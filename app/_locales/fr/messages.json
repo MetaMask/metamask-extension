@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "BlockAid"
   },
-  "blockaidAlertInfo": {
-    "message": "Nous ne vous recommandons pas de donner suite à cette demande."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Pour protéger vos actifs, nous vous suggérons de rejeter la demande."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Cette demande est suspecte"
   },
   "confirmed": {
     "message": "Confirmé"

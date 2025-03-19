@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "我们不建议继续处理此请求。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "此请求可疑"
   },
   "confirmed": {
     "message": "已确认"
