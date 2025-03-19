@@ -294,7 +294,8 @@ export default function CreatePassword({
                 // This type="button" prop is needed for <button> to prevent the implicit submit
                 // behavior. Without this and within this form, entering the "Enter" key while
                 // one of the inputs is focused will trigger this button.
-                type="button"
+                type="a"
+                href="#"
               >
                 {showPassword ? t('hide') : t('show')}
               </ButtonLink>
