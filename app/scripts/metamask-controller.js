@@ -394,6 +394,7 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { DeFiPositionsController } from '../../ui/DeFiPositionsController/DeFiPositionsController';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -769,6 +770,29 @@ export default class MetamaskController extends EventEmitter {
       messenger: tokensControllerMessenger,
       chainId: this.#getGlobalChainId(),
     });
+
+
+
+
+    this.defiPositionsController = new DeFiPositionsController({
+      state: initState.DeFiPositionsController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'DeFiPositionsController',
+        allowedActions: [
+          'AccountsController:getSelectedAccount',
+          'AccountsController:getAccount',
+        ],
+        allowedEvents: [
+          'AccountsController:selectedAccountChange',
+          'NetworkController:stateChange',
+        ],
+      }),
+      chainId: this.#getGlobalChainId(),
+    });
+
+    console.log('this.defiPositionsController oioi', this.defiPositionsController);
+
+
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -2147,6 +2171,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      DefiPositionsController: this.defiPositionsController,
       TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
@@ -2207,6 +2232,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
+        DefiPositionsController: this.defiPositionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,

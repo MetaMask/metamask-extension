@@ -83,6 +83,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
         <TokenCell
           key={`${token.chainId}-${token.symbol}-${token.address}`}
+          location={'TokensTab'}
           token={token}
           privacyMode={privacyMode}
           onClick={onTokenClick}

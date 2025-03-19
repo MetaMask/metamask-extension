@@ -57,6 +57,9 @@ export type TokenWithFiatAmount = Token &
   TokenBalanceValues & {
     isStakeable?: boolean;
     title: string;
+  } & {
+    iconGroup?: { avatarValue: string; symbol: string }[];
+    protocolId?: string;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
