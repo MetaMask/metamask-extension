@@ -1421,6 +1421,27 @@
         "immer": true
       }
     },
+    "@metamask/bridge-controller": {
+      "globals": {
+        "AbortController": true,
+        "URLSearchParams": true,
+        "console.log": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/browser-passworder": {
       "globals": {
         "CryptoKey": true,
@@ -2133,6 +2154,18 @@
       }
     },
     "@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
