@@ -6101,3 +6101,15 @@ export async function getCode(address: Hex, networkClientId: string) {
     networkClientId,
   ]);
 }
+
+export function setTransactionActive(
+  transactionId: string,
+  isFocused: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setTransactionActive', [
+      transactionId,
+      isFocused,
+    ]);
+  };
+}
