@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { ExternalAccount } from '../types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -10,48 +10,42 @@ import {
   Box,
   Text,
 } from '../../../../components/component-library';
-
 import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   Display,
+  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-
 import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { DestinationAccount } from '../types';
 
-type DestinationSelectedAccountListItemProps = {
-  account: DestinationAccount;
+type ExternalAccountListItemProps = {
+  account: ExternalAccount;
   selected: boolean;
   onClick?: () => void;
 };
 
-const DestinationSelectedAccountListItem: React.FC<
-  DestinationSelectedAccountListItemProps
+export const ExternalAccountListItem: React.FC<
+  ExternalAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
-  const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (
     <Box
       display={Display.Flex}
       padding={4}
-      backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
-      }
+      backgroundColor={BackgroundColor.transparent}
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
-      style={{ pointerEvents: 'none' }}
     >
       <AvatarAccount
         borderColor={BorderColor.transparent}
@@ -65,11 +59,10 @@ const DestinationSelectedAccountListItem: React.FC<
         marginInlineEnd={2}
       />
 
-      <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {isExternalAccount ? t('externalAccount') : account.metadata.name}
+          {t('externalAccount')}
         </Text>
-
         <Text
           variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
@@ -81,5 +74,3 @@ const DestinationSelectedAccountListItem: React.FC<
     </Box>
   );
 };
-
-export default React.memo(DestinationSelectedAccountListItem);
