@@ -95,10 +95,6 @@ workflows:
               pattern: /^rerun-from-failed.*/
               value: << pipeline.schedule.name >>
     jobs:
-      - create_release_pull_request:
-          <<: *rc_branch_only
-          requires:
-            - prep-deps
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
