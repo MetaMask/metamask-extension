@@ -110,7 +110,6 @@ export default function useHandleTx() {
         networkClientId,
         requireApproval: false,
         type: txType,
-        waitForSubmit: true,
       });
     }
 
