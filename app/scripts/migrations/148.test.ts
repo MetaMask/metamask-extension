@@ -71,7 +71,7 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
     const caveatValue =
-      newStorage.data.PermissionController.subjects['example.com'].permissions[
+      (newStorage.data.PermissionController as any).subjects['example.com'].permissions[
         Caip25EndowmentPermissionName
       ].caveats[0].value;
 
@@ -120,7 +120,7 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
     const caveatValue =
-      newStorage.data.PermissionController.subjects['example.com'].permissions[
+      (newStorage.data.PermissionController as any).subjects['example.com'].permissions[
         Caip25EndowmentPermissionName
       ].caveats[0].value;
 
@@ -178,14 +178,14 @@ describe(`migration #${version}`, () => {
 
     // Check first subject
     const firstCaveatValue =
-      newStorage.data.PermissionController.subjects['example.com'].permissions[
+      (newStorage.data.PermissionController as any).subjects['example.com'].permissions[
         Caip25EndowmentPermissionName
       ].caveats[0].value;
     expect(firstCaveatValue.sessionProperties).toStrictEqual({});
 
     // Check second subject
     const secondCaveatValue =
-      newStorage.data.PermissionController.subjects['other-site.com']
+      (newStorage.data.PermissionController as any).subjects['other-site.com']
         .permissions[Caip25EndowmentPermissionName].caveats[0].value;
     expect(secondCaveatValue.sessionProperties).toStrictEqual({});
   });
