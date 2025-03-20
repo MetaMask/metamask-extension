@@ -47,8 +47,8 @@ import {
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import type { ChainId } from '../../../../shared/types/bridge';
+import { useTokenScan } from '../../../hooks/bridge/useTokenScan';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
-import useTokenScan from '../../../hooks/bridge/useTokenScan';
 
 export const MultichainBridgeQuoteCard = () => {
   const t = useI18nContext();
