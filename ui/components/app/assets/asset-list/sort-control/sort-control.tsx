@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box, Text } from '../../../../component-library';
@@ -18,7 +18,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import { getPreferences } from '../../../../../selectors';
+import {
+  getIsEvmMultichainNetworkSelected,
+  getTokenSortConfig,
+} from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
@@ -74,37 +77,53 @@ type SortControlProps = {
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { tokenSortConfig } = useSelector(getPreferences);
+  const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const isEvmSelected = useSelector(getIsEvmMultichainNetworkSelected);
 
   const dispatch = useDispatch();
 
-  const handleSort = (
-    key: string,
-    sortCallback: keyof SortingCallbacksT,
-    order: SortOrder,
-  ) => {
-    dispatch(
-      setTokenSortConfig({
-        key,
-        sortCallback,
-        order,
-      }),
-    );
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.TokenSortPreference,
-      properties: {
-        [MetaMetricsUserTrait.TokenSortPreference]: key,
-      },
-    });
-    handleClose();
-  };
+  const handleSort = useCallback(
+    (key: string, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
+      dispatch(
+        setTokenSortConfig({
+          key,
+          sortCallback,
+          order,
+        }),
+      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.TokenSortPreference,
+        properties: {
+          [MetaMetricsUserTrait.TokenSortPreference]: key,
+        },
+      });
+      handleClose();
+    },
+    [dispatch, handleClose, trackEvent],
+  );
+
+  // useEffect(() => {
+  //   if (tokenSortConfig.sortCallback === 'alphaNumeric') {
+  //     dispatch(
+  //       setTokenSortConfig({
+  //         key: isEvmSelected ? 'name' : 'title',
+  //         sortCallback: 'alphaNumeric',
+  //         order: 'asc',
+  //       }),
+  //     );
+  //   }
+  // }, [dispatch, isEvmSelected, tokenSortConfig]);
   return (
     <>
       <SelectableListItem
-        isSelected={tokenSortConfig?.key === 'name'}
-        onClick={() => handleSort('name', 'alphaNumeric', 'asc')}
+        isSelected={
+          tokenSortConfig?.key === 'name' || tokenSortConfig?.key === 'title'
+        }
+        onClick={() =>
+          handleSort(isEvmSelected ? 'name' : 'title', 'alphaNumeric', 'asc')
+        }
         testId="sortByAlphabetically"
       >
         {t('sortByAlphabetically')}
