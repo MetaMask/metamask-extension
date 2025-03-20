@@ -67,7 +67,9 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
     const { seedPhraseBackedUp, dismissSeedBackUpReminder } = state.metamask;
     const selectedAccount = getSelectedInternalAccount(state);
 
-    // if there is no account, we don't need to show the seed phrase reminder
+    // If there is no account, we don't need to show the seed phrase reminder
+    // or if the account is not a primary HD or first party snap account
+    // It is assumed that imported srp accounts are backed up
     if (!selectedAccount || !isPrimaryHdOrFirstPartySnapAccount) {
       return false;
     }
@@ -75,7 +77,6 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
     let hasBalance = false;
 
     if (isEvmAccountType(selectedAccount.type)) {
-      console.log('has aggregated balance', aggregatedBalance > 0);
       hasBalance =
         Object.values(tokens).some((chains) => {
           return (
