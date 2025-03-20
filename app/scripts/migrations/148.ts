@@ -34,7 +34,6 @@ function transformState(state: Record<string, unknown>) {
     hasProperty(state, 'AppStateController') &&
     isObject(state.AppStateController)
   ) {
-    // Removed in
     // See: https://metamask.sentry.io/issues/5975849508/events/7b2c1e15e40b4b94b08030f8b5470f36/
     delete state.AppStateController.enableEIP1559V2NoticeDismissed;
   }
