@@ -1,4 +1,5 @@
 import { waitFor } from '@testing-library/react';
+import { BridgeBackgroundAction } from '@metamask/bridge-controller';
 import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import { integrationTestRender } from '../../lib/render-helpers';
@@ -13,7 +14,6 @@ import {
   waitForElementById,
   waitForElementByText,
 } from '../helpers';
-import { BridgeBackgroundAction } from '../../../shared/types/bridge';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 jest.mock('../../../ui/store/background-connection', () => ({
