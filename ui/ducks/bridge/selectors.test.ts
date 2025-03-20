@@ -582,7 +582,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: 5,
         quotesInitialLoadTimeMs: 11000,
         isQuoteGoingToRefresh: false,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -706,7 +706,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: 2,
         isQuoteGoingToRefresh: true,
         quotesInitialLoadTimeMs: 11000,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -831,7 +831,7 @@ describe('Bridge selectors', () => {
         isLoading: false,
         quotesRefreshCount: 1,
         isQuoteGoingToRefresh: false,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
   });
@@ -846,12 +846,12 @@ describe('Bridge selectors', () => {
         activeQuote: undefined,
         isLoading: false,
         isQuoteGoingToRefresh: false,
-        quotesLastFetchedMs: undefined,
+        quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
         recommendedQuote: undefined,
-        quotesInitialLoadTimeMs: undefined,
+        quotesInitialLoadTimeMs: null,
         sortedQuotes: [],
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
