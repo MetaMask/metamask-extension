@@ -41,6 +41,12 @@ const RATE_LIMIT_TYPES = {
   RANDOM_SAMPLE: 'random_sample',
 };
 
+const STAGE = {
+  REQUESTED: 'REQUESTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+};
+
 /**
  * This object maps a method name to a RATE_LIMIT_TYPE. If not in this map the
  * default is RANDOM_SAMPLE
@@ -62,6 +68,9 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
+  [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.WALLET_GET_CAPABILITIES]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.WALLET_SEND_CALLS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
 };
 
 const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
@@ -119,6 +128,15 @@ const EVENT_NAME_MAP = {
     REJECTED: MetaMetricsEventName.PermissionsRejected,
     REQUESTED: MetaMetricsEventName.PermissionsRequested,
   },
+  [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: {
+    REQUESTED: MetaMetricsEventName.Wallet5792Called,
+  },
+  [MESSAGE_TYPE.WALLET_GET_CAPABILITIES]: {
+    REQUESTED: MetaMetricsEventName.Wallet5792Called,
+  },
+  [MESSAGE_TYPE.WALLET_SEND_CALLS]: {
+    REQUESTED: MetaMetricsEventName.Wallet5792Called,
+  },
 };
 
 /**
@@ -130,6 +148,10 @@ const TRANSFORM_PARAMS_MAP = {
   [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
+};
+
+const CUSTOM_PROPERTIES_MAP = {
+  [MESSAGE_TYPE.WALLET_SEND_CALLS]: getWalletSendCallsProperties,
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -383,6 +405,13 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.params = transformParams(params);
       }
 
+      CUSTOM_PROPERTIES_MAP[method]?.(
+        req,
+        undefined,
+        STAGE.REQUESTED,
+        eventProperties,
+      );
+
       if (event === MetaMetricsEventName.SignatureRequested) {
         const fragmentPayload = {
           properties: eventProperties,
@@ -420,11 +449,13 @@ export default function createRPCMethodTrackingMiddleware({
       const location = res.error?.data?.location;
 
       let event;
+      let stage;
 
       const errorMessage = getErrorMessage(res.error);
 
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
+        stage = STAGE.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
         [errorMessage, res.error.message].includes(
@@ -433,10 +464,18 @@ export default function createRPCMethodTrackingMiddleware({
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
+        stage = STAGE.REJECTED;
         eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
+        stage = STAGE.APPROVED;
       }
+
+      if (!event) {
+        return callback();
+      }
+
+      CUSTOM_PROPERTIES_MAP[method]?.(req, res, stage, eventProperties);
 
       let blockaidMetricProps = {};
       if (SIGNING_METHODS.includes(method)) {
@@ -486,4 +525,17 @@ export default function createRPCMethodTrackingMiddleware({
       return callback();
     });
   };
+}
+
+function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
+  if (stage !== STAGE.REQUESTED) {
+    return;
+  }
+
+  const { params } = req;
+  const callCount = params?.[0]?.calls?.length;
+
+  if (callCount) {
+    eventProperties.batch_transaction_count = callCount;
+  }
 }

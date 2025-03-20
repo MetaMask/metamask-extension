@@ -395,8 +395,8 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import {
+  getCallsStatus,
   getCapabilities,
-  getTransactionReceiptsByBatchId,
   processSendCalls,
 } from './lib/transaction/eip5792';
 
@@ -1633,6 +1633,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
         allowedActions: [
+          `${this.accountsController.name}:getState`,
           `${this.approvalController.name}:addRequest`,
           `${this.keyringController.name}:signMessage`,
           `${this.keyringController.name}:signPersonalMessage`,
@@ -2161,10 +2162,7 @@ export default class MetamaskController extends EventEmitter {
         },
         this.controllerMessenger,
       ),
-      getTransactionReceiptsByBatchId: getTransactionReceiptsByBatchId.bind(
-        null,
-        this.controllerMessenger,
-      ),
+      getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
       getCapabilities: getCapabilities.bind(null, {
         isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
           this.txController,
@@ -2416,12 +2414,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.txController.stopIncomingTransactionPolling();
-
-    this.txController.startIncomingTransactionPolling([
-      this.#getGlobalChainId(),
-    ]);
-
+    this.#restartSmartTransactionPoller();
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
   }
@@ -2649,6 +2642,37 @@ export default class MetamaskController extends EventEmitter {
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
           },
+          getMnemonicSeed: async (source) => {
+            if (!source) {
+              return this.getPrimaryKeyringMnemonicSeed();
+            }
+
+            try {
+              const { type, seed } = await this.controllerMessenger.call(
+                'KeyringController:withKeyring',
+                {
+                  id: source,
+                },
+                async ({ keyring }) => ({
+                  type: keyring.type,
+                  seed: keyring.seed,
+                }),
+              );
+
+              if (type !== KeyringTypes.hd || !seed) {
+                // The keyring isn't guaranteed to have a seed (e.g.,
+                // hardware wallets, which can't be used as entropy sources),
+                // so we throw an error if it doesn't.
+                throw new Error(
+                  `Entropy source with ID "${source}" not found.`,
+                );
+              }
+
+              return seed;
+            } catch {
+              throw new Error(`Entropy source with ID "${source}" not found.`);
+            }
+          },
           getUnlockPromise: this.appStateController.getUnlockPromise.bind(
             this.appStateController,
           ),
@@ -2752,20 +2776,9 @@ export default class MetamaskController extends EventEmitter {
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
         const { currentLocale } = currState;
-        const chainId = this.#getGlobalChainId();
+        this.#restartSmartTransactionPoller();
 
         await updateCurrentLocale(currentLocale);
-
-        if (currState.incomingTransactionsPreferences?.[chainId]) {
-          this.txController.stopIncomingTransactionPolling();
-
-          this.txController.startIncomingTransactionPolling([
-            this.#getGlobalChainId(),
-          ]);
-        } else {
-          this.txController.stopIncomingTransactionPolling();
-        }
-
         this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
     );
@@ -2920,15 +2933,22 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        await this.txController.stopIncomingTransactionPolling();
+        const filteredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            this.preferencesController.state.incomingTransactionsPreferences[
+              networkId
+            ],
+        );
 
-        await this.txController.updateIncomingTransactions([
-          this.#getGlobalChainId(),
-        ]);
+        if (filteredChainIds.length > 0) {
+          await this.txController.stopIncomingTransactionPolling();
 
-        await this.txController.startIncomingTransactionPolling([
-          this.#getGlobalChainId(),
-        ]);
+          await this.txController.updateIncomingTransactions(filteredChainIds);
+
+          await this.txController.startIncomingTransactionPolling(
+            filteredChainIds,
+          );
+        }
       },
     );
 
@@ -3441,6 +3461,7 @@ export default class MetamaskController extends EventEmitter {
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
+      getCode: this.getCode.bind(this),
 
       // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
@@ -3738,7 +3759,8 @@ export default class MetamaskController extends EventEmitter {
           null,
           this.getTransactionMetricsRequest(),
         ),
-
+      setTransactionActive:
+        txController.setTransactionActive.bind(txController),
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
         this.decryptMessageController,
@@ -4819,6 +4841,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return keyring.mnemonic;
+  }
+
+  /**
+   * Gets the mnemonic seed of the user's primary keyring.
+   */
+  getPrimaryKeyringMnemonicSeed() {
+    const [keyring] = this.keyringController.getKeyringsByType(
+      KeyringType.hdKeyTree,
+    );
+    if (!keyring.seed) {
+      throw new Error('Primary keyring mnemonic unavailable.');
+    }
+
+    return keyring.seed;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -6438,6 +6474,8 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        hasApprovalRequestsForOrigin: () =>
+          this.approvalController.has({ origin }),
         rejectApprovalRequestsForOrigin: () =>
           this.rejectOriginPendingApprovals(origin),
 
@@ -7266,14 +7304,25 @@ export default class MetamaskController extends EventEmitter {
     // Putting these TransactionController listeners here to keep it colocated with the other bridge events
     this.controllerMessenger.subscribe(
       'TransactionController:transactionFailed',
-      (payload) => {
-        if (payload.transactionMeta.type === TransactionType.bridge) {
-          handleTransactionFailedTypeBridge(payload, {
-            backgroundState: this.getState(),
-            trackEvent: this.metaMetricsController.trackEvent.bind(
-              this.metaMetricsController,
-            ),
-          });
+      ({ transactionMeta }) => {
+        const { type, status } = transactionMeta;
+
+        const isBridgeTransaction = type === TransactionType.bridge;
+        const isIncompleteTransactionCleanup = [
+          TransactionStatus.approved,
+          TransactionStatus.signed,
+        ].includes(status);
+
+        if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
+          handleTransactionFailedTypeBridge(
+            { transactionMeta },
+            {
+              backgroundState: this.getState(),
+              trackEvent: this.metaMetricsController.trackEvent.bind(
+                this.metaMetricsController,
+              ),
+            },
+          );
         }
       },
     );
@@ -7617,6 +7666,16 @@ export default class MetamaskController extends EventEmitter {
     rejectAllApprovals({
       approvalController: this.approvalController,
       deleteInterface,
+    });
+  }
+
+  async getCode(address, networkClientId) {
+    const { provider } =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    return await provider.request({
+      method: 'eth_getCode',
+      params: [address],
     });
   }
 
@@ -8087,6 +8146,28 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
+  }
+
+  #getAllAddedNetworks() {
+    const networksConfig =
+      this.networkController.state.networkConfigurationsByChainId;
+    const chainIds = Object.keys(networksConfig);
+
+    return chainIds;
+  }
+
+  #restartSmartTransactionPoller() {
+    const filteredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
+    );
+
+    if (filteredChainIds.length > 0) {
+      this.txController.stopIncomingTransactionPolling();
+      this.txController.startIncomingTransactionPolling(filteredChainIds);
+    }
   }
 
   /**
