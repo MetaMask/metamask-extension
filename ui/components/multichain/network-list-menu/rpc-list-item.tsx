@@ -31,10 +31,8 @@ export const stripProtocol = (endpoint: string) => {
   return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
 };
 
-export const onlyKeepRootDomain = (endpoint: string) => {
+export const onlyKeepHost = (endpoint: string) => {
   const url = new URL(endpoint);
-  //const parts = url.host.split('.');
-  //return parts.slice(1).join('.');
   return url.host;
 };
 
@@ -57,7 +55,7 @@ const RpcListItem = ({
     endpoint ? stripProtocol(stripKeyFromInfuraUrl(endpoint)) : '\u00A0';
 
   const displayFailoverEndpoint = (endpoint?: string) =>
-    endpoint ? stripProtocol(endpoint) : '\u00A0';
+    endpoint ? onlyKeepHost(endpoint) : '\u00A0';
 
   const padding = name ? 2 : 4;
 

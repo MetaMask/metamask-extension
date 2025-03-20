@@ -61,6 +61,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import RpcListItem, {
+  onlyKeepHost,
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../../../../components/multichain/network-list-menu/rpc-list-item';
@@ -426,7 +427,7 @@ export const NetworksForm = ({
                     fontStyle={FontStyle.Italic}
                     ellipsis
                   >
-                    ({stripProtocol(item.failoverUrls[0])})
+                    ({onlyKeepHost(item.failoverUrls[0])})
                   </Text>
                 )}
               </Box>
