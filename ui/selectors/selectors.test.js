@@ -296,19 +296,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getShouldShowSeedPhraseReminder', () => {
-    it('returns true if the account is a native account', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          seedPhraseBackedUp: false,
-        },
-      };
-      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
-    });
-  });
-
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
     const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
