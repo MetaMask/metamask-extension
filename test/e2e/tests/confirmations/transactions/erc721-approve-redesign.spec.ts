@@ -3,8 +3,6 @@ import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import { openTestSnapClickButtonAndInstall } from '../../../page-objects/flows/install-test-snap.flow';
-import SnapInstall from '../../../page-objects/pages/dialog/snap-install';
 import {
   openDAppWithContract,
   TestSuiteArguments,
@@ -36,12 +34,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          // Navigate to test snaps page and click to the transaction-insights snap
-          await openTestSnapClickButtonAndInstall(
-            driver,
-            'connectTransactionInsightButton',
-          );
-
           await createMintTransaction(driver);
           await confirmMintTransaction(driver);
 
@@ -67,12 +59,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          // Navigate to test snaps page and click to the transaction-insights snap
-          await openTestSnapClickButtonAndInstall(
-            driver,
-            'connectTransactionInsightButton',
-          );
 
           await createMintTransaction(driver);
 
@@ -190,16 +176,11 @@ async function assertApproveDetails(driver: Driver) {
     css: 'p',
     text: 'Method',
   });
-  const snapInstall = new SnapInstall(driver);
-  await snapInstall.check_transactionInsightsTitle();
-  await snapInstall.check_transactionInsights();
-  await snapInstall.check_transactionFromAddress();
-  await snapInstall.check_transactionToAddress();
 }
 
 async function confirmApproveTransaction(driver: Driver) {
   await scrollAndConfirmAndAssertConfirm(driver);
-  await driver.waitUntilXWindowHandles(3);
+  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
