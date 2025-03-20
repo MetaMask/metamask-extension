@@ -92,7 +92,7 @@ describe('TransactionListItemDetails Component', () => {
       expect(queryByText('Test Transaction Details')).toBeInTheDocument();
       expect(
         queryByTestId('transaction-list-item-details-banner-error-message'),
-      ).toBeInTheDocument();
+      ).not.toBeInTheDocument(); // "not" is intentional here. See NO_ERROR_BANNER in the component.
     });
   });
 
