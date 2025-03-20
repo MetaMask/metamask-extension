@@ -5,57 +5,42 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  TOKENS_API_MOCK_RESULT,
-  TOP_ASSETS_API_MOCK_RESULT,
-  AGGREGATOR_METADATA_API_MOCK_RESULT,
-  GAS_PRICE_API_MOCK_RESULT,
-  FEATURE_FLAGS_API_MOCK_RESULT,
-  TRADES_API_MOCK_RESULT,
-  NETWORKS_2_API_MOCK_RESULT,
-} from '../../../data/mock-data';
-import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
+import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
-      .thenCallback(() => ({ statusCode: 200, json: TOKENS_API_MOCK_RESULT })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
+      .forGet('https://swap.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,
-        json: TOP_ASSETS_API_MOCK_RESULT,
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/aggregatorMetadata')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: AGGREGATOR_METADATA_API_MOCK_RESULT,
-      })),
-    await mockServer
-      .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: GAS_PRICE_API_MOCK_RESULT,
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/featureFlags')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: FEATURE_FLAGS_API_MOCK_RESULT,
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: TRADES_API_MOCK_RESULT,
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: NETWORKS_2_API_MOCK_RESULT,
+        json: {
+          symbol: 'WETH',
+          type: 'erc20',
+          aggregators: [
+            'metamask',
+            'aave',
+            'coinGecko',
+            'oneInch',
+            'pmm',
+            'zerion',
+            'lifi',
+            'socket',
+            'squid',
+            'sonarwatch',
+            'uniswapLabs',
+            'coinmarketcap',
+            'rango',
+          ],
+          occurrences: 13,
+          iconUrl:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/weth.svg',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          name: 'Wrapped Ether',
+          decimals: 18,
+        },
       })),
     await mockServer
       .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
@@ -88,77 +73,11 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           ],
         },
       })),
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-
-    "count": 4,
-    "balances": [
-        {
-            "object": "token",
-            "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-            "name": "Dai Stablecoin",
-            "symbol": "DAI",
-            "decimals": 18,
-            "balance": "1.171534639562184532",
-            "chainId": 1
-        },
-        {
-            "object": "token",
-            "address": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "name": "Ether",
-            "type": "native",
-            "timestamp": "2015-07-30T15:26:13.000Z",
-            "decimals": 18,
-            "chainId": 1,
-            "balance": "0.000038244165309000"
-        }
-      ],
-    "unprocessedNetworks": []
-        }
-      })),
-
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/token/')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          symbol: 'DAI',
-          type: 'erc20',
-          aggregators: [
-            'metamask',
-            'aave',
-            'bancor',
-            'cmc',
-            'coinGecko',
-            'oneInch',
-            'pmm',
-            'zerion',
-            'lifi',
-            'socket',
-            'squid',
-            'openswap',
-            'sonarwatch',
-            'uniswapLabs',
-            'coinmarketcap',
-            'rango',
-          ],
-          occurrences: 16,
-          iconUrl:
-            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
-          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-          name: 'Dai Stablecoin',
-          decimals: 18,
-        },
-      })),
   ];
 }
 
 describe('Swap', function () {
-  it('should swap ETH to DAI', async function () {
+  it('should swap WETH to ETH', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -168,8 +87,8 @@ describe('Swap', function () {
               '0x1': {
                 '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
                   {
-                    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-                    symbol: 'DAI',
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                    symbol: 'WETH',
                     decimals: 18,
                     isERC721: false,
                     aggregators: [],
@@ -188,31 +107,46 @@ describe('Swap', function () {
               chainId: 1,
               hardfork: 'london',
               loadState:
-                './test/e2e/seeder/network-states/swap-eth-dai/withSwapContracts.json',
+                './test/e2e/seeder/network-states/swap-state/withSwapContracts.json',
             },
           },
         ],
       },
       async ({ driver, localNodes }) => {
-        await driver.delay(5000)
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
+        await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
 
-        await assetListPage.clickOnAsset('ETH');
+        // disable smart transactions
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.openSettingsPage();
 
-        // Swap ETH to DAI
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.toggleSmartTransactions();
+        await settingsPage.closeSettingsPage();
+
+        // Swap WETH to ETH
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.clickOnAsset('WETH');
+
         const tokenOverviewPage = new TokenOverviewPage(driver);
         await tokenOverviewPage.check_pageIsLoaded();
         await tokenOverviewPage.clickSwap();
 
-        await driver.delay(90000)
-        await driver.delay(90000)
-        await driver.delay(90000)
-        await driver.delay(90000)
-        await driver.delay(90000)
+        const swapPage = new SwapPage(driver);
+        await swapPage.check_pageIsLoaded();
+        await swapPage.enterSwapAmount('10');
+        await swapPage.selectDestinationToken('Ether');
+        await swapPage.submitSwap();
+
+        await homePage.check_expectedTokenBalanceIsDisplayed('40', 'WETH');
       },
     );
   });
