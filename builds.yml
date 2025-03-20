@@ -345,7 +345,6 @@ env:
   ###
   # Account Abstraction (EIP-4337)
   ###
-
   - EIP_4337_ENTRYPOINT: null
 
   ###
@@ -360,3 +359,8 @@ env:
   # system that they are intentionally unset.
   ###
   - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
+
+  ###
+  # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
+  ###
+  - EIP_7702_PUBLIC_KEY: null
