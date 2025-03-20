@@ -343,7 +343,11 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.contractInteraction) {
+  } else if (
+    type === TransactionType.contractInteraction ||
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
+  ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
@@ -405,22 +409,34 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
+  const primaryCurrencyPreferences = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    transactionGroup?.initialTransaction?.chainId,
+  );
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: primaryDisplayValue,
-    suffix: primarySuffix,
-    ...primaryCurrencyPreferences,
-  });
+  const [primaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: primaryDisplayValue,
+      suffix: primarySuffix,
+      ...primaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: secondaryDisplayValue,
-    hideLabel: isTokenCategory || Boolean(swapTokenValue),
-    ...secondaryCurrencyPreferences,
-  });
+  const [secondaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: secondaryDisplayValue,
+      hideLabel: isTokenCategory || Boolean(swapTokenValue),
+      ...secondaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
   return {
     title,
