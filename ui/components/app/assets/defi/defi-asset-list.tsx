@@ -13,12 +13,21 @@ import {
 } from '../../../../helpers/constants/design-system';
 import PulseLoader from '../../../ui/pulse-loader';
 import { Box } from '../../../component-library/box';
-import { DeFiPositionsControllerState } from '../../../../DeFiPositionsController/DeFiPositionsController';
-import { GroupedPositions } from '../../../../DeFiPositionsController/group-positions';
+import {
+  DeFiPositionsControllerState,
+  GroupedPositions,
+} from '@metamask/assets-controllers';
+import { TokenCellLocation } from '../token-cell/token-cell';
 
 export type DefiState = {
   metamask: DeFiPositionsControllerState;
 };
+
+export function getDefiPositions(
+  state: DefiState,
+): DeFiPositionsControllerState['allDeFiPositions'] {
+  return state?.metamask?.allDeFiPositions;
+}
 
 const extractIconGroup = (
   protocolPositions: GroupedPositions['protocols'][keyof GroupedPositions['protocols']],
@@ -35,12 +44,6 @@ const extractIconGroup = (
       ),
   );
 };
-
-export function getDefiPositions(
-  state: DefiState,
-): DeFiPositionsControllerState['allDeFiPositions'] {
-  return state?.metamask?.allDeFiPositions;
-}
 
 const LoadingState = () => (
   <Box
@@ -72,7 +75,7 @@ const DeFi = ({
         return (
           <TokenCell
             key={`${chainId}-${protocolId}`}
-            location="DefiTab"
+            location={TokenCellLocation.DefiTab}
             token={{
               protocolId,
               address: '0x',

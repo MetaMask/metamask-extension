@@ -43,21 +43,29 @@ import {
 import { AvatarGroup } from '../../../multichain';
 import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
 
+
+export const TokenCellLocation = {
+  TokensTab: 'TokensTab',
+  DefiTab: 'DefiTab',
+  DefiDetailsTab: 'DefiDetailsTab',
+} as const
+export type TokenCellLocation = (typeof TokenCellLocation)[keyof typeof TokenCellLocation];
+
 type TokenCellProps =
   | {
-      location: 'TokensTab' | 'DefiDetailsTab';
+      location: typeof TokenCellLocation.TokensTab;
       token: TokenWithFiatAmount;
       onClick?: (chainId: string, address: string) => void;
       privacyMode: boolean;
     }
   | {
-      location: 'DefiDetailsTab';
+      location: typeof TokenCellLocation.DefiDetailsTab;
       token: TokenWithFiatAmount;
       privacyMode: boolean;
       onClick: undefined;
     }
   | {
-      location: 'DefiTab';
+      location: typeof TokenCellLocation.DefiTab;
       onClick?: (chainId: string, protocolId: string) => void;
       token: TokenWithFiatAmount & {
         iconGroup: { avatarValue: string; symbol: string }[];
@@ -66,7 +74,8 @@ type TokenCellProps =
       privacyMode: boolean;
     };
 
-export type TokenCellLocation = 'TokensTab' | 'DefiTab' | 'DefiDetailsTab';
+
+
 
 export default function TokenCell({
   token,
@@ -99,13 +108,12 @@ export default function TokenCell({
     (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e?.preventDefault();
 
-      if (showScamWarningModal || !onClick || !token.chainId) return;
+      if (!onClick || !token.chainId || showScamWarningModal) {
+        return;
+      }
 
-      const param = location == 'DefiTab' ? token.protocolId! : token.address;
-
-      onClick(token.chainId, param);
-
-      if (location == 'TokensTab') {
+      if (location === TokenCellLocation.TokensTab) {
+        onClick(token.chainId, token.address);
         trackEvent({
           category: MetaMetricsEventCategory.Tokens,
           event: MetaMetricsEventName.TokenDetailsOpened,
@@ -115,9 +123,11 @@ export default function TokenCell({
             token_symbol: token.symbol,
           },
         });
+      } else if (location === TokenCellLocation.DefiTab) {
+        onClick(token.chainId, token.protocolId);
       }
     },
-    [onClick, token],
+    [onClick, token, location, showScamWarningModal, trackEvent],
   );
 
   const handleScamWarningModal = (arg: boolean) => {

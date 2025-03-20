@@ -1576,6 +1576,9 @@
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
   },
+  "defi": {
+    "message": "DeFi"
+  },
   "delete": {
     "message": "Delete"
   },

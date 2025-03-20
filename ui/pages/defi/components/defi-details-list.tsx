@@ -7,16 +7,24 @@ import {
 import { Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { GroupedPositions } from '@metamask/assets-controllers';
+import { TokenCellLocation } from '../../../components/app/assets/token-cell/token-cell';
 
-import { UnderlyingWithMarketValue } from '../../../DeFiPositionsController/group-positions';
-import { PositionType } from '../../../DeFiPositionsController/fetch-positions';
-
-const positionTypeLabels: Record<PositionType, string> = {
+const PositionTypeLabels = {
   supply: 'supplied',
   stake: 'staked',
   borrow: 'borrowed',
   reward: 'rewards',
-};
+} as const;
+export type PositionTypeLabels = (typeof PositionTypeLabels)[keyof typeof PositionTypeLabels];
+export type PositionTypeKeys = keyof typeof PositionTypeLabels;
+
+type Protocols = GroupedPositions['protocols'];
+type Protocol = Protocols[keyof GroupedPositions['protocols']];
+type ProtocolPositionTypes = Protocol['positionTypes'];
+type PositionGroup = NonNullable<ProtocolPositionTypes[keyof ProtocolPositionTypes]>;
+export type ProtocolTokenWithMarketValue = NonNullable<PositionGroup['positions'][0][0]>
+type UnderlyingWithMarketValue = NonNullable<ProtocolTokenWithMarketValue['tokens']>[0];
 
 const DefiDetailsList = React.memo(
   ({
@@ -25,7 +33,7 @@ const DefiDetailsList = React.memo(
     chainId,
   }: {
     tokens: UnderlyingWithMarketValue[][];
-    positionType: PositionType;
+    positionType: PositionTypeKeys ;
     chainId: '0x' & string;
   }) => {
     const t = useI18nContext();
@@ -61,12 +69,12 @@ const DefiDetailsList = React.memo(
                   color={TextColor.textAlternativeSoft}
                   paddingBottom={4}
                 >
-                  {t(positionTypeLabels[positionType] || positionType)}
+                  {t(PositionTypeLabels[positionType as PositionTypeKeys] || positionType)}
                 </Text>
                 {underlying.map((token) => (
                   <TokenCell
                     key={`${chainId}-${token.address}`}
-                    location="DefiDetailsTab"
+                    location={TokenCellLocation.DefiDetailsTab}
                     token={{
                       address: token.address as '0x' & string,
                       title: token.symbol,
@@ -80,6 +88,7 @@ const DefiDetailsList = React.memo(
                       chainId: chainId,
                     }}
                     privacyMode={false}
+                    onClick={undefined}
                   />
                 ))}
               </>
@@ -98,7 +107,7 @@ const DefiDetailsList = React.memo(
                 {underlyingRewards.map((token) => (
                   <TokenCell
                     key={`${chainId}-${token.address}`}
-                    location="DefiDetailsTab"
+                    location={TokenCellLocation.DefiDetailsTab}
                     token={{
                       address: token.address as '0x' & string,
                       title: token.symbol,
@@ -112,6 +121,7 @@ const DefiDetailsList = React.memo(
                       chainId: chainId,
                     }}
                     privacyMode={false}
+                    onClick={undefined}
                   />
                 ))}
               </>

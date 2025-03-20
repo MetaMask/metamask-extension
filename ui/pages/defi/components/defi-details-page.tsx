@@ -21,9 +21,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useSelector } from 'react-redux';
 import { getDefiPositions } from '../../../components/app/assets/defi/defi-asset-list';
 import { getSelectedAccount } from '../../../selectors';
-import { ProtocolTokenWithMarketValue } from '../../../DeFiPositionsController/group-positions';
-import { PositionType } from '../../../DeFiPositionsController/fetch-positions';
-import DefiDetailsList from './defi-details-list';
+import DefiDetailsList, { PositionTypeKeys, ProtocolTokenWithMarketValue } from './defi-details-list';
 
 const useExtractUnderlyingTokens = (
   positions?: ProtocolTokenWithMarketValue[][],
@@ -60,12 +58,12 @@ export const DeFiPage = () => {
   const extractedTokens = useMemo(() => {
     return Object.keys(protocolPosition.positionTypes || {}).reduce(
       (acc, positionType) => {
-        acc[positionType as PositionType] =
-          protocolPosition.positionTypes[positionType as PositionType]
+        acc[positionType as PositionTypeKeys] =
+          protocolPosition.positionTypes[positionType as PositionTypeKeys]
             ?.positions || [];
         return acc;
       },
-      {} as Record<PositionType, ProtocolTokenWithMarketValue[][]>,
+      {} as Record<PositionTypeKeys, ProtocolTokenWithMarketValue[][]>,
     );
   }, [protocolPosition]);
 
@@ -110,11 +108,11 @@ export const DeFiPage = () => {
       </Box>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {['supply', 'borrow', 'stake', 'reward'].map((positionType) =>
-          protocolPosition.positionTypes[positionType as PositionType] ? (
+          protocolPosition.positionTypes[positionType as PositionTypeKeys] ? (
             <DefiDetailsList
               key={positionType}
-              tokens={underlyingDefiTokens[positionType as PositionType]}
-              positionType={positionType as PositionType}
+              tokens={underlyingDefiTokens[positionType as PositionTypeKeys]}
+              positionType={positionType as PositionTypeKeys}
               chainId={chainId}
             />
           ) : null,
