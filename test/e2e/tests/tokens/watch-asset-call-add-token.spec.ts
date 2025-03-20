@@ -19,11 +19,11 @@ describe('Add token using wallet_watchAsset', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.check_pageIsLoaded();
@@ -65,11 +65,11 @@ describe('Add token using wallet_watchAsset', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.check_pageIsLoaded();
