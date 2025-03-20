@@ -399,6 +399,7 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
+        assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
         iconUrl: './images/eth_logo.svg',
@@ -418,6 +419,7 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
+        assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
         iconUrl: './images/eth_logo.svg',
