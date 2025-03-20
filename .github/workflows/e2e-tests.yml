@@ -67,6 +67,7 @@ jobs:
           is-high-risk-environment: false
 
       - name: Download changed-files artifact
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: changed-files
