@@ -2349,9 +2349,7 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(
-      setActiveNetworkConfigurationId(networkClientIdForThisDomain),
-    );
+    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2633,21 +2631,15 @@ export function setActiveNetworkWithError(
   };
 }
 
-export function setActiveNetworkConfigurationId(
+export async function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    log.debug(
-      `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
-    );
-    try {
-      await submitRequestToBackground('setActiveNetworkConfigurationId', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
+): Promise<undefined> {
+  log.debug(
+    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+  );
+  await submitRequestToBackground('setActiveNetworkConfigurationId', [
+    networkConfigurationId,
+  ]);
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<

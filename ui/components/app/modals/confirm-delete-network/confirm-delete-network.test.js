@@ -10,10 +10,7 @@ describe('Confirm Delete Network', () => {
     hideModal: jest.fn(),
     onConfirm: jest.fn(),
     removeNetwork: jest.fn().mockResolvedValue(),
-    switchEvmNetwork: jest.fn(),
-    target: '0x5',
-    currentChainId: '0xe708',
-    ethereumMainnetClientId: '0x1',
+    target: '0x1',
   };
 
   it('should match snapshot', () => {
@@ -32,7 +29,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork {...props} />,
       mockStore,
     );
-    const expectedTitle = 'Delete Goerli network?';
+    const expectedTitle = 'Delete Custom Mainnet RPC network?';
 
     expect(getByText(expectedTitle)).toBeInTheDocument();
   });
