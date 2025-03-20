@@ -2561,6 +2561,9 @@
   "invalidCustomNetworkAlertTitle": {
     "message": "Invalid custom network"
   },
+  "invalidHexData": {
+    "message": "Invalid hex data"
+  },
   "invalidHexNumber": {
     "message": "Invalid hexadecimal number."
   },
