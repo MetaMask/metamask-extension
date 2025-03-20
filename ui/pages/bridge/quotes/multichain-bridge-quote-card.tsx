@@ -94,7 +94,7 @@ export const MultichainBridgeQuoteCard = () => {
     activeQuote.sentAmount.amount,
   );
 
-  // Some tokens have tokens fee that needs to be deducted from the amount
+  // Some tokens, specially solana have transfer fees that needs to be deducted from the amount
   // This fee are perceptual and range from 0 to 1
   if (scanTokenAdditionalFees?.transfer) {
     const transferTokenFeeAmount = toTokenAmount.times(
