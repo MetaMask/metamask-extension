@@ -325,7 +325,7 @@ const PrepareBridgePage = () => {
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
+      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('localhost')),
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
