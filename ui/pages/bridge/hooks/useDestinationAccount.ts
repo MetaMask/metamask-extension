@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   getSelectedInternalAccount,
@@ -12,10 +11,11 @@ import {
   getMultichainIsEvm,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import type { DestinationAccount } from '../prepare/types';
 
 export const useDestinationAccount = (isSwap = false) => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =
-    useState<InternalAccount | null>(null);
+    useState<DestinationAccount | null>(null);
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
