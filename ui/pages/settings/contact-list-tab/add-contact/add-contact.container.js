@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import {
   addToAddressBook,
   showQrScanner,
@@ -13,6 +12,7 @@ import {
   resetDomainResolution,
 } from '../../../../ducks/domains';
 import { getAddressBook, getInternalAccounts } from '../../../../selectors';
+import withOptimisedRouter from '../../../../helpers/higher-order-components/withOptimisedRouter';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {
@@ -36,6 +36,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(AddContact);

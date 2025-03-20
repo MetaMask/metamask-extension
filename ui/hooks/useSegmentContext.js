@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
@@ -25,22 +26,35 @@ export function useSegmentContext() {
   const txData = useSelector(txDataSelector) || {};
   const confirmTransactionOrigin = txData.origin;
 
-  const referrer = confirmTransactionOrigin
-    ? {
-        url: confirmTransactionOrigin,
-      }
-    : undefined;
+  const referrer = useMemo(
+    () =>
+      confirmTransactionOrigin
+        ? {
+            url: confirmTransactionOrigin,
+          }
+        : undefined,
+    [confirmTransactionOrigin],
+  );
 
-  const page = match
-    ? {
-        path: match.path,
-        title: PATH_NAME_MAP[match.path],
-        url: match.path,
-      }
-    : undefined;
+  const page = useMemo(
+    () =>
+      match?.path
+        ? {
+            path: match.path,
+            title: PATH_NAME_MAP[match.path],
+            url: match.path,
+          }
+        : undefined,
+    [match?.path],
+  );
 
-  return {
-    page,
-    referrer,
-  };
+  const returnResult = useMemo(
+    () => ({
+      page,
+      referrer,
+    }),
+    [page, referrer],
+  );
+
+  return returnResult;
 }

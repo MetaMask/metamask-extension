@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 import { tryReverseResolveAddress } from '../../../store/actions';
 
 import {
@@ -15,6 +14,7 @@ import {
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import withOptimisedRouter from '../../../helpers/higher-order-components/withOptimisedRouter';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -65,6 +65,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(TransactionListItemDetails);

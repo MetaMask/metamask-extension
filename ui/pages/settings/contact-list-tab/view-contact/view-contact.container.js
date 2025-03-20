@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntry,
   getInternalAccountByAddress,
@@ -10,6 +9,7 @@ import {
   CONTACT_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import withOptimisedRouter from '../../../../helpers/higher-order-components/withOptimisedRouter';
 import ViewContact from './view-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -37,4 +37,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(ViewContact);
+export default compose(
+  withOptimisedRouter,
+  connect(mapStateToProps),
+)(ViewContact);

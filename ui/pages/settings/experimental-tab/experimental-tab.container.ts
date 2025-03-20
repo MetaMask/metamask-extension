@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   setBitcoinSupportEnabled,
@@ -29,6 +28,7 @@ import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
 } from '../../../store/store';
+import withOptimisedRouter from '../../../helpers/higher-order-components/withOptimisedRouter';
 import ExperimentalTab from './experimental-tab.component';
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
@@ -72,6 +72,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(ExperimentalTab);

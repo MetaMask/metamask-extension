@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { getPreferences } from '../../../selectors';
@@ -19,6 +18,7 @@ import {
   displayErrorInSettings,
   hideErrorInSettings,
 } from '../../../ducks/app/app';
+import withOptimisedRouter from '../../../helpers/higher-order-components/withOptimisedRouter';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -79,6 +79,6 @@ export const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(AdvancedTab);
