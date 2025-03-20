@@ -127,7 +127,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         );
 
         // Reject All Transactions
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
           text: 'Reject all',
           tag: 'button',
         });
@@ -151,7 +151,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         });
 
         // Reject All Transactions
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
           text: 'Reject all',
           tag: 'button',
         });

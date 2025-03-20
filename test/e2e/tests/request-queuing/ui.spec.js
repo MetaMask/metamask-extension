@@ -134,7 +134,7 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  await driver.clickElementAndWaitForWindowToClose({
+  await driver.clickElement({
     tag: 'button',
     text: 'Cancel',
   });
