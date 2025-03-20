@@ -32,28 +32,18 @@ type TrackEvent = (
   options?: MetaMetricsEventOptions,
 ) => void;
 
-/**
- * Handles bridge transaction completion events and tracks analytics
- *
- * @param payload - The bridge transaction complete event payload
- * @param options - The options object
- * @param options.backgroundState - The background state
- * @param options.trackEvent - Function to track analytics events
- * @param options.getFeatureFlags - Function to get feature flags
- * @param options.getParticipateInMetrics - Function to check if user has opted into metrics
- */
 export const handleBridgeTransactionComplete = async (
   payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
   {
     backgroundState,
     trackEvent,
-    getFeatureFlags,
+    getRemoteFeatureFlags,
     getParticipateInMetrics,
   }: {
     backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
-    getFeatureFlags: () => {
-      collectTransactionHashInAnalytics?: boolean;
+    getRemoteFeatureFlags: () => {
+      'transactions-tx-hash-in-analytics'?: boolean;
       [key: string]: boolean | undefined;
     };
     getParticipateInMetrics: () => boolean;
@@ -129,14 +119,26 @@ export const handleBridgeTransactionComplete = async (
   // Create sensitiveProperties object for the transaction hash
   const sensitiveProperties: Record<string, string> = {};
 
-  // Add transaction hash if feature flag is enabled and user has opted into metrics
+  // Add transaction hash if remote feature flag is enabled and user has opted into metrics
   if (
-    getFeatureFlags().collectTransactionHashInAnalytics &&
+    getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
     getParticipateInMetrics() &&
     bridgeHistoryItem.status.srcChain.txHash
   ) {
     sensitiveProperties.transaction_hash =
       bridgeHistoryItem.status.srcChain.txHash;
+
+    // Debug logging - remove before production
+    if (!globalThis.debugEvents) {
+      globalThis.debugEvents = [];
+    }
+    globalThis.debugEvents.push({
+      time: Date.now(),
+      type: 'Action Completed',
+      hash: bridgeHistoryItem.status.srcChain.txHash,
+      flagSource: 'remote',
+    });
+    // Debug logging - remove before production
   }
 
   trackEvent({

@@ -63,8 +63,8 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
-  getFeatureFlags: () => {
-    collectTransactionHashInAnalytics?: boolean;
+  getRemoteFeatureFlags: () => {
+    'transactions-tx-hash-in-analytics'?: boolean;
     [key: string]: boolean | undefined;
   };
 };

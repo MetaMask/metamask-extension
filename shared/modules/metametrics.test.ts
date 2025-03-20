@@ -42,7 +42,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getSmartTransactionByMinedTxHash: jest.fn(),
     getMethodData: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
-    getFeatureFlags: jest.fn().mockReturnValue({}),
+    getRemoteFeatureFlags: jest.fn().mockReturnValue({}),
     ...customProps,
   } as TransactionMetricsRequest;
 };

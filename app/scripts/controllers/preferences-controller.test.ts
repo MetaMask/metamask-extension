@@ -721,9 +721,7 @@ describe('preferences controller', () => {
   describe('featureFlags', () => {
     it('defaults featureFlags', () => {
       const { controller } = setupController({});
-      expect(controller.state.featureFlags).toStrictEqual({
-        collectTransactionHashInAnalytics: false,
-      });
+      expect(controller.state.featureFlags).toStrictEqual({});
     });
 
     it('setFeatureFlags', () => {

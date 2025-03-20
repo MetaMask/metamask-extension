@@ -320,7 +320,7 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
- * @param transactionMetricsRequest.getFeatureFlags - Returns the feature flags object
+ * @param transactionMetricsRequest.getRemoteFeatureFlags - Returns the remote feature flags object
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
@@ -329,7 +329,7 @@ export const handlePostTransactionBalanceUpdate = async (
   {
     getParticipateInMetrics,
     trackEvent,
-    getFeatureFlags,
+    getRemoteFeatureFlags,
   }: TransactionMetricsRequest,
   {
     transactionMeta,
@@ -391,12 +391,24 @@ export const handlePostTransactionBalanceUpdate = async (
           transactionMeta.swapMetaData.token_to_amount.toString(10),
       };
 
-      // Add transaction hash if feature flag is enabled
+      // Add transaction hash if remote feature flag is enabled
       if (
-        getFeatureFlags().collectTransactionHashInAnalytics &&
+        getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
         transactionMeta.hash
       ) {
         sensitiveProperties.transaction_hash = transactionMeta.hash;
+
+        // Debug:transactions-tx-hash-in-analytics
+        if (!globalThis.debugEvents) {
+          globalThis.debugEvents = [];
+        }
+        globalThis.debugEvents.push({
+          time: Date.now(),
+          type: 'Swap Completed',
+          hash: transactionMeta.hash,
+          flagSource: 'remote',
+        });
+        // Debug:transactions-tx-hash-in-analytics
       }
 
       trackEvent({
