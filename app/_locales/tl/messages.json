@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Nakatanggap ka ng"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Limitasyon sa paggastos"
-  },
   "permitSimulationChange_transfer": {
     "message": "Nagpadala ka ng"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12 oras:"
-  },
-  "typeYourSRP": {
-    "message": "I-type ang iyong Lihim na Parirala sa Pagbawi"
   },
   "u2f": {
     "message": "U2F",

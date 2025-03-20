@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "受取"
   },
-  "permitSimulationChange_revoke": {
-    "message": "使用上限"
-  },
   "permitSimulationChange_transfer": {
     "message": "送金"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12時間:"
-  },
-  "typeYourSRP": {
-    "message": "シークレットリカバリーフレーズを入力してください"
   },
   "u2f": {
     "message": "U2F",

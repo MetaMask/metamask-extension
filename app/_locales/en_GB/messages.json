@@ -2036,6 +2036,9 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "externalAccount": {
+    "message": "External Account"
+  },
   "externalExtension": {
     "message": "External extension"
   },
@@ -2557,6 +2560,9 @@
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "Invalid custom network"
+  },
+  "invalidHexData": {
+    "message": "Invalid hex data"
   },
   "invalidHexNumber": {
     "message": "Invalid hexadecimal number."
@@ -4078,8 +4084,8 @@
   "permitSimulationChange_receive": {
     "message": "You receive"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Spending cap"
+  "permitSimulationChange_revoke2": {
+    "message": "Revoke"
   },
   "permitSimulationChange_transfer": {
     "message": "You send"
@@ -4482,6 +4488,9 @@
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -4539,6 +4548,10 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokePermissionTitle": {
+    "message": "Remove $1 permission",
+    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
@@ -4850,6 +4863,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -6264,9 +6280,6 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
-  },
-  "typeYourSRP": {
-    "message": "Type your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",

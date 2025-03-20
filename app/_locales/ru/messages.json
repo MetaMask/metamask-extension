@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Вы получаете"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Лимит расходов"
-  },
   "permitSimulationChange_transfer": {
     "message": "Вы отправляете"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12 ч:"
-  },
-  "typeYourSRP": {
-    "message": "Введите секретную фразу для восстановления"
   },
   "u2f": {
     "message": "U2F",
