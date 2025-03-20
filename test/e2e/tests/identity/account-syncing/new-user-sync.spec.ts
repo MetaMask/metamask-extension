@@ -66,6 +66,8 @@ describe('Account syncing - New User', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: secondAccountName,
           });
+          // Add a delay to allow the account to sync, this can be long for MV2
+          await driver.delay(2000);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

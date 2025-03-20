@@ -120,6 +120,9 @@ describe('Account syncing - User already has balances on multiple accounts', asy
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
           });
+          // Add a delay to allow the account to sync, this can be long for MV2
+          await driver.delay(2000);
+
           accountsToMockBalances = [
             ...INITIAL_ACCOUNTS,
             ...ADDITIONAL_ACCOUNTS,

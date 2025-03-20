@@ -149,6 +149,8 @@ describe('Account syncing - Opt-out Profile Sync', async function () {
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: 'New Account',
           });
+          // Add a delay to allow the account to sync, this can be long for MV2
+          await driver.delay(2000);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
