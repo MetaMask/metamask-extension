@@ -12,6 +12,7 @@ import {
   getDomainError,
   getDomainResolutions,
   getDomainWarning,
+  getDomainTypoWarning,
 } from '../../../../../ducks/domains';
 import {
   BannerAlert,
@@ -25,7 +26,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DomainInputResolutionCell } from './domain-input-resolution-cell';
-import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
+import { SendPageAddressBook, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
@@ -41,11 +42,12 @@ export const SendPageRecipient = () => {
   const domainResolutions = useSelector(getDomainResolutions) || [];
   const domainError = useSelector(getDomainError);
   const domainWarning = useSelector(getDomainWarning);
+  const typoWarning = useSelector(getDomainTypoWarning);
 
   const showErrorBanner =
     domainError || (recipient.error && recipient.error !== 'required');
   const showWarningBanner =
-    !showErrorBanner && (domainWarning || recipient.warning);
+    !showErrorBanner && (domainWarning || recipient.warning || typoWarning);
 
   type DomainResolution = {
     resolvedAddress: string;
@@ -146,28 +148,25 @@ export const SendPageRecipient = () => {
   }
 
   return (
-    <>
-      {showErrorBanner ? (
-        <SendPageRow>
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            data-testid="send-recipient-error"
-          >
-            {t(domainError ?? recipient.error)}
-          </BannerAlert>
-        </SendPageRow>
-      ) : null}
-      {showWarningBanner ? (
-        <SendPageRow>
-          <BannerAlert
-            severity={BannerAlertSeverity.Warning}
-            data-testid="send-recipient-warning"
-          >
-            {t(domainWarning ?? recipient.warning)}
-          </BannerAlert>
-        </SendPageRow>
-      ) : null}
+    <Box>
+      {showErrorBanner && (
+        <BannerAlert
+          severity={BannerAlertSeverity.Danger}
+          title={domainError || recipient.error}
+        />
+      )}
+      {showWarningBanner && (
+        <BannerAlert
+          severity={BannerAlertSeverity.Warning}
+          title={typoWarning?.warning || domainWarning || recipient.warning}
+          description={
+            typoWarning?.suggestedDomain
+              ? `Consider using: ${typoWarning.suggestedDomain}`
+              : undefined
+          }
+        />
+      )}
       <Box className="multichain-send-page__recipient">{contents}</Box>
-    </>
+    </Box>
   );
 };

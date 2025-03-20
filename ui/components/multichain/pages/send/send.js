@@ -60,6 +60,7 @@ import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import { getDomainResolutions } from '../../../../ducks/domains';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -274,6 +275,8 @@ export const SendPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
+  const domainResolutions = useSelector(getDomainResolutions);
+
   const onSubmit = async (event) => {
     event.preventDefault();
 
@@ -281,6 +284,55 @@ export const SendPage = () => {
     setError(undefined);
 
     try {
+      // Store ENS domain names and their resolved addresses in local storage
+      // First, get the existing items from localStorage
+      let existingEntries = [];
+      try {
+        existingEntries = JSON.parse(
+          window.localStorage.getItem('ensAndResolvedAddresses') || '[]',
+        );
+      } catch (e) {
+        console.error('Error parsing localStorage entries:', e);
+      }
+
+      // Process the current domain resolutions
+      const updatedEntries = [...existingEntries];
+      const currentTimestamp = Date.now();
+
+      if (domainResolutions && domainResolutions.length > 0) {
+        domainResolutions.forEach((resolution) => {
+          const { domainName, resolvedAddress } = resolution;
+
+          // Check if this domain already exists in our stored entries
+          const existingEntryIndex = updatedEntries.findIndex(
+            (entry) => entry.ensName.toLowerCase() === domainName.toLowerCase(),
+          );
+
+          if (existingEntryIndex >= 0) {
+            // Update the existing entry
+            updatedEntries[existingEntryIndex] = {
+              ...updatedEntries[existingEntryIndex],
+              resolvedAddress,
+              lastUpdated: currentTimestamp,
+            };
+          } else {
+            // Add as a new entry
+            updatedEntries.push({
+              ensName: domainName,
+              resolvedAddress,
+              created: currentTimestamp,
+              lastUpdated: currentTimestamp,
+            });
+          }
+        });
+      }
+
+      // Save the updated entries back to localStorage
+      window.localStorage.setItem(
+        'ensAndResolvedAddresses',
+        JSON.stringify(updatedEntries),
+      );
+
       await dispatch(signTransaction(history));
 
       trackEvent({
