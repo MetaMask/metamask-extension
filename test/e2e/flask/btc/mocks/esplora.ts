@@ -302,7 +302,8 @@ const mockFeeEstimates = (mockServer: Mockttp) =>
 /**
  * Mocks the Esplora calls needed for the initial full scan.
  * Consists of 1 transaction on the first address of the account.
- * @param mockServer The mock server
+ *
+ * @param mockServer - The mock server
  */
 export async function mockInitialFullScan(mockServer: Mockttp) {
   // Mock latest blocks
