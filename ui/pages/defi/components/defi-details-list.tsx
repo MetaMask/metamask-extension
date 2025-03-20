@@ -4,7 +4,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { GroupedPositions } from '@metamask/assets-controllers';
@@ -60,7 +60,7 @@ const DefiDetailsList = React.memo(
     return (
       <>
         {groupedTokens.map(({ underlying, underlyingRewards }, index) => (
-          <React.Fragment key={index}>
+          <Box key={index}>
             {underlying.length > 0 && (
               <>
                 <Text
@@ -126,7 +126,7 @@ const DefiDetailsList = React.memo(
                 ))}
               </>
             )}
-          </React.Fragment>
+          </Box>
         ))}
       </>
     );
