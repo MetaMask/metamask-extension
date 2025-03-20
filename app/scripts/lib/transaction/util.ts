@@ -28,6 +28,7 @@ import {
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { getDeleGatorEnvironment } from '@metamask-private/delegator-core-viem';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -303,4 +304,21 @@ async function validateSecurity(request: AddTransactionRequest) {
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
+}
+
+export function isRedeemDelegationTransaction(
+  txMeta: TransactionMeta,
+): boolean {
+  const { chainId } = txMeta;
+  const chainIdDecimal = parseInt(chainId, 16);
+
+  const delegationManagerAddress = getDeleGatorEnvironment(
+    chainIdDecimal,
+    '1.2.0',
+  )?.DelegationManager;
+
+  return (
+    delegationManagerAddress &&
+    txMeta.txParams.to?.toLowerCase() === delegationManagerAddress.toLowerCase()
+  );
 }

@@ -46,6 +46,7 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation/EnforceSimulationHook';
+import { isRedeemDelegationTransaction } from '../../lib/transaction/util';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -228,6 +229,15 @@ function publishSmartTransactionHook(
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
+    return { transactionHash: undefined };
+  }
+
+  const isRedeemDelegation = isRedeemDelegationTransaction(transactionMeta);
+  if (isRedeemDelegation) {
+    // Bypass the smart transactions controller for redeem delegation transactions.
+    console.log(
+      'Bypassing smart transactions controller for redeem delegation transactions',
+    );
     return { transactionHash: undefined };
   }
 
