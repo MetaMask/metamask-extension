@@ -5,6 +5,7 @@ import {
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
   selectIsFeatureAnnouncementsEnabled,
+  getValidNotificationAccounts,
 } from './metamask-notifications';
 
 type Notification = NotificationServicesController.Types.INotification;
@@ -59,5 +60,10 @@ describe('Metamask Notifications Selectors', () => {
 
   it('should select the isFeatureAnnouncementsEnabled state', () => {
     expect(selectIsFeatureAnnouncementsEnabled(mockState)).toBe(true);
+  });
+
+  it('should select the valid accounts that can enable notifications', () => {
+    const state = { ...mockState, subscriptionAccountsSeen: ['0x1111'] };
+    expect(getValidNotificationAccounts(state)).toStrictEqual(['0x1111']);
   });
 });
