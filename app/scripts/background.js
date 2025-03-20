@@ -47,8 +47,6 @@ import {
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
-import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -356,40 +354,6 @@ function maybeDetectPhishing(theController) {
   );
 }
 
-/**
- * Overrides the Content-Security-Policy (CSP) header by adding a nonce to the `script-src` directive.
- * This is a workaround for [Bug #1446231](https://bugzilla.mozilla.org/show_bug.cgi?id=1446231),
- * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
- */
-function overrideContentSecurityPolicyHeader() {
-  // The extension url is unique per install on Firefox, so we can safely add it as a nonce to the CSP header
-  const nonce = btoa(browser.runtime.getURL('/'));
-  browser.webRequest.onHeadersReceived.addListener(
-    ({ responseHeaders, url }) => {
-      // Check whether inpage.js is going to be injected into the page or not.
-      // There is no reason to modify the headers if we are not injecting inpage.js.
-      const isInjected = checkURLForProviderInjection(new URL(url));
-
-      // Check if the user has enabled the overrideContentSecurityPolicyHeader preference
-      const isEnabled =
-        controller.preferencesController.state
-          .overrideContentSecurityPolicyHeader;
-
-      if (isInjected && isEnabled) {
-        for (const header of responseHeaders) {
-          if (header.name.toLowerCase() === 'content-security-policy') {
-            header.value = addNonceToCsp(header.value, nonce);
-          }
-        }
-      }
-
-      return { responseHeaders };
-    },
-    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
-    ['blocking', 'responseHeaders'],
-  );
-}
-
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -537,11 +501,6 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
-      // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
-      if (isFirefox) {
-        overrideContentSecurityPolicyHeader();
-      }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
