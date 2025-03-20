@@ -227,8 +227,7 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
-    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@metamask/network-controller@npm:^22.2.1": "patch:@metamask/network-controller@npm%3A23.0.0#~/.yarn/patches/@metamask-network-controller-npm-23.0.0-3e994a5f09.patch"
+    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -298,7 +297,7 @@
     "@metamask/multichain-network-controller": "^0.1.0",
     "@metamask/multichain-transactions-controller": "^0.7.1",
     "@metamask/name-controller": "^8.0.3",
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.0.0#~/.yarn/patches/@metamask-network-controller-npm-23.0.0-3e994a5f09.patch",
+    "@metamask/network-controller": "patch:@metamask-previews/network-controller@npm%3A23.0.0-preview-9d51a80#~/.yarn/patches/@metamask-network-controller-npm-23.0.0-3e994a5f09.patch",
     "@metamask/notification-services-controller": "^1.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",

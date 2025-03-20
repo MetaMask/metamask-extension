@@ -56,6 +56,7 @@ import { AnnouncementController } from '@metamask/announcement-controller';
 import {
   NetworkController,
   getDefaultNetworkControllerState,
+  isConnectionError,
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
@@ -87,7 +88,6 @@ import {
   ERC20,
   ERC721,
   BlockExplorerUrl,
-  isConnectionError,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -668,9 +668,6 @@ export default class MetamaskController extends EventEmitter {
       getRpcServiceOptions: () => ({
         fetch: globalThis.fetch.bind(globalThis),
         btoa: globalThis.btoa.bind(globalThis),
-        policyOptions: {
-          circuitBreakDuration: 20000,
-        },
       }),
     });
     networkControllerMessenger.subscribe(
@@ -682,9 +679,13 @@ export default class MetamaskController extends EventEmitter {
         if (
           (rootDomainName === 'infura.io' ||
             rootDomainName === 'quicknode.pro') &&
-          !isConnectionError(error)
+          isConnectionError(error)
         ) {
-          console.log('RPC endpoint unavailable', endpointUrl);
+          console.log('RPC endpoint unavailable', {
+            chainId,
+            endpointUrl,
+            error,
+          });
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceUnavailable,
@@ -706,7 +707,7 @@ export default class MetamaskController extends EventEmitter {
           rootDomainName === 'infura.io' ||
           rootDomainName === 'quicknode.pro'
         ) {
-          console.log('RPC endpoint degraded', endpointUrl);
+          console.log('RPC endpoint degraded', { chainId, endpointUrl });
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceDegraded,
