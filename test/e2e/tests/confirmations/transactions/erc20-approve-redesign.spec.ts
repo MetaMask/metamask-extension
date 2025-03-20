@@ -36,6 +36,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await importTST(driver);
+
           await createERC20ApproveTransaction(driver);
 
           await assertApproveDetails(driver);
@@ -61,6 +62,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await importTST(driver);
+
           await createERC20ApproveTransaction(driver);
 
           await assertApproveDetails(driver);

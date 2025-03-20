@@ -61,7 +61,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createMintTransaction(driver);
-
           await confirmMintTransaction(driver);
 
           await createApproveTransaction(driver);
