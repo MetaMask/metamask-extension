@@ -1,11 +1,5 @@
-import { strict as assert } from 'assert';
-import { ethers } from 'ethers';
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../helpers';
-import { Tenderly, addFundsToAccount } from '../tenderly-network';
-import AccountListPage from '../page-objects/pages/account-list-page';
-import AssetListPage from '../page-objects/pages/home/asset-list';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import { Driver } from '../webdriver/driver';
 import BridgeQuotePage, {
@@ -31,27 +25,63 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await await unlockWallet(driver);
 
-        const wallet = ethers.Wallet.createRandom();
-        const response = await addFundsToAccount(
-          Tenderly.Mainnet_Bridge.url,
-          wallet.address,
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '10',
+            tokenFrom: 'DAI',
+            tokenTo: 'USDT',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+            unapproved: true,
+          },
+          2,
         );
-        assert.equal(response.error, undefined);
 
-        await importAccount(driver, wallet.privateKey);
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '0.03',
+            tokenFrom: 'ETH',
+            tokenTo: 'ETH',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+          },
+          3,
+        );
 
-        await bridgeTransaction(driver, {
-          amount: '.03',
-          tokenFrom: 'ETH',
-          tokenTo: 'ETH',
-          fromChain: 'Ethereum',
-          toChain: 'Linea',
-        });
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '1',
+            tokenFrom: 'ETH',
+            tokenTo: 'WETH',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+          },
+          4,
+        );
+
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '2',
+            tokenFrom: 'ETH',
+            tokenTo: 'USDT',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+          },
+          5,
+        );
       },
     );
   });
 
-  async function bridgeTransaction(driver: Driver, quote: BridgeQuote) {
+  async function bridgeTransaction(
+    driver: Driver,
+    quote: BridgeQuote,
+    transactionsCount: number,
+  ) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
     await homePage.startBridgeFlow();
@@ -60,31 +90,26 @@ describe('Bridge tests', function (this: Suite) {
     await bridgePage.enterBridgeQuote(quote);
     await bridgePage.submitQuote();
 
-    // BUGBUG: Github issue 29793 has changed the flow, should land on activity
-    await bridgePage.goBack();
     await homePage.goToActivityList();
 
+    await driver.delay(5000);
     const activityList = new ActivityListPage(driver);
-    await activityList.check_completedTxNumberDisplayedInActivity(1);
-    await activityList.check_waitForTransactionStatus('confirmed');
-    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
-    await activityList.check_txAmountInActivity(
-      `-0${quote.amount} ${quote.tokenFrom}`,
+    await activityList.check_completedBridgeTransactionActivity(
+      transactionsCount,
     );
-  }
 
-  async function importAccount(driver: Driver, privateKey: string) {
-    const headerNavbar = new HeaderNavbar(driver);
-    await headerNavbar.openAccountMenu();
+    if (quote.unapproved) {
+      await activityList.check_txAction(
+        `Approve ${quote.tokenFrom} for bridge`,
+      );
+      await activityList.check_txAction(`Bridge to ${quote.toChain}`, 2);
+    } else {
+      await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    }
+    await activityList.check_txAmountInActivity(
+      `-${quote.amount} ${quote.tokenFrom}`,
+    );
 
-    const accountListPage = new AccountListPage(driver);
-    await accountListPage.check_pageIsLoaded();
-
-    // Import private key
-    await accountListPage.addNewImportedAccount(privateKey);
-
-    // Wallet should contain 1 ETH
-    const assetListPage = new AssetListPage(driver);
-    await assetListPage.check_tokenAmountIsDisplayed('1 ETH');
+    await driver.delay(5000);
   }
 });

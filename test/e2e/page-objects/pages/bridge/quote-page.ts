@@ -6,6 +6,7 @@ export type BridgeQuote = {
   tokenTo: string;
   fromChain: string;
   toChain: string;
+  unapproved?: boolean
 };
 
 class BridgeQuotePage {

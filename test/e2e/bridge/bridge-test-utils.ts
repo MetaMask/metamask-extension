@@ -3,11 +3,9 @@ import { Mockttp } from 'mockttp';
 import { emptyHtmlPage } from '../mock-e2e';
 import FixtureBuilder from '../fixture-builder';
 import { BRIDGE_CLIENT_ID } from '../../../shared/constants/bridge';
-import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { Driver } from '../webdriver/driver';
 import type { FeatureFlagResponse } from '../../../shared/types/bridge';
-import { Tenderly } from '../tenderly-network';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
@@ -110,32 +108,29 @@ async function mockPortfolioPage(mockServer: Mockttp) {
 }
 
 async function mockGetTxStatus(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(/getTxStatus/u)
-    .always()
-    .thenCallback(async (req) => {
-      const urlObj = new URL(req.url);
-      const txHash = urlObj.searchParams.get('srcTxHash');
-      const srcChainId = urlObj.searchParams.get('srcChainId');
-      const destChainId = urlObj.searchParams.get('destChainId');
-      return {
-        statusCode: 200,
-        json: {
-          status: 'COMPLETE',
-          isExpectedToken: true,
-          bridge: 'across',
-          srcChain: {
-            chainId: srcChainId,
-            txHash,
-          },
-          destChain: {
-            chainId: destChainId,
-            txHash:
-              '0x7fadf05d079e457257564ee44c302968853a16c39a49428576d8ba1ca18127b7',
-          },
+  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
+    const urlObj = new URL(req.url);
+    const txHash = urlObj.searchParams.get('srcTxHash');
+    const srcChainId = urlObj.searchParams.get('srcChainId');
+    const destChainId = urlObj.searchParams.get('destChainId');
+    return {
+      statusCode: 200,
+      json: {
+        status: 'COMPLETE',
+        isExpectedToken: true,
+        bridge: 'across',
+        srcChain: {
+          chainId: srcChainId,
+          txHash,
         },
-      };
-    });
+        destChain: {
+          chainId: destChainId,
+          txHash:
+            '0x7fadf05d079e457257564ee44c302968853a16c39a49428576d8ba1ca18127b7',
+        },
+      },
+    };
+  });
 }
 
 export const getBridgeFixtures = (
@@ -146,27 +141,45 @@ export const getBridgeFixtures = (
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
-    .withNetworkControllerOnTenderly(Tenderly.Mainnet_Bridge.url)
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withBridgeControllerDefaultState();
+    .withBridgeControllerDefaultState()
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              symbol: 'DAI',
+              decimals: 18,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+    });
 
   if (withErc20) {
     fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
   }
 
   return {
-    driverOptions: {
-      // openDevToolsForTabs: true,
-      disableGanache: true,
-    },
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, featureFlags),
       await mockGetTxStatus(mockServer),
       await mockPortfolioPage(mockServer),
     ],
-    smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+          loadState: './test/e2e/seeder/network-states/with50Dai.json',
+        },
+      },
+    ],
     title,
   };
 };
