@@ -1,18 +1,15 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import NetworkFilterImportToken from '.';
+import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getPreferences,
-} from '../../../../selectors/selectors';
-import { useDispatch, useSelector } from 'react-redux';
+import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { NetworkFilterImportToken } from '.';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -42,6 +39,7 @@ describe('NetworkFilterImportToken', () => {
   const props = {
     buttonDataTestId: 'mockButtonDataTestId',
     title: 'mockTitle',
+    openListNetwork: jest.fn(),
   };
 
   it('should match snapshot', () => {

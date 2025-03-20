@@ -40,9 +40,14 @@ import InfoTooltip from '../../../../ui/info-tooltip';
 
 type SortControlProps = {
   handleClose: () => void;
+  handleFilterNetwork?: (chainFilters: Record<string, boolean>) => void;
 };
 
-const NetworkFilter = ({ handleClose }: SortControlProps) => {
+const NetworkFilter = ({
+  handleClose,
+  handleFilterNetwork,
+  networkFilter,
+}: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
@@ -84,7 +89,11 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
-    dispatch(setTokenNetworkFilter(chainFilters));
+    if (handleFilterNetwork) {
+      handleFilterNetwork(chainFilters);
+    } else {
+      dispatch(setTokenNetworkFilter(chainFilters));
+    }
 
     // TODO Add metrics
     handleClose();
@@ -104,7 +113,11 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   return (
     <>
       <SelectableListItem
-        isSelected={!isTokenNetworkFilterEqualCurrentNetwork}
+        isSelected={
+          networkFilter
+            ? Object.keys(networkFilter).length > 1 && networkFilter[chainId]
+            : !isTokenNetworkFilterEqualCurrentNetwork
+        }
         onClick={() => handleFilter(allOpts)}
         testId="network-filter-all"
       >
@@ -167,8 +180,10 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       </SelectableListItem>
       <SelectableListItem
         isSelected={
-          Object.keys(tokenNetworkFilter).length === 1 &&
-          tokenNetworkFilter[chainId]
+          networkFilter
+            ? Object.keys(networkFilter).length === 1 && networkFilter[chainId]
+            : Object.keys(tokenNetworkFilter).length === 1 &&
+              tokenNetworkFilter[chainId]
         }
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"

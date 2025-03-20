@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   TextVariant,
-  BlockSize,
   TextColor,
   BorderRadius,
   AlignItems,
@@ -13,50 +12,36 @@ import {
 import {
   ButtonIcon,
   Box,
-  Popover,
-  PopoverPosition,
   ButtonIconSize,
   IconName,
-  Label,
   Text,
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import NetworkFilter from '../../assets/asset-list/network-filter';
-import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_NETWORK_CHAIN_IDS,
-} from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkSelectorCustomImport = ({
   title,
   buttonDataTestId,
   chainId,
+  onSelectNetwork,
 }: {
   title: string;
   buttonDataTestId: string;
   chainId: string;
+  onSelectNetwork: () => void;
 }) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const networkImageUrl =
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
+  const networkImageUrl = getImageForChainId(chainId);
 
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks || {}).forEach((chain) => {
     allOpts[chain] = true;
   });
 
-  {
-    /* // TODO : NETWORK SELECTOR HERE .... */
-  }
-
   return (
-    <Box padding={4}>
+    <Box padding={4} onClick={onSelectNetwork} data-testid={buttonDataTestId}>
       <Box
         className="dropdown-editor__item-dropdown"
         display={Display.Flex}
@@ -67,14 +52,13 @@ export const NetworkSelectorCustomImport = ({
         borderWidth={1}
         paddingLeft={4}
         paddingRight={4}
-        data-testid={buttonDataTestId}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
           padding={2}
         >
-          Select Network
+          {title}
         </Text>
         <Box
           display={Display.Flex}
@@ -83,7 +67,7 @@ export const NetworkSelectorCustomImport = ({
         >
           <AvatarNetwork
             key={networkImageUrl}
-            name={networkImageUrl}
+            name={networkImageUrl ?? ''}
             src={networkImageUrl ?? undefined}
             size={AvatarNetworkSize.Sm}
           />

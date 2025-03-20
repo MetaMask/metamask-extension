@@ -24,19 +24,29 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import NetworkFilter from '../../assets/asset-list/network-filter';
-import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors';
+import {
+  getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+} from '../../../../selectors';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkFilterImportToken = ({
   title,
   buttonDataTestId,
+  openListNetwork,
+  networkFilter,
+  setNetworkFilter,
 }: {
   title: string;
   buttonDataTestId: string;
+  openListNetwork: () => void;
+  networkFilter?: Record<string, boolean>;
+  setNetworkFilter?: (network: Record<string, boolean>) => void;
 }) => {
   const t = useI18nContext();
   const dropdown = useRef(null);
@@ -44,6 +54,8 @@ export const NetworkFilterImportToken = ({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetworkImageUrl = getImageForChainId(currentNetwork?.chainId);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const allOpts: Record<string, boolean> = {};
@@ -51,8 +63,13 @@ export const NetworkFilterImportToken = ({
     allOpts[chain] = true;
   });
 
+  const isCurrentNetwork = networkFilter
+    ? Object.keys(networkFilter).length === 1 &&
+      networkFilter[currentNetwork?.chainId]
+    : isTokenNetworkFilterEqualCurrentNetwork;
+
   const renderItem = () => {
-    if (isTokenNetworkFilterEqualCurrentNetwork) {
+    if (isCurrentNetwork) {
       return (
         <Box
           display={Display.Flex}
@@ -70,27 +87,17 @@ export const NetworkFilterImportToken = ({
               {t('currentNetwork')}
             </Text>
           </Box>
-          <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
-            {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
-              (chain, index) => {
-                const networkImageUrl =
-                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                    chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                  ];
-                return (
-                  <AvatarNetwork
-                    key={networkImageUrl}
-                    name={networkImageUrl}
-                    src={networkImageUrl ?? undefined}
-                    size={AvatarNetworkSize.Sm}
-                    style={{
-                      marginLeft: index === 0 ? 0 : '-20px',
-                      zIndex: 5 - index,
-                    }}
-                  />
-                );
-              },
-            )}
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.flexStart}
+            onClick={openListNetwork}
+          >
+            <AvatarNetwork
+              key={currentNetworkImageUrl}
+              name={currentNetworkImageUrl ?? ''}
+              src={currentNetworkImageUrl ?? undefined}
+              size={AvatarNetworkSize.Sm}
+            />
           </Box>
         </Box>
       );
@@ -107,7 +114,11 @@ export const NetworkFilterImportToken = ({
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
           {t('popularNetworks')}
         </Text>
-        <Box display={Display.Flex} alignItems={AlignItems.flexEnd}>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.flexEnd}
+          onClick={openListNetwork}
+        >
           {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
             (chain, index) => {
               const networkImageUrl =
@@ -135,9 +146,6 @@ export const NetworkFilterImportToken = ({
 
   const box = (
     <Box
-      onClick={() => {
-        setIsDropdownOpen(!isDropdownOpen);
-      }}
       className="dropdown-editor__item-dropdown"
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -155,6 +163,9 @@ export const NetworkFilterImportToken = ({
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
         size={ButtonIconSize.Md}
+        onClick={() => {
+          setIsDropdownOpen(!isDropdownOpen);
+        }}
         data-testid={buttonDataTestId}
       />
     </Box>
@@ -177,7 +188,17 @@ export const NetworkFilterImportToken = ({
           padding: 0,
         }}
       >
-        <NetworkFilter handleClose={() => setIsDropdownOpen(false)} />
+        <NetworkFilter
+          handleClose={() => setIsDropdownOpen(false)}
+          handleFilterNetwork={(chainFilters) => {
+            if (setNetworkFilter) {
+              setNetworkFilter(chainFilters);
+            }
+          }}
+          {...(networkFilter && {
+            networkFilter,
+          })}
+        />
       </Popover>
     </Box>
   );

@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   getCurrentNetwork,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
   getPendingTokens,
   getTestNetworkBackgroundColor,
-  getTokenList,
+  selectERC20TokensByChain,
 } from '../../../selectors';
 import {
   Text,
@@ -28,16 +28,15 @@ import TokenBalance from '../../ui/token-balance/token-balance';
 import { I18nContext } from '../../../contexts/i18n';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
-export const ImportTokensModalConfirm = () => {
+export default function ImportTokensModalConfirm({ networkFilter }) {
   const t = useContext(I18nContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const pendingTokens = useSelector(getPendingTokens);
-  const tokenList = useSelector(getTokenList);
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
-
+  const tokenListByChain = useSelector(selectERC20TokensByChain);
+  const isCurrentNetworkSelected =
+    Object.keys(networkFilter).length === 1 &&
+    networkFilter[currentNetwork?.chainId];
   return (
     <Box paddingTop={6}>
       <Text textAlign={TextAlign.Center}>
@@ -51,9 +50,10 @@ export const ImportTokensModalConfirm = () => {
           className="import-tokens-modal__confirmation-list"
         >
           {Object.entries(pendingTokens).map(([address, token]) => {
-            const { name, symbol, iconUrl } = token;
+            const { name, symbol, iconUrl, chainId } = token;
             const tokenImage =
-              iconUrl || tokenList[address.toLowerCase()]?.iconUrl;
+              iconUrl ||
+              tokenListByChain?.[chainId]?.data[address.toLowerCase()]?.iconUrl;
             return (
               <Box key={address} padding={4} display={Display.Flex}>
                 <Box
@@ -66,7 +66,7 @@ export const ImportTokensModalConfirm = () => {
                         size={AvatarNetworkSize.Xs}
                         name={currentNetwork?.nickname}
                         src={
-                          isTokenNetworkFilterEqualCurrentNetwork
+                          isCurrentNetworkSelected
                             ? currentNetwork?.rpcPrefs?.imageUrl
                             : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                                 pendingTokens[address]?.chainId
@@ -87,28 +87,32 @@ export const ImportTokensModalConfirm = () => {
                     >
                       {name || symbol}
                     </Text>
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                    >
-                      <TokenBalance token={token} />
-                    </Text>
+                    {isCurrentNetworkSelected ? (
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                      >
+                        <TokenBalance token={token} displayZeroBalance />
+                      </Text>
+                    ) : null}
                   </Box>
                 </Box>
-                <Box alignItems={AlignItems.flexStart}>
-                  <TokenBalance
-                    textProps={{
-                      font: FontWeight.Medium,
-                      variant: TextVariant.bodyLgMedium,
-                    }}
-                    suffixProps={{
-                      font: FontWeight.Medium,
-                      variant: TextVariant.bodyLgMedium,
-                    }}
-                    token={token}
-                    showFiat
-                  />
-                </Box>
+                {isCurrentNetworkSelected ? (
+                  <Box alignItems={AlignItems.flexStart}>
+                    <TokenBalance
+                      textProps={{
+                        font: FontWeight.Medium,
+                        variant: TextVariant.bodyLgMedium,
+                      }}
+                      suffixProps={{
+                        font: FontWeight.Medium,
+                        variant: TextVariant.bodyLgMedium,
+                      }}
+                      token={token}
+                      showFiat
+                    />
+                  </Box>
+                ) : null}
               </Box>
             );
           })}
@@ -116,4 +120,8 @@ export const ImportTokensModalConfirm = () => {
       </Box>
     </Box>
   );
+}
+
+ImportTokensModalConfirm.propTypes = {
+  networkFilter: PropTypes.object.isRequired,
 };

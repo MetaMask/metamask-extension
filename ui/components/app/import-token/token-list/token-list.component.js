@@ -55,6 +55,7 @@ export default class TokenList extends Component {
       accountAddress,
       currentNetwork,
       testNetworkBackgroundColor,
+      isTokenNetworkFilterEqualCurrentNetwork,
     } = this.props;
 
     return (
@@ -78,7 +79,7 @@ export default class TokenList extends Component {
               .map((_, i) => {
                 const { symbol, name, address, chainId } = results[i] || {};
                 let tokenAlreadyAdded = false;
-                if (this.props.isTokenNetworkFilterEqualCurrentNetwork) {
+                if (isTokenNetworkFilterEqualCurrentNetwork) {
                   tokenAlreadyAdded = checkExistingAddresses(address, tokens);
                 } else {
                   tokenAlreadyAdded = checkExistingAllTokens(
@@ -133,9 +134,10 @@ export default class TokenList extends Component {
                                 size={AvatarNetworkSize.Xs}
                                 name={currentNetwork?.nickname}
                                 src={
-                                  this.props
-                                    .isTokenNetworkFilterEqualCurrentNetwork
-                                    ? currentNetwork?.rpcPrefs?.imageUrl
+                                  isTokenNetworkFilterEqualCurrentNetwork
+                                    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                        currentNetwork?.chainId
+                                      ]
                                     : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                                         results[i]?.chainId
                                       ]

@@ -4329,18 +4329,27 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.exportAccount(password, address);
   }
 
-  async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const { tokenList } = this.tokenListController.state;
+  async getTokenStandardAndDetails(
+    address,
+    userAddress,
+    tokenId,
+    chainId = '0x1',
+  ) {
+    const { tokensChainsCache } = this.tokenListController.state;
+    const tokenList = tokensChainsCache[chainId].data;
     const { tokens } = this.tokensController.state;
 
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    let staticTokenListDetails = {};
+    if (chainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
+
     const tokenListDetails = tokenList[address.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
       ) || {};
-
     const tokenDetails = {
       ...staticTokenListDetails,
       ...tokenListDetails,
@@ -4367,9 +4376,14 @@ export default class MetamaskController extends EventEmitter {
     let details;
     if (tokenCanBeTreatedAsAnERC20) {
       try {
-        const balance = userAddress
-          ? await fetchTokenBalance(address, userAddress, this.provider)
-          : undefined;
+        let balance;
+        if (this.#getGlobalChainId() === chainId) {
+          balance = await fetchTokenBalance(
+            address,
+            userAddress,
+            this.provider,
+          );
+        }
 
         details = {
           address,

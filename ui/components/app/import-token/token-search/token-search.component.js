@@ -6,10 +6,7 @@ import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-uti
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import { BlockSize, Size } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getCurrentNetwork,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-} from '../../../../selectors';
+import { getCurrentNetwork } from '../../../../selectors';
 
 const getTokens = (tokenList) => Object.values(tokenList);
 
@@ -32,11 +29,13 @@ export default function TokenSearch({
   error,
   tokenList,
   searchClassName,
+  networkFilter,
+  setSearchResults,
 }) {
   const t = useI18nContext();
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
+  const isTokenNetworkFilterEqualCurrentNetwork =
+    Object.keys(networkFilter).length === 1;
+
   const { chainId } = useSelector(getCurrentNetwork);
 
   const filteredTokenList = useMemo(() => {
@@ -74,6 +73,7 @@ export default function TokenSearch({
 
   const clear = () => {
     setSearchQuery('');
+    setSearchResults([]);
   };
 
   useEffect(() => {
@@ -105,4 +105,6 @@ TokenSearch.propTypes = {
   error: PropTypes.object,
   tokenList: PropTypes.object.isRequired,
   searchClassName: PropTypes.string.isRequired,
+  networkFilter: PropTypes.object.isRequired,
+  setSearchResults: PropTypes.func.isRequired,
 };
