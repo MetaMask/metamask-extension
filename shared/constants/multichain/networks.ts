@@ -62,12 +62,12 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   MultichainBlockExplorerFormatUrls
 > = {
   [MultichainNetworks.BITCOIN]: {
-    url: 'https://mempool.space/',
+    url: 'https://mempool.space',
     address: 'https://mempool.space/address/{address}',
     transaction: 'https://mempool.space/tx/{txId}',
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
-    url: 'https://mempool.space/',
+    url: 'https://mempool.space',
     address: 'https://mempool.space/testnet/address/{address}',
     transaction: 'https://mempool.space/testnet/tx/{txId}',
   },
