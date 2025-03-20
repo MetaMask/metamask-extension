@@ -476,6 +476,13 @@ export const AccountListMenu = ({
     [onClose, setActionMode],
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const onSelectSrp = useCallback(() => {
+    setPreviousActionMode(actionMode);
+    setActionMode(ACTION_MODES.SELECT_SRP);
+  }, [setActionMode, actionMode]);
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
+
   /**
    * Determines the client type and chain ID based on the action mode
    *
@@ -535,10 +542,7 @@ export const AccountListMenu = ({
               onActionComplete={onActionComplete}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               selectedKeyringId={selectedKeyringId}
-              onSelectSrp={() => {
-                setPreviousActionMode(ACTION_MODES.ADD);
-                setActionMode(ACTION_MODES.SELECT_SRP);
-              }}
+              onSelectSrp={onSelectSrp}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
@@ -550,10 +554,7 @@ export const AccountListMenu = ({
               <CreateSnapAccount
                 onActionComplete={onActionComplete}
                 selectedKeyringId={selectedKeyringId}
-                onSelectSrp={() => {
-                  setPreviousActionMode(actionMode);
-                  setActionMode(ACTION_MODES.SELECT_SRP);
-                }}
+                onSelectSrp={onSelectSrp}
                 clientType={clientType}
                 chainId={chainId}
               />
