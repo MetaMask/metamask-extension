@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useContext, useEffect } from 'react';
+import React, { ReactNode, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box, Text } from '../../../../component-library';
@@ -104,24 +104,15 @@ const SortControl = ({ handleClose }: SortControlProps) => {
     [dispatch, handleClose, trackEvent],
   );
 
-  // useEffect(() => {
-  //   if (tokenSortConfig.sortCallback === 'alphaNumeric') {
-  //     dispatch(
-  //       setTokenSortConfig({
-  //         key: isEvmSelected ? 'name' : 'title',
-  //         sortCallback: 'alphaNumeric',
-  //         order: 'asc',
-  //       }),
-  //     );
-  //   }
-  // }, [dispatch, isEvmSelected, tokenSortConfig]);
   return (
     <>
       <SelectableListItem
         isSelected={
+          // TODO: consolidate name and title fields in token to avoid this switch
           tokenSortConfig?.key === 'name' || tokenSortConfig?.key === 'title'
         }
         onClick={() =>
+          // TODO: consolidate name and title fields in token to avoid this switch
           handleSort(isEvmSelected ? 'name' : 'title', 'alphaNumeric', 'asc')
         }
         testId="sortByAlphabetically"
