@@ -132,12 +132,14 @@ async function setupMocking(
         WHITE_LISTED_HOSTS.includes(host)
       ) {
         // If the URL is whitelisted, we pass the request as it is, to the live server.
+        console.log('Request going to a live server ============', url);
         return {};
       }
-      console.log('URL not whitelisted ===============', url);
+      console.log('Request redirected to a catch all mock ============', url);
       return {
-        // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
-        url: 'https://mock.all',
+        // If the URL is not whitelisted nor blacklisted, we redirect the request to the localhost fixture server
+        // to always return a 200 response.
+        url: 'http:localhost:12345/state.json',
         method: 'GET',
       };
     },
@@ -145,13 +147,6 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
-
-  // Catch-all mock for any request not whitelisted nor blacklisted
-  await server.forGet('https://mock.all').thenCallback(() => {
-    return {
-      statusCode: 200,
-    };
-  });
 
   // Account link
   const accountLinkRegex =
