@@ -4814,39 +4814,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/chain-agnostic-permission@npm:0.1.0-preview-8f23873":
-  version: 0.1.0-preview-8f23873
-  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.1.0-preview-8f23873"
-  dependencies:
-    "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.6.0"
-    "@metamask/network-controller": "npm:^23.0.0"
-    "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.2.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/16499996cfd213b4091573adcb109f41210d28add2efc1c352cdd34b5e1f0c49b3bd620902af057f48b3045344122552d9d33db8785d02b5743a230683460f63
-  languageName: node
-  linkType: hard
-
-"@metamask-previews/multichain-api-middleware@npm:0.1.0-preview-8f23873":
-  version: 0.1.0-preview-8f23873
-  resolution: "@metamask-previews/multichain-api-middleware@npm:0.1.0-preview-8f23873"
-  dependencies:
-    "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/chain-agnostic-permission": "npm:^0.1.0"
-    "@metamask/json-rpc-engine": "npm:^10.0.3"
-    "@metamask/network-controller": "npm:^23.0.0"
-    "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.2.0"
-    "@open-rpc/meta-schema": "npm:^1.14.6"
-    "@open-rpc/schema-utils-js": "npm:^2.0.5"
-    jsonschema: "npm:^1.4.1"
-  checksum: 10/518fdd918c408dcd82c9ea12eff8e8924774161469807c5b49f86fd33aadb44d1b7dfd2513e1212ffb071217490191732c2f0ae05487971185f46a7f5fdbbc7a
-  languageName: node
-  linkType: hard
-
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -5095,6 +5062,21 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     "@types/eslint": "npm:^8.44.7"
   checksum: 10/e0246f115700fd9d705e3d8e0f38e49ae673f6b51d0d9c985a15a33b49fcecb9dbee55d61abb8aad970bffc1815f295206491fbde7c8c380971ea1feadf1b64e
+  languageName: node
+  linkType: hard
+
+"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@0.1.0-preview-8f23873":
+  version: 0.1.0-preview-8f23873
+  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.1.0-preview-8f23873"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.10.12"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/network-controller": "npm:^23.0.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.2.0"
+    lodash: "npm:^4.17.21"
+  checksum: 10/16499996cfd213b4091573adcb109f41210d28add2efc1c352cdd34b5e1f0c49b3bd620902af057f48b3045344122552d9d33db8785d02b5743a230683460f63
   languageName: node
   linkType: hard
 
@@ -5809,6 +5791,24 @@ __metadata:
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
   checksum: 10/2d456882c5180eaf02d07f578ee8b8806d18639349d086a6b3b68c87e7ea294749efc332bfe7c1d5fb700933e71f31a46d3cd07b94c4e91c80faea5f9729bf0d
+  languageName: node
+  linkType: hard
+
+"@metamask/multichain-api-middleware@npm:@metamask-previews/multichain-api-middleware@0.1.0-preview-8f23873":
+  version: 0.1.0-preview-8f23873
+  resolution: "@metamask-previews/multichain-api-middleware@npm:0.1.0-preview-8f23873"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.10.12"
+    "@metamask/chain-agnostic-permission": "npm:^0.1.0"
+    "@metamask/json-rpc-engine": "npm:^10.0.3"
+    "@metamask/network-controller": "npm:^23.0.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.2.0"
+    "@open-rpc/meta-schema": "npm:^1.14.6"
+    "@open-rpc/schema-utils-js": "npm:^2.0.5"
+    jsonschema: "npm:^1.4.1"
+  checksum: 10/518fdd918c408dcd82c9ea12eff8e8924774161469807c5b49f86fd33aadb44d1b7dfd2513e1212ffb071217490191732c2f0ae05487971185f46a7f5fdbbc7a
   languageName: node
   linkType: hard
 
@@ -27302,8 +27302,6 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.2.0"
     "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
-    "@metamask-previews/chain-agnostic-permission": "npm:0.1.0-preview-8f23873"
-    "@metamask-previews/multichain-api-middleware": "npm:0.1.0-preview-8f23873"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
     "@metamask/accounts-controller": "npm:^26.0.0"
@@ -27317,6 +27315,7 @@ __metadata:
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.1.0-preview-8f23873"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
     "@metamask/design-tokens": "npm:^5.0.0"
@@ -27351,6 +27350,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-api-middleware": "npm:@metamask-previews/multichain-api-middleware@0.1.0-preview-8f23873"
     "@metamask/multichain-network-controller": "npm:^0.1.0"
     "@metamask/multichain-transactions-controller": "npm:^0.7.2"
     "@metamask/name-controller": "npm:^8.0.3"

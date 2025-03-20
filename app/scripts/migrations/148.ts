@@ -1,17 +1,23 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
-import { VersionedData } from '../background';
-import { Caip25EndowmentPermissionName, Caip25CaveatType } from '@metamask/chain-agnostic-permission';
+import {
+  Caip25EndowmentPermissionName,
+  Caip25CaveatType,
+} from '@metamask/chain-agnostic-permission';
 
 export const version = 148;
 
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
 /**
  * Add sessionProperties property to CAIP-25 permission caveats
  *
  * @param originalVersionedData - Versioned MetaMask extension state
  * @returns Updated versioned MetaMask extension state
  */
-export async function migrate(originalVersionedData) {
+export async function migrate(originalVersionedData: VersionedData) {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
   transformState(versionedData.data);
@@ -49,16 +55,22 @@ function transformState(state: VersionedData['data']) {
     return state;
   }
 
-
   for (const subject of Object.values(subjects)) {
-    if (!isObject(subject) || !hasProperty(subject, 'permissions') || !isObject(subject.permissions)) {
+    if (
+      !isObject(subject) ||
+      !hasProperty(subject, 'permissions') ||
+      !isObject(subject.permissions)
+    ) {
       continue;
     }
 
     const { permissions } = subject;
     const caip25Permission = permissions[Caip25EndowmentPermissionName];
 
-    if (!isObject(caip25Permission) || !Array.isArray(caip25Permission.caveats)) {
+    if (
+      !isObject(caip25Permission) ||
+      !Array.isArray(caip25Permission.caveats)
+    ) {
       continue;
     }
 
