@@ -139,7 +139,7 @@ async function setupMocking(
       return {
         // If the URL is not whitelisted nor blacklisted, we redirect the request to the localhost fixture server
         // to always return a 200 response.
-        url: 'http:localhost:12345/state.json',
+        url: 'http://localhost:12345/state.json',
         method: 'GET',
       };
     },
