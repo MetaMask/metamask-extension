@@ -62,9 +62,9 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
+  getImageForChainId,
   getMultichainCoinRates,
   getMultichainProviderConfig,
-  getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {
@@ -210,8 +210,11 @@ export const getFromToken = createSelector(
     if (fromToken?.address) {
       return fromToken;
     }
+    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
+      fromChain.chainId,
+    );
     return {
-      ...getNativeAssetForChainId(fromChain.chainId),
+      ...nativeAsset,
       chainId: formatChainIdToCaip(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
