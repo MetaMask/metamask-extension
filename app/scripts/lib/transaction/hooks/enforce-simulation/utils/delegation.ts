@@ -47,8 +47,8 @@ function nativeTokenMaxLossBuilder(
 
 function erc20MaxLossBuilder(
   _: DeleGatorEnvironment,
-  tokenAddress: Address,
   recipient: Address,
+  tokenAddress: Address,
   amount: bigint,
 ): CaveatStruct {
   return {
