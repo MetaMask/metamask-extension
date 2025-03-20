@@ -98,7 +98,7 @@ export const MultichainBridgeQuoteCard = () => {
   // This fee are perceptual and range from 0 to 1
   if (scanTokenAdditionalFees?.transfer) {
     const transferTokenFeeAmount = toTokenAmount.times(
-      scanTokenAdditionalFees.transfer,
+      scanTokenAdditionalFees.transfer || 0,
     );
     toTokenAmount = toTokenAmount.minus(transferTokenFeeAmount);
   }
