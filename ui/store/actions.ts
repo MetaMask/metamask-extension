@@ -1118,7 +1118,6 @@ export function addTransactionAndRouteToConfirmationPage(
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
  * @param options.networkClientId - The network client id to use for the transaction.
- * @param options.waitForSubmit - Wait for the transaction to return a transaction hash.
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
@@ -1129,7 +1128,6 @@ export async function addTransactionAndWaitForPublish(
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
     networkClientId?: string;
-    waitForSubmit?: boolean;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransactionAndWaitForPublish');
@@ -1144,7 +1142,6 @@ export async function addTransactionAndWaitForPublish(
         ...options,
         origin: ORIGIN_METAMASK,
         actionId,
-        waitForSubmit,
       },
     ],
   );
