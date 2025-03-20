@@ -5,26 +5,24 @@ import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { useConfirmContext } from '../context/confirm';
 
-const shouldSetFocusedForType = (type: TransactionType) => {
-  return (
-    type === TransactionType.contractInteraction ||
-    type === TransactionType.deployContract ||
-    type === TransactionType.simpleSend ||
-    type === TransactionType.smart ||
-    type === TransactionType.tokenMethodTransfer ||
-    type === TransactionType.tokenMethodTransferFrom ||
-    type === TransactionType.tokenMethodSafeTransferFrom
-  );
-};
+const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
+  TransactionType.contractInteraction,
+  TransactionType.deployContract,
+  TransactionType.simpleSend,
+  TransactionType.smart,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+]);
 
 export const useTransactionFocusEffect = () => {
   const { currentConfirmation } = useConfirmContext();
   const { id, type } = currentConfirmation ?? {};
   const isWindowFocused = useWindowFocus();
   const dispatch = useDispatch();
-  const [focusedConfirmation, setFocusedConfirmation] = useState<string | null>(
-    null,
-  );
+  const [focusedConfirmationId, setFocusedConfirmationId] = useState<
+    string | null
+  >(null);
 
   const setTransactionFocus = useCallback(
     async (transactionId: string, isFocused: boolean) => {
@@ -34,32 +32,32 @@ export const useTransactionFocusEffect = () => {
   );
 
   useEffect(() => {
-    const shouldBeMarked = shouldSetFocusedForType(type as TransactionType);
+    const isFocusable = FOCUSABLE_TYPES.has(type as TransactionType);
 
-    if (!shouldBeMarked) {
+    if (!isFocusable) {
       // If the transaction type is not one of the types that should be focused,
       // we need to unfocus the previous focused confirmation and reset the focused confirmation
-      if (focusedConfirmation) {
-        setTransactionFocus(focusedConfirmation, false);
-        setFocusedConfirmation(null);
+      if (focusedConfirmationId) {
+        setTransactionFocus(focusedConfirmationId, false);
+        setFocusedConfirmationId(null);
       }
       return;
     }
 
-    if (isWindowFocused && focusedConfirmation !== id) {
+    if (isWindowFocused && focusedConfirmationId !== id) {
       // If the window is focused and the focused confirmation is not the current one,
       // we need to unfocus the previous focused confirmation and focus the current one
-      if (focusedConfirmation) {
-        setTransactionFocus(focusedConfirmation, false);
+      if (focusedConfirmationId) {
+        setTransactionFocus(focusedConfirmationId, false);
       }
       // Set the focused confirmation to the current one
-      setFocusedConfirmation(id);
+      setFocusedConfirmationId(id);
       setTransactionFocus(id, true);
-    } else if (!isWindowFocused && focusedConfirmation) {
+    } else if (!isWindowFocused && focusedConfirmationId) {
       // If the window is not focused and there is a focused confirmation,
       // we need to unfocus the focused confirmation
-      setTransactionFocus(focusedConfirmation, false);
-      setFocusedConfirmation(null);
+      setTransactionFocus(focusedConfirmationId, false);
+      setFocusedConfirmationId(null);
     }
-  }, [focusedConfirmation, id, isWindowFocused, setTransactionFocus, type]);
+  }, [focusedConfirmationId, id, isWindowFocused, setTransactionFocus, type]);
 };
