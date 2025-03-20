@@ -304,6 +304,7 @@ export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
 export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
+export const SONEIUM_TESTNET_DISPLAY_NAME = 'Soneium Minato Testnet';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
 
