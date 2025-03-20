@@ -21,9 +21,9 @@ const {
 } = require('./tests/bridge/constants');
 
 const {
-  WHITE_LISTED_HOSTS,
-  WHITE_LISTED_URLS,
-} = require('./mock-e2e-whitelisted');
+  ALLOWLISTED_HOSTS,
+  ALLOWLISTED_URLS,
+} = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -128,8 +128,8 @@ async function setupMocking(
           url: 'http://localhost:8545',
         };
       } else if (
-        WHITE_LISTED_URLS.includes(url) ||
-        WHITE_LISTED_HOSTS.includes(host)
+        ALLOWLISTED_URLS.includes(url) ||
+        ALLOWLISTED_HOSTS.includes(host)
       ) {
         // If the URL is whitelisted, we pass the request as it is, to the live server.
         console.log('Request going to a live server ============', url);

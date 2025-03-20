@@ -1,6 +1,6 @@
 // Please do not add any more items to this list.
 // This list is temporary and the goal is to reduce it to 0, meaning all requests are mocked in our e2e tests.
-const WHITE_LISTED_URLS = [
+const ALLOWLISTED_URLS = [
   'https://account.api.cx.metamask.io/networks/1/tokens',
   'https://account.api.cx.metamask.io/networks/10/tokens',
   'https://account.api.cx.metamask.io/networks/100/tokens',
@@ -163,7 +163,7 @@ const WHITE_LISTED_URLS = [
   'https://www.4byte.directory/api/v1/signatures/?hex_signature=0xd0e30db0',
 ];
 
-const WHITE_LISTED_HOSTS = [
+const ALLOWLISTED_HOSTS = [
   'accounts.api.cx.metamask.io',
   'app.launchdarkly.com',
   'api.web3modal.com',
@@ -189,4 +189,4 @@ const WHITE_LISTED_HOSTS = [
   'widget.intercom.io',
 ];
 
-module.exports = { WHITE_LISTED_HOSTS, WHITE_LISTED_URLS };
+module.exports = { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS };

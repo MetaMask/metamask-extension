@@ -138,4 +138,4 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Extension Platform
 yarnrc.yml                                            @MetaMask/extension-platform
-mock-e2e-whitelisted.js                               @MetaMask/extension-platform
+test/e2e/mock-e2e-whitelisted.js                      @MetaMask/extension-platform
