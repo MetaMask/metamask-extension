@@ -38,43 +38,38 @@ git config --global user.email "metamaskbot@users.noreply.github.com"
 
 git config --global user.name "MetaMask Bot"
 
-git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
+git clone --depth=1 git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
-{
-    echo " '${CIRCLE_SHA1}': ";
-    cat test-artifacts/chrome/bundle_size_stats.json;
-    echo ", ";
-} >> temp/stats/bundle_size_data.temp.js
+BUNDLE_SIZE_FILE="test-artifacts/chrome/bundle_size_stats.json"
+STATS_FILE="temp/stats/bundle_size_data.json"
+TEMP_FILE="temp/stats/bundle_size_data.temp.json"
 
-cp temp/stats/bundle_size_data.temp.js temp/stats/bundle_size_data.js
-
-echo " }" >> temp/stats/bundle_size_data.js
-
-if [ -f temp/stats/bundle_size_data.json ]; then
-  # copy bundle_size_data.json in bundle_size_data.temp.json without last 2 lines
-  head -$(($(wc -l < temp/stats/bundle_size_data.json) - 2)) temp/stats/bundle_size_data.json > bundle_size_stats.temp.json
-
-  {
-    echo "},";
-    echo "\"$CIRCLE_SHA1\":";
-    cat test-artifacts/chrome/bundle_size_stats.json;
-    echo "}";
-  } >> bundle_size_stats.temp.json
-else
-  {
-    echo "{";
-    echo "\"$CIRCLE_SHA1\":";
-    cat test-artifacts/chrome/bundle_size_stats.json;
-    echo "}";
-  } > bundle_size_stats.temp.json
+# Ensure the JSON file exists
+if [[ ! -f "$STATS_FILE" ]]; then
+    echo "{}" > "$STATS_FILE"
 fi
 
-jq . bundle_size_stats.temp.json > temp/stats/bundle_size_data.json
-rm bundle_size_stats.temp.json
+# Validate JSON files before modification
+jq . "$STATS_FILE" > /dev/null || { echo "Error: Existing stats JSON is invalid"; exit 1; }
+jq . "$BUNDLE_SIZE_FILE" > /dev/null || { echo "Error: New bundle size JSON is invalid"; exit 1; }
+
+# Check if the SHA already exists in the stats file
+if jq -e "has(\"$CIRCLE_SHA1\")" "$STATS_FILE" > /dev/null; then
+    echo "SHA $CIRCLE_SHA1 already exists in stats file. No new commit needed."
+    exit 0
+fi
+
+# Append new bundle size data correctly using jq
+jq --arg sha "$CIRCLE_SHA1" --argjson data "$(cat "$BUNDLE_SIZE_FILE")" \
+   '. + {($sha): $data}' "$STATS_FILE" > "$TEMP_FILE"
+
+# Overwrite the original JSON file with the corrected version
+mv "$TEMP_FILE" "$STATS_FILE"
 
 cd temp
 
-git add .
+# Only add the JSON file
+git add stats/bundle_size_data.json
 
 git commit --message "Adding bundle size at commit: ${CIRCLE_SHA1}"
 
