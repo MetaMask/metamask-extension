@@ -5041,8 +5041,8 @@ __metadata:
 
 "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap::locator=metamask-crx%40workspace%3A.":
   version: 0.9.0
-  resolution: "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap#../snap-bitcoin-wallet/packages/snap::hash=cfb51f&locator=metamask-crx%40workspace%3A."
-  checksum: 10/d8ff7a9d79243cbcebe686219ab02a28be38dd8f74284312d25d8f055095812b26e325b48f1632c5f02586abac11e97961e07bf198e382f03c4d2326488e19cf
+  resolution: "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap#../snap-bitcoin-wallet/packages/snap::hash=c6bb24&locator=metamask-crx%40workspace%3A."
+  checksum: 10/6d70ce2728d0e49965d423f1e068c7549c693cd33a355a7941f82873f35e5f0dbed6bac843b5fbf292831375d21aac523be0f5523d13ac9cfc27383352fbdfc2
   languageName: node
   linkType: hard
 
