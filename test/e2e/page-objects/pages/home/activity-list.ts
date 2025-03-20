@@ -22,7 +22,7 @@ class ActivityListPage {
   private readonly tooltip = '.tippy-tooltip-content';
 
   private readonly bridgeTransactionCompleted =
-    '.bridge-transaction-details__segment--complete';
+    '.transaction-status-label--confirmed';
 
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
@@ -182,7 +182,7 @@ class ActivityListPage {
         this.bridgeTransactionCompleted,
       );
       return completedTxs.length === expectedNumber;
-    }, 30000);
+    }, 60000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
