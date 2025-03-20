@@ -176,6 +176,26 @@ const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
 };
 
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+const SNAP_CLIENT_CONFIG_MAP: Record<
+  string,
+  { clientType: WalletClientType | null; chainId: CaipChainId | null }
+> = {
+  [ACTION_MODES.ADD_BITCOIN]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN,
+  },
+  [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_TESTNET,
+  },
+  [ACTION_MODES.ADD_SOLANA]: {
+    clientType: WalletClientType.Solana,
+    chainId: MultichainNetworks.SOLANA,
+  },
+};
+///: END:ONLY_INCLUDE_IF
+
 /**
  * Gets the title for a given action mode.
  *
@@ -481,44 +501,11 @@ export const AccountListMenu = ({
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
   }, [setActionMode, actionMode]);
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
 
-  /**
-   * Determines the client type and chain ID based on the action mode
-   *
-   * @param mode - The current action mode
-   * @returns An object containing the client type and chain ID, or null values if not a snap account creation mode
-   */
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const getSnapClientConfig = (
-    mode: string,
-  ): { clientType: WalletClientType | null; chainId: CaipChainId | null } => {
-    switch (mode) {
-      case ACTION_MODES.ADD_BITCOIN:
-        return {
-          clientType: WalletClientType.Bitcoin,
-          chainId: MultichainNetworks.BITCOIN,
-        };
-      case ACTION_MODES.ADD_BITCOIN_TESTNET:
-        return {
-          clientType: WalletClientType.Bitcoin,
-          chainId: MultichainNetworks.BITCOIN_TESTNET,
-        };
-      case ACTION_MODES.ADD_SOLANA:
-        return {
-          clientType: WalletClientType.Solana,
-          chainId: MultichainNetworks.SOLANA,
-        };
-      default:
-        return {
-          clientType: null,
-          chainId: null,
-        };
-    }
+  const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
+    clientType: null,
+    chainId: null,
   };
-
-  // Use the helper function to get client type and chain ID
-  const { clientType, chainId } = getSnapClientConfig(actionMode);
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -560,7 +547,7 @@ export const AccountListMenu = ({
               />
             </Box>
           ) : null
-          ///: END:ONLY_INCLUDE_IF(multi-srp)
+          ///: END:ONLY_INCLUDE_IF
         }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
