@@ -612,6 +612,7 @@ export function connectHardware(
   deviceName: HardwareDeviceNames,
   page: string,
   hdPath: string,
+  loadHid: boolean,
   t: (key: string) => string,
 ): ThunkAction<
   Promise<{ address: string }[]>,
@@ -630,6 +631,7 @@ export function connectHardware(
     let accounts: { address: string }[];
     try {
       if (
+        loadHid &&
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
@@ -6096,4 +6098,16 @@ export async function getCode(address: Hex, networkClientId: string) {
     address,
     networkClientId,
   ]);
+}
+
+export function setTransactionActive(
+  transactionId: string,
+  isFocused: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setTransactionActive', [
+      transactionId,
+      isFocused,
+    ]);
+  };
 }
