@@ -16,7 +16,6 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
