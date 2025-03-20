@@ -1,24 +1,10 @@
-// import { getSelectedInternalAccount } from '../accounts';
-// import { getMultichainAggregatedBalance } from '../assets';
-// import { getShouldShowSeedPhraseReminder } from './multi-srp';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import mockState from '../../../test/data/mock-state.json';
-import { getShouldShowSeedPhraseReminder } from './multi-srp';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
+import mockDefaultState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
-
-type AccountInfo = {
-  address: string;
-  balance: string;
-};
-
-type AccountsByChainId = {
-  [chainId: string]: {
-    [address: string]: AccountInfo;
-  };
-};
+import { getShouldShowSeedPhraseReminder } from './multi-srp';
 
 const mockGetSelectedAccountTokensAcrossChains = jest.fn();
 const mockGetCrossChainMetaMaskCachedBalances = jest.fn();
@@ -90,9 +76,9 @@ const generateMockState = ({
   nonEvmBalance?: number;
 }) => {
   const state = {
-    ...mockState,
+    ...mockDefaultState,
     metamask: {
-      ...mockState.metamask,
+      ...mockDefaultState.metamask,
       internalAccounts: {
         accounts: {
           [account.id]: account,

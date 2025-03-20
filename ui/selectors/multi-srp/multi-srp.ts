@@ -1,4 +1,5 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { SnapId } from '@metamask/snaps-sdk';
 import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
@@ -7,7 +8,6 @@ import {
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
-import { SnapId } from '@metamask/snaps-sdk';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 type AccountInfo = {
@@ -64,14 +64,14 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
     tokens: TokensByChainId,
     crossChainBalances: AccountsByChainId,
     aggregatedBalance,
-    isPrimaryHdOrFirstPartySnapAccount,
+    isAccountAPrimaryHdOrFirstPartySnapAccount,
   ) => {
     const { seedPhraseBackedUp, dismissSeedBackUpReminder } = state.metamask;
 
     // If there is no account, we don't need to show the seed phrase reminder
     // or if the account is not a primary HD or first party snap account
     // It is assumed that imported srp accounts are backed up
-    if (!account || !isPrimaryHdOrFirstPartySnapAccount) {
+    if (!account || !isAccountAPrimaryHdOrFirstPartySnapAccount) {
       return false;
     }
 
