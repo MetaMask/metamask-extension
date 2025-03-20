@@ -103,8 +103,8 @@ const SortControl = ({ handleClose }: SortControlProps) => {
   return (
     <>
       <SelectableListItem
-        isSelected={tokenSortConfig?.key === 'symbol'}
-        onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
+        isSelected={tokenSortConfig?.key === 'name'}
+        onClick={() => handleSort('name', 'alphaNumeric', 'asc')}
         testId="sortByAlphabetically"
       >
         {t('sortByAlphabetically')}
