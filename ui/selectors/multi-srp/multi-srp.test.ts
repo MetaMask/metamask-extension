@@ -47,6 +47,7 @@ const mockHdAccountFromSecondSrp = createMockInternalAccount({
   address: '0xF329D1a8a569787e98ac50d5c394f4F5B1444446',
 });
 const mockPrivateKeyAccount = createMockInternalAccount({
+  address: '0x25857581920e2A520c6507f2a2C2b53b2b75E1C9',
   keyringType: KeyringTypes.simple,
 });
 const mockSnapAccount = createMockInternalAccount({
