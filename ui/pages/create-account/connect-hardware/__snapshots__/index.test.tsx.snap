@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConnectHardwareForm should match snapshot 1`] = `
+exports[`ConnectHardwareForm matchs snapshot 1`] = `
 <div>
   <div
     class="mm-box new-external-account-form mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
