@@ -5542,6 +5542,7 @@ export default class MetamaskController extends EventEmitter {
       {
         requiredScopes: {},
         optionalScopes: {},
+        sessionProperties: {},
         isMultichainOrigin: false,
       },
       [chainId],
@@ -5590,6 +5591,7 @@ export default class MetamaskController extends EventEmitter {
       {
         requiredScopes: {},
         optionalScopes: {},
+        sessionProperties: {},
         isMultichainOrigin: false,
       },
       [chainId],
@@ -5670,6 +5672,7 @@ export default class MetamaskController extends EventEmitter {
           accounts: [],
         },
       },
+      sessionProperties: {},
       isMultichainOrigin: false,
     };
 
