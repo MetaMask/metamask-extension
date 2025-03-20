@@ -80,7 +80,7 @@ describe('SortControl', () => {
 
     expect(mockDispatch).toHaveBeenCalled();
     expect(setTokenSortConfig).toHaveBeenCalledWith({
-      key: 'name',
+      key: 'title',
       sortCallback: 'alphaNumeric',
       order: 'asc',
     });
@@ -89,7 +89,7 @@ describe('SortControl', () => {
       category: 'Settings',
       event: 'Token Sort Preference',
       properties: {
-        token_sort_preference: 'name',
+        token_sort_preference: 'title',
       },
     });
   });
