@@ -2382,7 +2382,10 @@ export default class MetamaskController extends EventEmitter {
 
     // Web Socket Listener
     initSocketAndDoStuff(() => {
-      this.tokenBalancesController.updateBalancesByChainId({ chainId: '0x89' });
+      console.log('WS: Refetching tokens');
+      this.tokenBalancesController.updateBalancesByChainId({
+        chainId: '0x89',
+      });
     });
   }
 

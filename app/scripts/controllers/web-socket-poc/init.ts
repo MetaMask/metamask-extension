@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 
 export function initSocketAndDoStuff(handler: () => void) {
-  const debonucedHandler = throttle(handler, 500);
+  const throttledHandler = throttle(handler, 500);
   const maxRetries = 5;
   let retryCount = 0;
   let ws: WebSocket;
@@ -25,7 +25,6 @@ export function initSocketAndDoStuff(handler: () => void) {
             address: '0x3EB132069C3C4f6C8632505Fd344925645eb27C5', // account 1
             contractAddress: [
               '0x0000000000000000000000000000000000000000',
-              '0x0000000000000000000000000000000000001010',
               '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
             ], // POL, Bridged USDC
           },
@@ -37,7 +36,7 @@ export function initSocketAndDoStuff(handler: () => void) {
 
     ws.onmessage = (event) => {
       console.log('WS: Received:', event.data);
-      // debonucedHandler();
+      throttledHandler();
     };
 
     ws.onclose = () => {
