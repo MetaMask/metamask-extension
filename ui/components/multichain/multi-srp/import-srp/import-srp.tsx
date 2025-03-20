@@ -233,7 +233,7 @@ export const ImportSrp = ({
               flexDirection={FlexDirection.Row}
             >
               <Label
-                className="import-multi-srp__srp-label"
+                className="import-srp__multi-srp-label"
                 variant={TextVariant.bodyMdMedium}
                 marginRight={4}
               >
