@@ -13,6 +13,7 @@ import {
   BlockSize,
   FontStyle,
 } from '../../../helpers/constants/design-system';
+import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
   let modifiedEndpoint = endpoint;
@@ -29,11 +30,6 @@ export const stripKeyFromInfuraUrl = (endpoint: string) => {
 export const stripProtocol = (endpoint: string) => {
   const url = new URL(endpoint);
   return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
-};
-
-export const onlyKeepHost = (endpoint: string) => {
-  const url = new URL(endpoint);
-  return url.host;
 };
 
 // This components represents an RPC endpoint in a list,

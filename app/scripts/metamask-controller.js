@@ -87,6 +87,7 @@ import {
   ERC20,
   ERC721,
   BlockExplorerUrl,
+  isConnectionError,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -246,6 +247,7 @@ import { endTrace, trace } from '../../shared/lib/trace';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import {
   BridgeUserAction,
   BridgeBackgroundAction,
@@ -666,8 +668,56 @@ export default class MetamaskController extends EventEmitter {
       getRpcServiceOptions: () => ({
         fetch: globalThis.fetch.bind(globalThis),
         btoa: globalThis.btoa.bind(globalThis),
+        policyOptions: {
+          circuitBreakDuration: 20000,
+        },
       }),
     });
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointUnavailable',
+      async ({ chainId, endpointUrl, error }) => {
+        const parsedUrl = new URL(endpointUrl);
+        const hostParts = parsedUrl.host.split('.');
+        const rootDomainName = hostParts.slice(-2).join('.');
+        if (
+          (rootDomainName === 'infura.io' ||
+            rootDomainName === 'quicknode.pro') &&
+          !isConnectionError(error)
+        ) {
+          console.log('RPC endpoint unavailable', endpointUrl);
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: MetaMetricsEventName.RpcServiceUnavailable,
+            properties: {
+              chain_id_caip: `eip155:${chainId}`,
+              rpc_endpoint_url: onlyKeepHost(endpointUrl),
+            },
+          });
+        }
+      },
+    );
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointDegraded',
+      async ({ chainId, endpointUrl }) => {
+        const parsedUrl = new URL(endpointUrl);
+        const hostParts = parsedUrl.host.split('.');
+        const rootDomainName = hostParts.slice(-2).join('.');
+        if (
+          rootDomainName === 'infura.io' ||
+          rootDomainName === 'quicknode.pro'
+        ) {
+          console.log('RPC endpoint degraded', endpointUrl);
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: MetaMetricsEventName.RpcServiceDegraded,
+            properties: {
+              chain_id_caip: `eip155:${chainId}`,
+              rpc_endpoint_url: endpointUrl,
+            },
+          });
+        }
+      },
+    );
     this.networkController.initializeProvider();
 
     if (process.env.MULTICHAIN_API) {
@@ -884,33 +934,6 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
-
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointUnavailable',
-      async ({ chainId, endpointUrl, failoverEndpointUrl }) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.Network,
-          event: MetaMetricsEventName.RpcServiceUnavailable,
-          properties: {
-            caip_chain_id: `eip155:${chainId}`,
-            rpc_endpoint_url: endpointUrl,
-            failover_endpoint_url: failoverEndpointUrl,
-          },
-        });
-      },
-    );
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointDegraded',
-      async ({ endpointUrl }) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.Network,
-          event: MetaMetricsEventName.RpcServiceDegraded,
-          properties: {
-            rpc_endpoint_url: endpointUrl,
-          },
-        });
-      },
-    );
 
     const dataDeletionService = new DataDeletionService();
     const metaMetricsDataDeletionMessenger =

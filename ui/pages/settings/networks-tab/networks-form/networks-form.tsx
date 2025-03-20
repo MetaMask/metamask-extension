@@ -61,7 +61,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import RpcListItem, {
-  onlyKeepHost,
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../../../../components/multichain/network-list-menu/rpc-list-item';
@@ -72,6 +71,7 @@ import {
 import { getTokenNetworkFilter } from '../../../../selectors';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
+import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 
 export const NetworksForm = ({
   networkFormState,
