@@ -39,6 +39,7 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
+import { isKnownSessionPropertyValue } from './constants';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -94,9 +95,6 @@ async function walletCreateSessionHandler(
     };
   },
 ) {
-  // TODO: move to @metamask/chain-agnostic-permission
-  const knownSessionProperties = ['solana_accountChanged_notifications'];
-
   const { origin } = req;
   if (!isPlainObject(req.params)) {
     return end(invalidParams({ data: { request: req } }));
@@ -107,12 +105,11 @@ async function walletCreateSessionHandler(
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
-  // TODO: add caveat validation in the `@metamask/chain-agnostic-permission` package
   let filteredSessionProperties = {};
   if (sessionProperties && Object.keys(sessionProperties).length > 0) {
     filteredSessionProperties = Object.fromEntries(
       Object.entries(sessionProperties).filter(([key]) =>
-        knownSessionProperties.includes(key),
+        isKnownSessionPropertyValue(key),
       ),
     );
   }

@@ -2,6 +2,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
+  getPermittedAccountsForScopes,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { createSelector } from 'reselect';
@@ -43,31 +44,6 @@ export const getPermittedAccountsByOrigin = createSelector(
     }, new Map());
   },
 );
-
-// This will be moved to the @metamask/chain-agnostic-permission package
-/**
- * Get the permitted accounts for a given scope.
- *
- * @param {Pick<Caip25CaveatValue, 'requiredScopes' | 'optionalScopes'>} caip25CaveatValue - The CAIP-25 CaveatValue to get the permitted accounts for
- * @param {string[]} scopes - The scopes to get the permitted accounts for
- * @returns {string[]} An array of permitted accounts
- */
-export const getPermittedAccountsForScopes = (caip25CaveatValue, scopes) => {
-  const scopeAccounts = [];
-
-  scopes.forEach((scope) => {
-    const requiredScope = caip25CaveatValue.requiredScopes[scope];
-    const optionalScope = caip25CaveatValue.optionalScopes[scope];
-    if (requiredScope) {
-      scopeAccounts.push(...requiredScope.accounts);
-    }
-
-    if (optionalScope) {
-      scopeAccounts.push(...optionalScope.accounts);
-    }
-  });
-  return scopeAccounts;
-};
 
 /**
  * Get the permitted accounts for a given origin and scope.
