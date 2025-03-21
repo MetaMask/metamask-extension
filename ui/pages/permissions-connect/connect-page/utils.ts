@@ -142,6 +142,29 @@ export function getRequestedAccounts(
 }
 
 /**
+ * Extracts chain IDs from both required and optional scopes in CAIP-25 caveat value.
+ * Converts EVM chain IDs to hexadecimal format and keeps other chain identifiers as is.
+ *
+ * @param caveatValue - The CAIP-25 caveat value containing scopes.
+ * @returns Array of chain IDs.
+ */
+export function getRequestedChainIds(caveatValue: Caip25CaveatValue): string[] {
+  const allScopes = [
+    ...Object.keys(caveatValue.requiredScopes),
+    ...Object.keys(caveatValue.optionalScopes),
+  ];
+
+  return [...new Set(allScopes)].map((scope) => {
+    if (scope.startsWith('eip155:')) {
+      const chainId = scope.split(':')[1];
+      return `0x${parseInt(chainId, 10).toString(16)}`;
+    }
+
+    return scope;
+  });
+}
+
+/**
  * Filters networks based on the CAIP request scopes.
  *
  * @param networks - Network configurations.
