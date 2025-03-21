@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.14.0",
+  "version": "12.14.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -30,9 +30,9 @@
     "start:test:flask": "yarn start:test --build-type flask --apply-lavamoat=false",
     "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
     "start:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn start:test --apply-lavamoat=false --snow=false",
-    "benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
+    "benchmark:chrome": "HEADLESS=true SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
     "bundle-size": "SELENIUM_BROWSER=chrome ts-node test/e2e/mv3-perf-stats/bundle-size.js",
-    "user-actions-benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
+    "user-actions-benchmark:chrome": "HEADLESS=true SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox ts-node test/e2e/benchmark.js",
     "build:test": "yarn env:e2e build test",
     "build:test:dev": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
@@ -130,8 +130,7 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
-    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
-    "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
+    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
     "chokidar": "^3.6.0",
