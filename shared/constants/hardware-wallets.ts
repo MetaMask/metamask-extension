@@ -7,7 +7,7 @@ export enum HardwareKeyringType {
   oneKey = 'OneKey Hardware',
   lattice = 'Lattice Hardware',
   qr = 'QR Hardware Wallet Device',
-  mock = 'Mock Hardware Wallet',
+  mock = 'Mock Hardware',
 }
 
 export enum HardwareKeyringNames {

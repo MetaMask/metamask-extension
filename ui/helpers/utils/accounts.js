@@ -79,6 +79,7 @@ export function getAccountLabel(
   snapName,
   ///: END:ONLY_INCLUDE_IF
 ) {
+  console.log('getAccountLabel', { type, account });
   if (!account) {
     return null;
   }
@@ -95,6 +96,8 @@ export function getAccountLabel(
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
+    case KeyringType.mock:
+      return 'Mock';
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
       if (snapName) {
