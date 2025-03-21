@@ -14,6 +14,7 @@ import {
   fetchMultiExchangeRate,
   TokenBalancesController,
 } from '@metamask/assets-controllers';
+import { MultichainApiNotifications } from '@metamask/multichain-api-middleware';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
@@ -7856,7 +7857,7 @@ export default class MetamaskController extends EventEmitter {
     this.notifyConnections(
       origin,
       {
-        method: NOTIFICATION_NAMES.sessionChanged,
+        method: MultichainApiNotifications.sessionChanged,
         params: {
           sessionScopes: getSessionScopes(newAuthorization, {
             getNonEvmSupportedMethods:
@@ -7872,7 +7873,7 @@ export default class MetamaskController extends EventEmitter {
     this.notifyConnections(
       origin,
       {
-        method: NOTIFICATION_NAMES.walletNotify,
+        method: MultichainApiNotifications.walletNotify,
         params: {
           scope: MultichainNetworks.SOLANA,
           notification: {
