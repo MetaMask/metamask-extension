@@ -47,6 +47,7 @@ import {
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import type { ChainId } from '../../../../shared/types/bridge';
+import { useTokenScan } from '../../../hooks/bridge/useTokenScan';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = () => {
@@ -58,6 +59,7 @@ export const MultichainBridgeQuoteCard = () => {
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const quoteListProperties = useQuoteProperties();
+  const { fees: scanTokenAdditionalFees } = useTokenScan();
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
@@ -87,6 +89,19 @@ export const MultichainBridgeQuoteCard = () => {
       )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ];
   };
+
+  let toTokenAmount = activeQuote.toTokenAmount.amount.dividedBy(
+    activeQuote.sentAmount.amount,
+  );
+
+  // Some tokens, specially solana have transfer fees that needs to be deducted from the amount
+  // This fee are perceptual and range from 0 to 1
+  if (scanTokenAdditionalFees?.transfer) {
+    const transferTokenFeeAmount = toTokenAmount.times(
+      scanTokenAdditionalFees.transfer || 0,
+    );
+    toTokenAmount = toTokenAmount.minus(transferTokenFeeAmount);
+  }
 
   return (
     <>
@@ -118,9 +133,7 @@ export const MultichainBridgeQuoteCard = () => {
               <Text>
                 {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
                   locale,
-                  activeQuote.toTokenAmount.amount.dividedBy(
-                    activeQuote.sentAmount.amount,
-                  ),
+                  toTokenAmount,
                 )} ${activeQuote.quote.destAsset.symbol}`}
               </Text>
             </Row>

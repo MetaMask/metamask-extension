@@ -5,6 +5,7 @@ import {
   TokenFeature,
   TokenFeatureType,
   TokenAlertWithLabelIds,
+  TokenFees,
 } from '../../types/security-alerts-api';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 
@@ -52,10 +53,15 @@ function getFirstTokenAlert(features: TokenFeature[]): TokenFeature | null {
   );
 }
 
-export async function fetchTokenAlert(
+export type FetchTokenScanResponse = {
+  tokenAlert: TokenAlertWithLabelIds | null;
+  fees: TokenFees;
+};
+
+export async function fetchTokenScan(
   chain: string,
   tokenAddress: string,
-): Promise<TokenAlertWithLabelIds | null> {
+): Promise<FetchTokenScanResponse | null> {
   if (!isSecurityAlertsAPIEnabled()) {
     return null;
   }
@@ -81,18 +87,21 @@ export async function fetchTokenAlert(
 
   const tokenAlert = getFirstTokenAlert(respBody.features);
 
-  if (!tokenAlert) {
-    return null;
-  }
-
-  return getTokenFeatureTitleDescriptionIds(tokenAlert);
+  return {
+    tokenAlert: getTokenFeatureTitleDescriptionIds(tokenAlert),
+    fees: respBody.fees,
+  };
 }
 
 export function getTokenFeatureTitleDescriptionIds(
-  tokenFeature: TokenFeature,
-): TokenAlertWithLabelIds {
+  tokenFeature: TokenFeature | null,
+): TokenAlertWithLabelIds | null {
   let titleId = null;
   let descriptionId = null;
+
+  if (!tokenFeature) {
+    return null;
+  }
 
   switch (tokenFeature.feature_id) {
     case 'UNSTABLE_TOKEN_PRICE':
