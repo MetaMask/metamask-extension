@@ -209,6 +209,22 @@ describe('TransactionList', () => {
     jest.clearAllMocks();
   });
 
+  it('renders TransactionList component correctly', () => {
+    const { container } = render();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders TransactionList component with props hideNetworkFilter correctly', () => {
+    const store = configureStore(defaultState);
+    const { container } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideNetworkFilter />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders TransactionList component and does not show You have no transactions text', () => {
     const { queryByText } = render();
     expect(queryByText('You have no transactions')).toBeNull();

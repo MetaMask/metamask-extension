@@ -8,7 +8,7 @@ import { BlockSize, Size } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../../../selectors';
 
-const getTokens = (tokenList) => Object.values(tokenList);
+const getTokens = (tokenList = {}) => Object.values(tokenList);
 
 const createTokenSearchFuse = (tokenList) => {
   return new Fuse(getTokens(tokenList), {

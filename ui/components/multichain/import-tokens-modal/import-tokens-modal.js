@@ -330,7 +330,6 @@ export const ImportTokensModal = ({ onClose }) => {
   }, [networkFilter]);
 
   const handleCustomSymbolChange = (value) => {
-    console.log('handleCustomSymbolChange ****************', value);
     const symbol = value.trim();
     const symbolLength = symbol.length;
     let symbolError = null;
@@ -444,7 +443,6 @@ export const ImportTokensModal = ({ onClose }) => {
           chainId: selectedNetworkForCustomImport,
         }
       : null;
-
     dispatch(
       setPendingTokens({ customToken, selectedTokens, tokenAddressList }),
     );

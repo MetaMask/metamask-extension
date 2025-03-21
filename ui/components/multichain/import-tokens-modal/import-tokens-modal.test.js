@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import configureStore from '../../../store/store';
@@ -35,6 +36,12 @@ describe('ImportTokensModal', () => {
       metamask: {
         ...mockState.metamask,
         ...metamaskStateChanges,
+        tokensChainsCache: {
+          [CHAIN_IDS.GOERLI]: {
+            timestamp: Date.now(),
+            data: {},
+          },
+        },
       },
     });
     return renderWithProvider(<ImportTokensModal onClose={onClose} />, store);
@@ -190,6 +197,7 @@ describe('ImportTokensModal', () => {
         expect(setPendingTokens).toHaveBeenCalledWith({
           customToken: {
             address: tokenAddress,
+            chainId: CHAIN_IDS.GOERLI,
             decimals: Number(tokenPrecision),
             standard: TokenStandard.ERC20,
             symbol: tokenSymbol,
