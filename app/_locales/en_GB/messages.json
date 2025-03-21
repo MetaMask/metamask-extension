@@ -4102,12 +4102,6 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
-  "petnamesEnabledToggle": {
-    "message": "Allow nicknames"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
-  },
   "pinToTop": {
     "message": "Pin to top"
   },
