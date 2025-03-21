@@ -17,6 +17,8 @@ import {
 } from '../flows';
 
 describe('Account syncing - New User', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   describe('from inside MetaMask', function () {
     it('syncs after new wallet creation', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();

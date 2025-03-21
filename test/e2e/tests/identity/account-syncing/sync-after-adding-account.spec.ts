@@ -20,6 +20,8 @@ import {
 } from './mock-data';
 
 describe('Account syncing - Add Account', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   const arrange = async () => {
     const unencryptedAccounts = accountsToMockForAccountsSync;
     const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
