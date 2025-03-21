@@ -62,9 +62,9 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
-  getImageForChainId,
   getMultichainCoinRates,
   getMultichainProviderConfig,
+  getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {

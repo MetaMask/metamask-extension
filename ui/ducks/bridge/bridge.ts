@@ -97,7 +97,7 @@ const bridgeSlice = createSlice({
           chainId: payload.chainId,
           address:
             payload.address ||
-            getNativeAssetForChainId(payload.chainId)?.address,
+            getNativeAssetForChainId(payload.chainId).address,
         };
       } else {
         state.toToken = payload;
