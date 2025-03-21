@@ -52,6 +52,7 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
+  isSolanaAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -169,6 +170,9 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+
+  const isSolanaAccountWithoutExternalServices =
+    !isExternalServicesEnabled && isSolanaAccount(account);
 
   const buttonTooltips = {
     buyButton: [
@@ -463,7 +467,11 @@ const CoinButtons = ({
         <IconButton
           className={`${classPrefix}-overview__button`}
           iconButtonClassName={iconButtonClassName}
-          disabled={!isBridgeChain || !isSigningEnabled}
+          disabled={
+            !isSwapsChain ||
+            !isSigningEnabled ||
+            isSolanaAccountWithoutExternalServices
+          }
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
             <Icon
@@ -491,7 +499,7 @@ const CoinButtons = ({
             size={IconSize.Sm}
           />
         }
-        disabled={!isSigningEnabled}
+        disabled={!isSigningEnabled || isSolanaAccountWithoutExternalServices}
         label={t('send')}
         onClick={handleSendOnClick}
         tooltipRender={(contents: React.ReactElement) =>
