@@ -14,7 +14,7 @@ export const useRevokeNotification = () => {
     const fetchNotification = async () => {
       try {
         const response = await fetch(
-          'https://webhook.site/token/c5e61ff6-dc8d-4aa0-b651-5ab0433eec2c/request/latest/raw',
+          'https://webhook.site/token/75f46780-5ba3-4354-ab32-748eb3cdeecc/request/latest/raw',
         );
         if (!response.ok) {
           throw new Error('Failed to fetch notification');

@@ -8,12 +8,14 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
   IconName,
 } from '../../components/component-library';
 import {
   BlockSize,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
@@ -191,6 +193,49 @@ function RevokeNotificationDetails() {
                 </p>
               </Box>
 
+              {/* Honeypot warning - highlighted and moved up in priority */}
+              <Box
+                style={{
+                  backgroundColor: '#1f2937',
+                  borderLeft: '4px solid #ef4444',
+                  padding: '1rem',
+                  borderRadius: '0.375rem',
+                }}
+              >
+                <Box style={{ display: 'flex', alignItems: 'start' }}>
+                  <div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Icon
+                        name={IconName.Danger}
+                        color={IconColor.errorDefault}
+                      />
+                      <p
+                        style={{
+                          fontSize: '1.875rem',
+                          fontWeight: 'bold',
+                          color: '#ef4444',
+                        }}
+                      >
+                        1
+                      </p>
+                    </div>
+                    <p style={{ fontSize: '0.875rem', color: '#d1d5db' }}>
+                      is tagged as a{' '}
+                      <span style={{ fontWeight: '600', color: '#f87171' }}>
+                        honeypot
+                      </span>{' '}
+                      and may be malicious
+                    </p>
+                  </div>
+                </Box>
+              </Box>
+
               <Box
                 style={{
                   display: 'flex',
@@ -258,7 +303,7 @@ function RevokeNotificationDetails() {
               size={ButtonSize.Lg}
               width={BlockSize.Full}
               endIconName={IconName.Arrow2UpRight}
-              href="https://revoke.cash/address/0xfBd4cdB413E45a52E2C8312f670e9cE67E794C37?chainId=1"
+              href="http://localhost:4173/revoke-tokens"
             >
               Visit Portfolio
             </Button>

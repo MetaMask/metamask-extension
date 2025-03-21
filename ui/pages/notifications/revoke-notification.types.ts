@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
-
-export interface ApprovedSpender {
+export type ApprovedSpender = {
   spender: string; // hex
   amount: string; // some stupid large number, assume 18 decimals, and anything crazy large we can assume is unlimited
-}
+};
 
-export interface RevokeAsset {
+export type RevokeAsset = {
   assetSymbol: string;
   assetName: string;
   assetAddress: string;
@@ -13,7 +11,7 @@ export interface RevokeAsset {
   approvedSpenders: ApprovedSpender[];
   lastUpdated: string;
   isHoneypot: boolean;
-}
+};
 
 export type RevokeData = RevokeAsset[];
 
