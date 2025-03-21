@@ -512,7 +512,12 @@ export const getMultichainNetworkConfigurationsByChainId = (
         MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
       nativeCurrency: 'sol',
       rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        {
+          url: '',
+          failoverUrls: [],
+          type: RpcEndpointType.Custom,
+          networkClientId: '',
+        },
       ],
       defaultRpcEndpointIndex: 0,
       chainId: MultichainNetworks.SOLANA as unknown as Hex,
