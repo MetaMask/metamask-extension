@@ -7,7 +7,6 @@ import {
   backupUserData,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
-  setOverrideContentSecurityPolicyHeader,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
@@ -27,11 +26,8 @@ export const mapStateToProps = (state) => {
     appState: { errorInSettings },
     metamask,
   } = state;
-  const {
-    featureFlags: { sendHexData } = {},
-    dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
-  } = metamask;
+  const { featureFlags: { sendHexData } = {}, dismissSeedBackUpReminder } =
+    metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
@@ -48,7 +44,6 @@ export const mapStateToProps = (state) => {
     smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
   };
 };
 
@@ -79,9 +74,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
-    },
-    setOverrideContentSecurityPolicyHeader: (value) => {
-      return dispatch(setOverrideContentSecurityPolicyHeader(value));
     },
   };
 };

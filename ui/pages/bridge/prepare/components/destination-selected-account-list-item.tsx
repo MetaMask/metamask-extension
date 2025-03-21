@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
@@ -24,9 +23,11 @@ import {
 import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
-  account: InternalAccount;
+  account: DestinationAccount;
   selected: boolean;
   onClick?: () => void;
 };
@@ -35,6 +36,8 @@ const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
+  const t = useI18nContext();
+  const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (
     <Box
@@ -64,7 +67,7 @@ const DestinationSelectedAccountListItem: React.FC<
 
       <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
         <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {account.metadata.name}
+          {isExternalAccount ? t('externalAccount') : account.metadata.name}
         </Text>
 
         <Text

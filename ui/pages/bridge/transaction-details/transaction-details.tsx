@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { isStrictHexString } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -63,12 +64,13 @@ import {
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { MINUTE } from '../../../../shared/constants/time';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
-  networkConfiguration: NetworkConfiguration | undefined,
+  networkConfiguration: EvmNetworkConfiguration | undefined,
   txHash: string | undefined,
 ) => {
   if (!networkConfiguration || !txHash) {
@@ -141,11 +143,13 @@ export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
+  const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
       bridgeHistoryItem?.startTime &&
       Date.now() >
         bridgeHistoryItem.startTime +
+          tenMinutesInMs +
           bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
@@ -192,10 +196,16 @@ const CrossChainSwapTxDetails = () => {
   });
 
   const srcTxHash = srcChainTxMeta?.hash;
-  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
+  const srcBlockExplorerUrl = getBlockExplorerUrl(
+    srcNetwork as EvmNetworkConfiguration,
+    srcTxHash,
+  );
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
+  const destBlockExplorerUrl = getBlockExplorerUrl(
+    destNetwork as EvmNetworkConfiguration,
+    destTxHash,
+  );
 
   const status = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
@@ -330,8 +340,16 @@ const CrossChainSwapTxDetails = () => {
 
           {/* Links to block explorers */}
           <BridgeExplorerLinks
-            srcChainId={srcNetwork?.chainId}
-            destChainId={destNetwork?.chainId}
+            srcChainId={
+              isStrictHexString(srcNetwork?.chainId)
+                ? srcNetwork?.chainId
+                : undefined
+            }
+            destChainId={
+              isStrictHexString(destNetwork?.chainId)
+                ? destNetwork?.chainId
+                : undefined
+            }
             srcBlockExplorerUrl={srcBlockExplorerUrl}
             destBlockExplorerUrl={destBlockExplorerUrl}
           />

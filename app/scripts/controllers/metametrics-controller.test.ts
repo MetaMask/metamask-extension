@@ -1622,11 +1622,15 @@ describe('MetaMetricsController', function () {
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
           sessionData: {
-            accessToken: '',
-            expiresIn: '',
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
             profile: {
               identifierId: 'identifierId',
               profileId: 'profileId',
+              metaMetricsId: 'testid',
             },
           },
           keyrings: [],
@@ -1699,11 +1703,15 @@ describe('MetaMetricsController', function () {
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
           sessionData: {
-            accessToken: '',
-            expiresIn: '',
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
             profile: {
               identifierId: 'identifierId',
               profileId: 'profileId',
+              metaMetricsId: 'testid',
             },
           },
           keyrings: [],
@@ -1757,11 +1765,15 @@ describe('MetaMetricsController', function () {
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
           sessionData: {
-            accessToken: '',
-            expiresIn: '',
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
             profile: {
               identifierId: 'identifierId',
               profileId: 'profileId',
+              metaMetricsId: 'testid',
             },
           },
           keyrings: [],

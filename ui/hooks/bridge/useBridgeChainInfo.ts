@@ -1,38 +1,29 @@
 import { useSelector } from 'react-redux';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
+import type { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
+import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
+import { formatChainIdToHexOrCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 
 const getSourceAndDestChainIds = ({
   bridgeHistoryItem,
 }: UseBridgeChainInfoProps) => {
-  const hexSrcChainId = bridgeHistoryItem
-    ? (new Numeric(
-        bridgeHistoryItem.quote.srcChainId,
-        10,
-      ).toPrefixedHexString() as Hex)
-    : undefined;
-  const hexDestChainId = bridgeHistoryItem
-    ? (new Numeric(
-        bridgeHistoryItem.quote.destChainId,
-        10,
-      ).toPrefixedHexString() as Hex)
-    : undefined;
-
   return {
-    hexSrcChainId,
-    hexDestChainId,
+    srcChainId: bridgeHistoryItem
+      ? formatChainIdToHexOrCaip(bridgeHistoryItem.quote.srcChainId)
+      : undefined,
+    destChainId: bridgeHistoryItem
+      ? formatChainIdToHexOrCaip(bridgeHistoryItem.quote.destChainId)
+      : undefined,
   };
 };
 
@@ -45,9 +36,8 @@ export default function useBridgeChainInfo({
   bridgeHistoryItem,
   srcTxMeta,
 }: UseBridgeChainInfoProps) {
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
+  const [networkConfigurationsByChainId] =
+    useSelector(getMultichainNetworkConfigurationsByChainId) ?? [];
 
   if (srcTxMeta?.type !== TransactionType.bridge) {
     return {
@@ -56,11 +46,11 @@ export default function useBridgeChainInfo({
     };
   }
 
-  const { hexSrcChainId, hexDestChainId } = getSourceAndDestChainIds({
+  const { srcChainId, destChainId } = getSourceAndDestChainIds({
     bridgeHistoryItem,
   });
 
-  if (!hexSrcChainId || !hexDestChainId) {
+  if (!srcChainId || !destChainId) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,
@@ -68,39 +58,43 @@ export default function useBridgeChainInfo({
   }
 
   // Source chain info
-  const srcNetwork = networkConfigurationsByChainId[hexSrcChainId]
-    ? networkConfigurationsByChainId[hexSrcChainId]
+  const srcNetwork = networkConfigurationsByChainId[
+    srcChainId as keyof typeof networkConfigurationsByChainId
+  ]
+    ? networkConfigurationsByChainId[
+        srcChainId as keyof typeof networkConfigurationsByChainId
+      ]
     : undefined;
-  const fallbackSrcNetwork: NetworkConfiguration = {
-    chainId: hexSrcChainId,
-    name: NETWORK_TO_NAME_MAP[
-      hexSrcChainId as keyof typeof NETWORK_TO_NAME_MAP
-    ],
+  const fallbackSrcNetwork = {
+    chainId: srcChainId,
+    name: NETWORK_TO_NAME_MAP[srcChainId as keyof typeof NETWORK_TO_NAME_MAP],
     nativeCurrency:
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        hexSrcChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+        srcChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ],
     defaultBlockExplorerUrlIndex: 0,
-    blockExplorerUrls: [CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[hexSrcChainId]],
+    blockExplorerUrls: [CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[srcChainId]],
     defaultRpcEndpointIndex: 0,
     rpcEndpoints: [],
   };
 
   // Dest chain info
-  const destNetwork = networkConfigurationsByChainId[hexDestChainId]
-    ? networkConfigurationsByChainId[hexDestChainId]
+  const destNetwork = networkConfigurationsByChainId[
+    destChainId as keyof typeof networkConfigurationsByChainId
+  ]
+    ? networkConfigurationsByChainId[
+        destChainId as keyof typeof networkConfigurationsByChainId
+      ]
     : undefined;
   const fallbackDestNetwork: NetworkConfiguration = {
-    chainId: hexDestChainId,
-    name: NETWORK_TO_NAME_MAP[
-      hexDestChainId as keyof typeof NETWORK_TO_NAME_MAP
-    ],
+    chainId: destChainId as Hex,
+    name: NETWORK_TO_NAME_MAP[destChainId as keyof typeof NETWORK_TO_NAME_MAP],
     nativeCurrency:
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        hexDestChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+        destChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ],
     defaultBlockExplorerUrlIndex: 0,
-    blockExplorerUrls: [CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[hexDestChainId]],
+    blockExplorerUrls: [CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[destChainId]],
     defaultRpcEndpointIndex: 0,
     rpcEndpoints: [],
   };

@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Δεν συνιστούμε να προχωρήσετε σε αυτό το αίτημα."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, ένα τρίτο μέρος που είναι γνωστό για απάτες μπορεί να πάρει όλα τα περιουσιακά σας στοιχεία."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Αυτό το αίτημα είναι ύποπτο"
   },
   "confirmed": {
     "message": "Επιβεβαιωμένο"
@@ -3851,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Θα λάβετε"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ανώτατο όριο δαπανών"
-  },
   "permitSimulationChange_transfer": {
     "message": "Θα στείλετε"
   },
@@ -5961,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12ώρες:"
-  },
-  "typeYourSRP": {
-    "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"
   },
   "u2f": {
     "message": "U2F",

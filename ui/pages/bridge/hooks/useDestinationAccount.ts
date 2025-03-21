@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getSelectedInternalAccount,
   getSelectedEvmInternalAccount,
@@ -13,10 +12,11 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { DestinationAccount } from '../prepare/types';
 
 export const useDestinationAccount = (isSwap = false) => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =
-    useState<InternalAccount | null>(null);
+    useState<DestinationAccount | null>(null);
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);

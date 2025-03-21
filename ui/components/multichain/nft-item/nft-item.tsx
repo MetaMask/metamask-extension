@@ -41,7 +41,6 @@ type NftItemProps = {
   detailView?: boolean;
   clickable?: boolean;
   privacyMode?: boolean;
-  badgeWrapperClassname?: string;
 };
 
 export const NftItem = ({
@@ -55,7 +54,6 @@ export const NftItem = ({
   clickable,
   privacyMode,
   isIpfsURL,
-  badgeWrapperClassname = '',
 }: NftItemProps) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
@@ -114,13 +112,9 @@ export const NftItem = ({
         onClick={onClick}
       >
         <BadgeWrapper
-          className={classnames(
-            'nft-item__badge-wrapper',
-            badgeWrapperClassname,
-            {
-              'nft-item__badge-wrapper__clickable': Boolean(clickable),
-            },
-          )}
+          className={classnames('nft-item__badge-wrapper', {
+            'nft-item__badge-wrapper__clickable': Boolean(clickable),
+          })}
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
           positionObj={{ top: -4, right: -4 }}
           display={Display.Block}

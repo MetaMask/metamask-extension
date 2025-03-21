@@ -1,7 +1,8 @@
-import {
+import type {
   AddNetworkFields,
-  RpcEndpointType,
+  NetworkConfiguration,
 } from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 import { Hex } from '@metamask/utils';
 
@@ -297,7 +298,7 @@ export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
-export const MEGAETH_TESTNET_DISPLAY_NAME = 'MegaETH Testnet';
+export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
@@ -565,7 +566,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
-  [NETWORK_TYPES.MEGAETH_TESTNET]: CURRENCY_SYMBOLS.ETH,
+  [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
 };
 
 /**
@@ -598,7 +599,7 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.MEGAETH_TESTNET]: {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-    blockExplorerUrl: 'https://www.megaexplorer.xyz',
+    blockExplorerUrl: 'https://megaexplorer.xyz',
   },
 } as const;
 
@@ -774,6 +775,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_TESTNET,
+  [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
+    TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
 } as const;
 
 /**
@@ -1188,6 +1191,27 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];
+
+/**
+ * A mapping for the default custom testnets.
+ */
+export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
+  [CHAIN_IDS.MEGAETH_TESTNET]: {
+    chainId: CHAIN_IDS.MEGAETH_TESTNET,
+    name: MEGAETH_TESTNET_DISPLAY_NAME,
+    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+    blockExplorerUrls: ['https://megaexplorer.xyz'],
+    defaultRpcEndpointIndex: 0,
+    defaultBlockExplorerUrlIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'megaeth-testnet',
+        url: 'https://carrot.megaeth.com/rpc',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+  },
+};
 
 export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.SEPOLIA,

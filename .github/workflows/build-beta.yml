@@ -42,7 +42,7 @@ jobs:
 
       - name: Checkout and setup high risk environment
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -50,9 +50,10 @@ jobs:
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         env:
-          INFURA_PROJECT_ID: 00000000000
-          INFURA_BETA_PROJECT_ID: 00000000000
+          INFURA_PROJECT_ID: ${{ vars.INFURA_PROJECT_ID }}
+          INFURA_BETA_PROJECT_ID: ${{ vars.INFURA_BETA_PROJECT_ID }}
           SEGMENT_BETA_WRITE_KEY: 00000000000
+          SENTRY_DSN: https://fake@sentry.io/0000000
           ENABLE_MV3: true
         run: |
           yarn build --build-type beta --platform='chrome' dist

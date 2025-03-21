@@ -15,8 +15,8 @@ import {
 /**
  * Creates a transaction URL for block explorer based on network type
  * Different networks have different URL patterns:
- * Bitcoin Mainnet: https://blockstream.info/tx/{txId}
- * Bitcoin Testnet: https://blockstream.info/testnet/tx/{txId}
+ * Bitcoin Mainnet: https://mempool.space/tx/{txId}
+ * Bitcoin Testnet: https://mempool.space/testnet/tx/{txId}
  * Solana Mainnet: https://explorer.solana.com/tx/{txId}
  * Solana Devnet: https://explorer.solana.com/tx/{txId}?cluster=devnet
  *
@@ -39,8 +39,8 @@ export const getTransactionUrl = (txId: string, chainId: string): string => {
 /**
  * Creates an address URL for block explorer based on network type
  * Different networks have different URL patterns:
- * Bitcoin Mainnet: https://blockstream.info/address/{address}
- * Bitcoin Testnet: https://blockstream.info/testnet/address/{address}
+ * Bitcoin Mainnet: https://mempool.space/address/{address}
+ * Bitcoin Testnet: https://mempool.space/testnet/address/{address}
  * Solana Mainnet: https://explorer.solana.com/address/{address}
  * Solana Devnet: https://explorer.solana.com/address/{address}?cluster=devnet
  *

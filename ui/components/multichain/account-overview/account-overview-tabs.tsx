@@ -177,7 +177,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__activity-tab"
             {...tabProps}
           >
-            <TransactionList boxProps={{ paddingTop: 4 }} />
+            <TransactionList boxProps={{ paddingTop: 3 }} />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               <NeedHelpButtonLink

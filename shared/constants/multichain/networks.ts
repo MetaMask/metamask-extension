@@ -62,14 +62,14 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   MultichainBlockExplorerFormatUrls
 > = {
   [MultichainNetworks.BITCOIN]: {
-    url: 'https://blockstream.info',
-    address: 'https://blockstream.info/address/{address}',
-    transaction: 'https://blockstream.info/tx/{txId}',
+    url: 'https://mempool.space',
+    address: 'https://mempool.space/address/{address}',
+    transaction: 'https://mempool.space/tx/{txId}',
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
-    url: 'https://blockstream.info',
-    address: 'https://blockstream.info/testnet/address/{address}',
-    transaction: 'https://blockstream.info/testnet/tx/{txId}',
+    url: 'https://mempool.space',
+    address: 'https://mempool.space/testnet/address/{address}',
+    transaction: 'https://mempool.space/testnet/tx/{txId}',
   },
 
   [MultichainNetworks.SOLANA]: {

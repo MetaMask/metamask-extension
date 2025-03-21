@@ -22,6 +22,9 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  REVEAL_SRP_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -57,6 +60,9 @@ import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { RevealSrpList } from './security-tab/reveal-srp-list';
+///: END:ONLY_INCLUDE_IF
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -461,6 +467,11 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
+          ///: END:ONLY_INCLUDE_IF
+        }
         <Route
           render={(routeProps) => (
             <SettingsTab

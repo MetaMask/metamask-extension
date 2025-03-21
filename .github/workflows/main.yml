@@ -18,28 +18,31 @@ on:
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
+    if: ${{ github.head_ref != 'l10n_crowdin_action' }}
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          cache-node-modules: 'true'
+          cache-node-modules: true
 
   lint-workflows:
     name: Lint workflows
     uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
 
   test-lint:
-    needs: prep-deps
+    needs:
+      - prep-deps
     uses: ./.github/workflows/test-lint.yml
 
   test-circular-deps:
     name: Test circular deps
-    needs: prep-deps
+    needs:
+      - prep-deps
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
@@ -47,28 +50,33 @@ jobs:
         run: yarn circular-deps:check
 
   repository-health-checks:
-    needs: prep-deps
+    needs:
+      - prep-deps
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:
     name: Test storybook
-    needs: prep-deps
+    needs:
+      - prep-deps
     uses: ./.github/workflows/test-storybook.yml
 
   validate-lavamoat-policy-build:
-    needs: prep-deps
+    needs:
+      - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-build.yml
 
   validate-lavamoat-policy-webapp:
-    needs: prep-deps
+    needs:
+      - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
   prep-build-test-browserify:
-    needs: prep-deps
+    needs:
+      - prep-deps
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
@@ -81,7 +89,8 @@ jobs:
           path: ./dist/
 
   prep-build-test-webpack:
-    needs: prep-deps
+    needs:
+      - prep-deps
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -89,13 +98,13 @@ jobs:
     name: prep-build-test-webpack-${{ matrix.browser }}
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
       - run: yarn webpack --test --no-lavamoat --no-cache --browser=${{ matrix.browser }} --lockdown --sentry --snow --env production
         env:
-          SEGMENT_PROD_WRITE_KEY: '-' # A fake key just to make the build succeed
+          SEGMENT_PROD_WRITE_KEY: '-'
 
       - name: Upload artifact prep-build-test-webpack
         uses: actions/upload-artifact@v4
@@ -103,17 +112,24 @@ jobs:
           name: prep-build-test-webpack-${{ matrix.browser }}
           path: ./dist/
 
-  run-tests:
-    name: Run tests
-    needs: prep-deps
-    uses: ./.github/workflows/run-tests.yml
-
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - prep-build-test-browserify
       - prep-build-test-webpack
     secrets: inherit
+
+  run-tests:
+    name: Run tests
+    needs:
+      - prep-deps
+    uses: ./.github/workflows/run-tests.yml
+
+  e2e-tests:
+    name: Run E2E tests
+    needs:
+      - prep-deps
+    uses: ./.github/workflows/e2e-tests.yml
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
@@ -170,7 +186,10 @@ jobs:
       - test-storybook
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
+      - prep-build-test-browserify
+      - prep-build-test-webpack
       - run-tests
+      - e2e-tests
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta

@@ -4,6 +4,8 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
+import { SolAccountType } from '@metamask/keyring-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
@@ -79,7 +81,8 @@ import type { BridgeState } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeControllerState &
-    NetworkState & {
+    NetworkState &
+    AccountsControllerState & {
       useExternalServices: boolean;
       currencyRates: {
         [currency: string]: {
@@ -89,6 +92,18 @@ export type BridgeAppState = {
       };
     };
   bridge: BridgeState;
+};
+
+// checks if the user has any solana accounts created
+const hasSolanaAccounts = (state: BridgeAppState) => {
+  // Access accounts from the state
+  const accounts = state.metamask.internalAccounts?.accounts || {};
+
+  // Check if any account is a Solana account
+  return Object.values(accounts).some((account) => {
+    const { DataAccount } = SolAccountType;
+    return Boolean(account && account.type === DataAccount);
+  });
 };
 
 // only includes networks user has added
@@ -124,8 +139,18 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags) => {
-    return allBridgeableNetworks.filter(
+  (state: BridgeAppState) => hasSolanaAccounts(state),
+  (allBridgeableNetworks, bridgeFeatureFlags, hasSolanaAccount) => {
+    // First filter out Solana from source chains if no Solana account exists
+    const filteredNetworks = hasSolanaAccount
+      ? allBridgeableNetworks
+      : allBridgeableNetworks.filter(
+          // @ts-expect-error: gotta fix type here.
+          ({ chainId }) => chainId !== MultichainNetworks.SOLANA,
+        );
+
+    // Then apply the standard filter for active source chains
+    return filteredNetworks.filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
           formatChainIdToCaip(chainId)
@@ -150,7 +175,7 @@ export const getToChains = createDeepEqualSelector(
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
-        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.chains?.[
           formatChainIdToCaip(chainId)
         ]?.isActiveDest,
     ),
@@ -171,18 +196,20 @@ export const getTopAssetsFromFeatureFlags = (
 
 export const getToChain = createSelector(
   getToChains,
-  (state: BridgeAppState) => state.bridge.toChainId,
+  (state: BridgeAppState) => state.bridge?.toChainId,
   (toChains, toChainId) =>
-    toChains.find(
-      ({ chainId }) =>
-        chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-    ),
+    toChainId
+      ? toChains.find(
+          ({ chainId }) =>
+            chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+        )
+      : undefined,
 );
 
 export const getFromToken = createSelector(
   (state: BridgeAppState) => state.bridge.fromToken,
   getFromChain,
-  (fromToken, fromChain): BridgeToken => {
+  (fromToken, fromChain): BridgeToken | null => {
     if (!fromChain?.chainId) {
       return null;
     }
@@ -204,7 +231,7 @@ export const getFromToken = createSelector(
   },
 );
 
-export const getToToken = (state: BridgeAppState): BridgeToken => {
+export const getToToken = (state: BridgeAppState): BridgeToken | null => {
   return state.bridge.toToken;
 };
 
@@ -677,6 +704,24 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
         solanaChainIdCaip
       ];
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
+  },
+);
+
+/**
+ * Checks if the destination chain is Solana and the user has no Solana accounts
+ */
+export const needsSolanaAccountForDestination = createDeepEqualSelector(
+  getToChain,
+  (state: BridgeAppState) => hasSolanaAccounts(state),
+  (toChain, hasSolanaAccount) => {
+    if (!toChain) {
+      return false;
+    }
+
+    const isSolanaDestination =
+      formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+
+    return isSolanaDestination && !hasSolanaAccount;
   },
 );
 
