@@ -31,7 +31,7 @@ jobs:
       - name: Validate release candidate changelog
         # For a `pull_request` event, the branch is `github.head_ref``.
         # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
+        if: ${{ startsWith(github.head_ref || github.ref_name, 'test-Version-v') }}
         run: .circleci/scripts/validate-changelog-in-rc.sh
         continue-on-error: true
 
