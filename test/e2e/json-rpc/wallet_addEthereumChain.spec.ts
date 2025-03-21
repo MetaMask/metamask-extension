@@ -473,7 +473,6 @@ describe('Add Ethereum Chain', function () {
 
   describe('the dapp is already permitted to use the chain being added, and the dapp is on the same chain as the chain being added, but the rpcEndpoint being proposed does not match any existing rpcEndpoints for the chain', () => {
     it('prompts to add the rpc endpoint to the chain networkConfiguration and set it as the default', async function () {
-      process.env.EVM_MULTICHAIN_ENABLED = 'true';
       await withFixtures(
         {
           dapp: true,
@@ -534,6 +533,7 @@ describe('Add Ethereum Chain', function () {
   });
 
   describe('There are pending confirmation in the old network', () => {
+    process.env.EVM_MULTICHAIN_ENABLED = 'true';
     it('alert user about pending confirmations', async function () {
       await withFixtures(
         {
