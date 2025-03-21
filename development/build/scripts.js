@@ -949,9 +949,12 @@ function setupBundlerDefaults(
     debug: true,
   });
 
+  if (buildTarget === BUILD_TARGETS.DIST) {
+    bundlerOpts.debug = false; // Disable sourcemaps in prod/dist
+  }
+
   // Ensure react-devtools is only included in dev builds
   if (buildTarget !== BUILD_TARGETS.DEV) {
-     bundlerOpts.debug = false; // Disable sourcemaps in prod/dist
     bundlerOpts.manualIgnore.push('react-devtools', 'remote-redux-devtools');
   }
 
