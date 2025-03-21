@@ -5827,9 +5827,6 @@
   "transactionErrored": {
     "message": "Bei der Transaktion ist ein Fehler aufgetreten."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Diese Transaktion hätte für Sie zusätzliche Gebühren mit sich gebracht, weshalb wir sie gestoppt haben. Ihr Geld befindet sich weiterhin in Ihrer Wallet."
-  },
   "transactionFlowNetwork": {
     "message": "Netzwerk"
   },
