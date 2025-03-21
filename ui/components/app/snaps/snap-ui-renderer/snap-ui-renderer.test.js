@@ -11,7 +11,7 @@ import {
   Checkbox,
   FileInput,
 } from '@metamask/snaps-sdk/jsx';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -20,9 +20,15 @@ import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import configureStore from '../../../../store/store';
 import { SnapUIRenderer } from './snap-ui-renderer';
 
+const mockUseScrollRequired = jest.fn();
+
 jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
   submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/useScrollRequired', () => ({
+  useScrollRequired: (...args) => mockUseScrollRequired(...args),
 }));
 
 const { submitRequestToBackground } = jest.mocked(backgroundConnection);
@@ -112,6 +118,13 @@ function renderInterface(
 describe('SnapUIRenderer', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    const mockUseScrollValue = {
+      isScrollable: true,
+      scrollToBottom: jest.fn(),
+      ref: { current: {} },
+      onScroll: jest.fn(),
+    };
+    mockUseScrollRequired.mockReturnValue(mockUseScrollValue);
   });
 
   it('renders loading state', () => {
@@ -295,7 +308,11 @@ describe('SnapUIRenderer', () => {
             method: ' ',
             params: {
               context: null,
-              event: { name: 'input', type: 'InputChangeEvent', value: 'abc' },
+              event: {
+                name: 'input',
+                type: 'InputChangeEvent',
+                value: 'abc',
+              },
               id: MOCK_INTERFACE_ID,
             },
           },
@@ -396,7 +413,11 @@ describe('SnapUIRenderer', () => {
             method: ' ',
             params: {
               context: null,
-              event: { name: 'input', type: 'InputChangeEvent', value: 'abc' },
+              event: {
+                name: 'input',
+                type: 'InputChangeEvent',
+                value: 'abc',
+              },
               id: MOCK_INTERFACE_ID,
             },
           },
@@ -502,7 +523,9 @@ describe('SnapUIRenderer', () => {
     expect(inputs).toHaveLength(1);
 
     updateInterface(
-      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+      Box({
+        children: [Input({ name: 'input' }), Input({ name: 'input2' })],
+      }),
     );
 
     const inputsAfterRerender = getAllByRole('textbox');
@@ -518,7 +541,9 @@ describe('SnapUIRenderer', () => {
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     updateInterface(
-      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+      Box({
+        children: [Input({ name: 'input' }), Input({ name: 'input2' })],
+      }),
       { input: 'bar', input2: 'foo' },
     );
 
@@ -545,7 +570,9 @@ describe('SnapUIRenderer', () => {
     expect(input).toHaveFocus();
 
     updateInterface(
-      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+      Box({
+        children: [Input({ name: 'input' }), Input({ name: 'input2' })],
+      }),
     );
 
     const inputs = getAllByRole('textbox');
@@ -689,5 +716,205 @@ describe('SnapUIRenderer', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  describe('Scroll behavior', () => {
+    const createLongContent = (lines) => {
+      return Array(lines)
+        .fill()
+        .map((_, i) => Text({ children: `Line ${i + 1}` }));
+    };
+
+    const mockContent = Container({
+      children: [
+        Box({
+          direction: 'vertical',
+          children: createLongContent(20),
+        }),
+        Footer({
+          children: Button({ children: 'Submit' }),
+          requireScroll: true,
+        }),
+      ],
+    });
+
+    it('renders footer without scroll arrow when content is not scrollable', () => {
+      let triggerStateChange;
+
+      mockUseScrollRequired.mockImplementation(() => {
+        const [hookState, setHookState] = React.useState({
+          isScrollable: false,
+          isScrolledToBottom: false,
+          hasScrolledToBottom: false,
+          ref: { current: null },
+        });
+
+        triggerStateChange = setHookState;
+
+        return {
+          isScrollable: hookState.isScrollable,
+          isScrolledToBottom: hookState.isScrolledToBottom,
+          hasScrolledToBottom: hookState.hasScrolledToBottom,
+          scrollToBottom: jest.fn(),
+          ref: hookState.ref,
+          onScroll: jest.fn(),
+        };
+      });
+
+      const { container, queryByTestId, getRenderCount, getByRole } =
+        renderInterface(
+          Container({
+            children: [
+              Box({ children: Text({ children: 'Short content' }) }),
+              Footer({
+                children: Button({ children: 'Submit' }),
+                requireScroll: true,
+              }),
+            ],
+          }),
+          { useFooter: true },
+        );
+
+      // Trigger the state change to simulate measurement completion
+      act(() => {
+        triggerStateChange({
+          isScrolledToBottom: true,
+          hasScrolledToBottom: true,
+          ref: { current: document.createElement('div') },
+        });
+      });
+
+      const submitButton = getByRole('button');
+      expect(submitButton).not.toBeDisabled();
+      expect(
+        queryByTestId('snap-ui-renderer__scroll-button'),
+      ).not.toBeInTheDocument();
+      expect(getRenderCount()).toBe(2); // One for initial render, second for re-render on ref attachment
+      expect(container).toMatchSnapshot();
+    });
+
+    it('renders footer with scroll arrow when content is scrollable', () => {
+      let triggerStateChange;
+
+      mockUseScrollRequired.mockImplementation(() => {
+        const [hookState, setHookState] = React.useState({
+          isScrollable: false,
+          isScrolledToBottom: false,
+          hasScrolledToBottom: false,
+          ref: { current: null },
+        });
+
+        triggerStateChange = setHookState;
+
+        return {
+          isScrollable: hookState.isScrollable,
+          isScrolledToBottom: hookState.isScrolledToBottom,
+          hasScrolledToBottom: hookState.hasScrolledToBottom,
+          scrollToBottom: jest.fn(),
+          ref: hookState.ref,
+          onScroll: jest.fn(),
+        };
+      });
+
+      const { container, getByTestId, getRenderCount, getByRole } =
+        renderInterface(mockContent, { useFooter: true });
+
+      // Trigger the state change to simulate measurement completion
+      act(() => {
+        triggerStateChange({
+          isScrollable: true,
+          ref: { current: document.createElement('div') },
+        });
+      });
+
+      const submitButton = getByRole('button');
+      expect(submitButton).toBeDisabled();
+      expect(
+        getByTestId('snap-ui-renderer__scroll-button'),
+      ).toBeInTheDocument();
+      expect(getRenderCount()).toBe(2); // One for initial render, one for scroll state update
+      expect(container).toMatchSnapshot();
+    });
+
+    it('handles scroll arrow click with minimal renders', () => {
+      let triggerStateChange;
+
+      mockUseScrollRequired.mockImplementation(() => {
+        const [hookState, setHookState] = React.useState({
+          isScrollable: false,
+          isScrolledToBottom: false,
+          hasScrolledToBottom: false,
+          ref: { current: null },
+        });
+
+        triggerStateChange = setHookState;
+
+        return {
+          isScrollable: hookState.isScrollable,
+          isScrolledToBottom: hookState.isScrolledToBottom,
+          hasScrolledToBottom: hookState.hasScrolledToBottom,
+          scrollToBottom: jest.fn(),
+          ref: hookState.ref,
+          onScroll: jest.fn(),
+        };
+      });
+
+      const { queryByTestId, getByTestId, getRenderCount, getByRole } =
+        renderInterface(mockContent, {
+          useFooter: true,
+        });
+
+      // Trigger the state change to simulate measurement completion
+      act(() => {
+        triggerStateChange({
+          isScrollable: true,
+          ref: { current: document.createElement('div') },
+        });
+      });
+
+      const submitButton = getByRole('button');
+      expect(submitButton).toBeDisabled();
+
+      act(() => {
+        const scrollArrow = getByTestId('snap-ui-renderer__scroll-button');
+        fireEvent.click(scrollArrow);
+        triggerStateChange({
+          isScrolledToBottom: true,
+          hasScrolledToBottom: true,
+        });
+      });
+
+      expect(
+        queryByTestId('snap-ui-renderer__scroll-button'),
+      ).not.toBeInTheDocument();
+      expect(submitButton).not.toBeDisabled();
+      expect(getRenderCount()).toBe(3); // One for initial render, one for scroll state update, one for scroll event
+    });
+
+    it('does not show scroll arrow when requireScroll is false', () => {
+      const { container, queryByTestId, getRenderCount, getByRole } =
+        renderInterface(
+          Container({
+            children: [
+              Box({
+                direction: 'vertical',
+                children: createLongContent(20),
+              }),
+              Footer({
+                children: Button({ children: 'Submit' }),
+              }),
+            ],
+          }),
+          { useFooter: true },
+        );
+
+      const submitButton = getByRole('button');
+      expect(submitButton).not.toBeDisabled();
+      expect(
+        queryByTestId('snap-ui-renderer__scroll-button'),
+      ).not.toBeInTheDocument();
+      expect(getRenderCount()).toBe(1); // Only initial render since no scroll handling needed
+      expect(container).toMatchSnapshot();
+    });
   });
 });
