@@ -50,6 +50,7 @@ export const EditGasFeesRow = ({
       data-testid="edit-gas-fees-row"
       label={t('networkFee')}
       tooltip={t('estimatedFeeTooltip')}
+      style={{ alignItems: AlignItems.center }}
     >
       <Box
         display={Display.Flex}
