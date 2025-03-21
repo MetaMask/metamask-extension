@@ -56,6 +56,8 @@ async function main() {
       const server = mockServer(port, parsedDoc);
       server.start();
 
+      console.log('hi hello yes hi');
+
       const testCoverageResults = await testCoverage({
         openrpcDocument: parsedDoc,
         transport,
