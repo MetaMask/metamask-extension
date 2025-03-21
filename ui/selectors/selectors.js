@@ -1741,7 +1741,7 @@ export function getIsBridgeChain(state, overrideChainId) {
 
   let currentChainId = selectedMultiChainId;
 
-  // While we do not support the multichain network to EVM chain (ex: mainnet is epi155:1), us the old chainId
+  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
   if (isEvmNetwork) {
     currentChainId = getCurrentChainId(state);
   }
