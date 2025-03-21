@@ -6604,9 +6604,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@48.2.0-preview-c37ee1c7":
-  version: 48.2.0-preview-c37ee1c7
-  resolution: "@metamask-previews/transaction-controller@npm:48.2.0-preview-c37ee1c7"
+"@metamask/transaction-controller@npm:^52.0.0":
+  version: 52.0.0
+  resolution: "@metamask/transaction-controller@npm:52.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6614,6 +6614,7 @@ __metadata:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -6629,13 +6630,13 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^26.0.0
+    "@metamask/accounts-controller": ^27.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/network-controller": ^22.0.0
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/840b525d760363201f000a61a02b9a099077d7ed03d468adedc8a0f8400b8a0b37c600cf9517851799f16cde3ae90c555f62caaf5864e6628f33baa7ddcabedf
+  checksum: 10/fae427161abf5f583fe2e895094fb7f5cc78e3a6142fb67f30854eb7ef155b3087a612b0b63f3aff6f5dd87a89252d02e269dd0b95a290c624f5f2feb8776321
   languageName: node
   linkType: hard
 
@@ -27405,7 +27406,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^49.0.0"
+    "@metamask/transaction-controller": "npm:^52.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
