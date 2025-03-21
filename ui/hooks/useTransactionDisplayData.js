@@ -332,9 +332,13 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
+    const isRevoke = !tokenData?.args?.[1];
+
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    title = isRevoke
+      ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
+      : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
@@ -409,22 +413,34 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
+  const primaryCurrencyPreferences = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    transactionGroup?.initialTransaction?.chainId,
+  );
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: primaryDisplayValue,
-    suffix: primarySuffix,
-    ...primaryCurrencyPreferences,
-  });
+  const [primaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: primaryDisplayValue,
+      suffix: primarySuffix,
+      ...primaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: secondaryDisplayValue,
-    hideLabel: isTokenCategory || Boolean(swapTokenValue),
-    ...secondaryCurrencyPreferences,
-  });
+  const [secondaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: secondaryDisplayValue,
+      hideLabel: isTokenCategory || Boolean(swapTokenValue),
+      ...secondaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
   return {
     title,

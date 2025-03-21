@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Bạn nhận được"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Hạn mức chi tiêu"
-  },
   "permitSimulationChange_transfer": {
     "message": "Bạn gửi"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12 giờ:"
-  },
-  "typeYourSRP": {
-    "message": "Nhập Cụm từ khôi phục bí mật của bạn"
   },
   "u2f": {
     "message": "U2F",
