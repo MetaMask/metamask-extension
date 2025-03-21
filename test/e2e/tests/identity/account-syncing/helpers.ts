@@ -1,5 +1,3 @@
-export const IS_ACCOUNT_SYNCING_ENABLED = true;
-
 export type UserStorageAccount = {
   /**
    * The Version 'v' of the User Storage.

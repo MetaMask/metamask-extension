@@ -14,25 +14,37 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { completeOnboardFlowIdentity } from '../flows';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 
-describe('Account syncing - Add Account', async function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+describe('Account syncing - Add Account', function () {
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const customNameAccount3 = '3rd Account';
+    const defaultNameAccount3 = 'Account 3';
 
-  const unencryptedAccounts = accountsToMockForAccountsSync;
-  const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
-  const customNameAccount3 = '3rd Account';
-  const defaultNameAccount3 = 'Account 3';
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      customNameAccount3,
+      defaultNameAccount3,
+    };
+  };
 
   describe('from inside MetaMask', function () {
     it('syncs newly added accounts - custom name', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        customNameAccount3,
+      } = await arrange();
 
       await withFixtures(
         {
@@ -124,7 +136,12 @@ describe('Account syncing - Add Account', async function () {
     });
 
     it('syncs newly added accounts - default name', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        defaultNameAccount3,
+      } = await arrange();
 
       await withFixtures(
         {

@@ -13,48 +13,56 @@ import AccountDetailsModal from '../../../page-objects/pages/dialog/account-deta
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 
-describe('Account syncing - User already has balances on multiple accounts', async function () {
+describe('Account syncing - User already has balances on multiple accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
 
-  const unencryptedAccounts = accountsToMockForAccountsSync;
-  const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
 
-  const INITIAL_ACCOUNTS = [
-    unencryptedAccounts[0].a,
-    unencryptedAccounts[1].a,
-    '0xd54ba25a07eb3da821face8478c3d965ded63018',
-    '0x2c30c098e2a560988d486c7f25798e790802f953',
-  ];
+    const INITIAL_ACCOUNTS = [
+      unencryptedAccounts[0].a,
+      unencryptedAccounts[1].a,
+      '0xd54ba25a07eb3da821face8478c3d965ded63018',
+      '0x2c30c098e2a560988d486c7f25798e790802f953',
+    ];
 
-  const ADDITIONAL_ACCOUNTS = [
-    '0x6b65DA6735119E72B72fF842Bd92e9DE0C1e4Ae0',
-    '0x0f205850eaC507473AA0e47cc8eB528D875E7498',
-  ];
+    const ADDITIONAL_ACCOUNTS = [
+      '0x6b65DA6735119E72B72fF842Bd92e9DE0C1e4Ae0',
+      '0x0f205850eaC507473AA0e47cc8eB528D875E7498',
+    ];
 
-  const EXPECTED_ACCOUNT_NAMES = {
-    INITIAL: [
-      unencryptedAccounts[0].n,
-      unencryptedAccounts[1].n,
-      'Account 3',
-      'Account 4',
-    ],
-    WITH_NEW_ACCOUNTS: [
-      unencryptedAccounts[0].n,
-      unencryptedAccounts[1].n,
-      'Account 3',
-      'Account 4',
-      'Account 5',
-      'Account 6',
-    ],
+    const EXPECTED_ACCOUNT_NAMES = {
+      INITIAL: [
+        unencryptedAccounts[0].n,
+        unencryptedAccounts[1].n,
+        'Account 3',
+        'Account 4',
+      ],
+      WITH_NEW_ACCOUNTS: [
+        unencryptedAccounts[0].n,
+        unencryptedAccounts[1].n,
+        'Account 3',
+        'Account 4',
+        'Account 5',
+        'Account 6',
+      ],
+    };
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      INITIAL_ACCOUNTS,
+      ADDITIONAL_ACCOUNTS,
+      EXPECTED_ACCOUNT_NAMES,
+    };
   };
 
   describe('from inside MetaMask', function () {
@@ -65,7 +73,14 @@ describe('Account syncing - User already has balances on multiple accounts', asy
      * Phase 3: Verification that any final changes to user storage are persisted and that we don't see any extra accounts created
      */
     it('when a user has balances on more accounts than previously synced, it should be handled gracefully', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        INITIAL_ACCOUNTS,
+        ADDITIONAL_ACCOUNTS,
+        EXPECTED_ACCOUNT_NAMES,
+      } = await arrange();
+
       let accountsToMockBalances = [...INITIAL_ACCOUNTS];
 
       // PHASE 1: Initial setup and account creation

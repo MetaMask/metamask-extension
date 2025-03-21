@@ -15,13 +15,8 @@ import {
   completeNewWalletFlowIdentity,
   completeOnboardFlowIdentity,
 } from '../flows';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing - New User', function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
-
   describe('from inside MetaMask', function () {
     it('syncs after new wallet creation', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
