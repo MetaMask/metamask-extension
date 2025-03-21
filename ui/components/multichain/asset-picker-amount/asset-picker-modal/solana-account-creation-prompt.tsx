@@ -61,7 +61,7 @@ export const SolanaAccountCreationPrompt = ({
       padding={4}
       className="solana-account-creation-prompt"
       data-testid="solana-account-creation-prompt"
-      style={{ height: 'auto', paddingTop: '24px' }}
+      style={{ height: '100vh', paddingTop: '72px' }}
     >
       <img
         src="/images/solana-logo.svg"
