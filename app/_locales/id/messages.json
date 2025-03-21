@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Anda menerima"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Batas penggunaan"
-  },
   "permitSimulationChange_transfer": {
     "message": "Anda mengirim"
   },
