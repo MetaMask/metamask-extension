@@ -161,7 +161,7 @@ import {
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
-  MultichainApiNotifications
+  MultichainApiNotifications,
 } from '@metamask/multichain-api-middleware';
 
 import {
