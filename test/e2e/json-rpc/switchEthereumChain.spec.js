@@ -480,9 +480,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-    describe('There are pending confirmation in the old network', function () {
-      it('show alerts on permission network if user does not have permission on new network', async function () {
+  describe('There are pending confirmation in the old network', function () {
+    it('show alerts on permission network if user does not have permission on new network', async function () {
+      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
         await withFixtures(
           {
             dapp: true,
@@ -556,9 +556,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
             });
           },
         );
-      });
+      }
+    });
 
-      it('show alerts on switch network page if user does has permission on new network', async function () {
+    it('show alerts on switch network page if user does has permission on new network', async function () {
+      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
         await withFixtures(
           {
             dapp: true,
@@ -641,7 +643,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
             });
           },
         );
-      });
+      }
     });
-  }
+  });
 });

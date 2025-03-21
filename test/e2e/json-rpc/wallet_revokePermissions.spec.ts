@@ -181,9 +181,9 @@ describe('Revoke Dapp Permissions', function () {
     );
   });
 
-  if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-    describe.only('There are pending confirmation in the old network', function () {
-      it('rejects the pending confirmations as permissions are reviked for the network', async function () {
+  describe('There are pending confirmation in the old network', function () {
+    it('rejects the pending confirmations as permissions are reviked for the network', async function () {
+      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
         await withFixtures(
           {
             dapp: true,
@@ -228,7 +228,7 @@ describe('Revoke Dapp Permissions', function () {
             assert.deepEqual(afterGetPermissionsNames, []);
           },
         );
-      });
+      }
     });
-  }
+  });
 });

@@ -532,9 +532,9 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-    describe('There are pending confirmation in the old network', () => {
-      it('alert user about pending confirmations', async function () {
+  describe('There are pending confirmation in the old network', () => {
+    it('alert user about pending confirmations', async function () {
+      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
         await withFixtures(
           {
             dapp: true,
@@ -619,7 +619,7 @@ describe('Add Ethereum Chain', function () {
             await driver.findElement({ css: '#chainId', text: '0x53a' });
           },
         );
-      });
+      }
     });
-  }
+  });
 });
