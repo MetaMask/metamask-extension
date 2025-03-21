@@ -9,6 +9,7 @@ export function isHeadless(serviceName: HeadlessCapableServiceName): boolean {
       return parseBoolean(env[serviceKey]);
     }
   }
+
   return Boolean(env.HEADLESS) && parseBoolean(env.HEADLESS);
 }
 
