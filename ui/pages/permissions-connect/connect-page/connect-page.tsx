@@ -1,7 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { getPermittedEthChainIds } from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -67,6 +66,7 @@ import {
   getFilteredAccounts,
   getRequestedAccounts,
   getFilteredNetworks,
+  getRequestedChainIds,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -104,7 +104,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     request.permissions,
   );
   const requestedAccounts = getRequestedAccounts(requestedCaip25CaveatValue);
-  const requestedChainIds = getPermittedEthChainIds(requestedCaip25CaveatValue);
+  const requestedChainIds = getRequestedChainIds(requestedCaip25CaveatValue);
 
   const networkConfigurations = useSelector(
     getConsolidatedNetworkConfigurations,
@@ -150,6 +150,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const supportedRequestedChainIds = requestedChainIds.filter((chainId) =>
+    // TODO: Fix this with network configuration type
+    // @ts-expect-error Fix network configuration type
     allNetworksList.includes(chainId),
   );
 
@@ -199,6 +201,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ...getCaip25PermissionsResponse(
           requestedCaip25CaveatValue,
           selectedAccountAddresses as Hex[],
+          // TODO: Fix this when proper adapter is available
+          // @ts-expect-error Fix with request types formatted with adapter
           selectedChainIds,
         ),
       },
