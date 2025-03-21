@@ -710,8 +710,26 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "We don't recommend proceeding with this request."
+  "blockaidAlertInfoDescription": {
+    "message": "A third party known for scams has access to this site. If you proceed, you'll lose assets."
+  },
+  "blockaidAlertInfoDescription2": {
+    "message": "The site may look safe, but a third party might have access to its information. If you sign in, your assets could get stolen."
+  },
+  "blockaidAlertInfoDescription3": {
+    "message": "If you confirm, you could lose all your funds and assets."
+  },
+  "blockaidAlertInfoDescription4": {
+    "message": "If you sign in, any or all assets you've listed on OpenSea are at risk."
+  },
+  "blockaidAlertInfoDescription5": {
+    "message": "If you sign in, any or all assets you've listed on Blur are at risk."
+  },
+  "blockaidAlertInfoDescription6": {
+    "message": "This site is recognized as a malicious domain. If you sign in, you will lose funds and assets. We strongly suggest you cancel this request."
+  },
+  "blockaidAlertInfoDescription7": {
+    "message": "If you sign in, you could lose all your assets. We recommend you cancel this request."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -1131,8 +1149,8 @@
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
   },
-  "confirmationAlertModalTitle": {
-    "message": "This request is suspicious"
+  "confirmationAlertModalTitleDescription": {
+    "message": "Your assets may be at risk"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -2018,6 +2036,9 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "externalAccount": {
+    "message": "External Account"
+  },
   "externalExtension": {
     "message": "External extension"
   },
@@ -2539,6 +2560,9 @@
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "Invalid custom network"
+  },
+  "invalidHexData": {
+    "message": "Invalid hex data"
   },
   "invalidHexNumber": {
     "message": "Invalid hexadecimal number."
@@ -4060,8 +4084,8 @@
   "permitSimulationChange_receive": {
     "message": "You receive"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Spending cap"
+  "permitSimulationChange_revoke2": {
+    "message": "Revoke"
   },
   "permitSimulationChange_transfer": {
     "message": "You send"
@@ -4464,6 +4488,9 @@
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -4521,6 +4548,10 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokePermissionTitle": {
+    "message": "Remove $1 permission",
+    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
@@ -4830,6 +4861,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -6245,9 +6279,6 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
-  },
-  "typeYourSRP": {
-    "message": "Type your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",
