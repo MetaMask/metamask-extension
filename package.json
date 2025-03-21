@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.13.1",
+  "version": "12.14.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -30,9 +30,9 @@
     "start:test:flask": "yarn start:test --build-type flask --apply-lavamoat=false",
     "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
     "start:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn start:test --apply-lavamoat=false --snow=false",
-    "benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
+    "benchmark:chrome": "HEADLESS=true SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
     "bundle-size": "SELENIUM_BROWSER=chrome ts-node test/e2e/mv3-perf-stats/bundle-size.js",
-    "user-actions-benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
+    "user-actions-benchmark:chrome": "HEADLESS=true SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox ts-node test/e2e/benchmark.js",
     "build:test": "yarn env:e2e build test",
     "build:test:dev": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
@@ -130,8 +130,7 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
-    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
-    "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
+    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
     "chokidar": "^3.6.0",
@@ -263,7 +262,7 @@
     "@metamask/address-book-controller": "^6.0.3",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A51.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.2-4dea2e3c06.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A53.1.1#~/.yarn/patches/@metamask-assets-controllers-npm-53.1.1-644979f986.patch",
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.9.0",
     "@metamask/browser-passworder": "^4.3.0",
@@ -295,7 +294,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain": "^3.0.0",
     "@metamask/multichain-network-controller": "^0.1.0",
-    "@metamask/multichain-transactions-controller": "^0.5.0",
+    "@metamask/multichain-transactions-controller": "^0.7.2",
     "@metamask/name-controller": "^8.0.3",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch",
     "@metamask/notification-services-controller": "^1.0.0",
@@ -308,7 +307,7 @@
     "@metamask/post-message-stream": "^9.0.0",
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.3.0",
-    "@metamask/profile-sync-controller": "^10.0.0",
+    "@metamask/profile-sync-controller": "^10.1.0",
     "@metamask/providers": "^20.0.0",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.3",
@@ -317,15 +316,15 @@
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^19.0.0",
-    "@metamask/signature-controller": "^23.1.0",
-    "@metamask/smart-transactions-controller": "^16.1.0",
+    "@metamask/signature-controller": "^26.0.0",
+    "@metamask/smart-transactions-controller": "^16.2.0",
     "@metamask/snaps-controllers": "^11.0.0",
     "@metamask/snaps-execution-environments": "^7.0.0",
     "@metamask/snaps-rpc-methods": "^12.0.0",
     "@metamask/snaps-sdk": "^6.19.0",
     "@metamask/snaps-utils": "^9.0.1",
-    "@metamask/solana-wallet-snap": "^1.11.0",
-    "@metamask/transaction-controller": "^49.0.0",
+    "@metamask/solana-wallet-snap": "^1.14.0",
+    "@metamask/transaction-controller": "^50.0.0",
     "@metamask/user-operation-controller": "^24.0.1",
     "@metamask/utils": "^11.1.0",
     "@ngraveio/bc-ur": "^1.1.12",
@@ -443,7 +442,7 @@
     "@metamask/eth-json-rpc-provider": "^4.1.6",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^4.1.0",
-    "@metamask/preferences-controller": "^15.0.2",
+    "@metamask/preferences-controller": "^17.0.0",
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.1.0",
     "@metamask/test-dapp-multichain": "^0.6.0",
@@ -666,7 +665,7 @@
   },
   "engines": {
     "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.4.1"
+    "yarn": "^4.7.0"
   },
   "lavamoat": {
     "allowScripts": {
@@ -751,7 +750,7 @@
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
     }
   },
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.7.0",
   "foundryup": {
     "binaries": [
       "anvil"
