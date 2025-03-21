@@ -75,7 +75,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getAccountLabels } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
@@ -112,7 +112,7 @@ const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
   const snapMetadata = useSelector(getSnapsMetadata);
-  const accountLabel = getAccountLabel(
+  const accountLabels = getAccountLabels(
     account.metadata.keyring.type,
     account,
     account.metadata.keyring.type === KeyringType.snap
@@ -435,19 +435,24 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {accountLabel ? (
-          <Tag
-            label={accountLabel}
-            labelProps={{
-              variant: TextVariant.bodyXs,
-              color: Color.textAlternative,
-            }}
-            startIconName={
-              account.metadata.keyring.type === KeyringType.snap
-                ? IconName.Snaps
-                : null
-            }
-          />
+        {accountLabels.length > 0 ? (
+          <Box display={Display.Flex} gap={1}>
+            {accountLabels.map((label) => (
+              <Tag
+                key={label}
+                label={label}
+                labelProps={{
+                  variant: TextVariant.bodyXs,
+                  color: Color.textAlternative,
+                }}
+                startIconName={
+                  account.metadata.keyring.type === KeyringType.snap
+                    ? IconName.Snaps
+                    : null
+                }
+              />
+            ))}
+          </Box>
         ) : null}
       </Box>
 

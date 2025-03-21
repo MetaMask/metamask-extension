@@ -72,40 +72,50 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(
+export function getAccountLabels(
   type,
   account,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   snapName,
   ///: END:ONLY_INCLUDE_IF
 ) {
-  console.log('getAccountLabel', { type, account });
+  const labels = [];
   if (!account) {
-    return null;
+    return labels;
   }
   switch (type) {
     case KeyringType.hdKeyTree:
-      return null;
+      break;
     case KeyringType.imported:
-      return t('imported');
+      labels.push(t('imported'));
+      break;
     case KeyringType.qr:
-      return HardwareKeyringNames.qr;
+      labels.push(HardwareKeyringNames.qr);
+      break;
     case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
+      labels.push(HardwareKeyringNames.trezor);
+      break;
     case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
+      labels.push(HardwareKeyringNames.ledger);
+      break;
     case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
+      labels.push(HardwareKeyringNames.lattice);
+      break;
     case KeyringType.mock:
-      return 'Mock';
+      labels.push('Mock');
+      labels.push('Unplugged');
+      break;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
       if (snapName) {
-        return `${snapName} (${t('beta')})`;
+        labels.push(`${snapName} (${t('beta')})`);
+      } else {
+        labels.push(`${t('snaps')} (${t('beta')})`);
       }
-      return `${t('snaps')} (${t('beta')})`;
+      break;
     ///: END:ONLY_INCLUDE_IF
     default:
-      return null;
+      break;
   }
+  return labels;
 }
