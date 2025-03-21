@@ -1734,8 +1734,19 @@ export function getIsSwapsChain(state, overrideChainId) {
 
 export function getIsBridgeChain(state, overrideChainId) {
   const account = getSelectedInternalAccount(state);
-  const { chainId: selectedChainId } = getMultichainNetwork(state, account);
-  const chainId = overrideChainId ?? selectedChainId;
+  const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
+    state,
+    account,
+  );
+
+  let currentChainId = selectedMultiChainId;
+
+  // While we do not support the multichain network to EVM chain (ex: mainnet is epi155:1), us the old chainId
+  if (isEvmNetwork) {
+    currentChainId = getCurrentChainId(state);
+  }
+
+  const chainId = overrideChainId ?? currentChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
