@@ -35,172 +35,172 @@ describe('Account syncing - Opt-out Profile Sync', async function () {
   const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
   const defaultAccountOneName = 'Account 1';
 
-  let walletSrp: string;
-  it('does not sync when profile sync is turned off - previously synced accounts', async function () {
-    const userStorageMockttpController = new UserStorageMockttpController();
+  describe('from inside MetaMask', function () {
+    let walletSrp: string;
+    it('does not sync when profile sync is turned off - previously synced accounts', async function () {
+      const userStorageMockttpController = new UserStorageMockttpController();
 
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
+            // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: mockedAccountSyncResponse,
+              },
+            );
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
+        },
+        async ({ driver }) => {
+          await importSRPOnboardingFlow({
+            driver,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
+          });
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+          const onboardingPrivacySettingsPage =
+            new OnboardingPrivacySettingsPage(driver);
+          await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+          await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.completeOnboarding();
+
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed('0');
+
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
+
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            unencryptedAccounts[0].n,
+          );
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            unencryptedAccounts[1].n,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            defaultAccountOneName,
+          );
+        },
+      );
+    });
+
+    it('does not sync when profile sync is turned off - new user', async function () {
+      const userStorageMockttpController = new UserStorageMockttpController();
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
+            // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
+        },
+        async ({ driver }) => {
+          await createNewWalletOnboardingFlow({
+            driver,
+            password: IDENTITY_TEAM_PASSWORD,
+          });
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+          const onboardingPrivacySettingsPage =
+            new OnboardingPrivacySettingsPage(driver);
+          await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+          await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.completeOnboarding();
+
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed('0');
+
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
+
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_accountDisplayedInAccountList(
+            defaultAccountOneName,
+          );
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName: 'New Account',
+          });
+          // Add a delay to allow the account to sync, this can be long for MV2
+          await driver.delay(2000);
+
+          // Set SRP to use for retreival
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.check_pageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.check_pageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
+          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
+          if (!walletSrp) {
+            throw new Error('Wallet SRP was not set');
+          }
+        },
+      );
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
           // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
           // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
-            {
-              getResponse: mockedAccountSyncResponse,
-            },
-          );
-          return mockIdentityServices(server, userStorageMockttpController);
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
         },
-      },
-      async ({ driver }) => {
-        await importSRPOnboardingFlow({
-          driver,
-          seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-          password: IDENTITY_TEAM_PASSWORD,
-        });
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
+        async ({ driver }) => {
+          await completeOnboardFlowIdentity(driver);
 
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
 
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
-
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
-
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(1);
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
-          unencryptedAccounts[0].n,
-        );
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
-          unencryptedAccounts[1].n,
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          defaultAccountOneName,
-        );
-      },
-    );
-  });
-
-  it('does not sync when profile sync is turned off - new user', async function () {
-    const userStorageMockttpController = new UserStorageMockttpController();
-
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
-          // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_accountDisplayedInAccountList(
+            defaultAccountOneName,
           );
-          return mockIdentityServices(server, userStorageMockttpController);
         },
-      },
-      async ({ driver }) => {
-        await createNewWalletOnboardingFlow({
-          driver,
-          password: IDENTITY_TEAM_PASSWORD,
-        });
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
-
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
-
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
-
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(1);
-        await accountListPage.check_accountDisplayedInAccountList(
-          defaultAccountOneName,
-        );
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: 'New Account',
-        });
-        // Add a delay to allow the account to sync, this can be long for MV2
-        await driver.delay(2000);
-
-        // Set SRP to use for retreival
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
-        walletSrp = await privacySettings.getSrpInRevealSrpDialog();
-        if (!walletSrp) {
-          throw new Error('Wallet SRP was not set');
-        }
-      },
-    );
-
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
-        // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
-        testSpecificMock: (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
-          );
-          return mockIdentityServices(server, userStorageMockttpController);
-        },
-      },
-      async ({ driver }) => {
-        await completeOnboardFlowIdentity(driver);
-
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
-
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(1);
-        await accountListPage.check_accountDisplayedInAccountList(
-          defaultAccountOneName,
-        );
-      },
-    );
+      );
+    });
   });
 });

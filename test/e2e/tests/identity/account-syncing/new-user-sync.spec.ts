@@ -22,107 +22,109 @@ describe('Account syncing - New User', function () {
     return;
   }
 
-  it('syncs after new wallet creation', async function () {
-    const userStorageMockttpController = new UserStorageMockttpController();
-    let walletSrp: string;
+  describe('from inside MetaMask', function () {
+    it('syncs after new wallet creation', async function () {
+      const userStorageMockttpController = new UserStorageMockttpController();
+      let walletSrp: string;
 
-    const defaultAccountOneName = 'Account 1';
-    const secondAccountName = 'My Second Account';
+      const defaultAccountOneName = 'Account 1';
+      const secondAccountName = 'My Second Account';
 
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
+
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
+        },
+        async ({ driver }) => {
+          await completeNewWalletFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+          // Open account menu and validate 1 account is shown
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
+
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_accountDisplayedInAccountList(
+            defaultAccountOneName,
           );
 
-          return mockIdentityServices(server, userStorageMockttpController);
+          // Add a second account
+          await accountListPage.openAccountOptionsMenu();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName: secondAccountName,
+          });
+          // Add a delay to allow the account to sync, this can be long for MV2
+          await driver.delay(2000);
+
+          // Set SRP to use for retreival
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.check_pageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.check_pageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
+          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
+          if (!walletSrp) {
+            throw new Error('Wallet SRP was not set');
+          }
         },
-      },
-      async ({ driver }) => {
-        await completeNewWalletFlowIdentity(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+      );
 
-        // Open account menu and validate 1 account is shown
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
+        },
+        async ({ driver }) => {
+          // Onboard with import flow using SRP from new account created above
+          await completeOnboardFlowIdentity(driver, walletSrp);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(1);
-        await accountListPage.check_accountDisplayedInAccountList(
-          defaultAccountOneName,
-        );
+          // Open account menu and validate the 2 accounts have been retrieved
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
 
-        // Add a second account
-        await accountListPage.openAccountOptionsMenu();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: secondAccountName,
-        });
-        // Add a delay to allow the account to sync, this can be long for MV2
-        await driver.delay(2000);
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
 
-        // Set SRP to use for retreival
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+          await accountListPage.check_numberOfAvailableAccounts(2);
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
-        walletSrp = await privacySettings.getSrpInRevealSrpDialog();
-        if (!walletSrp) {
-          throw new Error('Wallet SRP was not set');
-        }
-      },
-    );
-
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
+          await accountListPage.check_accountDisplayedInAccountList(
+            defaultAccountOneName,
           );
-          return mockIdentityServices(server, userStorageMockttpController);
+          await accountListPage.check_accountDisplayedInAccountList(
+            secondAccountName,
+          );
         },
-      },
-      async ({ driver }) => {
-        // Onboard with import flow using SRP from new account created above
-        await completeOnboardFlowIdentity(driver, walletSrp);
-        const homePage = new HomePage(driver);
-        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
-
-        // Open account menu and validate the 2 accounts have been retrieved
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
-
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-
-        await accountListPage.check_numberOfAvailableAccounts(2);
-
-        await accountListPage.check_accountDisplayedInAccountList(
-          defaultAccountOneName,
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          secondAccountName,
-        );
-      },
-    );
+      );
+    });
   });
 });

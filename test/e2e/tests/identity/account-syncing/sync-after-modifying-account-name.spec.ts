@@ -24,88 +24,92 @@ describe('Account syncing - Rename Accounts', async function () {
   const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
   const accountOneNewName = 'Account One New Name';
 
-  it('syncs renamed account names', async function () {
-    const userStorageMockttpController = new UserStorageMockttpController();
+  describe('from inside MetaMask', function () {
+    it('syncs renamed account names', async function () {
+      const userStorageMockttpController = new UserStorageMockttpController();
 
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
-            {
-              getResponse: mockedAccountSyncResponse,
-            },
-          );
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: mockedAccountSyncResponse,
+              },
+            );
 
-          return mockIdentityServices(server, userStorageMockttpController);
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
         },
-      },
-      async ({ driver }) => {
-        await completeOnboardFlowIdentity(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+        async ({ driver }) => {
+          await completeOnboardFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
 
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(
-          mockedAccountSyncResponse.length,
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          unencryptedAccounts[0].n,
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          unencryptedAccounts[1].n,
-        );
-        await accountListPage.openAccountDetailsModal(unencryptedAccounts[0].n);
-        const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.changeAccountLabel(accountOneNewName);
-      },
-    );
-
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(
+            mockedAccountSyncResponse.length,
           );
-          return mockIdentityServices(server, userStorageMockttpController);
+          await accountListPage.check_accountDisplayedInAccountList(
+            unencryptedAccounts[0].n,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            unencryptedAccounts[1].n,
+          );
+          await accountListPage.openAccountDetailsModal(
+            unencryptedAccounts[0].n,
+          );
+          const accountDetailsModal = new AccountDetailsModal(driver);
+          await accountDetailsModal.check_pageIsLoaded();
+          await accountDetailsModal.changeAccountLabel(accountOneNewName);
         },
-      },
-      async ({ driver }) => {
-        await completeOnboardFlowIdentity(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+      );
 
-        const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
-        await header.openAccountMenu();
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
+            return mockIdentityServices(server, userStorageMockttpController);
+          },
+        },
+        async ({ driver }) => {
+          await completeOnboardFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(
-          mockedAccountSyncResponse.length,
-        );
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
-          unencryptedAccounts[0].n,
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          accountOneNewName,
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          unencryptedAccounts[1].n,
-        );
-      },
-    );
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
+
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(
+            mockedAccountSyncResponse.length,
+          );
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            unencryptedAccounts[0].n,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            accountOneNewName,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            unencryptedAccounts[1].n,
+          );
+        },
+      );
+    });
   });
 });
