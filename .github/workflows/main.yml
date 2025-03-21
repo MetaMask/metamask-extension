@@ -86,13 +86,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: prep-build-test-browserify-chrome
-          path: ./dist/chrome
+          path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
 
       - name: Upload artifact prep-build-test-browserify-firefox
         uses: actions/upload-artifact@v4
         with:
           name: prep-build-test-browserify-firefox
-          path: ./dist/firefox
+          path: ./dist/**/firefox # it's really in dist/firefox, but the ** is there so that it's uploaded relative to `dist`
 
   prep-build-test-webpack:
     needs:

@@ -29,11 +29,7 @@ jobs:
 
       - name: Compute ARTIFACT_NAME
         run: |
-          if [[ "${{ matrix.buildType }}" == "webpack" ]]; then
-            ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}"
-          else
-            ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}"
-          fi
+          ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}"
 
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_ENV"
           echo "ARTIFACT_NAME is $ARTIFACT_NAME"
