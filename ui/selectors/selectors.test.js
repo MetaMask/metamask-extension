@@ -1230,7 +1230,6 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    console.log('mockState', mockState);
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
