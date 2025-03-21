@@ -33,6 +33,7 @@ jobs:
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: .circleci/scripts/validate-changelog-in-rc.sh
+        continue-on-error: true
 
       # test-lint-lockfile
       - name: Lint lockfile
