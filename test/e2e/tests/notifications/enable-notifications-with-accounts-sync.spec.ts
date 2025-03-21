@@ -11,18 +11,12 @@ import {
   getAccountsSyncMockResponse,
   accountsToMockForAccountsSync as unencryptedMockAccounts,
 } from '../identity/account-syncing/mock-data';
-import { IS_ACCOUNT_SYNCING_ENABLED } from '../identity/account-syncing/helpers';
 import NotificationsListPage from '../../page-objects/pages/notifications-list-page';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { mockNotificationServices } from './mocks';
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
-  // Accounts Syncing only works on MV3
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
-
   describe('from inside MetaMask', function () {
     /**
      * Test notification settings persistence across sessions.
