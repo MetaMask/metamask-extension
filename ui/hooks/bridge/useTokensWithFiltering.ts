@@ -24,28 +24,19 @@ import {
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import {
-  BRIDGE_API_BASE_URL,
-  STATIC_METAMASK_BASE_URL,
-} from '../../../shared/constants/bridge';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import type {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 
 type FilterPredicate = (
   symbol: string,
   address?: string,
   tokenChainId?: string,
 ) => boolean;
-
-// Returns the image url for a caip-formatted asset
-const getAssetImageUrl = (assetId: string) =>
-  `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId?.replaceAll(
-    ':',
-    '/',
-  )}.png`;
 
 /**
  * Returns a token list generator that filters and sorts tokens in this order
@@ -220,7 +211,11 @@ export const useTokensWithFiltering = (
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ?? getAssetImageUrl(token.address),
+                  ] ??
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ),
               };
             } else {
               yield {
@@ -235,7 +230,11 @@ export const useTokensWithFiltering = (
                 image:
                   (token.image ||
                     tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
-                  getAssetImageUrl(token.address),
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ) ??
+                  '',
               };
             }
           }
