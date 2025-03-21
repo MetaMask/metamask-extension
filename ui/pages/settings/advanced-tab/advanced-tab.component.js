@@ -29,10 +29,6 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -60,8 +56,6 @@ export default class AdvancedTab extends PureComponent {
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
-    overrideContentSecurityPolicyHeader: PropTypes.bool,
-    setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
     manageInstitutionalWallets: PropTypes.bool,
     setManageInstitutionalWallets: PropTypes.func.isRequired,
   };
@@ -245,7 +239,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('smartTransactions')}</span>
           <div className="settings-page__content-description">
-            {t('stxOptInEthereumBnbDescription', [learMoreLink])}
+            {t('stxOptInSupportedNetworksDescription', [learMoreLink])}
           </div>
         </div>
 
@@ -555,42 +549,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderOverrideContentSecurityPolicyHeader() {
-    const { t } = this.context;
-    const {
-      overrideContentSecurityPolicyHeader,
-      setOverrideContentSecurityPolicyHeader,
-    } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[11]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-override-content-security-policy-header"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('overrideContentSecurityPolicyHeader')}</span>
-          <div className="settings-page__content-description">
-            {t('overrideContentSecurityPolicyHeaderDescription')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={overrideContentSecurityPolicyHeader}
-            onToggle={(value) => setOverrideContentSecurityPolicyHeader(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   renderManageInstitutionalWallets() {
     const { t } = this.context;
     const { manageInstitutionalWallets, setManageInstitutionalWallets } =
@@ -644,9 +602,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
-        {getPlatform() === PLATFORM_FIREFOX
-          ? this.renderOverrideContentSecurityPolicyHeader()
-          : null}
       </div>
     );
   }

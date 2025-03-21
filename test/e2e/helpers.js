@@ -263,9 +263,10 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    driver = (await buildWebDriver(driverOptions)).driver;
+    const wd = await buildWebDriver(driverOptions);
+    driver = wd.driver;
+    extensionId = wd.extensionId;
     webDriver = driver.driver;
-    extensionId = driver.extensionId;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
@@ -431,6 +432,7 @@ const WINDOW_TITLES = Object.freeze({
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
+  MultichainTestDApp: 'Multichain Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });
@@ -553,24 +555,6 @@ const multipleGanacheOptionsForType2Transactions = {
   ...multipleGanacheOptions,
   // EVM version that supports type 2 transactions (EIP1559)
   hardfork: 'london',
-};
-
-const generateGanacheOptions = ({
-  secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-  ...otherProps
-}) => {
-  const accounts = [
-    {
-      secretKey,
-      balance,
-    },
-  ];
-
-  return {
-    accounts,
-    ...otherProps, // eg: hardfork
-  };
 };
 
 // Edit priority gas fee form
@@ -953,7 +937,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
   convertETHToHexGwei,

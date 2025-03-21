@@ -1,6 +1,6 @@
 import {
   AccountsControllerGetSelectedAccountAction,
-  AccountsControllerGetStateAction, // FIXME: this is from https://github.com/MetaMask/metamask-extension/pull/30271/files#diff-eb756059bd2cb349825faa3880f3ec5ed26bd7a72bef432a29c64ae4da1c0d9e
+  AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
@@ -24,7 +24,8 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
-
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -40,9 +41,12 @@ type MessengerActions =
   | AccountsControllerGetStateAction // FIXME: this is from https://github.com/MetaMask/metamask-extension/pull/30271/files#diff-eb756059bd2cb349825faa3880f3ec5ed26bd7a72bef432a29c64ae4da1c0d9e
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | AccountsControllerGetStateAction
+  | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction;
 
@@ -67,16 +71,18 @@ export type TransactionControllerInitMessenger = ReturnType<
 export function getTransactionControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ): TransactionControllerMessenger {
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   return messenger.getRestricted({
     name: 'TransactionController',
     allowedActions: [
       'AccountsController:getState', // FIXME: this is from https://github.com/MetaMask/metamask-extension/pull/30271/files#diff-eb756059bd2cb349825faa3880f3ec5ed26bd7a72bef432a29c64ae4da1c0d9e
       // allows me to use newer transaction controller
       'AccountsController:getSelectedAccount',
+      'AccountsController:getState',
       `ApprovalController:addRequest`,
+      'KeyringController:signEip7702Authorization',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [`NetworkController:stateChange`],
   });
@@ -108,6 +114,7 @@ export function getTransactionControllerInitMessenger(
       'InstitutionalSnapController:publishHook',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'NetworkController:getEIP1559Compatibility',
+      'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
     ],
