@@ -142,6 +142,13 @@ describe('Accounts', () => {
       );
     });
 
+    it('should return the correct label for OneKey hardware wallet', () => {
+      mockAccount.metadata.keyring.type = KeyringType.oneKey;
+      expect(getAccountLabel(KeyringType.oneKey, mockAccount)).toBe(
+        HardwareKeyringNames.oneKey,
+      );
+    });
+
     it('should return the correct label for Ledger hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.ledger;
       expect(getAccountLabel(KeyringType.ledger, mockAccount)).toBe(
