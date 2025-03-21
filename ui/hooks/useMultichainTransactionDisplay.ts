@@ -12,7 +12,7 @@ import { TransactionGroupStatus } from '../../shared/constants/transaction';
 type Fee = Transaction['fees'][0]['asset'];
 type Token = Transaction['from'][0]['asset'];
 
-const KEYRING_TRANSACTION_STATUS_MAP: Record<
+export const KEYRING_TRANSACTION_STATUS_MAP: Record<
   KeyringTransactionStatus,
   TransactionStatus | TransactionGroupStatus
 > = {
@@ -86,7 +86,6 @@ export function useMultichainTransactionDisplay({
     from,
     to,
     asset,
-    status: KEYRING_TRANSACTION_STATUS_MAP[transaction.status],
     baseFee: parseAssetWithThreshold(baseFee?.asset ?? null, '0.0000001', {
       locale,
       isNegative: false,
