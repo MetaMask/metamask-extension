@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
   },
-  "petnamesEnabledToggle": {
-    "message": "ニックネームを許可する"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "これにより、すべてのアドレスにニックネームを割り当てられるようになります。可能な場合、やり取りがあるアドレスの名前が提案されます。"
-  },
   "pinToTop": {
     "message": "最上部にピン留め"
   },
