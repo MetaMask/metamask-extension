@@ -4,6 +4,7 @@ import {
   isSolanaChainId,
   calcLatestSrcBalance,
   formatChainIdToCaip,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors';
@@ -66,7 +67,14 @@ const useLatestBalance = (
       formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId) &&
       rpcUrl
     ) {
-      return await calcLatestSrcBalance(rpcUrl, selectedAddress, token.address);
+      return (
+        await calcLatestSrcBalance(
+          global.ethereumProvider,
+          selectedAddress,
+          token.address,
+          formatChainIdToHex(chainId),
+        )
+      )?.toString();
     }
 
     return undefined;

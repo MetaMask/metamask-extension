@@ -1,9 +1,11 @@
 import { zeroAddress } from 'ethereumjs-util';
 import * as bridgeController from '@metamask/bridge-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createTestProviderTools } from '../../../test/stub/provider';
 import useLatestBalance from './useLatestBalance';
 
 const mockCalcLatestSrcBalance = jest.fn();
@@ -29,6 +31,12 @@ const renderUseLatestBalance = (
 describe('useLatestBalance', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    const { provider } = createTestProviderTools({
+      networkId: 'Ethereum',
+      chainId: CHAIN_IDS.MAINNET,
+    });
+
+    global.ethereumProvider = provider;
   });
 
   it('returns balanceAmount for native asset in current chain', async () => {
@@ -45,9 +53,10 @@ describe('useLatestBalance', () => {
 
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
-      'https://localhost/rpc/0x1',
+      global.ethereumProvider,
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       '0x0000000000000000000000000000000000000000',
+      CHAIN_IDS.MAINNET,
     );
   });
 
@@ -65,9 +74,31 @@ describe('useLatestBalance', () => {
 
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
-      'https://localhost/rpc/0x1',
+      global.ethereumProvider,
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      CHAIN_IDS.MAINNET,
+    );
+  });
+
+  it('returns balanceAmount for ERC20 asset in current caip-formatted EVM chain', async () => {
+    mockCalcLatestSrcBalance.mockResolvedValueOnce('15390000');
+
+    const { result, waitForNextUpdate } = renderUseLatestBalance(
+      { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', decimals: 6 },
+      toEvmCaipChainId(CHAIN_IDS.MAINNET),
+      createBridgeMockStore(),
+    );
+
+    await waitForNextUpdate();
+    expect(result.current?.toString()).toStrictEqual('15.39');
+
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
+      global.ethereumProvider,
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      CHAIN_IDS.MAINNET,
     );
   });
 
