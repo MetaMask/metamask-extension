@@ -7390,6 +7390,8 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getFeatureFlags: () => this.preferencesController.state.featureFlags,
+      getRemoteFeatureFlags: () =>
+        this.remoteFeatureFlagController.state.remoteFeatureFlags,
     };
     return {
       ...controllerActions,
