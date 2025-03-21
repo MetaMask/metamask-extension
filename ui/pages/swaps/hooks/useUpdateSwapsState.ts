@@ -38,6 +38,7 @@ export default function useUpdateSwapsState() {
 
     fetchTokens(chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP)
       .then((tokens) => {
+        console.log('tokens', tokens);
         dispatch(setSwapsTokens(tokens));
       })
       .catch((error) => console.error(error));

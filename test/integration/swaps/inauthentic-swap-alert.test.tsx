@@ -5,6 +5,19 @@ import * as backgroundConnection from '../../../ui/store/background-connection';
 import mockMetaMaskState from '../data/integration-init-state.json';
 import { integrationTestRender } from '../../lib/render-helpers';
 import preview from 'jest-preview';
+import { ENVIRONMENT } from '../../../development/build/constants';
+import { mockSwapsGasPrices, mockSwapsNetworks, mockSwapsToken, mockSwapsTrades } from '../helpers';
+import { mockSwapsAggregatorMetadata, mockSwapsTokens, mockSwapsTopAssets, createMockImplementation } from '../helpers';
+import { mockSwapsFeatureFlags } from '../helpers';
+
+import {TOP_ASSETS_API_MOCK_RESULT,
+    FEATURE_FLAGS_API_MOCK_RESULT,
+    TOKENS_API_MOCK_RESULT,
+    AGGREGATOR_METADATA_API_MOCK_RESULT,
+    GAS_PRICE_API_MOCK_RESULT,
+    TRADES_API_MOCK_RESULT,
+    NETWORKS_2_API_MOCK_RESULT,
+  } from '../../data/mock-data';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -21,149 +34,56 @@ const backgroundConnectionMocked = {
 const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
   return {
     ...mockMetaMaskState,
-    "smartTransactionsState": {
-      "fees": {
-        "approvalTxFees": null,
-        "tradeTxFees": {
-          "cancelFees": [],
-          "return": "0x",
-          "status": 1,
-          "gasUsed": 190780,
-          "gasLimit": 239420,
-          "fees": [
-            {
-              "maxFeePerGas": 4667609171,
-              "maxPriorityFeePerGas": 1000000004,
-              "gas": 239420,
-              "balanceNeeded": 1217518987960240,
-              "currentBalance": 751982303082919400,
-              "error": ""
-            }
-          ],
-          "feeEstimate": 627603309182220,
-          "baseFeePerGas": 2289670348,
-          "maxFeeEstimate": 1117518987720820
-        }
-      },
-      "feesByChainId": {
-        "0x1": {
-          "approvalTxFees": null,
-          "tradeTxFees": {
-            "cancelFees": [],
-            "return": "0x",
-            "status": 1,
-            "gasUsed": 190780,
-            "gasLimit": 239420,
-            "fees": [
-              {
-                "maxFeePerGas": 4667609171,
-                "maxPriorityFeePerGas": 1000000004,
-                "gas": 239420,
-                "balanceNeeded": 1217518987960240,
-                "currentBalance": 751982303082919400,
-                "error": ""
-              }
-            ],
-            "feeEstimate": 627603309182220,
-            "baseFeePerGas": 2289670348,
-            "maxFeeEstimate": 1117518987720820
-          }
-        }
-      },
-      "liveness": true,
-      "livenessByChainId": {
-        "0x1": true
-      },
-      "smartTransactions": {
-        "0x1": []
-      }
-    },
-    "swapsState": {
-      "quotes": {},
-      "quotesPollingLimitEnabled": false,
-      "fetchParams": null,
-      "tokens": null,
-      "tradeTxId": null,
-      "approveTxId": null,
-      "quotesLastFetched": null,
-      "customMaxGas": "",
-      "customGasPrice": null,
-      "customMaxFeePerGas": null,
-      "customMaxPriorityFeePerGas": null,
-      "swapsUserFeeLevel": "",
-      "selectedAggId": null,
-      "customApproveTxData": "",
-      "errorKey": "",
-      "topAggId": null,
-      "routeState": "",
-      "swapsFeatureIsLive": true,
-      "saveFetchedQuotes": false,
-      "swapsQuoteRefreshTime": 30000,
-      "swapsQuotePrefetchingRefreshTime": 30000,
-      "swapsStxBatchStatusRefreshTime": 10000,
-      "swapsStxStatusDeadline": 180,
-      "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2,
-      "swapsFeatureFlags": {
-        "ethereum": {
-          "fallbackToV1": false,
-          "mobileActive": true,
-          "extensionActive": true
-        },
-        "bsc": {
-          "fallbackToV1": false,
-          "mobileActive": true,
-          "extensionActive": true
-        },
-        "polygon": {
-          "fallbackToV1": false,
-          "mobileActive": true,
-          "extensionActive": true
-        },
-        "avalanche": {
-          "fallbackToV1": false,
-          "mobileActive": true,
-          "extensionActive": true
-        },
-        "smartTransactions": {
-          "mobileActive": false,
-          "extensionActive": true
-        },
-        "updated_at": "2022-03-17T15:54:00.360Z"
-      }
-    },
-    "bridgeState": {
-      "bridgeFeatureFlags": {
-        "extensionConfig": {
-          "refreshRate": 30,
-          "maxRefreshCount": 5,
-          "support": false,
-          "chains": {
-            "eip155:1": {
-              "isActiveSrc": true,
-              "isActiveDest": true
-            },
-            "eip155:42161": {
-              "isActiveSrc": true,
-              "isActiveDest": true
-            },
-            "eip155:59144": {
-              "isActiveSrc": true,
-              "isActiveDest": true
-            }
-          }
-        }
-      },
-    },
   };
 };
+
+const advancedDetailsMockedRequests = {
+    setSwapsTokens: TOKENS_API_MOCK_RESULT,
+    getNextNonce: '9',
+    decodeTransactionData: {
+      data: [
+        {
+          name: 'mintNFTs',
+          params: [
+            {
+              name: 'numberOfTokens',
+              type: 'uint256',
+              value: 1,
+            },
+          ],
+        },
+      ],
+      source: 'Sourcify',
+    },
+  };
+
+const setupSubmitRequestToBackgroundMocks = (
+    mockRequests?: Record<string, unknown>,
+  ) => {
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+      createMockImplementation({
+        ...advancedDetailsMockedRequests,
+        ...(mockRequests ?? {}),
+      }),
+    );
+  };
 
 describe('Swaps Inauthentic Swap Alert', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+      mockSwapsTokens();
+      setupSubmitRequestToBackgroundMocks();
+    // mockSwapsFeatureFlags();
+    // mockSwapsAggregatorMetadata();
+    // mockSwapsTopAssets();
+    // mockSwapsToken();
+    // mockSwapsGasPrices();
+    // mockSwapsTrades();
+    // mockSwapsNetworks();
   });
 
   it('displays the alert', async () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -181,19 +101,38 @@ describe('Swaps Inauthentic Swap Alert', () => {
         backgroundConnection: backgroundConnectionMocked,
       });
     });
-    await screen.findByText(accountName);
+      await screen.findByText(accountName);
 
     await act(async () => {
       fireEvent.click(
-        await screen.findByTestId('prepare-swap-page-from-token-amount'),
+        await screen.findByTestId('token-overview-button-swap'),
       );
     });
 
+      await act(async () => {
+        fireEvent.change(
+          await screen.findByTestId('prepare-swap-page-from-token-amount'),
+          { target: { value: '2' } },
+        );
+      });
 
+      await act(async () => {
+        fireEvent.click(
+            await screen.findByTestId('prepare-swap-page-swap-to'),
+        );
+      });
+
+      await act(async () => {
+        fireEvent.change(
+          await screen.findByPlaceholderText('Enter token name or paste address'),
+          { target: { value: 'INUINU' } },
+        );
+      });
+
+      console.log(mockedBackgroundConnection.submitRequestToBackground.mock.calls);
+      preview.debug();
 
     const alert = await screen.findByTestId('swaps-banner-title');
     expect(alert).toBeInTheDocument();
-
-    screen.debug();
   });
 });
