@@ -61,7 +61,7 @@ export const SolanaAccountCreationPrompt = ({
       padding={4}
       className="solana-account-creation-prompt"
       data-testid="solana-account-creation-prompt"
-      style={{ height: '100vh', paddingTop: '72px' }}
+      style={{ height: 'auto', paddingTop: '24px' }}
     >
       <img
         src="/images/solana-logo.svg"
@@ -99,7 +99,7 @@ export const SolanaAccountCreationPrompt = ({
         data-testid="create-solana-account-button"
         style={{ width: '75%', marginTop: '10px' }}
       >
-        {t('createSolanaAccount')}
+        {t('bridgeCreateSolanaAccount')}
       </Button>
     </Box>
   );
