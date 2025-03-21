@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "आप प्राप्त करते हैं"
   },
-  "permitSimulationChange_revoke": {
-    "message": "खर्च करने की लिमिट"
-  },
   "permitSimulationChange_transfer": {
     "message": "आप भेजते हैं"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12 घंटे:"
-  },
-  "typeYourSRP": {
-    "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"
   },
   "u2f": {
     "message": "U2F",

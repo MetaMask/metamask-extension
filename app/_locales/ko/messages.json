@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "받음:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "지출 한도"
-  },
   "permitSimulationChange_transfer": {
     "message": "보냄:"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12시간:"
-  },
-  "typeYourSRP": {
-    "message": "비밀복구구문을 입력하세요"
   },
   "u2f": {
     "message": "U2F",
