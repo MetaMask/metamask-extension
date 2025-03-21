@@ -201,6 +201,23 @@ export class MockKeyring implements Keyring {
     throw new Error('Method not implemented.');
   }
 
+  async signTypedData(
+    address: Hex,
+    typedData: Record<string, unknown>,
+    options?: Record<string, unknown>,
+  ) {
+    console.debug('MockKeyring - signTypedData', address, typedData, options);
+    const _account = this.accounts.find(
+      ({ address: a }) => a.toLowerCase() === address.toLowerCase(),
+    );
+    if (!_account) {
+      throw new Error(`Account not found: ${address}`);
+    }
+    const acct = privateKeyToAccount(_account.pk);
+    // @ts-expect-error ignore for now
+    return acct.signTypedData(typedData);
+  }
+
   async signEip712Message(
     address: Hex,
     _message: string,
