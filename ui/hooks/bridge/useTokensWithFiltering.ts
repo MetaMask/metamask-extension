@@ -9,6 +9,10 @@ import {
 } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import {
+  type BridgeAppState,
+  getTopAssetsFromFeatureFlags,
+} from '../../ducks/bridge/selectors';
+import type {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
@@ -27,16 +31,12 @@ import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import {
   fetchBridgeTokens,
   fetchNonEvmTokens,
-  getAssetImageUrl,
   isTokenV3Asset,
 } from '../../../shared/modules/bridge-utils/bridge.util';
 import { MINUTE } from '../../../shared/constants/time';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import {
-  type BridgeAppState,
-  getTopAssetsFromFeatureFlags,
-} from '../../ducks/bridge/selectors';
 import { type BridgeToken } from '../../../shared/types/bridge';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 
 type FilterPredicate = (
   symbol: string,
@@ -198,7 +198,11 @@ export const useTokensWithFiltering = (
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ?? getAssetImageUrl(token.address),
+                  ] ??
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ),
               };
             } else {
               yield {
@@ -211,8 +215,13 @@ export const useTokensWithFiltering = (
                 balance: token.balance ?? '',
                 string: token.string ?? undefined,
                 image:
-                  tokenList?.[token.address.toLowerCase()]?.iconUrl ??
-                  getAssetImageUrl(token.address),
+                  (token.image ||
+                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ) ??
+                  '',
               };
             }
           }
@@ -232,7 +241,7 @@ export const useTokensWithFiltering = (
               yield {
                 ...matchedToken,
                 type: AssetType.token,
-                image: getAssetImageUrl(assetId),
+                image: getAssetImageUrl(assetId, chainId) ?? '',
                 balance: '',
                 string: undefined,
                 address: assetId,
@@ -252,7 +261,7 @@ export const useTokensWithFiltering = (
               yield {
                 ...token_,
                 type: AssetType.token,
-                image: getAssetImageUrl(token_.assetId),
+                image: getAssetImageUrl(token_.assetId, chainId) ?? '',
                 balance: '',
                 string: undefined,
                 address: token_.assetId,

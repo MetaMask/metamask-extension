@@ -1,0 +1,242 @@
+import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
+import { toHex } from '@metamask/controller-utils';
+import { MINUTE } from '../constants/time';
+import { MultichainNetworks } from '../constants/multichain/networks';
+import fetchWithCache from './fetch-with-cache';
+import { getAssetImageUrl, fetchAssetMetadata } from './asset-utils';
+
+jest.mock('./fetch-with-cache');
+jest.mock('@metamask/multichain-network-controller');
+jest.mock('@metamask/controller-utils');
+
+describe('asset-utils', () => {
+  const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+  const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
+
+  describe('getAssetImageUrl', () => {
+    it('should return correct image URL for a CAIP asset ID', () => {
+      const assetId = 'eip155:1/erc20:0x123' as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/1/erc20/0x123.png`;
+
+      expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(expectedUrl);
+    });
+
+    it('should return correct image URL for non-hex CAIP asset ID', () => {
+      const assetId =
+        `${MultichainNetworks.SOLANA}/token:aBCD` as CaipAssetType;
+      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/aBCD.png`;
+
+      expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(expectedUrl);
+    });
+
+    it('should handle asset IDs with multiple colons', () => {
+      const assetId = 'test:chain:1/token:0x123' as CaipAssetType;
+
+      expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(undefined);
+    });
+  });
+
+  describe('fetchAssetMetadata', () => {
+    const mockAddress = '0x123' as Hex;
+    const mockChainId = 'eip155:1' as CaipChainId;
+    const mockHexChainId = '0x1' as Hex;
+    const mockAssetId = 'eip155:1/erc20:0x123' as CaipAssetType;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      (toEvmCaipChainId as jest.Mock).mockReturnValue(mockChainId);
+      (toHex as jest.Mock).mockImplementation((val) => val as Hex);
+    });
+
+    it('should fetch EVM token metadata successfully', async () => {
+      const mockMetadata = {
+        assetId: mockAssetId,
+        symbol: 'TEST',
+        name: 'Test Token',
+        decimals: 18,
+      };
+
+      (fetchWithCache as jest.Mock).mockResolvedValueOnce([mockMetadata]);
+
+      const result = await fetchAssetMetadata(mockAddress, mockHexChainId);
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId}`,
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: {
+          cacheRefreshTime: MINUTE,
+        },
+        functionName: 'fetchAssetMetadata',
+      });
+
+      expect(result).toStrictEqual({
+        symbol: 'TEST',
+        decimals: 18,
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123.png',
+        assetId: mockAssetId,
+        address: mockAddress,
+        chainId: mockHexChainId,
+      });
+    });
+
+    it('should fetch Solana token metadata successfully', async () => {
+      const solanaChainId = MultichainNetwork.Solana;
+      const solanaAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+      const solanaAssetId = `${solanaChainId}/token:${solanaAddress}`;
+
+      const mockMetadata = {
+        assetId: solanaAssetId,
+        symbol: 'SOL',
+        name: 'Solana Token',
+        decimals: 9,
+      };
+
+      (fetchWithCache as jest.Mock).mockResolvedValueOnce([mockMetadata]);
+
+      const result = await fetchAssetMetadata(solanaAddress, solanaChainId);
+
+      expect(result).toStrictEqual({
+        symbol: 'SOL',
+        decimals: 9,
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+        assetId: solanaAssetId,
+        address: solanaAssetId,
+        chainId: solanaChainId,
+      });
+    });
+
+    it('should handle CAIP chain IDs', async () => {
+      const mockMetadata = {
+        assetId: mockAssetId,
+        symbol: 'TEST',
+        name: 'Test Token',
+        decimals: 18,
+      };
+
+      (fetchWithCache as jest.Mock).mockResolvedValueOnce([mockMetadata]);
+
+      const result = await fetchAssetMetadata(mockAddress, mockChainId);
+
+      expect(toEvmCaipChainId).not.toHaveBeenCalled();
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId}`,
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: {
+          cacheRefreshTime: MINUTE,
+        },
+        functionName: 'fetchAssetMetadata',
+      });
+
+      expect(result).toStrictEqual({
+        symbol: 'TEST',
+        decimals: 18,
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123.png',
+        assetId: mockAssetId,
+        address: mockAddress,
+        chainId: mockHexChainId,
+      });
+    });
+
+    it('should handle hex chain IDs', async () => {
+      const mockMetadata = {
+        assetId: mockAssetId,
+        symbol: 'TEST',
+        name: 'Test Token',
+        decimals: 18,
+      };
+
+      (fetchWithCache as jest.Mock).mockResolvedValueOnce([mockMetadata]);
+
+      const result = await fetchAssetMetadata(mockAddress, mockHexChainId);
+
+      expect(toEvmCaipChainId).toHaveBeenCalledWith(mockHexChainId);
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId}`,
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: {
+          cacheRefreshTime: MINUTE,
+        },
+        functionName: 'fetchAssetMetadata',
+      });
+
+      expect(result).toStrictEqual({
+        symbol: 'TEST',
+        decimals: 18,
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123.png',
+        assetId: mockAssetId,
+        address: mockAddress,
+        chainId: mockHexChainId,
+      });
+    });
+
+    it('should return undefined when API call fails', async () => {
+      (fetchWithCache as jest.Mock).mockRejectedValueOnce(
+        new Error('API Error'),
+      );
+
+      const result = await fetchAssetMetadata(mockAddress, mockHexChainId);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('should return undefined when metadata processing fails', async () => {
+      (fetchWithCache as jest.Mock).mockResolvedValueOnce([null]);
+
+      const result = await fetchAssetMetadata(mockAddress, mockHexChainId);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('should return undefined when EVM address is not valid', async () => {
+      const mockMetadata = {
+        assetId: 'hjk',
+        symbol: 'TEST',
+        name: 'Test Token',
+        decimals: 18,
+      };
+
+      (fetchWithCache as jest.Mock).mockResolvedValueOnce([mockMetadata]);
+
+      const result = await fetchAssetMetadata(mockAddress, mockHexChainId);
+
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId}`,
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+        },
+        cacheOptions: {
+          cacheRefreshTime: MINUTE,
+        },
+        functionName: 'fetchAssetMetadata',
+      });
+
+      expect(result).toStrictEqual({
+        symbol: 'TEST',
+        decimals: 18,
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123.png',
+        assetId: mockAssetId,
+        address: mockAddress,
+        chainId: mockHexChainId,
+      });
+    });
+  });
+});
