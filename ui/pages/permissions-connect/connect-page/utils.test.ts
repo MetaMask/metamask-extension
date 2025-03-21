@@ -40,6 +40,7 @@ describe('getCaip25PermissionsResponse', () => {
                 },
                 isMultichainOrigin: false,
                 sessionProperties: {},
+              },
             },
           ],
         },
