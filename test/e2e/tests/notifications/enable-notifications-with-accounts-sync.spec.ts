@@ -17,6 +17,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { mockNotificationServices } from './mocks';
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
+  this.timeout(120000); // Multiple Syncing features can cause this test to take some time
+
   describe('from inside MetaMask', function () {
     /**
      * Test notification settings persistence across sessions.
@@ -38,7 +40,6 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * → Second account: disabled (persisted from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
-      this.timeout(120000); // Multiple Syncing features can cause this test to take some time
       const userStorageMockttpController = new UserStorageMockttpController();
       const mockedAccountsResponse = await getAccountsSyncMockResponse();
 
