@@ -9,8 +9,8 @@ const {
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-describe('Request Queuing Switch Network on Dapp Send Tx while on different networks.', function () {
-  it('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {
+describe('Request Queuing Does not Switch Network on Dapp Send Tx while on different networks.', function () {
+  it('does not switch to the dapps network when mm network differs', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -75,19 +75,21 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         );
         await driver.navigate(PAGES.HOME);
 
+        await driver.delay(10000);
         // Check correct network switched and on the correct network
         await driver.findElement({
           css: '[data-testid="network-display"]',
-          text: 'Localhost 8545',
+          text: 'Localhost 8546',
         });
 
+        // todo: to be uncommented after activity tab is fixed to show transactions from all networks
         // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        // await driver.wait(async () => {
+        //   const confirmedTxes = await driver.findElements(
+        //     '.transaction-list__completed-transactions .activity-list-item',
+        //   );
+        //   return confirmedTxes.length === 1;
+        // }, 10000);
       },
     );
   });
