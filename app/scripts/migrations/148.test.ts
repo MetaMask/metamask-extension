@@ -1,281 +1,224 @@
-import { migrate } from './148';
+import { migrate, version } from './148';
 
-const expectedVersion = 148;
-const previousVersion = expectedVersion - 1;
+const oldVersion = 148;
 
-describe(`migration #${expectedVersion}`, () => {
-  it('does nothing if state has no NetworkController property', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
+describe(`migration #${version}`, () => {
+  it('updates the version metadata', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
       data: {},
     };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if state.NetworkController is not an object', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: 'not-an-object',
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if state.NetworkController has no networkConfigurationsByChainId property', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {},
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if state.NetworkController.networkConfigurationsByChainId is not an object', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: 'not-an-object',
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if any value in state.NetworkController.networkConfigurationsByChainId is not an object', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': 'not-an-object',
-            '0x2': {},
-          },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if any value in state.NetworkController.networkConfigurationsByChainId does not contain a chainId', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': 'not-an-object',
-            '0x2': {},
-          },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if state.NetworkController.networkConfigurationsByChainId contains any keys that cannot be converted to hex strings', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            'unconvertable-string': {
-              chainId: '0x1',
-            },
-            '2': {
-              chainId: '2',
+  describe(`migration #${version}`, () => {
+    describe('removes the transactionSecurityCheckEnabled preference from the PreferencesController', () => {
+      it('removes the transactionSecurityCheckEnabled preference if it is set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            PreferencesController: {
+              preferences: {
+                transactionSecurityCheckEnabled: true,
+              },
             },
           },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
+        };
+        const expectedData = {
+          PreferencesController: {
+            preferences: {},
+          },
+        };
 
-    const newVersionedData = await migrate(oldVersionedData);
+        const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
 
-  it('corrects a chainId property so it matches the key of the network configuration, even after converting the key', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '1': {
-              chainId: '2345',
-            },
-            '0x2': {
-              chainId: '0x2',
+      it('does nothing to other PreferencesController state if there is not a transactionSecurityCheckEnabled preference', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            PreferencesController: {
+              existingPreference: true,
             },
           },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-            },
-            '0x2': {
-              chainId: '0x2',
+        };
+        const expectedData = {
+          PreferencesController: {
+            existingPreference: true,
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
+    });
+
+    describe('removes the useRequestQueue preference from the PreferencesController', () => {
+      it('removes the useRequestQueue preference if it is set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            PreferencesController: {
+              preferences: {
+                useRequestQueue: true,
+              },
             },
           },
-        },
-      },
-    };
+        };
+        const expectedData = {
+          PreferencesController: {
+            preferences: {},
+          },
+        };
 
-    const newVersionedData = await migrate(oldVersionedData);
+        const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
 
-  it('returns a new version of the data with decimal keys in state.NetworkController.networkConfigurationsByChainId converted to hex strings', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '100': {
-              chainId: '0x64',
-            },
-            '128': {
-              chainId: '0x80',
+      it('does nothing to other PreferencesController state if there is not a useRequestQueue preference', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            PreferencesController: {
+              existingPreference: true,
             },
           },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x64': {
-              chainId: '0x64',
-            },
-            '0x80': {
-              chainId: '0x80',
+        };
+        const expectedData = {
+          PreferencesController: {
+            existingPreference: true,
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
+    });
+
+    describe('removes the collectibles property from the NftController', () => {
+      it('removes the collectibles property if it is set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            NftController: {
+              collectibles: true,
             },
           },
-        },
-      },
-    };
+        };
+        const expectedData = {
+          NftController: {},
+        };
 
-    const newVersionedData = await migrate(oldVersionedData);
+        const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
 
-  it('returns a new version of the data with chainId properties in state.NetworkController.networkConfigurationsByChainId converted to hex strings', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x64': {
-              chainId: '100',
-            },
-            '0x80': {
-              chainId: '128',
+      it('it does nothing to other state if the collectibles property is not set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            NftController: {
+              existingProperty: true,
             },
           },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x64': {
-              chainId: '0x64',
-            },
-            '0x80': {
-              chainId: '0x80',
+        };
+        const expectedData = {
+          NftController: {
+            existingProperty: true,
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
+    });
+
+    describe('removes the collectibleContracts property from the NftController', () => {
+      it('removes the collectibleContracts property if it is set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            NftController: {
+              collectibleContracts: true,
             },
           },
-        },
-      },
-    };
+        };
+        const expectedData = {
+          NftController: {},
+        };
 
-    const newVersionedData = await migrate(oldVersionedData);
+        const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
 
-  it('leaves chain IDs that are already hex strings untouched', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x64': {
-              chainId: '0x64',
-            },
-            '0x80': {
-              chainId: '0x80',
+      it('it does nothing to other state if the collectibleContracts property is not set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            NftController: {
+              existingProperty: true,
             },
           },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
+        };
+        const expectedData = {
+          NftController: {
+            existingProperty: true,
+          },
+        };
 
-    const newVersionedData = await migrate(oldVersionedData);
+        const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
+    });
+
+    describe('removes the enableEIP1559V2NoticeDismissed property from the AppStateController', () => {
+      it('removes the enableEIP1559V2NoticeDismissed property if it is set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            AppStateController: {
+              enableEIP1559V2NoticeDismissed: true,
+            },
+          },
+        };
+        const expectedData = {
+          AppStateController: {},
+        };
+
+        const newStorage = await migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
+
+      it('it does nothing to other state if the enableEIP1559V2NoticeDismissed property is not set', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            AppStateController: {
+              existingProperty: true,
+            },
+          },
+        };
+        const expectedData = {
+          AppStateController: {
+            existingProperty: true,
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual(expectedData);
+      });
+    });
   });
 });

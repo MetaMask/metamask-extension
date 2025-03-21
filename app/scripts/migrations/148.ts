@@ -1,87 +1,64 @@
-import { toHex } from '@metamask/controller-utils';
-import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
 
 export const version = 148;
 
 /**
- * This migration resets sessionData and isSignedIn if using the old sessionData state shape.
+ * This migration deletes properties from state which have been removed in
+ * previous commits.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly
+ * what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
  * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by
+ * controller.
  * @returns Updated versioned MetaMask extension state.
  */
-export async function migrate(originalVersionedData: {
-  meta: { version: number };
-  data: Record<string, unknown>;
-}) {
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  try {
-    versionedData.data = transformState(versionedData.data);
-  } catch (error) {
-    global.sentry?.captureException?.(
-      new Error(`Migration #${version}: ${getErrorMessage(error)}`),
-    );
-  }
+  transformState(versionedData.data);
   return versionedData;
 }
 
 function transformState(state: Record<string, unknown>) {
-  const newState = cloneDeep(state);
-
-  if (!hasProperty(newState, 'NetworkController')) {
-    throw new Error(`newState.NetworkController must be present`);
-  }
-
-  if (!isObject(newState.NetworkController)) {
-    throw new Error(
-      `state.NetworkController must be an object, but is: ${typeof newState.NetworkController}`,
-    );
-  }
   if (
-    !hasProperty(newState.NetworkController, 'networkConfigurationsByChainId')
+    hasProperty(state, 'AppStateController') &&
+    isObject(state.AppStateController)
   ) {
-    throw new Error(
-      `state.NetworkController.networkConfigurationsByChainId must be present`,
-    );
+    // See: https://metamask.sentry.io/issues/5975849508/events/7b2c1e15e40b4b94b08030f8b5470f36/
+    delete state.AppStateController.enableEIP1559V2NoticeDismissed;
   }
 
-  if (!isObject(newState.NetworkController.networkConfigurationsByChainId)) {
-    throw new Error(
-      `state.NetworkController.networkConfigurationsByChainId must be an object, but is: ${typeof newState
-        .NetworkController.networkConfigurationsByChainId}`,
-    );
+  if (hasProperty(state, 'NftController') && isObject(state.NftController)) {
+    // See: https://metamask.sentry.io/issues/5975849508/events/7b2c1e15e40b4b94b08030f8b5470f36/
+    delete state.NftController.collectibles;
+    // See: https://metamask.sentry.io/issues/5975849508/events/7b2c1e15e40b4b94b08030f8b5470f36/
+    delete state.NftController.collectibleContracts;
   }
 
-  const { networkConfigurationsByChainId } = newState.NetworkController;
-
-  for (const [chainId, networkConfiguration] of Object.entries(
-    networkConfigurationsByChainId,
-  )) {
-    const chainIdAsHex = toHex(chainId);
-
-    if (!isObject(networkConfiguration)) {
-      throw new Error(
-        `state.NetworkController.networkConfigurationsByChainId has a network configuration under '${chainId}' that must be an object but is: ${typeof networkConfiguration}`,
-      );
-    }
-
-    if (typeof networkConfiguration.chainId !== 'string') {
-      throw new Error(
-        `state.NetworkController.networkConfigurationsByChainId has a network configuration under '${chainId}' with a chainId that must be a string but is: ${typeof networkConfiguration.chainId}`,
-      );
-    }
-
-    networkConfiguration.chainId = chainIdAsHex;
-
-    if (chainIdAsHex !== chainId) {
-      delete networkConfigurationsByChainId[chainId];
-      networkConfigurationsByChainId[chainIdAsHex] = networkConfiguration;
-    }
+  if (
+    hasProperty(state, 'PreferencesController') &&
+    isObject(state.PreferencesController) &&
+    hasProperty(state.PreferencesController, 'preferences') &&
+    isObject(state.PreferencesController.preferences)
+  ) {
+    // Removed in https://github.com/MetaMask/metamask-extension/pull/23460
+    // See: https://metamask.sentry.io/issues/6312710272/events/e9f738648e874c7ab7bc974a79c0a048/
+    delete state.PreferencesController.preferences
+      .transactionSecurityCheckEnabled;
+    // Removed in https://github.com/MetaMask/metamask-extension/pull/29301
+    // See: https://metamask.sentry.io/issues/6043753318/events/b610fbc6125d439190845caeba805eb1/
+    delete state.PreferencesController.preferences.useRequestQueue;
   }
 
-  return newState;
+  return state;
 }
