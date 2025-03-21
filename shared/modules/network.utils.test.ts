@@ -305,6 +305,7 @@ describe('network utils', () => {
         rpcEndpoints: [
           {
             url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+            failoverUrls: [],
             networkClientId: '1',
             name: 'infura',
             type: RpcEndpointType.Custom,
@@ -312,6 +313,7 @@ describe('network utils', () => {
         ],
         defaultRpcEndpoint: {
           url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+          failoverUrls: [],
           networkClientId: '1',
           name: 'infura',
           type: RpcEndpointType.Custom,
