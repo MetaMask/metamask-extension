@@ -57,6 +57,7 @@ import { AnnouncementController } from '@metamask/announcement-controller';
 import {
   NetworkController,
   getDefaultNetworkControllerState,
+  isConnectionError,
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
@@ -247,6 +248,7 @@ import { endTrace, trace } from '../../shared/lib/trace';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import {
   BridgeUserAction,
   BridgeBackgroundAction,
@@ -609,6 +611,14 @@ export default class MetamaskController extends EventEmitter {
         DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
       );
 
+      // Add failovers for default Infura RPC endpoints
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls = [
+        process.env.QUICKNODE_MAINNET_URL ?? '',
+      ].filter(Boolean);
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls = [
+        process.env.QUICKNODE_LINEA_MAINNET_URL ?? '',
+      ].filter(Boolean);
+
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
@@ -653,7 +663,60 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getRpcServiceOptions: () => ({
+        fetch: globalThis.fetch.bind(globalThis),
+        btoa: globalThis.btoa.bind(globalThis),
+      }),
     });
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointUnavailable',
+      async ({ chainId, endpointUrl, error }) => {
+        const parsedUrl = new URL(endpointUrl);
+        const hostParts = parsedUrl.host.split('.');
+        const rootDomainName = hostParts.slice(-2).join('.');
+        if (
+          (rootDomainName === 'infura.io' ||
+            rootDomainName === 'quicknode.pro') &&
+          isConnectionError(error)
+        ) {
+          console.log('RPC endpoint unavailable', {
+            chainId,
+            endpointUrl,
+            error,
+          });
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: MetaMetricsEventName.RpcServiceUnavailable,
+            properties: {
+              chain_id_caip: `eip155:${chainId}`,
+              rpc_endpoint_url: onlyKeepHost(endpointUrl),
+            },
+          });
+        }
+      },
+    );
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointDegraded',
+      async ({ chainId, endpointUrl }) => {
+        const parsedUrl = new URL(endpointUrl);
+        const hostParts = parsedUrl.host.split('.');
+        const rootDomainName = hostParts.slice(-2).join('.');
+        if (
+          rootDomainName === 'infura.io' ||
+          rootDomainName === 'quicknode.pro'
+        ) {
+          console.log('RPC endpoint degraded', { chainId, endpointUrl });
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: MetaMetricsEventName.RpcServiceDegraded,
+            properties: {
+              chain_id_caip: `eip155:${chainId}`,
+              rpc_endpoint_url: endpointUrl,
+            },
+          });
+        }
+      },
+    );
     this.networkController.initializeProvider();
 
     if (process.env.MULTICHAIN_API) {
