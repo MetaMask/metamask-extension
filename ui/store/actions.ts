@@ -125,6 +125,7 @@ import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/con
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { canSafelyAutoCloseThisPopup } from '../../shared/lib/canSafelyAutoCloseThisPopup';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -1589,7 +1590,7 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        closeNotificationPopup();
+        attemptCloseNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -2835,7 +2836,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
-      closeNotificationPopup();
+      attemptCloseNotificationPopup();
     }
   };
 }
@@ -4857,9 +4858,20 @@ export function getGasFeeTimeEstimate(
   ]);
 }
 
-export async function closeNotificationPopup() {
+export async function attemptCloseNotificationPopup() {
   await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
-  global.platform.closeCurrentWindow();
+  try {
+    // Try closing this tab if possible.
+    // As of 2025-03-17, a "tab" in this context could be a popup window.
+    const tab = await browser.tabs.getCurrent();
+    await browser.tabs.remove(tab.id);
+  } catch (error) {
+    if (!(await canSafelyAutoCloseThisPopup())) {
+      // In case we are running in a tab, we don't want to close the window.
+      return;
+    }
+    global.platform.closeCurrentWindow();
+  }
 }
 
 /**
