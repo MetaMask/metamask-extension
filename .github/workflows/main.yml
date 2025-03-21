@@ -131,11 +131,18 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/run-tests.yml
 
-  e2e-tests:
-    name: Run E2E tests
+  e2e-needs:
+    name: E2E Needs
     needs:
       - prep-deps
-    uses: ./.github/workflows/e2e-tests.yml
+    uses: ./.github/workflows/e2e-needs.yml
+
+  chrome-tests:
+    needs:
+      - e2e-needs
+      - prep-build-test-browserify
+    if: ${{ needs.e2e-needs.outputs.needs-e2e == 'true' }}
+    uses: ./.github/workflows/e2e-chrome.yml
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
@@ -195,7 +202,7 @@ jobs:
       - prep-build-test-browserify
       - prep-build-test-webpack
       - run-tests
-      - e2e-tests
+      - e2e-needs
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta

@@ -1,7 +1,11 @@
-name: E2E Tests
+name: E2E Needs
 
 on:
   workflow_call:
+    outputs:
+      needs-e2e:
+        description: Stored coverage
+        value: ${{ jobs.needs-e2e.outputs.needs-e2e }}
 
 jobs:
   needs-e2e:
@@ -49,12 +53,6 @@ jobs:
         with:
           name: changed-files
           path: ./changed-files/
-
-  chrome-tests:
-    needs:
-      - needs-e2e
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
-    uses: ./.github/workflows/e2e-chrome.yml
 
   run-e2e-pom-validation:
     needs:
