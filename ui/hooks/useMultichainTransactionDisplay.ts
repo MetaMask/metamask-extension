@@ -1,10 +1,26 @@
-import { Transaction, TransactionType } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus as KeyringTransactionStatus,
+  TransactionType,
+} from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
+import { TransactionGroupStatus } from '../../shared/constants/transaction';
 
 type Fee = Transaction['fees'][0]['asset'];
 type Token = Transaction['from'][0]['asset'];
+
+const KEYRING_TRANSACTION_STATUS_MAP: Record<
+  KeyringTransactionStatus,
+  TransactionStatus | TransactionGroupStatus
+> = {
+  [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
+  [KeyringTransactionStatus.Confirmed]: TransactionStatus.confirmed,
+  [KeyringTransactionStatus.Unconfirmed]: TransactionGroupStatus.pending,
+  [KeyringTransactionStatus.Submitted]: TransactionStatus.submitted,
+};
 
 export function useMultichainTransactionDisplay({
   transaction,
@@ -70,6 +86,7 @@ export function useMultichainTransactionDisplay({
     from,
     to,
     asset,
+    status: KEYRING_TRANSACTION_STATUS_MAP[transaction.status],
     baseFee: parseAssetWithThreshold(baseFee?.asset ?? null, '0.0000001', {
       locale,
       isNegative: false,
