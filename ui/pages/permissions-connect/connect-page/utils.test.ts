@@ -14,6 +14,7 @@ const baseCaip25CaveatValue = {
     },
   },
   isMultichainOrigin: false,
+  sessionProperties: {},
 };
 
 describe('getCaip25PermissionsResponse', () => {
@@ -38,6 +39,7 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
+                sessionProperties: {},
               },
             },
           ],
@@ -71,6 +73,7 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
+                sessionProperties: {},
               },
             },
           ],
@@ -104,6 +107,7 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
+                sessionProperties: {},
               },
             },
           ],
@@ -148,6 +152,7 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
+                sessionProperties: {},
               },
             },
           ],
@@ -198,6 +203,7 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
+                sessionProperties: {},
               },
             },
           ],
