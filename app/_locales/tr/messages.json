@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Aldığınız:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Harcama üst limiti"
-  },
   "permitSimulationChange_transfer": {
     "message": "Gönderdiğiniz:"
   },
