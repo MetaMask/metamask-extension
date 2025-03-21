@@ -14,7 +14,6 @@ import {
   fetchMultiExchangeRate,
   TokenBalancesController,
 } from '@metamask/assets-controllers';
-import { MultichainApiNotifications } from '@metamask/multichain-api-middleware';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
@@ -162,6 +161,7 @@ import {
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
+  MultichainApiNotifications
 } from '@metamask/multichain-api-middleware';
 
 import {
