@@ -1,0 +1,1460 @@
+[
+  {
+    "assetSymbol": "BIO",
+    "assetName": "BIO",
+    "assetAddress": "0x000000000000000000000000cb1592591996765ec0efc1f92599a19767ee5ffa",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PAXG",
+    "assetName": "Paxos Gold",
+    "assetAddress": "0x00000000000000000000000045804880de22913dafe09f4980848ece6ecbaf78",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "AXL",
+    "assetName": "Axelar",
+    "assetAddress": "0x000000000000000000000000467719ad09025fcc6cf6f8311755809d45a5e5f3",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "USUAL",
+    "assetName": "USUAL",
+    "assetAddress": "0x000000000000000000000000c4441c2be5d8fa8126822b9929ca0b81ea0de38e",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "AEVO",
+    "assetName": "Aevo",
+    "assetAddress": "0x000000000000000000000000b528edbef013aff855ac3c50b381f253af13b997",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PENDLE",
+    "assetName": "Pendle",
+    "assetAddress": "0x000000000000000000000000808507121b80c02388fad14726482e061b8da827",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "TOKEN",
+    "assetName": "TokenFi",
+    "assetAddress": "0x0000000000000000000000004507cef57c46789ef8d1a19ea45f4216bae2b528",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "BEAM",
+    "assetName": "Beam",
+    "assetAddress": "0x00000000000000000000000062d0a8458ed7719fdaf978fe5929c6d342b0bfce",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "STRK",
+    "assetName": "StarkNet Token",
+    "assetAddress": "0x000000000000000000000000ca14007eff0db1f8135f4c25b34de49ab0d42766",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "TRX",
+    "assetName": "TRON",
+    "assetAddress": "0x00000000000000000000000050327c6c5a14dcade707abad2e27eb517df87ab5",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "KEKIUS",
+    "assetName": "Kekius Maximus",
+    "assetAddress": "0x00000000000000000000000026e550ac11b26f78a04489d5f20f24e3559f7dd9",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "WLD",
+    "assetName": "Worldcoin",
+    "assetAddress": "0x000000000000000000000000163f8c2467924be0ae7b5347228cabf260318753",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "TONCOIN",
+    "assetName": "Wrapped TON Coin",
+    "assetAddress": "0x000000000000000000000000582d872a1b094fc48f5de31d3b73f2d9be47def1",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ID",
+    "assetName": "SPACE ID",
+    "assetAddress": "0x0000000000000000000000002dff88a56767223a5529ea5960da7a3f5f766406",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MEME",
+    "assetName": "Memecoin",
+    "assetAddress": "0x000000000000000000000000b131f4a55907b10d1f0a50d8ab8fa09ec342cd74",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "COMP",
+    "assetName": "Compound",
+    "assetAddress": "0x000000000000000000000000c00e94cb662c3520282e6f5717214004a7f26888",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "79228162514264337593543950335"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "LADYS",
+    "assetName": "Milady",
+    "assetAddress": "0x00000000000000000000000012970e6868f88f6557b76120662c1b3e50a646bf",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "DAI",
+    "assetName": "Dai Stablecoin",
+    "assetAddress": "0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "APE",
+    "assetName": "ApeCoin",
+    "assetAddress": "0x0000000000000000000000004d224452801aced8b2f0aebe155379bb5d594381",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ENS",
+    "assetName": "Ethereum Name Service",
+    "assetAddress": "0x000000000000000000000000c18360217d8f7ab5e7c516566761ea12ce7f9d72",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "RSR",
+    "assetName": "Reserve Rights",
+    "assetAddress": "0x000000000000000000000000320623b8e4ff03373931769a31fc52a4e78b5d70",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ACX",
+    "assetName": "Across Protocol Token",
+    "assetAddress": "0x00000000000000000000000044108f0223a3c3028f5fe7aec7f9bb2e66bef82f",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MC",
+    "assetName": "Merit Circle",
+    "assetAddress": "0x000000000000000000000000949d48eca67b17269629c7194f4b727d4ef9e5d6",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "POWR",
+    "assetName": "PowerLedger",
+    "assetAddress": "0x000000000000000000000000595832f8fc6bf59c85c527fec3740a1b7a361269",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "GRT",
+    "assetName": "Graph Token",
+    "assetAddress": "0x000000000000000000000000c944e90c64b2c07662a292be6244bdf05cda44a7",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "RNDR",
+    "assetName": "Render Token",
+    "assetAddress": "0x0000000000000000000000006de037ef9ad2725eb40118bb1702ebb27e4aeb24",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SD",
+    "assetName": "Stader",
+    "assetAddress": "0x00000000000000000000000030d20208d987713f46dfd34ef128bb16c404d10f",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ERN",
+    "assetName": "@EthernityChain $ERN Token",
+    "assetAddress": "0x000000000000000000000000bbc2ae13b23d715c30720f079fcd9b4a74093505",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PORTAL",
+    "assetName": "PORTAL",
+    "assetAddress": "0x0000000000000000000000001bbe973bef3a977fc51cbed703e8ffdefe001fed",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MKR",
+    "assetName": "Maker",
+    "assetAddress": "0x0000000000000000000000009f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      },
+      {
+        "spender": "0x9866772a9bdb4dc9d2c5a4753e8658b8b0ca1fc3",
+        "amount": "39801478285829115817"
+      }
+    ],
+    "lastUpdated": "2025-03-20T13:07:23Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MATIC",
+    "assetName": "Matic Token",
+    "assetAddress": "0x0000000000000000000000007d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MAGA",
+    "assetName": "MAGA",
+    "assetAddress": "0x000000000000000000000000d29da236dd4aac627346e1bba06a619e8c22d7c5",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "WETH",
+    "assetName": "Wrapped Ether",
+    "assetAddress": "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      },
+      {
+        "spender": "0x9866772a9bdb4dc9d2c5a4753e8658b8b0ca1fc3",
+        "amount": "29058483019298116984"
+      },
+      {
+        "spender": "0xc697051d1c6296c24ae3bcef39aca743861d9a81",
+        "amount": "50357507539570765659"
+      }
+    ],
+    "lastUpdated": "2025-03-20T18:23:23Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "FET",
+    "assetName": "Fetch",
+    "assetAddress": "0x000000000000000000000000aea46a60368a7bd060eec7df8cba43b7ef41ad85",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "cbBTC",
+    "assetName": "Coinbase Wrapped BTC",
+    "assetAddress": "0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MNT",
+    "assetName": "Mantle",
+    "assetAddress": "0x0000000000000000000000003c3a81e81dc49a522a592e7622a7e711c06bf354",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "LINK",
+    "assetName": "ChainLink Token",
+    "assetAddress": "0x000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "RBN",
+    "assetName": "Ribbon",
+    "assetAddress": "0x0000000000000000000000006123b0049f904d730db3c36a31167d9d4121fa6b",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "RPL",
+    "assetName": "Rocket Pool Protocol",
+    "assetAddress": "0x000000000000000000000000d33526068d116ce69f19a9ee46f0bd304f21a51f",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PEPE",
+    "assetName": "Pepe",
+    "assetAddress": "0x0000000000000000000000006982508145454ce325ddbe47a25d4ec3d2311933",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MAVIA",
+    "assetName": "Heroes of Mavia",
+    "assetAddress": "0x00000000000000000000000024fcfc492c1393274b6bcd568ac9e225bec93584",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SKY",
+    "assetName": "SKY Governance Token",
+    "assetAddress": "0x00000000000000000000000056072c95faa701256059aa122697b133aded9279",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ARB",
+    "assetName": "Arbitrum",
+    "assetAddress": "0x000000000000000000000000b50721bcf8d664c30412cfbc6cf7a15145234ad1",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "JASMY",
+    "assetName": "JasmyCoin",
+    "assetAddress": "0x0000000000000000000000007420b4b9a0110cdc71fb720908340c03f9bc03ec",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ENA",
+    "assetName": "ENA",
+    "assetAddress": "0x00000000000000000000000057e114b691db790c35207b2e685d4a43181e6061",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "VIRTUAL",
+    "assetName": "Virtual Protocol",
+    "assetAddress": "0x00000000000000000000000044ff8620b8ca30902395a7bd3f2407e1a091bf73",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "FLOKI",
+    "assetName": "FLOKI",
+    "assetAddress": "0x000000000000000000000000cf0c122c6b73ff809c693db761e7baebe62b6a2e",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ETHFI",
+    "assetName": "ether.fi governance token",
+    "assetAddress": "0x000000000000000000000000fe0c30065b384f05761f15d0cc899d4f9f9cc0eb",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "COW",
+    "assetName": "CoW Protocol Token",
+    "assetAddress": "0x000000000000000000000000def1ca1fb7fbcdc777520aa7f396b4e015f497ab",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "LDO",
+    "assetName": "Lido DAO Token",
+    "assetAddress": "0x0000000000000000000000005a98fcbea516cf06857215779fd812ca3bef1b32",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "USDC",
+    "assetName": "USD Coin",
+    "assetAddress": "0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SUPER",
+    "assetName": "SuperFarm",
+    "assetAddress": "0x000000000000000000000000e53ec727dbdeb9e2d5456c3be40cff031ab40a55",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "FTM",
+    "assetName": "Fantom Token",
+    "assetAddress": "0x0000000000000000000000004e15361fd6b4bb609fa63c81a2be19d873717870",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SWELL",
+    "assetName": "Swell Governance Token",
+    "assetAddress": "0x0000000000000000000000000a6e7ba5042b38349e437ec6db6214aec7b35676",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "AGIX",
+    "assetName": "SingularityNET Token",
+    "assetAddress": "0x0000000000000000000000005b7533812759b45c2b44c19e320ba2cd2681b542",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "GLM",
+    "assetName": "Golem Network Token",
+    "assetAddress": "0x0000000000000000000000007dd9c5cba05e151c895fde1cf355c9a1d5da6429",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ATH",
+    "assetName": "Aethir Token",
+    "assetAddress": "0x000000000000000000000000be0ed4138121ecfc5c0e56b40517da27e6c5226b",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "UNI",
+    "assetName": "Uniswap",
+    "assetAddress": "0x0000000000000000000000001f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "79228162514264337593543950335"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PEIPEI",
+    "assetName": "PeiPei",
+    "assetAddress": "0x0000000000000000000000003ffeea07a27fab7ad1df5297fa75e77a43cb5790",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MORPHO",
+    "assetName": "Morpho Token",
+    "assetAddress": "0x00000000000000000000000058d97b57bb95320f9a05dc918aef65434969c2b2",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "REZ",
+    "assetName": "Renzo",
+    "assetAddress": "0x0000000000000000000000003b50805453023a91a8bf641e279401a0b23fa6f9",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SYN",
+    "assetName": "Synapse",
+    "assetAddress": "0x0000000000000000000000000f2d719407fdbeff09d87557abb7232601fd9f29",
+    "assetType": ["erc20", "erc179", "proxy"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ILV",
+    "assetName": "Illuvium",
+    "assetAddress": "0x000000000000000000000000767fe9edc9e0df98e07454847909b5e959d7ca0e",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "NEIRO",
+    "assetName": "Neiro",
+    "assetAddress": "0x000000000000000000000000ee2a03aa6dacf51c18679c516ad5283d8e7c2637",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "OM",
+    "assetName": "MANTRA DAO",
+    "assetAddress": "0x0000000000000000000000003593d125a4f7849a1b059e64f4517a86dd60c95d",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "Neiro",
+    "assetName": "Neiro",
+    "assetAddress": "0x000000000000000000000000812ba41e071c7b7fa4ebcfb62df5f45f6fa853ee",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SHIB",
+    "assetName": "SHIBA INU",
+    "assetAddress": "0x00000000000000000000000095ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "TURBO",
+    "assetName": "Turbo",
+    "assetAddress": "0x000000000000000000000000a35923162c49cf95e6bf26623385eb431ad920d3",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "CRV",
+    "assetName": "Curve DAO Token",
+    "assetAddress": "0x000000000000000000000000d533a949740bb3306d119cc777fa900ba034cd52",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ZRO",
+    "assetName": "LayerZero",
+    "assetAddress": "0x0000000000000000000000006985884c4392d348587b19cb9eaaf157f13271cd",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ORDER",
+    "assetName": "Orderly Network",
+    "assetAddress": "0x000000000000000000000000abd4c63d2616a5201454168269031355f4764337",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "BANANA",
+    "assetName": "Banana",
+    "assetAddress": "0x00000000000000000000000038e68a37e401f7271568cecaac63c6b1e19130b4",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ONDO",
+    "assetName": "Ondo",
+    "assetAddress": "0x000000000000000000000000faba6f8e4a5e8ab82f62fe7c39859fa577269be3",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "79228162514264337593543950335"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "Mog",
+    "assetName": "Mog Coin",
+    "assetAddress": "0x000000000000000000000000aaee1a9723aadb7afa2810263653a34ba2c21c7a",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SNX",
+    "assetName": "Synthetix Network Token",
+    "assetAddress": "0x000000000000000000000000c011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MOODENG",
+    "assetName": "MOO DENG",
+    "assetAddress": "0x00000000000000000000000028561b8a2360f463011c16b6cc0b0cbef8dbbcad",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "AAVE",
+    "assetName": "Aave Token",
+    "assetAddress": "0x0000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      },
+      {
+        "spender": "0xc697051d1c6296c24ae3bcef39aca743861d9a81",
+        "amount": "466939834662687058249"
+      }
+    ],
+    "lastUpdated": "2025-03-20T16:36:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "LOOKS",
+    "assetName": "LooksRare Token",
+    "assetAddress": "0x000000000000000000000000f4d2888d29d722226fafa5d9b24f9164c092421e",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "OGN",
+    "assetName": "OriginToken",
+    "assetAddress": "0x0000000000000000000000008207c1ffc5b6804f6024322ccf34f29c3541ae26",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "APU",
+    "assetName": "Apu Apustaja",
+    "assetAddress": "0x000000000000000000000000594daad7d77592a2b97b725a7ad59d7e188b5bfa",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "LQTY",
+    "assetName": "LQTY",
+    "assetAddress": "0x0000000000000000000000006dea81c8171d0ba574754ef6f8b412f2ed88c54d",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PRIME",
+    "assetName": "Prime",
+    "assetAddress": "0x000000000000000000000000b23d80f5fefcddaa212212f028021b41ded428cf",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MOVE",
+    "assetName": "Movement",
+    "assetAddress": "0x0000000000000000000000003073f7aaa4db83f95e9fff17424f71d4751a3073",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "BabyDoge",
+    "assetName": "Baby Doge Coin",
+    "assetAddress": "0x000000000000000000000000ac57de9c1a09fec648e93eb98875b212db0d460b",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PEOPLE",
+    "assetName": "ConstitutionDAO",
+    "assetAddress": "0x0000000000000000000000007a58c0be72be218b41c608b7fe7c5bb630736c71",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "TAIKO",
+    "assetName": "Taiko Token",
+    "assetAddress": "0x00000000000000000000000010dea67478c5f8c5e2d90e5e9b26dbe60c54d800",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "EIGEN",
+    "assetName": "Eigen",
+    "assetAddress": "0x000000000000000000000000ec53bf9167f50cdeb3ae105f56099aaab9061f83",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "CRO",
+    "assetName": "CRO",
+    "assetAddress": "0x000000000000000000000000a0b73e1ff0b80914ab6fe0444e65848c4c34450b",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "ELON",
+    "assetName": "Dogelon",
+    "assetAddress": "0x000000000000000000000000761d38e5ddf6ccf6cf7c55759d5210750b5d60f3",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "USDS",
+    "assetName": "USDS Stablecoin",
+    "assetAddress": "0x000000000000000000000000dc035d45d973e3ec169d2276ddab16f1e407384f",
+    "assetType": ["proxy", "erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "MAX",
+    "assetName": "Matr1x",
+    "assetAddress": "0x000000000000000000000000b7109df1a93f8fe2b8162c6207c9b846c1c68090",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "PIRATE",
+    "assetName": "Pirate Nation Token",
+    "assetAddress": "0x0000000000000000000000007613c48e0cd50e42dd9bf0f6c235063145f6f8dc",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SSV",
+    "assetName": "SSV Token",
+    "assetAddress": "0x0000000000000000000000009d65ff81a3c488d585bbfb0bfe3c7707c7917f54",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "VANRY",
+    "assetName": "VANRY",
+    "assetAddress": "0x0000000000000000000000008de5b80a0c1b02fe4976851d030b36122dbb8624",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "1INCH",
+    "assetName": "1INCH Token",
+    "assetAddress": "0x000000000000000000000000111111111117dc0aa78b770fa6a738034120c302",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SAFE",
+    "assetName": "Safe Token",
+    "assetAddress": "0x0000000000000000000000005afe3855358e112b5647b952709e6165e1c1eeee",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "FIGHT",
+    "assetName": "Fight to MAGA",
+    "assetAddress": "0x0000000000000000000000008802269d1283cdb2a5a329649e5cb4cdcee91ab6",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "USDT",
+    "assetName": "Tether USD",
+    "assetAddress": "0x000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "STG",
+    "assetName": "StargateToken",
+    "assetAddress": "0x000000000000000000000000af5191b0de278c7286d6c7cc6ab6bb8a73ba2cd6",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "OMNI",
+    "assetName": "Omni Network",
+    "assetAddress": "0x00000000000000000000000036e66fbbce51e4cd5bd3c62b637eb411b18949d4",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "SPX",
+    "assetName": "SPX6900",
+    "assetAddress": "0x000000000000000000000000e0f63a424a4439cbe457d80e4f4b51ad25b2c56c",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "WBTC",
+    "assetName": "Wrapped BTC",
+    "assetAddress": "0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  },
+  {
+    "assetSymbol": "INJ",
+    "assetName": "Injective Token",
+    "assetAddress": "0x000000000000000000000000e28b3b32b6c345a34ff64674606124dd5aceca30",
+    "assetType": ["erc20", "erc179"],
+    "approvedSpenders": [
+      {
+        "spender": "0x45d9cdd47a49e40d9f7a241404f609d481ff3ce0",
+        "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    ],
+    "lastUpdated": "2025-03-10T14:22:35Z",
+    "isHoneypot": false
+  }
+]
