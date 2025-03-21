@@ -69,9 +69,9 @@ import {
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import { getTokenNetworkFilter } from '../../../../selectors';
+import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
-import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 
 export const NetworksForm = ({
   networkFormState,
