@@ -30,193 +30,191 @@ describe('Account syncing - Add Account', async function () {
   const customNameAccount3 = '3rd Account';
   const defaultNameAccount3 = 'Account 3';
 
-  describe('from inside MetaMask', function () {
-    it('syncs newly added accounts - custom name', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+  it('syncs newly added accounts - custom name', async function () {
+    const userStorageMockttpController = new UserStorageMockttpController();
 
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-              {
-                getResponse: mockedAccountSyncResponse,
-              },
-            );
-
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
-
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(
-            mockedAccountSyncResponse.length,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[0].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[1].n,
-          );
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-            accountName: customNameAccount3,
-          });
-          // Add a delay to allow the account to sync, this can be long for MV2
-          await driver.delay(2000);
-        },
-      );
-
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
-
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-
-          const accountSyncResponse = userStorageMockttpController.paths.get(
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
-          )?.response;
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
 
-          await accountListPage.check_numberOfAvailableAccounts(
-            accountSyncResponse?.length as number,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[0].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[1].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            customNameAccount3,
-          );
+          return mockIdentityServices(server, userStorageMockttpController);
         },
-      );
-    });
+      },
+      async ({ driver }) => {
+        await completeOnboardFlowIdentity(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-    it('syncs newly added accounts - default name', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+        const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+        await header.openAccountMenu();
 
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-              {
-                getResponse: mockedAccountSyncResponse,
-              },
-            );
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_numberOfAvailableAccounts(
+          mockedAccountSyncResponse.length,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[0].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[1].n,
+        );
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+          accountName: customNameAccount3,
+        });
+        // Add a delay to allow the account to sync, this can be long for MV2
+        await driver.delay(2000);
+      },
+    );
 
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
-
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(
-            mockedAccountSyncResponse.length,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[0].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[1].n,
-          );
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-          });
-          // Add a delay to allow the account to sync, this can be long for MV2
-          await driver.delay(2000);
-        },
-      );
-
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('0');
-
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-
-          const accountSyncResponse = userStorageMockttpController.paths.get(
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
-          )?.response;
-
-          await accountListPage.check_numberOfAvailableAccounts(
-            accountSyncResponse?.length as number,
+            server,
           );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[0].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[1].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            defaultNameAccount3,
-          );
+          return mockIdentityServices(server, userStorageMockttpController);
         },
-      );
-    });
+      },
+      async ({ driver }) => {
+        await completeOnboardFlowIdentity(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+        const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+        await header.openAccountMenu();
+
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+
+        const accountSyncResponse = userStorageMockttpController.paths.get(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+        )?.response;
+
+        await accountListPage.check_numberOfAvailableAccounts(
+          accountSyncResponse?.length as number,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[0].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[1].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          customNameAccount3,
+        );
+      },
+    );
+  });
+
+  it('syncs newly added accounts - default name', async function () {
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
+
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
+      },
+      async ({ driver }) => {
+        await completeOnboardFlowIdentity(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+        const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+        await header.openAccountMenu();
+
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_numberOfAvailableAccounts(
+          mockedAccountSyncResponse.length,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[0].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[1].n,
+        );
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+        });
+        // Add a delay to allow the account to sync, this can be long for MV2
+        await driver.delay(2000);
+      },
+    );
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+          );
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
+      },
+      async ({ driver }) => {
+        await completeImportSRPOnboardingFlow({
+          driver,
+          seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+          password: IDENTITY_TEAM_PASSWORD,
+        });
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+
+        const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+        await header.openAccountMenu();
+
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+
+        const accountSyncResponse = userStorageMockttpController.paths.get(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+        )?.response;
+
+        await accountListPage.check_numberOfAvailableAccounts(
+          accountSyncResponse?.length as number,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[0].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[1].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          defaultNameAccount3,
+        );
+      },
+    );
   });
 });

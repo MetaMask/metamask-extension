@@ -23,85 +23,83 @@ describe('Account syncing - Import With Private Key', async function () {
   const unencryptedAccounts = accountsToMockForAccountsSync;
   const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
 
-  describe('from inside MetaMask', function () {
-    it('does not sync accounts imported with private keys', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+  it('does not sync accounts imported with private keys', async function () {
+    const userStorageMockttpController = new UserStorageMockttpController();
 
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-              {
-                getResponse: mockedAccountSyncResponse,
-              },
-            );
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
 
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
+          return mockIdentityServices(server, userStorageMockttpController);
         },
-        async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+      },
+      async ({ driver }) => {
+        await completeOnboardFlowIdentity(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
+        const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+        await header.openAccountMenu();
 
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(
-            mockedAccountSyncResponse.length,
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_numberOfAvailableAccounts(
+          mockedAccountSyncResponse.length,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[0].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[1].n,
+        );
+        await accountListPage.openAccountOptionsMenu();
+        await accountListPage.addNewImportedAccount(
+          IDENTITY_TEAM_IMPORTED_PRIVATE_KEY,
+        );
+      },
+    );
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
           );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[0].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[1].n,
-          );
-          await accountListPage.openAccountOptionsMenu();
-          await accountListPage.addNewImportedAccount(
-            IDENTITY_TEAM_IMPORTED_PRIVATE_KEY,
-          );
+          return mockIdentityServices(server, userStorageMockttpController);
         },
-      );
+      },
+      async ({ driver }) => {
+        await completeOnboardFlowIdentity(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+        const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+        await header.openAccountMenu();
 
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(2);
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[0].n,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            unencryptedAccounts[1].n,
-          );
-        },
-      );
-    });
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_numberOfAvailableAccounts(2);
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[0].n,
+        );
+        await accountListPage.check_accountDisplayedInAccountList(
+          unencryptedAccounts[1].n,
+        );
+      },
+    );
   });
 });
