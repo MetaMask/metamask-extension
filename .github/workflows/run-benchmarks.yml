@@ -63,15 +63,15 @@ jobs:
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
-      - name: Download artifact prep-build-test-browserify
+      - name: Download artifact prep-build-test-browserify-chrome
         uses: actions/download-artifact@v4
         with:
           path: ./dist/
-          pattern: prep-build-test-browserify
+          pattern: prep-build-test-browserify-chrome
           merge-multiple: true
 
       - name: Measure bundle size

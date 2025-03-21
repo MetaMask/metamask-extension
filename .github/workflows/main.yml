@@ -82,11 +82,17 @@ jobs:
 
       - run: yarn build:test
 
-      - name: Upload artifact prep-build-test-browserify
+      - name: Upload artifact prep-build-test-browserify-chrome
         uses: actions/upload-artifact@v4
         with:
-          name: prep-build-test-browserify
-          path: ./dist/
+          name: prep-build-test-browserify-chrome
+          path: ./dist/chrome
+
+      - name: Upload artifact prep-build-test-browserify-firefox
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-browserify-firefox
+          path: ./dist/firefox
 
   prep-build-test-webpack:
     needs:
@@ -106,7 +112,7 @@ jobs:
         env:
           SEGMENT_PROD_WRITE_KEY: '-'
 
-      - name: Upload artifact prep-build-test-webpack
+      - name: Upload artifact prep-build-test-webpack-${{ matrix.browser }}
         uses: actions/upload-artifact@v4
         with:
           name: prep-build-test-webpack-${{ matrix.browser }}
