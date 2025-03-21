@@ -6155,6 +6155,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/providers@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/providers@npm:21.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    detect-browser: "npm:^5.2.0"
+    extension-port-stream: "npm:^4.1.0"
+    fast-deep-equal: "npm:^3.1.3"
+    is-stream: "npm:^2.0.0"
+    readable-stream: "npm:^3.6.2"
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/4bd649cf2541b6da9257583496b906c00eef316df64db38008a864b1d27beeb9f579ed9b8f5a1ba11c0403d88b32a93c674d622dc24dc2b026d68a49692a1b73
+  languageName: node
+  linkType: hard
+
 "@metamask/queued-request-controller@npm:^7.0.1":
   version: 7.0.1
   resolution: "@metamask/queued-request-controller@npm:7.0.1"
@@ -27370,7 +27391,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^15.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^10.1.0"
-    "@metamask/providers": "npm:^20.0.0"
+    "@metamask/providers": "npm:^21.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
