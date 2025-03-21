@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
   },
-  "petnamesEnabledToggle": {
-    "message": "Takma adlara izin ver"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Bu, dilediğiniz adrese takma ad atamanıza olanak sağlar. Mümkün olduğunda etkileşimde bulunduğunuz adresler için ad önerilerinde bulunacağız."
-  },
   "pinToTop": {
     "message": "Yukarıya sabitle"
   },
