@@ -1,9 +1,11 @@
-import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import {
   isSolanaChainId,
   calcLatestSrcBalance,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors';
 import { useAsyncResult } from '../useAsyncResult';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -13,6 +15,7 @@ import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -38,30 +41,18 @@ const useLatestBalance = (
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
+  const { rpcUrl } = useSelector(getProviderConfig);
 
   const nonEvmBalances = nonEvmBalancesByAccountId?.[id];
 
   const value = useAsyncResult<string | undefined>(async () => {
-    if (
-      token?.address &&
-      // TODO check whether chainId is EVM when MultichainNetworkController is integrated
-      !isCaipChainId(chainId) &&
-      chainId &&
-      currentChainId === chainId
-    ) {
-      return (
-        await calcLatestSrcBalance(
-          global.ethereumProvider,
-          selectedAddress,
-          token.address,
-          chainId,
-        )
-      )?.toString();
+    if (!chainId || !token) {
+      return undefined;
     }
 
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
     // multichain balances controller
-    if (chainId && isSolanaChainId(chainId) && token?.decimals) {
+    if (isSolanaChainId(chainId) && token.decimals) {
       return Numeric.from(
         nonEvmBalances?.[token.address]?.amount ?? token?.string,
         10,
@@ -70,15 +61,16 @@ const useLatestBalance = (
         .toString();
     }
 
+    if (
+      token.address &&
+      formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId) &&
+      rpcUrl
+    ) {
+      return await calcLatestSrcBalance(rpcUrl, selectedAddress, token.address);
+    }
+
     return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-    nonEvmBalances,
-  ]);
+  }, [chainId, currentChainId, token, selectedAddress, rpcUrl, nonEvmBalances]);
 
   if (token && !token.decimals) {
     throw new Error(
