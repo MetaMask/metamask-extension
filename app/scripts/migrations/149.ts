@@ -79,12 +79,17 @@ export const INFURA_CHAINS_WITH_FAILOVERS: Map<
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
+  console.log(
+    '[149] originalVersionedData.data.NetworkController BEFORE',
+    originalVersionedData.data.NetworkController,
+  );
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
 
   try {
     transformState(versionedData.data);
   } catch (error) {
+    console.error(error);
     const newError = new Error(
       `Migration #${version}: ${getErrorMessage(error)}`,
     );
@@ -95,6 +100,11 @@ export async function migrate(
     // the migrator tests for work
     versionedData.data = originalVersionedData.data;
   }
+
+  console.log(
+    '[149] originalVersionedData.data.NetworkController AFTER',
+    versionedData.data.NetworkController,
+  );
 
   return versionedData;
 }
@@ -129,15 +139,12 @@ function transformState(state: Record<string, unknown>) {
 
   const { networkConfigurationsByChainId } = state.NetworkController;
 
-  for (const [
-    chainId,
-    { subdomain, getFailoverUrl },
-  ] of INFURA_CHAINS_WITH_FAILOVERS) {
-    const networkConfiguration = networkConfigurationsByChainId[chainId];
-
-    if (!networkConfiguration) {
-      continue;
-    }
+  for (const [chainId, networkConfiguration] of Object.entries(
+    networkConfigurationsByChainId,
+  )) {
+    const infuraChainWithFailover = INFURA_CHAINS_WITH_FAILOVERS.get(
+      chainId as Hex,
+    );
 
     if (
       !isObject(networkConfiguration) ||
@@ -168,9 +175,12 @@ function transformState(state: Record<string, unknown>) {
             'u',
           ),
         );
-        const isInfuraLike = match && match[1] === subdomain;
+        const isInfuraLike =
+          match &&
+          infuraChainWithFailover &&
+          match[1] === infuraChainWithFailover.subdomain;
 
-        const failoverUrl = getFailoverUrl();
+        const failoverUrl = infuraChainWithFailover?.getFailoverUrl();
 
         const failoverUrls =
           failoverUrl &&
