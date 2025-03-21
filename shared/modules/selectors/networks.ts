@@ -135,6 +135,5 @@ export function getInfuraBlocked(
 
 export function getCurrentChainId(state: ProviderConfigState) {
   const { chainId } = getProviderConfig(state);
-  console.log(chainId, 'chainId');
   return chainId;
 }
