@@ -129,6 +129,7 @@ import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getMultichainNetwork,
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
@@ -1732,8 +1733,9 @@ export function getIsSwapsChain(state, overrideChainId) {
 }
 
 export function getIsBridgeChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
-  const chainId = overrideChainId ?? currentChainId;
+  const account = getSelectedInternalAccount(state);
+  const { chainId: selectedChainId } = getMultichainNetwork(state, account);
+  const chainId = overrideChainId ?? selectedChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
