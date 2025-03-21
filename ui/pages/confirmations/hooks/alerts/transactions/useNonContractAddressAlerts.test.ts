@@ -264,7 +264,7 @@ describe('useNonContractAddressAlerts', () => {
     await waitFor(() => {
       expect(result.current).toEqual([
         {
-          field: RowAlertKey.To,
+          field: RowAlertKey.InteractingWith,
           isBlocking: false,
           key: 'hexDataWhileInteractingWithNonContractAddress',
           reason: 'nonContractAddressAlertTitle',

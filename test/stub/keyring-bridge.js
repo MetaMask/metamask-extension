@@ -1,7 +1,7 @@
-import { Transaction } from '@ethereumjs/tx';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { bufferToHex } from 'ethereumjs-util';
-import { addHexPrefix, Common } from './keyring-utils';
+import { bigIntToHex, bytesToHex } from '@metamask/utils';
+import { Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
 // BIP32 Private Key: xprvA1MLMFQnqSCfwD5C9sXAYo1NFG5oh4x6MD5mRhbV7JcVnFwtkka5ivtAYDYJsr9GS242p3QZMbsMZC1GZ2uskNeTj9VhYxrCqRG6U5UPXp5
@@ -92,7 +92,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       hardfork: 'istanbul',
     });
 
-    const signedTransaction = Transaction.fromTxData(transaction, {
+    const signedTransaction = TransactionFactory.fromTxData(transaction, {
       common,
     }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
 
@@ -100,10 +100,10 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       id: 1,
       success: true,
       payload: {
-        v: signedTransaction.v,
-        r: signedTransaction.r,
-        s: signedTransaction.s,
-        serializedTx: addHexPrefix(bufferToHex(signedTransaction.serialize())),
+        v: bigIntToHex(signedTransaction.v),
+        r: bigIntToHex(signedTransaction.r),
+        s: bigIntToHex(signedTransaction.s),
+        serializedTx: bytesToHex(signedTransaction.serialize()),
       },
     };
   }

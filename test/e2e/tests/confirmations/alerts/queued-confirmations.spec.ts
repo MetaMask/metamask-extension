@@ -11,6 +11,7 @@ import {
   TestSuiteArguments,
 } from '../transactions/shared';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { MOCK_META_METRICS_ID } from '../../../constants';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -198,7 +199,7 @@ describe('Queued Confirmations', function () {
 
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -287,7 +288,7 @@ describe('Queued Confirmations', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),

@@ -300,9 +300,6 @@
   "history": {
     "message": "História"
   },
-  "importAccount": {
-    "message": "Import účtu"
-  },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
   },

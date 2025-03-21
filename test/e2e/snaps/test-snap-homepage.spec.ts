@@ -22,8 +22,7 @@ describe('Test Snap Homepage', function (this: Suite) {
         const snapListPage = new SnapListPage(driver);
 
         await testSnaps.openPage();
-        await testSnaps.clickConnectHomePage();
-        await testSnaps.completeSnapInstallConfirmation();
+        await testSnaps.installSnap('#connecthomepage');
 
         // switch to metamask page and open the three dots menu
         await driver.switchToWindowWithTitle(

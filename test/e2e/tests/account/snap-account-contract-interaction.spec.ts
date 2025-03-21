@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
@@ -34,13 +35,13 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       async ({
         driver,
         contractRegistry,
-        ganacheServer,
+        localNodes,
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        ganacheServer?: Ganache;
+        localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
