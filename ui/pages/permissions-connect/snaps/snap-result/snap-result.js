@@ -83,6 +83,7 @@ export default function SnapResult({
           variant={TextVariant.headingLg}
           paddingBottom={2}
           marginTop={4}
+          textAlign="center"
         >
           {successScreenTitle}
         </Text>
