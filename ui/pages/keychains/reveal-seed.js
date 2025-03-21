@@ -1,7 +1,12 @@
 import qrCode from 'qrcode-generator';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  useParams,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -45,6 +50,9 @@ const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 export default function RevealSeedPage() {
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const { keyringId } = useParams();
+  ///: END:ONLY_INCLUDE_IF
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -56,6 +64,26 @@ export default function RevealSeedPage() {
   const [error, setError] = useState(null);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
+  const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
+
+  const onClickCopy = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportCopied,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+        copy_method: 'clipboard',
+      },
+    });
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpCopiedToClipboard,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+        copy_method: 'clipboard',
+      },
+    });
+  }, [trackEvent]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -76,7 +104,14 @@ export default function RevealSeedPage() {
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
-    dispatch(requestRevealSeedWords(password))
+    dispatch(
+      requestRevealSeedWords(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      ),
+    )
       .then((revealedSeedWords) => {
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
@@ -146,13 +181,16 @@ export default function RevealSeedPage() {
 
   const renderRevealSeedContent = () => {
     // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpViewSrpText,
-      properties: {
-        key_type: MetaMetricsEventKeyType.Srp,
-      },
-    });
+    if (!srpViewEventTracked) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpViewSrpText,
+        properties: {
+          key_type: MetaMetricsEventKeyType.Srp,
+        },
+      });
+      setSrpViewEventTracked(true);
+    }
 
     return (
       <div>
@@ -185,27 +223,7 @@ export default function RevealSeedPage() {
             tabKey="text-seed"
           >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
-            <ExportTextContainer
-              text={seedWords}
-              onClickCopy={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Keys,
-                  event: MetaMetricsEventName.KeyExportCopied,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Srp,
-                    copy_method: 'clipboard',
-                  },
-                });
-                trackEvent({
-                  category: MetaMetricsEventCategory.Keys,
-                  event: MetaMetricsEventName.SrpCopiedToClipboard,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Srp,
-                    copy_method: 'clipboard',
-                  },
-                });
-              }}
-            />
+            <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
           </Tab>
           <Tab
             name={t('revealSeedWordsQR')}
