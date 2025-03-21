@@ -43,7 +43,7 @@ const SIWESignInfo: React.FC = () => {
   return (
     <ConfirmInfoRow
       label={t('message')}
-      collapsed
+      collapsed={false}
       copyEnabled
       copyText={JSON.stringify(siweMessage)}
     >
