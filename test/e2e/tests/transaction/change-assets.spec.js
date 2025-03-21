@@ -14,11 +14,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
-
-        // Wait for balance to load
-        await driver.delay(500);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Click the Send button
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -86,8 +83,8 @@ describe('Change assets', function () {
         smartContract: [smartContract, tokenContract],
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Click the Send button
         await driver.clickElement({
@@ -159,8 +156,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Choose the nft
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
@@ -246,8 +243,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');

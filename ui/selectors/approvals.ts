@@ -99,6 +99,18 @@ export const selectPendingApproval = createDeepEqualSelector(
   (approval) => approval,
 );
 
+export const getApprovalsByOrigin = (
+  state: ApprovalsMetaMaskState,
+  origin: string,
+) => {
+  const pendingApprovals = getPendingApprovals(state);
+
+  return pendingApprovals?.filter(
+    (confirmation: ApprovalRequest<Record<string, Json>>) =>
+      confirmation.origin === origin,
+  );
+};
+
 function isWatchTokenApproval(approval: ApprovalRequest<Record<string, Json>>) {
   const tokenId = (approval.requestData?.asset as Record<string, string>)
     ?.tokenId;

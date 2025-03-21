@@ -343,7 +343,11 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.contractInteraction) {
+  } else if (
+    type === TransactionType.contractInteraction ||
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
+  ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =

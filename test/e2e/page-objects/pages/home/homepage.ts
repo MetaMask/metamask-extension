@@ -257,7 +257,7 @@ class HomePage {
     if (localNode) {
       expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
-      expectedBalance = '0';
+      expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }
