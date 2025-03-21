@@ -397,6 +397,9 @@ export async function getSeedPhrase(
 
 export function requestRevealSeedWords(
   password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -404,7 +407,12 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await getSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      );
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -612,6 +620,7 @@ export function connectHardware(
   deviceName: HardwareDeviceNames,
   page: string,
   hdPath: string,
+  loadHid: boolean,
   t: (key: string) => string,
 ): ThunkAction<
   Promise<{ address: string }[]>,
@@ -630,6 +639,7 @@ export function connectHardware(
     let accounts: { address: string }[];
     try {
       if (
+        loadHid &&
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
@@ -2339,7 +2349,9 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
+    await dispatch(
+      setActiveNetworkConfigurationId(networkClientIdForThisDomain),
+    );
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2621,15 +2633,21 @@ export function setActiveNetworkWithError(
   };
 }
 
-export async function setActiveNetworkConfigurationId(
+export function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
-): Promise<undefined> {
-  log.debug(
-    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
-  );
-  await submitRequestToBackground('setActiveNetworkConfigurationId', [
-    networkConfigurationId,
-  ]);
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(
+      `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+    );
+    try {
+      await submitRequestToBackground('setActiveNetworkConfigurationId', [
+        networkConfigurationId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
@@ -6083,4 +6101,23 @@ export async function disableAccountUpgradeForChain(chainId: string) {
   return await submitRequestToBackground('disableAccountUpgradeForChain', [
     chainId,
   ]);
+}
+
+export async function getCode(address: Hex, networkClientId: string) {
+  return await submitRequestToBackground<string>('getCode', [
+    address,
+    networkClientId,
+  ]);
+}
+
+export function setTransactionActive(
+  transactionId: string,
+  isFocused: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setTransactionActive', [
+      transactionId,
+      isFocused,
+    ]);
+  };
 }

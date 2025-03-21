@@ -34,6 +34,12 @@ describe('Accounts Selectors', () => {
         Object.values(mockState.metamask.internalAccounts.accounts),
       );
     });
+
+    it('returns the same object', () => {
+      const result1 = getInternalAccounts(mockState as AccountsState);
+      const result2 = getInternalAccounts(mockState as AccountsState);
+      expect(result1 === result2).toBe(true);
+    });
   });
 
   describe('#getSelectedInternalAccount', () => {

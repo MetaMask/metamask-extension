@@ -5,12 +5,16 @@ describe('Authentication Selectors', () => {
     metamask: {
       isSignedIn: true,
       sessionData: {
+        token: {
+          accessToken: 'accessToken',
+          expiresIn: 0,
+          obtainedAt: 0,
+        },
         profile: {
           identifierId: 'identifierId',
           profileId: 'profileId',
+          metaMetricsId: 'metaMetricsId',
         },
-        accessToken: 'accessToken',
-        expiresIn: 'expiresIn',
       },
     },
   };
