@@ -68,6 +68,7 @@ describe('Swaps - notifications', function () {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockTradesApiPriceSlippageError,
+        localNodeOptions: 'ganache',
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
