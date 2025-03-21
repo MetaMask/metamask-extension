@@ -13,18 +13,12 @@ import AccountDetailsModal from '../../../page-objects/pages/dialog/account-deta
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 
 describe('Account syncing - User already has balances on multiple accounts', async function () {
-  this.timeout(160000); // This test is very long, so we need an unusually high timeout
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
-
   const unencryptedAccounts = accountsToMockForAccountsSync;
   const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
 
@@ -58,6 +52,8 @@ describe('Account syncing - User already has balances on multiple accounts', asy
   };
 
   describe('from inside MetaMask', function () {
+    this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
     /**
      * This test verifies the complete account syncing flow in three phases:
      * Phase 1: Initial setup, where we check that 4 accounts are shown due to balance detection even though the user storage only has 2 accounts.
