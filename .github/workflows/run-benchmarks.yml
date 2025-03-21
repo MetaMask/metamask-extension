@@ -57,7 +57,7 @@ jobs:
           path: test-artifacts/benchmarks/
 
   bundle-size:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome

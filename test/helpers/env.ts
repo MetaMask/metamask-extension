@@ -3,10 +3,6 @@ import { env } from 'process';
 type HeadlessCapableServiceName = 'SELENIUM' | 'PLAYWRIGHT';
 
 export function isHeadless(serviceName: HeadlessCapableServiceName): boolean {
-  if (process.env.GITHUB_ACTION) {
-    return true;
-  }
-
   if (serviceName) {
     const serviceKey = `${serviceName}_HEADLESS`;
     if (env[serviceKey]) {
