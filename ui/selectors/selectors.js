@@ -1252,6 +1252,13 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export const getTokenSortConfig = createDeepEqualSelector(
+  getPreferences,
+  ({ tokenSortConfig }) => {
+    return tokenSortConfig;
+  },
+);
+
 /**
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
