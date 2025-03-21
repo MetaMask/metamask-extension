@@ -951,11 +951,11 @@ function setupBundlerDefaults(
 
   // Ensure react-devtools is only included in dev builds
   if (buildTarget !== BUILD_TARGETS.DEV) {
-    bundlerOpts.manualIgnore.push('react-devtools');
-    bundlerOpts.manualIgnore.push('remote-redux-devtools');
+     bundlerOpts.debug = false; // Disable sourcemaps in prod/dist
+    bundlerOpts.manualIgnore.push('react-devtools', 'remote-redux-devtools');
   }
 
-  // This dependency uses WASM which we cannot execute in accordance with our CSP
+  // These dependencies use WASM which we cannot execute in accordance with our CSP
   bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
 
   // Inject environment variables via node-style `process.env`
