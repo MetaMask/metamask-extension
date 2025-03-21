@@ -481,6 +481,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   });
 
   describe('There are pending confirmation in the old network', function () {
+    process.env.EVM_MULTICHAIN_ENABLED = 'true';
     it('show alerts on permission network if user does not have permission on new network', async function () {
       await withFixtures(
         {
