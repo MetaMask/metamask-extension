@@ -1089,7 +1089,7 @@ async function buildEventFragmentProperties({
   );
 
   if (
-    transactionMetricsRequest.getFeatureFlags?.()
+    transactionMetricsRequest.getRemoteFeatureFlags?.()
       ?.collectTransactionHashInAnalytics &&
     transactionMetricsRequest.getParticipateInMetrics?.()
   ) {
