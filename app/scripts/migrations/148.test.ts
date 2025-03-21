@@ -1,5 +1,7 @@
-import { migrate, version } from './148';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+
+import { migrate, version } from './148';
+
 const oldVersion = 147;
 
 describe(`migration #${version}`, () => {
