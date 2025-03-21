@@ -1,8 +1,8 @@
-import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
+import type { FeatureFlagResponse } from '../../../shared/types/bridge';
 
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-config': {
-    refreshRate: 30,
+    refreshRate: 30000,
     maxRefreshCount: 5,
     support: false,
     chains: {

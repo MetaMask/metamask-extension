@@ -8,7 +8,7 @@ import { NetworkController } from '../../shared/pageObjects/network-controller-p
 import { SwapPage } from '../pageObjects/swap-page';
 import { WalletPage } from '../../shared/pageObjects/wallet-page';
 import { ActivityListPage } from '../../shared/pageObjects/activity-list-page';
-import { Tenderly, addFundsToAccount } from '../tenderly-network';
+import { Tenderly, addFundsToAccount } from '../../../tenderly-network';
 
 let swapPage: SwapPage;
 let networkController: NetworkController;
