@@ -194,7 +194,7 @@ export const AssetPickerAmount = ({
       type: asset.type as AssetType.NFT,
       tokenId: asset.details.tokenId,
       image: asset.details.image,
-      symbol: asset.details.symbol,
+      symbol: (asset.details.symbol || asset.details.name) ?? undefined,
       address: asset.details.address,
     };
   }

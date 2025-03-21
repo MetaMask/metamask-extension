@@ -361,6 +361,7 @@ export function getAccountTypeForKeyring(keyring) {
 
   switch (type) {
     case KeyringType.trezor:
+    case KeyringType.oneKey:
     case KeyringType.ledger:
     case KeyringType.lattice:
     case KeyringType.qr:
@@ -1251,6 +1252,13 @@ export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
 }
+
+export const getTokenSortConfig = createDeepEqualSelector(
+  getPreferences,
+  ({ tokenSortConfig }) => {
+    return tokenSortConfig;
+  },
+);
 
 /**
  * Returns an object indicating which networks
@@ -2905,23 +2913,28 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 }
 
 export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
     state.metamask;
 
-  const currentKeyring = getCurrentKeyring(state);
-  const isNativeAccount =
-    currentKeyring?.type && currentKeyring.type === KeyringType.hdKeyTree;
+  const [primaryKeyring] = getMetaMaskHdKeyrings(state);
 
+  if (!isUnlocked || !primaryKeyring) {
+    return false;
+  }
+
+  const selectedAccount = getSelectedInternalAccount(state);
   // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = getSelectedInternalAccount(state)
-    ? getCurrentEthBalance(state)
-    : 0;
+  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
+
+  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
+    selectedAccount.address.toLowerCase(),
+  );
 
   const showMessage =
+    isAccountFromPrimarySrp &&
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false &&
-    isNativeAccount;
+    dismissSeedBackUpReminder === false;
 
   return showMessage;
 }

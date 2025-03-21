@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "受取"
   },
-  "permitSimulationChange_revoke": {
-    "message": "使用上限"
-  },
   "permitSimulationChange_transfer": {
     "message": "送金"
   },

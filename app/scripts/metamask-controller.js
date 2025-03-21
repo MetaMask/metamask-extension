@@ -32,6 +32,7 @@ import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
+  OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
@@ -415,9 +416,6 @@ const API_TYPE = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-
-// OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
-export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
 
 const environmentMappingForRemoteFeatureFlag = {
   [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
@@ -1113,6 +1111,10 @@ export default class MetamaskController extends EventEmitter {
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
         },
         {
+          keyring: keyringOverrides?.oneKey || OneKeyKeyring,
+          bridge: keyringOverrides?.oneKeyBridge || TrezorConnectBridge,
+        },
+        {
           keyring: keyringOverrides?.ledger || LedgerKeyring,
           bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
@@ -1135,6 +1137,10 @@ export default class MetamaskController extends EventEmitter {
         hardwareKeyringBuilderFactory(
           TrezorKeyring,
           keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          OneKeyKeyring,
+          keyringOverrides?.oneKey || TrezorOffscreenBridge,
         ),
         hardwareKeyringBuilderFactory(
           LedgerKeyring,
@@ -4868,16 +4874,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    // The `getKeyringForAccount` is now deprecated, so we just use `withKeyring` instead to access our keyring.
     return await this.keyringController.withKeyring(
       { address },
-      ({ keyring }) => {
-        const { type: keyringType, bridge: keyringBridge } = keyring;
-        // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
-        return keyringBridge?.minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION
-          ? HardwareKeyringType.oneKey
-          : HardwareKeyringType[keyringType];
-      },
+      ({ keyring }) => HardwareKeyringType[keyring.type],
     );
   }
 
@@ -5385,11 +5384,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.origin - The origin to request approval for.
    * @param {Hex} options.chainId - The chainId to add to the existing permittedChains.
    * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
+   * @param {object} options.metadata - Request data for the approval.
    */
   async requestPermittedChainsPermissionIncremental({
     origin,
     chainId,
     autoApprove,
+    metadata,
   }) {
     if (isSnapId(origin)) {
       throw new Error(
@@ -5407,6 +5408,10 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (!autoApprove) {
+      let options;
+      if (metadata) {
+        options = { metadata };
+      }
       await this.permissionController.requestPermissionsIncremental(
         { origin },
         {
@@ -5419,6 +5424,7 @@ export default class MetamaskController extends EventEmitter {
             ],
           },
         },
+        options,
       );
       return;
     }
@@ -7988,8 +7994,10 @@ export default class MetamaskController extends EventEmitter {
     let keyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
-      case HardwareDeviceNames.oneKey:
         keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        break;
+      case HardwareDeviceNames.oneKey:
+        keyringType = keyringOverrides?.oneKey?.type || OneKeyKeyring?.type;
         break;
       case HardwareDeviceNames.ledger:
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;

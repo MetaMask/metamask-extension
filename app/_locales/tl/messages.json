@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Nakatanggap ka ng"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Limitasyon sa paggastos"
-  },
   "permitSimulationChange_transfer": {
     "message": "Nagpadala ka ng"
   },

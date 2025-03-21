@@ -219,9 +219,13 @@ export const ImportSrp = ({
         {t('importSRPDescription')}
       </Text>
 
-      <Box className="import-srp__srp" width={BlockSize.Full} marginTop={4}>
+      <Box
+        className="import-multi-srp__srp"
+        width={BlockSize.Full}
+        marginTop={4}
+      >
         {Array.from({ length: numberOfWords }).map((_, index) => {
-          const id = `import-srp__srp-word-${index}`;
+          const id = `import-multi-srp__srp-word-${index}`;
           return (
             <Box
               key={index}
@@ -235,7 +239,7 @@ export const ImportSrp = ({
               >
                 {index + 1}.
               </Label>
-              <Box className="import-srp__srp-word" marginBottom={4}>
+              <Box className="import-multi-srp__srp-word" marginBottom={4}>
                 <TextField
                   id={id}
                   data-testid={id}

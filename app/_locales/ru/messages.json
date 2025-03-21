@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Вы получаете"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Лимит расходов"
-  },
   "permitSimulationChange_transfer": {
     "message": "Вы отправляете"
   },

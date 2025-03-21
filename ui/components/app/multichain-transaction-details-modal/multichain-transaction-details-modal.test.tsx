@@ -218,7 +218,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/tx/${txId}`,
+      `https://mempool.space/tx/${txId}`,
     );
   });
 
@@ -228,7 +228,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/testnet/tx/${txId}`,
+      `https://mempool.space/testnet/tx/${txId}`,
     );
   });
 
@@ -275,7 +275,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/address/${address}`,
+      `https://mempool.space/address/${address}`,
     );
   });
 
@@ -284,7 +284,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/testnet/address/${address}`,
+      `https://mempool.space/testnet/address/${address}`,
     );
   });
 

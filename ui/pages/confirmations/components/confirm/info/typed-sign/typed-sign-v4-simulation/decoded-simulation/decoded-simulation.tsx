@@ -80,7 +80,7 @@ const getStateChangeLabelMap = (
         ? t('permitSimulationChange_nft_listing')
         : t('permitSimulationChange_receive'),
     [DecodingDataChangeType.Approve]: t('permitSimulationChange_approve'),
-    [DecodingDataChangeType.Revoke]: t('permitSimulationChange_revoke'),
+    [DecodingDataChangeType.Revoke]: t('permitSimulationChange_revoke2'),
     [DecodingDataChangeType.Bidding]: t('permitSimulationChange_bidding'),
     [DecodingDataChangeType.Listing]: t('permitSimulationChange_listing'),
   }[changeType];
