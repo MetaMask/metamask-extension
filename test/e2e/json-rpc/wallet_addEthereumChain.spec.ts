@@ -532,93 +532,94 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('There are pending confirmation in the old network', () => {
-    process.env.EVM_MULTICHAIN_ENABLED = 'true';
-    it('alert user about pending confirmations', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
-            .build(),
-          localNodeOptions: [
-            {
-              type: 'anvil',
-            },
-            {
-              type: 'anvil',
-              options: {
-                port: 8546,
-                chainId: 1338,
-              },
-            },
-          ],
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
-
-          await driver.clickElement('#personalSign');
-
-          const beforePermittedChains = await getPermittedChains(driver);
-          assert.deepEqual(beforePermittedChains, ['0x539']);
-
-          // should start on 1337
-          await driver.findElement({ css: '#chainId', text: '0x539' });
-
-          const switchEthereumChainRequest = JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'wallet_addEthereumChain',
-            params: [
+  if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
+    describe('There are pending confirmation in the old network', () => {
+      it('alert user about pending confirmations', async function () {
+        await withFixtures(
+          {
+            dapp: true,
+            fixtures: new FixtureBuilder()
+              .withNetworkControllerDoubleGanache()
+              .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+              .build(),
+            localNodeOptions: [
               {
-                chainId: '0x53a',
-                chainName: 'Localhost 8546 alternative',
-                nativeCurrency: {
-                  name: '',
-                  symbol: 'ETH',
-                  decimals: 18,
+                type: 'anvil',
+              },
+              {
+                type: 'anvil',
+                options: {
+                  port: 8546,
+                  chainId: 1338,
                 },
-                // this does not match what already exists in the NetworkController
-                rpcUrls: ['http://127.0.0.1:8546'],
-                blockExplorerUrls: [],
               },
             ],
-          });
+            title: this.test?.fullTitle(),
+          },
+          async ({ driver }: { driver: Driver }) => {
+            await unlockWallet(driver);
+            await openDapp(driver);
 
-          await driver.executeScript(
-            `window.ethereum.request(${switchEthereumChainRequest})`,
-          );
+            await driver.clickElement('#personalSign');
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            const beforePermittedChains = await getPermittedChains(driver);
+            assert.deepEqual(beforePermittedChains, ['0x539']);
 
-          await driver.clickElement(
-            '[data-testid="confirm-nav__next-confirmation"]',
-          );
+            // should start on 1337
+            await driver.findElement({ css: '#chainId', text: '0x539' });
 
-          // User reviews pending alerts
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
-          await driver.clickElement(
-            '[data-testid="alert-modal-action-showPendingConfirmation"]',
-          );
+            const switchEthereumChainRequest = JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0x53a',
+                  chainName: 'Localhost 8546 alternative',
+                  nativeCurrency: {
+                    name: '',
+                    symbol: 'ETH',
+                    decimals: 18,
+                  },
+                  // this does not match what already exists in the NetworkController
+                  rpcUrls: ['http://127.0.0.1:8546'],
+                  blockExplorerUrls: [],
+                },
+              ],
+            });
 
-          // user confirms add network confirmation
-          await driver.clickElement(
-            '[data-testid="confirm-nav__next-confirmation"]',
-          );
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
-          await driver.clickElement('[data-testid="alert-modal-button"]');
+            await driver.executeScript(
+              `window.ethereum.request(${switchEthereumChainRequest})`,
+            );
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          const afterPermittedChains = await getPermittedChains(driver);
-          assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
+            await driver.clickElement(
+              '[data-testid="confirm-nav__next-confirmation"]',
+            );
 
-          // should end on 1338
-          await driver.findElement({ css: '#chainId', text: '0x53a' });
-        },
-      );
+            // User reviews pending alerts
+            await driver.clickElement({ text: 'Approve', tag: 'button' });
+            await driver.clickElement(
+              '[data-testid="alert-modal-action-showPendingConfirmation"]',
+            );
+
+            // user confirms add network confirmation
+            await driver.clickElement(
+              '[data-testid="confirm-nav__next-confirmation"]',
+            );
+            await driver.clickElement({ text: 'Approve', tag: 'button' });
+            await driver.clickElement('[data-testid="alert-modal-button"]');
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+            const afterPermittedChains = await getPermittedChains(driver);
+            assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
+
+            // should end on 1338
+            await driver.findElement({ css: '#chainId', text: '0x53a' });
+          },
+        );
+      });
     });
-  });
+  }
 });
