@@ -49,9 +49,7 @@ export function mockSwapsTokens() {
     .query({
       includeBlockedTokens: true,
     })
-    .reply(200, {
-      results: TOKENS_API_MOCK_RESULT,
-    });
+    .reply(200, TOKENS_API_MOCK_RESULT);
   return mockEndpoint;
 }
 
@@ -61,9 +59,7 @@ export function mockSwapsFeatureFlags() {
   })
     .persist()
     .get('/featureFlags')
-    .reply(200, {
-      results: FEATURE_FLAGS_API_MOCK_RESULT,
-    });
+    .reply(200, FEATURE_FLAGS_API_MOCK_RESULT);
   return mockEndpoint;
 }
 
@@ -73,9 +69,7 @@ export function mockSwapsAggregatorMetadata() {
   })
     .persist()
     .get('/networks/1/aggregatorMetadata')
-    .reply(200, {
-      results: data,
-    });
+    .reply(200, data);
   return mockEndpoint;
 }
 
@@ -85,9 +79,7 @@ export function mockSwapsTopAssets() {
   })
     .persist()
     .get('/networks/1/topAssets')
-    .reply(200, {
-      results: TOP_ASSETS_API_MOCK_RESULT,
-    });
+    .reply(200, TOP_ASSETS_API_MOCK_RESULT);
   return mockEndpoint;
 }
 
@@ -97,9 +89,7 @@ export function mockSwapsGasPrices() {
   })
     .persist()
     .get('/networks/1/gasPrices')
-    .reply(200, {
-      results: GAS_PRICE_API_MOCK_RESULT,
-    });
+    .reply(200, GAS_PRICE_API_MOCK_RESULT);
   return mockEndpoint;
 }
 
@@ -109,9 +99,7 @@ export function mockSwapsTrades() {
   })
     .persist()
     .get('/networks/1/trades')
-    .reply(200, {
-      results: TRADES_API_MOCK_RESULT,
-    });
+    .reply(200, TRADES_API_MOCK_RESULT);
   return mockEndpoint;
 }
 
@@ -121,9 +109,7 @@ export function mockSwapsNetworks() {
   })
     .persist()
     .get('/networks/1')
-    .reply(200, {
-      results: NETWORKS_2_API_MOCK_RESULT,
-    });
+    .reply(200, NETWORKS_2_API_MOCK_RESULT);
   return mockEndpoint;
 }
 
@@ -133,8 +119,6 @@ export function mockSwapsToken() {
   })
     .persist()
     .get('/token/1337')
-    .reply(200, {
-      results: {},
-    });
+    .reply(200, {});
   return mockEndpoint;
 }

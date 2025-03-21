@@ -37,6 +37,7 @@ const TOKENS_API_MOCK_RESULT = [
     storage: {
       balance: 2,
     },
+    "blocked": false
   },
   {
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -60,6 +61,7 @@ const TOKENS_API_MOCK_RESULT = [
     storage: {
       balance: 9,
     },
+    "blocked": false
   },
   {
     address: '0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f',
@@ -70,7 +72,8 @@ const TOKENS_API_MOCK_RESULT = [
       'https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596',
     type: 'erc20',
     aggregators: ['coinGecko'],
-    occurrences: 1,
+    occurrences: 8,
+    "blocked": false
   },
 ];
 

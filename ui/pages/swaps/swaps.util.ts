@@ -165,8 +165,6 @@ export async function fetchTokens(
   });
   const logError = false;
   const tokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId] || null;
-  console.log('tokens', tokens);
-  console.log('tokenObject', tokenObject);
   return [
     tokenObject,
     ...tokens.filter((token: Token) => {
