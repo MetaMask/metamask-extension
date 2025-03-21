@@ -1,4 +1,5 @@
 import { MockttpServer } from 'mockttp';
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
 
 const CONTRACT_ADDRESS = {
   BalanceCheckerEthereumMainnet: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
@@ -22,6 +23,7 @@ const infuraSepoliaUrl: string =
  */
 export async function mockMultiNetworkBalancePolling(
   mockServer: MockttpServer,
+  balance: string = '0x1158E460913D00000',
 ): Promise<void> {
   await mockServer
     .forPost(infuraUrl)
@@ -31,7 +33,7 @@ export async function mockMultiNetworkBalancePolling(
       json: {
         jsonrpc: '2.0',
         id: '1111111111111111',
-        result: '0x1158E460913D00000',
+        result: balance,
       },
     }));
 
@@ -43,7 +45,7 @@ export async function mockMultiNetworkBalancePolling(
       json: {
         jsonrpc: '2.0',
         id: '6183194981233610',
-        result: '0x1158E460913D00000',
+        result: balance,
       },
     }));
 
@@ -55,7 +57,7 @@ export async function mockMultiNetworkBalancePolling(
       json: {
         jsonrpc: '2.0',
         id: '6183194981233610',
-        result: '0x1158E460913D00000',
+        result: balance,
       },
     }));
 
@@ -67,7 +69,7 @@ export async function mockMultiNetworkBalancePolling(
       json: {
         jsonrpc: '2.0',
         id: '6183194981233610',
-        result: '0x1158E460913D00000',
+        result: balance,
       },
     }));
 
@@ -137,7 +139,7 @@ export async function mockMultiNetworkBalancePolling(
             timestamp: '2015-07-30T03:26:13.000Z',
             decimals: 18,
             chainId: 1,
-            balance: '20',
+            balance: decimalToHex(balance),
           },
         ],
         unprocessedNetworks: [],
