@@ -200,11 +200,7 @@ export default class UnlockPage extends Component {
             {t('welcomeBack')}
           </Text>
 
-          <Text
-            color={TextColor.textAlternative}
-          >
-            {t('unlockMessage')}
-          </Text>
+          <Text color={TextColor.textAlternative}>{t('unlockMessage')}</Text>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
