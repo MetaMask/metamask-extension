@@ -17,6 +17,7 @@ import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { useEthFiatAmount } from '../../../../../../../hooks/useEthFiatAmount';
 import { Hex } from '@metamask/utils';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export type GasFeeTokenListItemProps = {
   gasFeeToken: GasFeeToken;
@@ -29,6 +30,8 @@ export function GasFeeTokenListItem({
   isSelected,
   onClick,
 }: GasFeeTokenListItemProps) {
+  const t = useI18nContext();
+
   const { amount, balance, decimals, rateWei, symbol, tokenAddress } =
     gasFeeToken;
 
@@ -41,7 +44,7 @@ export function GasFeeTokenListItem({
       image={<Identicon address={tokenAddress} diameter={32} />}
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`Bal: ${balanceFiat}`}
+      leftSecondary={`${t('confirmGasFeeTokenBalance')} ${balanceFiat}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
       onClick={() => onClick?.(gasFeeToken)}
