@@ -340,25 +340,23 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "bridgeState": {
-      "bridgeFeatureFlags": {
-        "extensionConfig": {
-          "refreshRate": "number",
-          "maxRefreshCount": "number",
-          "support": "boolean",
-          "chains": {
-            "eip155:1": "object",
-            "eip155:42161": "object",
-            "eip155:59144": "object"
-          }
+    "bridgeFeatureFlags": {
+      "extensionConfig": {
+        "refreshRate": "number",
+        "maxRefreshCount": "number",
+        "support": "boolean",
+        "chains": {
+          "eip155:1": "object",
+          "eip155:42161": "object",
+          "eip155:59144": "object"
         }
-      },
-      "quoteRequest": {
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-      },
-      "quotes": {},
-      "quotesRefreshCount": 0
+      }
     },
+    "quoteRequest": {
+      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+    },
+    "quotes": {},
+    "quotesRefreshCount": 0,
     "bridgeStatusState": { "txHistory": "object" },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

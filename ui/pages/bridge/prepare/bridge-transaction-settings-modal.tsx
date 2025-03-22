@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
 import {
   Button,
   ButtonPrimary,
@@ -35,7 +36,6 @@ import { getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
 import { Column, Row, Tooltip } from '../layout';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 3];

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  isSolanaChainId,
+  BRIDGE_MM_FEE_RATE,
+} from '@metamask/bridge-controller';
+import type { ChainId } from '@metamask/bridge-controller';
+import {
   Text,
   PopoverPosition,
   IconName,
@@ -35,10 +40,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   MULTICHAIN_TOKEN_IMAGE_MAP,
@@ -46,7 +48,6 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import type { ChainId } from '../../../../shared/types/bridge';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = () => {
@@ -67,7 +68,7 @@ export const MultichainBridgeQuoteCard = () => {
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
   const getNetworkImage = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
+    if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
     }
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -78,7 +79,7 @@ export const MultichainBridgeQuoteCard = () => {
   };
 
   const getNetworkName = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
+    if (isSolanaChainId(chainId)) {
       return 'Solana';
     }
     return NETWORK_TO_SHORT_NETWORK_NAME_MAP[

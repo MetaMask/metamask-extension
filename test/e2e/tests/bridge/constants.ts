@@ -1,4 +1,4 @@
-import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
+import type { FeatureFlagResponse } from '@metamask/bridge-controller';
 
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-config': {
@@ -9,6 +9,14 @@ export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
       '1': { isActiveSrc: true, isActiveDest: true },
       '42161': { isActiveSrc: true, isActiveDest: true },
       '59144': { isActiveSrc: true, isActiveDest: true },
+    },
+  },
+  'mobile-config': {
+    refreshRate: 30,
+    maxRefreshCount: 5,
+    support: false,
+    chains: {
+      '1': { isActiveSrc: true, isActiveDest: true },
     },
   },
 };
