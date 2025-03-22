@@ -1,5 +1,5 @@
 import React from 'react';
-import { TokenGasFeeListItem } from './token-gas-fee-list-item';
+import { GasFeeTokenListItem } from './gas-fee-token-list-item';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../../../store/store';
@@ -32,28 +32,28 @@ const STATE_MOCK = {
 
 const store = configureStore(STATE_MOCK);
 
-describe('TokenGasFeeListItem', () => {
-  it('includes fiat amount', () => {
+describe('GasFeeTokenListItem', () => {
+  it('renders fiat amount', () => {
     const result = renderWithProvider(
-      <TokenGasFeeListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />,
+      <GasFeeTokenListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />,
       store,
     );
 
     expect(result.getByText('$1,000.00 USD')).toBeInTheDocument();
   });
 
-  it('includes fiat balance', () => {
+  it('renders fiat balance', () => {
     const result = renderWithProvider(
-      <TokenGasFeeListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />,
+      <GasFeeTokenListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />,
       store,
     );
 
     expect(result.getByText('Bal: $2,345.00 USD')).toBeInTheDocument();
   });
 
-  it('includes token amount', () => {
+  it('renders token amount', () => {
     const result = renderWithProvider(
-      <TokenGasFeeListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />,
+      <GasFeeTokenListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />,
       store,
     );
 

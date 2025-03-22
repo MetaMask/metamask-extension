@@ -13,9 +13,9 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { TokenGasFeeListItem } from '../token-gas-fee-list-item';
+import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 
-export function TokenGasFeeModal({ onClose }: { onClose: () => void }) {
+export function GasFeeTokenModal({ onClose }: { onClose: () => void }) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { gasFeeTokens } = currentConfirmation;
   const { id: transactionId, selectedGasFeeToken } = currentConfirmation;
@@ -43,8 +43,8 @@ export function TokenGasFeeModal({ onClose }: { onClose: () => void }) {
           paddingLeft={0}
           paddingRight={0}
         >
-          {gasFeeTokens?.map((token, index) => (
-            <TokenGasFeeListItem
+          {gasFeeTokens?.map((token) => (
+            <GasFeeTokenListItem
               key={token.tokenAddress}
               gasFeeToken={token}
               isSelected={selectedGasFeeToken === token.tokenAddress}

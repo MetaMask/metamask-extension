@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { TokenGasFeeListItem } from './token-gas-fee-list-item';
+import { GasFeeTokenListItem } from './gas-fee-token-list-item';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import mockState from '../../../../../../../../test/data/mock-state.json';
@@ -34,21 +34,21 @@ const STATE_MOCK = {
 const store = configureStore(STATE_MOCK);
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/TokenGasFeeListItem',
-  component: TokenGasFeeListItem,
+  title: 'Confirmations/Components/Confirm/GasFeeTokenListItem',
+  component: GasFeeTokenListItem,
   decorators: [(story: any) => <Provider store={store}>{story()}</Provider>],
 };
 
 export default Story;
 
 export const DefaultStory = () => (
-  <TokenGasFeeListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />
+  <GasFeeTokenListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} />
 );
 
 DefaultStory.storyName = 'Default';
 
 export const SelectedStory = () => (
-  <TokenGasFeeListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} isSelected={true} />
+  <GasFeeTokenListItem gasFeeToken={GAS_FEE_TOKEN_MOCK} isSelected={true} />
 );
 
 SelectedStory.storyName = 'Selected';
