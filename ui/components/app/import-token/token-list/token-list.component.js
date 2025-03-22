@@ -81,6 +81,7 @@ export default class TokenList extends Component {
                 let tokenAlreadyAdded = false;
                 if (isTokenNetworkFilterEqualCurrentNetwork) {
                   tokenAlreadyAdded = checkExistingAddresses(address, tokens);
+                  results[i].chainId = currentNetwork?.chainId;
                 } else {
                   tokenAlreadyAdded = checkExistingAllTokens(
                     address,

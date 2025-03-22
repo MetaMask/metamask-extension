@@ -153,7 +153,6 @@ export function tokenInfoGetter() {
     if (tokens[address.toLowerCase()]) {
       return tokens[address.toLowerCase()];
     }
-    console.log('ELSE ............');
 
     tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);
     return tokens[address];

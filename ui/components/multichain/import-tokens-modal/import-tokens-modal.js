@@ -139,7 +139,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const [tokenSelectorError, setTokenSelectorError] = useState(null);
   const [selectedTokens, setSelectedTokens] = useState({});
   const [searchResults, setSearchResults] = useState([]);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
     useState(currentNetwork.chainId);
@@ -233,32 +233,27 @@ export const ImportTokensModal = ({ onClose }) => {
   const handleAddTokens = useCallback(async () => {
     try {
       const addedTokenValues = Object.values(pendingTokens);
-      const isTokenNetworkFilterEqualCurrentNetwork =
-        Object.keys(networkFilter).length === 1;
-      if (isTokenNetworkFilterEqualCurrentNetwork) {
-        await dispatch(addImportedTokens(addedTokenValues, networkClientId));
-      } else {
-        const addedTokensByChain = addedTokenValues.reduce((groups, token) => {
-          if (!groups[token.chainId]) {
-            groups[token.chainId] = [];
-          }
-          groups[token.chainId].push(token);
-          return groups;
-        }, {});
 
-        const promiseAllImport = Object.keys(addedTokensByChain).map(
-          (networkId) => {
-            const clientId =
-              networkConfigurations[networkId]?.rpcEndpoints[
-                networkConfigurations[networkId]?.defaultRpcEndpointIndex
-              ]?.networkClientId;
-            return dispatch(
-              addImportedTokens(addedTokensByChain[networkId], clientId),
-            );
-          },
-        );
-        await Promise.all(promiseAllImport);
-      }
+      const addedTokensByChain = addedTokenValues.reduce((groups, token) => {
+        if (!groups[token.chainId]) {
+          groups[token.chainId] = [];
+        }
+        groups[token.chainId].push(token);
+        return groups;
+      }, {});
+
+      const promiseAllImport = Object.keys(addedTokensByChain).map(
+        (networkId) => {
+          const clientId =
+            networkConfigurations[networkId]?.rpcEndpoints[
+              networkConfigurations[networkId]?.defaultRpcEndpointIndex
+            ]?.networkClientId;
+          return dispatch(
+            addImportedTokens(addedTokensByChain[networkId], clientId),
+          );
+        },
+      );
+      await Promise.all(promiseAllImport);
 
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
@@ -495,8 +490,6 @@ export const ImportTokensModal = ({ onClose }) => {
       (key) => key.toLowerCase() === address.toLowerCase(),
     );
 
-    console.log('isMainnetToken ****************', isMainnetToken);
-
     let standard;
     if (addressIsValid) {
       try {
@@ -510,8 +503,6 @@ export const ImportTokensModal = ({ onClose }) => {
         // ignore
       }
     }
-
-    console.log('standard ****************', standard);
 
     const addressIsEmpty = address.length === 0 || address === EMPTY_ADDRESS;
     switch (true) {

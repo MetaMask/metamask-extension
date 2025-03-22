@@ -66,11 +66,9 @@ export default function ImportTokensModalConfirm({ networkFilter }) {
                         size={AvatarNetworkSize.Xs}
                         name={currentNetwork?.nickname}
                         src={
-                          isCurrentNetworkSelected
-                            ? currentNetwork?.rpcPrefs?.imageUrl
-                            : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                pendingTokens[address]?.chainId
-                              ]
+                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                            pendingTokens[address]?.chainId
+                          ]
                         }
                         backgroundColor={testNetworkBackgroundColor}
                       />
