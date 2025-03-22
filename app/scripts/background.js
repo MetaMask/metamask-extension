@@ -1182,7 +1182,7 @@ export function setupController(
         featureAnnouncementCount +
         walletNotificationCount;
 
-      return unreadNotificationsCount;
+      return unreadNotificationsCount + 1;
     } catch (error) {
       console.error('Failed to get unread notifications count:', error);
       return 0;

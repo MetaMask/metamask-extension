@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -7,15 +8,21 @@ import {
   JustifyContent,
   FlexDirection,
   AlignItems,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { NotificationListItem } from '../../components/multichain';
+import { NotificationListItemIconType } from '../../components/multichain/notification-list-item-icon/notification-list-item-icon';
+import { createTextItems } from '../../helpers/utils/notification.util';
+import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
 import type { Notification } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
+import { useRevokeNotification } from './revoke-notification.hooks';
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
@@ -87,6 +94,9 @@ function NotificationsListStates({
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+  const history = useHistory();
+
+  const testNotif = useRevokeNotification();
 
   // Case when a user has not enabled wallet notifications yet
   if (activeTab === TAB_KEYS.WALLET && !isMetamaskNotificationsEnabled) {
@@ -94,7 +104,7 @@ function NotificationsListStates({
   }
 
   // Loading State
-  if (isLoading) {
+  if (isLoading || testNotif.loading) {
     return <LoadingContent />;
   }
 
@@ -107,8 +117,35 @@ function NotificationsListStates({
     return <EmptyContent />;
   }
 
+  const revokeNotif = testNotif.notification;
+
   return (
     <>
+      {/* Revoke Notification */}
+      {revokeNotif ? (
+        <NotificationListItem
+          id={revokeNotif.id}
+          isRead={revokeNotif.isRead}
+          createdAt={new Date(revokeNotif.createdAt)}
+          icon={{
+            type: NotificationListItemIconType.Token,
+            value: './images/icons/security-time.svg',
+          }}
+          title={createTextItems(
+            [`You have ${revokeNotif.data.length} total approvals`],
+            TextVariant.bodySm,
+          )}
+          description={createTextItems(
+            [`Lets cleanup some tokens you are not using`],
+            TextVariant.bodyMd,
+          )}
+          onClick={() =>
+            history.push(`${NOTIFICATIONS_ROUTE}/${revokeNotif.id}`)
+          }
+        />
+      ) : null}
+
+      {/* Other Notifications */}
       {notifications.map((notification) => (
         <NotificationItem key={notification.id} notification={notification} />
       ))}
