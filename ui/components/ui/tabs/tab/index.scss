@@ -1,6 +1,6 @@
 .tab {
   border-bottom: 2px solid var(--color-border-muted);
-  color: var(--color-text-muted);
+  color: var(--color-text-alternative);
   font-weight: 500;
   transition: color 200ms ease, border-color 200ms ease;
 
@@ -18,7 +18,7 @@
   }
 
   &:hover {
-    color: var(--color-text-default)
+    color: var(--color-text-default);
   }
 
   &--active {
