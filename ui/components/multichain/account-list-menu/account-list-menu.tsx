@@ -254,6 +254,7 @@ export const AccountListMenu = ({
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+
   const filteredUpdatedAccountList = useMemo(
     () =>
       updatedAccountsList.filter((account) =>

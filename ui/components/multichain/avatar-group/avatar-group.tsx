@@ -40,6 +40,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   avatarType = AvatarType.TOKEN,
   borderColor,
   isTagOverlay = false,
+  renderTag = true,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
@@ -101,7 +102,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             </Box>
           );
         })}
-        {showTag && isTagOverlay && (
+        {showTag && isTagOverlay && renderTag && (
           <AvatarBase
             backgroundColor={BackgroundColor.overlayAlternative}
             style={{ marginLeft: marginLeftValue, fontSize: 8 }}
@@ -114,7 +115,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
           </AvatarBase>
         )}
       </Box>
-      {showTag && !isTagOverlay ? (
+      {showTag && !isTagOverlay && renderTag ? (
         <Box>
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {tagValue}
