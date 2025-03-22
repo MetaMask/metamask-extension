@@ -15,12 +15,9 @@ import {
   completeNewWalletFlowIdentity,
   completeOnboardFlowIdentity,
 } from '../flows';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing - New User', function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   describe('from inside MetaMask', function () {
     it('syncs after new wallet creation', async function () {
@@ -66,6 +63,8 @@ describe('Account syncing - New User', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: secondAccountName,
           });
+          // Add a delay to allow the account to sync, this can be long for MV2
+          await driver.delay(2000);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

@@ -9,24 +9,37 @@ import AccountDetailsModal from '../../../page-objects/pages/dialog/account-deta
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeOnboardFlowIdentity } from '../flows';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 
-describe('Account syncing - Rename Accounts', async function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+describe('Account syncing - Rename Accounts', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
-  const unencryptedAccounts = accountsToMockForAccountsSync;
-  const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
-  const accountOneNewName = 'Account One New Name';
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const accountOneNewName = 'Account One New Name';
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      accountOneNewName,
+    };
+  };
 
   describe('from inside MetaMask', function () {
     it('syncs renamed account names', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        accountOneNewName,
+      } = await arrange();
 
       await withFixtures(
         {
