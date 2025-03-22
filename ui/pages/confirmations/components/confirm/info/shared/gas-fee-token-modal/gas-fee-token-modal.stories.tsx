@@ -5,7 +5,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../../test/
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 
-import { TokenGasFeeModal } from './token-gas-fee-modal';
+import { GasFeeTokenModal } from './gas-fee-token-modal';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
@@ -53,8 +53,8 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/TokenGasFeeModal',
-  component: TokenGasFeeModal,
+  title: 'Confirmations/Components/Confirm/GasFeeTokenModal',
+  component: GasFeeTokenModal,
   decorators: [
     (story: any) => (
       <Provider store={store}>
@@ -66,6 +66,6 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <TokenGasFeeModal onClose={() => {}} />;
+export const DefaultStory = () => <GasFeeTokenModal onClose={() => {}} />;
 
 DefaultStory.storyName = 'Default';
