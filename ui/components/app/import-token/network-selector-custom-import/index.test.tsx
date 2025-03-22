@@ -4,7 +4,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import NetworkSelectorCustomImport from '.';
+import { NetworkSelectorCustomImport } from '.';
 
 describe('NetworkSelectorCustomImport', () => {
   const store = configureStore()(mockState);

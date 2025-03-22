@@ -41,6 +41,7 @@ import InfoTooltip from '../../../../ui/info-tooltip';
 type SortControlProps = {
   handleClose: () => void;
   handleFilterNetwork?: (chainFilters: Record<string, boolean>) => void;
+  networkFilter?: Record<string, boolean>;
 };
 
 const NetworkFilter = ({
