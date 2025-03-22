@@ -18,17 +18,17 @@ import classnames from 'classnames';
 import { useEthFiatAmount } from '../../../../../../../hooks/useEthFiatAmount';
 import { Hex } from '@metamask/utils';
 
-export type TokenGasFeeListItemProps = {
+export type GasFeeTokenListItemProps = {
   gasFeeToken: GasFeeToken;
   isSelected?: boolean;
   onClick?: (token: GasFeeToken) => void;
 };
 
-export function TokenGasFeeListItem({
+export function GasFeeTokenListItem({
   gasFeeToken,
   isSelected,
   onClick,
-}: TokenGasFeeListItemProps) {
+}: GasFeeTokenListItemProps) {
   const { amount, balance, decimals, rateWei, symbol, tokenAddress } =
     gasFeeToken;
 
@@ -83,8 +83,8 @@ function ListItem({
       justifyContent={JustifyContent.spaceBetween}
       backgroundColor={isSelected ? BackgroundColor.primaryMuted : undefined}
       padding={2}
-      className={classnames('token-gas-fee-list-item', {
-        'token-gas-fee-list-item--selected': isSelected ?? false,
+      className={classnames('gas-fee-token-list-item', {
+        'gas-fee-token-list-item--selected': isSelected ?? false,
       })}
       onClick={() => onClick?.()}
     >
@@ -114,7 +114,7 @@ function SelectedIndicator() {
     <Box
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.primaryDefault}
-      className="token-gas-fee-list-item__selected-indicator"
+      className="gas-fee-token-list-item__selected-indicator"
     />
   );
 }
