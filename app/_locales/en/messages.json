@@ -1074,6 +1074,12 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmGasFeeTokenBalance": {
+    "message": "Bal:"
+  },
+  "confirmGasFeeTokenModalTitle": {
+    "message": "Select a token"
+  },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
   },

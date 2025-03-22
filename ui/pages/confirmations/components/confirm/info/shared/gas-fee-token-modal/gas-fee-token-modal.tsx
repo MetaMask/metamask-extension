@@ -14,8 +14,10 @@ import {
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
+  const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { gasFeeTokens } = currentConfirmation;
   const { id: transactionId, selectedGasFeeToken } = currentConfirmation;
@@ -36,7 +38,9 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     >
       <ModalOverlay data-testid="modal-overlay" />
       <ModalContent size={ModalContentSize.Md}>
-        <ModalHeader onClose={onClose}>Select a token</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {t('confirmGasFeeTokenModalTitle')}
+        </ModalHeader>
         <ModalBody
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
