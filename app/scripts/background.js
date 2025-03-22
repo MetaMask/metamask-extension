@@ -71,12 +71,17 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { createOffscreen } from './offscreen';
+import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -355,29 +360,24 @@ function maybeDetectPhishing(theController) {
 }
 
 // These are set after initialization
-let connectRemote;
-let connectExternalExtension;
-let connectExternalCaip;
+let connectWindowPostMessage;
+let connectExternallyConnectable;
+let connectEip1193;
+let connectCaipMultichain;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
+  connectWindowPostMessage(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-  // This is set in `setupController`, which is called as part of initialization
 
-  const port = args[0];
-  const isDappConnecting = port.sender.tab?.id;
-  if (isDappConnecting && process.env.MULTICHAIN_API) {
-    connectExternalCaip(...args);
-  } else {
-    connectExternalExtension(...args);
-  }
+  // This is set in `setupController`, which is called as part of initialization
+  connectExternallyConnectable(...args);
 });
 
 function saveTimestamp() {
@@ -869,12 +869,12 @@ export function setupController(
    */
 
   /**
-   * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
+   * Connects a WindowPostMessage Port to the MetaMask controller.
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  connectRemote = async (remotePort) => {
+  connectWindowPostMessage = (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -981,45 +981,88 @@ export function setupController(
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
-      connectExternalExtension(remotePort);
+
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+      connectEip1193(portStream, remotePort.sender);
+
+      if (process.env.MULTICHAIN_API && isFirefox) {
+        const mux = setupMultiplex(portStream);
+        mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+
+        connectCaipMultichain(
+          mux.createStream(
+            METAMASK_CAIP_MULTICHAIN_PROVIDER,
+            remotePort.sender,
+          ),
+        );
+      }
     }
   };
 
-  // communication with page or other extension
-  connectExternalExtension = (remotePort) => {
+  /**
+   * Connects a externally_connecatable Port to the MetaMask controller.
+   * This method identifies dapp clients and connects them differently from extension clients.
+   *
+   * @param {Port} remotePort - The port provided by a new context.
+   */
+  connectExternallyConnectable = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    const isDappConnecting = remotePort.sender.tab?.id;
+    if (isDappConnecting && process.env.MULTICHAIN_API) {
+      if (metamaskBlockedPorts.includes(remotePort.name)) {
+        return;
+      }
+
+      // this is triggered when a new tab is opened, or origin(url) is changed
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        trackDappView(remotePort);
+      }
+
+      connectCaipMultichain(portStream, remotePort.sender);
+    } else {
+      connectEip1193(portStream, remotePort.sender);
+    }
+  };
+
+  /**
+   * Connects a Duplexstream to the MetaMask controller EIP-1193 API (via a multiplexed duplex stream).
+   *
+   * @param {DuplexStream} connectionStream - The duplex stream.
+   * @param sender - The remote port sender.
+   */
+  connectEip1193 = (connectionStream, sender) => {
     controller.setupUntrustedCommunicationEip1193({
-      connectionStream: portStream,
-      sender: remotePort.sender,
+      connectionStream,
+      sender,
     });
   };
 
-  connectExternalCaip = async (remotePort) => {
+  /**
+   * Connects a DuplexStream to the MetaMask controller Caip Multichain API.
+   *
+   * @param {DuplexStream} connectionStream - The duplex stream.
+   * @param sender - The remote port sender.
+   */
+  connectCaipMultichain = (connectionStream, sender) => {
     if (!process.env.MULTICHAIN_API) {
       return;
     }
 
-    if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return;
-    }
-
-    // this is triggered when a new tab is opened, or origin(url) is changed
-    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-      trackDappView(remotePort);
-    }
-
-    const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-
     controller.setupUntrustedCommunicationCaip({
-      connectionStream: portStream,
-      sender: remotePort.sender,
+      connectionStream,
+      sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
+    overrides.registerConnectListeners(
+      connectWindowPostMessage,
+      connectEip1193,
+    );
   }
 
   //
