@@ -189,10 +189,12 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const nativeAssetBalance = useLatestBalance(
-    fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    fromChain?.chainId,
+  const nativeAsset = useMemo(
+    () =>
+      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
+    [fromChain?.chainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChain?.chainId);
 
   const { tokenAlert } = useTokenAlerts();
   const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);

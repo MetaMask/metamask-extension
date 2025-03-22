@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { useMemo } from 'react';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -29,10 +30,11 @@ export const useIsTxSubmittable = () => {
   } = useSelector(getValidationErrors);
 
   const balanceAmount = useLatestBalance(fromToken, fromChainId);
-  const nativeAssetBalance = useLatestBalance(
-    fromChainId ? getNativeAssetForChainId(fromChainId) : null,
-    fromChainId,
+  const nativeAsset = useMemo(
+    () => getNativeAssetForChainId(fromChainId),
+    [fromChainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChainId);
 
   return Boolean(
     fromToken &&

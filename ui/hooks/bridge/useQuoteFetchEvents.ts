@@ -45,10 +45,12 @@ export const useQuoteFetchEvents = () => {
   const fromChain = useSelector(getFromChain);
 
   const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
-  const nativeAssetBalance = useLatestBalance(
-    fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    fromChain?.chainId,
+  const nativeAsset = useMemo(
+    () =>
+      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
+    [fromChain?.chainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChain?.chainId);
 
   const warnings = useMemo(() => {
     const {
