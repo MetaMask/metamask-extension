@@ -64,6 +64,7 @@ import {
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
+  getAllChainsToPoll,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -166,6 +167,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
+
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
@@ -291,7 +294,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     dispatch(setActiveNetwork(networkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-    dispatch(detectNfts());
+    dispatch(detectNfts(allChainIds));
 
     dispatch(toggleNetworkMenu());
 

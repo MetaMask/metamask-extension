@@ -394,6 +394,7 @@ class FixtureBuilder {
               image:
                 'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
               standard: 'ERC1155',
+              chainId: 1337,
             },
           ],
         },
@@ -428,6 +429,7 @@ class FixtureBuilder {
               name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
+              chainId: 1337,
             },
           ],
         },
