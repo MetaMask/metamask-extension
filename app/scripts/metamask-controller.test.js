@@ -226,13 +226,19 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
 }));
 
 const DEFAULT_LABEL = 'Account 1';
-const TEST_SEED =
-  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+const TEST_SEED = [
+  ...new TextEncoder().encode(
+    'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+  ),
+];
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TEST_ADDRESS_2 = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
-const TEST_SEED_ALT =
-  'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
+const TEST_SEED_ALT = [
+  ...new TextEncoder().encode(
+    'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+  ),
+];
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 const TEST_INTERNAL_ACCOUNT = {
   id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
@@ -374,6 +380,9 @@ describe('MetaMaskController', () => {
   });
 
   describe('MetaMaskController Behaviour', () => {
+    /**
+     * @type {MetaMaskController}
+     */
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
@@ -690,17 +699,32 @@ describe('MetaMaskController', () => {
 
     describe('#createNewVaultAndRestore', () => {
       it('should be able to call newVaultAndRestore despite a mistake.', async () => {
+        expect.assertions(5);
+
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController
-          .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
-          .catch(() => null);
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        // there should be no locks (tasks should be empty)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(0);
 
-        expect(
-          metamaskController.keyringController.createNewVaultAndRestore,
-        ).toHaveBeenCalledTimes(2);
+        // invalid seed should throw
+        const createVault = metamaskController.createNewVaultAndRestore(
+          password,
+          TEST_SEED.slice(0, -1),
+        );
+        // a lock should be taken (tasks should not be empty)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(1);
+
+        // eslint-disable-next-line jest/require-to-throw-message
+        await expect(createVault).rejects.toThrow();
+
+        // the lock should be released (tasks should be empty again)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(0);
+
+        // and calling again should work
+        await expect(
+          metamaskController.createNewVaultAndRestore(password, TEST_SEED),
+        ).resolves.toBeUndefined(); // it doesn't return anything on success
       });
 
       it('should clear previous identities after vault restoration', async () => {
@@ -2313,6 +2337,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setUpCookieHandlerCommunication', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetaMaskController;
       beforeEach(() => {
         localMetaMaskController = new MetaMaskController({
@@ -2626,6 +2653,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetamaskController;
       beforeEach(() => {
         process.env.MULTICHAIN_API = true;
@@ -3786,6 +3816,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('RemoteFeatureFlagController', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetamaskController;
 
       beforeEach(() => {
@@ -3961,7 +3994,9 @@ describe('MetaMaskController', () => {
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
-        expect(newSRP).toStrictEqual(TEST_SEED_ALT);
+        expect(newSRP).toStrictEqual(
+          new TextDecoder().decode(Uint8Array.from(TEST_SEED_ALT)),
+        );
       });
 
       it('throws an error if a duplicate srp is added', async () => {
