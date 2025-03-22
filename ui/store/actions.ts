@@ -2315,15 +2315,24 @@ export async function getTokenStandardAndDetails(
   address: string,
   userAddress?: string,
   tokenId?: string,
+  networkClientId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
   > & { balance?: string }
 > {
+  console.log(
+    'getTokenStandardAndDetails 222 ****************',
+    address,
+    userAddress,
+    tokenId,
+    networkClientId,
+  );
   return await submitRequestToBackground('getTokenStandardAndDetails', [
     address,
     userAddress,
     tokenId,
+    networkClientId,
   ]);
 }
 
