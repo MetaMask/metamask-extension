@@ -1,7 +1,8 @@
-import {
+import type {
   AddNetworkFields,
-  RpcEndpointType,
+  NetworkConfiguration,
 } from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 import { Hex } from '@metamask/utils';
 
@@ -248,6 +249,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SONEIUM_TESTNET: '0x79a',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  SHAPE_SEPOLIA: '0x2b03',
+  SHAPE: '0x168',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -297,7 +300,7 @@ export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
-export const MEGAETH_TESTNET_DISPLAY_NAME = 'MegaETH Testnet';
+export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
@@ -305,6 +308,8 @@ export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
+export const SHAPE_SEPOLIA_DISPLAY_NAME = 'Shape Sepolia';
+export const SHAPE_DISPLAY_NAME = 'Shape';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -434,6 +439,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SONEIUM_MAINNET: 'ETH',
   SONEIUM_TESTNET: 'ETH',
   MODE: 'ETH',
+  SHAPE: 'ETH',
+  SHAPE_SEPOLIA: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -526,6 +533,8 @@ export const SONIC_MAINNET_IMAGE_URL = './images/sonic.svg';
 export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
+export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
+export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 
@@ -565,7 +574,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
-  [NETWORK_TYPES.MEGAETH_TESTNET]: CURRENCY_SYMBOLS.ETH,
+  [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
 };
 
 /**
@@ -598,7 +607,7 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.MEGAETH_TESTNET]: {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-    blockExplorerUrl: 'https://www.megaexplorer.xyz',
+    blockExplorerUrl: 'https://megaexplorer.xyz',
   },
 } as const;
 
@@ -774,6 +783,11 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_TESTNET,
+  [CHAINLIST_CHAIN_IDS_MAP.SHAPE]: CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE,
+  [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE_SEPOLIA,
+  [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
+    TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
 } as const;
 
 /**
@@ -904,6 +918,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE_SEPOLIA]: MODE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SHAPE]: SHAPE_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: SHAPE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
 } as const;
@@ -953,6 +969,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAIN_IDS.MODE]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FUNKICHAIN]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SHAPE]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: TEST_ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
 } as const;
@@ -1188,6 +1206,27 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];
+
+/**
+ * A mapping for the default custom testnets.
+ */
+export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
+  [CHAIN_IDS.MEGAETH_TESTNET]: {
+    chainId: CHAIN_IDS.MEGAETH_TESTNET,
+    name: MEGAETH_TESTNET_DISPLAY_NAME,
+    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+    blockExplorerUrls: ['https://megaexplorer.xyz'],
+    defaultRpcEndpointIndex: 0,
+    defaultBlockExplorerUrlIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'megaeth-testnet',
+        url: 'https://carrot.megaeth.com/rpc',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+  },
+};
 
 export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.SEPOLIA,
