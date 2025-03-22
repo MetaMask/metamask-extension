@@ -912,6 +912,27 @@ export default class MetaMetricsController extends BaseController<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): void {
+    // Debug:transactions-tx-hash-in-analytics
+    if (
+      payload.event === 'Swap Completed' ||
+      payload.event === 'Action Completed'
+    ) {
+      // Get feature flags from preferences state
+      const preferencesState = this.messagingSystem.call(
+        'PreferencesController:getState',
+      );
+      console.log('ANALYTICS TEST:', {
+        event: payload.event,
+        hasTransactionHash: Boolean(
+          payload.sensitiveProperties?.transaction_hash,
+        ),
+        transactionHash: payload.sensitiveProperties?.transaction_hash,
+        featureFlagsEnabled:
+          preferencesState?.featureFlags?.collectTransactionHashInAnalytics,
+      });
+    }
+    // Debug:transactions-tx-hash-in-analytics
+
     // validation is not caught and handled
     this.#validatePayload(payload);
     this.#submitEvent(payload, options).catch((err) => {

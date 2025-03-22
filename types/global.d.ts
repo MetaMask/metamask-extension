@@ -263,6 +263,8 @@ export declare global {
 
   var stateHooks: StateHooks;
 
+  var debugEvents: unknown[]; // Debug:transactions-tx-hash-in-analytics
+
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

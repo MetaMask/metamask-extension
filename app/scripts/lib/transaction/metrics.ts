@@ -328,12 +328,17 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionMetricsRequest.getRemoteFeatureFlags - Returns the remote feature flags object
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent }: TransactionMetricsRequest,
+  {
+    getParticipateInMetrics,
+    trackEvent,
+    getRemoteFeatureFlags,
+  }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -381,26 +386,43 @@ export const handlePostTransactionBalanceUpdate = async (
         approvalTransactionMeta,
       );
 
+      const sensitiveProperties: Record<string, string | number | null> = {
+        ...transactionMeta.swapMetaData,
+        token_to_amount_received: tokensReceived,
+        quote_vs_executionRatio: quoteVsExecutionRatio,
+        estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+        approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+        trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+        trade_and_approval_gas_cost_in_eth:
+          transactionsCost.tradeAndApprovalGasCostInEth,
+        token_to_amount:
+          transactionMeta.swapMetaData.token_to_amount.toString(10),
+      };
+
+      // Add transaction hash if remote feature flag is enabled
+      if (
+        getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
+        transactionMeta.hash
+      ) {
+        sensitiveProperties.transaction_hash = transactionMeta.hash;
+
+        // Debug:transactions-tx-hash-in-analytics
+        if (!globalThis.debugEvents) {
+          globalThis.debugEvents = [];
+        }
+        globalThis.debugEvents.push({
+          time: Date.now(),
+          type: 'Swap Completed',
+          hash: transactionMeta.hash,
+          flagSource: 'remote',
+        });
+        // Debug:transactions-tx-hash-in-analytics
+      }
+
       trackEvent({
         event: MetaMetricsEventName.SwapCompleted,
         category: MetaMetricsEventCategory.Swaps,
-        sensitiveProperties: {
-          ...transactionMeta.swapMetaData,
-          token_to_amount_received: tokensReceived,
-          quote_vs_executionRatio: quoteVsExecutionRatio,
-          estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
-          approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
-          trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
-          trade_and_approval_gas_cost_in_eth:
-            transactionsCost.tradeAndApprovalGasCostInEth,
-          // Firefox and Chrome have different implementations of the APIs
-          // that we rely on for communication accross the app. On Chrome big
-          // numbers are converted into number strings, on firefox they remain
-          // Big Number objects. As such, we convert them here for both
-          // browsers.
-          token_to_amount:
-            transactionMeta.swapMetaData.token_to_amount.toString(10),
-        },
+        sensitiveProperties,
       });
     }
   }
@@ -1065,6 +1087,16 @@ async function buildEventFragmentProperties({
     properties,
     sensitiveProperties,
   );
+
+  if (
+    transactionMetricsRequest.getRemoteFeatureFlags?.()
+      ?.collectTransactionHashInAnalytics &&
+    transactionMetricsRequest.getParticipateInMetrics?.()
+  ) {
+    if (transactionMeta.hash) {
+      sensitiveProperties.transaction_hash = transactionMeta.hash;
+    }
+  }
 
   return { properties, sensitiveProperties };
 }
