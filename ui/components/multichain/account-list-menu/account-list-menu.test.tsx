@@ -7,6 +7,7 @@ import {
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -671,6 +672,78 @@ describe('AccountListMenu', () => {
 
       expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
+    });
+  });
+
+  describe('Multi Srp', () => {
+    it('redirects to import srp component', () => {
+      const { getByTestId } = render();
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      button.click();
+
+      const addAccountButton = getByTestId(
+        'multichain-account-menu-popover-import-srp',
+      );
+      addAccountButton.click();
+
+      expect(getByTestId('import-srp-container')).toBeInTheDocument();
+    });
+
+    it('shows srp list if there are multiple srps when adding a new account', async () => {
+      mockNextAccountName.mockReturnValue('Next HD Account');
+
+      const accountInSecondSrp = createMockInternalAccount({
+        address: '0xb1baf6a2f4a808937bb97a2f12ccf08f1233e3d9',
+        name: 'Account in second Srp',
+      });
+      const secondHdKeyring = {
+        accounts: [accountInSecondSrp.address],
+        type: KeyringTypes.hd,
+      };
+      const secondHdKeyringMetadata = {
+        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+        name: '',
+      };
+
+      const { getByTestId } = render({
+        metamask: {
+          ...mockState.metamask,
+          accounts: {
+            [accountInSecondSrp.address]: {
+              address: accountInSecondSrp.address,
+              balance: '0x0',
+            },
+          },
+          keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
+          keyringsMetadata: [
+            ...mockState.metamask.keyringsMetadata,
+            secondHdKeyringMetadata,
+          ],
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [accountInSecondSrp.id]: accountInSecondSrp,
+            },
+            selectedAccount: accountInSecondSrp.id,
+          },
+        },
+      });
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      await button.click();
+
+      const addAccountButton = getByTestId(
+        'multichain-account-menu-popover-add-account',
+      );
+      await addAccountButton.click();
+
+      expect(getByTestId('select-srp-container')).toBeInTheDocument();
     });
   });
 });
