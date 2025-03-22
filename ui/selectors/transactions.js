@@ -107,8 +107,9 @@ export const incomingTxListSelectorAllChains = createDeepEqualSelector(
 
 export const getUnapprovedTransactions = createDeepEqualSelector(
   (state) => {
-    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    return filterAndShapeUnapprovedTransactions(currentNetworkTransactions);
+    const transactions = getTransactions(state);
+    console.log('===========================', transactions);
+    return filterAndShapeUnapprovedTransactions(transactions);
   },
   (transactions) => transactions,
 );
