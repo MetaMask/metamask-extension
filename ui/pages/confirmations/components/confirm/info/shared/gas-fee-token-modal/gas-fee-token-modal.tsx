@@ -15,14 +15,14 @@ import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 
-export function GasFeeTokenModal({ onClose }: { onClose: () => void }) {
+export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { gasFeeTokens } = currentConfirmation;
   const { id: transactionId, selectedGasFeeToken } = currentConfirmation;
 
   const handleTokenClick = useCallback(
     async (_token: GasFeeToken) => {
-      onClose();
+      onClose?.();
     },
     [transactionId, onClose],
   );
@@ -30,7 +30,7 @@ export function GasFeeTokenModal({ onClose }: { onClose: () => void }) {
   return (
     <Modal
       isOpen={true}
-      onClose={onClose}
+      onClose={onClose ?? (() => {})}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
     >
