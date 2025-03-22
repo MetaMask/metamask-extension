@@ -1564,6 +1564,7 @@
       "globals": {
         "addEventListener": true,
         "console.error": true,
+        "console.log": true,
         "document.createElement": true,
         "document.head.appendChild": true,
         "fetch": true,
