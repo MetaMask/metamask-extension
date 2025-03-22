@@ -158,13 +158,20 @@ export const escapeColon = (selector: string): string =>
  * @param browser - The browser environment of the current test, against which to conditionally run or skip the test.
  * @param description - The description of the test suite.
  * @param callback - The callback function to execute the test suite.
+ * @param timeout - The optional timeout value to set for the test suite.
  */
 export const describeBrowserOnly = (
   browser: string,
   description: string,
   callback: () => void,
+  timeout?: number,
 ) => {
   return process.env.SELENIUM_BROWSER === browser
-    ? describe(description, callback)
+    ? describe(description, function () {
+        if (timeout) {
+          this.timeout(timeout);
+        }
+        callback();
+      })
     : describe.skip(description, callback);
 };
