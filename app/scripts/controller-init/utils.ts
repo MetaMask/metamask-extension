@@ -43,7 +43,10 @@ export type ControllersToInitialize =
   | 'MultichainAssetsController'
   | 'MultichainAssetsRatesController'
   | 'MultichainBalancesController'
+  | 'MultichainNetworkController'
   | 'MultichainTransactionsController'
+  | 'NotificationServicesController'
+  | 'NotificationServicesPushController'
   | 'RateLimitController'
   | 'SnapsRegistry'
   | 'SnapController'
@@ -61,7 +64,7 @@ type InitFunction<Name extends ControllersToInitialize> =
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
 
-type InitFunctions = Partial<{
+export type InitFunctions = Partial<{
   [name in ControllersToInitialize]: InitFunction<name>;
 }>;
 
