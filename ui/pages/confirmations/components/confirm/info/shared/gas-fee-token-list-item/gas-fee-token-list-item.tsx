@@ -78,6 +78,7 @@ function ListItem({
 }) {
   return (
     <Box
+      data-testid="gas-fee-token-list-item"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
