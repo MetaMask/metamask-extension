@@ -1440,7 +1440,10 @@ export default class MetamaskController extends EventEmitter {
         const { type, rpcUrl } =
           providerConfig ??
           getProviderConfig({
-            metamask: this.networkController.state,
+            metamask: {
+              ...this.networkController.state,
+              ...this.selectedNetworkController.state,
+            },
           });
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
@@ -3384,7 +3387,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       getProviderConfig: () =>
         getProviderConfig({
-          metamask: this.networkController.state,
+          metamask: {
+            ...this.networkController.state,
+            ...this.selectedNetworkController.state,
+          },
         }),
       grantPermissionsIncremental:
         this.permissionController.grantPermissionsIncremental.bind(
@@ -6289,6 +6295,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
+        this.selectedNetworkController,
       ),
     );
 
@@ -8110,7 +8117,10 @@ export default class MetamaskController extends EventEmitter {
         }
 
         keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
+          metamask: {
+            ...this.networkController.state,
+            ...this.selectedNetworkController.state,
+          },
         }).type;
 
         return await callback(keyring);
