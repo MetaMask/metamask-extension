@@ -100,6 +100,7 @@ import {
   isAddressLedger,
   getIsUnlocked,
   getCompletedOnboarding,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -3637,3 +3638,8 @@ export function getRequestType(state, id) {
 }
 
 // #endregion permissions selectors
+
+export const getMemoizedCurrentCurrency = createDeepEqualSelector(
+  [getCurrentCurrency],
+  (currency) => currency,
+);
