@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -14,7 +8,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
-import { EthScope } from '@metamask/keyring-api';
 import {
   RpcEndpointType,
   type UpdateNetworkFields,
@@ -27,15 +20,12 @@ import {
 } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
-import { NetworkListItem } from '../network-list-item';
 import {
   hideNetworkBanner,
   setActiveNetwork,
   setShowTestNetworks,
-  showModal,
   toggleNetworkMenu,
   updateNetworksList,
-  setNetworkClientIdForDomain,
   setEditedNetwork,
   showPermittedNetworkToast,
   updateCustomNonce,
@@ -43,6 +33,7 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
+  setNetworkClientIdForDomain,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -89,7 +80,6 @@ import {
   IconName,
   ModalContent,
   ModalHeader,
-  AvatarNetworkSize,
 } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -99,7 +89,6 @@ import {
 import {
   convertCaipToHexChainId,
   sortNetworks,
-  getNetworkIcon,
   getRpcDataByChainId,
 } from '../../../../shared/modules/network.utils';
 import {
@@ -114,6 +103,7 @@ import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
+import { NetworkItems } from './NetworkItems/NetworkItems';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -317,7 +307,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // to ensure that the isConnected value can be accurately inferred from
       // NetworkController.state.networksMetadata in return value of
       // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-      setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      dispatch(setNetworkClientIdForDomain(selectedTabOrigin, networkClientId));
     }
 
     if (permittedAccountAddresses.length > 0) {
@@ -377,108 +367,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         to_network: chainIdToTrack,
       },
     });
-  };
-
-  const hasMultiRpcOptions = useCallback(
-    (network: MultichainNetworkConfiguration): boolean =>
-      network.isEvm &&
-      getRpcDataByChainId(network.chainId, evmNetworks).rpcEndpoints.length > 1,
-    [evmNetworks],
-  );
-
-  const isNetworkEnabled = useCallback(
-    (network: MultichainNetworkConfiguration): boolean =>
-      network.isEvm || isUnlocked || hasAnyAccountsInNetwork(network.chainId),
-    [hasAnyAccountsInNetwork, isUnlocked],
-  );
-
-  const getItemCallbacks = useCallback(
-    (
-      network: MultichainNetworkConfiguration,
-    ): Record<string, (() => void) | undefined> => {
-      const { chainId, isEvm } = network;
-
-      if (!isEvm) {
-        return {};
-      }
-
-      // Non-EVM networks cannot be deleted, edited or have
-      // RPC endpoints so it's safe to call this conversion function here.
-      const hexChainId = convertCaipToHexChainId(chainId);
-      const isDeletable =
-        isUnlocked &&
-        network.chainId !== currentChainId &&
-        network.chainId !== EthScope.Mainnet;
-
-      return {
-        onDelete: isDeletable
-          ? () => {
-              dispatch(toggleNetworkMenu());
-              dispatch(
-                showModal({
-                  name: 'CONFIRM_DELETE_NETWORK',
-                  target: hexChainId,
-                  onConfirm: () => undefined,
-                }),
-              );
-            }
-          : undefined,
-        onEdit: () => {
-          dispatch(
-            setEditedNetwork({
-              chainId: hexChainId,
-              nickname: network.name,
-            }),
-          );
-          setActionMode(ACTION_MODE.ADD_EDIT);
-        },
-        onRpcConfigEdit: hasMultiRpcOptions(network)
-          ? () => {
-              setActionMode(ACTION_MODE.SELECT_RPC);
-              dispatch(
-                setEditedNetwork({
-                  chainId: hexChainId,
-                }),
-              );
-            }
-          : undefined,
-      };
-    },
-    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked],
-  );
-
-  // Renders a network in the network list
-  const generateMultichainNetworkListItem = (
-    network: MultichainNetworkConfiguration,
-  ) => {
-    const { chainId } = network;
-    const isCurrentNetwork = chainId === currentChainId;
-    const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
-    const iconSrc = getNetworkIcon(network);
-
-    return (
-      <NetworkListItem
-        key={network.chainId}
-        chainId={network.chainId}
-        name={network.name}
-        iconSrc={iconSrc}
-        iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
-        rpcEndpoint={
-          hasMultiRpcOptions(network)
-            ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
-            : undefined
-        }
-        onClick={async () => {
-          await handleNetworkChange(chainId);
-        }}
-        onDeleteClick={onDelete}
-        onEditClick={onEdit}
-        onRpcEndpointClick={onRpcConfigEdit}
-        disabled={!isNetworkEnabled(network)}
-      />
-    );
   };
 
   const render = () => {
@@ -566,7 +454,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                                   {...providedDrag.draggableProps}
                                   {...providedDrag.dragHandleProps}
                                 >
-                                  {generateMultichainNetworkListItem(network)}
+                                  <NetworkItems
+                                    network={network}
+                                    isUnlocked={isUnlocked}
+                                    currentChainId={currentChainId}
+                                    handleNetworkChange={handleNetworkChange}
+                                    toggleNetworkMenu={toggleNetworkMenu}
+                                    setActionMode={setActionMode}
+                                    focusSearch={focusSearch}
+                                    evmNetworks={evmNetworks}
+                                  />
                                 </Box>
                               )}
                             </Draggable>
@@ -612,9 +509,19 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
               {showTestnets || currentlyOnTestnet ? (
                 <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
-                    generateMultichainNetworkListItem(network),
-                  )}
+                  {searchedTestNetworks.map((network) => (
+                    <NetworkItems
+                      key={network.chainId}
+                      network={network}
+                      isUnlocked={isUnlocked}
+                      currentChainId={currentChainId}
+                      handleNetworkChange={handleNetworkChange}
+                      toggleNetworkMenu={toggleNetworkMenu}
+                      setActionMode={setActionMode}
+                      focusSearch={focusSearch}
+                      evmNetworks={evmNetworks}
+                    />
+                  ))}
                 </Box>
               ) : null}
             </Box>
