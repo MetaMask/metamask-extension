@@ -155,7 +155,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               Token ID
             </p>
             <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
             >
               1
             </p>
@@ -169,7 +169,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               Token standard
             </p>
             <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
             >
               ERC721
             </p>
