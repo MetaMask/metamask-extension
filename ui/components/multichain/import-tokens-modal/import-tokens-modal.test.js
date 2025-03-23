@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import {
   clearPendingTokens,
-  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
   setPendingTokens,
   setConfirmationExchangeRates,
 } from '../../../store/actions';
@@ -15,7 +15,7 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { ImportTokensModal } from '.';
 
 jest.mock('../../../store/actions', () => ({
-  getTokenStandardAndDetails: jest
+  getTokenStandardAndDetailsByChain: jest
     .fn()
     .mockImplementation(() => Promise.resolve({ standard: 'ERC20' })),
   setPendingTokens: jest
@@ -224,7 +224,7 @@ describe('ImportTokensModal', () => {
     });
 
     it('sets and error when a token is an NFT', async () => {
-      getTokenStandardAndDetails.mockImplementation(() =>
+      getTokenStandardAndDetailsByChain.mockImplementation(() =>
         Promise.resolve({ standard: TokenStandard.ERC721 }),
       );
 

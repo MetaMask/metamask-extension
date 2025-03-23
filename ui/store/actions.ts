@@ -2315,7 +2315,6 @@ export async function getTokenStandardAndDetails(
   address: string,
   userAddress?: string,
   tokenId?: string,
-  networkClientId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
@@ -2325,7 +2324,24 @@ export async function getTokenStandardAndDetails(
     address,
     userAddress,
     tokenId,
-    networkClientId,
+  ]);
+}
+
+export async function getTokenStandardAndDetailsByChain(
+  address: string,
+  userAddress?: string,
+  tokenId?: string,
+  chainId?: string,
+): Promise<
+  Awaited<
+    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+  > & { balance?: string }
+> {
+  return await submitRequestToBackground('getTokenStandardAndDetailsByChain', [
+    address,
+    userAddress,
+    tokenId,
+    chainId,
   ]);
 }
 

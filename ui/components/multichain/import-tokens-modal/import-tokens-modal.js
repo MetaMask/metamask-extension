@@ -15,7 +15,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-  getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
 import {
   getInternalAccounts,
@@ -36,13 +35,13 @@ import {
 import {
   addImportedTokens,
   clearPendingTokens,
-  getTokenStandardAndDetails,
   setPendingTokens,
   showImportNftsModal,
   setNewTokensImported,
   setNewTokensImportedError,
   hideImportTokensModal,
   setConfirmationExchangeRates,
+  getTokenStandardAndDetailsByChain,
 } from '../../../store/actions';
 import {
   BannerAlert,
@@ -493,7 +492,7 @@ export const ImportTokensModal = ({ onClose }) => {
     let standard;
     if (addressIsValid) {
       try {
-        ({ standard } = await getTokenStandardAndDetails(
+        ({ standard } = await getTokenStandardAndDetailsByChain(
           standardAddress,
           selectedAccount.address,
           null,
