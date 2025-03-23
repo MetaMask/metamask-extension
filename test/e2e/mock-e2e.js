@@ -161,7 +161,9 @@ async function setupMocking(
   });
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
+    .forPost(
+      `${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x${chainId.toString(16)}`,
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -317,6 +319,17 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
+  });
+  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
+    name: 'Mainnet',
+    group: 'ethereum',
+    chainID: 1,
+    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: true,
+    hidden: false,
   });
 
   await server
@@ -629,6 +642,20 @@ async function setupMocking(
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
     .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ETH: {
+            USD: ethConversionInUsd,
+          },
+        },
+      };
+    });
+
+  await server
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,

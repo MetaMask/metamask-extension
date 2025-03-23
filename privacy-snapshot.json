@@ -29,6 +29,7 @@
   "etherscan.io",
   "execution.metamask.io",
   "fonts.gstatic.com",
+  "foo.io",
   "gas.api.cx.metamask.io",
   "github.com",
   "goerli.infura.io",
@@ -83,5 +84,6 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "api.web3modal.org"
 ]

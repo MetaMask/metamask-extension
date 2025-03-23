@@ -63,6 +63,7 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const mocks = {
+    isAddFlow: true,
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
     setNetworkClientIdForDomain: jest.fn(),
     getNetworkConfigurationByChainId: jest.fn(),
@@ -78,6 +79,7 @@ const createMockedHandler = () => {
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    rejectApprovalRequestsForOrigin: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -185,9 +187,11 @@ describe('addEthereumChainHandler', () => {
       {
         autoApprove: true,
         getCaveat: mocks.getCaveat,
+        isAddFlow: true,
         setActiveNetwork: mocks.setActiveNetwork,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        rejectApprovalRequestsForOrigin: mocks.rejectApprovalRequestsForOrigin,
       },
     );
   });
@@ -250,9 +254,12 @@ describe('addEthereumChainHandler', () => {
           {
             autoApprove: true,
             getCaveat: mocks.getCaveat,
+            isAddFlow: true,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });
@@ -295,9 +302,12 @@ describe('addEthereumChainHandler', () => {
           {
             autoApprove: false,
             getCaveat: mocks.getCaveat,
+            isAddFlow: true,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });

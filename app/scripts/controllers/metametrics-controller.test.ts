@@ -1489,6 +1489,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.ProfileId]: undefined,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
           [MetaMetricsUserTrait.MmiAccountAddress]: null,
@@ -1621,11 +1622,15 @@ describe('MetaMetricsController', function () {
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
           sessionData: {
-            accessToken: '',
-            expiresIn: '',
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
             profile: {
               identifierId: 'identifierId',
               profileId: 'profileId',
+              metaMetricsId: 'testid',
             },
           },
           keyrings: [],
@@ -1698,11 +1703,15 @@ describe('MetaMetricsController', function () {
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
           sessionData: {
-            accessToken: '',
-            expiresIn: '',
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
             profile: {
               identifierId: 'identifierId',
               profileId: 'profileId',
+              metaMetricsId: 'testid',
             },
           },
           keyrings: [],
@@ -1756,11 +1765,15 @@ describe('MetaMetricsController', function () {
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
           sessionData: {
-            accessToken: '',
-            expiresIn: '',
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
             profile: {
               identifierId: 'identifierId',
               profileId: 'profileId',
+              metaMetricsId: 'testid',
             },
           },
           keyrings: [],

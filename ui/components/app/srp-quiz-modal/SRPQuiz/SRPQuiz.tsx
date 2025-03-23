@@ -57,9 +57,16 @@ const openSupportArticle = (): void => {
   });
 };
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function SRPQuiz(props: any) {
+export type SRPQuizProps = {
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId?: string;
+  ///: END:ONLY_INCLUDE_IF
+  isOpen: boolean;
+  onClose: () => void;
+  closeAfterCompleting?: boolean;
+};
+
+export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -218,7 +225,22 @@ export default function SRPQuiz(props: any) {
         buttons={[
           {
             label: t('continue'),
-            onClick: () => history.push(REVEAL_SEED_ROUTE),
+            onClick: () => {
+              let route = REVEAL_SEED_ROUTE;
+
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              // We need to check for the keyringId incase it is undefined.
+              // The route param is used as an input to reveal srp, and an undefined becomes a string 'undefined'
+              if (props.keyringId) {
+                route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
+              }
+              ///: END:ONLY_INCLUDE_IF
+
+              history.push(route);
+              if (props.closeAfterCompleting) {
+                props.onClose();
+              }
+            },
             variant: ButtonVariant.Primary,
             size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-continue',
