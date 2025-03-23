@@ -73,6 +73,51 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           ],
         },
       })),
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            trade: {
+              data: '0x2e1a7d4d0000000000000000000000000000000000000000000000008ac7230489e80000',
+              to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              value: '0',
+              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            },
+            hasRoute: false,
+            sourceAmount: '10000000000000000000',
+            destinationAmount: '10000000000000000000',
+            error: null,
+            sourceToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            destinationToken: '0x0000000000000000000000000000000000000000',
+            maxGas: 300000,
+            averageGas: 280000,
+            estimatedRefund: 0,
+            isGasIncludedTrade: false,
+            approvalNeeded: null,
+            fetchTime: 63,
+            aggregator: 'wrappedNative',
+            aggType: 'CONTRACT',
+            fee: 0,
+            quoteRefreshSeconds: 30,
+            gasMultiplier: 1.1,
+            sourceTokenRate: 0.9996738094827067,
+            destinationTokenRate: 1,
+            priceSlippage: {
+              ratio: 0.9997007391742396,
+              alculationError: '',
+              bucket: 'low',
+              sourceAmountInUSD: 20049.4,
+              destinationAmountInUSD: 20055.4,
+              sourceAmountInNativeCurrency: 9.996738094827068,
+              destinationAmountInNativeCurrency: 10,
+              sourceAmountInETH: 9.996738094827068,
+              destinationAmountInETH: 10,
+            },
+          }
+        ]
+    })),
   ];
 }
 
