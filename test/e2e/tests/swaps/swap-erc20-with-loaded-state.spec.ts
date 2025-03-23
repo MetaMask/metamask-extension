@@ -115,9 +115,9 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
               sourceAmountInETH: 9.996738094827068,
               destinationAmountInETH: 10,
             },
-          }
-        ]
-    })),
+          },
+        ],
+      })),
   ];
 }
 
