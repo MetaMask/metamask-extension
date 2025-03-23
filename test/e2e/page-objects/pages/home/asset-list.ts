@@ -92,6 +92,9 @@ class AssetListPage {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
+  private readonly tokenChainDropdown =
+    '[data-testid="test-import-tokens-drop-down-custom-import"]';
+
   private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
 
   private readonly tokenSymbolInput =
@@ -203,6 +206,30 @@ class AssetListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );
+  }
+
+  async importCustomTokenByChain(
+    tokenAddress: string,
+    symbol: string,
+    chainName: string,
+  ): Promise<void> {
+    console.log(`Creating custom token ${symbol} on homepage`);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.clickElement(this.customTokenModalOption);
+    await this.driver.waitForSelector(this.modalWarningBanner);
+
+    await this.driver.clickElement(this.tokenChainDropdown);
+    await this.driver.clickElement({ text: chainName, tag: 'p' });
+
+    await this.driver.fill(this.tokenAddressInput, tokenAddress);
+    await this.driver.fill(this.tokenSymbolInput, symbol);
+    await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+    );
+    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
   async importCustomToken(tokenAddress: string, symbol: string): Promise<void> {
