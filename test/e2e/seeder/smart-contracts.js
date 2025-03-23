@@ -71,26 +71,47 @@ const verifyingPaymasterFactory = {
   bytecode: verifyingPaymasterBytecode,
 };
 
+// Delegator Contracts
+const delegationManagerFactory = {
+  abi: delegationManagerAbi,
+  bytecode: delegationManagerBytecode,
+};
+
+const delegationEntrypointFactory = {
+  abi: delegationEntrypointAbi,
+  bytecode: delegationEntrypointBytecode,
+};
+
+const eip7702StatelessDeleGatorFactory = {
+  abi: eip7702StatelessDeleGatorAbi,
+  bytecode: eip7702StatelessDeleGatorBytecode,
+};
+
+const specificActionERC20TransferBatchEnforcerFactory = {
+  abi: specificActionERC20TransferBatchEnforcerAbi,
+  bytecode: specificActionERC20TransferBatchEnforcerBytecode,
+};
+
 const SMART_CONTRACTS = {
   HST: 'hst',
-  NFTS: 'nfts',
+  ENTRYPOINT: 'entrypoint',
   ERC1155: 'erc1155',
-  PIGGYBANK: 'piggybank',
   FAILING: 'failing',
   MULTISIG: 'multisig',
-  ENTRYPOINT: 'entrypoint',
+  NFTS: 'nfts',
+  PIGGYBANK: 'piggybank',
   SIMPLE_ACCOUNT_FACTORY: 'simpleAccountFactory',
   VERIFYING_PAYMASTER: 'verifyingPaymaster',
 };
 
 const contractConfiguration = {
   [SMART_CONTRACTS.HST]: hstFactory,
-  [SMART_CONTRACTS.NFTS]: nftsFactory,
+  [SMART_CONTRACTS.ENTRYPOINT]: entrypointFactory,
   [SMART_CONTRACTS.ERC1155]: erc1155Factory,
-  [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.FAILING]: failingContract,
   [SMART_CONTRACTS.MULTISIG]: multisigFactory,
-  [SMART_CONTRACTS.ENTRYPOINT]: entrypointFactory,
+  [SMART_CONTRACTS.NFTS]: nftsFactory,
+  [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY]: simpleAccountFactory,
   [SMART_CONTRACTS.VERIFYING_PAYMASTER]: verifyingPaymasterFactory,
 };
