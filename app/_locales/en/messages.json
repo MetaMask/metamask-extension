@@ -2561,6 +2561,9 @@
   "invalidCustomNetworkAlertTitle": {
     "message": "Invalid custom network"
   },
+  "invalidHexData": {
+    "message": "Invalid hex data"
+  },
   "invalidHexNumber": {
     "message": "Invalid hexadecimal number."
   },
@@ -2738,6 +2741,9 @@
   },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+  },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "Multiple Ledger devices cannot be connected at the same time. To connect a new Ledger device, you'll need to first disconnect the previous one."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."

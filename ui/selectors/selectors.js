@@ -361,6 +361,7 @@ export function getAccountTypeForKeyring(keyring) {
 
   switch (type) {
     case KeyringType.trezor:
+    case KeyringType.oneKey:
     case KeyringType.ledger:
     case KeyringType.lattice:
     case KeyringType.qr:
@@ -1251,6 +1252,13 @@ export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
 }
+
+export const getTokenSortConfig = createDeepEqualSelector(
+  getPreferences,
+  ({ tokenSortConfig }) => {
+    return tokenSortConfig;
+  },
+);
 
 /**
  * Returns an object indicating which networks
