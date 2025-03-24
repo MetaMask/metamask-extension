@@ -17,14 +17,21 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
+import { updateSelectedGasFeeToken } from '../../../../../../../store/actions/transaction-controller';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { gasFeeTokens, selectedGasFeeToken } = currentConfirmation;
+
+  const {
+    id: transactionId,
+    gasFeeTokens,
+    selectedGasFeeToken,
+  } = currentConfirmation;
 
   const handleTokenClick = useCallback(
-    async (_token: GasFeeToken) => {
+    async (token: GasFeeToken) => {
+      await updateSelectedGasFeeToken(transactionId, token.tokenAddress);
       onClose?.();
     },
     [onClose],

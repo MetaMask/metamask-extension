@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -18,6 +19,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
+import { SelectedGasFeeToken } from '../selected-gas-fee-token';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -37,12 +39,6 @@ export const EditGasFeesRow = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  type TestNetChainId = (typeof TEST_CHAINS)[number];
-  const isTestnet = TEST_CHAINS.includes(
-    transactionMeta.chainId as TestNetChainId,
-  );
-  const { showFiatInTestnets } = useSelector(getPreferences);
-
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.EstimatedFee}
@@ -58,39 +54,58 @@ export const EditGasFeesRow = ({
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
+        gap={1}
       >
         <EditGasIconButton
           supportsEIP1559={supportsEIP1559}
           setShowCustomizeGasPopover={setShowCustomizeGasPopover}
         />
-        <Text
+        {/* <Text
           marginRight={1}
           color={TextColor.textDefault}
           data-testid="first-gas-field"
         >
           {nativeFee}
-        </Text>
-        {(!isTestnet || showFiatInTestnets) &&
-          (fiatFeeWith18SignificantDigits ? (
-            <Tooltip title={fiatFeeWith18SignificantDigits}>
-              <Text
-                marginRight={2}
-                color={TextColor.textAlternative}
-                data-testid="native-currency"
-              >
-                {fiatFee}
-              </Text>
-            </Tooltip>
-          ) : (
-            <Text
-              marginRight={2}
-              color={TextColor.textAlternative}
-              data-testid="native-currency"
-            >
-              {fiatFee}
-            </Text>
-          ))}
+        </Text> */}
+        <FiatValue
+          chainId={transactionMeta.chainId}
+          fullValue={fiatFeeWith18SignificantDigits}
+          roundedValue={fiatFee}
+        />
+        <SelectedGasFeeToken />
       </Box>
     </ConfirmInfoAlertRow>
   );
 };
+
+function FiatValue({
+  chainId,
+  fullValue,
+  roundedValue,
+}: {
+  chainId: Hex;
+  fullValue: string | null;
+  roundedValue: string;
+}) {
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+
+  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
+
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
+  if (isTestnet && !showFiatInTestnets) {
+    return null;
+  }
+
+  const value = (
+    <Text marginRight={2} data-testid="native-currency">
+      {roundedValue}
+    </Text>
+  );
+
+  return fullValue ? (
+    <Tooltip title={fullValue}>{value}</Tooltip>
+  ) : (
+    <>{value}</>
+  );
+}
