@@ -29,7 +29,6 @@ const ALLOWLISTED_URLS = [
   'https://authentication.api.cx.metamask.io/siwe/verify',
   'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link/',
   'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
-  'https://bridge.api.cx.metamask.io/getAllFeatureFlags',
   'https://bridge.api.cx.metamask.io/getTokens?chainId=1',
   'https://cdn.contentful.com/spaces/jdkgyfmyd9sw/environments/master/entries?content_type=productAnnouncement&order=-sys.createdAt&fields.clients=portfolio',
   'https://cdn.segment.com/analytics-next/bundles/ajs-destination.bundle.ed53a26b6edc80c65d73.js',
