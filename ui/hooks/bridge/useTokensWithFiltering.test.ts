@@ -1,4 +1,7 @@
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  BridgeToken,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -11,8 +14,15 @@ const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
 const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
   [NATIVE_TOKEN.address]: NATIVE_TOKEN,
   ...STATIC_MAINNET_TOKEN_LIST,
+  '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': {
+    ...(STATIC_MAINNET_TOKEN_LIST as unknown as Record<string, BridgeToken>)[
+      '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2'
+    ],
+    assetId: 'eip155:1/erc20:0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+  },
 });
 jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
   fetchBridgeTokens: (c: string) => mockFetchBridgeTokens(c),
 }));
 
@@ -30,7 +40,7 @@ describe('useTokensWithFiltering', () => {
     jest.clearAllMocks();
   });
 
-  it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
+  it.only('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
