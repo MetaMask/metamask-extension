@@ -74,6 +74,9 @@ function mapStateToProps(state) {
   const pendingApprovals = getPendingApprovals(state);
   const transactionsMetadata = getUnapprovedTransactions(state);
 
+  const shouldShowSeedPhraseReminder =
+    account && getShouldShowSeedPhraseReminder(state, account);
+
   return {
     alertOpen,
     alertMessage,
@@ -97,10 +100,7 @@ function mapStateToProps(state) {
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
     currentChainId: getCurrentChainId(state),
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(
-      state,
-      account,
-    ),
+    shouldShowSeedPhraseReminder,
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,

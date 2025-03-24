@@ -126,15 +126,15 @@ const mapStateToProps = (state) => {
     ? false
     : getShowWhatsNewPopup(state);
 
+  const shouldShowSeedPhraseReminder =
+    selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
+
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     swapsEnabled,
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(
-      state,
-      selectedAccount,
-    ),
+    shouldShowSeedPhraseReminder,
     isPopup,
     isNotification,
     dataCollectionForMarketing,

@@ -35,6 +35,11 @@ const isPrimaryHdOrFirstPartySnapAccount = createDeepEqualSelector(
   (account, hdKeyrings) => {
     const [primaryKeyring] = hdKeyrings;
 
+    // There are no keyrings during onboarding.
+    if (!primaryKeyring) {
+      return false;
+    }
+
     if (
       primaryKeyring.accounts.find((address: string) =>
         isEqualCaseInsensitive(account.address, address),
