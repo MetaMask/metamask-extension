@@ -498,9 +498,13 @@ export const AccountListMenu = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const onSelectSrp = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+    });
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
-  }, [setActionMode, actionMode]);
+  }, [setActionMode, actionMode, trackEvent]);
 
   const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
     clientType: null,
@@ -729,6 +733,11 @@ export const AccountListMenu = ({
                   startIconName={IconName.Wallet}
                   startIconProps={{ size: IconSize.Md }}
                   onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+                    });
                     setActionMode(ACTION_MODES.IMPORT_SRP);
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
