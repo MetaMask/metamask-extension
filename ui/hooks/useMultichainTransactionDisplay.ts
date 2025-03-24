@@ -12,10 +12,7 @@ import { TransactionGroupStatus } from '../../shared/constants/transaction';
 type Fee = Transaction['fees'][0]['asset'];
 type Token = Transaction['from'][0]['asset'];
 
-export const KEYRING_TRANSACTION_STATUS_MAP: Record<
-  KeyringTransactionStatus,
-  TransactionStatus | TransactionGroupStatus
-> = {
+export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
   [KeyringTransactionStatus.Confirmed]: TransactionStatus.confirmed,
   [KeyringTransactionStatus.Unconfirmed]: TransactionGroupStatus.pending,
