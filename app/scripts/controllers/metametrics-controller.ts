@@ -913,20 +913,20 @@ export default class MetaMetricsController extends BaseController<
     options?: MetaMetricsEventOptions,
   ): void {
     // Debug:transactions-tx-hash-in-analytics
-// Debug:transactions-tx-hash-in-analytics
-if (
-  payload.event === 'Swap Completed' ||
-  payload.event === 'Action Completed'
-) {
-  console.log('ANALYTICS EVENT:', {
-    event: payload.event,
-    hasTransactionHash: Boolean(
-      payload.sensitiveProperties?.transaction_hash,
-    ),
-    transactionHash: payload.sensitiveProperties?.transaction_hash,
-  });
-}
-// Debug:transactions-tx-hash-in-analytics
+    // Debug:transactions-tx-hash-in-analytics
+    if (
+      payload.event === 'Swap Completed' ||
+      payload.event === 'Action Completed'
+    ) {
+      console.log('ANALYTICS EVENT:', {
+        event: payload.event,
+        hasTransactionHash: Boolean(
+          payload.sensitiveProperties?.transaction_hash,
+        ),
+        transactionHash: payload.sensitiveProperties?.transaction_hash,
+      });
+    }
+    // Debug:transactions-tx-hash-in-analytics
     // Debug:transactions-tx-hash-in-analytics
 
     // validation is not caught and handled
