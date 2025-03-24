@@ -95,8 +95,7 @@ async function main() {
     {} as { [method: string]: string },
   );
 
-  const parsedDoc = await parseOpenRPCDocument(transformedDoc);
-  const server = mockServer(port, parsedDoc);
+  const server = mockServer(port, await parseOpenRPCDocument(transformedDoc));
   server.start();
 
   // Multichain API excluding `wallet_invokeMethod`
@@ -254,11 +253,10 @@ async function main() {
   await htmlReporter.onEnd({} as IOptions, testCoverageResults);
 
   // if any of the tests failed, exit with a non-zero code
-  if (testCoverageResults.some((r) => !r.valid)) {
-    //process.exit(1);
-    process.exitCode = 1;
-    //} else {
-    //process.exit(0);
+  if (testCoverageResults.every((r) => r.valid)) {
+    process.exit(0);
+  } else {
+    process.exit(1);
   }
 }
 
