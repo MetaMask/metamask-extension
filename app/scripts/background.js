@@ -1008,9 +1008,7 @@ export function setupController(
       }
 
       // this is triggered when a new tab is opened, or origin(url) is changed
-      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-        trackDappView(remotePort);
-      }
+      trackDappView(remotePort);
 
       connectCaipMultichain(portStream, remotePort.sender);
     } else {
