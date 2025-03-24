@@ -1,5 +1,6 @@
 import * as lodash from 'lodash';
-import { isObject } from '@metamask/utils';
+import { MessageTypes, TypedMessage } from '@metamask/eth-sig-util';
+import { ParsedTypedMessage } from '../../../shared/types/typed-data';
 
 /**
  * Returns the values of an object
@@ -55,7 +56,7 @@ const solidityTypes = (): string[] => {
    * This value type also can be declared keywords such as ufixedMxN and fixedMxN.
    * The M represents the amount of bits that the type takes,
    * with N representing the number of decimal points that are available.
-   *  M has to be divisible by 8, and a number from 8 to 256.
+   * M has to be divisible by 8, and a number from 8 to 256.
    * N has to be a value between 0 and 80, also being inclusive.
    */
   const fixedM = Array.from(new Array(32)).map(
@@ -125,15 +126,15 @@ const isSolidityType = (type: string): boolean => SOLIDITY_TYPES.includes(type);
  * Sanitizes an EIP-712 message for display
  *
  * @param msg - The message to sanitize
- * @param primaryType - The primary type of the message
+ * @param primaryType - The primary type to sanitize
  * @param types - The types definition
  * @returns The sanitized message
  */
 export const sanitizeMessage = (
-  msg: Record<string, any>,
+  msg: unknown,
   primaryType: string,
-  types: Record<string, { name: string; type: string }[]>,
-): { value: any; type: string } => {
+  types: MessageTypes,
+): { value: unknown; type: string } => {
   if (!types) {
     throw new Error(`Invalid types definition`);
   }
@@ -142,8 +143,12 @@ export const sanitizeMessage = (
   const isArray = primaryType && isArrayType(primaryType);
   if (isArray) {
     return {
-      value: msg.map((value: any) =>
-        sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
+      value: (msg as unknown[]).map((value: unknown) =>
+        sanitizeMessage(
+          value as Record<string, unknown>,
+          stripOneLayerofNesting(primaryType),
+          types,
+        ),
       ),
       type: primaryType,
     };
@@ -159,8 +164,9 @@ export const sanitizeMessage = (
     throw new Error(`Invalid primary type definition`);
   }
 
-  const sanitizedStruct: Record<string, any> = {};
-  const msgKeys = Object.keys(msg);
+  const msgAsRecord = msg as Record<string, unknown>;
+  const sanitizedStruct: Record<string, unknown> = {};
+  const msgKeys = Object.keys(msgAsRecord);
   msgKeys.forEach((msgKey) => {
     const definedType = Object.values(baseTypeDefinitions).find(
       (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
@@ -170,8 +176,13 @@ export const sanitizeMessage = (
       return;
     }
 
+    const msgValue = msgAsRecord[msgKey];
     sanitizedStruct[msgKey] = sanitizeMessage(
-      msg[msgKey],
+      typeof msgValue === 'object' && msgValue !== null
+        ? Array.isArray(msgValue)
+          ? msgValue
+          : (msgValue as Record<string, unknown>)
+        : msgValue,
       definedType.type,
       types,
     );
