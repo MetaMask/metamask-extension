@@ -10,18 +10,21 @@ async function mockEip7702FeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: [{
-          'confirmations-eip-7702': {
-            supportedChains: ['0x7a69', '0xaa36a7'],
-            contractAddresses: {
-              '0x7a69': ['0x8438Ad1C834623CfF278AB6829a248E37C2D7E3f'],
-              '0xaa36a7': ['0xCd8D6C5554e209Fbb0deC797C6293cf7eAE13454'],
+      .thenCallback(() => {
+        return {
+          ok: true,
+          statusCode: 200,
+          json: [{
+            'confirmations-eip-7702': {
+              supportedChains: ['0x539', '0xaa36a7'],
+              contractAddresses: {
+                '0x539': ['0x8438Ad1C834623CfF278AB6829a248E37C2D7E3f'],
+                '0xaa36a7': ['0xCd8D6C5554e209Fbb0deC797C6293cf7eAE13454'],
+              }
             }
-          }
-        }],
-      })),
+          }],
+        }
+      }),
   ];
 }
 
