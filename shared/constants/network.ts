@@ -1095,9 +1095,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [process.env.QUICKNODE_LINEA_MAINNET_URL ?? ''].filter(
-          Boolean,
-        ),
+        failoverUrls: process.env.QUICKNODE_LINEA_MAINNET_URL
+          ? [process.env.QUICKNODE_LINEA_MAINNET_URL]
+          : [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1112,9 +1112,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [process.env.QUICKNODE_ARBITRUM_URL ?? ''].filter(
-          Boolean,
-        ),
+        failoverUrls: process.env.QUICKNODE_ARBITRUM_URL
+          ? [process.env.QUICKNODE_ARBITRUM_URL]
+          : [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1129,9 +1129,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [process.env.QUICKNODE_AVALANCHE_URL ?? ''].filter(
-          Boolean,
-        ),
+        failoverUrls: process.env.QUICKNODE_AVALANCHE_URL
+          ? [process.env.QUICKNODE_AVALANCHE_URL]
+          : [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1161,9 +1161,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [process.env.QUICKNODE_OPTIMISM_URL ?? ''].filter(
-          Boolean,
-        ),
+        failoverUrls: process.env.QUICKNODE_OPTIMISM_URL
+          ? [process.env.QUICKNODE_OPTIMISM_URL]
+          : [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1178,7 +1178,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [process.env.QUICKNODE_POLYGON_URL ?? ''].filter(Boolean),
+        failoverUrls: process.env.QUICKNODE_POLYGON_URL
+          ? [process.env.QUICKNODE_POLYGON_URL]
+          : [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1208,7 +1210,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [process.env.QUICKNODE_BASE_URL ?? ''].filter(Boolean),
+        failoverUrls: process.env.QUICKNODE_BASE_URL
+          ? [process.env.QUICKNODE_BASE_URL]
+          : [],
         type: RpcEndpointType.Custom,
       },
     ],
