@@ -227,7 +227,6 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
-    "@metamask/eth-ledger-bridge-keyring@npm:^10.0.0": "npm:@metamask-previews/eth-ledger-bridge-keyring@10.0.0-9d37a15",
     "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
   },
   "dependencies": {
@@ -275,7 +274,7 @@
     "@metamask/ens-resolver-snap": "^0.1.2",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^16.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "^10.0.0",
+    "@metamask/eth-ledger-bridge-keyring": "^11.0.0",
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^12.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
