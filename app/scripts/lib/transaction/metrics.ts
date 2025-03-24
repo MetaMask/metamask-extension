@@ -1098,7 +1098,7 @@ async function buildEventFragmentProperties({
 
   if (
     transactionMetricsRequest.getRemoteFeatureFlags?.()
-      ?.collectTransactionHashInAnalytics &&
+      ?.transactionsTxHashInAnalytics &&
     transactionMetricsRequest.getParticipateInMetrics?.()
   ) {
     if (transactionMeta.hash) {
