@@ -195,20 +195,23 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(['confirmed', 'pending', 'failed'] as const)(
+  it.each([
+    [TransactionStatus.Confirmed, 'Confirmed'],
+    [TransactionStatus.Unconfirmed, 'Pending'],
+    [TransactionStatus.Failed, 'Failed'],
+    [TransactionStatus.Submitted, 'Submitted'],
+  ])(
     'handles different transaction status: %s',
-    (status: string) => {
+    (status: TransactionStatus, expectedLabel: string) => {
       const propsWithStatus = {
         ...mockProps,
         transaction: {
           ...mockTransaction,
-          status: status as TransactionStatus,
+          status,
         },
       };
       renderComponent(propsWithStatus);
-      expect(
-        screen.getByText(status.charAt(0).toUpperCase() + status.slice(1)),
-      ).toBeInTheDocument();
+      expect(screen.getByText(expectedLabel)).toBeInTheDocument();
     },
   );
 
