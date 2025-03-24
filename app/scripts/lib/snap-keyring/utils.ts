@@ -4,7 +4,7 @@ import { GetSnapKeyring } from './types';
 /**
  * Get the addresses of the accounts managed by a given Snap.
  *
- * @param controller - Instance of the MetaMask Controller.
+ * @param getSnapKeyring
  * @param snapId - Snap ID to get accounts for.
  * @returns The addresses of the accounts.
  */
