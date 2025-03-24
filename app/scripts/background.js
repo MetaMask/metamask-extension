@@ -684,7 +684,7 @@ function emitDappViewedMetricEvent(origin) {
 /**
  * Track dapp connection when loaded and permissioned
  *
- * @param {Port} remotePort - The port provided by a new context.
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
   if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
@@ -861,18 +861,10 @@ export function setupController(
   };
 
   /**
-   * A runtime.Port object, as provided by the browser:
-   *
-   * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
-   * @typedef Port
-   * @type Object
-   */
-
-  /**
    * Connects a WindowPostMessage Port to the MetaMask controller.
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    *
-   * @param {Port} remotePort - The port provided by a new context.
+   * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
    */
   connectWindowPostMessage = (remotePort) => {
     const processName = remotePort.name;
@@ -992,9 +984,7 @@ export function setupController(
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
         connectCaipMultichain(
-          mux.createStream(
-            METAMASK_CAIP_MULTICHAIN_PROVIDER,
-          ),
+          mux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER),
           remotePort.sender,
         );
       }
@@ -1005,7 +995,7 @@ export function setupController(
    * Connects a externally_connecatable Port to the MetaMask controller.
    * This method identifies dapp clients and connects them differently from extension clients.
    *
-   * @param {Port} remotePort - The port provided by a new context.
+   * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
    */
   connectExternallyConnectable = (remotePort) => {
     const portStream =
