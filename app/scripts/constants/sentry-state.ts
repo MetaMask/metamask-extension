@@ -117,6 +117,7 @@ export const SENTRY_BACKGROUND_STATE = {
         support: false,
         chains: {},
       },
+      mobileConfig: false,
     },
     quoteRequest: {
       walletAddress: false,

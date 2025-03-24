@@ -345,13 +345,14 @@
         "refreshRate": "number",
         "maxRefreshCount": "number",
         "support": "boolean",
-        "chains": {
-          "eip155:1": "object",
-          "eip155:42161": "object",
-          "eip155:59144": "object"
-        }
-      }
+        "chains": {}
+      },
+      "mobileConfig": "object"
     },
+    "quoteFetchError": null,
+    "quotesInitialLoadTime": null,
+    "quotesLastFetched": null,
+    "quotesLoadingStatus": null,
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },

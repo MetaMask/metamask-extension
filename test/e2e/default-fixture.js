@@ -121,6 +121,23 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       BridgeController: {
         bridgeFeatureFlags: {
+          mobileConfig: {
+            support: false,
+            chains: {
+              'eip155:1': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:10': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:59144': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
           extensionConfig: {
             support: false,
             chains: {

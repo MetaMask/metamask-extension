@@ -47,6 +47,7 @@
     },
     "BridgeController": {
       "bridgeFeatureFlags": {
+        "mobileConfig": "object",
         "extensionConfig": {
           "support": "boolean",
           "chains": {
