@@ -88,8 +88,20 @@ describe('Account syncing - Add Account', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: customNameAccount3,
           });
-          // Add a delay to allow the account to sync, this can be long for MV2
-          await driver.delay(2000);
+          // Wait for the account to be synced
+          await driver.waitUntil(
+            async () => {
+              return (
+                userStorageMockttpController.paths.get(
+                  USER_STORAGE_FEATURE_NAMES.accounts,
+                )?.response.length === 3
+              );
+            },
+            {
+              timeout: 5000,
+              interval: 500,
+            },
+          );
         },
       );
 
@@ -184,8 +196,20 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
           });
-          // Add a delay to allow the account to sync, this can be long for MV2
-          await driver.delay(2000);
+          // Wait for the account to be synced
+          await driver.waitUntil(
+            async () => {
+              return (
+                userStorageMockttpController.paths.get(
+                  USER_STORAGE_FEATURE_NAMES.accounts,
+                )?.response.length === 3
+              );
+            },
+            {
+              timeout: 5000,
+              interval: 500,
+            },
+          );
         },
       );
 

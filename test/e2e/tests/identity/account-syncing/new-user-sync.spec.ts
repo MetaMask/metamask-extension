@@ -63,8 +63,20 @@ describe('Account syncing - New User', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: secondAccountName,
           });
-          // Add a delay to allow the account to sync, this can be long for MV2
-          await driver.delay(2000);
+          // Wait for the account to be synced
+          await driver.waitUntil(
+            async () => {
+              return (
+                userStorageMockttpController.paths.get(
+                  USER_STORAGE_FEATURE_NAMES.accounts,
+                )?.response.length === 2
+              );
+            },
+            {
+              timeout: 5000,
+              interval: 500,
+            },
+          );
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
