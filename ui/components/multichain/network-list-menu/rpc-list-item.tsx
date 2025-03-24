@@ -50,8 +50,7 @@ const RpcListItem = ({
   const displayEndpoint = (endpoint?: string) =>
     endpoint ? stripProtocol(stripKeyFromInfuraUrl(endpoint)) : '\u00A0';
 
-  const displayFailoverEndpoint = (endpoint?: string) =>
-    endpoint ? onlyKeepHost(endpoint) : '\u00A0';
+  const displayFailoverEndpoint = (endpoint: string) => onlyKeepHost(endpoint);
 
   const padding = name ? 2 : 4;
 
