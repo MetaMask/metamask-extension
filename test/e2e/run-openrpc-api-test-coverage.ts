@@ -36,14 +36,6 @@ async function main() {
       title: 'api-specs coverage',
     },
     async ({ driver }: { driver: Driver }) => {
-      await unlockWallet(driver);
-
-      // Navigate to extension home screen
-      await driver.navigate(PAGES.HOME);
-
-      // Open Dapp
-      await openDapp(driver, undefined, DAPP_URL);
-
       const transport = createDriverTransport(driver);
       const [doc, filteredMethods, methodsWithConfirmations] =
         transformOpenRPCDocument(
@@ -56,7 +48,13 @@ async function main() {
       const server = mockServer(port, parsedDoc);
       server.start();
 
-      console.log('hi hello yes hi');
+      await unlockWallet(driver);
+
+      // Navigate to extension home screen
+      await driver.navigate(PAGES.HOME);
+
+      // Open Dapp
+      await openDapp(driver, undefined, DAPP_URL);
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: parsedDoc,
