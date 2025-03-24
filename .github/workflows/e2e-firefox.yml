@@ -1,4 +1,4 @@
-name: E2E firefox
+name: E2E Firefox
 
 on:
   workflow_call:
