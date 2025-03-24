@@ -1,8 +1,9 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
+import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -60,7 +61,6 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import {
-  getCaip25PermissionsResponse,
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
   getFilteredAccounts,
@@ -198,11 +198,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ...request,
       permissions: {
         ...request.permissions,
-        ...getCaip25PermissionsResponse(
+        ...generateCaip25Caveat(
           requestedCaip25CaveatValue,
-          selectedAccountAddresses as Hex[],
-          // TODO: Fix this when proper adapter is available
           // @ts-expect-error Fix with request types formatted with adapter
+          selectedAccountAddresses,
           selectedChainIds,
         ),
       },
