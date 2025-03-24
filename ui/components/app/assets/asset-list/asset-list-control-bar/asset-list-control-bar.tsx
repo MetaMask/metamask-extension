@@ -88,11 +88,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   });
 
   useEffect(() => {
-    if (isTestNetwork) {
-      const testnetFilter = { [currentNetwork.chainId]: true };
-      dispatch(setTokenNetworkFilter(testnetFilter));
-    }
-  }, [isTestNetwork, currentNetwork.chainId, dispatch]);
+    const networkFilter = { [currentNetwork.chainId]: true };
+    dispatch(setTokenNetworkFilter(networkFilter));
+  }, [currentNetwork.chainId, dispatch]);
 
   // TODO: This useEffect should be a migration
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
