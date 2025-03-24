@@ -323,7 +323,7 @@
     "@metamask/snaps-rpc-methods": "^12.0.0",
     "@metamask/snaps-sdk": "^6.19.0",
     "@metamask/snaps-utils": "^9.0.1",
-    "@metamask/solana-wallet-snap": "^1.13.0",
+    "@metamask/solana-wallet-snap": "^1.14.0",
     "@metamask/transaction-controller": "^50.0.0",
     "@metamask/user-operation-controller": "^24.0.1",
     "@metamask/utils": "^11.1.0",
@@ -665,7 +665,7 @@
   },
   "engines": {
     "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.4.1"
+    "yarn": "^4.7.0"
   },
   "lavamoat": {
     "allowScripts": {
@@ -750,7 +750,7 @@
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
     }
   },
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.7.0",
   "foundryup": {
     "binaries": [
       "anvil"
