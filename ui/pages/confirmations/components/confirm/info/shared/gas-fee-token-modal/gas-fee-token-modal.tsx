@@ -1,6 +1,12 @@
 import React, { useCallback } from 'react';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import {
+  GasFeeToken,
+  TransactionMeta,
+  BatchTransactionParams,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   Modal,
   ModalBody,
@@ -17,7 +23,11 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
-import { updateSelectedGasFeeToken } from '../../../../../../../store/actions/transaction-controller';
+import {
+  updateBatchTransactions,
+  updateSelectedGasFeeToken,
+} from '../../../../../../../store/actions/transaction-controller';
+import { updateEditableParams } from '../../../../../../../store/actions';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
@@ -32,9 +42,21 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const handleTokenClick = useCallback(
     async (token: GasFeeToken) => {
       await updateSelectedGasFeeToken(transactionId, token.tokenAddress);
+
+      await updateEditableParams(transactionId, {
+        gas: token.gas,
+        maxFeePerGas: token.maxFeePerGas,
+        maxPriorityFeePerGas: token.maxPriorityFeePerGas,
+      });
+
+      await updateBatchTransactions({
+        transactionId,
+        batchTransactions: [getTransferTransaction(token)],
+      });
+
       onClose?.();
     },
-    [onClose],
+    [onClose, transactionId],
   );
 
   const gasFeeTokenAddresses = [
@@ -81,4 +103,22 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
       </ModalContent>
     </Modal>
   );
+}
+
+function getTransferTransaction(
+  gasFeeToken: GasFeeToken,
+): BatchTransactionParams {
+  const data = new Interface(abiERC20).encodeFunctionData('transfer', [
+    gasFeeToken.recipient,
+    gasFeeToken.amount,
+  ]) as Hex;
+
+  return {
+    data,
+    gas: gasFeeToken.gas,
+    maxFeePerGas: gasFeeToken.maxFeePerGas,
+    maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
+    to: gasFeeToken.recipient,
+    value: gasFeeToken.amount,
+  };
 }

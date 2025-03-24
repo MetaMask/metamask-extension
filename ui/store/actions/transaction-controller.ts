@@ -9,6 +9,12 @@ export async function updateAtomicBatchData(
   ]);
 }
 
+export async function updateBatchTransactions(
+  ...args: Parameters<TransactionController['updateBatchTransactions']>
+) {
+  return await submitRequestToBackground<void>('updateBatchTransactions', args);
+}
+
 export async function updateSelectedGasFeeToken(
   ...args: Parameters<TransactionController['updateSelectedGasFeeToken']>
 ) {
