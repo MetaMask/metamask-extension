@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { logInWithBalanceValidation, withFixtures } from '../../helpers';
-import { BridgePage, getBridgeFixtures } from '../../tests/bridge/bridge-test-utils';
+import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Click bridge button', function (this: Suite) {
   it('loads portfolio tab from wallet overview when flag is turned off', async function () {

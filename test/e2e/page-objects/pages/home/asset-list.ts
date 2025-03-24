@@ -325,13 +325,10 @@ class AssetListPage {
    */
   async check_tokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
-    await this.driver.waitForSelector(
-      {
-        css: this.tokenAmountValue,
-        text: tokenAmount,
-      },
-      { timeout: 60000 },
-    );
+    await this.driver.waitForSelector({
+      css: this.tokenAmountValue,
+      text: tokenAmount,
+    });
     console.log(`Token amount ${tokenAmount} was found`);
   }
 
