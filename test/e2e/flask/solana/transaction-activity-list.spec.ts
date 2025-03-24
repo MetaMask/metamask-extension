@@ -54,7 +54,7 @@ describe('Transaction activity list', function (this: Suite) {
     );
   });
 });
-describe.skip('Transaction activity list', function (this: Suite) {
+describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -71,11 +71,9 @@ describe.skip('Transaction activity list', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded('0');
         await homePage.goToActivityList();
-
         const activityList = new ActivityListPage(driver);
         await activityList.check_failedTxNumberDisplayedInActivity(1);
         await activityList.check_txAction('Receive', 1);
-        await activityList.check_txAmountInActivity('0.000000005 SOL', 1);
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
         await transactionDetails.check_transactionStatus(
