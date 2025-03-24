@@ -41,7 +41,7 @@ exports[`NFT full image should match snapshot 1`] = `
           class="mm-box multichain-page-content fade-in visible mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full mm-box--height-full"
         >
           <div
-            class="mm-box mm-box--padding-top-4 mm-box--display-flex mm-box--justify-content-center"
+            class="mm-box mm-box--padding-bottom-12 mm-box--display-flex mm-box--justify-content-center"
           >
             <div
               class="mm-box"
@@ -54,7 +54,7 @@ exports[`NFT full image should match snapshot 1`] = `
                   data-testid="nft-item"
                 >
                   <div
-                    class="mm-box mm-badge-wrapper nft-item__badge-wrapper badge-wrapper mm-box--display-block"
+                    class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"

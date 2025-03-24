@@ -1,4 +1,4 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import { integrationTestRender } from '../../lib/render-helpers';
@@ -7,7 +7,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { createMockImplementation } from '../helpers';
+import {
+  clickElementById,
+  createMockImplementation,
+  waitForElementById,
+  waitForElementByText,
+} from '../helpers';
 import { BridgeBackgroundAction } from '../../../shared/types/bridge';
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -62,19 +67,19 @@ describe('Wallet Created Events', () => {
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    const { getByTestId, findByTestId, getByText, findByText } =
-      await integrationTestRender({
-        preloadedState: mockMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-
-    expect(await findByText('Congratulations!')).toBeInTheDocument();
-
-    fireEvent.click(await findByTestId('onboarding-complete-done'));
-
-    await waitFor(() => {
-      expect(getByTestId('onboarding-pin-extension')).toBeInTheDocument();
+    await integrationTestRender({
+      preloadedState: mockMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
     });
+
+    await waitForElementByText('Congratulations!');
+
+    const completeOnboardingBtnId = 'onboarding-complete-done';
+    const pinExtensionNextBtnId = 'pin-extension-next';
+    const pinExtensionDoneBtnId = 'pin-extension-done';
+
+    await waitForElementById(completeOnboardingBtnId);
+    await clickElementById(completeOnboardingBtnId);
 
     let confirmAccountDetailsModalMetricsEvent;
 
@@ -102,7 +107,8 @@ describe('Wallet Created Events', () => {
       ]),
     );
 
-    fireEvent.click(await findByTestId('pin-extension-next'));
+    await waitForElementById(pinExtensionNextBtnId);
+    await clickElementById(pinExtensionNextBtnId);
 
     let onboardingPinExtensionMetricsEvent;
 
@@ -116,16 +122,12 @@ describe('Wallet Created Events', () => {
       );
     });
 
-    await waitFor(() => {
-      expect(
-        getByText(
-          `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
-        ),
-      ).toBeInTheDocument();
-    });
+    await waitForElementByText(
+      `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
+    );
 
-    fireEvent.click(await findByTestId('pin-extension-done'));
-
+    await waitForElementById(pinExtensionDoneBtnId);
+    await clickElementById(pinExtensionDoneBtnId);
     await waitFor(() => {
       const completeOnboardingBackgroundRequest =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(

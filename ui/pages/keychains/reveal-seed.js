@@ -1,7 +1,12 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  useParams,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -46,6 +51,9 @@ const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 export default function RevealSeedPage() {
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const { keyringId } = useParams();
+  ///: END:ONLY_INCLUDE_IF
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -100,7 +108,14 @@ export default function RevealSeedPage() {
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
-    dispatch(requestRevealSeedWords(password))
+    dispatch(
+      requestRevealSeedWords(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      ),
+    )
       .then((revealedSeedWords) => {
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
