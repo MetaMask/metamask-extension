@@ -16,7 +16,7 @@ import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import { MINUTE } from '../../../shared/constants/time';
 import {

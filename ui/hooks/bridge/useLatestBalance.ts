@@ -9,7 +9,7 @@ import {
 } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { useMultichainSelector } from '../useMultichainSelector';
