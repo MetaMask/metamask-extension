@@ -44,13 +44,13 @@ export const useQuoteFetchEvents = () => {
   const fromToken = useSelector(getFromToken);
   const fromChain = useSelector(getFromChain);
 
-  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
+  const balanceAmount = useLatestBalance(fromToken);
   const nativeAsset = useMemo(
     () =>
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChain?.chainId);
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const warnings = useMemo(() => {
     const {

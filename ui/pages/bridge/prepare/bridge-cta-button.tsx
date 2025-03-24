@@ -74,13 +74,13 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
+  const balanceAmount = useLatestBalance(fromToken);
   const nativeAsset = useMemo(
     () =>
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChain?.chainId);
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();

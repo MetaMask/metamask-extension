@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   isSolanaChainId,
   BRIDGE_MM_FEE_RATE,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
 import {
@@ -46,7 +47,6 @@ import {
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -72,20 +72,20 @@ export const MultichainBridgeQuoteCard = () => {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
     }
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      `0x${decimalToHex(
+      formatChainIdToHex(
         chainId,
-      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   };
 
   const getNetworkName = (chainId: ChainId) => {
     if (isSolanaChainId(chainId)) {
-      return 'Solana';
+      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA];
     }
     return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-      `0x${decimalToHex(
+      formatChainIdToHex(
         chainId,
-      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ];
   };
 

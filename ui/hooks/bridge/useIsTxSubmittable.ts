@@ -29,12 +29,12 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasForQuote,
   } = useSelector(getValidationErrors);
 
-  const balanceAmount = useLatestBalance(fromToken, fromChainId);
+  const balanceAmount = useLatestBalance(fromToken);
   const nativeAsset = useMemo(
     () => getNativeAssetForChainId(fromChainId),
     [fromChainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChainId);
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   return Boolean(
     fromToken &&

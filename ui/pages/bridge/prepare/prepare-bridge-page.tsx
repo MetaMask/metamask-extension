@@ -194,10 +194,10 @@ const PrepareBridgePage = () => {
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset, fromChain?.chainId);
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const { tokenAlert } = useTokenAlerts();
-  const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
+  const srcTokenBalance = useLatestBalance(fromToken);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
 

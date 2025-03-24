@@ -1,11 +1,11 @@
 import { zeroAddress } from 'ethereumjs-util';
 import * as bridgeController from '@metamask/bridge-controller';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { createTestProviderTools } from '../../../test/stub/provider';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import useLatestBalance from './useLatestBalance';
 
 const mockCalcLatestSrcBalance = jest.fn();
@@ -18,15 +18,12 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 const renderUseLatestBalance = (
-  token: { address: string; decimals?: number | string },
-  chainId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  token: { address: string; decimals?: number | string; chainId: any },
   mockStoreState: object,
 ) =>
-  renderHookWithProvider(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    () => useLatestBalance(token as any, chainId as any),
-    mockStoreState,
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderHookWithProvider(() => useLatestBalance(token as any), mockStoreState);
 
 describe('useLatestBalance', () => {
   beforeEach(() => {
@@ -43,8 +40,7 @@ describe('useLatestBalance', () => {
     mockCalcLatestSrcBalance.mockResolvedValueOnce('1000000000000000000');
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
-      { address: zeroAddress(), decimals: 18 },
-      CHAIN_IDS.MAINNET,
+      { address: zeroAddress(), decimals: 18, chainId: CHAIN_IDS.MAINNET },
       createBridgeMockStore(),
     );
 
@@ -64,8 +60,11 @@ describe('useLatestBalance', () => {
     mockCalcLatestSrcBalance.mockResolvedValueOnce('15390000');
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
-      { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', decimals: 6 },
-      CHAIN_IDS.MAINNET,
+      {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        decimals: 6,
+        chainId: CHAIN_IDS.MAINNET,
+      },
       createBridgeMockStore(),
     );
 
@@ -85,8 +84,11 @@ describe('useLatestBalance', () => {
     mockCalcLatestSrcBalance.mockResolvedValueOnce('15390000');
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
-      { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', decimals: 6 },
-      toEvmCaipChainId(CHAIN_IDS.MAINNET),
+      {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        decimals: 6,
+        chainId: toEvmCaipChainId(CHAIN_IDS.MAINNET),
+      },
       createBridgeMockStore(),
     );
 
@@ -130,11 +132,11 @@ describe('useLatestBalance', () => {
     const { result, waitForNextUpdate } = renderUseLatestBalance(
       {
         address: bridgeController.getNativeAssetForChainId(
-          bridgeController.ChainId.SOLANA,
+          MultichainNetworks.SOLANA,
         ).assetId,
         decimals: 9,
+        chainId: MultichainNetworks.SOLANA,
       },
-      MultichainNetwork.Solana,
       mockStoreState,
     );
 
