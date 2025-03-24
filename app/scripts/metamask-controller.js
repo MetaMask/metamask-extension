@@ -139,16 +139,8 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
-import {
-  TRIGGER_TYPES,
-  Controller as NotificationServicesController,
-} from '@metamask/notification-services-controller/notification-services';
-import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
-import {
-  createRegToken,
-  deleteRegToken,
-  createSubscribeToPushNotifications,
-} from '@metamask/notification-services-controller/push-services/web';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -352,10 +344,6 @@ import { isEthAddress } from './lib/multichain/address';
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import BridgeController from './controllers/bridge/bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
-import {
-  onPushNotificationClicked,
-  onPushNotificationReceived,
-} from './controllers/push-notifications';
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
@@ -400,6 +388,8 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
+import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
+import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1311,111 +1301,6 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
-    // Notification Controllers
-
-    /** @type {import('@metamask/notification-services-controller/push-services').NotificationServicesPushControllerMessenger} */
-    const notificationServicesPushControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'NotificationServicesPushController',
-        allowedActions: ['AuthenticationController:getBearerToken'],
-        allowedEvents: [],
-      });
-    this.notificationServicesPushController =
-      new NotificationServicesPushController({
-        messenger: notificationServicesPushControllerMessenger,
-        state: initState.NotificationServicesPushController,
-        env: {
-          apiKey: process.env.FIREBASE_API_KEY ?? '',
-          authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? '',
-          storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? '',
-          projectId: process.env.FIREBASE_PROJECT_ID ?? '',
-          messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? '',
-          appId: process.env.FIREBASE_APP_ID ?? '',
-          measurementId: process.env.FIREBASE_MEASUREMENT_ID ?? '',
-          vapidKey: process.env.VAPID_KEY ?? '',
-        },
-        config: {
-          isPushFeatureEnabled: isManifestV3,
-          platform: 'extension',
-          pushService: {
-            createRegToken,
-            deleteRegToken,
-            subscribeToPushNotifications: createSubscribeToPushNotifications({
-              messenger: notificationServicesPushControllerMessenger,
-              onReceivedHandler: onPushNotificationReceived,
-              onClickHandler: onPushNotificationClicked,
-            }),
-          },
-        },
-      });
-    notificationServicesPushControllerMessenger.subscribe(
-      'NotificationServicesPushController:onNewNotifications',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationReceived,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
-        });
-      },
-    );
-    notificationServicesPushControllerMessenger.subscribe(
-      'NotificationServicesPushController:pushNotificationClicked',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationClicked,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
-        });
-      },
-    );
-
-    /** @type {import('@metamask/notification-services-controller/notification-services').NotificationServicesControllerMessenger} */
-    const notificationServicesControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'NotificationServicesController',
-        allowedActions: [
-          'KeyringController:getAccounts',
-          'KeyringController:getState',
-          'AuthenticationController:getBearerToken',
-          'AuthenticationController:isSignedIn',
-          'AuthenticationController:performSignIn',
-          'UserStorageController:getStorageKey',
-          'UserStorageController:performGetStorage',
-          'UserStorageController:performSetStorage',
-          'NotificationServicesPushController:enablePushNotifications',
-          'NotificationServicesPushController:disablePushNotifications',
-          'NotificationServicesPushController:subscribeToPushNotifications',
-          'NotificationServicesPushController:updateTriggerPushNotifications',
-        ],
-        allowedEvents: [
-          'KeyringController:stateChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'NotificationServicesPushController:onNewNotifications',
-          'NotificationServicesPushController:stateChange',
-        ],
-      });
-    this.notificationServicesController = new NotificationServicesController({
-      messenger: notificationServicesControllerMessenger,
-      state: initState.NotificationServicesController,
-      env: {
-        isPushIntegrated: isManifestV3,
-        featureAnnouncements: {
-          platform: 'extension',
-          spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
-          accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
-        },
-      },
-    });
-
     // account tracker watches balances, nonces, and any code at their address
     this.accountTrackerController = new AccountTrackerController({
       state: { accounts: {} },
@@ -2007,6 +1892,7 @@ export default class MetamaskController extends EventEmitter {
       this.smartTransactionsController,
     ];
 
+    /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ExecutionService: ExecutionServiceInit,
       RateLimitController: RateLimitControllerInit,
@@ -2026,6 +1912,9 @@ export default class MetamaskController extends EventEmitter {
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
+      NotificationServicesController: NotificationServicesControllerInit,
+      NotificationServicesPushController:
+        NotificationServicesPushControllerInit,
     };
 
     const {
@@ -2067,11 +1956,46 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
+    this.notificationServicesController =
+      controllersByName.NotificationServicesController;
+    this.notificationServicesPushController =
+      controllersByName.NotificationServicesPushController;
+
+    this.notificationServicesController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'NotificationServicesPushController:onNewNotifications',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.PushNotificationReceived,
+          properties: {
+            notification_id: notification.id,
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
+    this.controllerMessenger.subscribe(
+      'NotificationServicesPushController:pushNotificationClicked',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.PushNotificationClicked,
+          properties: {
+            notification_id: notification.id,
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
       },
     );
 
