@@ -1986,6 +1986,15 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    // Debug:transactions-tx-hash-in-analytics
+    this.controllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (newState) => {
+        console.log('REMOTE FEATURE FLAGS UPDATED:', newState.remoteFeatureFlags);
+      }
+    );
+    // Debug:transactions-tx-hash-in-analytics
+
     const existingControllers = [
       this.networkController,
       this.preferencesController,
