@@ -5281,18 +5281,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-infura@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "@metamask/eth-json-rpc-infura@npm:10.1.0"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
-    "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.0.1"
-  checksum: 10/e3305d8a2535c3dd0e4b127fb6d01e70245f394b05c6fe81030a9043ad6fd4b8d904e00830236f88cb80b09fa6490ea22e7abaa8230a4fd4912436d0738ee702
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-json-rpc-middleware@npm:^15.0.1, @metamask/eth-json-rpc-middleware@npm:^15.1.0":
   version: 15.3.0
   resolution: "@metamask/eth-json-rpc-middleware@npm:15.3.0"
