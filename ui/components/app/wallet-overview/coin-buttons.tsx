@@ -2,7 +2,7 @@ import React, {
   useCallback,
   useContext,
   useState,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   useEffect,
   ///: END:ONLY_INCLUDE_IF
 } from 'react';
@@ -23,7 +23,7 @@ import {
   CaipChainId,
 } from '@metamask/utils';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -31,15 +31,10 @@ import { SnapId } from '@metamask/snaps-sdk';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
+
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   CONFIRMATION_V_NEXT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -53,7 +48,7 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
@@ -88,12 +83,12 @@ import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -148,7 +143,7 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const currentActivityTabName = useSelector(
     // @ts-expect-error TODO: fix state type
     (state) => state.metamask.defaultHomeActiveTabName,
@@ -239,81 +234,13 @@ const CoinButtons = ({
     return {};
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-
-  const portfolioEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const stakingEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const handleMmiStakingOnClick = useCallback(() => {
-    stakingEvent();
-    global.platform.openTab({
-      url: `${mmiPortfolioUrl}/stake`,
-    });
-  }, [mmiPortfolioUrl]);
-
-  const handleMmiPortfolioOnClick = useCallback(() => {
-    portfolioEvent();
-    global.platform.openTab({
-      url: mmiPortfolioUrl,
-    });
-  }, [mmiPortfolioUrl]);
-
-  const renderInstitutionalButtons = () => {
-    return (
-      <>
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
-          Icon={
-            <Icon
-              name={IconName.Stake}
-              color={IconColor.primaryInverse}
-              size={IconSize.Sm}
-            />
-          }
-          label={t('stake')}
-          onClick={handleMmiStakingOnClick}
-        />
-        {mmiPortfolioEnabled && (
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
-            Icon={
-              <Icon
-                name={IconName.Diagram}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('portfolio')}
-            onClick={handleMmiPortfolioOnClick}
-          />
-        )}
-      </>
-    );
-  };
-  ///: END:ONLY_INCLUDE_IF
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const unapprovedTemplatedConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
@@ -372,7 +299,7 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     if (!isEvmAccountType(account.type)) {
       // Non-EVM (Snap) Send flow
       if (!account.metadata.snap) {
@@ -427,33 +354,32 @@ const CoinButtons = ({
     });
   }, [chainId, defaultSwapsToken]);
 
-  const handleBridgeOnClick = useCallback(async () => {
-    if (!defaultSwapsToken) {
-      return;
-    }
-    await setCorrectChain();
-    openBridgeExperience(
-      'Home',
-      defaultSwapsToken,
-      location.pathname.includes('asset') ? '&token=native' : '',
-    );
-  }, [defaultSwapsToken, location, openBridgeExperience]);
+  const handleBridgeOnClick = useCallback(
+    async (isSwap: boolean) => {
+      if (!defaultSwapsToken) {
+        return;
+      }
+      await setCorrectChain();
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        defaultSwapsToken,
+        location.pathname.includes('asset') ? '&token=native' : '',
+        isSwap,
+      );
+    },
+    [defaultSwapsToken, location, openBridgeExperience],
+  );
   ///: END:ONLY_INCLUDE_IF
 
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
-      handleBridgeOnClick();
+      handleBridgeOnClick(true);
       return;
     }
     ///: END:ONLY_INCLUDE_IF
 
     await setCorrectChain();
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    global.platform.openTab({
-      url: `${mmiPortfolioUrl}/swap`,
-    });
-    ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isSwapsChain) {
@@ -485,9 +411,6 @@ const CoinButtons = ({
     usingHardwareWallet,
     defaultSwapsToken,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiPortfolioUrl,
-    ///: END:ONLY_INCLUDE_IF
   ]);
 
   return (
@@ -515,11 +438,6 @@ const CoinButtons = ({
         ///: END:ONLY_INCLUDE_IF
       }
 
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        renderInstitutionalButtons()
-        ///: END:ONLY_INCLUDE_IF
-      }
       <IconButton
         className={`${classPrefix}-overview__button`}
         iconButtonClassName={iconButtonClassName}
@@ -555,7 +473,7 @@ const CoinButtons = ({
             />
           }
           label={t('bridge')}
-          onClick={handleBridgeOnClick}
+          onClick={() => handleBridgeOnClick(false)}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }

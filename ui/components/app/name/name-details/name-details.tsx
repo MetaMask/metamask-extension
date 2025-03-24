@@ -42,7 +42,6 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import Name from '../name';
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
@@ -55,6 +54,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
@@ -340,12 +340,10 @@ export default function NameDetails({
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
-              <Name
+              <NameDisplay
                 value={value}
                 type={NameType.ETHEREUM_ADDRESS}
                 variation={variation}
-                disableEdit
-                internal
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>

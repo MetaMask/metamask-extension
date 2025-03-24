@@ -1,8 +1,7 @@
 import { Mockttp } from 'mockttp';
-import { mockedSourcifyTokenSend } from '../confirmations/transactions/erc20-token-send-redesign.spec';
+import { mockedSourcifyTokenSend } from '../confirmations/helpers';
 import {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   WINDOW_TITLES,
   unlockWallet,
@@ -31,7 +30,6 @@ describe('Transfer custom tokens @no-mmi', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
@@ -89,7 +87,6 @@ describe('Transfer custom tokens @no-mmi', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
@@ -158,7 +155,6 @@ describe('Transfer custom tokens @no-mmi', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,

@@ -36,7 +36,6 @@ import {
   handleTransactionFailed,
   handleTransactionRejected,
   handleTransactionSubmitted,
-  TransactionMetricsRequest,
 } from '../../lib/transaction/metrics';
 import {
   ControllerInitFunction,
@@ -45,6 +44,7 @@ import {
 } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -123,6 +123,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         );
       },
     },
+    publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
@@ -176,6 +177,7 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateEditableParams: controller.updateEditableParams.bind(controller),
     updatePreviousGasParams:
       controller.updatePreviousGasParams.bind(controller),

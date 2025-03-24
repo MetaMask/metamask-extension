@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { isStrictHexString } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -47,7 +48,6 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { selectedAddressTxListSelector } from '../../../selectors';
 import {
   MetaMetricsContextProp,
@@ -63,12 +63,14 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
+import { getImageForChainId } from '../../../selectors/multichain';
+import { MINUTE } from '../../../../shared/constants/time';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
-  networkConfiguration: NetworkConfiguration | undefined,
+  networkConfiguration: EvmNetworkConfiguration | undefined,
   txHash: string | undefined,
 ) => {
   if (!networkConfiguration || !txHash) {
@@ -141,11 +143,13 @@ export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
+  const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
       bridgeHistoryItem?.startTime &&
       Date.now() >
         bridgeHistoryItem.startTime +
+          tenMinutesInMs +
           bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
@@ -174,10 +178,10 @@ const CrossChainSwapTxDetails = () => {
     getNetworkConfigurationsByChainId,
   );
 
-  const { transactionGroup, isEarliestNonce } = location.state as {
-    transactionGroup: TransactionGroup;
-    isEarliestNonce: boolean;
-  };
+  const transactionGroup: TransactionGroup | null =
+    location.state?.transactionGroup || null;
+  const isEarliestNonce: boolean | null =
+    location.state?.isEarliestNonce || null;
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -192,25 +196,27 @@ const CrossChainSwapTxDetails = () => {
   });
 
   const srcTxHash = srcChainTxMeta?.hash;
-  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
+  const srcBlockExplorerUrl = getBlockExplorerUrl(
+    srcNetwork as EvmNetworkConfiguration,
+    srcTxHash,
+  );
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
+  const destBlockExplorerUrl = getBlockExplorerUrl(
+    destNetwork as EvmNetworkConfiguration,
+    destTxHash,
+  );
 
   const status = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
 
   const srcChainIconUrl = srcNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        srcNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(srcNetwork.chainId)
     : undefined;
 
   const destChainIconUrl = destNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        destNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(destNetwork.chainId)
     : undefined;
 
   const srcNetworkName =
@@ -334,8 +340,16 @@ const CrossChainSwapTxDetails = () => {
 
           {/* Links to block explorers */}
           <BridgeExplorerLinks
-            srcChainId={srcNetwork?.chainId}
-            destChainId={destNetwork?.chainId}
+            srcChainId={
+              isStrictHexString(srcNetwork?.chainId)
+                ? srcNetwork?.chainId
+                : undefined
+            }
+            destChainId={
+              isStrictHexString(destNetwork?.chainId)
+                ? destNetwork?.chainId
+                : undefined
+            }
             srcBlockExplorerUrl={srcBlockExplorerUrl}
             destBlockExplorerUrl={destBlockExplorerUrl}
           />
@@ -410,24 +424,27 @@ const CrossChainSwapTxDetails = () => {
                 </Box>
               }
             />
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsYouReceived')}
-              value={
-                <Box
-                  display={Display.Flex}
-                  gap={1}
-                  alignItems={AlignItems.center}
-                  flexWrap={FlexWrap.Wrap}
-                  justifyContent={JustifyContent.flexEnd}
-                >
-                  {t('bridgeTxDetailsTokenAmountOnChain', [
-                    bridgeAmountReceived,
-                    bridgeHistoryItem?.quote.destAsset.symbol,
-                  ])}
-                  {destNetworkIconName}
-                </Box>
-              }
-            />
+            {bridgeAmountReceived &&
+              bridgeHistoryItem?.quote.destAsset.symbol && (
+                <TransactionDetailRow
+                  title={t('bridgeTxDetailsYouReceived')}
+                  value={
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.center}
+                      flexWrap={FlexWrap.Wrap}
+                      justifyContent={JustifyContent.flexEnd}
+                    >
+                      {t('bridgeTxDetailsTokenAmountOnChain', [
+                        bridgeAmountReceived,
+                        bridgeHistoryItem?.quote.destAsset.symbol,
+                      ])}
+                      {destNetworkIconName}
+                    </Box>
+                  }
+                />
+              )}
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotalGasFee')}
               value={
@@ -458,12 +475,13 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              isEarliestNonce={isEarliestNonce}
-            />
+            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                isEarliestNonce={isEarliestNonce}
+              />
+            )}
           </Box>
         </Box>
       </Content>

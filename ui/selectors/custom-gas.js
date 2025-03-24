@@ -192,14 +192,6 @@ export function getGasPriceInHexWei(price) {
   return addHexPrefix(priceEstimateToWei(value));
 }
 
-export function getIsEthGasPriceFetched(state) {
-  const gasEstimateType = getGasEstimateType(state);
-  return (
-    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
-    getIsMainnet(state)
-  );
-}
-
 export function getIsCustomNetworkGasPriceFetched(state) {
   const gasEstimateType = getGasEstimateType(state);
   return (

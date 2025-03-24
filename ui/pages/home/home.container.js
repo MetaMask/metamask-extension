@@ -1,21 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-  getCustodianDeepLink,
-  getWaitForConfirmDeepLinkDialog,
-} from '../../selectors/institutional/selectors';
-import {
-  mmiActionsFactory,
-  setCustodianDeepLink,
-} from '../../store/institutional/institution-background';
-import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
-import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
-///: END:ONLY_INCLUDE_IF
+
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -41,9 +27,6 @@ import {
   getQueuedRequestCount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getAccountType,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -111,10 +94,6 @@ const mapStateToProps = (state) => {
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const institutionalConnectRequests = getInstitutionalConnectRequests(state);
-  ///: END:ONLY_INCLUDE_IF
-
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
@@ -136,7 +115,12 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  let TEMPORARY_DISABLE_WHATS_NEW = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  TEMPORARY_DISABLE_WHATS_NEW = false;
+  ///: END:ONLY_INCLUDE_IF
+
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
     : getShowWhatsNewPopup(state);
@@ -185,25 +169,11 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
-    institutionalConnectRequests,
-    modalOpen: state.appState.modal.open,
-    mmiPortfolioUrl: getMmiPortfolioUrl(state),
-    mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
-    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    custodianDeepLink: getCustodianDeepLink(state),
-    accountType: getAccountType(state),
-    ///: END:ONLY_INCLUDE_IF
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
-
   return {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
@@ -249,34 +219,6 @@ const mapDispatchToProps = (dispatch) => {
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    showCustodianDeepLink: ({
-      txId = undefined,
-      fromAddress,
-      custodyId,
-      onDeepLinkFetched = () => undefined,
-      onDeepLinkShown = () => undefined,
-      isSignature = false,
-      isNotification = false,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId,
-        fromAddress,
-        custodyId,
-        closeNotification: isNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-        showCustodyConfirmLink,
-        isSignature,
-      }),
-    cleanCustodianDeepLink: () => {
-      dispatch(setCustodianDeepLink({}));
-    },
-    ///: END:ONLY_INCLUDE_IF
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),

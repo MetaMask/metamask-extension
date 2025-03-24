@@ -24,7 +24,7 @@ import { AlertModal } from '../alert-modal';
 import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
 import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
-import { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
+import type { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
 
 export type ConfirmAlertModalProps = {
   /** Callback function that is called when the cancel button is clicked. */
@@ -176,7 +176,7 @@ export function ConfirmAlertModal({
       onAcknowledgeClick={onClose}
       alertKey={selectedAlert.key}
       onClose={onClose}
-      customTitle={t('confirmationAlertModalTitle')}
+      customTitle={t('confirmationAlertModalTitleDescription')}
       customDetails={
         <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }

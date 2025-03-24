@@ -1,11 +1,17 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
+import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
+import {
+  SnapKeyringAccountAssetListUpdatedEvent,
+  SnapKeyringAccountBalancesUpdatedEvent,
+  SnapKeyringAccountTransactionsUpdatedEvent,
+} from '@metamask/eth-snap-keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -39,14 +45,18 @@ const setupController = ({
 }: {
   state?: Partial<PreferencesControllerState>;
 }) => {
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     AllowedActions,
     | AllowedEvents
     | KeyringControllerStateChangeEvent
     | SnapControllerStateChangeEvent
+    | SnapKeyringAccountAssetListUpdatedEvent
+    | SnapKeyringAccountBalancesUpdatedEvent
+    | SnapKeyringAccountTransactionsUpdatedEvent
+    | MultichainNetworkControllerNetworkDidChangeEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    controllerMessenger.getRestricted({
+    messenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -58,7 +68,7 @@ const setupController = ({
       allowedEvents: ['AccountsController:stateChange'],
     });
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     jest.fn().mockReturnValue({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
@@ -69,11 +79,15 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = controllerMessenger.getRestricted({
+  const accountsControllerMessenger = messenger.getRestricted({
     name: 'AccountsController',
     allowedEvents: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
+      'SnapKeyring:accountAssetListUpdated',
+      'SnapKeyring:accountBalancesUpdated',
+      'SnapKeyring:accountTransactionsUpdated',
+      'MultichainNetworkController:networkDidChange',
     ],
     allowedActions: [],
   });
@@ -90,7 +104,7 @@ const setupController = ({
 
   return {
     controller,
-    messenger: controllerMessenger,
+    messenger,
     accountsController,
   };
 };
@@ -141,6 +155,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -184,6 +204,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -237,6 +263,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -270,6 +302,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -515,6 +553,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -579,19 +623,6 @@ describe('preferences controller', () => {
 
       controller.setBitcoinSupportEnabled(false);
       expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-  });
-
-  describe('useNonceField', () => {
-    it('defaults useNonceField to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useNonceField).toStrictEqual(false);
-    });
-
-    it('setUseNonceField to true', () => {
-      const { controller } = setupController({});
-      controller.setUseNonceField(true);
-      expect(controller.state.useNonceField).toStrictEqual(true);
     });
   });
 
@@ -845,18 +876,64 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+  describe('getDisabledAccountUpgradeChains', () => {
+    it('returns empty array if disabledAccountUpgrades is empty', () => {
+      const { controller } = setupController({});
+      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([]);
     });
 
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
+    it('returns disabledAccountUpgrades state', () => {
+      const { controller } = setupController({
+        state: {
+          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+        },
+      });
 
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.GOERLI,
+      ]);
+    });
+  });
+
+  describe('disableAccountUpgradeForChain', () => {
+    it('adds chain ID to disabledAccountUpgrades if empty', () => {
+      const { controller } = setupController({});
+
+      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
+
+      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+        CHAIN_IDS.GOERLI,
+      ]);
+    });
+
+    it('adds chain ID to disabledAccountUpgrades if not empty', () => {
+      const { controller } = setupController({
+        state: {
+          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
+        },
+      });
+
+      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
+
+      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.GOERLI,
+      ]);
+    });
+
+    it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
+      const { controller } = setupController({
+        state: {
+          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
+        },
+      });
+
+      controller.disableAccountUpgradeForChain(CHAIN_IDS.MAINNET);
+
+      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+      ]);
     });
   });
 });

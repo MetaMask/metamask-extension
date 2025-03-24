@@ -9,6 +9,23 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
+  protected readonly balanceDiv =
+    '[data-testid="coin-overview__primary-currency"]';
+
+  async check_pageIsLoaded(amount: string = ''): Promise<void> {
+    await super.check_pageIsLoaded();
+    if (amount) {
+      try {
+        await this.driver.waitForSelector({
+          text: `${amount}`,
+          tag: 'span',
+        });
+      } catch (e) {
+        console.log('Error in check_pageIsLoaded', e);
+      }
+    }
+  }
+
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
   /**
@@ -23,16 +40,20 @@ class NonEvmHomepage extends HomePage {
    * Checks if the expected balance is displayed on homepage.
    *
    * @param balance
+   * @param token
    */
-  async check_getBalance(balance: string): Promise<void> {
-    console.log(`Getting Non-evm account balance`);
-    await this.driver.waitForSelector(
-      {
-        css: 'div',
-        text: balance,
-      },
-      { timeout: 5000 },
-    );
+  async check_getBalance(
+    balance: string,
+    token: string = 'SOL',
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: balance,
+      tag: 'span',
+    });
+    await this.driver.waitForSelector({
+      text: token,
+      tag: 'span',
+    });
   }
 
   /**

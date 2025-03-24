@@ -11,13 +11,11 @@ jobs:
     name: Publish prerelease
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout and setup high risk environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Get merge base commit hash
         id: get-merge-base
@@ -61,9 +59,6 @@ jobs:
 
           mkdir -p test-artifacts/chrome
           curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
-
-          mkdir storybook-build
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/storybook/stories.json" > "storybook-build/stories.json"
 
       - name: Publish prerelease
         env:

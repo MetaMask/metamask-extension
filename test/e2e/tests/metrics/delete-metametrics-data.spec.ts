@@ -1,16 +1,12 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  getEventPayloads,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures, getEventPayloads, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { WebElementWithWaitForElementState } from '../../webdriver/types';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -53,7 +49,7 @@ const mockSegment = async (mockServer: Mockttp) => {
         JSON.stringify({
           regulationType: 'DELETE_ONLY',
           subjectType: 'USER_ID',
-          subjectIds: ['fake-metrics-id'],
+          subjectIds: [MOCK_META_METRICS_ID],
         }),
       )
       .thenCallback(() => ({
@@ -89,11 +85,10 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -158,11 +153,10 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: false,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -187,7 +181,6 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

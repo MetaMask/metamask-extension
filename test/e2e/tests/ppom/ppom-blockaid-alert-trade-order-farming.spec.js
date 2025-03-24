@@ -1,11 +1,6 @@
 const FixtureBuilder = require('../../fixture-builder');
 
-const {
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { WINDOW_TITLES, unlockWallet, withFixtures } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const CONTRACT_ADDRESS = {
@@ -101,7 +96,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.title,
       },

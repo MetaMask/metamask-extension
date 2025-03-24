@@ -106,7 +106,7 @@ export default function ListWithSearch({
 
   useEffect(() => {
     handleSearch(searchQuery);
-  }, [searchQuery]);
+  }, [searchQuery, itemsToSearch]);
 
   const handleOnClear = () => {
     setSearchQuery('');

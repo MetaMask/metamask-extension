@@ -21,6 +21,12 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
+    offscreenPromise: Promise.resolve(),
     persistedState: {},
+    removeAllConnections: jest.fn(),
+    setupUntrustedCommunicationEip1193: jest.fn(),
+    showNotification: jest.fn(),
+    trackEvent: jest.fn(),
+    getMetaMetricsId: jest.fn(),
   };
 }

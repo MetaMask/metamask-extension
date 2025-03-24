@@ -8,7 +8,7 @@ import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details
 import { getSelectedAccountTokensAcrossChains } from '../../selectors';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { Token } from '../../components/app/assets/token-list/token-list';
+import { Token } from '../../components/app/assets/types';
 import TokenAsset from './components/token-asset';
 import { findAssetByAddress } from './util';
 import NativeAsset from './components/native-asset';

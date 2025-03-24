@@ -1,10 +1,6 @@
 import { ReactNodeLike } from 'prop-types';
 import React, { ReactNode } from 'react';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
-import NoteToTrader from '../../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IF
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
@@ -15,7 +11,6 @@ import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
-import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
@@ -56,24 +51,13 @@ const Confirm = () => (
             <Header />
             <SmartTransactionsBannerAlert marginType="noTop" />
             <ScrollToBottom>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <MMISignatureMismatchBanner />
-                ///: END:ONLY_INCLUDE_IF
-              }
               <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />
               <Info />
               <PluggableSection />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <NoteToTrader />
-                ///: END:ONLY_INCLUDE_IF
-              }
             </ScrollToBottom>
             <Footer />
-            <NetworkChangeToast />
           </Page>
         </ConfirmAlerts>
       </GasFeeContextProviderWrapper>

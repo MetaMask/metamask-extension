@@ -85,6 +85,12 @@ class PrivacySettings {
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
 
+  private readonly participateInMetaMetricsToggle =
+    '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
+
+  private readonly dataCollectionForMarketingToggle =
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -177,9 +183,27 @@ class PrivacySettings {
     return (await this.driver.findElement(this.displayedSrpText)).getText();
   }
 
-  async openRevealSrpQuiz(): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
+  async openSrpList(): Promise<void> {
+    // THe e2e clicks the reveal SRP too quickly before the component checks if there are multiple SRPs
+    await this.driver.delay(1000);
     await this.driver.clickElement(this.revealSrpButton);
+  }
+
+  async openRevealSrpQuiz(srpIndex?: number): Promise<void> {
+    console.log('Open reveal SRP quiz on privacy settings page');
+
+    if (srpIndex) {
+      await this.openSrpList();
+      // We only pass in the srpIndex when there are multiple SRPs
+      const srpSelector = {
+        text: `Secret Recovery Phrase ${srpIndex.toString()}`,
+        tag: 'p',
+      };
+      await this.driver.clickElement(srpSelector);
+    } else {
+      await this.driver.clickElement(this.revealSrpButton);
+    }
+
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
@@ -211,6 +235,20 @@ class PrivacySettings {
       css: this.displayedSrpText,
       text: expectedSrpText,
     });
+  }
+
+  async toggleParticipateInMetaMetrics(): Promise<void> {
+    console.log(
+      'Toggle participate in meta metrics in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.participateInMetaMetricsToggle);
+  }
+
+  async toggleDataCollectionForMarketing(): Promise<void> {
+    console.log(
+      'Toggle data collection for marketing in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.dataCollectionForMarketingToggle);
   }
 }
 

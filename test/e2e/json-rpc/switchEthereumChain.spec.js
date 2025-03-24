@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
@@ -21,11 +20,22 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -86,10 +96,22 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -118,6 +140,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         await editButtons[1].click();
@@ -196,10 +224,22 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -229,6 +269,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         // Click the edit button for networks
@@ -304,10 +350,22 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -336,6 +394,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
 
         const editButtons = await driver.findElements('[data-testid="edit"]');
 

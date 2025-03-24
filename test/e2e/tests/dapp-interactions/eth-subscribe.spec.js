@@ -1,5 +1,4 @@
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   DAPP_ONE_URL,
@@ -15,7 +14,6 @@ describe('eth_subscribe', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
