@@ -200,7 +200,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValue,
-          // @ts-expect-error Fix with request types formatted with adapter
           selectedAccountAddresses,
           selectedChainIds,
         ),
