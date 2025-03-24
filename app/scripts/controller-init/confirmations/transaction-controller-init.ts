@@ -181,6 +181,8 @@ function getApi(
     updateEditableParams: controller.updateEditableParams.bind(controller),
     updatePreviousGasParams:
       controller.updatePreviousGasParams.bind(controller),
+    updateSelectedGasFeeToken:
+      controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
     updateTransactionSendFlowHistory:
