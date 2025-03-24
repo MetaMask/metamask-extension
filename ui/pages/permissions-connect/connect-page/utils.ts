@@ -85,20 +85,13 @@ export function getFilteredAccounts(
   accounts: MergedInternalAccount[],
   requestedCaip25CaveatValue: Caip25CaveatValue,
 ): MergedInternalAccount[] {
-  // This ensures backwards compatability
-  if (!requestedCaip25CaveatValue.isMultichainOrigin) {
-    return accounts.filter((account: MergedInternalAccount) =>
-      isEvmAccountType(account.type),
-    );
-  }
-
   const requestedScopes = new Set([
     ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
     ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
   ]);
 
-  const hasEipRequests = Array.from(requestedScopes).some((scope) =>
-    scope.startsWith('eip155:'),
+  const hasEipRequests = Array.from(requestedScopes).some(
+    (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
   );
 
   return accounts.filter((account) => {
