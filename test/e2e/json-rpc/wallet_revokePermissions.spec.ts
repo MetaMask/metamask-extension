@@ -183,16 +183,16 @@ describe('Revoke Dapp Permissions', function () {
 
   describe('There are pending confirmation in the old network', function () {
     it('rejects the pending confirmations as permissions are reviked for the network', async function () {
-      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
-              .build(),
-            title: this.test?.fullTitle(),
-          },
-          async ({ driver }) => {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }) => {
+          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
             await loginWithBalanceValidation(driver);
             const testDapp = new TestDapp(driver);
             await testDapp.openTestDappPage();
@@ -226,9 +226,9 @@ describe('Revoke Dapp Permissions', function () {
               (permission: PermissionConstraint) => permission.parentCapability,
             );
             assert.deepEqual(afterGetPermissionsNames, []);
-          },
-        );
-      }
+          }
+        },
+      );
     });
   });
 });

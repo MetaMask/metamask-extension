@@ -482,34 +482,34 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
   describe('There are pending confirmation in the old network', function () {
     it('show alerts on permission network if user does not have permission on new network', async function () {
-      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerDoubleGanache()
-              .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
-              .build(),
-            dappOptions: { numberOfDapps: 2 },
-            localNodeOptions: [
-              {
-                type: 'anvil',
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleGanache()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          dappOptions: { numberOfDapps: 2 },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                blockTime: 2,
+                vmErrorsOnRPCResponse: false,
+                mnemonic:
+                  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+                port: 8546,
+                chainId: 1338,
               },
-              {
-                type: 'anvil',
-                options: {
-                  blockTime: 2,
-                  vmErrorsOnRPCResponse: false,
-                  mnemonic:
-                    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-                  port: 8546,
-                  chainId: 1338,
-                },
-              },
-            ],
-            title: this.test.fullTitle(),
-          },
-          async ({ driver }) => {
+            },
+          ],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
             await unlockWallet(driver);
 
             await openDapp(driver);
@@ -554,43 +554,43 @@ describe('Switch Ethereum Chain for two dapps', function () {
               css: '#chainId',
               text: '0x53a',
             });
-          },
-        );
-      }
+          }
+        },
+      );
     });
 
     it('show alerts on switch network page if user does has permission on new network', async function () {
-      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerDoubleGanache()
-              .withPermissionControllerConnectedToTestDappWithChains([
-                '0x539',
-                '0x53a',
-              ])
-              .build(),
-            dappOptions: { numberOfDapps: 2 },
-            localNodeOptions: [
-              {
-                type: 'anvil',
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleGanache()
+            .withPermissionControllerConnectedToTestDappWithChains([
+              '0x539',
+              '0x53a',
+            ])
+            .build(),
+          dappOptions: { numberOfDapps: 2 },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                blockTime: 2,
+                vmErrorsOnRPCResponse: false,
+                mnemonic:
+                  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+                port: 8546,
+                chainId: 1338,
               },
-              {
-                type: 'anvil',
-                options: {
-                  blockTime: 2,
-                  vmErrorsOnRPCResponse: false,
-                  mnemonic:
-                    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-                  port: 8546,
-                  chainId: 1338,
-                },
-              },
-            ],
-            title: this.test.fullTitle(),
-          },
-          async ({ driver }) => {
+            },
+          ],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
             await unlockWallet(driver);
 
             await openDapp(driver);
@@ -641,9 +641,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
               css: '#chainId',
               text: '0x53a',
             });
-          },
-        );
-      }
+          }
+        },
+      );
     });
   });
 });

@@ -534,29 +534,29 @@ describe('Add Ethereum Chain', function () {
 
   describe('There are pending confirmation in the old network', () => {
     it('alert user about pending confirmations', async function () {
-      if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerDoubleGanache()
-              .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
-              .build(),
-            localNodeOptions: [
-              {
-                type: 'anvil',
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleGanache()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
               },
-              {
-                type: 'anvil',
-                options: {
-                  port: 8546,
-                  chainId: 1338,
-                },
-              },
-            ],
-            title: this.test?.fullTitle(),
-          },
-          async ({ driver }: { driver: Driver }) => {
+            },
+          ],
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
             await unlockWallet(driver);
             await openDapp(driver);
 
@@ -617,9 +617,9 @@ describe('Add Ethereum Chain', function () {
 
             // should end on 1338
             await driver.findElement({ css: '#chainId', text: '0x53a' });
-          },
-        );
-      }
+          }
+        },
+      );
     });
   });
 });
