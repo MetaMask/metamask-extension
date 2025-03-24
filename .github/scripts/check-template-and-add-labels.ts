@@ -265,7 +265,7 @@ function extractReleaseVersionFromBugReportIssueBody(
 }
 
 // This function adds the "needs-triage" label to the issue if it doesn't have it
-function addNeedsTriageLabelToIssue(
+async function addNeedsTriageLabelToIssue(
   octokit: InstanceType<typeof GitHub>,
   issue: Labelable,
 ): Promise<void> {

@@ -87,7 +87,7 @@ export const BridgeInputGroup = ({
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = networkProps?.network?.chainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const balanceAmount = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -245,7 +245,7 @@ export const BridgeInputGroup = ({
             selectedChainId &&
             (isNativeAddress(token.address)
               ? undefined
-              : shortenString(token.address, {
+              : shortenString(token.address.split(':').at(-1), {
                   truncatedCharLimit: 11,
                   truncatedStartChars: 4,
                   truncatedEndChars: 4,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -22,6 +22,7 @@ export const ReceiveModal = ({ address, onClose }) => {
   const {
     metadata: { name },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
+  const data = useMemo(() => ({ data: address }), [address]);
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -37,7 +38,7 @@ export const ReceiveModal = ({ address, onClose }) => {
           paddingInlineEnd={4}
           paddingInlineStart={4}
         >
-          <QrCodeView Qr={{ data: address }} accountName={name} />
+          <QrCodeView Qr={data} accountName={name} />
         </Box>
       </ModalContent>
     </Modal>

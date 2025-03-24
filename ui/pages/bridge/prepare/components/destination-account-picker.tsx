@@ -1,8 +1,5 @@
-import * as React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { SolAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useState } from 'react';
 import {
   TextField,
   Box,
@@ -14,6 +11,7 @@ import {
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
+  isSolanaAccount,
 } from '../../../../selectors';
 import {
   BlockSize,
@@ -26,12 +24,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
+// eslint-disable-next-line import/no-restricted-paths
+import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
+import { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
+import { ExternalAccountListItem } from './external-account-list-item';
 
 type DestinationAccountPickerProps = {
-  onAccountSelect: (account: InternalAccount | null) => void;
-  selectedSwapToAccount: InternalAccount | null;
+  onAccountSelect: (account: DestinationAccount | null) => void;
+  selectedSwapToAccount: DestinationAccount | null;
   isDestinationSolana: boolean;
 };
 
@@ -44,17 +47,63 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
-  const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = account.metadata.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  // Check if search query is a valid address
+  const isValidAddress = useMemo(() => {
+    const trimmedQuery = searchQuery.trim();
+    if (!trimmedQuery) {
+      return false;
+    }
 
-    const matchesChain = isDestinationSolana
-      ? account.type === SolAccountType.DataAccount
-      : account.type !== SolAccountType.DataAccount;
+    return isDestinationSolana
+      ? isSolanaAddress(trimmedQuery)
+      : isEthAddress(trimmedQuery);
+  }, [searchQuery, isDestinationSolana]);
 
-    return matchesSearch && matchesChain;
-  });
+  // Create an external account object if valid address is not in internal accounts
+  const externalAccount = useMemo(() => {
+    if (!isValidAddress) {
+      return null;
+    }
+
+    const trimmedQuery = searchQuery.trim();
+    const addressExists = accounts.some(
+      (account) => account.address.toLowerCase() === trimmedQuery.toLowerCase(),
+    );
+
+    if (addressExists) {
+      return null;
+    }
+
+    return {
+      address: trimmedQuery,
+      metadata: {
+        name: `${trimmedQuery.slice(0, 6)}...${trimmedQuery.slice(-4)}`,
+      },
+      isExternal: true,
+    };
+  }, [accounts, isValidAddress, searchQuery]);
+
+  const filteredAccounts = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const matchesSearchByName = account.metadata.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        const matchesSearchByAddress = account.address
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        const matchesSearch = matchesSearchByName || matchesSearchByAddress;
+
+        const matchesChain = isDestinationSolana
+          ? isSolanaAccount(account)
+          : !isSolanaAccount(account);
+
+        return matchesSearch && matchesChain;
+      }),
+    [accounts, isDestinationSolana, searchQuery],
+  );
 
   if (selectedSwapToAccount) {
     return (
@@ -69,9 +118,7 @@ export const DestinationAccountPicker = ({
         style={{
           height: '70px',
           borderRadius: '8px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <Box
@@ -116,9 +163,6 @@ export const DestinationAccountPicker = ({
       style={{
         borderRadius: '8px',
         position: 'relative',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        boxShadow: 'var(--shadow-bridge-picker)',
       }}
     >
       <Box
@@ -134,6 +178,7 @@ export const DestinationAccountPicker = ({
           borderBottomStyle: 'solid',
           borderBottomColor: '#B7BBC866',
           borderRadius: '8px 8px 0 0',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <TextField
@@ -151,20 +196,21 @@ export const DestinationAccountPicker = ({
           }}
         />
       </Box>
+      {/* Invisible buffer to match selected account height */}
+      <Box style={{ height: '20px' }} />
       <Box
         className="destination-account-picker__list"
         backgroundColor={BackgroundColor.backgroundDefault}
         style={{
           position: 'absolute',
-          top: '45px',
+          top: '50px',
           left: 0,
           right: 0,
-          minHeight: '79px',
           maxHeight: '240px',
           overflowY: 'auto',
           borderRadius: '0 0 8px 8px',
           zIndex: 1000,
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         {filteredAccounts.map((account) => (
@@ -177,8 +223,20 @@ export const DestinationAccountPicker = ({
             showOptions={false}
           />
         ))}
+        {externalAccount && (
+          <ExternalAccountListItem
+            key="external-account"
+            account={externalAccount}
+            selected={Boolean(
+              selectedSwapToAccount &&
+                (selectedSwapToAccount as DestinationAccount).address ===
+                  externalAccount.address,
+            )}
+            onClick={() => onAccountSelect(externalAccount)}
+          />
+        )}
 
-        {filteredAccounts.length === 0 && (
+        {filteredAccounts.length === 0 && !externalAccount && (
           <Box
             display={Display.Flex}
             style={{

@@ -50,9 +50,7 @@ exports[`<NFTSendHeading /> renders component 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-    >
-      #undefined
-    </p>
+    />
   </div>
 </div>
 `;
