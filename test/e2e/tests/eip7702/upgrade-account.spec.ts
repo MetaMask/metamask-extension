@@ -35,6 +35,7 @@ describe('Upgrade Account', function (this: Suite) {
           .build(),
         localNodeOptions: {
           hardfork: 'prague',
+          loadState: './test/e2e/seeder/network-states/withDelegator.json',
         },
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
