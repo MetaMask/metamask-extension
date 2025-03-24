@@ -1616,6 +1616,9 @@
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
   },
+  "destinationAccountPickerReceiveAt": {
+    "message": "Receive at"
+  },
   "destinationAccountPickerSearchPlaceholder": {
     "message": "Receiving address or SNS"
   },

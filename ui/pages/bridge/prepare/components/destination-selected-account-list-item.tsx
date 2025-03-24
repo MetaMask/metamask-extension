@@ -66,16 +66,22 @@ const DestinationSelectedAccountListItem: React.FC<
       />
 
       <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {isExternalAccount ? t('externalAccount') : account.metadata.name}
+        <Text
+          variant={TextVariant.bodySmMedium}
+          color={TextColor.textAlternative}
+          data-testid="account-list-address"
+          marginBottom={1}
+        >
+          {t('destinationAccountPickerReceiveAt')}
         </Text>
 
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMdMedium}
           data-testid="account-list-address"
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
+          {isExternalAccount
+            ? shortenAddress(normalizeSafeAddress(account.address))
+            : account.metadata.name}
         </Text>
       </Box>
     </Box>
