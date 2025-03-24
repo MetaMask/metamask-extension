@@ -994,8 +994,8 @@ export function setupController(
         connectCaipMultichain(
           mux.createStream(
             METAMASK_CAIP_MULTICHAIN_PROVIDER,
-            remotePort.sender,
           ),
+          remotePort.sender,
         );
       }
     }
