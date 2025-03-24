@@ -401,6 +401,9 @@ import {
   processSendCalls,
 } from './lib/transaction/eip5792';
 
+
+import { DeFiPositionsController } from '@metamask/assets-controllers';
+
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -773,6 +776,25 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
       provider: this.provider,
       messenger: tokensControllerMessenger,
+      chainId: this.#getGlobalChainId(),
+    });
+
+
+
+
+    this.defiPositionsController = new DeFiPositionsController({
+      state: initState.DeFiPositionsController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'DeFiPositionsController',
+        allowedActions: [
+          'AccountsController:getSelectedAccount',
+          'AccountsController:getAccount',
+        ],
+        allowedEvents: [
+          'AccountsController:selectedAccountChange',
+          'NetworkController:stateChange',
+        ],
+      }),
       chainId: this.#getGlobalChainId(),
     });
 
@@ -2223,6 +2245,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      DefiPositionsController: this.defiPositionsController,
       TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
@@ -2282,6 +2305,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
+        DefiPositionsController: this.defiPositionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,

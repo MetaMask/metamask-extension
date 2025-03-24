@@ -40,17 +40,48 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from './cells';
+import { AvatarGroup } from '../../../multichain';
+import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
 
-export type TokenCellProps = {
-  token: TokenWithFiatAmount;
-  privacyMode?: boolean;
-  onClick?: (chainId: string, address: string) => void;
-};
+
+export const TokenCellLocation = {
+  TokensTab: 'TokensTab',
+  DefiTab: 'DefiTab',
+  DefiDetailsTab: 'DefiDetailsTab',
+} as const
+export type TokenCellLocation = (typeof TokenCellLocation)[keyof typeof TokenCellLocation];
+
+type TokenCellProps =
+  | {
+      location: typeof TokenCellLocation.TokensTab;
+      token: TokenWithFiatAmount;
+      onClick?: (chainId: string, address: string) => void;
+      privacyMode: boolean;
+    }
+  | {
+      location: typeof TokenCellLocation.DefiDetailsTab;
+      token: TokenWithFiatAmount;
+      privacyMode: boolean;
+      onClick: undefined;
+    }
+  | {
+      location: typeof TokenCellLocation.DefiTab;
+      onClick?: (chainId: string, protocolId: string) => void;
+      token: TokenWithFiatAmount & {
+        iconGroup: { avatarValue: string; symbol: string }[];
+        protocolId: string;
+      };
+      privacyMode: boolean;
+    };
+
+
+
 
 export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
+  location,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -77,31 +108,26 @@ export default function TokenCell({
     (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e?.preventDefault();
 
-      // If the scam warning modal is open, do nothing
-      if (showScamWarningModal) {
+      if (!onClick || !token.chainId || showScamWarningModal) {
         return;
       }
 
-      // Ensure token has a valid chainId before proceeding
-      if (!onClick || !token.chainId) {
-        return;
+      if (location === TokenCellLocation.TokensTab) {
+        onClick(token.chainId, token.address);
+        trackEvent({
+          category: MetaMetricsEventCategory.Tokens,
+          event: MetaMetricsEventName.TokenDetailsOpened,
+          properties: {
+            location: 'Home',
+            chain_id: token.chainId,
+            token_symbol: token.symbol,
+          },
+        });
+      } else if (location === TokenCellLocation.DefiTab) {
+        onClick(token.chainId, token.protocolId);
       }
-
-      // Call the onClick handler with chainId and address if needed
-      onClick(token.chainId, token.address);
-
-      // Track the event
-      trackEvent({
-        category: MetaMetricsEventCategory.Tokens,
-        event: MetaMetricsEventName.TokenDetailsOpened,
-        properties: {
-          location: 'Home',
-          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
-          token_symbol: token.symbol,
-        },
-      });
     },
-    [onClick, token, showScamWarningModal, trackEvent],
+    [onClick, token, location, showScamWarningModal, trackEvent],
   );
 
   const handleScamWarningModal = (arg: boolean) => {
@@ -160,10 +186,18 @@ export default function TokenCell({
             justifyContent={JustifyContent.spaceBetween}
           >
             <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-            <TokenCellPrimaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
-              privacyMode={privacyMode}
-            />
+            {location === 'DefiTab' ? (
+              <AvatarGroup
+                avatarType={AvatarType.TOKEN}
+                limit={4}
+                members={token.iconGroup}
+              />
+            ) : (
+              <TokenCellPrimaryDisplay
+                token={{ ...token, ...tokenDisplayInfo }}
+                privacyMode={privacyMode}
+              />
+            )}
           </Box>
         </Box>
       </Box>

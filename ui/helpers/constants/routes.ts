@@ -12,6 +12,7 @@ export const LOCK_ROUTE = '/lock';
 PATH_NAME_MAP[LOCK_ROUTE] = 'Lock Page';
 
 export const ASSET_ROUTE = '/asset';
+export const DEFI_ROUTE = '/defi';
 PATH_NAME_MAP[`${ASSET_ROUTE}/:asset/:id`] = `Asset Page`;
 PATH_NAME_MAP[`${ASSET_ROUTE}/image/:asset/:id`] = `Nft Image Page`;
 
