@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement editing spending cap in the simulation component ([#30745](https://github.com/MetaMask/metamask-extension/pull/30745))
 - Integrate alert system into template based confirmations ([#30577](https://github.com/MetaMask/metamask-extension/pull/30577))
 - Add info alert when new confirmation is from different origin or network ([#30550](https://github.com/MetaMask/metamask-extension/pull/30550))
-- Add MegaETH Testnet as a default test network ([#30871](https://github.com/MetaMask/metamask-extension/pull/30871))
 - Populate swap page with a default destination token ([#30929](https://github.com/MetaMask/metamask-extension/pull/30929))
 - Add a new token alert translation to support concentrated supply distribution cases ([#30877](https://github.com/MetaMask/metamask-extension/pull/30877))
 - Add token alerts with multichain integration ([#30557](https://github.com/MetaMask/metamask-extension/pull/30557))
@@ -25,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Multichain API to Flask ([#27782](https://github.com/MetaMask/metamask-extension/pull/27782))
 
 ### Changed
-- Update MegaETH logo ([#30883](https://github.com/MetaMask/metamask-extension/pull/30883))
 - Set swap input selection defaults ([#30600](https://github.com/MetaMask/metamask-extension/pull/30600))
 
 ### Fixed
