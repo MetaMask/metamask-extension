@@ -669,7 +669,7 @@ export default class MetamaskController extends EventEmitter {
         if (
           (rootDomainName === 'infura.io' ||
             rootDomainName === 'quicknode.pro') &&
-          isConnectionError(error)
+          !isConnectionError(error)
         ) {
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
