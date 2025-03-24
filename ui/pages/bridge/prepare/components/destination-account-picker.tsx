@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   TextField,
   Box,
@@ -28,6 +28,11 @@ import { t } from '../../../../../app/scripts/translate';
 import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import { DestinationAccount } from '../types';
+import {
+  getDomainResolutions,
+  lookupDomainName,
+  resetDomainResolution,
+} from '../../../../ducks/domains';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -46,6 +51,8 @@ export const DestinationAccountPicker = ({
   const [searchQuery, setSearchQuery] = useState('');
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
+  const dispatch = useDispatch();
+  const domainResolutions = useSelector(getDomainResolutions) || [];
 
   // Check if search query is a valid address
   const isValidAddress = useMemo(() => {
@@ -59,29 +66,84 @@ export const DestinationAccountPicker = ({
       : isEthAddress(trimmedQuery);
   }, [searchQuery, isDestinationSolana]);
 
+  // Check if search query is a valid ENS name
+  const isValidEnsName = useMemo(() => {
+    if (isDestinationSolana) {
+      return false;
+    }
+    const trimmedQuery = searchQuery.trim();
+    if (!trimmedQuery) {
+      return false;
+    }
+    return trimmedQuery.endsWith('.eth');
+  }, [searchQuery, isDestinationSolana]);
+
+  // Lookup ENS name when we detect a valid ENS name
+  React.useEffect(() => {
+    if (isValidEnsName) {
+      dispatch(lookupDomainName(searchQuery.trim()));
+    } else {
+      dispatch(resetDomainResolution());
+    }
+  }, [dispatch, isValidEnsName, searchQuery]);
+
   // Create an external account object if valid address is not in internal accounts
   const externalAccount = useMemo(() => {
-    if (!isValidAddress) {
+    if (!isValidAddress && !isValidEnsName) {
       return null;
     }
 
-    const trimmedQuery = searchQuery.trim();
-    const addressExists = accounts.some(
-      (account) => account.address.toLowerCase() === trimmedQuery.toLowerCase(),
-    );
+    // If it's a valid ENS name and we have resolutions, use the resolved address
+    if (isValidEnsName && domainResolutions.length > 0) {
+      const { resolvedAddress } = domainResolutions[0];
+      const ensName = searchQuery.trim();
 
-    if (addressExists) {
-      return null;
+      const addressExists = accounts.some(
+        (account) =>
+          account.address.toLowerCase() === resolvedAddress.toLowerCase(),
+      );
+
+      if (addressExists) {
+        return null;
+      }
+
+      return {
+        address: resolvedAddress, // Use the resolved ETH address
+        metadata: {
+          name: ensName, // Keep the ENS name for display
+        },
+        isExternal: true,
+      };
     }
 
-    return {
-      address: trimmedQuery,
-      metadata: {
-        name: `${trimmedQuery.slice(0, 6)}...${trimmedQuery.slice(-4)}`,
-      },
-      isExternal: true,
-    };
-  }, [accounts, isValidAddress, searchQuery]);
+    // For regular addresses
+    if (isValidAddress) {
+      const address = searchQuery.trim();
+      const addressExists = accounts.some(
+        (account) => account.address.toLowerCase() === address.toLowerCase(),
+      );
+
+      if (addressExists) {
+        return null;
+      }
+
+      return {
+        address,
+        metadata: {
+          name: `${address.slice(0, 6)}...${address.slice(-4)}`,
+        },
+        isExternal: true,
+      };
+    }
+
+    return null;
+  }, [
+    accounts,
+    isValidAddress,
+    isValidEnsName,
+    searchQuery,
+    domainResolutions,
+  ]);
 
   const filteredAccounts = useMemo(
     () =>
