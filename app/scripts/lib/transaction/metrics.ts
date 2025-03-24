@@ -402,7 +402,7 @@ export const handlePostTransactionBalanceUpdate = async (
       // Add transaction hash if remote feature flag is enabled
       console.log('DEBUG TX HASH ANALYTICS:', {
         remoteFeatureFlags: getRemoteFeatureFlags?.(),
-        flagExists: 'transactions-tx-hash-in-analytics' in (getRemoteFeatureFlags?.() || {}),
+        flagExists: 'transactionsTxHashInAnalytics' in (getRemoteFeatureFlags?.() || {}),
         flagValue: getRemoteFeatureFlags?.()['transactions-tx-hash-in-analytics'],
         hasHash: Boolean(transactionMeta.hash),
         txHash: transactionMeta.hash,
