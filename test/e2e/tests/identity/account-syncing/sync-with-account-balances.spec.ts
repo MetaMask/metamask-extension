@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { unlockWallet, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockInfuraAndAccountSync } from '../mocks';
@@ -18,6 +17,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
+import { waitUntilSyncedAccountsNumberEquals } from './helpers';
 
 describe('Account syncing - User already has balances on multiple accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -137,19 +137,10 @@ describe('Account syncing - User already has balances on multiple accounts', fun
             accountType: ACCOUNT_TYPE.Ethereum,
           });
           // Wait for the account to be synced
-          await driver.waitUntil(
-            async () => {
-              return (
-                userStorageMockttpController.paths.get(
-                  USER_STORAGE_FEATURE_NAMES.accounts,
-                )?.response.length === 5
-              );
-            },
-            {
-              timeout: 5000,
-              interval: 500,
-            },
-          );
+          await waitUntilSyncedAccountsNumberEquals(5, {
+            driver,
+            userStorageMockttpController,
+          });
 
           accountsToMockBalances = [
             ...INITIAL_ACCOUNTS,

@@ -15,6 +15,7 @@ import {
   completeNewWalletFlowIdentity,
   completeOnboardFlowIdentity,
 } from '../flows';
+import { waitUntilSyncedAccountsNumberEquals } from './helpers';
 
 describe('Account syncing - New User', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -64,19 +65,10 @@ describe('Account syncing - New User', function () {
             accountName: secondAccountName,
           });
           // Wait for the account to be synced
-          await driver.waitUntil(
-            async () => {
-              return (
-                userStorageMockttpController.paths.get(
-                  USER_STORAGE_FEATURE_NAMES.accounts,
-                )?.response.length === 2
-              );
-            },
-            {
-              timeout: 5000,
-              interval: 500,
-            },
-          );
+          await waitUntilSyncedAccountsNumberEquals(2, {
+            driver,
+            userStorageMockttpController,
+          });
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

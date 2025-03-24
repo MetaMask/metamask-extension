@@ -165,20 +165,6 @@ describe('Account syncing - Opt-out Profile Sync', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: 'New Account',
           });
-          // Wait for the account to be synced
-          await driver.waitUntil(
-            async () => {
-              return (
-                userStorageMockttpController.paths.get(
-                  USER_STORAGE_FEATURE_NAMES.accounts,
-                )?.response.length === 3
-              );
-            },
-            {
-              timeout: 5000,
-              interval: 500,
-            },
-          );
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

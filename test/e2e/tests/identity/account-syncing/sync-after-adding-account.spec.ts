@@ -18,6 +18,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
+import { waitUntilSyncedAccountsNumberEquals } from './helpers';
 
 describe('Account syncing - Add Account', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -89,19 +90,10 @@ describe('Account syncing - Add Account', function () {
             accountName: customNameAccount3,
           });
           // Wait for the account to be synced
-          await driver.waitUntil(
-            async () => {
-              return (
-                userStorageMockttpController.paths.get(
-                  USER_STORAGE_FEATURE_NAMES.accounts,
-                )?.response.length === 3
-              );
-            },
-            {
-              timeout: 5000,
-              interval: 500,
-            },
-          );
+          await waitUntilSyncedAccountsNumberEquals(3, {
+            driver,
+            userStorageMockttpController,
+          });
         },
       );
 
@@ -197,19 +189,10 @@ describe('Account syncing - Add Account', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
           });
           // Wait for the account to be synced
-          await driver.waitUntil(
-            async () => {
-              return (
-                userStorageMockttpController.paths.get(
-                  USER_STORAGE_FEATURE_NAMES.accounts,
-                )?.response.length === 3
-              );
-            },
-            {
-              timeout: 5000,
-              interval: 500,
-            },
-          );
+          await waitUntilSyncedAccountsNumberEquals(3, {
+            driver,
+            userStorageMockttpController,
+          });
         },
       );
 
