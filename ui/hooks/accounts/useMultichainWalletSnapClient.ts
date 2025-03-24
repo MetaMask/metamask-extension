@@ -65,6 +65,7 @@ export class MultichainWalletSnapClient {
     const account = await this.#client.createAccount({
       scope,
       ...(entropySource ? { entropySource } : {}),
+      synchronize: true,
     });
 
     // NOTE: The account's balance is going to be tracked automatically on when the new account
