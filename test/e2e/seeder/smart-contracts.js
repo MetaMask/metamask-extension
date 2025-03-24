@@ -21,6 +21,22 @@ const {
   verifyingPaymasterAbi,
   verifyingPaymasterBytecode,
 } = require('./contracts/verifyingPaymaster');
+const {
+  delegationManagerAbi,
+  delegationManagerBytecode,
+} = require('./contracts/delegator/delegationManager');
+const {
+  delegatorEntrypointAbi,
+  delegatorEntrypointBytecode,
+} = require('./contracts/delegator/delegatorEntrypoint');
+const {
+  eip7702StatelessDeleGatorAbi,
+  eip7702StatelessDeleGatorBytecode,
+} = require('./contracts/delegator/eip7702StatelessDeleGator');
+const {
+  specificActionERC20TransferBatchEnforcerAbi,
+  specificActionERC20TransferBatchEnforcerBytecode,
+} = require('./contracts/delegator/specificActionERC20TransferBatchEnforcer');
 
 const hstFactory = {
   initialAmount: 10,
@@ -77,9 +93,9 @@ const delegationManagerFactory = {
   bytecode: delegationManagerBytecode,
 };
 
-const delegationEntrypointFactory = {
-  abi: delegationEntrypointAbi,
-  bytecode: delegationEntrypointBytecode,
+const delegatorEntrypointFactory = {
+  abi: delegatorEntrypointAbi,
+  bytecode: delegatorEntrypointBytecode,
 };
 
 const eip7702StatelessDeleGatorFactory = {
@@ -94,18 +110,25 @@ const specificActionERC20TransferBatchEnforcerFactory = {
 
 const SMART_CONTRACTS = {
   HST: 'hst',
+  DELEGATOR_ENTRYPOINT: 'delegatorEntrypoint',
+  DELEGATION_MANAGER: 'delegationManager',
+  EIP7702_STATELESS_DELEGATOR: 'eip7702StatelessDelegator',
   ENTRYPOINT: 'entrypoint',
   ERC1155: 'erc1155',
   FAILING: 'failing',
   MULTISIG: 'multisig',
   NFTS: 'nfts',
   PIGGYBANK: 'piggybank',
+  SPECIFIC_ACTION_ERC20_TRANSFER_BATCH_ENFORCER: 'specificActionERC20TransferBatchEnforcer',
   SIMPLE_ACCOUNT_FACTORY: 'simpleAccountFactory',
   VERIFYING_PAYMASTER: 'verifyingPaymaster',
 };
 
 const contractConfiguration = {
   [SMART_CONTRACTS.HST]: hstFactory,
+  [SMART_CONTRACTS.DELEGATOR_ENTRYPOINT]: delegatorEntrypointFactory,
+  [SMART_CONTRACTS.DELEGATION_MANAGER]: delegationManagerFactory,
+  [SMART_CONTRACTS.EIP7702_STATELESS_DELEGATOR]: eip7702StatelessDeleGatorFactory,
   [SMART_CONTRACTS.ENTRYPOINT]: entrypointFactory,
   [SMART_CONTRACTS.ERC1155]: erc1155Factory,
   [SMART_CONTRACTS.FAILING]: failingContract,
@@ -113,6 +136,7 @@ const contractConfiguration = {
   [SMART_CONTRACTS.NFTS]: nftsFactory,
   [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY]: simpleAccountFactory,
+  [SMART_CONTRACTS.SPECIFIC_ACTION_ERC20_TRANSFER_BATCH_ENFORCER]: specificActionERC20TransferBatchEnforcerFactory,
   [SMART_CONTRACTS.VERIFYING_PAYMASTER]: verifyingPaymasterFactory,
 };
 

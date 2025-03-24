@@ -13,6 +13,9 @@ describe('Upgrade Account', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        localNodeOptions: {
+          hardfork: 'prague',
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
