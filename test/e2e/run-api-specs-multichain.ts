@@ -61,7 +61,6 @@ async function main() {
     'net_version',
   ];
 
-  /*
   const [transformedDoc, filteredMethods, methodsWithConfirmations] =
     transformOpenRPCDocument(
       MetaMaskOpenRPCDocument as OpenrpcDocument,
@@ -95,7 +94,10 @@ async function main() {
     },
     {} as { [method: string]: string },
   );
-  */
+
+  const parsedDoc = await parseOpenRPCDocument(transformedDoc);
+  const server = mockServer(port, parsedDoc);
+  server.start();
 
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
@@ -112,19 +114,6 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      const transport = createMultichainDriverTransport(driver, extensionId);
-      const [transformedDoc, filteredMethods, methodsWithConfirmations] =
-        transformOpenRPCDocument(
-          MetaMaskOpenRPCDocument as OpenrpcDocument,
-          chainId,
-          ACCOUNT_1,
-        );
-      const parsedDoc = await parseOpenRPCDocument(transformedDoc);
-
-      console.log('Starting server...');
-      const server = mockServer(port, parsedDoc);
-      server.start();
-
       await unlockWallet(driver);
 
       // Navigate to extension home screen
@@ -150,47 +139,30 @@ async function main() {
         },
       ];
 
-      console.log('Running tests...');
       const results = await testCoverage({
         openrpcDocument: doc,
-        transport,
+        transport: createMultichainDriverTransport(driver, extensionId),
         reporters: ['console-streaming'],
-        skip: [
-          'wallet_invokeMethod',
-
-          // Copied over from other one
-          'eth_coinbase',
-          // these methods below are not supported by MetaMask extension yet and
-          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
-          'eth_getBlockReceipts',
-          'eth_maxPriorityFeePerGas',
-          'wallet_swapAsset',
-        ],
+        skip: ['wallet_invokeMethod'],
         rules: [
           new ExamplesRule({
             skip: [],
             only: ['wallet_getSession', 'wallet_revokeSession'],
           }),
-          /*
           new MultichainAuthorizationConfirmation({
             driver,
           }),
           new MultichainAuthorizationConfirmationErrors({
             driver,
           }),
-          */
         ],
       });
-      console.log('Okay done!');
 
       testCoverageResults = testCoverageResults.concat(results);
-
-      await driver.quit();
     },
   );
 
   // requests made via wallet_invokeMethod
-  /*
   await withFixtures(
     {
       dapp: true,
@@ -268,9 +240,7 @@ async function main() {
       testCoverageResults = testCoverageResults.concat(results);
     },
   );
-  */
 
-  /*
   // fix ids for html reporter
   testCoverageResults.forEach((r, index) => {
     r.id = index;
@@ -282,7 +252,6 @@ async function main() {
   });
 
   await htmlReporter.onEnd({} as IOptions, testCoverageResults);
-  */
 
   // if any of the tests failed, exit with a non-zero code
   if (testCoverageResults.some((r) => !r.valid)) {
