@@ -77,6 +77,7 @@ async function switchEthereumChainHandler(
 
   return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
     origin,
+    isSwitchFlow: true,
     setActiveNetwork,
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
