@@ -68,6 +68,10 @@ class TestDapp {
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc721DeployButton = '#deployNFTsButton';
+
+  private readonly erc155DeployButton = '#deployERC1155Button';
+
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
@@ -624,6 +628,18 @@ class TestDapp {
     );
     await this.driver.scrollToElement(sendTransactionButton);
     await this.driver.clickElement(this.maliciousERC20TransferButton);
+  }
+
+  async clickERC721DeployButton() {
+    const button = await this.driver.findElement(this.erc721DeployButton);
+    await this.driver.scrollToElement(button);
+    await this.driver.clickElement(this.erc721DeployButton);
+  }
+
+  async clickERC155DeployButton() {
+    const button = await this.driver.findElement(this.erc155DeployButton);
+    await this.driver.scrollToElement(button);
+    await this.driver.clickElement(this.erc155DeployButton);
   }
 
   /**
