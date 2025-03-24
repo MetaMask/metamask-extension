@@ -6,8 +6,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.14.1]
+### Fixed
+- Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
+
+## [12.14.0] [DEPRECATED]
+### Added
+- Add Unichain logo ([#30361](https://github.com/MetaMask/metamask-extension/pull/30361))
+- Add modal to include metric ID before redirecting to the support page ([#30415](https://github.com/MetaMask/metamask-extension/pull/30415))
+- Add support for Mega Testnet for new users ([#30871](https://github.com/MetaMask/metamask-extension/pull/#30871))
+- Add support for Mega Testnet for existing users ([#30895](https://github.com/MetaMask/metamask-extension/pull/#30895))
+- [Beta] Add UI preparation changes for multichain connection flow ([#30164](https://github.com/MetaMask/metamask-extension/pull/30164))
+- [Beta] Integrate multichain assets rates controller to extension UI ([#30291](https://github.com/MetaMask/metamask-extension/pull/30291))
+- [Beta] Integrate SPL tokens and rates from multichainAssetsRates ([#30389](https://github.com/MetaMask/metamask-extension/pull/30389))
+- [Beta] Implement submission of multichain transactions ([#30416](https://github.com/MetaMask/metamask-extension/pull/30416))
+- [Beta] Add fetching for Solana quotes, account picker, and quote card ([#30452](https://github.com/MetaMask/metamask-extension/pull/30452))
+- [Beta] Fetch non-EVM token list and refreshed quote rates ([#30567](https://github.com/MetaMask/metamask-extension/pull/30567))
+- [Beta] Convert non-EVM amounts to fiat ([#30568](https://github.com/MetaMask/metamask-extension/pull/30568))
+- [Beta] Calculate Solana quote fees ([#30574](https://github.com/MetaMask/metamask-extension/pull/30574))
+- [Beta] Enable switching between EVM and non-EVM networks within Bridge experience ([#30595](https://github.com/MetaMask/metamask-extension/pull/30595))
+- [Beta] Track Solana bridge transactions ([#30619](https://github.com/MetaMask/metamask-extension/pull/30619))
+
+### Changed
+- Improve account sync with primary SRP filtering, bulk account creation, and removed synced accounts limit ([#30529](https://github.com/MetaMask/metamask-extension/pull/30529))
+- Bump Snaps dependencies ([#30396](https://github.com/MetaMask/metamask-extension/pull/30396))
+- Set swap input parameters ([#30284](https://github.com/MetaMask/metamask-extension/pull/30284))
+- Adjust swap input selection defaults ([#30600](https://github.com/MetaMask/metamask-extension/pull/30600))
+- Handle `displayAccountNameSuggestion` flag in Snap Keyring ([#30531](https://github.com/MetaMask/metamask-extension/pull/30531))
+- Remove supported chains check ([#29773](https://github.com/MetaMask/metamask-extension/pull/29773))
+- Revist list of supported currencies ([#30324](https://github.com/MetaMask/metamask-extension/pull/30324))
+- Hide non-zero hex data alert for contract deployment confirmations ([#30474](https://github.com/MetaMask/metamask-extension/pull/30474))
+- Allow `snap_experimentalProviderRequest` as an unrestricted method ([#30525](https://github.com/MetaMask/metamask-extension/pull/30525))
+- Update slides descriptions ([#30270](https://github.com/MetaMask/metamask-extension/pull/30270))
+- Tweak threshold settings on Coin Overview for Flask build ([#30585](https://github.com/MetaMask/metamask-extension/pull/30585))
+- Clear transaction data after submission or cancellation ([#30546](https://github.com/MetaMask/metamask-extension/pull/30546))
+- Ensure swap-send decimals are rounded correctly in Firefox ([#30593](https://github.com/MetaMask/metamask-extension/pull/30593))
+- Refresh activity page upon specific events ([#30571](https://github.com/MetaMask/metamask-extension/pull/30571))
+- Exclude smart transaction status page from rate limiting ([#30537](https://github.com/MetaMask/metamask-extension/pull/30537))
+- Improve performance by preventing unnecessary AddressCopyButton re-renders ([#30289](https://github.com/MetaMask/metamask-extension/pull/30289))
+- Update Mega Testnet logo ([#30883](https://github.com/MetaMask/metamask-extension/pull/#30883))
+- [Beta] Refactor asset picker to support non-EVM tokens ([#30313](https://github.com/MetaMask/metamask-extension/pull/30313))
+
+### Fixed
+- Fix network switch issue on dApps ([#30211](https://github.com/MetaMask/metamask-extension/pull/30211))
+- Fix spinner display in NFT tab ([#30427](https://github.com/MetaMask/metamask-extension/pull/30427))
+- Fix chain ID inconsistency between NFT and global settings ([#30517](https://github.com/MetaMask/metamask-extension/pull/30517))
+- Fix "Send Max" behavior when gas value changes ([#30523](https://github.com/MetaMask/metamask-extension/pull/30523))
+- Fix fetching of quotes when source amount's decimals exceed token's decimals ([#29990](https://github.com/MetaMask/metamask-extension/pull/29990))
+- Fix critical error message visibility in dark mode ([#30570](https://github.com/MetaMask/metamask-extension/pull/30570))
+- Fix text visibility issues on the error page in dark mode ([#30408](https://github.com/MetaMask/metamask-extension/pull/30408))
+- Fix page reload issue during SRP creation ([#30178](https://github.com/MetaMask/metamask-extension/pull/30178))
+- [Beta] Fix Solana snap validation ([#30596](https://github.com/MetaMask/metamask-extension/pull/30596))
+- [Beta] Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
+
 ## [12.13.1]
-### Uncategorized
+### Fixed
 - fix: Remove previousUserTraits from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
 
 ## [12.13.0]
@@ -5774,7 +5827,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...HEAD
+[12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
+[12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0
 [12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
 [12.13.0]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.13.0
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
