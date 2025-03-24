@@ -28,10 +28,12 @@ import {
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/actions/transaction-controller';
 import { updateEditableParams } from '../../../../../../../store/actions';
+import { useDispatch } from 'react-redux';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const dispatch = useDispatch();
 
   const {
     id: transactionId,
@@ -43,11 +45,13 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     async (token: GasFeeToken) => {
       await updateSelectedGasFeeToken(transactionId, token.tokenAddress);
 
-      await updateEditableParams(transactionId, {
-        gas: token.gas,
-        maxFeePerGas: token.maxFeePerGas,
-        maxPriorityFeePerGas: token.maxPriorityFeePerGas,
-      });
+      await dispatch(
+        updateEditableParams(transactionId, {
+          gas: token.gas,
+          maxFeePerGas: token.maxFeePerGas,
+          maxPriorityFeePerGas: token.maxPriorityFeePerGas,
+        }),
+      );
 
       await updateBatchTransactions({
         transactionId,
@@ -115,10 +119,8 @@ function getTransferTransaction(
 
   return {
     data,
-    gas: gasFeeToken.gas,
     maxFeePerGas: gasFeeToken.maxFeePerGas,
     maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
-    to: gasFeeToken.recipient,
-    value: gasFeeToken.amount,
+    to: gasFeeToken.tokenAddress,
   };
 }
