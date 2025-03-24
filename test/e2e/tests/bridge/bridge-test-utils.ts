@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { BRIDGE_CLIENT_ID } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
@@ -170,6 +171,7 @@ export const getBridgeFixtures = (
       await mockPortfolioPage(mockServer),
     ],
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
         type: 'anvil',
