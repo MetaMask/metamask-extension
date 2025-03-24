@@ -671,11 +671,6 @@ export default class MetamaskController extends EventEmitter {
             rootDomainName === 'quicknode.pro') &&
           isConnectionError(error)
         ) {
-          console.log('RPC endpoint unavailable', {
-            chainId,
-            endpointUrl,
-            error,
-          });
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceUnavailable,
@@ -697,7 +692,6 @@ export default class MetamaskController extends EventEmitter {
           rootDomainName === 'infura.io' ||
           rootDomainName === 'quicknode.pro'
         ) {
-          console.log('RPC endpoint degraded', { chainId, endpointUrl });
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceDegraded,
