@@ -403,7 +403,7 @@ export const handlePostTransactionBalanceUpdate = async (
       console.log('DEBUG TX HASH ANALYTICS:', {
         remoteFeatureFlags: getRemoteFeatureFlags?.(),
         flagExists: 'transactionsTxHashInAnalytics' in (getRemoteFeatureFlags?.() || {}),
-        flagValue: getRemoteFeatureFlags?.()['transactions-tx-hash-in-analytics'],
+        flagValue: getRemoteFeatureFlags?.()['transactionsTxHashInAnalytics'],
         hasHash: Boolean(transactionMeta.hash),
         txHash: transactionMeta.hash,
       });
