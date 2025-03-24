@@ -1,6 +1,5 @@
-import * as lodash from 'lodash';
-import { MessageTypes, TypedMessage } from '@metamask/eth-sig-util';
-import { ParsedTypedMessage } from '../../../shared/types/typed-data';
+import { isString } from 'lodash';
+import { MessageTypes } from '@metamask/eth-sig-util';
 
 /**
  * Returns the values of an object
@@ -131,7 +130,7 @@ const isSolidityType = (type: string): boolean => SOLIDITY_TYPES.includes(type);
  * @returns The sanitized message
  */
 export const sanitizeMessage = (
-  msg: unknown,
+  msg: unknown, // TypedMessage message could be anything.
   primaryType: string,
   types: MessageTypes,
 ): { value: unknown; type: string } => {
@@ -143,7 +142,7 @@ export const sanitizeMessage = (
   const isArray = primaryType && isArrayType(primaryType);
   if (isArray) {
     return {
-      value: (msg as unknown[]).map((value: unknown) =>
+      value: (msg as unknown as unknown[]).map((value: unknown) =>
         sanitizeMessage(
           value as Record<string, unknown>,
           stripOneLayerofNesting(primaryType),
@@ -177,12 +176,9 @@ export const sanitizeMessage = (
     }
 
     const msgValue = msgAsRecord[msgKey];
+
     sanitizedStruct[msgKey] = sanitizeMessage(
-      typeof msgValue === 'object' && msgValue !== null
-        ? Array.isArray(msgValue)
-          ? msgValue
-          : (msgValue as Record<string, unknown>)
-        : msgValue,
+      msgValue,
       definedType.type,
       types,
     );
@@ -197,7 +193,7 @@ export const sanitizeMessage = (
  * @param value - A value (literally anything)
  * @returns `true` if the value is null or undefined, `false` otherwise
  */
-export function isNullish(value: any): boolean {
+export function isNullish(value: unknown): boolean {
   return value === null || value === undefined;
 }
 
@@ -225,12 +221,9 @@ export function sortSelectedInternalAccounts<
  * @param value - Value to sanitize
  * @returns Escaped string or original param value
  */
-export const sanitizeString = (value: any): any => {
-  if (!value) {
-    return value;
-  }
-  if (!lodash.isString(value)) {
-    return value;
+export const sanitizeString = (value: string | unknown): string => {
+  if (!value || !isString(value)) {
+    return String(value);
   }
   const regex = /\u202E/giu;
   return value.replace(regex, '\\u202E');

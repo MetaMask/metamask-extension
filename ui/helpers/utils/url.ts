@@ -31,7 +31,7 @@ export function stripHttpsScheme(urlString: string): string {
  * @returns The URL string, without the scheme, if it was stripped
  */
 export function stripHttpsSchemeWithoutPort(urlString: string): string {
-  if (getURL(urlString).port) {
+  if (getURL(urlString)?.port) {
     return urlString;
   }
 
@@ -44,11 +44,11 @@ export function stripHttpsSchemeWithoutPort(urlString: string): string {
  * @param url - URL string
  * @returns URL object or empty string if invalid
  */
-export function getURL(url: string): URL | '' {
+export function getURL(url: string): URL | null {
   try {
     return new URL(url);
   } catch (err) {
-    return '';
+    return null;
   }
 }
 
@@ -78,23 +78,10 @@ export function getURLHostName(url: string): string {
  * @param urlLike - The URL-like value to test
  * @returns Whether the URL-like value is an extension URL
  */
-export function isExtensionUrl(
-  urlLike: string | URL | { protocol?: string },
-): boolean {
-  const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:'];
+export function isExtensionUrl(urlLike: string | URL): boolean {
+  const url = typeof urlLike === 'string' ? new URL(urlLike) : urlLike;
 
-  if (typeof urlLike === 'string') {
-    for (const protocol of EXT_PROTOCOLS) {
-      if (urlLike.startsWith(protocol)) {
-        return true;
-      }
-    }
-  }
-
-  if (urlLike?.protocol) {
-    return EXT_PROTOCOLS.includes(urlLike.protocol);
-  }
-  return false;
+  return ['chrome-extension:', 'moz-extension:'].includes(url.protocol);
 }
 
 /**
@@ -116,13 +103,10 @@ export function getIsBrowserDeprecated(
  * @returns Boolean, true if the origin is an IP address, false otherwise
  */
 export const isIpAddress = (rawOriginUrl: string): boolean => {
-  if (typeof rawOriginUrl === 'string') {
-    return Boolean(
-      rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
-    );
-  }
-
-  return false;
+  return (
+    typeof rawOriginUrl === 'string' &&
+    /^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu.test(rawOriginUrl)
+  );
 };
 
 /**

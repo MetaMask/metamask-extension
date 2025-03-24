@@ -2,15 +2,16 @@ import {
   getFormattedIpfsUrl,
   fetchTokenContractExchangeRates,
   CodefiTokenPricesServiceV2,
+  ContractExchangeRates,
 } from '@metamask/assets-controllers';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import abi from 'human-standard-token-abi';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import abi from 'human-standard-token-abi';
 
 /**
  * Gets the URL for an asset image, with IPFS support
@@ -83,7 +84,7 @@ export const fetchTokenExchangeRates = async (
   nativeCurrency: string,
   tokenAddresses: Hex[],
   chainId: Hex,
-): Promise<Record<string, any>> => {
+): Promise<ContractExchangeRates> => {
   try {
     return await fetchTokenContractExchangeRates({
       tokenPricesService: new CodefiTokenPricesServiceV2(),
@@ -126,7 +127,7 @@ export const hexToText = (hex?: string): string => {
 export const checkTokenIdExists = (
   address: string,
   tokenId: string,
-  obj: Record<string, { nfts: Array<{ address: string; tokenId: string }> }>,
+  obj: Record<string, { nfts: { address: string; tokenId: string }[] }>,
 ): boolean => {
   // check if input tokenId is hexadecimal
   // If it is convert to decimal and compare with existing tokens

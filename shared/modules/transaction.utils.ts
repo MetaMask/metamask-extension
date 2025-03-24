@@ -16,8 +16,8 @@ import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { MessageTypes, TypedMessage } from '@metamask/eth-sig-util';
 import { AssetType, TokenStandard } from '../constants/transaction';
-import { ParsedTypedMessage } from '../types/typed-data';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -314,7 +314,7 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  */
 export const parseTypedDataMessage = (
   dataToParse: string,
-): ParsedTypedMessage => {
+): TypedMessage<MessageTypes> => {
   const result = JSON.parse(dataToParse);
 
   const messageValue = extractLargeMessageValue(dataToParse);

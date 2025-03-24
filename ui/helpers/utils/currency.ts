@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { Numeric } from '../../../shared/modules/Numeric';
 
@@ -197,7 +197,7 @@ export function bnLessThanEqualTo(
  */
 export function roundToDecimalPlacesRemovingExtraZeroes(
   numberish?: number | string | null,
-  numberOfDecimalPlaces?: number,
+  numberOfDecimalPlaces = 0,
 ): string | number {
   if (numberish === undefined || numberish === null) {
     return '';
@@ -216,7 +216,7 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
  * @returns Formatted time string
  */
 export const toHumanReadableTime = (
-  t: (key: string, values?: any[]) => string,
+  t: (key: string, values?: unknown[]) => string,
   milliseconds?: number | null,
 ): string => {
   if (milliseconds === undefined || milliseconds === null) {
