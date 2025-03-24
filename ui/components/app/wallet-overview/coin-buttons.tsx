@@ -24,7 +24,6 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IF
@@ -83,10 +82,6 @@ import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
@@ -299,37 +294,37 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
-      // Non-EVM (Snap) Send flow
-      if (!account.metadata.snap) {
-        throw new Error('Non-EVM needs to be Snap accounts');
-      }
+    // ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    // if (!isEvmAccountType(account.type)) {
+    //   // Non-EVM (Snap) Send flow
+    //   if (!account.metadata.snap) {
+    //     throw new Error('Non-EVM needs to be Snap accounts');
+    //   }
 
-      // TODO: Remove this once we want to enable all non-EVM Snaps
-      if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
-        throw new Error(
-          `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
-        );
-      }
+    //   // TODO: Remove this once we want to enable all non-EVM Snaps
+    //   if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
+    //     throw new Error(
+    //       `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
+    //     );
+    //   }
 
-      try {
-        // FIXME: We switch the tab before starting the send flow (we
-        // faced some inconsistencies when changing it after).
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        await sendMultichainTransaction(account.metadata.snap.id, {
-          account: account.id,
-          scope: chainId as CaipChainId,
-        });
-      } catch {
-        // Restore the previous tab in case of any error (see FIXME comment above).
-        await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
-      }
+    //   try {
+    //     // FIXME: We switch the tab before starting the send flow (we
+    //     // faced some inconsistencies when changing it after).
+    //     await dispatch(setDefaultHomeActiveTabName('activity'));
+    //     await sendMultichainTransaction(account.metadata.snap.id, {
+    //       account: account.id,
+    //       scope: chainId as CaipChainId,
+    //     });
+    //   } catch {
+    //     // Restore the previous tab in case of any error (see FIXME comment above).
+    //     await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+    //   }
 
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
+    //   // Early return, not to let the non-EVM flow slip into the native send flow.
+    //   return;
+    // }
+    // ///: END:ONLY_INCLUDE_IF
 
     // Native Send flow
     await setCorrectChain();

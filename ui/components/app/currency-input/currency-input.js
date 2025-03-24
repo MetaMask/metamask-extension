@@ -5,19 +5,17 @@ import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import {
-  getNativeCurrency,
-  getCurrentCurrency,
-} from '../../../ducks/metamask/metamask';
-import {
-  getProviderConfig,
-  getCurrentChainId,
-} from '../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentCurrency,
+  getMultichainNativeCurrency,
+} from '../../../selectors/multichain';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
 import useStateWithFirstTouch from './hooks/useStateWithFirstTouch';
@@ -57,8 +55,8 @@ export default function CurrencyInput({
     ? NATIVE_CURRENCY_DECIMALS
     : Number(asset?.decimals);
 
-  const preferredCurrency = useSelector(getNativeCurrency);
-  const secondaryCurrency = useSelector(getCurrentCurrency);
+  const preferredCurrency = useSelector(getMultichainNativeCurrency);
+  const secondaryCurrency = useSelector(getMultichainCurrentCurrency);
 
   const primarySuffix =
     asset?.symbol || preferredCurrency || EtherDenomination.ETH;
@@ -75,7 +73,7 @@ export default function CurrencyInput({
 
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
   const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,

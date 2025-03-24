@@ -18,6 +18,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { SendPageRow } from './send-page-row';
 
 type SendPageYourAccountsProps = {
@@ -31,15 +32,23 @@ export const SendPageYourAccounts = ({
 }: SendPageYourAccountsProps) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  const isEvmAccount = useSelector(getMultichainIsEvm);
+  ///: END:ONLY_INCLUDE_IF
+
+  const allAllowedAccountTypes = useMemo(() => {
+    return isEvmAccount ? allowedAccountTypes : [selectedAccount.type];
+  }, [isEvmAccount, selectedAccount.type, allowedAccountTypes]);
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const filteredAccounts = useMemo(() => {
     return accounts.filter((account: InternalAccount) =>
-      allowedAccountTypes.includes(account.type),
+      allAllowedAccountTypes.includes(account.type),
     );
-  }, [accounts]);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  }, [accounts, allAllowedAccountTypes]);
 
   const onClick = useCallback(
     (account: MergedInternalAccount) => {

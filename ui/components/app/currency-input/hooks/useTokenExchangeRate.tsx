@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getTokenExchangeRates } from '../../../../selectors';
@@ -24,9 +23,10 @@ const FAILED = 'failed';
 export default function useTokenExchangeRate(
   uncheckedTokenAddress?: string,
 ): Numeric | undefined {
-  const tokenAddress = uncheckedTokenAddress
-    ? toChecksumAddress(uncheckedTokenAddress)
-    : undefined;
+  const tokenAddress = uncheckedTokenAddress;
+  // TODO: Add checksum address back checking if evm is selected
+  // ? toChecksumAddress(uncheckedTokenAddress)
+  // : undefined;
   const nativeCurrency = useSelector(getNativeCurrency);
   const chainId = useSelector(getCurrentChainId);
 

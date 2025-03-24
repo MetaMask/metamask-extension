@@ -14,6 +14,7 @@ import {
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { SendPageRow } from './send-page-row';
 
 const AccountListItemProps = { showOptions: false };
@@ -21,6 +22,7 @@ const AccountListItemProps = { showOptions: false };
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
   const internalAccount = useSelector(getSelectedInternalAccount);
+  const isEvmAccount = useSelector(getMultichainIsEvm);
 
   const [showAccountPicker, setShowAccountPicker] = useState(false);
 
@@ -68,7 +70,11 @@ export const SendPageAccountPicker = () => {
           accountListItemProps={AccountListItemProps}
           showAccountCreation={false}
           onClose={onAccountListMenuClose}
-          allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}
+          allowedAccountTypes={
+            isEvmAccount
+              ? [EthAccountType.Eoa, EthAccountType.Erc4337]
+              : [internalAccount.type]
+          }
         />
       ) : null}
     </SendPageRow>

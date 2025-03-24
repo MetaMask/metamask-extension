@@ -23,6 +23,7 @@ import {
   fetchSwapsFeatureFlags,
   getNetworkNameByChainId,
 } from '../../pages/swaps/swaps.util';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type Address = `0x${string}`;
 
@@ -214,6 +215,12 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   return newQuotes;
 }
 
+const ALLOWED_SWAP_AND_SEND_CHAIN_IDS = ALLOWED_PROD_SWAPS_CHAIN_IDS.filter(
+  // Specifically removing Solana from the list of allowed chains
+  // We don't support send & swap on Solana
+  (chainId) => chainId !== MultichainNetworks.SOLANA,
+);
+
 export async function getDisabledSwapAndSendNetworksFromAPI(): Promise<
   string[]
 > {
@@ -222,7 +229,7 @@ export async function getDisabledSwapAndSendNetworksFromAPI(): Promise<
 
     const featureFlagResponse = await fetchSwapsFeatureFlags();
 
-    ALLOWED_PROD_SWAPS_CHAIN_IDS.forEach((chainId) => {
+    ALLOWED_SWAP_AND_SEND_CHAIN_IDS.forEach((chainId) => {
       // explicitly look for disabled so that chains aren't turned off accidentally
       if (
         featureFlagResponse[getNetworkNameByChainId(chainId)]?.v2?.swapAndSend
