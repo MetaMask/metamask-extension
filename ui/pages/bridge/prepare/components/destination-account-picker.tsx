@@ -183,7 +183,11 @@ export const DestinationAccountPicker = ({
       >
         <TextField
           // @ts-expect-error: TextField component expects different props than provided - works but needs type update
-          placeholder={t('destinationAccountPickerSearchPlaceholder')}
+          placeholder={
+            isDestinationSolana
+              ? t('destinationAccountPickerSearchPlaceholderToSolana')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
