@@ -5001,6 +5001,12 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideSweepStakeDescription": {
+    "message": "Mint an NFT now for a chance to win"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Enter the $5000 USDC Giveaway!"
+  },
   "smartContracts": {
     "message": "Smart contracts"
   },

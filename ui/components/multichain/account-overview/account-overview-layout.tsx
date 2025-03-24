@@ -34,6 +34,7 @@ import {
   CARD_SLIDE,
   CASH_SLIDE,
   ZERO_BALANCE,
+  SWEEPSTAKES_SLIDE,
 } from './constants';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
@@ -61,6 +62,9 @@ export const AccountOverviewLayout = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
+  // TODO: Add logic to show carousel for the duration April 9 - April 15
+  // const showSweepStakeslide = true;
+
   useEffect(() => {
     const fundSlide = {
       ...FUND_SLIDE,
@@ -71,10 +75,12 @@ export const AccountOverviewLayout = ({
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       BRIDGE_SLIDE,
       ///: END:ONLY_INCLUDE_IF
+      SWEEPSTAKES_SLIDE,
       CARD_SLIDE,
       CASH_SLIDE,
+      SWEEPSTAKES_SLIDE,
     ];
-
+    // Since this new banner is temporary, make sure it's rendered as the first banner
     if (hasZeroBalance) {
       defaultSlides.unshift(fundSlide);
     } else {

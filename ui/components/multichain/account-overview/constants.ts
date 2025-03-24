@@ -1,3 +1,10 @@
+export const SWEEPSTAKES_SLIDE = {
+  id: 'sweepStake',
+  title: 'slideSweepStakeTitle',
+  description: 'slideSweepStakeDescription',
+  image: './images/slide-bridge-icon.svg',
+};
+
 export const FUND_SLIDE = {
   id: 'fund',
   title: 'slideFundWalletTitle',
