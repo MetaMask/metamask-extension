@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../helpers';
-import HomePage from '../page-objects/pages/home/homepage';
-import { Driver } from '../webdriver/driver';
+import { unlockWallet, withFixtures } from '../../helpers';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage, {
   BridgeQuote,
-} from '../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../page-objects/pages/home/activity-list';
+} from '../../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
-import { getBridgeFixtures } from './bridge-test-utils';
+import { getBridgeFixtures } from '../../tests/bridge/bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   it('Execute various bridge transactions', async function () {
@@ -41,7 +41,7 @@ describe('Bridge tests', function (this: Suite) {
         await bridgeTransaction(
           driver,
           {
-            amount: '0.03',
+            amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Ethereum',
@@ -91,6 +91,8 @@ describe('Bridge tests', function (this: Suite) {
     await bridgePage.submitQuote();
 
     await homePage.goToActivityList();
+
+    //check balance
 
     await driver.delay(5000);
     const activityList = new ActivityListPage(driver);

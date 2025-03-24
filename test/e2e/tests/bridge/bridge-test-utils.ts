@@ -1,11 +1,11 @@
 import { Mockttp } from 'mockttp';
 
-import { emptyHtmlPage } from '../mock-e2e';
-import FixtureBuilder from '../fixture-builder';
-import { BRIDGE_CLIENT_ID } from '../../../shared/constants/bridge';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { Driver } from '../webdriver/driver';
-import type { FeatureFlagResponse } from '../../../shared/types/bridge';
+import { emptyHtmlPage } from '../../mock-e2e';
+import FixtureBuilder from '../../fixture-builder';
+import { BRIDGE_CLIENT_ID } from '../../../../shared/constants/bridge';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { Driver } from '../../webdriver/driver';
+import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
@@ -125,8 +125,7 @@ async function mockGetTxStatus(mockServer: Mockttp) {
         },
         destChain: {
           chainId: destChainId,
-          txHash:
-            '0x7fadf05d079e457257564ee44c302968853a16c39a49428576d8ba1ca18127b7',
+          txHash,
         },
       },
     };

@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
-import { logInWithBalanceValidation, withFixtures } from '../helpers';
-import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
+import { logInWithBalanceValidation, withFixtures } from '../../helpers';
+import { BridgePage, getBridgeFixtures } from '../../tests/bridge/bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
 describe('Click bridge button', function (this: Suite) {
