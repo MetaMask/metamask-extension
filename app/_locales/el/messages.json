@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Θα λάβετε"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ανώτατο όριο δαπανών"
-  },
   "permitSimulationChange_transfer": {
     "message": "Θα στείλετε"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12ώρες:"
-  },
-  "typeYourSRP": {
-    "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"
   },
   "u2f": {
     "message": "U2F",

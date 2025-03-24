@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Usted recibe"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Límite de gasto"
-  },
   "permitSimulationChange_transfer": {
     "message": "Usted envía"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12 horas:"
-  },
-  "typeYourSRP": {
-    "message": "Escriba la frase secreta de recuperación"
   },
   "u2f": {
     "message": "U2F",

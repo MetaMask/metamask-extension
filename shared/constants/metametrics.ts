@@ -904,6 +904,7 @@ export enum MetaMetricsEventName {
   QuoteSelected = 'Quote Selected',
   CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
   CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
+  Wallet5792Called = 'EIP-5792 API Called',
 }
 
 export enum MetaMetricsEventAccountType {

@@ -9,16 +9,17 @@ async function verifyE2ePageObjectsUsage(
   let e2eFiles: string[];
 
   const artifactName = 'changed-files.json';
-  const artifactPath = 'changed-files';
 
-  const outputDir = `${artifactPath}/${artifactName}`;
-  const changedFilesContent = JSON.parse(readFileContent(outputDir));
+  const artifactDir = 'changed-files';
+  const artifactPath = `${artifactDir}/${artifactName}`;
 
-  if (!changedFilesContent) {
-    console.error(
-      'No artifacts found for changed files. Exiting with failure.',
-    );
-    process.exit(1);
+  let changedFilesContent;
+
+  try {
+    changedFilesContent = JSON.parse(fs.readFileSync(artifactPath, 'utf-8'));
+  } catch (error) {
+    console.error('No artifacts found for changed files.');
+    process.exit(0);
   }
 
   // Filter files based on the provided changeType
