@@ -137,7 +137,7 @@ export function MultichainTransactionDetailsModal({
                 {t('status')}
               </Text>
               <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
-                {t(statusKey)}
+                {capitalize(t(statusKey))}
               </Text>
             </Box>
 
