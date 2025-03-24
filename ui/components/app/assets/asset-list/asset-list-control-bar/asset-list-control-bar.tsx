@@ -55,9 +55,13 @@ import { getMultichainNetwork } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
+  showTokenFiatBalance?: boolean;
 };
 
-const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
+const AssetListControlBar = ({
+  showTokensLinks,
+  showTokenFiatBalance,
+}: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -113,6 +117,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   useEffect(() => {
     if (Object.keys(tokenNetworkFilter).length === 1) {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
+    } else {
+      dispatch(setTokenNetworkFilter(allOpts));
     }
   }, [Object.keys(allNetworks).length]);
 
@@ -253,7 +259,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           minWidth: isFullScreen ? '250px' : '',
         }}
       >
-        <NetworkFilter handleClose={closePopover} />
+        <NetworkFilter
+          handleClose={closePopover}
+          showTokenFiatBalance={showTokenFiatBalance}
+        />
       </Popover>
       <Popover
         onClickOutside={closePopover}
