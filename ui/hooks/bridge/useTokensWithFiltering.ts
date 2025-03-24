@@ -12,13 +12,9 @@ import {
   BridgeClientId,
   type BridgeAsset,
 } from '@metamask/bridge-controller';
-import {
-  getAllDetectedTokensForSelectedAddress,
-  selectERC20TokensByChain,
-} from '../../selectors';
+import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
 import { useAsyncResult } from '../useAsyncResult';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
@@ -69,9 +65,6 @@ export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
 ) => {
-  const allDetectedTokens: Record<string, Token[]> = useSelector(
-    getAllDetectedTokensForSelectedAddress,
-  );
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
@@ -130,7 +123,7 @@ export const useTokensWithFiltering = (
   }, [chainId, topAssetsFromFeatureFlags]);
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
-  const buildTokenData = (
+  const buildTokenDataFn = (
     token?: BridgeAsset,
   ):
     | AssetWithDisplayData<NativeAsset>
@@ -166,13 +159,15 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? tokenList?.[token.address]?.iconUrl ?? '',
+      image: token.iconUrl ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
       address: isSolanaChainId(chainId) ? token.assetId : token.address,
     };
   };
+
+  const buildTokenData = useCallback(buildTokenDataFn, [chainId]);
 
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
@@ -275,11 +270,11 @@ export const useTokensWithFiltering = (
         }
       })(),
     [
+      buildTokenData,
       multichainTokensWithBalance,
       topTokens,
       chainId,
       tokenList,
-      allDetectedTokens,
       tokenToExclude,
     ],
   );
