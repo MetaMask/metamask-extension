@@ -9,7 +9,6 @@ async function verifyE2ePageObjectsUsage(
   let e2eFiles: string[];
 
   const artifactName = 'changed-files.json';
-
   const artifactDir = 'changed-files';
   const artifactPath = `${artifactDir}/${artifactName}`;
 
