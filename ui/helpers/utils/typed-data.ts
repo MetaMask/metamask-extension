@@ -7,7 +7,7 @@ import { MessageTypes } from '@metamask/eth-sig-util';
  * @param obj - Object to get values from
  * @returns Array of values
  */
-export function valuesFor<T>(obj?: Record<string, T>): T[] {
+export function valuesFor<T>(obj?: Record<string, T> | null): T[] {
   if (!obj) {
     return [];
   }

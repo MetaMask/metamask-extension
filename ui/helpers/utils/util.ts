@@ -7,6 +7,6 @@ export * from './address';
 export * from './assets';
 export * from './currency';
 export * from './date';
-export * from './misc';
+export * from './typed-data';
 export * from './snaps';
 export * from './url';
