@@ -12,7 +12,7 @@ async function mockEip7702FeatureFlag(mockServer: Mockttp) {
       .forGet('https://client-config.api.cx.metamask.io/v1/flags')
       .thenCallback(() => ({
         statusCode: 200,
-        json: {
+        json: [{
           'confirmations-eip-7702': {
             supportedChains: ['0x7a69', '0xaa36a7'],
             contractAddresses: {
@@ -20,7 +20,7 @@ async function mockEip7702FeatureFlag(mockServer: Mockttp) {
               '0xaa36a7': ['0xCd8D6C5554e209Fbb0deC797C6293cf7eAE13454'],
             }
           }
-        },
+        }],
       })),
   ];
 }
@@ -33,10 +33,13 @@ describe('Upgrade Account', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: {
-          hardfork: 'prague',
-          loadState: './test/e2e/seeder/network-states/withDelegator.json',
-        },
+        localNodeOptions: [{
+          type: 'anvil',
+          options: {
+            hardfork: 'prague',
+            loadState: './test/e2e/seeder/network-states/withDelegator.json',
+          },
+        }],
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
