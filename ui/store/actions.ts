@@ -397,6 +397,9 @@ export async function getSeedPhrase(
 
 export function requestRevealSeedWords(
   password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -404,7 +407,12 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await getSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      );
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -3598,17 +3606,15 @@ export function detectTokens(): ThunkAction<
   };
 }
 
-export function detectNfts(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+// TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
+export function detectNfts(
+  chainIds: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts');
+      await submitRequestToBackground('detectNfts', [chainIds]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
