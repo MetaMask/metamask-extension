@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Anda menerima"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Batas penggunaan"
-  },
   "permitSimulationChange_transfer": {
     "message": "Anda mengirim"
   },
@@ -5955,9 +5952,6 @@
   },
   "twelveHrTitle": {
     "message": "12 j:"
-  },
-  "typeYourSRP": {
-    "message": "Ketik Frasa Pemulihan Rahasia"
   },
   "u2f": {
     "message": "U2F",
