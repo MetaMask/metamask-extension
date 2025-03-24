@@ -19,7 +19,7 @@ const mockNotifications: Notification[] = [
 describe('Metamask Notifications Selectors', () => {
   const mockState = {
     metamask: {
-      subscriptionAccountsSeen: [],
+      subscriptionAccountsSeen: [] as string[],
       isMetamaskNotificationsFeatureSeen: true,
       isNotificationServicesEnabled: true,
       isFeatureAnnouncementsEnabled: true,
@@ -63,7 +63,8 @@ describe('Metamask Notifications Selectors', () => {
   });
 
   it('should select the valid accounts that can enable notifications', () => {
-    const state = { ...mockState, subscriptionAccountsSeen: ['0x1111'] };
+    const state = { ...mockState };
+    state.metamask.subscriptionAccountsSeen = ['0x1111'];
     expect(getValidNotificationAccounts(state)).toStrictEqual(['0x1111']);
   });
 });
