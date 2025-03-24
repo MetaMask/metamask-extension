@@ -14,16 +14,18 @@ async function mockEip7702FeatureFlag(mockServer: Mockttp) {
         return {
           ok: true,
           statusCode: 200,
-          json: [{
-            'confirmations-eip-7702': {
-              supportedChains: ['0x539', '0xaa36a7'],
-              contractAddresses: {
-                '0x539': ['0x8438Ad1C834623CfF278AB6829a248E37C2D7E3f'],
-                '0xaa36a7': ['0xCd8D6C5554e209Fbb0deC797C6293cf7eAE13454'],
-              }
-            }
-          }],
-        }
+          json: [
+            {
+              'confirmations-eip-7702': {
+                supportedChains: ['0x539', '0xaa36a7'],
+                contractAddresses: {
+                  '0x539': ['0x8438Ad1C834623CfF278AB6829a248E37C2D7E3f'],
+                  '0xaa36a7': ['0xCd8D6C5554e209Fbb0deC797C6293cf7eAE13454'],
+                },
+              },
+            },
+          ],
+        };
       }),
   ];
 }
@@ -36,13 +38,15 @@ describe('Upgrade Account', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: [{
-          type: 'anvil',
-          options: {
-            hardfork: 'prague',
-            loadState: './test/e2e/seeder/network-states/withDelegator.json',
+        localNodeOptions: [
+          {
+            type: 'anvil',
+            options: {
+              hardfork: 'prague',
+              loadState: './test/e2e/seeder/network-states/withDelegator.json',
+            },
           },
-        }],
+        ],
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
@@ -52,7 +56,6 @@ describe('Upgrade Account', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSendCalls();
-
       },
     );
   });
