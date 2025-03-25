@@ -1020,7 +1020,7 @@ export function setupController(
    * Connects a Duplexstream to the MetaMask controller EIP-1193 API (via a multiplexed duplex stream).
    *
    * @param {DuplexStream} connectionStream - The duplex stream.
-   * @param sender - The remote port sender.
+   * @param {chrome.runtime.MessageSender} sender - The remote port sender.
    */
   connectEip1193 = (connectionStream, sender) => {
     controller.setupUntrustedCommunicationEip1193({
@@ -1033,7 +1033,7 @@ export function setupController(
    * Connects a DuplexStream to the MetaMask controller Caip Multichain API.
    *
    * @param {DuplexStream} connectionStream - The duplex stream.
-   * @param sender - The remote port sender.
+   * @param {chrome.runtime.MessageSender} sender - The remote port sender.
    */
   connectCaipMultichain = (connectionStream, sender) => {
     if (!process.env.MULTICHAIN_API) {
