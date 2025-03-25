@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { AssetType } from '../../shared/constants/transaction';
+import { AssetType } from '../../../../../../shared/constants/transaction';
 import { useAssetMetadata } from './useAssetMetadata';
 
 // Mock dependencies
@@ -11,7 +11,7 @@ jest.mock('react-redux', () => ({
 const mockFetchAssetMetadata = jest.fn();
 const mockGetAssetImageUrl = jest.fn();
 
-jest.mock('../../shared/lib/asset-utils', () => ({
+jest.mock('../../../../../../shared/lib/asset-utils', () => ({
   fetchAssetMetadata: (...args: unknown[]) => mockFetchAssetMetadata(...args),
   getAssetImageUrl: (...args: unknown[]) => mockGetAssetImageUrl(...args),
 }));

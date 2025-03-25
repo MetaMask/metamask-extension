@@ -65,7 +65,7 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
-import { useAssetMetadata } from '../../../../hooks/useAssetMetadata';
+import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type {
   ERC20Asset,
   NativeAsset,
