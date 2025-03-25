@@ -1249,9 +1249,8 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
-export function getPetnamesEnabled(state) {
-  const { petnamesEnabled = true } = getPreferences(state);
-  return petnamesEnabled;
+export function getUseExternalNameSources(state) {
+  return state.metamask.useExternalNameSources;
 }
 
 export const getTokenSortConfig = createDeepEqualSelector(
