@@ -27,6 +27,7 @@ jest.mock('../../../../store/actions', () => ({
     .mockReturnValue(jest.fn().mockResolvedValue(null)),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
+  hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
 }));
 
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
@@ -107,7 +108,10 @@ describe('ImportSrp', () => {
         VALID_SECRET_RECOVERY_PHRASE,
       );
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions[0]).toStrictEqual({
+      expect(dispatchedActions).toContainEqual({
+        type: 'HIDE_WARNING',
+      });
+      expect(dispatchedActions).toContainEqual({
         type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
         payload: true,
       });
