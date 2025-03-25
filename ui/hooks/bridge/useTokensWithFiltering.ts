@@ -138,11 +138,10 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? tokenList?.[token.address]?.iconUrl ?? '',
+      image: token.iconUrl ?? token.icon ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: token.address,
     };
   };
 
@@ -184,8 +183,7 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            // If there's no address, set it to the native address in swaps/bridge
-            if (isNativeAddress(token.address)) {
+            if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
