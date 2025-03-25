@@ -29,6 +29,7 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   isHardwareWallet,
+  getIsVaultRemoteModeEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -187,8 +188,10 @@ export function UpgradeAccountButton() {
   const account = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const isHardware = useSelector(isHardwareWallet);
+  const isFeatureEnabled = useSelector(getIsVaultRemoteModeEnabled);
   const spender = accounts[0].address as `0x${string}`;
 
+  console.debug('vault remote mode:', isFeatureEnabled);
   console.debug('account', account);
   console.debug('accounts', accounts);
   console.debug('spender', spender);
@@ -303,7 +306,7 @@ export function UpgradeAccountButton() {
     ]);
   }, [account.address, spender]);
 
-  if (!isHardware) {
+  if (!isFeatureEnabled || !isHardware) {
     return null;
   }
 

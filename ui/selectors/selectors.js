@@ -2862,6 +2862,11 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
+export function getIsVaultRemoteModeEnabled(state) {
+  const { vaultRemoteMode } = getRemoteFeatureFlags(state);
+  return Boolean(vaultRemoteMode);
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
