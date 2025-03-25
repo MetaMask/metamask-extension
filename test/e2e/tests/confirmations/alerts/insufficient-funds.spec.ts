@@ -6,6 +6,7 @@ import {
   openDAppWithContract,
 } from '../transactions/shared';
 import { Driver } from '../../../webdriver/driver';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 
 describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
@@ -48,7 +49,8 @@ async function verifyAlertForInsufficientBalance(driver: Driver) {
 
 async function mintNft(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement(`#mintButton`);
+  const testDapp = new TestDapp(driver);
+  await testDapp.clickERC721MintButton();
 
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
