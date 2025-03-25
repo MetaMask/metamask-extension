@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Browser, By } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 import { isObject } from 'lodash';
 import {
   largeDelayMs,

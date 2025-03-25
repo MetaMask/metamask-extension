@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
