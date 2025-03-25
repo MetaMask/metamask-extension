@@ -7,7 +7,10 @@ import BridgeQuotePage, {
 } from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { getBridgeFixtures } from './bridge-test-utils';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
+import {
+  DEFAULT_FEATURE_FLAGS_RESPONSE,
+  EXPECTED_MAINNET_ETH_BALANCE,
+} from './constants';
 
 describe('Bridge tests', function (this: Suite) {
   it('Execute various bridge transactions', async function () {
@@ -69,9 +72,16 @@ describe('Bridge tests', function (this: Suite) {
     } else {
       await activityList.check_txAction(`Bridge to ${quote.toChain}`);
     }
+    // Check the amount of ETH deducted in the activity is correct
     await activityList.check_txAmountInActivity(
       `-${quote.amount} ${quote.tokenFrom}`,
     );
+
+    // Check the wallet ETH balance is correct
+    await driver.waitForSelector({
+      testId: 'account-value-and-suffix',
+      text: `${EXPECTED_MAINNET_ETH_BALANCE}`,
+    });
 
     await driver.delay(5000);
   }

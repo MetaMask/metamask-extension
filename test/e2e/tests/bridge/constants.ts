@@ -1,5 +1,7 @@
 import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
 
+export const EXPECTED_MAINNET_ETH_BALANCE = '23.9955';
+
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-config': {
     refreshRate: 30000,
