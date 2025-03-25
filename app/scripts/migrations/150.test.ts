@@ -1,301 +1,79 @@
-import { migrate } from './150';
+import { migrate, version } from './150';
 
-const expectedVersion = 150;
-const previousVersion = expectedVersion - 1;
+const oldVersion = 149;
 
-describe(`migration #${expectedVersion}`, () => {
-  it('does nothing if state.NetworkController has no networkConfigurationsByChainId property', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {},
-      },
+describe(`migration #${version}`, () => {
+  it('updates the version metadata', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {},
     };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if state.NetworkController.networkConfigurationsByChainId is not an object', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: 'not-an-object',
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if state.NetworkController.selectedNetworkClientId is not defined', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {},
-          },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('does nothing if selectedNetworkClientId is already defined and exists in networkConfigurationsByChainId', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              blockExplorerUrls: ['https://etherscan.io'],
-              chainId: '0x1',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Ethereum Mainnet',
-              nativeCurrency: 'ETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'mainnet',
-                  type: 'infura',
-                  url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
-            '0x18c6': {
-              blockExplorerUrls: ['https://megaexplorer.xyz'],
-              chainId: '0x18c6',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Mega Testnet',
-              nativeCurrency: 'MegaETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'megaeth-testnet',
-                  type: 'custom',
-                  url: 'https://carrot.megaeth.com/rpc',
-                },
-              ],
-            },
-            '0xaa36a7': {
-              blockExplorerUrls: ['https://sepolia.etherscan.io'],
-              chainId: '0xaa36a7',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Sepolia',
-              nativeCurrency: 'SepoliaETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'sepolia',
-                  type: 'infura',
-                  url: 'https://sepolia.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
-            '0xe705': {
-              blockExplorerUrls: ['https://sepolia.lineascan.build'],
-              chainId: '0xe705',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Linea Sepolia',
-              nativeCurrency: 'LineaETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'linea-sepolia',
-                  type: 'infura',
-                  url: 'https://linea-sepolia.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
-            '0xe708': {
-              blockExplorerUrls: ['https://lineascan.build'],
-              chainId: '0xe708',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Linea',
-              nativeCurrency: 'ETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'linea-mainnet',
-                  type: 'infura',
-                  url: 'https://linea-mainnet.infura.io/v3/{infuraProjectId}',
-                },
-              ],
+  describe(`migration #${version}`, () => {
+    it('removes the petnamesEnabled preference if it is set to true', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            preferences: {
+              petnamesEnabled: true,
             },
           },
-          networksMetadata: {
-            '17a6de2b-a6b9-4b2c-8ea5-e8b6a97e0cc4': {
-              EIPS: {
-                '1559': true,
-              },
-              status: 'available',
-            },
-            mainnet: {
-              EIPS: {
-                '1559': true,
-              },
-              status: 'available',
-            },
-            sepolia: {
-              EIPS: {
-                '1559': true,
-              },
-              status: 'available',
+        },
+      };
+      const expectedData = {
+        PreferencesController: {
+          preferences: {},
+        },
+      };
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
+
+    it('removes the petnamesEnabled preference if it is set to false', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            preferences: {
+              petnamesEnabled: false,
             },
           },
-          selectedNetworkClientId: 'mainnet',
         },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
+      };
+      const expectedData = {
+        PreferencesController: {
+          preferences: {},
+        },
+      };
+      const newStorage = await migrate(oldStorage);
 
-    const newVersionedData = await migrate(oldVersionedData);
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('switches to mainnet if selectedNetworkClientId does not exist in networkConfigurationsByChainId', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              blockExplorerUrls: ['https://etherscan.io'],
-              chainId: '0x1',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Ethereum Mainnet',
-              nativeCurrency: 'ETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'mainnet',
-                  type: 'infura',
-                  url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
-            '0x18c6': {
-              blockExplorerUrls: ['https://megaexplorer.xyz'],
-              chainId: '0x18c6',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Mega Testnet',
-              nativeCurrency: 'MegaETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'megaeth-testnet',
-                  type: 'custom',
-                  url: 'https://carrot.megaeth.com/rpc',
-                },
-              ],
-            },
-            '0xaa36a7': {
-              blockExplorerUrls: ['https://sepolia.etherscan.io'],
-              chainId: '0xaa36a7',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Sepolia',
-              nativeCurrency: 'SepoliaETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'sepolia',
-                  type: 'infura',
-                  url: 'https://sepolia.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
-            '0xe705': {
-              blockExplorerUrls: ['https://sepolia.lineascan.build'],
-              chainId: '0xe705',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Linea Sepolia',
-              nativeCurrency: 'LineaETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'linea-sepolia',
-                  type: 'infura',
-                  url: 'https://linea-sepolia.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
-            '0xe708': {
-              blockExplorerUrls: ['https://lineascan.build'],
-              chainId: '0xe708',
-              defaultBlockExplorerUrlIndex: 0,
-              defaultRpcEndpointIndex: 0,
-              name: 'Linea',
-              nativeCurrency: 'ETH',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'linea-mainnet',
-                  type: 'infura',
-                  url: 'https://linea-mainnet.infura.io/v3/{infuraProjectId}',
-                },
-              ],
-            },
+    it('does nothing to other PreferencesController state if there is not a petnamesEnabled preference', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            existingPreference: true,
           },
-          networksMetadata: {
-            '17a6de2b-a6b9-4b2c-8ea5-e8b6a97e0cc4': {
-              EIPS: {
-                '1559': true,
-              },
-              status: 'available',
-            },
-            mainnet: {
-              EIPS: {
-                '1559': true,
-              },
-              status: 'available',
-            },
-            sepolia: {
-              EIPS: {
-                '1559': true,
-              },
-              status: 'available',
-            },
-          },
-          selectedNetworkClientId: '17a6de2b-a6b9-4b2c-8ea5-e8b6a97e0cc4',
         },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: {
-        ...oldVersionedData.data,
-        NetworkController: {
-          ...oldVersionedData.data.NetworkController,
-          selectedNetworkClientId: 'mainnet',
+      };
+
+      const expectedData = {
+        PreferencesController: {
+          existingPreference: true,
         },
-      },
-    };
+      };
 
-    const newVersionedData = await migrate(oldVersionedData);
+      const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
   });
 });

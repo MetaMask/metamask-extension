@@ -86,6 +86,7 @@ const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
 
 const mockMetamaskStore = {
   ...mockState.metamask,
+  useExternalServices: true,
   accountsAssets: {
     [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
   },
@@ -417,5 +418,24 @@ describe('NonEvmOverview', () => {
       },
       expect.any(Object),
     );
+  });
+
+  it('disables the Send and Bridge buttons if external services are disabled', () => {
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          useExternalServices: false,
+        },
+      }),
+    );
+
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
+    expect(bridgeButton).toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
   });
 });

@@ -2871,13 +2871,11 @@ export default class MetamaskController extends EventEmitter {
         );
 
         if (filteredChainIds.length > 0) {
-          await this.txController.stopIncomingTransactionPolling();
+          this.txController.stopIncomingTransactionPolling();
 
-          await this.txController.updateIncomingTransactions(filteredChainIds);
+          await this.txController.updateIncomingTransactions();
 
-          await this.txController.startIncomingTransactionPolling(
-            filteredChainIds,
-          );
+          this.txController.startIncomingTransactionPolling();
         }
       },
     );
@@ -7621,9 +7619,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions([
-      this.#getGlobalChainId(),
-    ]);
+    await this.txController.updateIncomingTransactions();
   }
 
   _notifyAccountsChange(origin, newAccounts) {

@@ -1,4 +1,3 @@
-import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {
@@ -9,39 +8,34 @@ type VersionedData = {
 export const version = 150;
 
 /**
- * This migration sets the selectedNetworkClientId to mainnet if the current selectedNetworkClientId does not exist in the networkConfigurationsByChainId object.
+ * This migration deletes the preference `petnamesEnabled` if the user has
+ * existing data.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
+ * what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by
+ * controller.
  * @returns Updated versioned MetaMask extension state.
  */
-export async function migrate(originalVersionedData: VersionedData) {
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  versionedData.data = transformState(versionedData.data);
+  transformState(versionedData.data);
   return versionedData;
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    isObject(state.NetworkController.networkConfigurationsByChainId) &&
-    hasProperty(state.NetworkController, 'selectedNetworkClientId')
-  ) {
-    const networkState = state.NetworkController;
-    const allNetworkConfigurations = Object.values(
-      state.NetworkController.networkConfigurationsByChainId,
-    );
-    const allNetworkClientIds = allNetworkConfigurations
-      .flatMap((n) =>
-        isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
-      )
-      .map((e) => e.networkClientId);
+  const preferencesControllerState = state?.PreferencesController as
+    | Record<string, unknown>
+    | undefined;
 
-    if (!allNetworkClientIds.includes(networkState.selectedNetworkClientId)) {
-      state.NetworkController.selectedNetworkClientId = 'mainnet';
-    }
-  }
-  return state;
+  const preferences = preferencesControllerState?.preferences as
+    | Record<string, unknown>
+    | undefined;
+
+  delete preferences?.petnamesEnabled;
 }

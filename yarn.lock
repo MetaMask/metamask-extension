@@ -5114,10 +5114,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/design-tokens@npm:5.0.0"
-  checksum: 10/6f2681e44f5f3ef2e5c02c6713ec72d32831e3f7c1b1f90aff8a6faae36bcb15b55eead8cd0a56539adebb6682b7a25789eb5e8dea5439298db8ebbe7a0d11f1
+"@metamask/design-tokens@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/design-tokens@npm:5.1.0"
+  checksum: 10/84eaf9d7fd94df8bf853ab32bf1bcdfe8ef325c02ec1c2469e50a4e8818e5af34ff12ee5794a5dbc0a897711c80de2254e33df004c8f0d4772ce2d757f272896
   languageName: node
   linkType: hard
 
@@ -5318,9 +5318,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:10.0.0"
+"@metamask/eth-ledger-bridge-keyring@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5328,7 +5328,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/a1e4e410aa051fa85abdff044eab4ae3fd594442186b53d1c21d12817d2ece51e510f86ecd9e69658fc2c3cbbf53d5941eb4ea93928f74c11e0ff5e399781a2e
+  checksum: 10/7f6ed01ee083e7fb7d01520b15cf20e70e51e397134023d7577c7a7b6256b207b999992109e706348b507193def075437f80b6889f10b58a31e877124b9ffb20
   languageName: node
   linkType: hard
 
@@ -6474,10 +6474,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.14.0":
-  version: 1.14.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.14.0"
-  checksum: 10/f09baf18f259ad560877230859ebed88fb816fde8a4057794b477f72af838b202811a39133a8771561a12973755f1ca3f635095ed281656a51dfc4a68cb2bf58
+"@metamask/solana-wallet-snap@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "@metamask/solana-wallet-snap@npm:1.15.1"
+  checksum: 10/f6a63cb410b0267ed29824095cedcafbc87e9bcb82690e4ade75537a33e5c7baadcb2b5e6148eae8ab732b140f52b7222fdb48a18f62222271d11e8c99f10769
   languageName: node
   linkType: hard
 
@@ -6525,16 +6525,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/test-dapp@npm:9.1.0"
-  checksum: 10/6b8de938953984b279f0033ede77cad4afc2aa78dff98329ce45978026d2f2a46834fd7383575293e690b75167779bb3d684a9f86037ad057a5837888809091f
+"@metamask/test-dapp@npm:9.2.0":
+  version: 9.2.0
+  resolution: "@metamask/test-dapp@npm:9.2.0"
+  checksum: 10/616ba794bd67a075de5c4cfd3f3e03745e256fa0d56cbfc894474187b4643e050fa38a1dbf26fdb81826a68a7df98fbdeabce928fa827b01f203aeb09e403647
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^50.0.0":
-  version: 50.0.0
-  resolution: "@metamask/transaction-controller@npm:50.0.0"
+"@metamask/transaction-controller@npm:^52.1.0":
+  version: 52.1.0
+  resolution: "@metamask/transaction-controller@npm:52.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6558,13 +6558,13 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^26.0.0
+    "@metamask/accounts-controller": ^27.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/network-controller": ^22.0.0
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/7882a57f04552b47ad8755076d95d6256db4cc76918aa9775f6b0dac7b574479f218e7d7eac2b10facbb2468c43b38554bdce578a561ff6e442ec9f481b56b9a
+  checksum: 10/934d90160ec2094a5f0f9f1c8a9a38580522744b921c94ec4c2b59d3459fb7ecfcde18c21ba0d3b113b428ac3d812c9d123c78868e679d03bda6c3c971ca9415
   languageName: node
   linkType: hard
 
@@ -27281,7 +27281,7 @@ __metadata:
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
-    "@metamask/design-tokens": "npm:^5.0.0"
+    "@metamask/design-tokens": "npm:^5.1.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
@@ -27293,7 +27293,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^10.0.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^12.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
@@ -27346,11 +27346,11 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
     "@metamask/snaps-sdk": "npm:^6.19.0"
     "@metamask/snaps-utils": "npm:^9.0.1"
-    "@metamask/solana-wallet-snap": "npm:^1.14.0"
+    "@metamask/solana-wallet-snap": "npm:^1.15.1"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:9.1.0"
+    "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^50.0.0"
+    "@metamask/transaction-controller": "npm:^52.1.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
