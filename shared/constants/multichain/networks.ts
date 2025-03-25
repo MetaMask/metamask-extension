@@ -77,17 +77,17 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
 
   [MultichainNetworks.SOLANA]: {
     url: SOLANA_BLOCK_EXPLORER_URL,
-    address: `${SOLANA_BLOCK_EXPLORER_URL}/address/{address}`,
+    address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
     url: SOLANA_BLOCK_EXPLORER_URL,
-    address: `${SOLANA_BLOCK_EXPLORER_URL}/address/{address}?cluster=devnet`,
+    address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=devnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=devnet`,
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
     url: SOLANA_BLOCK_EXPLORER_URL,
-    address: `${SOLANA_BLOCK_EXPLORER_URL}/address/{address}?cluster=testnet`,
+    address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=testnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=testnet`,
   },
 } as const;

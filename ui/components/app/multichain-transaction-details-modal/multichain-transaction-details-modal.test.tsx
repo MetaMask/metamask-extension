@@ -263,7 +263,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `${SOLANA_BLOCK_EXPLORER_URL}/address/${address}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}`,
     );
   });
 
@@ -272,7 +272,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `${SOLANA_BLOCK_EXPLORER_URL}/address/${address}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}?cluster=devnet`,
     );
   });
 

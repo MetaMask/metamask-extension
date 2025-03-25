@@ -41,8 +41,8 @@ export const getTransactionUrl = (txId: string, chainId: string): string => {
  * Different networks have different URL patterns:
  * Bitcoin Mainnet: https://mempool.space/address/{address}
  * Bitcoin Testnet: https://mempool.space/testnet/address/{address}
- * Solana Mainnet: https://solscan.io/address/{address}
- * Solana Devnet: https://solscan.io/address/{address}?cluster=devnet
+ * Solana Mainnet: https://solscan.io/account/{address}
+ * Solana Devnet: https://solscan.io/account/{address}?cluster=devnet
  *
  * @param address - Wallet address
  * @param chainId - Network chain ID
