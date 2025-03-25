@@ -147,7 +147,7 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';

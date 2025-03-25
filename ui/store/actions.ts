@@ -3624,17 +3624,15 @@ export function detectTokens(): ThunkAction<
   };
 }
 
-export function detectNfts(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+// TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
+export function detectNfts(
+  chainIds: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts');
+      await submitRequestToBackground('detectNfts', [chainIds]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }

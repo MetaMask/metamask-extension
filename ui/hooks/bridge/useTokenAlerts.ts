@@ -11,7 +11,7 @@ import {
 } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
 import { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 
 export const useTokenAlerts = () => {
   const fromToken = useSelector(getFromToken);
