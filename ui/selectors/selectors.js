@@ -2860,6 +2860,18 @@ export function getIsCustomNetwork(state) {
   return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
 }
 
+/**
+ * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * This flag determines whether the user should see a `Discover` button on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ */
+export function getIsPortfolioDiscoverButtonEnabled(state) {
+  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
+  return Boolean(nePortfolioDiscoverButton);
+}
+
 export function getBlockExplorerLinkText(
   state,
   accountDetailsModalComponent = false,

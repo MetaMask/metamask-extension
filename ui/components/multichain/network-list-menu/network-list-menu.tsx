@@ -66,6 +66,7 @@ import {
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
+  getIsPortfolioDiscoverButtonEnabled,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -150,6 +151,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
+  // This selector provides the indication if the "Discover" button
+  // is enabled based on the remote feature flag.
+  const isPortfolioDiscoverButtonEnabled = useSelector(
+    getIsPortfolioDiscoverButtonEnabled,
+  );
   // This selector provides an array with two elements.
   // 1 - All network configurations including EVM and non-EVM with the data type
   // MultichainNetworkConfiguration from @metamask/multichain-network-controller
@@ -382,11 +388,17 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
-  const isDiscoverBtnEnabled = useCallback((hexChainId: Hex): boolean => {
-    // For now, the "Discover" button should be enabled only for Linea network base on
-    // the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
-    return CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined;
-  }, []);
+  const isDiscoverBtnEnabled = useCallback(
+    (hexChainId: Hex): boolean => {
+      // For now, the "Discover" button should be enabled only for Linea network base on
+      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      return (
+        isPortfolioDiscoverButtonEnabled &&
+        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+      );
+    },
+    [isPortfolioDiscoverButtonEnabled],
+  );
 
   const hasMultiRpcOptions = useCallback(
     (network: MultichainNetworkConfiguration): boolean =>
