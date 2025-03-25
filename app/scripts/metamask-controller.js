@@ -2861,17 +2861,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        this.txController.stopIncomingTransactionPolling();
-
-        await this.txController.updateIncomingTransactions();
-
-        this.txController.startIncomingTransactionPolling();
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstallStarted`,
       (snapId, origin, isUpdate) => {
         const snapCategory = this._getSnapMetadata(snapId)?.category;
