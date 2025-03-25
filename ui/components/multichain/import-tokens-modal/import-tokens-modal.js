@@ -429,9 +429,10 @@ export const ImportTokensModal = ({ onClose }) => {
       return;
     }
 
-    const tokenAddressList = Object.keys(
-      tokenListByChain?.[selectedNetworkForCustomImport]?.data,
-    );
+    const tokenList =
+      tokenListByChain?.[selectedNetworkForCustomImport]?.data ?? {};
+
+    const tokenAddressList = Object.keys(tokenList);
     const customToken = customAddress
       ? {
           address: customAddress,
@@ -917,7 +918,6 @@ export const ImportTokensModal = ({ onClose }) => {
                               handleCustomAddressChange(e.target.value);
                             } else {
                               setCustomAddress(e.target.value);
-                              setCustomAddressError(t('pleaseSelectNetwork'));
                             }
                           }}
                           helpText={
@@ -1038,7 +1038,8 @@ export const ImportTokensModal = ({ onClose }) => {
               disabled={
                 Boolean(hasError()) ||
                 !hasSelected() ||
-                !selectedNetworkForCustomImport
+                (defaultActiveTabKey === TAB_NAMES.CUSTOM_TOKEN &&
+                  !selectedNetworkForCustomImport)
               }
               block
               data-testid="import-tokens-button-next"

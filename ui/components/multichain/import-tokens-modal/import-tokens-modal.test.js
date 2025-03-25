@@ -95,6 +95,12 @@ describe('ImportTokensModal', () => {
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
 
+      // Select network
+      const selectedNetwork = getByText('Select a network');
+      fireEvent.click(selectedNetwork);
+      const networkOption = getByText('Goerli');
+      fireEvent.click(networkOption);
+
       // Enter token address first
       const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
       const eventTokenAddress = { target: { value: tokenAddress } };
@@ -127,6 +133,12 @@ describe('ImportTokensModal', () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
+
+      // Select network
+      const selectedNetwork = getByText('Select a network');
+      fireEvent.click(selectedNetwork);
+      const networkOption = getByText('Goerli');
+      fireEvent.click(networkOption);
 
       // Enter token address first
       const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
@@ -161,6 +173,12 @@ describe('ImportTokensModal', () => {
       fireEvent.click(customTokenButton);
 
       expect(getByText('Next')).toBeDisabled();
+
+      // Select network
+      const selectedNetwork = getByText('Select a network');
+      fireEvent.click(selectedNetwork);
+      const networkOption = getByText('Goerli');
+      fireEvent.click(networkOption);
 
       const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
       await fireEvent.change(
@@ -231,6 +249,12 @@ describe('ImportTokensModal', () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
+
+      // Select network
+      const selectedNetwork = getByText('Select a network');
+      fireEvent.click(selectedNetwork);
+      const networkOption = getByText('Goerli');
+      fireEvent.click(networkOption);
 
       const submit = getByText('Next');
       expect(submit).toBeDisabled();
