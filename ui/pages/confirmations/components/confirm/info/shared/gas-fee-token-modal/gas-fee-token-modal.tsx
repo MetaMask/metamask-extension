@@ -1,12 +1,6 @@
 import React, { useCallback } from 'react';
-import {
-  GasFeeToken,
-  TransactionMeta,
-  BatchTransactionParams,
-} from '@metamask/transaction-controller';
+import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   Modal,
   ModalBody,
@@ -22,10 +16,7 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  updateBatchTransactions,
-  updateSelectedGasFeeToken,
-} from '../../../../../../../store/actions/transaction-controller';
+import { updateSelectedGasFeeToken } from '../../../../../../../store/actions/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
@@ -46,11 +37,6 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
           : token.tokenAddress;
 
       await updateSelectedGasFeeToken(transactionId, selectedAddress);
-
-      await updateBatchTransactions({
-        transactionId,
-        batchTransactions: [getTransferTransaction(token)],
-      });
 
       onClose?.();
     },
@@ -101,20 +87,4 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
       </ModalContent>
     </Modal>
   );
-}
-
-function getTransferTransaction(
-  gasFeeToken: GasFeeToken,
-): BatchTransactionParams {
-  const data = new Interface(abiERC20).encodeFunctionData('transfer', [
-    gasFeeToken.recipient,
-    gasFeeToken.amount,
-  ]) as Hex;
-
-  return {
-    data,
-    maxFeePerGas: gasFeeToken.maxFeePerGas,
-    maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
-    to: gasFeeToken.tokenAddress,
-  };
 }

@@ -24,9 +24,9 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567891',
   symbol: 'USDC',
-  tokenAddress: '0xabc',
+  tokenAddress: '0x1234567890123456789012345678901234567892',
 };
 
 const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
@@ -37,9 +37,9 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x123456789012345678901234567890123456789A',
+  recipient: '0x1234567890123456789012345678901234567893',
   symbol: 'WETH',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
+  tokenAddress: '0x1234567890123456789012345678901234567894',
 };
 
 function getState({
@@ -130,29 +130,5 @@ describe('GasFeeTokenModal', () => {
       expect.any(String),
       GAS_FEE_TOKEN_2_MOCK.tokenAddress,
     );
-  });
-
-  it('adds token transfer batch transaction on click', async () => {
-    const result = renderWithConfirmContextProvider(
-      <GasFeeTokenModal />,
-      configureStore(getState()),
-    );
-
-    await act(async () => {
-      result.queryAllByTestId('gas-fee-token-list-item')[2].click();
-    });
-
-    expect(updateBatchTransactionsMock).toHaveBeenCalledTimes(1);
-    expect(updateBatchTransactionsMock).toHaveBeenCalledWith({
-      transactionId: expect.any(String),
-      batchTransactions: [
-        {
-          data: '0xa9059cbb000000000000000000000000123456789012345678901234567890123456789a0000000000000000000000000000000000000000000000000000000000004e20',
-          maxFeePerGas: GAS_FEE_TOKEN_2_MOCK.maxFeePerGas,
-          maxPriorityFeePerGas: GAS_FEE_TOKEN_2_MOCK.maxPriorityFeePerGas,
-          to: GAS_FEE_TOKEN_2_MOCK.tokenAddress,
-        },
-      ],
-    });
   });
 });
