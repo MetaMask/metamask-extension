@@ -20,6 +20,7 @@ import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { SelectedGasFeeToken } from '../selected-gas-fee-token';
+import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -39,6 +40,12 @@ export const EditGasFeesRow = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const { chainId } = transactionMeta;
+  const gasFeeToken = useSelectedGasFeeToken();
+  const showFiat = useShowFiat(chainId);
+  const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
+  const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
+
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.EstimatedFee}
@@ -56,56 +63,55 @@ export const EditGasFeesRow = ({
         textAlign={TextAlign.Center}
         gap={1}
       >
-        <EditGasIconButton
-          supportsEIP1559={supportsEIP1559}
-          setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-        />
-        {/* <Text
-          marginRight={1}
-          color={TextColor.textDefault}
-          data-testid="first-gas-field"
-        >
-          {nativeFee}
-        </Text> */}
-        <FiatValue
-          chainId={transactionMeta.chainId}
-          fullValue={fiatFeeWith18SignificantDigits}
-          roundedValue={fiatFee}
-        />
+        {!gasFeeToken && (
+          <EditGasIconButton
+            supportsEIP1559={supportsEIP1559}
+            setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+          />
+        )}
+        {showFiat ? (
+          <FiatValue
+            fullValue={fiatFeeWith18SignificantDigits}
+            roundedValue={fiatValue}
+          />
+        ) : (
+          <TokenValue roundedValue={tokenValue} />
+        )}
         <SelectedGasFeeToken />
       </Box>
     </ConfirmInfoAlertRow>
   );
 };
 
-function FiatValue({
-  chainId,
-  fullValue,
-  roundedValue,
-}: {
-  chainId: Hex;
-  fullValue: string | null;
-  roundedValue: string;
-}) {
-  type TestNetChainId = (typeof TEST_CHAINS)[number];
-
-  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
-
-  const { showFiatInTestnets } = useSelector(getPreferences);
-
-  if (isTestnet && !showFiatInTestnets) {
-    return null;
-  }
-
-  const value = (
-    <Text marginRight={2} data-testid="native-currency">
+function TokenValue({ roundedValue }: { roundedValue: string }) {
+  return (
+    <Text color={TextColor.textDefault} data-testid="first-gas-field">
       {roundedValue}
     </Text>
   );
+}
+
+function FiatValue({
+  fullValue,
+  roundedValue,
+}: {
+  fullValue: string | null;
+  roundedValue: string;
+}) {
+  const value = <Text data-testid="native-currency">{roundedValue}</Text>;
 
   return fullValue ? (
     <Tooltip title={fullValue}>{value}</Tooltip>
   ) : (
     <>{value}</>
   );
+}
+
+function useShowFiat(chainId: Hex): boolean {
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+
+  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
+  return !isTestnet || showFiatInTestnets;
 }
