@@ -5080,9 +5080,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/chain-agnostic-permission@npm:0.1.0"
+"@metamask/chain-agnostic-permission@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/chain-agnostic-permission@npm:0.2.0"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
     "@metamask/controller-utils": "npm:^11.6.0"
