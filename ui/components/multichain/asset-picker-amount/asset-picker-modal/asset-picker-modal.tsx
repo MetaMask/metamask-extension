@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import type {
   Token,
@@ -150,6 +156,7 @@ export function AssetPickerModal({
   useEffect(() => {
     debouncedSetSearchQuery(searchQuery);
   }, [searchQuery, debouncedSetSearchQuery]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
@@ -464,8 +471,9 @@ export function AssetPickerModal({
 
   // This fetches the metadata for the asset if it is not already in the filteredTokenList
   const unlistedAssetMetadata = useAssetMetadata(
-    debouncedSearchQuery,
+    searchQuery,
     filteredTokenList.length === 0,
+    abortControllerRef,
     selectedNetwork?.chainId,
   );
 
@@ -570,7 +578,13 @@ export function AssetPickerModal({
               <React.Fragment key={TabName.TOKENS}>
                 <Search
                   searchQuery={searchQuery}
-                  onChange={(value) => setSearchQuery(value)}
+                  onChange={(value) => {
+                    if (abortControllerRef.current) {
+                      // Cancel previous asset metadata fetch
+                      abortControllerRef.current.abort();
+                    }
+                    setSearchQuery(value);
+                  }}
                   autoFocus={autoFocus}
                 />
                 <AssetList
