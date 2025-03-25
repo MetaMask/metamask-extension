@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.14.2]
+
 ## [12.14.1]
 ### Fixed
 - Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
@@ -5827,7 +5829,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...HEAD
+[12.14.2]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.14.2
 [12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
 [12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0
 [12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
