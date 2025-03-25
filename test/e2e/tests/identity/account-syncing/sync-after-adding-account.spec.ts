@@ -21,10 +21,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
-import {
-  prepareEventsWatcher,
-  waitUntilSyncedAccountsNumberEquals,
-} from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Add Account', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -92,13 +89,15 @@ describe('Account syncing - Add Account', function () {
             unencryptedAccounts[1].n,
           );
 
-          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-            {
-              driver,
-              userStorageMockttpController,
-            },
-          );
+          const {
+            prepareEventsEmittedCounter,
+            waitUntilSyncedAccountsNumberEquals,
+          } = arrangeTestUtils(driver, userStorageMockttpController);
+
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
 
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
@@ -106,11 +105,8 @@ describe('Account syncing - Add Account', function () {
           });
 
           // Wait for the account AND account name to be synced
-          await waitUntilSyncedAccountsNumberEquals(3, {
-            driver,
-            userStorageMockttpController,
-          });
-          await waitUntilEventCallsNumberEquals(2);
+          await waitUntilSyncedAccountsNumberEquals(3);
+          await waitUntilEventsEmittedNumberEquals(2);
         },
       );
 
@@ -202,14 +198,18 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[1].n,
           );
+
+          const { waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
           });
+
           // Wait for the account to be synced
-          await waitUntilSyncedAccountsNumberEquals(3, {
-            driver,
-            userStorageMockttpController,
-          });
+          await waitUntilSyncedAccountsNumberEquals(3);
         },
       );
 

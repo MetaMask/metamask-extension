@@ -18,10 +18,7 @@ import {
   completeNewWalletFlowIdentity,
   completeOnboardFlowIdentity,
 } from '../flows';
-import {
-  prepareEventsWatcher,
-  waitUntilSyncedAccountsNumberEquals,
-} from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - New User', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -65,13 +62,15 @@ describe('Account syncing - New User', function () {
           );
 
           // Add a second account
-          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-            {
-              driver,
-              userStorageMockttpController,
-            },
-          );
+          const {
+            waitUntilSyncedAccountsNumberEquals,
+            prepareEventsEmittedCounter,
+          } = arrangeTestUtils(driver, userStorageMockttpController);
+
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
 
           await accountListPage.openAccountOptionsMenu();
           await accountListPage.addAccount({
@@ -79,11 +78,8 @@ describe('Account syncing - New User', function () {
             accountName: secondAccountName,
           });
           // Wait for the account AND account name to be synced
-          await waitUntilSyncedAccountsNumberEquals(2, {
-            driver,
-            userStorageMockttpController,
-          });
-          await waitUntilEventCallsNumberEquals(2);
+          await waitUntilSyncedAccountsNumberEquals(2);
+          await waitUntilEventsEmittedNumberEquals(2);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

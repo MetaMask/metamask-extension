@@ -16,7 +16,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
-import { prepareEventsWatcher } from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Rename Accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -87,18 +87,20 @@ describe('Account syncing - Rename Accounts', function () {
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
 
-          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-            {
-              driver,
-              userStorageMockttpController,
-            },
+          const { prepareEventsEmittedCounter } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
           );
+
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
 
           await accountDetailsModal.changeAccountLabel(accountOneNewName);
 
           // Wait for the account name to be synced
-          await waitUntilEventCallsNumberEquals(1);
+          await waitUntilEventsEmittedNumberEquals(1);
         },
       );
 

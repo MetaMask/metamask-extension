@@ -20,10 +20,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
-import {
-  prepareEventsWatcher,
-  waitUntilSyncedAccountsNumberEquals,
-} from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - User already has balances on multiple accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -139,14 +136,16 @@ describe('Account syncing - User already has balances on multiple accounts', fun
           }
 
           // Create new account and prepare for additional accounts
+          const { waitUntilSyncedAccountsNumberEquals } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
           });
           // Wait for the account to be synced
-          await waitUntilSyncedAccountsNumberEquals(5, {
-            driver,
-            userStorageMockttpController,
-          });
+          await waitUntilSyncedAccountsNumberEquals(5);
 
           accountsToMockBalances = [
             ...INITIAL_ACCOUNTS,
@@ -207,18 +206,20 @@ describe('Account syncing - User already has balances on multiple accounts', fun
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
 
-          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-            {
-              driver,
-              userStorageMockttpController,
-            },
+          const { prepareEventsEmittedCounter } = arrangeTestUtils(
+            driver,
+            userStorageMockttpController,
           );
+
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
 
           await accountDetailsModal.changeAccountLabel('My Renamed Account 6');
 
           // Wait for the account name to be synced
-          await waitUntilEventCallsNumberEquals(1);
+          await waitUntilEventsEmittedNumberEquals(1);
         },
       );
 

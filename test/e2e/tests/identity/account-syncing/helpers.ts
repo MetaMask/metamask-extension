@@ -21,63 +21,57 @@ export type UserStorageAccount = {
   nlu?: number;
 };
 
-export const prepareEventsWatcher = (
-  event: UserStorageMockttpControllerEvents,
-  options: {
-    driver: Driver;
-    userStorageMockttpController: UserStorageMockttpController;
-    timeout?: number;
-    interval?: number;
-  },
-): {
-  waitUntilEventCallsNumberEquals: (expectedNumber: number) => Promise<void>;
-} => {
-  const {
-    driver,
-    userStorageMockttpController,
-    timeout = 30000,
-    interval = 1000,
-  } = options;
+export const arrangeTestUtils = (
+  driver: Driver,
+  userStorageMockttpController: UserStorageMockttpController,
+) => {
+  const BASE_TIMEOUT = 30000;
+  const BASE_INTERVAL = 1000;
 
-  let counter = 0;
-  userStorageMockttpController.eventEmitter.on(event, () => {
-    counter += 1;
-  });
-
-  const waitUntilEventCallsNumberEquals = async (expectedNumber: number) => {
-    await driver.waitUntil(async () => counter === expectedNumber, {
-      timeout,
-      interval,
+  const prepareEventsEmittedCounter = (
+    event: UserStorageMockttpControllerEvents,
+  ) => {
+    let counter = 0;
+    userStorageMockttpController.eventEmitter.on(event, () => {
+      counter += 1;
     });
-  };
-  return { waitUntilEventCallsNumberEquals };
-};
 
-export const waitUntilSyncedAccountsNumberEquals = async (
-  expectedNumber: number,
-  options: {
-    driver: Driver;
-    userStorageMockttpController: UserStorageMockttpController;
-    timeout?: number;
-    interval?: number;
-  },
-): Promise<void> => {
-  const {
-    driver,
-    userStorageMockttpController,
-    timeout = 30000,
-    interval = 1000,
-  } = options;
-  await driver.waitUntil(
-    async () => {
-      const accounts = userStorageMockttpController.paths.get(
-        USER_STORAGE_FEATURE_NAMES.accounts,
-      )?.response;
-      return accounts?.length === expectedNumber;
-    },
-    {
-      timeout,
-      interval,
-    },
-  );
+    const waitUntilEventsEmittedNumberEquals = async (
+      expectedNumber: number,
+    ) => {
+      console.log(
+        `Waiting for user storage event ${event} to be emitted ${expectedNumber} times`,
+      );
+      await driver.waitUntil(async () => counter === expectedNumber, {
+        timeout: BASE_TIMEOUT,
+        interval: BASE_INTERVAL,
+      });
+    };
+    return { waitUntilEventsEmittedNumberEquals };
+  };
+
+  const waitUntilSyncedAccountsNumberEquals = async (
+    expectedNumber: number,
+  ) => {
+    console.log(
+      `Waiting for user storage number of accounts synced to be ${expectedNumber}`,
+    );
+    await driver.waitUntil(
+      async () => {
+        const accounts = userStorageMockttpController.paths.get(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+        )?.response;
+        return accounts?.length === expectedNumber;
+      },
+      {
+        timeout: BASE_TIMEOUT,
+        interval: BASE_INTERVAL,
+      },
+    );
+  };
+
+  return {
+    prepareEventsEmittedCounter,
+    waitUntilSyncedAccountsNumberEquals,
+  };
 };
