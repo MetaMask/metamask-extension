@@ -5,6 +5,9 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
+  // prevent overflow-x
+  max-width: 100%;
+
   background-color: var(--color-background-default);
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   z-index: 25;
