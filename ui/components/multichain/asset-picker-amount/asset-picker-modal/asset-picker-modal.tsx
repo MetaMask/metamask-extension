@@ -168,6 +168,10 @@ export function AssetPickerModal({
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
+  useEffect(() => {
+    setSearchQuery('');
+  }, [selectedNetwork?.chainId]);
+
   const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
   const balanceValue = useMultichainSelector(
