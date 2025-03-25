@@ -23,7 +23,9 @@
 
   &--has-app-header {
     @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+      // multichain-page UI here flows from the dashboard page which doesn't have padding-bottom. We can consider adding padding bottom here and to the .main-container-wrapper.
       padding-top: 0;
+      padding-bottom: 0;
     }
 
     & .multichain-page__inner-container {
