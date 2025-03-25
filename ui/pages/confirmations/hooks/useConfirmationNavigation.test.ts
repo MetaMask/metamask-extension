@@ -12,7 +12,6 @@ import {
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
@@ -80,17 +79,6 @@ describe('useConfirmationNavigation', () => {
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
-      );
-    });
-
-    it('navigates to signature route', () => {
-      const result = renderHook(ApprovalType.EthSignTypedData);
-
-      result.navigateToId(APPROVAL_ID_MOCK);
-
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
-        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${SIGNATURE_REQUEST_PATH}`,
       );
     });
 

@@ -3,7 +3,6 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
@@ -16,8 +15,7 @@ describe('AssetPickerSendFlow', function () {
 
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    ganacheOptions: {
-      ...defaultGanacheOptions,
+    localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
   };

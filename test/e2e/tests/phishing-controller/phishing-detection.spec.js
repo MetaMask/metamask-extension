@@ -4,7 +4,6 @@ const { createDeferredPromise } = require('@metamask/utils');
 const { until } = require('selenium-webdriver');
 
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -45,7 +44,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -80,7 +78,6 @@ describe('Phishing Detection', function () {
     const getFixtureOptions = (overrides) => {
       return {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -152,7 +149,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -204,7 +200,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           setupPhishingDetectionMocks(mockServer, {
@@ -240,7 +235,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -275,7 +269,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -320,7 +313,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           await mockServer.forAnyWebSocket().thenEcho();
@@ -362,7 +354,6 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           await mockServer.forAnyWebSocket().thenEcho();
@@ -484,7 +475,6 @@ describe('Phishing Detection', function () {
       fixturePromise = withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: async (mockServer) => {
             await setupPhishingDetectionMocks(mockServer, {

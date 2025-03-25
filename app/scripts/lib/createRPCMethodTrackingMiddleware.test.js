@@ -1,6 +1,6 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -49,24 +49,21 @@ const appStateController = {
   },
 };
 
-const controllerMessenger = new ControllerMessenger();
+const messenger = new Messenger();
 
-controllerMessenger.registerActionHandler(
-  'PreferencesController:getState',
-  () => ({
-    ...getDefaultPreferencesControllerState(),
-    currentLocale: 'en_US',
-  }),
-);
+messenger.registerActionHandler('PreferencesController:getState', () => ({
+  ...getDefaultPreferencesControllerState(),
+  currentLocale: 'en_US',
+}));
 
-controllerMessenger.registerActionHandler(
+messenger.registerActionHandler(
   'NetworkController:getState',
   jest.fn().mockReturnValue({
     selectedNetworkClientId: 'selectedNetworkClientId',
   }),
 );
 
-controllerMessenger.registerActionHandler(
+messenger.registerActionHandler(
   'NetworkController:getNetworkClientById',
   jest.fn().mockReturnValue({
     configuration: {
@@ -82,7 +79,7 @@ const metaMetricsController = new MetaMetricsController({
     fragments: {},
     events: {},
   },
-  messenger: controllerMessenger.getRestricted({
+  messenger: messenger.getRestricted({
     name: 'MetaMetricsController',
     allowedActions: [
       'PreferencesController:getState',
@@ -936,6 +933,72 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0].properties.params).toStrictEqual(
           expected,
+        );
+      },
+    );
+
+    it.each([
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        [
+          {
+            calls: [
+              {
+                from: '0x1',
+                to: '0x2',
+              },
+              {
+                from: '0x2',
+                to: '0x3',
+              },
+            ],
+          },
+        ],
+        {
+          batch_transaction_count: 2,
+          method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        },
+      ],
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
+        ['0x123'],
+        {
+          method: MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
+        },
+      ],
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+        ['0x123'],
+        {
+          method: MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+        },
+      ],
+    ])(
+      `should generate %s event from %s method`,
+      async (event, method, params, properties) => {
+        const req = {
+          id: MOCK_ID,
+          method,
+          origin: 'some.dapp',
+          params,
+        };
+
+        const res = {
+          error: null,
+        };
+
+        const { next } = getNext();
+        const handler = createHandler();
+
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].event).toBe(event);
+        expect(trackEventSpy.mock.calls[0][0].properties).toStrictEqual(
+          properties,
         );
       },
     );

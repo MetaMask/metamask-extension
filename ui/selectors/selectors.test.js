@@ -296,6 +296,19 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getShouldShowSeedPhraseReminder', () => {
+    it('returns true if the account is a native account', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+        },
+      };
+      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
+    });
+  });
+
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
     const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
@@ -1179,12 +1192,6 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  it('#getTotalUnapprovedSignatureRequestCount', () => {
-    const totalUnapprovedSignatureRequestCount =
-      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
-    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1433,7 +1440,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1459,7 +1466,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1484,7 +1491,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1511,7 +1518,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1545,7 +1552,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1565,7 +1572,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
@@ -2170,21 +2177,6 @@ describe('#getConnectedSitesList', () => {
     });
   });
 
-  describe('#getRemoteFeatureFlags', () => {
-    it('returns remoteFeatureFlags in state', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            existingFlag: true,
-          },
-        },
-      };
-      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
-        existingFlag: true,
-      });
-    });
-  });
-
   describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
     beforeEach(() => {
       process.env.PORTFOLIO_VIEW = 'true';
@@ -2242,5 +2234,226 @@ describe('#getConnectedSitesList', () => {
         false,
       );
     });
+  });
+
+  describe('getTokenNetworkFilter', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('always returns an object containing the network if portfolio view is disabled', () => {
+      process.env.PORTFOLIO_VIEW = undefined;
+
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+      });
+    });
+
+    it('always returns an object containing the network if it is not included in popular networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0xNotPopularNetwork': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0xNotPopularNetwork': {
+              chainId: '0xNotPopularNetwork',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        '0xNotPopularNetwork': true,
+      });
+    });
+
+    it('returns an object containing all the popular networks for portfolio view', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.LINEA_MAINNET]: true,
+        [CHAIN_IDS.ARBITRUM]: true,
+        [CHAIN_IDS.AVALANCHE]: true,
+        [CHAIN_IDS.BSC]: true,
+        [CHAIN_IDS.OPTIMISM]: true,
+        [CHAIN_IDS.POLYGON]: true,
+        [CHAIN_IDS.ZKSYNC_ERA]: true,
+        [CHAIN_IDS.BASE]: true,
+      });
+    });
+
+    it('always returns the same object (memoized) if the same state is given', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      const result1 = selectors.getTokenNetworkFilter(state);
+      const result2 = selectors.getTokenNetworkFilter(state);
+      expect(result1 === result2).toBe(true);
+    });
+  });
+});
+
+describe('getShouldShowSeedPhraseReminder', () => {
+  const mockAccount = createMockInternalAccount();
+  const mockAccount2 = createMockInternalAccount({ address: 'mockAddress2' });
+
+  it('shows reminder for seed phrase if the primary srp is not backed up', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+        ],
+        accounts: {
+          [mockAccount.address]: {
+            address: mockAccount.address,
+            balance: '0x1',
+          },
+        },
+        keyringsMetadata: [{ id: 'mockid', name: '' }],
+        seedPhraseBackedUp: false,
+        isUnlocked: true,
+        dismissSeedBackUpReminder: false,
+      },
+    };
+
+    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
+  });
+
+  it('does not show reminder for imported srps', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockAccount2.id]: mockAccount2,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          // primary srp
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount2.address],
+          },
+          // secondary srp
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+        ],
+        accounts: {
+          [mockAccount.address]: {
+            address: mockAccount.address,
+            balance: '0x1',
+          },
+          [mockAccount2.address]: {
+            address: mockAccount2.address,
+            balance: '0x1',
+          },
+        },
+        keyringsMetadata: [
+          { id: 'mockid1', name: '' },
+          { id: 'mockid2', name: '' },
+        ],
+        seedPhraseBackedUp: false,
+        isUnlocked: true,
+        dismissSeedBackUpReminder: false,
+      },
+    };
+
+    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
   });
 });

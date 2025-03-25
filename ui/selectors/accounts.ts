@@ -5,10 +5,11 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { createSelector } from 'reselect';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
-} from '../../shared/lib/multichain';
+} from '../../shared/lib/multichain/accounts';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -20,15 +21,17 @@ function isBtcAccount(account: InternalAccount) {
   return Boolean(account && account.type === P2wpkh);
 }
 
-function isSolanaAccount(account: InternalAccount) {
+export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
 
   return Boolean(account && account.type === DataAccount);
 }
 
-export function getInternalAccounts(state: AccountsState) {
-  return Object.values(state.metamask.internalAccounts.accounts);
-}
+export const getInternalAccounts = createSelector(
+  (state: AccountsState) =>
+    Object.values(state.metamask.internalAccounts.accounts),
+  (accounts) => accounts,
+);
 
 export function getSelectedInternalAccount(state: AccountsState) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
@@ -66,4 +69,9 @@ export function hasCreatedBtcMainnetAccount(state: AccountsState) {
 
 export function hasCreatedBtcTestnetAccount(state: AccountsState) {
   return hasCreatedBtcAccount(state, isBtcTestnetAddress);
+}
+
+export function hasCreatedSolanaAccount(state: AccountsState) {
+  const accounts = getInternalAccounts(state);
+  return accounts.some((account) => isSolanaAccount(account));
 }

@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 
 const {
-  defaultGanacheOptions,
   switchToNotificationWindow,
   withFixtures,
   openDapp,
@@ -10,6 +9,7 @@ const {
   clickSignOnRedesignedSignatureConfirmation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -52,7 +52,7 @@ const expectedEventPropertiesBase = {
   locale: 'en',
   chain_id: '0x539',
   environment_type: 'background',
-  security_alert_reason: 'CheckingChain',
+  security_alert_reason: 'validation_in_progress',
   security_alert_response: 'loading',
   ui_customizations: ['redesigned_confirmation'],
 };
@@ -65,11 +65,10 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -94,6 +93,7 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_signTypedData_v4',
           eip712_primary_type: 'Mail',
           security_alert_response: 'Benign',
+          security_alert_source: 'api',
         });
       },
     );
@@ -106,11 +106,10 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -133,6 +132,7 @@ describe('Signature Approved Event', function () {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
           security_alert_response: 'Benign',
+          security_alert_source: 'api',
         });
       },
     );
@@ -145,11 +145,10 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -172,6 +171,7 @@ describe('Signature Approved Event', function () {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
           security_alert_response: 'Benign',
+          security_alert_source: 'api',
         });
       },
     );
@@ -184,11 +184,10 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -211,6 +210,7 @@ describe('Signature Approved Event', function () {
           ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
           security_alert_response: 'Benign',
+          security_alert_source: 'api',
         });
       },
     );

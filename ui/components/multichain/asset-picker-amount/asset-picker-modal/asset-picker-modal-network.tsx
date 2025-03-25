@@ -6,6 +6,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { IconName } from '@metamask/snaps-sdk/jsx';
+import type { CaipChainId } from '@metamask/utils';
 import {
   Display,
   FlexDirection,
@@ -26,7 +27,6 @@ import {
   Text,
   AvatarNetworkSize,
 } from '../../../component-library';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
@@ -36,6 +36,13 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import { getImageForChainId } from '../../../../selectors/multichain';
+
+// TODO use MultichainNetworkConfiguration type
+type NetworkOption =
+  | NetworkConfiguration
+  | AddNetworkFields
+  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.
@@ -68,12 +75,10 @@ export const AssetPickerModalNetwork = ({
   selectedChainIds,
 }: {
   isOpen: boolean;
-  network?: NetworkConfiguration | AddNetworkFields;
-  networks?: (NetworkConfiguration | AddNetworkFields)[];
-  onNetworkChange: (network: NetworkConfiguration | AddNetworkFields) => void;
-  shouldDisableNetwork?: (
-    network: NetworkConfiguration | AddNetworkFields,
-  ) => boolean;
+  network?: NetworkOption;
+  networks?: NetworkOption[];
+  onNetworkChange: (network: NetworkOption) => void;
+  shouldDisableNetwork?: (network: NetworkOption) => boolean;
   onClose: () => void;
   onBack: () => void;
   header?: JSX.Element | string | null;
@@ -160,7 +165,7 @@ export const AssetPickerModalNetwork = ({
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
-          onBack={onBack}
+          onBack={network ? onBack : undefined}
           onClose={isMultiselectEnabled ? undefined : onClose}
           endAccessory={
             isMultiselectEnabled && selectedChainIds ? (
@@ -244,11 +249,7 @@ export const AssetPickerModalNetwork = ({
                     onNetworkChange(networkConfig);
                     onBack();
                   }}
-                  iconSrc={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  iconSrc={getImageForChainId(chainId)}
                   iconSize={AvatarNetworkSize.Sm}
                   focus={false}
                   disabled={shouldDisableNetwork?.(networkConfig)}

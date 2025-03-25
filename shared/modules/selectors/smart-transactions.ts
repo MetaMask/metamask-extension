@@ -11,6 +11,7 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
+import { getFeatureFlagsByChainId } from './feature-flags';
 import { getCurrentChainId, NetworkState } from './networks';
 
 export type SmartTransactionsMetaMaskState = {
@@ -156,10 +157,11 @@ export const getSmartTransactionsEnabled = (
   state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const featureFlagsByChainId = getFeatureFlagsByChainId(state);
   // TODO: Create a new proxy service only for MM feature flags.
   const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
-      ?.extensionActive;
+    featureFlagsByChainId?.smartTransactions?.extensionActive;
   const smartTransactionsLiveness =
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(

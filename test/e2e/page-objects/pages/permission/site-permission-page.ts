@@ -7,6 +7,8 @@ import { Driver } from '../../../webdriver/driver';
 class SitePermissionPage {
   private driver: Driver;
 
+  private readonly confirmDisconnectButton = '[data-testid="disconnect-all"]';
+
   private readonly confirmEditAccountsButton =
     '[data-testid="connect-more-accounts-button"]';
 
@@ -16,6 +18,18 @@ class SitePermissionPage {
   private readonly connectedAccountsInfo = {
     text: 'See your accounts and suggest transactions',
     tag: 'p',
+  };
+
+  private readonly disconnectButton = '[data-test-id="disconnect-all"]';
+
+  private readonly disconnectConfirmMessage = {
+    text: 'MetaMask isn’t connected to this site',
+    tag: 'p',
+  };
+
+  private readonly disconnectModalTitle = {
+    text: 'Disconnect',
+    tag: 'h4',
   };
 
   private readonly editAccountsModalTitle = {
@@ -57,6 +71,19 @@ class SitePermissionPage {
       throw e;
     }
     console.log('Site permission page is loaded');
+  }
+
+  /**
+   * Disconnect all permissions for accounts and networks
+   */
+  async disconnectAll(): Promise<void> {
+    console.log('Disconnect all permissions for accounts and networks');
+    await this.driver.clickElement(this.disconnectButton);
+    await this.driver.waitForSelector(this.disconnectModalTitle);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmDisconnectButton,
+    );
+    await this.driver.waitForSelector(this.disconnectConfirmMessage);
   }
 
   /**

@@ -43,9 +43,12 @@ export const SENTRY_BACKGROUND_STATE = {
   AuthenticationController: {
     isSignedIn: false,
     sessionData: {
+      token: {
+        accessToken: false,
+        expiresIn: true,
+        obtainedAt: true,
+      },
       profile: true,
-      accessToken: false,
-      expiresIn: true,
     },
   },
   NetworkOrderController: {
@@ -75,6 +78,7 @@ export const SENTRY_BACKGROUND_STATE = {
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
@@ -93,11 +97,19 @@ export const SENTRY_BACKGROUND_STATE = {
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
+    throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
   },
   MultichainBalancesController: {
     balances: false,
+  },
+  MultichainAssetsController: {
+    accountsAssets: false,
+    assetsMetadata: false,
+  },
+  MultichainAssetsRatesController: {
+    assetsRates: false,
   },
   BridgeController: {
     bridgeState: {
@@ -179,7 +191,6 @@ export const SENTRY_BACKGROUND_STATE = {
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
-    previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
@@ -263,7 +274,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
-    useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
@@ -433,8 +443,10 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

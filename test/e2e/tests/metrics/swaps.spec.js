@@ -3,11 +3,9 @@ const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
-  generateGanacheOptions,
   unlockWallet,
   getEventPayloads,
   assertInAnyOrder,
-  genRandInitBal,
 } = require('../../helpers');
 const {
   buildQuote,
@@ -30,6 +28,7 @@ const {
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
 } = require('../../../data/mock-data');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 const numberOfSegmentRequests = 19;
 
@@ -93,19 +92,14 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
 describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
-    const { initialBalanceInHex } = genRandInitBal();
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: generateGanacheOptions({
-          balance: initialBalanceInHex,
-        }),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },

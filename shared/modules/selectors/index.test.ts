@@ -238,6 +238,33 @@ describe('Selectors', () => {
     );
 
     jestIt(
+      'returns false if feature flag is disabled for BSC, not a HW and is BSC network with a default RPC URL',
+      () => {
+        const state = createSwapsMockStore();
+        state.metamask.swapsState.swapsFeatureFlags = {
+          ...state.metamask.swapsState.swapsFeatureFlags,
+          bsc: {
+            ...state.metamask.swapsState.swapsFeatureFlags.bsc,
+            smartTransactions: {
+              extensionActive: false,
+            },
+          },
+        };
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.BSC,
+              rpcUrl: 'https://bsc-dataseed.binance.org/',
+            }),
+          },
+        };
+        expect(getSmartTransactionsEnabled(newState)).toBe(false);
+      },
+    );
+
+    jestIt(
       'returns false if feature flag is enabled, not a HW and is BSC network with a non-default RPC URL',
       () => {
         const state = createSwapsMockStore();

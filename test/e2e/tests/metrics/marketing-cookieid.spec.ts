@@ -6,19 +6,19 @@ import {
   getEventPayloads,
   WINDOW_TITLES,
   withFixtures,
-  defaultGanacheOptions,
   unlockWallet,
   openDapp,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import FixtureBuilder from '../../fixture-builder';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
   securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
   dataCollectionForMarketingToggle:
-    '[data-testid="dataCollectionForMarketing"] .toggle-button',
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button',
   dataCollectionWarningAckButton: { text: 'Okay', tag: 'Button' },
 };
 
@@ -55,12 +55,11 @@ describe('Marketing cookieId', function (this: Suite) {
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -99,11 +98,10 @@ describe('Marketing cookieId', function (this: Suite) {
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -141,7 +139,6 @@ describe('Marketing cookieId', function (this: Suite) {
         dapp: true,
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -178,12 +175,11 @@ describe('Marketing cookieId', function (this: Suite) {
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

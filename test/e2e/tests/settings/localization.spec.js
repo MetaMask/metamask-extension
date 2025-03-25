@@ -1,14 +1,10 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 async function mockPhpConversion(mockServer) {
   return await mockServer
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH', tsyms: 'php,USD' })
+    .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'php,USD' })
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -37,7 +33,6 @@ describe('Localization', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockPhpConversion,
         title: this.test.fullTitle(),
       },

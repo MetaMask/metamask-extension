@@ -4,12 +4,7 @@ const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const {
-  withFixtures,
-  unlockWallet,
-  generateGanacheOptions,
-  WINDOW_TITLES,
-} = require('../../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
@@ -17,7 +12,7 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -90,8 +85,14 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -166,8 +167,13 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
         dapp: true,
       },

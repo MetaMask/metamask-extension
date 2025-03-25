@@ -1,10 +1,9 @@
 import React from 'react';
-
 import type {
-  StyleUtilityProps,
-  PolymorphicComponentPropWithRef,
   BoxProps,
-} from '..';
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box';
 
 export enum BadgeWrapperPosition {
   topRight = 'top-right',

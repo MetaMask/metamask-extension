@@ -1,12 +1,7 @@
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-  largeDelayMs,
-} from '../../helpers';
+import { unlockWallet, withFixtures, largeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -18,8 +13,7 @@ describe('Token List Sorting', function () {
 
   const testFixtures = {
     fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
-    ganacheOptions: {
-      ...defaultGanacheOptions,
+    localNodeOptions: {
       chainId: parseInt(mainnetChainId, 16),
     },
   };

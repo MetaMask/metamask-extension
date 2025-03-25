@@ -17,7 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { isBeta } from '../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -168,6 +168,26 @@ export default class UnlockPage extends Component {
     );
   }
 
+  renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={this.animationEventEmitter}
+        width="120"
+        height="120"
+      />
+    );
+  };
+
   render() {
     const { password, error } = this.state;
     const { t } = this.context;
@@ -179,11 +199,7 @@ export default class UnlockPage extends Component {
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
+            {this.renderMascot()}
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
                 {t('beta')}

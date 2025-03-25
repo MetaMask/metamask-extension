@@ -2,10 +2,10 @@ const { strict: assert } = require('assert');
 const {
   withFixtures,
   logInWithBalanceValidation,
-  defaultGanacheOptions,
   getEventPayloads,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 describe('Unlock wallet', function () {
   async function mockSegment(mockServer) {
@@ -27,16 +27,15 @@ describe('Unlock wallet', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint }) => {
+        await logInWithBalanceValidation(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
         await assert.equal(sortedEvents.length, 3);
