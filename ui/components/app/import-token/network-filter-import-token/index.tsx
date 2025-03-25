@@ -75,8 +75,8 @@ export const NetworkFilterImportToken = ({
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           width={BlockSize.Full}
-          paddingTop={4}
-          paddingBottom={4}
+          paddingTop={3}
+          paddingBottom={3}
           gap={3}
         >
           <Box>
@@ -107,8 +107,8 @@ export const NetworkFilterImportToken = ({
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
         width={BlockSize.Full}
-        paddingTop={4}
-        paddingBottom={4}
+        paddingTop={3}
+        paddingBottom={3}
         gap={3}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
@@ -154,7 +154,7 @@ export const NetworkFilterImportToken = ({
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
       paddingLeft={4}
-      paddingRight={4}
+      paddingRight={1}
       ref={dropdown}
     >
       {renderItem()}

@@ -94,7 +94,7 @@ export default function TokenSearch({
       width={BlockSize.Full}
       clearButtonOnClick={clear}
       clearButtonProps={{
-        size: Size.SM,
+        size: Size.LG,
       }}
     />
   );

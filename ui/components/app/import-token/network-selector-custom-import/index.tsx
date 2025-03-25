@@ -51,12 +51,13 @@ export const NetworkSelectorCustomImport = ({
         borderColor={BorderColor.borderDefault}
         borderWidth={1}
         paddingLeft={4}
-        paddingRight={4}
+        paddingRight={1}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
-          padding={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
           {title}
         </Text>
