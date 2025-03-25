@@ -125,7 +125,14 @@ function ListItem({
             alignItems={AlignItems.center}
             gap={2}
           >
-            <Text variant={TextVariant.bodyMdMedium}>{leftPrimary}</Text>
+            <Text
+              as="button"
+              variant={TextVariant.bodyMdMedium}
+              backgroundColor={BackgroundColor.transparent}
+              padding={0}
+            >
+              {leftPrimary}
+            </Text>
             {warning}
           </Box>
           <Text
