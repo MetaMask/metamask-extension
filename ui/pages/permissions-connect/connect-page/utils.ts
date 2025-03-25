@@ -6,7 +6,6 @@ import {
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 
