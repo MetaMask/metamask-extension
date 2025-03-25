@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
 class TransactionDetailsPage {
   private readonly driver: Driver;
 
-  private readonly solanaExplorerUrl = 'https://explorer.solana.com';
+  private readonly solanaExplorerUrl = 'https://solscan.io';
 
   private readonly transactionFromToLink = (accountAddress: string) => {
     return {
