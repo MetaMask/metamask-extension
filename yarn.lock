@@ -5065,9 +5065,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@0.2.0-preview-8c3b89c":
-  version: 0.2.0-preview-8c3b89c
-  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.2.0-preview-8c3b89c"
+"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@0.2.0-preview-6bd2731f":
+  version: 0.2.0-preview-6bd2731f
+  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.2.0-preview-6bd2731f"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
     "@metamask/controller-utils": "npm:^11.6.0"
@@ -5076,7 +5076,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.2.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/65117397887a5d5fb6f8eb942006ed62966955c650e6fc4ead2f0a66db466be50709bcb1f6654e780471a79b48a334d347e70b5cad680bdea2e130c686c1a71a
+  checksum: 10/089bc653e00598f3a64039dc601c4b0cb7757661371326b28f361ff456140ef0ae83ef59af3175f5cd0b6ff8d2433c2f710636c761bb82c441662676f8232a73
   languageName: node
   linkType: hard
 
@@ -27303,7 +27303,7 @@ __metadata:
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.2.0-preview-8c3b89c"
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.2.0-preview-6bd2731f"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
     "@metamask/design-tokens": "npm:^5.0.0"
