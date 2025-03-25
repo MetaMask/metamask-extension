@@ -54,17 +54,20 @@ const RemoveSnapAccount = ({
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         padding={4}
+        width={BlockSize.Full}
         style={{ flexGrow: 1 }}
       >
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
+          width={BlockSize.Full}
         >
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
+            width={BlockSize.Full}
           >
             <Box paddingBottom={2}>
               <AvatarIcon
