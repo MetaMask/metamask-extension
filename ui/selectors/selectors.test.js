@@ -307,33 +307,6 @@ describe('Selectors', () => {
       };
       expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
     });
-
-    it('returns false if the account is not native', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          seedPhraseBackedUp: false,
-          internalAccounts: {
-            ...mockState.metamask.internalAccounts,
-            accounts: {
-              ...mockState.metamask.internalAccounts.accounts,
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                ...mockState.metamask.internalAccounts.accounts[
-                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-                ],
-                metadata: {
-                  keyring: {
-                    type: KeyringType.imported,
-                  },
-                },
-              },
-            },
-          },
-        },
-      };
-      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
-    });
   });
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
@@ -2397,5 +2370,90 @@ describe('#getConnectedSitesList', () => {
       const result2 = selectors.getTokenNetworkFilter(state);
       expect(result1 === result2).toBe(true);
     });
+  });
+});
+
+describe('getShouldShowSeedPhraseReminder', () => {
+  const mockAccount = createMockInternalAccount();
+  const mockAccount2 = createMockInternalAccount({ address: 'mockAddress2' });
+
+  it('shows reminder for seed phrase if the primary srp is not backed up', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+        ],
+        accounts: {
+          [mockAccount.address]: {
+            address: mockAccount.address,
+            balance: '0x1',
+          },
+        },
+        keyringsMetadata: [{ id: 'mockid', name: '' }],
+        seedPhraseBackedUp: false,
+        isUnlocked: true,
+        dismissSeedBackUpReminder: false,
+      },
+    };
+
+    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
+  });
+
+  it('does not show reminder for imported srps', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockAccount2.id]: mockAccount2,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          // primary srp
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount2.address],
+          },
+          // secondary srp
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+        ],
+        accounts: {
+          [mockAccount.address]: {
+            address: mockAccount.address,
+            balance: '0x1',
+          },
+          [mockAccount2.address]: {
+            address: mockAccount2.address,
+            balance: '0x1',
+          },
+        },
+        keyringsMetadata: [
+          { id: 'mockid1', name: '' },
+          { id: 'mockid2', name: '' },
+        ],
+        seedPhraseBackedUp: false,
+        isUnlocked: true,
+        dismissSeedBackUpReminder: false,
+      },
+    };
+
+    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
   });
 });
