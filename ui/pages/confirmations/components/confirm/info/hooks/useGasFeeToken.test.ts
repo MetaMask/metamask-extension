@@ -21,9 +21,9 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567891',
   symbol: 'USDC',
-  tokenAddress: '0xabc',
+  tokenAddress: '0x1234567890123456789012345678901234567890',
 };
 
 const STATE_MOCK = getMockConfirmStateForTransaction(
@@ -78,6 +78,16 @@ describe('useGasFeeToken', () => {
   it('returns fiat balance', () => {
     const result = runHook({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress });
     expect(result.balanceFiat).toStrictEqual('$2,345.00');
+  });
+
+  it('returns transfer tranasction', () => {
+    const result = runHook({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress });
+    expect(result.transferTransaction).toStrictEqual({
+      data: '0xa9059cbb000000000000000000000000123456789012345678901234567890123456789100000000000000000000000000000000000000000000000000000000000004d2',
+      maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+      maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+      to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
   });
 
   it('returns undefined if no gas fee token', () => {
@@ -143,12 +153,14 @@ describe('useGasFeeToken', () => {
   describe('useSelectedGasFeeToken', () => {
     it('returns selected gas fee token', () => {
       const result = runUseSelectedGasFeeTokenHook();
-      expect(result).toStrictEqual({
-        ...GAS_FEE_TOKEN_MOCK,
-        amountFiat: '$1,234.00',
-        amountFormatted: '1.234',
-        balanceFiat: '$2,345.00',
-      });
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          ...GAS_FEE_TOKEN_MOCK,
+          amountFiat: '$1,234.00',
+          amountFormatted: '1.234',
+          balanceFiat: '$2,345.00',
+        }),
+      );
     });
   });
 });
