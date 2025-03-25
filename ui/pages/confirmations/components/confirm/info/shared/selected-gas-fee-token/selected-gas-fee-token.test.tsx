@@ -9,8 +9,6 @@ import { GasFeeToken } from '@metamask/transaction-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { act } from 'react-dom/test-utils';
 
-const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
-
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
   balance: toHex(2345),
@@ -19,9 +17,9 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567891',
   symbol: 'USDC',
-  tokenAddress: TOKEN_ADDRESS_MOCK,
+  tokenAddress: '0x1234567890123456789012345678901234567890',
 };
 
 function getStore({
@@ -34,7 +32,7 @@ function getStore({
         gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
         selectedGasFeeToken: noSelectedGasFeeToken
           ? undefined
-          : TOKEN_ADDRESS_MOCK,
+          : GAS_FEE_TOKEN_MOCK.tokenAddress,
       }),
       {
         metamask: {
