@@ -19,7 +19,15 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
+import {
+  debounce,
+  regExpEscape,
+  throttle,
+  memoize,
+  wrap,
+  pick,
+  cloneDeep,
+} from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -670,7 +678,7 @@ export default class MetamaskController extends EventEmitter {
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, endpointUrl, error }) => {
         const isInfuraEndpointUrl = new RegExp(
-          `https://[^.]+.infura.io/v3/${opts.infuraProjectId}`,
+          `https://[^.]+.infura.io/v3/${regExpEscape(opts.infuraProjectId)}`,
           'u',
         ).test(endpointUrl);
         const isQuicknodeEndpointUrl = Object.values(
@@ -702,7 +710,7 @@ export default class MetamaskController extends EventEmitter {
       'NetworkController:rpcEndpointDegraded',
       async ({ chainId, endpointUrl }) => {
         const isInfuraEndpointUrl = new RegExp(
-          `https://[^.]+.infura.io/v3/${opts.infuraProjectId}`,
+          `https://[^.]+.infura.io/v3/${regExpEscape(opts.infuraProjectId)}`,
           'u',
         ).test(endpointUrl);
         const isQuicknodeEndpointUrl = Object.values(
