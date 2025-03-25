@@ -1,5 +1,6 @@
 import {
   CaipAccountAddress,
+  CaipAccountId,
   CaipNamespace,
   CaipReference,
   Hex,
@@ -88,125 +89,129 @@ export function getCaip25PermissionsResponse(
  * @returns Accounts available for selection.
  */
 export function getFilteredAccounts(
-  accounts: MergedInternalAccount[],
-  requestedCaip25CaveatValue: Caip25CaveatValue,
+  accounts: {
+    address: CaipAccountAddress;
+    namespace: CaipNamespace;
+    reference: CaipReference;
+  }[],
+  requestedNamespaces: CaipNamespace[],
 ): {
   address: CaipAccountAddress;
   namespace: CaipNamespace;
   reference: CaipReference;
 }[] {
-  const requestedScopes = new Set([
-    ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
-    ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
-  ]);
-
-  const hasEipRequests = Array.from(requestedScopes).some(
-    (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
-  );
-
   const filteredAccounts = accounts.filter((account) => {
-    const hasUniversalEipScope =
-      hasEipRequests && account.scopes.includes('eip155:0');
-
-    if (hasUniversalEipScope) {
-      return true;
-    }
-    /*
-    [
-    {
-        "type": "solana:data-account",
-        "id": "705449e6-e9e4-41b0-a2ef-d56689fd6b6a",
-        "address": "43gdHDjZKnum4iZ2snLih2fu9FGWytHeFu9Fv2j91dCb",
-        "options": {
-            "scope": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-            "entropySource": "01JNSCFB61ZBXCHWCBT0CNZSHW",
-            "imported": false
-        },
-        "methods": [
-            "signAndSendTransaction",
-            "signTransaction",
-            "signMessage",
-            "signIn"
-        ],
-        "scopes": [
-            "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-            "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
-            "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
-        ],
-        "metadata": {
-            "name": "Solana Account 1",
-            "importTime": 1741642143176,
-            "keyring": {
-                "type": "Snap Keyring"
-            },
-            "snap": {
-                "id": "npm:@metamask/solana-wallet-snap",
-                "name": "Solana",
-                "enabled": true
-            },
-            "lastSelected": 1742928117271
-        },
-        "balance": "0",
-        "pinned": false,
-        "hidden": false,
-        "active": false
-    },
-    {
-        "type": "solana:data-account",
-        "id": "cd709c6e-4a32-454b-bfe7-02e26024d0b3",
-        "address": "BUDhihG2wwL7aCmnQyv5g7Mw4Rqo8oiEhgJVDdSdW9b4",
-        "options": {
-            "scope": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-            "entropySource": "01JNSCFB61ZBXCHWCBT0CNZSHW",
-            "imported": false
-        },
-        "methods": [
-            "signAndSendTransaction",
-            "signTransaction",
-            "signMessage",
-            "signIn"
-        ],
-        "scopes": [
-            "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-            "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
-            "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
-        ],
-        "metadata": {
-            "name": "Solana Account 2",
-            "importTime": 1741728982744,
-            "keyring": {
-                "type": "Snap Keyring"
-            },
-            "snap": {
-                "id": "npm:@metamask/solana-wallet-snap",
-                "name": "Solana",
-                "enabled": true
-            },
-            "lastSelected": 1742928115471
-        },
-        "balance": "0",
-        "pinned": false,
-        "hidden": false,
-        "active": false
-    }
-]
-    */
-
-    return account.scopes.some((accountScope) =>
-      requestedScopes.has(accountScope),
-    );
+    return requestedNamespaces.includes(account.namespace);
   });
 
-  return filteredAccounts.map((internalAccount: MergedInternalAccount) => {
-    const { namespace, reference } = parseCaipChainId(
-      internalAccount.scopes[0],
-    );
-    return {
-      address: internalAccount.address,
-      namespace,
-      reference,
-    };
-  });
+  return filteredAccounts;
+
+  //   const evmScopesAreRequested = Array.from(requestedScopes).some(
+  //     (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
+  //   );
+
+  //   const filteredAccounts = accounts.filter((account) => {
+  //     const hasUniversalEipScope =
+  //       hasEipRequests && account.scopes.includes('eip155:0');
+
+  //     if (hasUniversalEipScope) {
+  //       return true;
+  //     }
+  //     /*
+  //     [
+  //     {
+  //         "type": "solana:data-account",
+  //         "id": "705449e6-e9e4-41b0-a2ef-d56689fd6b6a",
+  //         "address": "43gdHDjZKnum4iZ2snLih2fu9FGWytHeFu9Fv2j91dCb",
+  //         "options": {
+  //             "scope": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  //             "entropySource": "01JNSCFB61ZBXCHWCBT0CNZSHW",
+  //             "imported": false
+  //         },
+  //         "methods": [
+  //             "signAndSendTransaction",
+  //             "signTransaction",
+  //             "signMessage",
+  //             "signIn"
+  //         ],
+  //         "scopes": [
+  //             "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  //             "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+  //             "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+  //         ],
+  //         "metadata": {
+  //             "name": "Solana Account 1",
+  //             "importTime": 1741642143176,
+  //             "keyring": {
+  //                 "type": "Snap Keyring"
+  //             },
+  //             "snap": {
+  //                 "id": "npm:@metamask/solana-wallet-snap",
+  //                 "name": "Solana",
+  //                 "enabled": true
+  //             },
+  //             "lastSelected": 1742928117271
+  //         },
+  //         "balance": "0",
+  //         "pinned": false,
+  //         "hidden": false,
+  //         "active": false
+  //     },
+  //     {
+  //         "type": "solana:data-account",
+  //         "id": "cd709c6e-4a32-454b-bfe7-02e26024d0b3",
+  //         "address": "BUDhihG2wwL7aCmnQyv5g7Mw4Rqo8oiEhgJVDdSdW9b4",
+  //         "options": {
+  //             "scope": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  //             "entropySource": "01JNSCFB61ZBXCHWCBT0CNZSHW",
+  //             "imported": false
+  //         },
+  //         "methods": [
+  //             "signAndSendTransaction",
+  //             "signTransaction",
+  //             "signMessage",
+  //             "signIn"
+  //         ],
+  //         "scopes": [
+  //             "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  //             "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+  //             "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+  //         ],
+  //         "metadata": {
+  //             "name": "Solana Account 2",
+  //             "importTime": 1741728982744,
+  //             "keyring": {
+  //                 "type": "Snap Keyring"
+  //             },
+  //             "snap": {
+  //                 "id": "npm:@metamask/solana-wallet-snap",
+  //                 "name": "Solana",
+  //                 "enabled": true
+  //             },
+  //             "lastSelected": 1742928115471
+  //         },
+  //         "balance": "0",
+  //         "pinned": false,
+  //         "hidden": false,
+  //         "active": false
+  //     }
+  // ]
+  //     */
+
+  //     return account.scopes.some((accountScope) =>
+  //       requestedScopes.has(accountScope),
+  //     );
+
+  // return filteredAccounts.map((internalAccount: MergedInternalAccount) => {
+  //   const { namespace, reference } = parseCaipChainId(
+  //     internalAccount.scopes[0],
+  //   );
+  //   return {
+  //     address: internalAccount.address,
+  //     namespace,
+  //     reference,
+  //   };
+  // });
 }
 
 /**
@@ -309,13 +314,13 @@ export function getFilteredNetworks(
   requestedCaip25CaveatValue: Caip25CaveatValue,
 ): Record<string, NetworkConfiguration> {
   // This ensures backwards compatability
-  if (
-    !requestedCaip25CaveatValue ||
-    (!requestedCaip25CaveatValue.requiredScopes &&
-      !requestedCaip25CaveatValue.optionalScopes)
-  ) {
-    return networks;
-  }
+  // if (
+  //   !requestedCaip25CaveatValue ||
+  //   (!requestedCaip25CaveatValue.requiredScopes &&
+  //     !requestedCaip25CaveatValue.optionalScopes)
+  // ) {
+  //   return networks;
+  // }
 
   const filteredNetworks: Record<string, NetworkConfiguration> = {};
   const allScopes = {
@@ -338,4 +343,49 @@ export function getFilteredNetworks(
   });
 
   return filteredNetworks;
+}
+
+// We need at least one default per requested namespace
+// if there are more explicitly requested accounts, use those instead
+// for that namespace
+export function getDefaultAccounts(
+  requestedNamespaces: CaipNamespace[],
+  supportedRequestedAccounts: {
+    address: CaipAccountAddress;
+    namespace: CaipNamespace;
+    reference: CaipReference;
+  }[],
+  allAccounts: {
+    address: CaipAccountAddress;
+    namespace: CaipNamespace;
+    reference: CaipReference;
+  }[],
+): CaipAccountId[] {
+  const defaultAccounts: {
+    address: CaipAccountAddress;
+    namespace: CaipNamespace;
+    reference: CaipReference;
+  }[] = [];
+
+  supportedRequestedAccounts.forEach((account) => {
+    if (requestedNamespaces.includes(account.namespace)) {
+      defaultAccounts.push(account);
+    }
+  });
+
+  requestedNamespaces.forEach((namespace) => {
+    if (!defaultAccounts.find((account) => account.namespace === namespace)) {
+      const defaultAccountForNamespace = allAccounts.find(
+        (account) => account.namespace === namespace,
+      );
+      if (defaultAccountForNamespace) {
+        defaultAccounts.push(defaultAccountForNamespace);
+      }
+    }
+  });
+
+  return defaultAccounts.map(
+    ({ address, namespace, reference }) =>
+      `${namespace}:${reference}:${address}` as CaipAccountId,
+  );
 }

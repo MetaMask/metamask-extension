@@ -2,7 +2,13 @@ import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
-import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
+import { generateCaip25Caveat, getUniqueArrayItems } from '@metamask/chain-agnostic-permission';
+import {
+  CaipAccountAddress,
+  CaipNamespace,
+  CaipReference,
+  parseCaipChainId,
+} from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -64,11 +70,9 @@ import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
   getFilteredAccounts,
-  getRequestedAccounts,
-  getFilteredNetworks,
-  getRequestedChainIds,
   getAllAccounts,
   getAllChainIds,
+  getDefaultAccounts,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -177,9 +181,29 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const accounts = useSelector(
     getUpdatedAndSortedAccounts,
   ) as MergedInternalAccount[];
+
+  const reformattedAccounts = accounts.map((account) => {
+    // I hope we can reliably use the first scope to determine the namespace
+    const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+    return {
+      address: account.address,
+      namespace,
+      reference,
+    };
+  });
+  const requestedNamespaces = getUniqueArrayItems([
+    ...Object.keys(requestedCaip25CaveatValue.requiredScopes).map((scope) => {
+      const scopeString = scope as `${CaipNamespace}:${CaipReference}`;
+      return parseCaipChainId(scopeString).namespace;
+    }),
+    ...Object.keys(requestedCaip25CaveatValue.optionalScopes).map((scope) => {
+      const scopeString = scope as `${CaipNamespace}:${CaipReference}`;
+      return parseCaipChainId(scopeString).namespace;
+    }),
+  ]);
   const filteredAccounts = getFilteredAccounts(
-    accounts,
-    requestedCaip25CaveatValue,
+    reformattedAccounts,
+    requestedNamespaces,
   );
 
   // This needs to be enhanced for new types
@@ -189,18 +213,24 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     ),
   );
 
-  const currentAccount = useSelector(getSelectedInternalAccount);
-  const currentAccountAddress = filteredAccounts.some(
-    (account) => account.address === currentAccount.address,
-  )
-    ? [currentAccount.address]
-    : [filteredAccounts[0]?.address].filter(Boolean);
+  // const currentAccount = useSelector(getSelectedInternalAccount);
+  // const currentAccountAddress = filteredAccounts.some(
+  //   (account) => account.address === currentAccount.address,
+  // )
+  //   ? [currentAccount.address]
+  //   : [filteredAccounts[0]?.address].filter(Boolean);
 
-  // We need a default per requested namespace
-  const defaultAccountsAddresses =
-    supportedRequestedAccounts.length > 0
-      ? supportedRequestedAccounts
-      : currentAccountAddress;
+  // We need at least one default per requested namespace
+  // const defaultAccountsAddresses =
+  //   supportedRequestedAccounts.length > 0
+  //     ? supportedRequestedAccounts
+  //     : currentAccountAddress;
+
+  const defaultAccountsAddresses = getDefaultAccounts(
+    requestedNamespaces,
+    supportedRequestedAccounts,
+    filteredAccounts,
+  );
 
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
@@ -223,7 +253,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   };
 
   const selectedAccounts = filteredAccounts.filter(
-    (account): account is MergedInternalAccount =>
+    (
+      account,
+    ): account is {
+      address: CaipAccountAddress;
+      namespace: CaipNamespace;
+      reference: CaipReference;
+    } =>
       selectedAccountAddresses.some((selectedAccountAddress) =>
         isEqualCaseInsensitive(selectedAccountAddress, account.address),
       ),
