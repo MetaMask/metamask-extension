@@ -20,7 +20,6 @@ import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-sig
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
-  isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
@@ -63,13 +62,11 @@ export async function validateRequestWithPPOM({
 
     const normalizedRequest = normalizePPOMRequest(request);
 
-    const ppomResponse = isSecurityAlertsAPIEnabled()
-      ? await validateWithAPI(ppomController, chainId, normalizedRequest)
-      : await validateWithController(
-          ppomController,
-          normalizedRequest,
-          chainId,
-        );
+    const ppomResponse = await validateWithAPI(
+      ppomController,
+      chainId,
+      normalizedRequest,
+    );
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
     await updateSecurityResponse(
