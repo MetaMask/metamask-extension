@@ -226,7 +226,8 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
-    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
+    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@21.0.0-preview-8a8331b2"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
