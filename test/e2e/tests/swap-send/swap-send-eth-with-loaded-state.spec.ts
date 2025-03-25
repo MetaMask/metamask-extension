@@ -1,19 +1,17 @@
 import { Suite } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   withFixtures,
 } from '../../helpers';
-import {
-  NATIVE_TOKEN_SYMBOL,
-  SwapSendPage,
-} from './swap-send-test-utils';
 import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import { MockttpServer } from 'mockttp';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
+
 const RECIPIENT_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
@@ -286,7 +284,10 @@ describe('Swap-Send ETH', function () {
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed('14.99994', 'ETH');
+          await homePage.check_expectedTokenBalanceIsDisplayed(
+            '14.99994',
+            'ETH',
+          );
 
           driver.summarizeErrorsAndExceptions();
         },

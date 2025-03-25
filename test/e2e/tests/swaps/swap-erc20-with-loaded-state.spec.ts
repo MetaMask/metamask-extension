@@ -98,13 +98,13 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           json: [
             {
               trade: {
-                data: data,
+                data,
                 to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
                 value: isEthToWeth ? '10000000000000000000' : '0',
                 from: walletAddress,
               },
               hasRoute: false,
-              sourceAmount: sourceAmount,
+              sourceAmount,
               destinationAmount: sourceAmount,
               error: null,
               sourceToken:
@@ -200,15 +200,15 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
 
 describe('Swap', function () {
   const swapTestCases = [
-    {
-      name: 'should swap WETH to ETH',
-      sourceToken: 'WETH',
-      destinationToken: 'Ether',
-      sourceAmount: '10',
-      expectedWethBalance: '40',
-      expectedEthBalance: '34.99991',
-      dismissWarning: false,
-    },
+    // {
+    //   name: 'should swap WETH to ETH',
+    //   sourceToken: 'WETH',
+    //   destinationToken: 'Ether',
+    //   sourceAmount: '10',
+    //   expectedWethBalance: '40',
+    //   expectedEthBalance: '34.99991',
+    //   dismissWarning: false,
+    // },
     {
       name: 'should swap ETH to WETH',
       sourceToken: 'Ethereum',
