@@ -230,6 +230,28 @@ export const getDefaultPreferencesControllerState =
     useExternalServices: true,
     // from core PreferencesController
     isMultiAccountBalancesEnabled: true,
+    showIncomingTransactions: {
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+    },
   });
 
 /**
@@ -399,6 +421,7 @@ const controllerMetadata = {
     anonymous: false,
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
+  showIncomingTransactions: { persist: true, anonymous: true },
   accountUpgradeDisabledChains: { persist: true, anonymous: false },
 };
 

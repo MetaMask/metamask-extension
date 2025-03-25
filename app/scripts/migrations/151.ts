@@ -38,5 +38,4 @@ function transformState(state: Record<string, unknown>) {
     | undefined;
 
   delete preferences?.incomingTransactionsPreferences;
-  delete preferences?.showIncomingTransactions;
 }
