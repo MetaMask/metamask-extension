@@ -1,14 +1,13 @@
-import React, { useEffect, useContext, useState, useCallback } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide, updateSlides } from '../../../store/actions';
+import { removeSlide } from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getSelectedAccountCachedBalance,
   getAppIsLoading,
-  getSlides,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
@@ -23,19 +22,13 @@ import {
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import {
+  useCarouselManagement,
+  ZERO_BALANCE,
+} from '../../../hooks/useCarouselManagement';
+import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
-import {
-  FUND_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  CARD_SLIDE,
-  CASH_SLIDE,
-  ZERO_BALANCE,
-  SWEEPSTAKES_SLIDE,
-} from './constants';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -46,7 +39,6 @@ export const AccountOverviewLayout = ({
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
-  const slides = useSelector(getSlides);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
@@ -57,38 +49,13 @@ export const AccountOverviewLayout = ({
   ///: END:ONLY_INCLUDE_IF
 
   const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const { slides } = useCarouselManagement({
+    hasZeroBalance,
+  });
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
-
-  // TODO: Add logic to show carousel for the duration April 9 - April 15
-  // const showSweepStakeslide = true;
-
-  useEffect(() => {
-    const fundSlide = {
-      ...FUND_SLIDE,
-      undismissable: hasZeroBalance,
-    };
-
-    const defaultSlides = [
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      BRIDGE_SLIDE,
-      ///: END:ONLY_INCLUDE_IF
-      SWEEPSTAKES_SLIDE,
-      CARD_SLIDE,
-      CASH_SLIDE,
-      SWEEPSTAKES_SLIDE,
-    ];
-    // Since this new banner is temporary, make sure it's rendered as the first banner
-    if (hasZeroBalance) {
-      defaultSlides.unshift(fundSlide);
-    } else {
-      defaultSlides.splice(2, 0, fundSlide);
-    }
-
-    dispatch(updateSlides(defaultSlides));
-  }, [hasZeroBalance]);
 
   const handleCarouselClick = (id: string) => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
