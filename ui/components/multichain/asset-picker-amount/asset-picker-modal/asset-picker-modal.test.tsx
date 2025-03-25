@@ -584,6 +584,23 @@ describe('AssetPickerModal token filtering', () => {
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
   });
 
+  it('should show selected token first', async () => {
+    renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        asset={{
+          address: 'NEWTOKEN',
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          symbol: 'USDT',
+          image: 'image.png',
+          type: AssetType.token,
+        }}
+      />,
+    );
+
+    expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
+  });
+
   it('should filter tokens by chain when multichain network is selected', async () => {
     renderWithProvider(
       <AssetPickerModal
