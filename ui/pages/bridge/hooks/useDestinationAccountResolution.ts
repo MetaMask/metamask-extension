@@ -1,5 +1,7 @@
 import { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+// eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
 import { DestinationAccount } from '../prepare/types';
 import {
@@ -9,19 +11,18 @@ import {
   initializeDomainSlice,
 } from '../../../ducks/domains';
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 
-interface UseDestinationAccountResolutionProps {
+type UseDestinationAccountResolutionProps = {
   searchQuery: string;
   isDestinationSolana: boolean;
   accounts: InternalAccount[];
-}
+};
 
-interface UseDestinationAccountResolutionResult {
+type UseDestinationAccountResolutionResult = {
   isValidAddress: boolean;
   isValidEnsName: boolean;
   externalAccount: DestinationAccount | null;
-}
+};
 
 export const useDestinationAccountResolution = ({
   searchQuery,
@@ -29,7 +30,7 @@ export const useDestinationAccountResolution = ({
   accounts,
 }: UseDestinationAccountResolutionProps): UseDestinationAccountResolutionResult => {
   const dispatch = useDispatch();
-  const domainResolutions = useSelector(getDomainResolutions) || [];
+  const domainResolutionsFromStore = useSelector(getDomainResolutions);
 
   // Initialize domain slice on mount
   useEffect(() => {
@@ -71,6 +72,8 @@ export const useDestinationAccountResolution = ({
 
   // Create an external account object if valid address is not in internal accounts
   const externalAccount = useMemo(() => {
+    const domainResolutions = domainResolutionsFromStore || [];
+
     if (!isValidAddress && !isValidEnsName) {
       return null;
     }
@@ -119,7 +122,13 @@ export const useDestinationAccountResolution = ({
     }
 
     return null;
-  }, [accounts, isValidAddress, isValidEnsName, searchQuery, domainResolutions]);
+  }, [
+    accounts,
+    isValidAddress,
+    isValidEnsName,
+    searchQuery,
+    domainResolutionsFromStore,
+  ]);
 
   return {
     isValidAddress,
