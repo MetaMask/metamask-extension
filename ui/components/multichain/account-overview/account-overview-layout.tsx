@@ -11,13 +11,13 @@ import {
 } from '@metamask-private/delegator-core-viem';
 import { type Address } from 'viem';
 import { sepolia } from 'viem/chains';
+import { SignTypedDataVersion } from '@metamask/keyring-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   addTransaction,
-  getNextNonce,
   newUnsignedTypedMessage,
   removeSlide,
   updateSlides,
-  upgradeHardwareAccount,
 } from '../../../store/actions';
 import { Carousel } from '..';
 import {
@@ -28,6 +28,7 @@ import {
   getSwapsDefaultToken,
   getSelectedInternalAccount,
   getInternalAccounts,
+  isHardwareWallet,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -58,9 +59,6 @@ import {
   CASH_SLIDE,
   ZERO_BALANCE,
 } from './constants';
-import { Json } from '@metamask/utils';
-import { SignTypedDataVersion } from '@metamask/keyring-controller';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -108,7 +106,7 @@ export const AccountOverviewLayout = ({
     }
 
     dispatch(updateSlides(defaultSlides));
-  }, [hasZeroBalance]);
+  }, [dispatch, hasZeroBalance]);
 
   const handleCarouselClick = (id: string) => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -188,6 +186,7 @@ export function UpgradeAccountButton() {
   const GATOR_7702_ADDRESS = '0xDC1C96531101926581CB1201338d698C072069B7';
   const account = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
+  const isHardware = useSelector(isHardwareWallet);
   const spender = accounts[0].address as `0x${string}`;
 
   console.debug('account', account);
@@ -304,7 +303,7 @@ export function UpgradeAccountButton() {
     ]);
   }, [account.address, spender]);
 
-  if (account.metadata.keyring.type !== 'Mock Hardware') {
+  if (!isHardware) {
     return null;
   }
 
