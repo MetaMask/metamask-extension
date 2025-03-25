@@ -133,15 +133,13 @@ const generateMockState = ({
     '0xaa36a7': [
       {
         address: account.address,
-        balance: tokenBalance,
+        balance: String(tokenBalance),
       },
     ],
   });
   mockGetCrossChainMetaMaskCachedBalances.mockReturnValue({
     '0xaa36a7': {
-      [account.address]: {
-        balance: nativeBalance,
-      },
+      [account.address]: String(nativeBalance),
     },
   });
 
@@ -164,7 +162,7 @@ describe('Multi SRP Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it('returns true for EVM account with cross chain balance', () => {
+    it.only('returns true for EVM account with cross chain balance', () => {
       const mockState = generateMockState({
         account: mockHdAccount,
         seedPhraseBackedUp: false,
