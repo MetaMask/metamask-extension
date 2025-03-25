@@ -133,26 +133,27 @@ async function mockGetTxStatus(mockServer: Mockttp) {
   });
 }
 
-async function mockLineaTokens(mockServer: Mockttp) {
+async function mockArbitrumTokens(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://bridge.dev-api.cx.metamask.io/getTokens`)
-    .withQuery({ chainId: 59144 })
+    .withQuery({ chainId: '42161' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: [
           {
             address: '0x0000000000000000000000000000000000000000',
-            assetId: 'eip155:59144/slip44:60',
+            assetId: 'eip155:42161/slip44:60',
             symbol: 'ETH',
             decimals: 18,
             name: 'Ether',
             coingeckoId: 'ethereum',
             aggregators: [],
             iconUrl:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/native/60.png',
             metadata: {
               honeypotStatus: {},
+              isContractVerified: false,
               erc20Permit: false,
               description: {
                 en: 'Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.',
@@ -160,21 +161,21 @@ async function mockLineaTokens(mockServer: Mockttp) {
                 zh: 'Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。',
                 ja: 'イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。',
               },
-              createdAt: '2023-10-31T21:55:26.652Z',
+              createdAt: '2023-10-31T21:35:04.606Z',
             },
-            chainId: 59144,
+            chainId: 42161,
           },
           {
-            address: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
+            address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
             assetId:
-              'eip155:59144/erc20:0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
-            symbol: 'WETH',
-            decimals: 18,
-            name: 'Wrapped Ether',
-            coingeckoId: 'wrapped-ether-linea',
+              'eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USDC',
+            coingeckoId: 'usd-coin',
             aggregators: [
-              'lineaTeam',
               'coinGecko',
+              'traderJoe',
               'oneInch',
               'liFi',
               'xSwap',
@@ -183,53 +184,21 @@ async function mockLineaTokens(mockServer: Mockttp) {
               'squid',
             ],
             iconUrl:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f.png',
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/erc20/0xaf88d065e77c8cc2239327c5edb3a432268e5831.png',
             metadata: {
-              honeypotStatus: {
-                goPlus: false,
-              },
+              honeypotStatus: {},
               isContractVerified: true,
               storage: {
-                balance: 3,
-                approval: 4,
+                balance: 9,
+                approval: 10,
               },
-              erc20Permit: false,
-              createdAt: '2023-10-31T21:55:26.652Z',
+              erc20Permit: true,
+              description: {
+                en: 'USDC is a fully collateralized US dollar stablecoin. USDC is the bridge between dollars and trading on cryptocurrency exchanges. The technology behind CENTRE makes it possible to exchange value between people, businesses and financial institutions just like email between mail services and texts between SMS providers. We believe by removing artificial economic borders, we can create a more inclusive global economy.',
+              },
+              createdAt: '2023-10-31T21:35:04.606Z',
             },
-            chainId: 59144,
-          },
-          {
-            address: '0xA219439258ca9da29E9Cc4cE5596924745e12B93',
-            assetId:
-              'eip155:59144/erc20:0xa219439258ca9da29e9cc4ce5596924745e12b93',
-            symbol: 'USDT',
-            decimals: 6,
-            name: 'Tether USD',
-            coingeckoId: 'bridged-tether-linea',
-            aggregators: [
-              'lineaTeam',
-              'coinGecko',
-              'oneInch',
-              'liFi',
-              'xSwap',
-              'rubic',
-              'squid',
-            ],
-            iconUrl:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0xa219439258ca9da29e9cc4ce5596924745e12b93.png',
-            metadata: {
-              honeypotStatus: {
-                goPlus: false,
-              },
-              isContractVerified: true,
-              storage: {
-                balance: 51,
-                approval: 52,
-              },
-              erc20Permit: false,
-              createdAt: '2023-10-31T21:55:26.652Z',
-            },
-            chainId: 59144,
+            chainId: 42161,
           },
         ],
       };
@@ -271,7 +240,7 @@ export const getBridgeFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, featureFlags),
       await mockGetTxStatus(mockServer),
-      await mockLineaTokens(mockServer),
+      await mockArbitrumTokens(mockServer),
       await mockPortfolioPage(mockServer),
     ],
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,

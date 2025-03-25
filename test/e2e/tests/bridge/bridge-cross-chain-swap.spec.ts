@@ -30,9 +30,9 @@ describe('Bridge tests', function (this: Suite) {
           {
             amount: '10',
             tokenFrom: 'DAI',
-            tokenTo: 'USDT',
+            tokenTo: 'USDC',
             fromChain: 'Ethereum',
-            toChain: 'Linea',
+            toChain: 'Arbitrum One',
             unapproved: true,
           },
           2,
