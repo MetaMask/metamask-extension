@@ -107,7 +107,7 @@ describe('asset-utils', () => {
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
         assetId: solanaAssetId,
-        address: solanaAssetId,
+        address: solanaAddress,
         chainId: solanaChainId,
       });
     });
