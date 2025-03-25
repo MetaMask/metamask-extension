@@ -79,10 +79,6 @@ export const INFURA_CHAINS_WITH_FAILOVERS: Map<
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
-  console.log(
-    '[149] originalVersionedData.data.NetworkController BEFORE',
-    originalVersionedData.data.NetworkController,
-  );
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
 
@@ -100,11 +96,6 @@ export async function migrate(
     // the migrator tests for work
     versionedData.data = originalVersionedData.data;
   }
-
-  console.log(
-    '[149] originalVersionedData.data.NetworkController AFTER',
-    versionedData.data.NetworkController,
-  );
 
   return versionedData;
 }
