@@ -150,11 +150,10 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? '',
+      image: token.iconUrl ?? token.icon ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: isSolanaChainId(chainId) ? token.assetId : token.address,
     };
   };
 
@@ -198,7 +197,7 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            if (isNativeAddress(token.address)) {
+            if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
