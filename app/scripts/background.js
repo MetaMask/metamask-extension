@@ -360,9 +360,13 @@ function maybeDetectPhishing(theController) {
 }
 
 // These are set after initialization
+/** @type {ConnectWindowPostMessage} */
 let connectWindowPostMessage;
+/** @type {ConnectExternallyConnectable} */
 let connectExternallyConnectable;
+/** @type {ConnectEip1193} */
 let connectEip1193;
+/** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
 browser.runtime.onConnect.addListener(async (...args) => {
@@ -864,6 +868,7 @@ export function setupController(
    * Connects a WindowPostMessage Port to the MetaMask controller.
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    *
+   * @callback ConnectWindowPostMessage
    * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
    */
   connectWindowPostMessage = (remotePort) => {
@@ -995,6 +1000,7 @@ export function setupController(
    * Connects a externally_connecatable Port to the MetaMask controller.
    * This method identifies dapp clients and connects them differently from extension clients.
    *
+   * @callback ConnectExternallyConnectable
    * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
    */
   connectExternallyConnectable = (remotePort) => {
@@ -1019,6 +1025,7 @@ export function setupController(
   /**
    * Connects a Duplexstream to the MetaMask controller EIP-1193 API (via a multiplexed duplex stream).
    *
+   * @callback ConnectEip1193
    * @param {DuplexStream} connectionStream - The duplex stream.
    * @param {chrome.runtime.MessageSender} sender - The remote port sender.
    */
@@ -1032,6 +1039,7 @@ export function setupController(
   /**
    * Connects a DuplexStream to the MetaMask controller Caip Multichain API.
    *
+   * @callback ConnectCaipMultichain
    * @param {DuplexStream} connectionStream - The duplex stream.
    * @param {chrome.runtime.MessageSender} sender - The remote port sender.
    */
