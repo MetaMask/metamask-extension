@@ -1,3 +1,8 @@
+import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
+import { GasFeeToken } from '@metamask/transaction-controller';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import {
   NATIVE_TOKEN_ADDRESS,
@@ -5,11 +10,6 @@ import {
   useGasFeeToken,
   useSelectedGasFeeToken,
 } from './useGasFeeToken';
-import { Hex } from '@metamask/utils';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
-import { toHex } from '@metamask/controller-utils';
-import { GasFeeToken } from '@metamask/transaction-controller';
 
 const FROM_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
