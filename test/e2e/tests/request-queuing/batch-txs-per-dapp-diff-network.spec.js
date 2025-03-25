@@ -102,7 +102,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
           text: 'Reject all',
           tag: 'button',
         });
