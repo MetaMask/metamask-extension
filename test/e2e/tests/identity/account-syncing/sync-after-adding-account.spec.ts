@@ -8,7 +8,10 @@ import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -18,7 +21,10 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
-import { waitUntilSyncedAccountsNumberEquals } from './helpers';
+import {
+  prepareEventsWatcher,
+  waitUntilSyncedAccountsNumberEquals,
+} from './helpers';
 
 describe('Account syncing - Add Account', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -85,15 +91,26 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[1].n,
           );
+
+          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+            {
+              driver,
+              userStorageMockttpController,
+            },
+          );
+
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: customNameAccount3,
           });
-          // Wait for the account to be synced
+
+          // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(3, {
             driver,
             userStorageMockttpController,
           });
+          await waitUntilEventCallsNumberEquals(2);
         },
       );
 

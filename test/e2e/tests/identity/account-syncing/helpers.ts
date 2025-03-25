@@ -1,5 +1,8 @@
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { Driver } from '../../../webdriver/driver';
 
 export type UserStorageAccount = {
@@ -16,6 +19,38 @@ export type UserStorageAccount = {
   n: string;
   /** the nameLastUpdatedAt timestamp 'nlu' of the account */
   nlu?: number;
+};
+
+export const prepareEventsWatcher = (
+  event: UserStorageMockttpControllerEvents,
+  options: {
+    driver: Driver;
+    userStorageMockttpController: UserStorageMockttpController;
+    timeout?: number;
+    interval?: number;
+  },
+): {
+  waitUntilEventCallsNumberEquals: (expectedNumber: number) => Promise<void>;
+} => {
+  const {
+    driver,
+    userStorageMockttpController,
+    timeout = 30000,
+    interval = 1000,
+  } = options;
+
+  let counter = 0;
+  userStorageMockttpController.eventEmitter.on(event, () => {
+    counter += 1;
+  });
+
+  const waitUntilEventCallsNumberEquals = async (expectedNumber: number) => {
+    await driver.waitUntil(async () => counter === expectedNumber, {
+      timeout,
+      interval,
+    });
+  };
+  return { waitUntilEventCallsNumberEquals };
 };
 
 export const waitUntilSyncedAccountsNumberEquals = async (

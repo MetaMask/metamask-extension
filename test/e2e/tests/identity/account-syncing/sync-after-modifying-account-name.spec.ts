@@ -3,7 +3,10 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
@@ -13,6 +16,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
+import { prepareEventsWatcher } from './helpers';
 
 describe('Account syncing - Rename Accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -82,7 +86,19 @@ describe('Account syncing - Rename Accounts', function () {
           );
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
+
+          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+            {
+              driver,
+              userStorageMockttpController,
+            },
+          );
+
           await accountDetailsModal.changeAccountLabel(accountOneNewName);
+
+          // Wait for the account name to be synced
+          await waitUntilEventCallsNumberEquals(1);
         },
       );
 

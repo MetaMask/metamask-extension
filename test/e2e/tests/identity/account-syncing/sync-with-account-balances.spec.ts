@@ -7,7 +7,10 @@ import {
   IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
 import { ACCOUNT_TYPE } from '../../../constants';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
@@ -17,7 +20,10 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
-import { waitUntilSyncedAccountsNumberEquals } from './helpers';
+import {
+  prepareEventsWatcher,
+  waitUntilSyncedAccountsNumberEquals,
+} from './helpers';
 
 describe('Account syncing - User already has balances on multiple accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -200,7 +206,19 @@ describe('Account syncing - User already has balances on multiple accounts', fun
           await accountListPage.openAccountDetailsModal('Account 6');
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
+
+          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+            {
+              driver,
+              userStorageMockttpController,
+            },
+          );
+
           await accountDetailsModal.changeAccountLabel('My Renamed Account 6');
+
+          // Wait for the account name to be synced
+          await waitUntilEventCallsNumberEquals(1);
         },
       );
 

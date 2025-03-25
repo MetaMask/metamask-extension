@@ -5,7 +5,10 @@ import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
 import { IDENTITY_TEAM_PASSWORD } from '../constants';
-import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -15,7 +18,10 @@ import {
   completeNewWalletFlowIdentity,
   completeOnboardFlowIdentity,
 } from '../flows';
-import { waitUntilSyncedAccountsNumberEquals } from './helpers';
+import {
+  prepareEventsWatcher,
+  waitUntilSyncedAccountsNumberEquals,
+} from './helpers';
 
 describe('Account syncing - New User', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -59,16 +65,25 @@ describe('Account syncing - New User', function () {
           );
 
           // Add a second account
+          const { waitUntilEventCallsNumberEquals } = prepareEventsWatcher(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+            {
+              driver,
+              userStorageMockttpController,
+            },
+          );
+
           await accountListPage.openAccountOptionsMenu();
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName: secondAccountName,
           });
-          // Wait for the account to be synced
+          // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(2, {
             driver,
             userStorageMockttpController,
           });
+          await waitUntilEventCallsNumberEquals(2);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
