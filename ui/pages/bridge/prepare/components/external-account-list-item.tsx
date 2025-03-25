@@ -79,7 +79,12 @@ export const ExternalAccountListItem: React.FC<
       </Box>
 
       {isEnsName && (
-        <Tag label={t('externalAccount')} paddingLeft={2} paddingRight={2} />
+        <Tag
+          label={t('externalAccount')}
+          paddingLeft={2}
+          paddingRight={2}
+          labelProps={{ variant: TextVariant.bodyXs }}
+        />
       )}
     </Box>
   );
