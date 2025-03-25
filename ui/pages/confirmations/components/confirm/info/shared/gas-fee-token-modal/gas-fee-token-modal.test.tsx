@@ -1,13 +1,13 @@
 import React from 'react';
 
+import { GasFeeToken } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
-import { GasFeeTokenModal } from './gas-fee-token-modal';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { GasFeeToken } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
@@ -35,11 +35,15 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   tokenAddress: '0xdef',
 };
 
-const store = configureStore(
-  getMockConfirmStateForTransaction(
+function getState({
+  noSelectedGasFeeToken,
+}: { noSelectedGasFeeToken?: boolean } = {}) {
+  return getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK],
-      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      selectedGasFeeToken: noSelectedGasFeeToken
+        ? undefined
+        : GAS_FEE_TOKEN_MOCK.tokenAddress,
     }),
     {
       metamask: {
@@ -48,8 +52,10 @@ const store = configureStore(
         },
       },
     },
-  ),
-);
+  );
+}
+
+const store = configureStore(getState());
 
 describe('GasFeeTokenModal', () => {
   it('renders multiple list items', () => {
@@ -62,10 +68,30 @@ describe('GasFeeTokenModal', () => {
     expect(result.getByText(GAS_FEE_TOKEN_2_MOCK.symbol)).toBeInTheDocument();
   });
 
+  it('renders native list item', () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      store,
+    );
+
+    expect(result.getByText('0.000066 ETH')).toBeInTheDocument();
+  });
+
   it('selects token matching selectedGasFeeToken', () => {
     const result = renderWithConfirmContextProvider(
       <GasFeeTokenModal />,
       store,
+    );
+
+    expect(result.queryAllByTestId('gas-fee-token-list-item')[1]).toHaveClass(
+      'gas-fee-token-list-item--selected',
+    );
+  });
+
+  it('selects native token if no selectedGasFeeToken', () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(getState({ noSelectedGasFeeToken: true })),
     );
 
     expect(result.queryAllByTestId('gas-fee-token-list-item')[0]).toHaveClass(
