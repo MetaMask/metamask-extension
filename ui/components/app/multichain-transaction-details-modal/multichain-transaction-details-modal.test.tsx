@@ -195,20 +195,23 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(['confirmed', 'pending', 'failed'] as const)(
+  it.each([
+    [TransactionStatus.Confirmed, 'Confirmed'],
+    [TransactionStatus.Unconfirmed, 'Pending'],
+    [TransactionStatus.Failed, 'Failed'],
+    [TransactionStatus.Submitted, 'Submitted'],
+  ])(
     'handles different transaction status: %s',
-    (status: string) => {
+    (status: TransactionStatus, expectedLabel: string) => {
       const propsWithStatus = {
         ...mockProps,
         transaction: {
           ...mockTransaction,
-          status: status as TransactionStatus,
+          status,
         },
       };
       renderComponent(propsWithStatus);
-      expect(
-        screen.getByText(status.charAt(0).toUpperCase() + status.slice(1)),
-      ).toBeInTheDocument();
+      expect(screen.getByText(expectedLabel)).toBeInTheDocument();
     },
   );
 
@@ -218,7 +221,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/tx/${txId}`,
+      `https://mempool.space/tx/${txId}`,
     );
   });
 
@@ -228,7 +231,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/testnet/tx/${txId}`,
+      `https://mempool.space/testnet/tx/${txId}`,
     );
   });
 
@@ -275,7 +278,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/address/${address}`,
+      `https://mempool.space/address/${address}`,
     );
   });
 
@@ -284,7 +287,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/testnet/address/${address}`,
+      `https://mempool.space/testnet/address/${address}`,
     );
   });
 

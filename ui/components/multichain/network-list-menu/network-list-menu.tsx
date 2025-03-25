@@ -67,6 +67,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
   getIsPortfolioDiscoverButtonEnabled,
+  getAllChainsToPoll,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -175,6 +176,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
+
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
@@ -300,7 +303,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     dispatch(setActiveNetwork(networkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-    dispatch(detectNfts());
+    dispatch(detectNfts(allChainIds));
 
     dispatch(toggleNetworkMenu());
 
@@ -537,9 +540,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   marginRight={4}
                   borderRadius={BorderRadius.LG}
                   padding={4}
-                  marginBottom={4}
                   marginTop={2}
-                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  gap={4}
+                  backgroundColor={BackgroundColor.backgroundMuted}
                   startAccessory={
                     <Box
                       display={Display.Flex}
