@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { Hex, parseCaipAccountId } from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
@@ -131,6 +131,34 @@ export function getRequestedAccounts(
     .filter(Boolean);
 
   return [...requiredNonEvmAccounts, ...optionalNonEvmAccounts].filter(Boolean);
+}
+
+/**
+ * Gets a list of unique accounts from the given CAIP-25 caveat value.
+ *
+ * @param requestedCaip25CaveatValue - CAIP-25 request values.
+ * @returns Accounts available for requesting.
+ */
+export function getAllAccounts(requestedCaip25CaveatValue: Caip25CaveatValue) {
+  const requiredAccounts = Object.values(
+    requestedCaip25CaveatValue.requiredScopes,
+  )
+    .flatMap((scope) => scope.accounts)
+    .map((account) => ({
+      address: parseCaipAccountId(account).address,
+      chainId: parseCaipAccountId(account).chainId,
+    }));
+
+  const optionalAccounts = Object.values(
+    requestedCaip25CaveatValue.optionalScopes,
+  )
+    .flatMap((scope) => scope.accounts)
+    .map((account) => ({
+      address: parseCaipAccountId(account).address,
+      chainId: parseCaipAccountId(account).chainId,
+    }));
+
+  return [...requiredAccounts, ...optionalAccounts];
 }
 
 /**

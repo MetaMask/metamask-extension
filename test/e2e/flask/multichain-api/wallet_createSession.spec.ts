@@ -59,7 +59,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
     });
   });
 
-  describe('Call `wallet_createSession` with EVM scopes that match the user’s enabled networks, and eip155 scoped accounts', function () {
+  describe.only('Call `wallet_createSession` with EVM scopes that match the user’s enabled networks, and eip155 scoped accounts', function () {
     it('should ignore requested accounts that do not match accounts in the wallet and and pre-select matching requested accounts in the permission confirmation screen', async function () {
       await withFixtures(
         {

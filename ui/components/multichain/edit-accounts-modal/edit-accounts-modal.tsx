@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -39,9 +40,9 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 
 type EditAccountsModalProps = {
   accounts: MergedInternalAccount[];
-  defaultSelectedAccountAddresses: string[];
+  defaultSelectedAccountAddresses: CaipAccountId[];
   onClose: () => void;
-  onSubmit: (addresses: string[]) => void;
+  onSubmit: (addresses: CaipAccountId[]) => void;
 };
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({

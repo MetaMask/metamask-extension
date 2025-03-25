@@ -193,6 +193,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     defaultAccountsAddresses,
   );
 
+  // TODO accounts should be CaipAccountId[] now
   const onConfirm = () => {
     const _request = {
       ...request,
