@@ -130,11 +130,12 @@ const generateMockState = ({
   };
 
   mockGetSelectedAccountTokensAcrossChains.mockReturnValue({
-    '0xaa36a7': {
-      [account.address]: {
+    '0xaa36a7': [
+      {
+        address: account.address,
         balance: tokenBalance,
       },
-    },
+    ],
   });
   mockGetCrossChainMetaMaskCachedBalances.mockReturnValue({
     '0xaa36a7': {

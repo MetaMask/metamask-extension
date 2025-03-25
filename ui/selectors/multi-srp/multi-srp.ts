@@ -9,24 +9,18 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-
-type AccountInfo = {
-  address: string;
-  balance: string;
-};
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 type AccountsByChainId = {
   [chainId: string]: {
-    [address: string]: AccountInfo;
+    [address: string]: string;
   };
 };
 
 type TokensByChainId = {
   [chainId: string]: {
-    [address: string]: {
-      balance: number;
-    };
-  };
+    balance: string;
+  }[];
 };
 
 const isPrimaryHdOrFirstPartySnapAccount = createDeepEqualSelector(
@@ -65,7 +59,7 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
   (state, account) => isPrimaryHdOrFirstPartySnapAccount(state, account),
   (
     state,
-    account,
+    account: InternalAccount,
     tokens: TokensByChainId,
     crossChainBalances: AccountsByChainId,
     aggregatedBalance,
@@ -85,16 +79,14 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
     if (isEvmAccountType(account.type)) {
       hasBalance =
         Object.values(tokens).some((chains) => {
-          return (
-            chains?.[account.address as keyof typeof chains]?.balance &&
-            Number(chains?.[account.address as keyof typeof chains]?.balance) >
-              0
+          return chains.some(
+            (chain) => chain.balance && parseInt(chain.balance, 16) > 0,
           );
         }) ||
         Object.values(crossChainBalances).some((chain) => {
           return (
-            chain?.[account.address as keyof typeof chain]?.balance &&
-            Number(chain?.[account.address as keyof typeof chain]?.balance) > 0
+            chain?.[account.address as keyof typeof chain] &&
+            parseInt(chain?.[account.address as keyof typeof chain], 16) > 0
           );
         });
     } else {
