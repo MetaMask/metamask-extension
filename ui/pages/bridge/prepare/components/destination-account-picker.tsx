@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   TextField,
@@ -32,6 +32,7 @@ import {
   getDomainResolutions,
   lookupDomainName,
   resetDomainResolution,
+  initializeDomainSlice,
 } from '../../../../ducks/domains';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
@@ -53,6 +54,11 @@ export const DestinationAccountPicker = ({
   const accounts = useSelector(getInternalAccounts);
   const dispatch = useDispatch();
   const domainResolutions = useSelector(getDomainResolutions) || [];
+
+  // Initialize domain slice on mount
+  useEffect(() => {
+    dispatch(initializeDomainSlice());
+  }, [dispatch]);
 
   // Check if search query is a valid address
   const isValidAddress = useMemo(() => {
@@ -79,7 +85,7 @@ export const DestinationAccountPicker = ({
   }, [searchQuery, isDestinationSolana]);
 
   // Lookup ENS name when we detect a valid ENS name
-  React.useEffect(() => {
+  useEffect(() => {
     if (isValidEnsName) {
       dispatch(lookupDomainName(searchQuery.trim()));
     } else {
@@ -108,9 +114,9 @@ export const DestinationAccountPicker = ({
       }
 
       return {
-        address: resolvedAddress, // Use the resolved ETH address
+        address: resolvedAddress,
         metadata: {
-          name: ensName, // Keep the ENS name for display
+          name: ensName,
         },
         isExternal: true,
       };
@@ -130,7 +136,7 @@ export const DestinationAccountPicker = ({
       return {
         address,
         metadata: {
-          name: `${address.slice(0, 6)}...${address.slice(-4)}`,
+          name: address,
         },
         isExternal: true,
       };
