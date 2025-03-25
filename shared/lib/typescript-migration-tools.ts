@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Type helper that checks if TWidened is an element-wise widening
  * of the elements in TOriginal
@@ -45,8 +46,7 @@ type IsWideningOf<
  * const takesString = tsMigrateWidenSignature<[string]>()(takesHex);
  *
  * takesString('a string'); // No type error, even though the original function expects `0x${string}`
- *
- * @template TWidened The widened parameter types as a tuple
+ * @template TWidened - The widened parameter types as a tuple
  * @returns A function that accepts the original function and returns it with widened parameter types
  */
 export function tsMigrateWidenSignature<TWidened extends any[]>() {
