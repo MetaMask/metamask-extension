@@ -74,11 +74,13 @@ type AssetMetadata = {
  *
  * @param address - The address of the token
  * @param chainId - The chainId of the token
+ * @param abortSignal - The abort signal for the fetch request
  * @returns The metadata for the token
  */
 export const fetchAssetMetadata = async (
   address: string | CaipAssetType | Hex,
   chainId: Hex | CaipChainId,
+  abortSignal?: AbortSignal,
 ) => {
   const chainIdInCaip = isCaipChainId(chainId)
     ? chainId
@@ -96,6 +98,7 @@ export const fetchAssetMetadata = async (
       fetchOptions: {
         method: 'GET',
         headers: { 'X-Client-Id': 'extension' },
+        signal: abortSignal,
       },
       cacheOptions: {
         cacheRefreshTime: MINUTE,

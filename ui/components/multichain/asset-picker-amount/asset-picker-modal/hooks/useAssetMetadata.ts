@@ -13,12 +13,14 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
  *
  * @param searchQuery - The search query to fetch metadata for
  * @param shouldFetchMetadata - Whether to fetch metadata
+ * @param abortControllerRef - The abort controller ref to use for the fetch request
  * @param chainId - The chain id to fetch metadata for
  * @returns The asset metadata
  */
 export const useAssetMetadata = (
   searchQuery: string,
   shouldFetchMetadata: boolean,
+  abortControllerRef: React.MutableRefObject<AbortController | null>,
   chainId?: Hex | CaipChainId,
 ) => {
   const allowExternalServices = useSelector(getUseExternalServices);
@@ -44,11 +46,15 @@ export const useAssetMetadata = (
     const trimmedSearchQuery = searchQuery.trim();
     if (
       allowExternalServices &&
-      chainId &&
       shouldFetchMetadata &&
-      trimmedSearchQuery.length > 0
+      trimmedSearchQuery.length > 30
     ) {
-      const metadata = await fetchAssetMetadata(trimmedSearchQuery, chainId);
+      abortControllerRef.current = new AbortController();
+      const metadata = await fetchAssetMetadata(
+        trimmedSearchQuery,
+        chainId,
+        abortControllerRef.current.signal,
+      );
 
       if (metadata) {
         return {
