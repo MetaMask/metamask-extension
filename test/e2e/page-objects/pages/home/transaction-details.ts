@@ -55,7 +55,7 @@ class TransactionDetailsPage {
 
   async check_transactionFromToLink(fromToAddress: string): Promise<void> {
     await this.driver.waitForSelector(
-      By.css(`a[href='${this.solanaExplorerUrl}/address/${fromToAddress}']`),
+      By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
     );
   }
 
