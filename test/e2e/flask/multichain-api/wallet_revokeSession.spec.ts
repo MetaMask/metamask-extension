@@ -50,10 +50,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           'Should have non-empty session scopes value before calling `wallet_revokeSession`',
         );
 
-        await driver.clickElement({
-          text: 'wallet_revokeSession',
-          tag: 'span',
-        });
+        await testDapp.revokeSession();
 
         const parsedResult = await testDapp.getSession();
         const resultSessionScopes = parsedResult.sessionScopes;
@@ -94,7 +91,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
-        await driver.clickElement('#revoke-session-btn');
+        await testDapp.revokeSession();
 
         for (const scope of GANACHE_SCOPES) {
           const request = {

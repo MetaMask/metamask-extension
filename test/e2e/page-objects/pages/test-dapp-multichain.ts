@@ -22,6 +22,8 @@ class TestDappMultichain {
 
   private readonly walletGetSessionButton = '#get-session-btn';
 
+  private readonly walletRevokeSessionButton = '#revoke-session-btn';
+
   private readonly resultSummary = '.result-summary';
 
   constructor(driver: Driver) {
@@ -60,6 +62,10 @@ class TestDappMultichain {
 
   async clickWalletGetSessionButton() {
     await this.driver.clickElement(this.walletGetSessionButton);
+  }
+
+  async clickWalletRevokeSessionButton() {
+    await this.driver.clickElement(this.walletRevokeSessionButton);
   }
 
   async fillExtensionIdInput(extensionId: string) {
@@ -150,6 +156,13 @@ class TestDappMultichain {
     );
     return JSON.parse(await getSessionRawResult.getText());
   }
+
+  /**
+   * Revokes permitted session.
+   */
+    async revokeSession(): Promise<void> {
+      this.clickWalletRevokeSessionButton();
+    }
 }
 
 export default TestDappMultichain;
