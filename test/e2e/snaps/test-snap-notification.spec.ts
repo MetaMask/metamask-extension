@@ -102,7 +102,7 @@ describe('Test Snap Notification', function () {
 
 async function validateExpandedViewNotification(driver: Driver) {
   console.log('Validating expanded view notification');
-  const element = await driver.findElement('.multichain-page__inner-container');
+  const element = await driver.findElement('[data-testid="multichain-page"]');
   assert.equal((await element.getAttribute('class')).includes('-full'), true);
 }
 
@@ -125,7 +125,7 @@ async function validateNotificationDetails(driver: Driver) {
   });
 
   await driver.waitForSelector({
-    css: '.snap-ui-markdown__text',
+    css: '[data-testid="snap-ui-markdown-text"]',
     text: 'Hello from MetaMask, click here for an expanded view!',
   });
 }
