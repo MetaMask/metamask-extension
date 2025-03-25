@@ -59,6 +59,14 @@ class SwapPage {
     await this.driver.clickElement(this.swapButton);
     await this.driver.clickElement(this.closeButton);
   }
+
+  async dismissManualTokenWarning(): Promise<void> {
+    console.log('Dismiss manual token warning');
+    await this.driver.clickElement({
+      text: 'Continue swapping',
+      tag: 'button',
+    });
+  }
 }
 
 export default SwapPage;

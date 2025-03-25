@@ -1,4 +1,4 @@
-import { MockttpServer } from 'mockttp';
+import { MockttpServer, CompletedRequest } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -75,124 +75,240 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback((request: CompletedRequest) => {
+        const url = new URL(request.url);
+        const sourceToken = url.searchParams.get('sourceToken')?.toLowerCase();
+        const destinationToken = url.searchParams
+          .get('destinationToken')
+          ?.toLowerCase();
+        const walletAddress =
+          url.searchParams.get('walletAddress') ||
+          '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+        const sourceAmount = url.searchParams.get('sourceAmount');
+
+        const isEthToWeth =
+          sourceToken === '0x0000000000000000000000000000000000000000' &&
+          destinationToken === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+
+        const data = isEthToWeth
+          ? '0xd0e30db0'
+          : '0x2e1a7d4d0000000000000000000000000000000000000000000000008ac7230489e80000';
+        const response = {
+          statusCode: 200,
+          json: [
+            {
+              trade: {
+                data: data,
+                to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                value: isEthToWeth ? '10000000000000000000' : '0',
+                from: walletAddress,
+              },
+              hasRoute: false,
+              sourceAmount: sourceAmount,
+              destinationAmount: sourceAmount,
+              error: null,
+              sourceToken:
+                sourceToken || '0x0000000000000000000000000000000000000000',
+              destinationToken:
+                destinationToken ||
+                '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              maxGas: 300000,
+              averageGas: 280000,
+              estimatedRefund: 0,
+              isGasIncludedTrade: false,
+              approvalNeeded: null,
+              fetchTime: 27,
+              aggregator: 'wrappedNative',
+              aggType: 'CONTRACT',
+              fee: 0,
+              quoteRefreshSeconds: 30,
+              gasMultiplier: 1.1,
+              sourceTokenRate: 1,
+              destinationTokenRate: 1.001552079142939,
+              priceSlippage: {
+                ratio: 1.0005795645538318,
+                calculationError: '',
+                bucket: 'low',
+                sourceAmountInUSD: 20705.2,
+                destinationAmountInUSD: 20693.2,
+                sourceAmountInNativeCurrency: 10,
+                destinationAmountInNativeCurrency: 10.01552079142939,
+                sourceAmountInETH: 10,
+                destinationAmountInETH: 10.01552079142939,
+              },
+            },
+          ],
+        };
+        return response;
+      }),
+
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
-        json: [
-          {
-            trade: {
-              data: '0x2e1a7d4d0000000000000000000000000000000000000000000000008ac7230489e80000',
-              to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-              value: '0',
-              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            },
-            hasRoute: false,
-            sourceAmount: '10000000000000000000',
-            destinationAmount: '10000000000000000000',
-            error: null,
-            sourceToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            destinationToken: '0x0000000000000000000000000000000000000000',
-            maxGas: 300000,
-            averageGas: 280000,
-            estimatedRefund: 0,
-            isGasIncludedTrade: false,
-            approvalNeeded: null,
-            fetchTime: 63,
-            aggregator: 'wrappedNative',
-            aggType: 'CONTRACT',
-            fee: 0,
-            quoteRefreshSeconds: 30,
-            gasMultiplier: 1.1,
-            sourceTokenRate: 0.9996738094827067,
-            destinationTokenRate: 1,
-            priceSlippage: {
-              ratio: 0.9997007391742396,
-              alculationError: '',
-              bucket: 'low',
-              sourceAmountInUSD: 20049.4,
-              destinationAmountInUSD: 20055.4,
-              sourceAmountInNativeCurrency: 9.996738094827068,
-              destinationAmountInNativeCurrency: 10,
-              sourceAmountInETH: 9.996738094827068,
-              destinationAmountInETH: 10,
-            },
+        json: {
+          active: true,
+          networkId: 1,
+          chainId: 1,
+          chainName: 'Ethereum Mainnet',
+          nativeCurrency: {
+            name: 'Ether',
+            symbol: 'ETH',
+            decimals: 18,
+            address: '0x0000000000000000000000000000000000000000',
           },
-        ],
+          iconUrl: 'https://s3.amazonaws.com/airswap-token-images/ETH.png',
+          blockExplorerUrl: 'https://etherscan.io',
+          networkType: 'L1',
+          aggregators: [
+            'airswapV3',
+            'airswapV4',
+            'oneInchV4',
+            'oneInchV5',
+            'paraswap',
+            'pmm',
+            'zeroEx',
+            'openOcean',
+            'hashFlow',
+            'wrappedNative',
+            'kyberSwap',
+            'airSwapV4_3',
+            'hashFlowV3',
+          ],
+          refreshRates: {
+            quotes: 30,
+            quotesPrefetching: 30,
+            stxGetTransactions: 10,
+            stxBatchStatus: 1,
+            stxStatusDeadline: 160,
+            stxMaxFeeMultiplier: 2,
+          },
+          parameters: {
+            refreshRates: {
+              quotes: 30,
+              quotesPrefetching: 30,
+              stxGetTransactions: 10,
+              stxBatchStatus: 1,
+            },
+            stxStatusDeadline: 160,
+            stxMaxFeeMultiplier: 2,
+          },
+        },
       })),
   ];
 }
 
 describe('Swap', function () {
-  it('should swap WETH to ETH', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withTokensController({
-            allTokens: {
-              '0x1': {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-                    symbol: 'WETH',
-                    decimals: 18,
-                    isERC721: false,
-                    aggregators: [],
-                  },
-                ],
+  const swapTestCases = [
+    {
+      name: 'should swap WETH to ETH',
+      sourceToken: 'WETH',
+      destinationToken: 'Ether',
+      sourceAmount: '10',
+      expectedWethBalance: '40',
+      expectedEthBalance: '34.99991',
+      dismissWarning: false,
+    },
+    {
+      name: 'should swap ETH to WETH',
+      sourceToken: 'Ethereum',
+      destinationToken: 'WETH',
+      sourceAmount: '10',
+      expectedWethBalance: '60',
+      expectedEthBalance: '14.99992',
+      dismissWarning: true,
+    },
+  ];
+
+  swapTestCases.forEach((testCase) => {
+    it(testCase.name, async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerOnMainnet()
+            .withTokensController({
+              allTokens: {
+                '0x1': {
+                  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+                    {
+                      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                      symbol: 'WETH',
+                      decimals: 18,
+                      isERC721: false,
+                      aggregators: [],
+                    },
+                  ],
+                },
+              },
+            })
+            .build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: mockSwapQuotes,
+          localNodeOptions: [
+            {
+              type: 'anvil',
+              options: {
+                chainId: 1,
+                hardfork: 'london',
+                loadState:
+                  './test/e2e/seeder/network-states/swap-state/withSwapContracts.json',
               },
             },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSwapQuotes,
-        localNodeOptions: [
-          {
-            type: 'anvil',
-            options: {
-              chainId: 1,
-              hardfork: 'london',
-              loadState:
-                './test/e2e/seeder/network-states/swap-state/withSwapContracts.json',
-            },
-          },
-        ],
-      },
-      async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+          ],
+        },
+        async ({ driver, localNodes }) => {
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
 
-        // disable smart transactions
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openSettingsPage();
+          // disable smart transactions
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.openSettingsPage();
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.check_pageIsLoaded();
+          await settingsPage.clickAdvancedTab();
+          const advancedSettingsPage = new AdvancedSettings(driver);
+          await advancedSettingsPage.check_pageIsLoaded();
+          await advancedSettingsPage.toggleSmartTransactions();
+          await settingsPage.closeSettingsPage();
 
-        // Swap WETH to ETH
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.clickOnAsset('WETH');
+          // Swap tokens
+          const assetListPage = new AssetListPage(driver);
+          // Remove ETH linea token to avoid potential flakiness
+          if (testCase.sourceToken === 'Ethereum') {
+            await assetListPage.openNetworksFilter();
+            await assetListPage.clickCurrentNetworkOption();
+          }
+          await assetListPage.clickOnAsset(testCase.sourceToken);
 
-        const tokenOverviewPage = new TokenOverviewPage(driver);
-        await tokenOverviewPage.check_pageIsLoaded();
-        await tokenOverviewPage.clickSwap();
+          const tokenOverviewPage = new TokenOverviewPage(driver);
+          await tokenOverviewPage.check_pageIsLoaded();
+          await tokenOverviewPage.clickSwap();
 
-        const swapPage = new SwapPage(driver);
-        await swapPage.check_pageIsLoaded();
-        await swapPage.enterSwapAmount('10');
-        await swapPage.selectDestinationToken('Ether');
-        await swapPage.submitSwap();
+          const swapPage = new SwapPage(driver);
+          await swapPage.check_pageIsLoaded();
+          await swapPage.enterSwapAmount(testCase.sourceAmount);
+          await swapPage.selectDestinationToken(testCase.destinationToken);
+          if (testCase.dismissWarning) {
+            await swapPage.dismissManualTokenWarning();
+          }
+          await swapPage.submitSwap();
 
-        await homePage.check_expectedTokenBalanceIsDisplayed('40', 'WETH');
-      },
-    );
+          await homePage.check_expectedTokenBalanceIsDisplayed(
+            testCase.expectedWethBalance,
+            'WETH',
+          );
+          await homePage.check_expectedTokenBalanceIsDisplayed(
+            testCase.expectedEthBalance,
+            'ETH',
+          );
+        },
+      );
+    });
   });
 });
