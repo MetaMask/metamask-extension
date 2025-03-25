@@ -94,13 +94,13 @@ const SnapUIRendererComponent = ({
   });
 
   const shouldShowArrow = useMemo(() => {
-    if (!requireScroll || isScrolledToBottom || hasScrolledToBottom) {
+    if (isScrolledToBottom || hasScrolledToBottom) {
       return false;
     } else if (!isScrolledToBottom && !hasScrolledToBottom && isScrollable) {
       return true;
     }
     return false;
-  }, [requireScroll, isScrolledToBottom, hasScrolledToBottom, isScrollable]);
+  }, [isScrolledToBottom, hasScrolledToBottom, isScrollable]);
 
   const buttonsEnabled = useMemo(
     () => (requireScroll ? !shouldShowArrow : true),
