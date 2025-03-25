@@ -11,6 +11,10 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
+  const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+  const ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
+  const DEFAULT_WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+
   return [
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/token/1')
@@ -37,7 +41,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           occurrences: 13,
           iconUrl:
             'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/weth.svg',
-          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          address: WETH_ADDRESS,
           name: 'Wrapped Ether',
           decimals: 18,
         },
@@ -87,8 +91,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
         const sourceAmount = url.searchParams.get('sourceAmount');
 
         const isEthToWeth =
-          sourceToken === '0x0000000000000000000000000000000000000000' &&
-          destinationToken === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+          sourceToken === ETH_ADDRESS && destinationToken === WETH_ADDRESS;
 
         const data = isEthToWeth
           ? '0xd0e30db0'
@@ -99,19 +102,16 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
             {
               trade: {
                 data,
-                to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                value: isEthToWeth ? '10000000000000000000' : '0',
+                to: WETH_ADDRESS,
+                value: isEthToWeth ? sourceAmount : '0',
                 from: walletAddress,
               },
               hasRoute: false,
               sourceAmount,
               destinationAmount: sourceAmount,
               error: null,
-              sourceToken:
-                sourceToken || '0x0000000000000000000000000000000000000000',
-              destinationToken:
-                destinationToken ||
-                '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              sourceToken: sourceToken || ETH_ADDRESS,
+              destinationToken: destinationToken || WETH_ADDRESS,
               maxGas: 300000,
               averageGas: 280000,
               estimatedRefund: 0,
@@ -155,7 +155,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
             name: 'Ether',
             symbol: 'ETH',
             decimals: 18,
-            address: '0x0000000000000000000000000000000000000000',
+            address: ETH_ADDRESS,
           },
           iconUrl: 'https://s3.amazonaws.com/airswap-token-images/ETH.png',
           blockExplorerUrl: 'https://etherscan.io',

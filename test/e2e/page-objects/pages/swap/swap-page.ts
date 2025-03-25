@@ -21,15 +21,7 @@ class SwapPage {
 
   private readonly closeButtonId = '[data-testid="page-container-footer-next"]';
 
-  private readonly transactionConfirmationText = {
-    css: '[data-testid="awaiting-swap-header"]',
-    text: 'Transaction complete',
-  };
-
-  private readonly transactionProcessingText = {
-    css: '[data-testid="awaiting-swap-header"]',
-    text: 'Processing',
-  };
+  private readonly transactionHeaderLocator = '[data-testid="awaiting-swap-header"]'
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -66,11 +58,13 @@ class SwapPage {
     });
   }
 
-  async processingSwap(): Promise<void> {
-    console.log('Processing Swap');
+  async swapProcessingMessageCheck(message: string): Promise<void> {
     await this.driver.wait(async () => {
       const confirmedTxes = await this.driver.findElements(
-        this.transactionProcessingText,
+        {
+            css: this.transactionHeaderLocator,
+            text: message,
+          },
       );
       return confirmedTxes.length === 1;
     }, 10000);
@@ -79,16 +73,11 @@ class SwapPage {
   async submitSwap(): Promise<void> {
     console.log('Submit Swap');
     await this.driver.clickElement(this.swapButton);
-    await this.processingSwap();
-    console.log('Transaction complete');
-    await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements(
-        this.transactionConfirmationText,
-      );
-      return confirmedTxes.length === 1;
-    }, 10000);
+    console.log('Processing Swap');
+    await this.swapProcessingMessageCheck('Processing');
+    console.log('Swap Transaction complete');
+    await this.swapProcessingMessageCheck('Transaction complete');
     await this.driver.clickElement(this.closeButtonId);
-    // await this.driver.clickElement(this.closeButton);
   }
 
   async dismissManualTokenWarning(): Promise<void> {
