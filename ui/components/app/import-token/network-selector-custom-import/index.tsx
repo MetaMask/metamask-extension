@@ -34,7 +34,6 @@ export const NetworkSelectorCustomImport = ({
 }) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkImageUrl = getImageForChainId(chainId);
-  console.log('networkImageUrl ............', networkImageUrl);
 
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks || {}).forEach((chain) => {

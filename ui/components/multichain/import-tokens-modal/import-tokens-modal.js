@@ -598,24 +598,31 @@ export const ImportTokensModal = ({ onClose }) => {
               width={BlockSize.Full}
             >
               {Object.values(allNetworks).map((network) => (
-                <NetworkListItem
+                <Box
                   key={network.chainId}
-                  chainId={network.chainId}
-                  name={network.name}
-                  iconSrc={getImageForChainId(network.chainId)}
-                  iconSize={AvatarNetworkSize.Sm}
-                  focus={false}
-                  onClick={() => {
-                    setSelectedNetworkForCustomImport(network.chainId);
-                    setCustomAddress('');
-                    setCustomSymbol('');
-                    setCustomDecimals(0);
-                    setShowSymbolAndDecimals(false);
+                  data-testid={`select-network-item-${network.chainId}`}
+                >
+                  <NetworkListItem
+                    key={network.chainId}
+                    chainId={network.chainId}
+                    name={network.name}
+                    iconSrc={getImageForChainId(network.chainId)}
+                    iconSize={AvatarNetworkSize.Sm}
+                    focus={false}
+                    onClick={() => {
+                      setSelectedNetworkForCustomImport(network.chainId);
+                      setCustomAddress('');
+                      setCustomSymbol('');
+                      setCustomDecimals(0);
+                      setShowSymbolAndDecimals(false);
 
-                    setActionMode(ACTION_MODES.IMPORT_TOKEN);
-                  }}
-                  selected={network?.chainId === selectedNetworkForCustomImport}
-                />
+                      setActionMode(ACTION_MODES.IMPORT_TOKEN);
+                    }}
+                    selected={
+                      network?.chainId === selectedNetworkForCustomImport
+                    }
+                  />
+                </Box>
               ))}
             </Box>
           </ModalBody>
@@ -885,7 +892,13 @@ export const ImportTokensModal = ({ onClose }) => {
                         </Box>
                       )}
                       <NetworkSelectorCustomImport
-                        title={t('networkMenuHeading')}
+                        title={
+                          selectedNetworkForCustomImport
+                            ? networkConfigurations[
+                                selectedNetworkForCustomImport
+                              ]?.name
+                            : t('networkMenuHeading')
+                        }
                         buttonDataTestId="test-import-tokens-drop-down-custom-import"
                         chainId={selectedNetworkForCustomImport}
                         onSelectNetwork={() =>
