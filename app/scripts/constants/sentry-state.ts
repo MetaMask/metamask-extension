@@ -259,7 +259,6 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,
-      petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
     },

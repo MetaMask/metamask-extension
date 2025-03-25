@@ -465,14 +465,6 @@ const SETTINGS_CONSTANTS = [
   // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('petnamesEnabledToggle'),
-    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[1]
-  {
-    tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('notificationsFeatureToggle'),
     descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
