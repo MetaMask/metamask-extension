@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react';
+import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import {
   Modal,
   ModalBody,
@@ -11,28 +13,37 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../../../helpers/constants/design-system';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { gasFeeTokens } = currentConfirmation;
-  const { id: transactionId, selectedGasFeeToken } = currentConfirmation;
+  const { gasFeeTokens, selectedGasFeeToken } = currentConfirmation;
 
   const handleTokenClick = useCallback(
     async (_token: GasFeeToken) => {
       onClose?.();
     },
-    [transactionId, onClose],
+    [onClose],
   );
+
+  const gasFeeTokenAddresses = [
+    NATIVE_TOKEN_ADDRESS,
+    ...(gasFeeTokens?.map((token) => token.tokenAddress) ?? []),
+  ] as Hex[];
 
   return (
     <Modal
       isOpen={true}
-      onClose={onClose ?? (() => {})}
+      onClose={
+        onClose ??
+        (() => {
+          // Intentionally empty
+        })
+      }
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
     >
@@ -47,11 +58,15 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
           paddingLeft={0}
           paddingRight={0}
         >
-          {gasFeeTokens?.map((token) => (
+          {gasFeeTokenAddresses.map((tokenAddress) => (
             <GasFeeTokenListItem
-              key={token.tokenAddress}
-              gasFeeToken={token}
-              isSelected={selectedGasFeeToken === token.tokenAddress}
+              key={tokenAddress}
+              tokenAddress={tokenAddress}
+              isSelected={
+                selectedGasFeeToken?.toLowerCase() ===
+                  tokenAddress.toLowerCase() ||
+                (!selectedGasFeeToken && tokenAddress === NATIVE_TOKEN_ADDRESS)
+              }
               onClick={handleTokenClick}
             />
           ))}
