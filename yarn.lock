@@ -2349,7 +2349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^9.0.2, @ethereumjs/util@npm:^9.1.0":
+"@ethereumjs/util@npm:^9.0.2, @ethereumjs/util@npm:^9.0.3, @ethereumjs/util@npm:^9.1.0":
   version: 9.1.0
   resolution: "@ethereumjs/util@npm:9.1.0"
   dependencies:
@@ -4138,6 +4138,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@keystonehq/bc-ur-registry-eth@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "@keystonehq/bc-ur-registry-eth@npm:0.21.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.0.3"
+    "@keystonehq/bc-ur-registry": "npm:^0.7.0"
+    hdkey: "npm:^2.0.1"
+    uuid: "npm:^8.3.2"
+  checksum: 10/2f694957c5e5d93db5523af59e5ed582dbbd9d08cc9c165ebe79b4f953ab2401b6212bb5c931e41ff9e5e6e8469f18c1aff90ff88b0ff85d093cd5794ddbdbbc
+  languageName: node
+  linkType: hard
+
 "@keystonehq/bc-ur-registry@npm:^0.6.0":
   version: 0.6.4
   resolution: "@keystonehq/bc-ur-registry@npm:0.6.4"
@@ -4146,6 +4158,17 @@ __metadata:
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
   checksum: 10/d4cdbefc14f3305543340d509564e1a795eb458327d46aad8665927999150df7e282939dcb714b81fea386061019e3b9f41eedbbb09a59d404355711c33159b2
+  languageName: node
+  linkType: hard
+
+"@keystonehq/bc-ur-registry@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@keystonehq/bc-ur-registry@npm:0.7.0"
+  dependencies:
+    "@ngraveio/bc-ur": "npm:^1.1.5"
+    bs58check: "npm:^2.1.2"
+    tslib: "npm:^2.3.0"
+  checksum: 10/44bb60d0e8471ec3148fab47bc3484406ea43b378c4e5bfbadc8978ed898ed387ad5d1c4f6b2983dced8ead4c26414e28a3b80c45364b6d066e0050a910e89d4
   languageName: node
   linkType: hard
 
@@ -6687,7 +6710,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.1.12, @ngraveio/bc-ur@npm:^1.1.5":
+"@ngraveio/bc-ur@npm:^1.1.13":
+  version: 1.1.13
+  resolution: "@ngraveio/bc-ur@npm:1.1.13"
+  dependencies:
+    "@keystonehq/alias-sampling": "npm:^0.1.1"
+    assert: "npm:^2.0.0"
+    bignumber.js: "npm:^9.0.1"
+    cbor-sync: "npm:^1.0.4"
+    crc: "npm:^3.8.0"
+    jsbi: "npm:^3.1.5"
+    sha.js: "npm:^2.4.11"
+  checksum: 10/0d3301b673a0bd9a069dae1f017cfd03010fddf19c1449d1a9e986b9b879ee4611f5af690ace9f59b75707573d1d3d6a4983166207db743425974a736689c6a0
+  languageName: node
+  linkType: hard
+
+"@ngraveio/bc-ur@npm:^1.1.5":
   version: 1.1.12
   resolution: "@ngraveio/bc-ur@npm:1.1.12"
   dependencies:
@@ -27248,7 +27286,7 @@ __metadata:
     "@ethersproject/wallet": "npm:^5.7.0"
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
+    "@keystonehq/bc-ur-registry-eth": "npm:^0.21.0"
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch"
     "@lavamoat/allow-scripts": "npm:^3.3.1"
     "@lavamoat/lavadome-core": "npm:0.0.20"
@@ -27353,7 +27391,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^50.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
-    "@ngraveio/bc-ur": "npm:^1.1.12"
+    "@ngraveio/bc-ur": "npm:^1.1.13"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
@@ -27572,8 +27610,8 @@ __metadata:
     prop-types: "npm:^15.6.1"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
-    qrcode-generator: "npm:1.4.1"
-    qrcode.react: "npm:^3.1.0"
+    qrcode-generator: "npm:1.4.4"
+    qrcode.react: "npm:^4.2.0"
     randomcolor: "npm:^0.5.4"
     react: "npm:^16.12.0"
     react-beautiful-dnd: "npm:^13.1.1"
@@ -31361,19 +31399,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode-generator@npm:1.4.1":
-  version: 1.4.1
-  resolution: "qrcode-generator@npm:1.4.1"
-  checksum: 10/fc62250ce5baad65ce97063e78876d66ccb4bca2dace50e195d0a6cd65a429b99710b8fcb3b435399d5e3c56e3c5014d7491f6ebf2b24d0ad36ddb26a35f8783
+"qrcode-generator@npm:1.4.4":
+  version: 1.4.4
+  resolution: "qrcode-generator@npm:1.4.4"
+  checksum: 10/65b2bba237d1f230eba0d08ae4267d04f326859c2265775ade99191be1b522158b623fcc0b613bbfc9d4edbbafb928fc41c66d61053b333f2eb0bcedb2ebadca
   languageName: node
   linkType: hard
 
-"qrcode.react@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "qrcode.react@npm:3.1.0"
+"qrcode.react@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "qrcode.react@npm:4.2.0"
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 10/71953241f151ca5ad4013c034cb13033e1ebad56a1db77297a7ddd7fd4d5f137f37f3be51133aeef0b54dc52d6c76630429d2269bd72e6858c3209fe42310498
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/665036d88b160e6d5de4e24d101bc63bd2b76712802e874bbffe56c6b6e5fe50c63f02c3cba2975b2e2b555c1f1e112cbb42987f8cb3a626ce2d17023cfde6ac
   languageName: node
   linkType: hard
 
