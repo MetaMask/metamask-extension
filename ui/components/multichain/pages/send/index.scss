@@ -5,6 +5,11 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
+  // prevent overflow-x
+  max-width: 100%;
+
+  border: 1px solid var(--color-border-muted);
+  border-radius: 2px;
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
   @include design-system.screen-sm-min {

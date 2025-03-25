@@ -18,7 +18,9 @@
       padding-top: 0;
     }
 
-    &__inner-container {
+    & .multichain-page__inner-container {
+      border-radius: 0 0 2px 2px;
+      border-top: 0;
       box-shadow:
         var(--shadow-size-lg) var(--color-shadow-default),
         calc(var(--shadow-size-lg) * -1) var(--color-shadow-default),
@@ -27,6 +29,8 @@
   }
 
   &__inner-container {
+    border: 1px solid var(--color-border-muted);
+    border-radius: 2px;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   }
 }
