@@ -13,6 +13,7 @@ import {
   MOCK_CURRENCY_RATES,
   MOCK_BRIDGE_ETH_TO_LINEA,
 } from './constants';
+
 const { TOP_ASSETS_API_MOCK_RESULT } = require('../../../data/mock-data');
 
 export class BridgePage {
@@ -135,7 +136,7 @@ async function mockGetTxStatus(mockServer: Mockttp) {
   });
 }
 
-async function mockTopAssetsArbitrum(mockServer: Mockttp) {
+async function mockTopAssets(mockServer: Mockttp) {
   return await mockServer.forGet(/topAssets/u).thenCallback(() => {
     return {
       statusCode: 200,
@@ -191,7 +192,7 @@ export const getBridgeFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, featureFlags),
       await mockGetTxStatus(mockServer),
-      await mockTopAssetsArbitrum(mockServer),
+      await mockTopAssets(mockServer),
       await mockGetQuote(mockServer),
       await mockPortfolioPage(mockServer),
     ],

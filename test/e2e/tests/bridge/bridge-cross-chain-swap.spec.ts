@@ -6,8 +6,8 @@ import BridgeQuotePage, {
   BridgeQuote,
 } from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
-import { getBridgeFixtures } from '../../tests/bridge/bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   it('Execute various bridge transactions', async function () {
@@ -54,8 +54,6 @@ describe('Bridge tests', function (this: Suite) {
     await bridgePage.submitQuote();
 
     await homePage.goToActivityList();
-
-    //check balance
 
     await driver.delay(5000);
     const activityList = new ActivityListPage(driver);
