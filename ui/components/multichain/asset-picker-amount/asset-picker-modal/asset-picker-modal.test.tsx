@@ -51,7 +51,7 @@ jest.mock('./AssetList', () => (props: unknown) => {
 });
 
 const mockUseAssetMetadata = jest.fn();
-jest.mock('../../../../hooks/useAssetMetadata', () => ({
+jest.mock('./hooks/useAssetMetadata', () => ({
   useAssetMetadata: (...args: unknown[]) => mockUseAssetMetadata(...args),
 }));
 
