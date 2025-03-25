@@ -251,6 +251,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   MODE: '0x868b',
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
+  JOC_MAINNET: '0x51',
+  JOC_TESTNET: '0x2761',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -310,6 +312,8 @@ export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
 export const SHAPE_SEPOLIA_DISPLAY_NAME = 'Shape Sepolia';
 export const SHAPE_DISPLAY_NAME = 'Shape';
+export const JOC_DISPLAY_NAME = 'Japan Open Chain Mainnet';
+export const JOC_TESTNET_DISPLAY_NAME = 'Japan Open Chain Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -441,6 +445,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   MODE: 'ETH',
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
+  JOC_MAINNET: 'JOC',
+  JOC_TESTNET: 'JOCT',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -537,6 +543,10 @@ export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
 export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
+export const JOC_MAINNET_IMAGE_URL = './images/joc-logo-mainnet.png';
+export const JOC_TESTNET_IMAGE_URL = './images/joc-logo-testnet.png';
+export const JOC_MAINNET_TOKEN_IMAGE_URL = './images/joc-logo-mainnet.png';
+export const JOC_TESTNET_TOKEN_IMAGE_URL = './images/joc-logo-testnet.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -788,6 +798,10 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE_SEPOLIA,
   [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+  [CHAINLIST_CHAIN_IDS_MAP.JOC_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.JOC_MAINNET,
+  [CHAINLIST_CHAIN_IDS_MAP.JOC_TESTNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.JOC_TESTNET,
 } as const;
 
 /**
@@ -922,6 +936,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: SHAPE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.JOC_MAINNET]: JOC_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.JOC_TESTNET]: JOC_TESTNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -973,6 +989,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: TEST_ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.JOC_MAINNET]: JOC_MAINNET_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.JOC_TESTNET]: JOC_TESTNET_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
