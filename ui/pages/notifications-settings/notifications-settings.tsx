@@ -35,17 +35,17 @@ import { NotificationsSettingsPerAccount } from './notifications-settings-per-ac
 
 function useNotificationAccounts() {
   const accountAddresses = useSelector(getValidNotificationAccounts);
-  const internalAcconuts = useSelector(getInternalAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
   const accounts = useMemo(() => {
     return accountAddresses
       .map((addr) => {
-        const account = internalAcconuts.find(
+        const account = internalAccounts.find(
           (a) => a.address.toLowerCase() === addr.toLowerCase(),
         );
         return account;
       })
       .filter(<T,>(val: T | undefined): val is T => Boolean(val));
-  }, [accountAddresses, internalAcconuts]);
+  }, [accountAddresses, internalAccounts]);
 
   return accounts;
 }
