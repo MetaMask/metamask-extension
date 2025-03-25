@@ -42,7 +42,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     getMultichainNetworkConfigurationsByChainId,
   );
   const ticker =
-    multichainNetworkConfigurationsByChainId[chainId].nativeCurrency;
+    multichainNetworkConfigurationsByChainId[chainId]?.nativeCurrency;
 
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {
