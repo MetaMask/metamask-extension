@@ -478,10 +478,10 @@ describe('Send ETH', function () {
             await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
-              text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+              text: '0xc427D...Acd28',
             });
 
-            assert.equal(recipientAddress.length, 1);
+            assert.equal(recipientAddress.length, 2);
           },
         );
       });

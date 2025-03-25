@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
   },
-  "petnamesEnabledToggle": {
-    "message": "Pahintulutan ang mga palayaw"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Magbibigay-daan ito sa iyo na magtalaga ng palayaw sa anumang address. Magbibigay kami ng mungkahi para sa mga address na may ugnayan ka kapag posible."
-  },
   "pinToTop": {
     "message": "I-pin sa itaas"
   },

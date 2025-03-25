@@ -49,7 +49,7 @@ import {
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getPetnamesEnabled,
+  getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -63,7 +63,7 @@ import {
   showModal,
   toggleNetworkMenu,
   setUseTransactionSimulations,
-  setPetnamesEnabled,
+  setUseExternalNameSources,
   setEditedNetwork,
 } from '../../../store/actions';
 import {
@@ -98,7 +98,7 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
     useTransactionSimulations,
   } = defaultState;
-  const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const useExternalNameSources = useSelector(getUseExternalNameSources);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
@@ -118,7 +118,9 @@ export default function PrivacySettings() {
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
-  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
+  const [turnOnExternalNameSources, setTurnOnExternalNameSources] = useState(
+    useExternalNameSources,
+  );
 
   const trackEvent = useContext(MetaMetricsContext);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -155,7 +157,7 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
-    dispatch(setPetnamesEnabled(turnOnPetnames));
+    setUseExternalNameSources(turnOnExternalNameSources);
 
     // Profile Syncing Setup
     if (!externalServicesOnboardingToggleState) {
@@ -178,6 +180,7 @@ export default function PrivacySettings() {
       },
     });
 
+    console.log('go back man');
     history.push(ONBOARDING_COMPLETION_ROUTE);
   };
 
@@ -694,10 +697,10 @@ export default function PrivacySettings() {
                     description={t('toggleDecodeDescription')}
                   />
                   <Setting
-                    value={turnOnPetnames}
-                    setValue={setTurnOnPetnames}
-                    title={t('petnamesEnabledToggle')}
-                    description={t('petnamesEnabledToggleDescription')}
+                    value={turnOnExternalNameSources}
+                    setValue={setTurnOnExternalNameSources}
+                    title={t('externalNameSourcesSetting')}
+                    description={t('externalNameSourcesSettingDescription')}
                   />
                 </>
               ) : null}

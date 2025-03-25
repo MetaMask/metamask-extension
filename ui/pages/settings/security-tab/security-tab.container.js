@@ -24,7 +24,6 @@ import {
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
-  getPetnamesEnabled,
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -35,8 +34,6 @@ import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
-
-  const petnamesEnabled = getPetnamesEnabled(state);
 
   const {
     participateInMetaMetrics,
@@ -77,7 +74,6 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalNameSources,
     useExternalServices,
-    petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),

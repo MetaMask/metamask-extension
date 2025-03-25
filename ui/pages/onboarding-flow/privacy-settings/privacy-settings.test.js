@@ -32,9 +32,6 @@ describe('Privacy Settings Onboarding View', () => {
         { chainId: CHAIN_IDS.SEPOLIA },
         { chainId: CHAIN_IDS.LINEA_SEPOLIA },
       ),
-      preferences: {
-        petnamesEnabled: true,
-      },
       use4ByteResolution: true,
       useTokenDetection: false,
       useCurrencyRateCheck: true,
@@ -154,11 +151,6 @@ describe('Privacy Settings Onboarding View', () => {
 
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setPreferenceStub).toHaveBeenCalledTimes(1);
-    expect(setPreferenceStub.mock.calls[0][0]).toStrictEqual(
-      'petnamesEnabled',
-      false,
-    );
   });
 
   describe('IPFS', () => {

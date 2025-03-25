@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte füge die Token-Contract-Adresse ein."
   },
-  "petnamesEnabledToggle": {
-    "message": "Spitznamen erlauben"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Damit können Sie jeder Adresse einen Spitznamen zuweisen. Nach Möglichkeit werden wir Namen für Adressen vorschlagen, mit denen Sie interagieren."
-  },
   "pinToTop": {
     "message": "Pin nach oben"
   },

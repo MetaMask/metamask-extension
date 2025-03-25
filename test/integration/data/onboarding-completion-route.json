@@ -236,7 +236,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": false,
     "smartTransactionsOptInStatus": true,
-    "petnamesEnabled": true,
     "showConfirmationAdvancedDetails": false,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,

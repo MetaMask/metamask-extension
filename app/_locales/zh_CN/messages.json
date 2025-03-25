@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
   },
-  "petnamesEnabledToggle": {
-    "message": "允许昵称"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "这样可以协助您为任何地址添加昵称。我们将在可能的情况下为您与之交互的地址提供名称建议。"
-  },
   "pinToTop": {
     "message": "置顶"
   },
