@@ -137,7 +137,12 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
+import {
+  hasProperty,
+  hexToBigInt,
+  hexToNumber,
+  toCaipChainId,
+} from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
@@ -686,7 +691,7 @@ export default class MetamaskController extends EventEmitter {
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceUnavailable,
             properties: {
-              chain_id_caip: `eip155:${chainId}`,
+              chain_id_caip: `eip155:${hexToNumber(chainId)}`,
               rpc_endpoint_url: onlyKeepHost(endpointUrl),
             },
           });
@@ -715,7 +720,7 @@ export default class MetamaskController extends EventEmitter {
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceDegraded,
             properties: {
-              chain_id_caip: `eip155:${chainId}`,
+              chain_id_caip: `eip155:${hexToNumber(chainId)}`,
               rpc_endpoint_url: onlyKeepHost(endpointUrl),
             },
           });
