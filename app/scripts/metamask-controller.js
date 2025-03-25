@@ -716,7 +716,7 @@ export default class MetamaskController extends EventEmitter {
             event: MetaMetricsEventName.RpcServiceDegraded,
             properties: {
               chain_id_caip: `eip155:${chainId}`,
-              rpc_endpoint_url: endpointUrl,
+              rpc_endpoint_url: onlyKeepHost(endpointUrl),
             },
           });
         }
