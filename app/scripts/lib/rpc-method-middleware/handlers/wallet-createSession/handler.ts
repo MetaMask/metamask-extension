@@ -39,6 +39,7 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
+import { isKnownSessionPropertyValue } from './constants';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -104,6 +105,12 @@ async function walletCreateSessionHandler(
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
+  const filteredSessionProperties = Object.fromEntries(
+    Object.entries(sessionProperties ?? {}).filter(([key]) =>
+      isKnownSessionPropertyValue(key),
+    ),
+  );
+
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
@@ -162,6 +169,7 @@ async function walletCreateSessionHandler(
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
+      sessionProperties: filteredSessionProperties,
     };
 
     const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
@@ -200,6 +208,9 @@ async function walletCreateSessionHandler(
       getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
     });
 
+    const { sessionProperties: approvedSessionProperties = {} } =
+      approvedCaip25CaveatValue;
+
     // TODO: Contact analytics team for how they would prefer to track this
     // first time connection to dapp will lead to no log in the permissionHistory
     // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
@@ -227,7 +238,7 @@ async function walletCreateSessionHandler(
 
     res.result = {
       sessionScopes,
-      sessionProperties,
+      sessionProperties: approvedSessionProperties,
     };
     return end();
   } catch (err) {
