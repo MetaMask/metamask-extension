@@ -28733,7 +28733,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "nanoid@npm:^3.3.10, nanoid@npm:^3.3.8":
+=======
+"nanoid@npm:^3.1.31, nanoid@npm:^3.3.10, nanoid@npm:^3.3.8":
+>>>>>>> cf4296fe55 (chore: Bump Snaps dependencies)
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
