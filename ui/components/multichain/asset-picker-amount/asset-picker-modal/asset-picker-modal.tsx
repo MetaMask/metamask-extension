@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type {
   Token,
@@ -7,6 +7,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { debounce } from 'lodash';
 import {
   Modal,
   ModalContent,
@@ -144,6 +145,11 @@ export function AssetPickerModal({
   const t = useI18nContext();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+  const debouncedSetSearchQuery = debounce(setDebouncedSearchQuery, 200);
+  useEffect(() => {
+    debouncedSetSearchQuery(searchQuery);
+  }, [searchQuery, debouncedSetSearchQuery]);
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
@@ -379,7 +385,7 @@ export function AssetPickerModal({
       address?: string | null,
       tokenChainId?: string,
     ) => {
-      const trimmedSearchQuery = searchQuery.trim().toLowerCase();
+      const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
       const isMatchedBySearchQuery = Boolean(
         !trimmedSearchQuery ||
           symbol?.toLowerCase().includes(trimmedSearchQuery) ||
@@ -439,7 +445,7 @@ export function AssetPickerModal({
     return filteredTokens;
   }, [
     currentChainId,
-    searchQuery,
+    debouncedSearchQuery,
     isMultiselectEnabled,
     selectedChainIds,
     selectedNetwork?.chainId,
@@ -454,7 +460,7 @@ export function AssetPickerModal({
 
   // This fetches the metadata for the asset if it is not already in the filteredTokenList
   const unlistedAssetMetadata = useAssetMetadata(
-    searchQuery,
+    debouncedSearchQuery,
     filteredTokenList.length === 0,
     selectedNetwork?.chainId,
   );
