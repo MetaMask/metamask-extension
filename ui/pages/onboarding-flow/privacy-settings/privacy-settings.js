@@ -614,7 +614,6 @@ export default function PrivacySettings() {
                       </>
                     }
                   />
-
                   <Setting
                     value={turnOnCurrencyRateCheck}
                     setValue={setTurnOnCurrencyRateCheck}
