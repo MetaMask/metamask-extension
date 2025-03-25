@@ -81,19 +81,20 @@ export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
  */
 export const getOriginsWithSessionProperty = (state, property) => {
   const subjects = getSubjects(state);
-  return Object.values(subjects).reduce((acc, subject) => {
+  const result = {};
+
+  Object.values(subjects).forEach((subject) => {
     const caveats =
       subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
     const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
     const sessionProperty = caveat?.value?.sessionProperties?.[property];
-    return sessionProperty
-      ? {
-          ...acc,
-          [subject.origin]: sessionProperty,
-        }
-      : acc;
-  }, {});
+    if (sessionProperty !== undefined) {
+      result[subject.origin] = sessionProperty;
+    }
+  });
+
+  return result;
 };
 
 /**
