@@ -94,6 +94,11 @@ jest.mock('../../../../hooks/useNfts', () => ({
   }),
 }));
 
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  debounce: jest.fn().mockImplementation((fn) => fn),
+}));
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
