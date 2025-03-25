@@ -32,6 +32,8 @@
 
 // Main container
 .main-container {
+  display: flex;
+  flex-direction: column;
   z-index: design-system.$main-container-z-index;
 }
 
