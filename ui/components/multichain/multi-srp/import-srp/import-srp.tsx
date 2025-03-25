@@ -280,6 +280,8 @@ export const ImportSrp = ({
             loading={loading}
             onClick={async () => {
               setNumberOfWords(24);
+              setSrpError('');
+              setInvalidSrpWords(Array(24).fill(false));
             }}
           >
             {t('importNWordSRP', ['24'])}
