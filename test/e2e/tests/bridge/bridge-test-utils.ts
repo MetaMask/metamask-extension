@@ -6,6 +6,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { BRIDGE_CLIENT_ID } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
+import { TOP_ASSETS_API_MOCK_RESULT } from '../../../data/mock-data';
 import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
@@ -13,8 +14,6 @@ import {
   MOCK_CURRENCY_RATES,
   MOCK_BRIDGE_ETH_TO_LINEA,
 } from './constants';
-
-const { TOP_ASSETS_API_MOCK_RESULT } = require('../../../data/mock-data');
 
 export class BridgePage {
   driver: Driver;
