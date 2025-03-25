@@ -22,8 +22,6 @@ export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
     const t = useI18nContext();
 
-    console.log('this: ', token);
-
     if (token.title.length > 12) {
       return (
         <Tooltip

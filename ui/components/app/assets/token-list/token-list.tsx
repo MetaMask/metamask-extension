@@ -72,8 +72,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
     newTokensImported,
   ]);
 
-  console.log(sortedFilteredTokens);
-
   useEffect(() => {
     if (sortedFilteredTokens) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
