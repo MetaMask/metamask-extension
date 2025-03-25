@@ -413,6 +413,24 @@ export function AssetPickerModal({
       );
     };
 
+    // If an asset is selected, display it first
+    if (
+      asset &&
+      'symbol' in asset &&
+      'address' in asset &&
+      'chainId' in asset
+    ) {
+      if (shouldAddToken(asset.symbol, asset.address, asset.chainId)) {
+        filteredTokens.push({
+          ...asset,
+          balance: 'balance' in asset ? asset.balance : '0',
+          string: 'string' in asset ? asset.string : '0',
+        } as unknown as AssetWithDisplayData<ERC20Asset | NativeAsset>);
+
+        filteredTokensAddresses.add(getTokenKey(asset.address, asset.chainId));
+      }
+    }
+
     // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
     // Otherwise use the default tokenGenerator
     const tokenGenerator = (customTokenListGenerator ?? tokenListGenerator)(
@@ -467,6 +485,7 @@ export function AssetPickerModal({
     tokenConversionRates,
     conversionRate,
     currentCurrency,
+    asset,
   ]);
 
   // This fetches the metadata for the asset if it is not already in the filteredTokenList
