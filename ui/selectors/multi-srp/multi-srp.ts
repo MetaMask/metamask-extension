@@ -1,5 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { SnapId } from '@metamask/snaps-sdk';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
@@ -9,7 +10,6 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 
 type AccountsByChainId = {
   [chainId: string]: {
