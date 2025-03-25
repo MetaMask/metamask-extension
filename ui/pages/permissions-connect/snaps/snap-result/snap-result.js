@@ -80,10 +80,10 @@ export default function SnapResult({
         />
         <Text
           fontWeight={FontWeight.Bold}
+          textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
           paddingBottom={2}
           marginTop={4}
-          textAlign="center"
         >
           {successScreenTitle}
         </Text>
@@ -148,8 +148,7 @@ export default function SnapResult({
       />
       <Box
         className="snap-result__content"
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
         style={{

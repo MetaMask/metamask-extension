@@ -53,8 +53,7 @@ const RemoveSnapAccount = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
         style={{ flexGrow: 1 }}
       >
         <Box
@@ -75,7 +74,11 @@ const RemoveSnapAccount = ({
                 size={AvatarIconSize.Xl}
               />
             </Box>
-            <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
+            <Text
+              textAlign={TextAlign.Center}
+              variant={TextVariant.headingLg}
+              paddingBottom={2}
+            >
               {t('removeSnapAccountTitle')}
             </Text>
             <SnapAccountCard address={publicAddress} remove={true} />
