@@ -188,7 +188,7 @@ export const sendMultichainApiRequest = ({
           return;
         }
 
-        resolve(data.data.data)
+        resolve(data.data.data);
       });
     })
     window.postMessage(
@@ -219,9 +219,7 @@ export const sendMultichainApiRequest = ({
           return;
         }
 
-        if (msg.data.id || msg.data.error) {
-          resolve(msg.data)
-        }
+        resolve(msg.data);
       })
     })
     port.postMessage({ type: 'caip-x', data });

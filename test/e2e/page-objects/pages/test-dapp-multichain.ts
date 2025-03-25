@@ -160,9 +160,9 @@ class TestDappMultichain {
   /**
    * Revokes permitted session.
    */
-    async revokeSession(): Promise<void> {
-      this.clickWalletRevokeSessionButton();
-    }
+  async revokeSession(): Promise<void> {
+    this.clickWalletRevokeSessionButton();
+  }
 }
 
 export default TestDappMultichain;

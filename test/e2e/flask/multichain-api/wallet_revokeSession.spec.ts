@@ -92,6 +92,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
         await testDapp.revokeSession();
+        await driver.delay(largeDelayMs);
 
         for (const scope of GANACHE_SCOPES) {
           const request = {
@@ -120,12 +121,12 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
            * We make sure it's the expected error by comparing expected error code and message (we ignore `stack` property)
            */
           assert.deepEqual(
-            expectedError,
             pick(
               result.error,
               ['code', 'message'],
-              `calling wallet_invokeMethod should throw an error for scope ${scope}`,
             ),
+            expectedError,
+            `calling wallet_invokeMethod should throw an error for scope ${scope}`,
           );
         }
       },
