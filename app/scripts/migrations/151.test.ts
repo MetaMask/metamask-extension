@@ -1,7 +1,7 @@
 import { RpcEndpointType } from '@metamask/network-controller';
-import { migrate } from './149';
+import { migrate } from './151';
 
-const VERSION = 149;
+const VERSION = 151;
 
 const INFURA_PROJECT_ID = 'some-infura-project-id';
 const QUICKNODE_MAINNET_URL = 'https://example.quicknode.com/mainnet';
@@ -54,7 +54,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionData);
     expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Migration #149: No INFURA_PROJECT_ID set!',
+        message: 'Migration #151: No INFURA_PROJECT_ID set!',
       }),
     );
   });
@@ -75,7 +75,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionData);
     expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Migration #149: Missing NetworkController state',
+        message: 'Migration #151: Missing NetworkController state',
       }),
     );
   });
@@ -99,7 +99,7 @@ describe(`migration #${VERSION}`, () => {
     expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message:
-          'Migration #149: Expected state.NetworkController to be an object, but is string',
+          'Migration #151: Expected state.NetworkController to be an object, but is string',
       }),
     );
   });
@@ -123,7 +123,7 @@ describe(`migration #${VERSION}`, () => {
     expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message:
-          'Migration #149: Missing state.NetworkController.networkConfigurationsByChainId',
+          'Migration #151: Missing state.NetworkController.networkConfigurationsByChainId',
       }),
     );
   });
@@ -149,7 +149,7 @@ describe(`migration #${VERSION}`, () => {
     expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message:
-          'Migration #149: Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is string',
+          'Migration #151: Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is string',
       }),
     );
   });

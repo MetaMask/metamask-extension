@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 149;
+export const version = 151;
 
 // Chains supported by Infura that are either built in or featured,
 // mapped to their corresponding failover URLs.
