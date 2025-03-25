@@ -206,6 +206,22 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    */
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {

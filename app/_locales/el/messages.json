@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Θα λάβετε"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ανώτατο όριο δαπανών"
-  },
   "permitSimulationChange_transfer": {
     "message": "Θα στείλετε"
   },
