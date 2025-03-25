@@ -326,7 +326,10 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
