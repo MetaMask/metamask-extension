@@ -64,14 +64,31 @@ export const ExternalAccountListItem: React.FC<
           marginInlineEnd={2}
         />
 
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          style={{ maxWidth: '140px', overflow: 'hidden' }}
+        >
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            marginBottom={1}
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {isEnsName ? account.metadata.name : t('externalAccount')}
           </Text>
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
             data-testid="account-list-address"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
           >
             {shortenAddress(normalizeSafeAddress(account.address))}
           </Text>
