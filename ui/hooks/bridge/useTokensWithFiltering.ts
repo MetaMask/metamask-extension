@@ -8,6 +8,12 @@ import {
   selectERC20TokensByChain,
 } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { AssetType } from '../../../shared/constants/transaction';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
+import { useMultichainBalances } from '../useMultichainBalances';
+import { useAsyncResult } from '../useAsync';
+import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
+import { MINUTE } from '../../../shared/constants/time';
 import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
@@ -17,24 +23,21 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { AssetType } from '../../../shared/constants/transaction';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
 } from '../../../shared/modules/bridge-utils/caip-formatters';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
-import { useMultichainBalances } from '../useMultichainBalances';
-import { useAsyncResult } from '../useAsync';
-import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import {
   fetchBridgeTokens,
   fetchNonEvmTokens,
   isTokenV3Asset,
 } from '../../../shared/modules/bridge-utils/bridge.util';
-import { MINUTE } from '../../../shared/constants/time';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import {
+  MultichainNetworks,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+} from '../../../shared/constants/multichain/networks';
 import { type BridgeToken } from '../../../shared/types/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 
@@ -127,8 +130,9 @@ export const useTokensWithFiltering = (
         address: token.address === zeroAddress() ? null : token.address,
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
-            chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ],
+            sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+          ] ??
+          (token.iconUrl || token.icon || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
         string: '0',
@@ -196,6 +200,9 @@ export const useTokensWithFiltering = (
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ] ??
+                  MULTICHAIN_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
                   getAssetImageUrl(
                     token.address,
