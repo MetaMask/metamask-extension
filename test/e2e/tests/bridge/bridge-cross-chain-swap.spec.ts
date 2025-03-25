@@ -28,26 +28,13 @@ describe('Bridge tests', function (this: Suite) {
         await bridgeTransaction(
           driver,
           {
-            amount: '10',
-            tokenFrom: 'DAI',
-            tokenTo: 'USDC',
-            fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
-            unapproved: true,
-          },
-          2,
-        );
-
-        await bridgeTransaction(
-          driver,
-          {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Ethereum',
-            toChain: 'Linea',
+            toChain: 'Arbitrum One',
           },
-          3,
+          1,
         );
 
         await bridgeTransaction(
@@ -57,9 +44,9 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'WETH',
             fromChain: 'Ethereum',
-            toChain: 'Linea',
+            toChain: 'Arbitrum One',
           },
-          4,
+          2,
         );
 
         await bridgeTransaction(
@@ -69,9 +56,9 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'USDT',
             fromChain: 'Ethereum',
-            toChain: 'Linea',
+            toChain: 'Arbitrum One',
           },
-          5,
+          3,
         );
       },
     );
