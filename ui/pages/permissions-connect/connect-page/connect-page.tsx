@@ -67,6 +67,8 @@ import {
   getRequestedAccounts,
   getFilteredNetworks,
   getRequestedChainIds,
+  getAllAccounts,
+  getAllChainIds,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -103,15 +105,23 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedAccounts = getRequestedAccounts(requestedCaip25CaveatValue);
-  const requestedChainIds = getRequestedChainIds(requestedCaip25CaveatValue);
+  const requestedAccounts = getAllAccounts(requestedCaip25CaveatValue);
+  const requestedChainIds = getAllChainIds(requestedCaip25CaveatValue);
 
   const networkConfigurations = useSelector(
     getConsolidatedNetworkConfigurations,
   );
-  const filteredNetworkConfigurations = getFilteredNetworks(
-    networkConfigurations,
-    requestedCaip25CaveatValue,
+  console.log('networkConfigurations', networkConfigurations);
+
+  // const filteredNetworkConfigurations = getFilteredNetworks(
+  //   networkConfigurations,
+  //   requestedCaip25CaveatValue,
+  // );
+
+  const filteredNetworkConfigurations = Object.fromEntries(
+    Object.entries(networkConfigurations).filter(([chainId]) =>
+      requestedChainIds.includes(chainId),
+    ),
   );
 
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -172,9 +182,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     requestedCaip25CaveatValue,
   );
 
+  // This needs to be enhanced for new types
   const supportedRequestedAccounts = requestedAccounts.filter((account) =>
     filteredAccounts.find(({ address }) =>
-      isEqualCaseInsensitive(address, account),
+      isEqualCaseInsensitive(address, account.address),
     ),
   );
 
@@ -185,10 +196,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     ? [currentAccount.address]
     : [filteredAccounts[0]?.address].filter(Boolean);
 
+  // We need a default per requested namespace
   const defaultAccountsAddresses =
     supportedRequestedAccounts.length > 0
       ? supportedRequestedAccounts
       : currentAccountAddress;
+
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );

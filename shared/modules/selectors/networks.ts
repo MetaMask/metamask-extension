@@ -6,6 +6,8 @@ import {
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
 import { createDeepEqualSelector } from './util';
+import { parseCaipChainId } from '@metamask/utils';
+import { hexToDecimal } from '../conversion.utils';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -79,8 +81,20 @@ export const getConsolidatedNetworkConfigurations = createDeepEqualSelector(
     networkConfigurationsByChainId,
     multichainNetworkConfigurationsByChainId,
   ) => {
+    const caipFormattedEvmNetworkConfigurations: Record<
+      string,
+      NetworkConfiguration
+    > = {};
+
+    Object.entries(networkConfigurationsByChainId).forEach(
+      ([chainId, network]) => {
+        const caipChainId = `eip155:${hexToDecimal(chainId)}`;
+        caipFormattedEvmNetworkConfigurations[caipChainId] = network;
+      },
+    );
+
     return {
-      ...networkConfigurationsByChainId,
+      ...caipFormattedEvmNetworkConfigurations,
       ...multichainNetworkConfigurationsByChainId,
     };
   },

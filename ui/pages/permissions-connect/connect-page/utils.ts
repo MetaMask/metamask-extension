@@ -1,4 +1,11 @@
-import { Hex, parseCaipAccountId } from '@metamask/utils';
+import {
+  CaipAccountAddress,
+  CaipNamespace,
+  CaipReference,
+  Hex,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
@@ -83,7 +90,11 @@ export function getCaip25PermissionsResponse(
 export function getFilteredAccounts(
   accounts: MergedInternalAccount[],
   requestedCaip25CaveatValue: Caip25CaveatValue,
-): MergedInternalAccount[] {
+): {
+  address: CaipAccountAddress;
+  namespace: CaipNamespace;
+  reference: CaipReference;
+}[] {
   const requestedScopes = new Set([
     ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
     ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
@@ -93,17 +104,108 @@ export function getFilteredAccounts(
     (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
   );
 
-  return accounts.filter((account) => {
+  const filteredAccounts = accounts.filter((account) => {
     const hasUniversalEipScope =
       hasEipRequests && account.scopes.includes('eip155:0');
 
     if (hasUniversalEipScope) {
       return true;
     }
+    /*
+    [
+    {
+        "type": "solana:data-account",
+        "id": "705449e6-e9e4-41b0-a2ef-d56689fd6b6a",
+        "address": "43gdHDjZKnum4iZ2snLih2fu9FGWytHeFu9Fv2j91dCb",
+        "options": {
+            "scope": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "entropySource": "01JNSCFB61ZBXCHWCBT0CNZSHW",
+            "imported": false
+        },
+        "methods": [
+            "signAndSendTransaction",
+            "signTransaction",
+            "signMessage",
+            "signIn"
+        ],
+        "scopes": [
+            "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+            "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+        ],
+        "metadata": {
+            "name": "Solana Account 1",
+            "importTime": 1741642143176,
+            "keyring": {
+                "type": "Snap Keyring"
+            },
+            "snap": {
+                "id": "npm:@metamask/solana-wallet-snap",
+                "name": "Solana",
+                "enabled": true
+            },
+            "lastSelected": 1742928117271
+        },
+        "balance": "0",
+        "pinned": false,
+        "hidden": false,
+        "active": false
+    },
+    {
+        "type": "solana:data-account",
+        "id": "cd709c6e-4a32-454b-bfe7-02e26024d0b3",
+        "address": "BUDhihG2wwL7aCmnQyv5g7Mw4Rqo8oiEhgJVDdSdW9b4",
+        "options": {
+            "scope": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "entropySource": "01JNSCFB61ZBXCHWCBT0CNZSHW",
+            "imported": false
+        },
+        "methods": [
+            "signAndSendTransaction",
+            "signTransaction",
+            "signMessage",
+            "signIn"
+        ],
+        "scopes": [
+            "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+            "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+        ],
+        "metadata": {
+            "name": "Solana Account 2",
+            "importTime": 1741728982744,
+            "keyring": {
+                "type": "Snap Keyring"
+            },
+            "snap": {
+                "id": "npm:@metamask/solana-wallet-snap",
+                "name": "Solana",
+                "enabled": true
+            },
+            "lastSelected": 1742928115471
+        },
+        "balance": "0",
+        "pinned": false,
+        "hidden": false,
+        "active": false
+    }
+]
+    */
 
     return account.scopes.some((accountScope) =>
       requestedScopes.has(accountScope),
     );
+  });
+
+  return filteredAccounts.map((internalAccount: MergedInternalAccount) => {
+    const { namespace, reference } = parseCaipChainId(
+      internalAccount.scopes[0],
+    );
+    return {
+      address: internalAccount.address,
+      namespace,
+      reference,
+    };
   });
 }
 
@@ -146,7 +248,8 @@ export function getAllAccounts(requestedCaip25CaveatValue: Caip25CaveatValue) {
     .flatMap((scope) => scope.accounts)
     .map((account) => ({
       address: parseCaipAccountId(account).address,
-      chainId: parseCaipAccountId(account).chainId,
+      namespace: parseCaipAccountId(account).chain.namespace,
+      reference: parseCaipAccountId(account).chain.reference,
     }));
 
   const optionalAccounts = Object.values(
@@ -155,7 +258,8 @@ export function getAllAccounts(requestedCaip25CaveatValue: Caip25CaveatValue) {
     .flatMap((scope) => scope.accounts)
     .map((account) => ({
       address: parseCaipAccountId(account).address,
-      chainId: parseCaipAccountId(account).chainId,
+      namespace: parseCaipAccountId(account).chain.namespace,
+      reference: parseCaipAccountId(account).chain.reference,
     }));
 
   return [...requiredAccounts, ...optionalAccounts];
@@ -182,6 +286,15 @@ export function getRequestedChainIds(caveatValue: Caip25CaveatValue): string[] {
 
     return scope;
   });
+}
+
+export function getAllChainIds(requestedCaip25CaveatValue: Caip25CaveatValue) {
+  const allScopes = [
+    ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
+    ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
+  ];
+
+  return [...new Set(allScopes)];
 }
 
 /**
