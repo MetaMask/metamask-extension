@@ -19023,7 +19023,7 @@ THE SOFTWARE.
 ******************************
 
 @metamask/eth-ledger-bridge-keyring
-10.0.0 <https://github.com/MetaMask/eth-ledger-bridge-keyring>
+11.0.0 <https://github.com/MetaMask/eth-ledger-bridge-keyring>
 ISC License
 
 Copyright (c) 2020 MetaMask
