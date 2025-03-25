@@ -19623,7 +19623,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/keyring-controller
-19.2.1 <https://github.com/MetaMask/core>
+19.2.2 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
