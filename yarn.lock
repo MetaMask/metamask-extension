@@ -4149,7 +4149,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/metamask-airgapped-keyring@npm:^0.14.1":
+"@keystonehq/metamask-airgapped-keyring@npm:0.14.1":
   version: 0.14.1
   resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.14.1"
   dependencies:
@@ -4160,6 +4160,20 @@ __metadata:
     rlp: "npm:^2.2.6"
     uuid: "npm:^8.3.2"
   checksum: 10/8e34be8813c51488c7dc9b641ed17258740dda45fb72fe48670b077ecfb92273e0c5a2fbbab121b01d7e0906a3ec512f261fceb95da8089550021ab6a0c89c6b
+  languageName: node
+  linkType: hard
+
+"@keystonehq/metamask-airgapped-keyring@patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch":
+  version: 0.14.1
+  resolution: "@keystonehq/metamask-airgapped-keyring@patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch::version=0.14.1&hash=03f5fe"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.0.2"
+    "@keystonehq/base-eth-keyring": "npm:^0.14.1"
+    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
+    "@metamask/obs-store": "npm:^9.0.0"
+    rlp: "npm:^2.2.6"
+    uuid: "npm:^8.3.2"
+  checksum: 10/fe16cd952ffc588e74457bbee5bdb0434e1820a8de5d5fa2f5c95b7edfa5a3c51ca610d60dc334517b79c2666be25b1e6cfdde53fa5c043029395a1e67b66d19
   languageName: node
   linkType: hard
 
@@ -5304,9 +5318,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:10.0.0"
+"@metamask/eth-ledger-bridge-keyring@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5314,7 +5328,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/a1e4e410aa051fa85abdff044eab4ae3fd594442186b53d1c21d12817d2ece51e510f86ecd9e69658fc2c3cbbf53d5941eb4ea93928f74c11e0ff5e399781a2e
+  checksum: 10/7f6ed01ee083e7fb7d01520b15cf20e70e51e397134023d7577c7a7b6256b207b999992109e706348b507193def075437f80b6889f10b58a31e877124b9ffb20
   languageName: node
   linkType: hard
 
@@ -6518,9 +6532,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^50.0.0":
-  version: 50.0.0
-  resolution: "@metamask/transaction-controller@npm:50.0.0"
+"@metamask/transaction-controller@npm:^52.1.0":
+  version: 52.1.0
+  resolution: "@metamask/transaction-controller@npm:52.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6544,13 +6558,13 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^26.0.0
+    "@metamask/accounts-controller": ^27.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/network-controller": ^22.0.0
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/7882a57f04552b47ad8755076d95d6256db4cc76918aa9775f6b0dac7b574479f218e7d7eac2b10facbb2468c43b38554bdce578a561ff6e442ec9f481b56b9a
+  checksum: 10/934d90160ec2094a5f0f9f1c8a9a38580522744b921c94ec4c2b59d3459fb7ecfcde18c21ba0d3b113b428ac3d812c9d123c78868e679d03bda6c3c971ca9415
   languageName: node
   linkType: hard
 
@@ -27235,7 +27249,7 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
+    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch"
     "@lavamoat/allow-scripts": "npm:^3.3.1"
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
@@ -27279,7 +27293,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^10.0.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^12.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
@@ -27336,7 +27350,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.1.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^50.0.0"
+    "@metamask/transaction-controller": "npm:^52.1.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"

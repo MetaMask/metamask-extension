@@ -2840,22 +2840,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        const filteredChainIds = this.#getAllAddedNetworks().filter(
-          (networkId) =>
-            this.preferencesController.state.incomingTransactionsPreferences[
-              networkId
-            ],
-        );
+        this.txController.stopIncomingTransactionPolling();
 
-        if (filteredChainIds.length > 0) {
-          await this.txController.stopIncomingTransactionPolling();
+        await this.txController.updateIncomingTransactions();
 
-          await this.txController.updateIncomingTransactions(filteredChainIds);
-
-          await this.txController.startIncomingTransactionPolling(
-            filteredChainIds,
-          );
-        }
+        this.txController.startIncomingTransactionPolling();
       },
     );
 
@@ -3379,7 +3368,8 @@ export default class MetamaskController extends EventEmitter {
       getNextAvailableAccountName:
         accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
+      getAccountsBySnapId: (snapId) =>
+        getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
       ///: END:ONLY_INCLUDE_IF
 
       // hardware wallets
@@ -7597,9 +7587,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions([
-      this.#getGlobalChainId(),
-    ]);
+    await this.txController.updateIncomingTransactions();
   }
 
   _notifyAccountsChange(origin, newAccounts) {
@@ -8066,17 +8054,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #restartSmartTransactionPoller() {
-    const filteredChainIds = this.#getAllAddedNetworks().filter(
-      (networkId) =>
-        this.preferencesController.state.incomingTransactionsPreferences[
-          networkId
-        ],
-    );
-
-    if (filteredChainIds.length > 0) {
-      this.txController.stopIncomingTransactionPolling();
-      this.txController.startIncomingTransactionPolling(filteredChainIds);
-    }
+    this.txController.stopIncomingTransactionPolling();
+    this.txController.startIncomingTransactionPolling();
   }
 
   /**
