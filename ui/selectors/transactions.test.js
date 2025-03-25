@@ -26,6 +26,7 @@ import {
   smartTransactionsListSelector,
   getTransactions,
   getAllNetworkTransactions,
+  getUnapprovedTransactions,
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
   transactionSubSelectorAllChains,
@@ -1753,6 +1754,73 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if there are no transactions', () => {
       const results = getTransactions({});
       expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('getUnapprovedTransactions', () => {
+    it('returns confirmations from all networks', () => {
+      const state = {
+        metamask: {
+          incomingTransactionsPreferences: true,
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x2',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xOtherAddress' },
+            },
+            {
+              id: 3,
+              chainId: '0x3',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.outgoing,
+              txParams: { to: '0xSelectedAddress' },
+            },
+            {
+              id: 4,
+              chainId: '0x1',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+        },
+      };
+
+      const result = getUnapprovedTransactions(state);
+
+      expect(result).toStrictEqual({
+        1: state.metamask.transactions[0],
+        2: state.metamask.transactions[1],
+        3: state.metamask.transactions[2],
+        4: state.metamask.transactions[3],
+      });
     });
   });
 });
