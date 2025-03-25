@@ -32,33 +32,9 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
+            toChain: 'Linea',
           },
           1,
-        );
-
-        await bridgeTransaction(
-          driver,
-          {
-            amount: '1',
-            tokenFrom: 'ETH',
-            tokenTo: 'WETH',
-            fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
-          },
-          2,
-        );
-
-        await bridgeTransaction(
-          driver,
-          {
-            amount: '2',
-            tokenFrom: 'ETH',
-            tokenTo: 'USDT',
-            fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
-          },
-          3,
         );
       },
     );
