@@ -18,15 +18,9 @@ class TestDappMultichain {
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
 
-  private readonly walletCreateSessionButton = {
-    text: 'wallet_createSession',
-    tag: 'span',
-  };
+  private readonly walletCreateSessionButton = '#create-session-btn';
 
-  private readonly walletGetSessionButton = {
-    text: 'wallet_getSession',
-    tag: 'span',
-  };
+  private readonly walletGetSessionButton = '#get-session-btn';
 
   private readonly resultSummary = '.result-summary';
 

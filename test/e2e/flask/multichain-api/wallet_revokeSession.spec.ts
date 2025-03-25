@@ -94,10 +94,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
-        await driver.clickElement({
-          text: 'wallet_revokeSession',
-          tag: 'span',
-        });
+        await driver.clickElement('#revoke-session-btn');
 
         for (const scope of GANACHE_SCOPES) {
           const request = {
