@@ -25,7 +25,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 import { DestinationAccount } from '../types';
-import { useDestinationAccountResolution } from '../../hooks/useDestinationAccountResolution';
+import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -45,7 +45,7 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
-  const { externalAccount } = useDestinationAccountResolution({
+  const { externalAccount } = useExternalAccountResolution({
     searchQuery,
     isDestinationSolana,
     accounts,

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
-import { DestinationAccount, ExternalAccount } from '../prepare/types';
+import { ExternalAccount } from '../prepare/types';
 import {
   getDomainResolutions,
   lookupDomainName,
@@ -12,23 +12,23 @@ import {
 } from '../../../ducks/domains';
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 
-type UseDestinationAccountResolutionProps = {
+type UseExternalAccountResolutionProps = {
   searchQuery: string;
   isDestinationSolana: boolean;
   accounts: InternalAccount[];
 };
 
-type UseDestinationAccountResolutionResult = {
+type UseExternalAccountResolutionResult = {
   isValidAddress: boolean;
   isValidEnsName: boolean;
   externalAccount: ExternalAccount | null;
 };
 
-export const useDestinationAccountResolution = ({
+export const useExternalAccountResolution = ({
   searchQuery,
   isDestinationSolana,
   accounts,
-}: UseDestinationAccountResolutionProps): UseDestinationAccountResolutionResult => {
+}: UseExternalAccountResolutionProps): UseExternalAccountResolutionResult => {
   const dispatch = useDispatch();
   const domainResolutionsFromStore = useSelector(getDomainResolutions);
 
