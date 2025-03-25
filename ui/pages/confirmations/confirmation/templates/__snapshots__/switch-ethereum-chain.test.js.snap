@@ -6,7 +6,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="mm-box confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
       style="overflow-y: auto;"
     >
       <h3
@@ -119,7 +119,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
     class="confirmation-page"
   >
     <div
-      class="mm-box confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
       style="overflow-y: auto;"
     >
       <h3
