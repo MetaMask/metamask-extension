@@ -101,11 +101,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
       },
       includeTokenTransfers: false,
-      isEnabled: () =>
-        preferencesController().state.incomingTransactionsPreferences?.[
-          // @ts-expect-error PreferencesController incorrectly expects number index
-          getGlobalChainId()
-        ] && onboardingController().state.completedOnboarding,
+      isEnabled: () => onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
     },

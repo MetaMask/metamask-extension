@@ -4574,16 +4574,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para exibir o campo de dados hexa na tela de envio"
   },
-  "showIncomingTransactions": {
-    "message": "Exibir transações recebidas"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Isso depende de $1, que terá acesso ao seu endereço Ethereum e ao seu endereço IP. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Isso depende de diferentes APIs de terceiros para cada rede, o que expõe seu endereço Ethereum e seu endereço IP."
-  },
   "showLess": {
     "message": "Mostrar menos"
   },

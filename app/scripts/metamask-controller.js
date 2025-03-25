@@ -3366,10 +3366,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
-      setIncomingTransactionsPreferences:
-        preferencesController.setIncomingTransactionsPreferences.bind(
-          preferencesController,
-        ),
       setServiceWorkerKeepAlivePreference:
         preferencesController.setServiceWorkerKeepAlivePreference.bind(
           preferencesController,

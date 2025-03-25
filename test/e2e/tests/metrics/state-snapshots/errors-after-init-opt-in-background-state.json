@@ -228,7 +228,6 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
-    "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",
@@ -259,8 +258,7 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object"
+    "isMultiAccountBalancesEnabled": "boolean"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {

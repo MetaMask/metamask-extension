@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -18,10 +18,7 @@ import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
   type PreferencesState,
 } from '@metamask/preferences-controller';
-import {
-  CHAIN_IDS,
-  IPFS_DEFAULT_GATEWAY_URL,
-} from '../../../shared/constants/network';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
@@ -29,17 +26,6 @@ type AccountIdentityEntry = {
   address: string;
   name: string;
   lastSelected?: number;
-};
-
-const mainNetworks = {
-  [CHAIN_IDS.MAINNET]: true,
-  [CHAIN_IDS.LINEA_MAINNET]: true,
-};
-
-const testNetworks = {
-  [CHAIN_IDS.GOERLI]: true,
-  [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
 const controllerName = 'PreferencesController';
@@ -148,7 +134,6 @@ export type PreferencesControllerState = Omit<
   ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
-  incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
   currentLocale: string;
   forgottenPassword: boolean;
@@ -194,10 +179,6 @@ export const getDefaultPreferencesControllerState =
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     featureFlags: {},
-    incomingTransactionsPreferences: {
-      ...mainNetworks,
-      ...testNetworks,
-    },
     knownMethodData: {},
     currentLocale: '',
     identities: {},
@@ -249,28 +230,6 @@ export const getDefaultPreferencesControllerState =
     useExternalServices: true,
     // from core PreferencesController
     isMultiAccountBalancesEnabled: true,
-    showIncomingTransactions: {
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
-    },
   });
 
 /**
@@ -357,10 +316,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  incomingTransactionsPreferences: {
-    persist: true,
-    anonymous: true,
-  },
   knownMethodData: {
     persist: true,
     anonymous: false,
@@ -444,7 +399,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
-  showIncomingTransactions: { persist: true, anonymous: true },
   accountUpgradeDisabledChains: { persist: true, anonymous: false },
 };
 
@@ -461,27 +415,12 @@ export class PreferencesController extends BaseController<
    * @param options.state - The initial controller state
    */
   constructor({ messenger, state }: PreferencesControllerOptions) {
-    const { networkConfigurationsByChainId } = messenger.call(
-      'NetworkController:getState',
-    );
-
-    const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
-      networkConfigurationsByChainId ?? {},
-    ).reduce((acc: Record<Hex, boolean>, element) => {
-      acc[element.chainId] = true;
-      return acc;
-    }, {});
     super({
       messenger,
       metadata: controllerMetadata,
       name: controllerName,
       state: {
         ...getDefaultPreferencesControllerState(),
-        incomingTransactionsPreferences: {
-          ...mainNetworks,
-          ...addedNonMainNetwork,
-          ...testNetworks,
-        },
         ...state,
       },
     });
@@ -975,20 +914,6 @@ export class PreferencesController extends BaseController<
     this.update((state) => {
       state.overrideContentSecurityPolicyHeader =
         overrideContentSecurityPolicyHeader;
-    });
-  }
-
-  /**
-   * A setter for the incomingTransactions in preference to be updated
-   *
-   * @param chainId - chainId of the network
-   * @param value - preference of certain network, true to be enabled
-   */
-  setIncomingTransactionsPreferences(chainId: Hex, value: boolean): void {
-    const previousValue = this.state.incomingTransactionsPreferences;
-    const updatedValue = { ...previousValue, [chainId]: value };
-    this.update((state) => {
-      state.incomingTransactionsPreferences = updatedValue;
     });
   }
 

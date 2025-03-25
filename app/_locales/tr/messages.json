@@ -4574,16 +4574,6 @@
   "showHexDataDescription": {
     "message": "Gönder ekranında on altılı veri alanını göstermek için bunu seçin"
   },
-  "showIncomingTransactions": {
-    "message": "Gelen işlemleri göster"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ethereum adresinizi ve IP adresinizi açığa çıkaran her ağ için farklı üçüncü taraf API'lerine güvenir."
-  },
   "showLess": {
     "message": "Daha az göster"
   },

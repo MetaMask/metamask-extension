@@ -35,13 +35,6 @@ describe('Privacy Settings Onboarding View', () => {
       preferences: {
         petnamesEnabled: true,
       },
-      incomingTransactionsPreferences: {
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [CHAIN_IDS.SEPOLIA]: false,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      },
       use4ByteResolution: true,
       useTokenDetection: false,
       useCurrencyRateCheck: true,
@@ -67,7 +60,6 @@ describe('Privacy Settings Onboarding View', () => {
     .mockImplementation(() => Promise.resolve());
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
-  const setIncomingTransactionsPreferencesStub = jest.fn();
   const onboardingToggleBasicFunctionalityOnStub = jest.fn();
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
@@ -84,7 +76,6 @@ describe('Privacy Settings Onboarding View', () => {
     completeOnboarding: completeOnboardingStub,
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
-    setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
     toggleExternalServices: toggleExternalServicesStub,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
@@ -106,7 +97,6 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(0);
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(0);
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
@@ -129,11 +119,6 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[0]); // setUseTokenDetectionStub
     fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
 
-    fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub
-    fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (2)
-    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (3)
-    fireEvent.click(toggles[5]); // setIncomingTransactionsPreferencesStub (4)
-
     fireEvent.click(toggles[6]); // setUseCurrencyRateCheckStub
     fireEvent.click(toggles[7]); // setUseAddressBarEnsResolutionStub
     fireEvent.click(toggles[8]); // setUseMultiAccountBalanceCheckerStub
@@ -154,13 +139,6 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
     expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
       false,
-    );
-
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(4);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
-      CHAIN_IDS.MAINNET,
-      false,
-      expect.anything(),
     );
 
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);

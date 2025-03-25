@@ -124,8 +124,7 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "isMultiAccountBalancesEnabled": "boolean",
-      "showIncomingTransactions": "object"
+      "isMultiAccountBalancesEnabled": "boolean"
     },
     "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },

@@ -4574,16 +4574,6 @@
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
   },
-  "showIncomingTransactions": {
-    "message": "수신되는 트랜잭션 표시"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다.",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "이는 네트워크마다 다른 제삼자 API에 의존하며, 이더리움 주소와 IP 주소가 노출됩니다."
-  },
   "showLess": {
     "message": "간략히 보기"
   },

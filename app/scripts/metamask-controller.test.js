@@ -3577,33 +3577,13 @@ describe('MetaMaskController', () => {
     });
 
     describe('incoming transactions', () => {
-      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
-        expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: true,
-          },
-        });
-
+      it('starts incoming transaction polling', async () => {
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async () => {
-        expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: false,
-          },
-        });
-
+      it('stops incoming transaction polling before re-starting', async () => {
         expect(
           TransactionController.prototype.stopIncomingTransactionPolling,
         ).toHaveBeenCalledTimes(1);

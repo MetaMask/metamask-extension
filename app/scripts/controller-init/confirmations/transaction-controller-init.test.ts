@@ -115,15 +115,12 @@ describe('Transaction Controller Init', () => {
   });
 
   describe('determines incoming transactions is enabled', () => {
-    it('when enabled in preferences and onboarding complete', () => {
+    it('when onboarding complete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
         {
           state: {
             completedOnboarding: true,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: true,
-            },
           },
         },
       )?.isEnabled;
@@ -131,31 +128,12 @@ describe('Transaction Controller Init', () => {
       expect(incomingTransactionsIsEnabled?.()).toBe(true);
     });
 
-    it('unless enabled in preferences but onboarding incomplete', () => {
+    it('when onboarding incomplete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
         {
           state: {
             completedOnboarding: false,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: true,
-            },
-          },
-        },
-      )?.isEnabled;
-
-      expect(incomingTransactionsIsEnabled?.()).toBe(false);
-    });
-
-    it('unless disabled in preferences and onboarding complete', () => {
-      const incomingTransactionsIsEnabled = testConstructorOption(
-        'incomingTransactions',
-        {
-          state: {
-            completedOnboarding: true,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: false,
-            },
           },
         },
       )?.isEnabled;

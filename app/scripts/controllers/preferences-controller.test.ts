@@ -499,45 +499,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setIncomingTransactionsPreferences', () => {
-    const { controller } = setupController({});
-    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
-
-    it('should have default value combined', () => {
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-
-    it('should update incomingTransactionsPreferences with given value set', () => {
-      controller.setIncomingTransactionsPreferences(
-        CHAIN_IDS.LINEA_MAINNET,
-        false,
-      );
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-  });
-
   describe('AccountsController:stateChange subscription', () => {
     const { controller, messenger, accountsController } = setupController({});
     it('sync the identities with the accounts in the accounts controller', () => {

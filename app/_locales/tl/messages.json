@@ -4574,16 +4574,6 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex na data sa screen ng pagpapadala"
   },
-  "showIncomingTransactions": {
-    "message": "Ipakita ang mga papasok na transaksyon"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Umaasa ito sa $1 na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ito ay umaasa sa ibang third party na API para sa bawat network, na naglalantad sa iyong address sa Ethereum at iyong IP address."
-  },
   "showLess": {
     "message": "Magpakita ng mas kaunti"
   },

@@ -957,32 +957,9 @@ describe('Transaction Selectors', () => {
   });
 
   describe('incomingTxListSelectorAllChains', () => {
-    it('returns an empty array if incomingTransactionsPreferences is not present', () => {
-      const state = {
-        metamask: {
-          incomingTransactionsPreferences: null,
-          transactions: [
-            {
-              id: 1,
-              type: TransactionType.incoming,
-              txParams: { to: '0xAddress' },
-            },
-          ],
-          internalAccounts: {
-            selectedAccount: '0xAddress',
-          },
-        },
-      };
-
-      const result = incomingTxListSelectorAllChains(state);
-
-      expect(result).toStrictEqual([]);
-    });
-
     it('returns an empty array if there are no incoming transactions', () => {
       const state = {
         metamask: {
-          incomingTransactionsPreferences: true,
           transactions: [
             {
               id: 1,
@@ -1019,7 +996,6 @@ describe('Transaction Selectors', () => {
     it('returns only incoming transactions for the selected address across networks', () => {
       const state = {
         metamask: {
-          incomingTransactionsPreferences: true,
           transactions: [
             {
               id: 1,
@@ -1078,7 +1054,6 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if no transactions match the selected address', () => {
       const state = {
         metamask: {
-          incomingTransactionsPreferences: true,
           transactions: [
             {
               id: 1,
@@ -1302,7 +1277,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           unapprovedPersonalMsgs: {},
-          incomingTransactionsPreferences: true,
           transactions: [],
           internalAccounts: {
             accounts: {
@@ -1360,7 +1334,6 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: unapprovedMessages[0],
           },
-          incomingTransactionsPreferences: true,
           transactions: [],
           internalAccounts: {
             accounts: {
@@ -1417,7 +1390,6 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           unapprovedPersonalMsgs: {},
-          incomingTransactionsPreferences: true,
           transactions: incomingTxList,
           internalAccounts: {
             accounts: {
@@ -1485,7 +1457,6 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: unapprovedMessages[0],
           },
-          incomingTransactionsPreferences: true,
           transactions: incomingTxList,
           internalAccounts: {
             accounts: {
