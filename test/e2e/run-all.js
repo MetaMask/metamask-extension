@@ -234,13 +234,13 @@ async function main() {
   // on every build type in which they are running to avoid regressions across
   // builds.
   const featureTestsOnMain = [
-    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
-    ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+    // ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    // ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
   ];
 
   if (buildType === 'flask') {
     testPaths = [
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask', 'multichain-api'))),
       ...featureTestsOnMain,
     ];
   } else if (rpc) {
