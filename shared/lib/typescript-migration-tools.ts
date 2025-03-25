@@ -30,12 +30,9 @@ type IsWideningOf<
  * are already using the widened types and allows for a gradual narrowing of the signature
  * to the desired types. Designed to help keep PRs small and focused.
  *
- * Does not alter runtime behavior as it returns the original function with a modified type signature.
+ * Uses IsWideningOf to enforce that the widened types are a superset of the original types.
  *
- * When to use:
- * - During migration from looser types to stricter types
- * - When you want to gradually narrow parameter types without breaking existing code
- * - When refactoring large codebases where making all type changes at once would be impractical
+ * Does not alter runtime behavior as it returns the original function with a modified type signature.
  *
  * @example
  * function takesHex(hex: `0x${string}`) {

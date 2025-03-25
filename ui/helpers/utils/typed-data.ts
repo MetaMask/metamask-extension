@@ -1,4 +1,3 @@
-import { isString } from 'lodash';
 import { MessageTypes } from '@metamask/eth-sig-util';
 
 /**
@@ -221,10 +220,15 @@ export function sortSelectedInternalAccounts<
  * @param value - Value to sanitize
  * @returns Escaped string or original param value
  */
-export const sanitizeString = (value: string | unknown): string => {
-  if (!value || !isString(value)) {
-    return String(value);
+export const sanitizeString = (value: string | unknown): string | unknown => {
+  if (!value) {
+    return value;
   }
+
+  if (typeof value !== 'string') {
+    return value;
+  }
+
   const regex = /\u202E/giu;
   return value.replace(regex, '\\u202E');
 };

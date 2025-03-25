@@ -108,9 +108,9 @@ export const fetchTokenExchangeRates = tsMigrateWidenSignature<
  * @param hex - Hex string to convert
  * @returns UTF-8 string or original hex if conversion fails
  */
-export const hexToText = (hex?: string): string => {
+export const hexToText = (hex?: string): string | undefined => {
   if (!hex) {
-    return hex || '';
+    return hex;
   }
   try {
     const stripped = hex.startsWith('0x') ? hex.slice(2) : hex;
