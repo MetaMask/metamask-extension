@@ -22,28 +22,38 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   rateWei: toHex('1798170000000000000'),
   recipient: '0x7',
   symbol: 'USDC',
-  tokenAddress: '0xabc',
+  tokenAddress: TOKEN_ADDRESS_MOCK,
 };
 
-const store = configureStore(
-  getMockConfirmStateForTransaction(
-    genUnapprovedContractInteractionConfirmation(),
-    {
-      metamask: {
-        preferences: {
-          showFiatInTestnets: true,
+function getStore({
+  gasFeeTokens,
+  noSelectedGasFeeToken,
+}: { gasFeeTokens?: GasFeeToken[]; noSelectedGasFeeToken?: boolean } = {}) {
+  return configureStore(
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: noSelectedGasFeeToken
+          ? undefined
+          : TOKEN_ADDRESS_MOCK,
+      }),
+      {
+        metamask: {
+          preferences: {
+            showFiatInTestnets: true,
+          },
         },
       },
-    },
-  ),
-);
+    ),
+  );
+}
 
 const Story = {
   title: 'Confirmations/Components/Confirm/SelectedGasFeeToken',
   component: SelectedGasFeeToken,
   decorators: [
-    (story: any) => (
-      <Provider store={store}>
+    (story: any, { args }) => (
+      <Provider store={getStore(args ?? {})}>
         <ConfirmContextProvider>{story()}</ConfirmContextProvider>
       </Provider>
     ),
@@ -52,8 +62,16 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => (
-  <SelectedGasFeeToken gasFeeToken={GAS_FEE_TOKEN_MOCK} />
-);
+export const DefaultStory = () => <SelectedGasFeeToken />;
 
 DefaultStory.storyName = 'Default';
+
+export const NativeStory = () => <SelectedGasFeeToken />;
+
+NativeStory.storyName = 'Native';
+NativeStory.args = { noSelectedGasFeeToken: true };
+
+export const NoTokenStory = () => <SelectedGasFeeToken />;
+
+NoTokenStory.storyName = 'No Tokens';
+NoTokenStory.args = { noSelectedGasFeeToken: true, gasFeeTokens: [] };

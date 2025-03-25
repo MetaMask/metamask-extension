@@ -1,10 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
-  AvatarToken,
-  AvatarTokenSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -16,19 +12,21 @@ import {
   BorderRadius,
   Display,
 } from '../../../../../../../helpers/constants/design-system';
-import Identicon from '../../../../../../../components/ui/identicon';
-import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useSelector } from 'react-redux';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  useSelectedGasFeeToken,
+} from '../../hooks/useGasFeeToken';
+import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, gasFeeTokens, selectedGasFeeToken } = currentConfirmation;
+  const { chainId, gasFeeTokens } = currentConfirmation;
   const hasGasFeeTokens = Boolean(gasFeeTokens?.length);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
@@ -44,12 +42,7 @@ export function SelectedGasFeeToken() {
   }, [hasGasFeeTokens]);
 
   const nativeTicker = networkConfiguration?.nativeCurrency;
-
-  const gasFeeToken = gasFeeTokens?.find(
-    (token) =>
-      token.tokenAddress?.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
-  );
-
+  const gasFeeToken = useSelectedGasFeeToken();
   const symbol = gasFeeToken?.symbol ?? nativeTicker;
 
   return (
@@ -69,37 +62,15 @@ export function SelectedGasFeeToken() {
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
         }}
       >
-        {!gasFeeToken && (
-          <NativeIcon chainId={chainId} nativeSymbol={nativeTicker} />
-        )}
-        {gasFeeToken && (
-          <Identicon address={gasFeeToken.tokenAddress} diameter={12} />
-        )}
+        <GasFeeTokenIcon
+          tokenAddress={gasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS}
+          size={GasFeeTokenIconSize.Sm}
+        />
         <Text>{symbol}</Text>
         {hasGasFeeTokens && (
-          <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+          <Icon data-testid='selected-gas-fee-token-arrow' name={IconName.ArrowDown} size={IconSize.Sm} />
         )}
       </Box>
     </>
-  );
-}
-
-function NativeIcon({
-  chainId,
-  nativeSymbol,
-}: {
-  chainId: Hex;
-  nativeSymbol: string;
-}) {
-  const source =
-    CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
-
-  return (
-    <AvatarToken
-      src={source}
-      name={nativeSymbol}
-      size={AvatarTokenSize.Xs}
-      backgroundColor={BackgroundColor.backgroundDefault}
-    />
   );
 }
