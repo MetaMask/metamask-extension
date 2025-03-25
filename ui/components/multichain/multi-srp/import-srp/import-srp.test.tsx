@@ -58,6 +58,49 @@ describe('ImportSrp', () => {
     jest.restoreAllMocks();
   });
 
+  it('should not show error messages until all words are provided', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { queryByText } = render;
+
+    // Initially, no error message should be shown
+    expect(
+      queryByText('Word 1 is incorrect or misspelled.'),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+    ).not.toBeInTheDocument();
+
+    // Paste a partial SRP (first 6 words)
+    const partialSrp = VALID_SECRET_RECOVERY_PHRASE.split(' ')
+      .slice(0, 6)
+      .join(' ');
+    pasteSrpIntoFirstInput(render, partialSrp);
+
+    // Still no error message should be shown
+    expect(
+      queryByText('Word 1 is incorrect or misspelled.'),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+    ).not.toBeInTheDocument();
+
+    // Paste the complete SRP
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+
+    // Now error messages should be shown if there are any issues
+    await waitFor(() => {
+      expect(
+        queryByText('Word 1 is incorrect or misspelled.'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it('enables the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
     const render = renderWithProvider(
       <ImportSrp onActionComplete={jest.fn()} />,
