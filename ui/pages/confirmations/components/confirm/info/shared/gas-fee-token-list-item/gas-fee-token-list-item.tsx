@@ -157,6 +157,8 @@ function ListItem({
 }
 
 function InsufficientBalanceIndicator() {
+  const t = useI18nContext();
+
   return (
     <Box
       display={Display.Flex}
@@ -173,7 +175,7 @@ function InsufficientBalanceIndicator() {
         color={IconColor.iconMuted}
       />
       <Text variant={TextVariant.bodyXsMedium} color={TextColor.textMuted}>
-        Insufficient funds
+        {t('confirmGasFeeTokenInsufficientBalance')}
       </Text>
     </Box>
   );

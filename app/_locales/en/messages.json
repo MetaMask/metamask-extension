@@ -1077,6 +1077,9 @@
   "confirmGasFeeTokenBalance": {
     "message": "Bal:"
   },
+  "confirmGasFeeTokenInsufficientBalance": {
+    "message": "Insufficient funds"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
   },
