@@ -61,14 +61,14 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
           style="flex-grow: 1;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--width-full"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
             >
               <div
                 class="mm-box mm-box--padding-bottom-2"
