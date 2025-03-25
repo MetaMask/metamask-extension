@@ -1088,6 +1088,7 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
 export const QUICKNODE_URLS_BY_INFURA_NETWORK_NAME = {
+  'ethereum-mainnet': process.env.QUICKNODE_MAINNET_URL,
   'linea-mainnet': process.env.QUICKNODE_LINEA_MAINNET_URL,
   'arbitrum-mainnet': process.env.QUICKNODE_ARBITRUM_URL,
   'avalanche-mainnet': process.env.QUICKNODE_AVALANCHE_URL,

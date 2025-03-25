@@ -603,14 +603,14 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // Add failovers for default Infura RPC endpoints
-      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls = process.env
-        .QUICKNODE_MAINNET_URL
-        ? [process.env.QUICKNODE_MAINNET_URL]
-        : [];
-      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls = process
-        .env.QUICKNODE_MAINNET_URL
-        ? [process.env.QUICKNODE_LINEA_MAINNET_URL]
-        : [];
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
+        QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['ethereum-mainnet']
+          ? [QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['ethereum-mainnet']]
+          : [];
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
+        QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['linea-mainnet']
+          ? [QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['linea-mainnet']]
+          : [];
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
