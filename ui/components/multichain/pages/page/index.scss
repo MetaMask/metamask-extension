@@ -29,10 +29,8 @@
     & .multichain-page__inner-container {
       border-radius: 0 0 2px 2px;
       border-top: 0;
-      box-shadow:
-        var(--shadow-size-lg) var(--color-shadow-default),
-        calc(var(--shadow-size-lg) * -1) var(--color-shadow-default),
-        0 var(--shadow-size-lg) var(--color-shadow-default);
+      // Matches the box-shadow of the .main-container
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     }
   }
 
