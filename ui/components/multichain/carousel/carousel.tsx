@@ -43,7 +43,6 @@ export const Carousel = React.forwardRef(
       .filter((slide) => !slide.dismissed || slide.undismissable)
       .sort((a, b) => {
         const isSweepstakesActive = getSweepstakesCampaignActive(
-          // new Date('2025-04-20T12:00:00Z'),
           new Date(new Date().toISOString()),
         );
 
