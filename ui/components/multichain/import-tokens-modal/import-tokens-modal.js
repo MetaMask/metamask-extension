@@ -22,7 +22,6 @@ import {
   getIsTokenDetectionInactiveOnMainnet,
   getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getCurrentNetwork,
@@ -141,7 +140,7 @@ export const ImportTokensModal = ({ onClose }) => {
   // const networkClientId = useSelector(getSelectedNetworkClientId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
-    useState(currentNetwork.chainId);
+    useState(null);
 
   const [defaultActiveTabKey, setDefaultActiveTabKey] = useState(
     TAB_NAMES.SEARCH,
@@ -183,7 +182,6 @@ export const ImportTokensModal = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const tokens = useSelector((state) => state.metamask.tokens);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const contractExchangeRates = useSelector(getTokenExchangeRates);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
@@ -206,15 +204,22 @@ export const ImportTokensModal = ({ onClose }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const [showSymbolAndDecimals, setShowSymbolAndDecimals] = useState(false);
 
+  const blockExplorerUrl =
+    networkConfigurations[selectedNetworkForCustomImport]?.blockExplorerUrls?.[
+      networkConfigurations[selectedNetworkForCustomImport]
+        ?.defaultBlockExplorerUrlIndex
+    ] ?? null;
+
   const chainId = useSelector(getCurrentChainId);
   const blockExplorerTokenLink = getTokenTrackerLink(
     customAddress,
-    chainId,
+    selectedNetworkForCustomImport,
     null,
     null,
-    { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+    { blockExplorerUrl },
   );
-  const blockExplorerLabel = rpcPrefs?.blockExplorerUrl
+
+  const blockExplorerLabel = blockExplorerTokenLink
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
@@ -894,9 +899,14 @@ export const ImportTokensModal = ({ onClose }) => {
                           paddingTop={6}
                           label={t('tokenContractAddress')}
                           value={customAddress}
-                          onChange={(e) =>
-                            handleCustomAddressChange(e.target.value)
-                          }
+                          onChange={(e) => {
+                            if (selectedNetworkForCustomImport) {
+                              handleCustomAddressChange(e.target.value);
+                            } else {
+                              setCustomAddress(e.target.value);
+                              setCustomAddressError(t('pleaseSelectNetwork'));
+                            }
+                          }}
                           helpText={
                             customAddressError ||
                             mainnetTokenWarning ||
@@ -1012,7 +1022,11 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonPrimary
               onClick={() => handleNext()}
               size={Size.LG}
-              disabled={Boolean(hasError()) || !hasSelected()}
+              disabled={
+                Boolean(hasError()) ||
+                !hasSelected() ||
+                !selectedNetworkForCustomImport
+              }
               block
               data-testid="import-tokens-button-next"
             >

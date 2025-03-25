@@ -34,6 +34,7 @@ export const NetworkSelectorCustomImport = ({
 }) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkImageUrl = getImageForChainId(chainId);
+  console.log('networkImageUrl ............', networkImageUrl);
 
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks || {}).forEach((chain) => {
@@ -66,12 +67,14 @@ export const NetworkSelectorCustomImport = ({
           alignItems={AlignItems.center}
           marginLeft="auto"
         >
-          <AvatarNetwork
-            key={networkImageUrl}
-            name={networkImageUrl ?? ''}
-            src={networkImageUrl ?? undefined}
-            size={AvatarNetworkSize.Sm}
-          />
+          {networkImageUrl ? (
+            <AvatarNetwork
+              key={networkImageUrl}
+              name={networkImageUrl ?? ''}
+              src={networkImageUrl ?? undefined}
+              size={AvatarNetworkSize.Sm}
+            />
+          ) : null}
           <ButtonIcon
             marginLeft="auto"
             iconName={IconName.ArrowRight}
