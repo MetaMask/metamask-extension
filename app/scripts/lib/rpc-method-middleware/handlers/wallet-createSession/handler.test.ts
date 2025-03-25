@@ -10,6 +10,7 @@ import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
 import { KnownSessionProperties } from './constants';
+
 jest.mock('../../../util', () => ({
   ...jest.requireActual('../../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
