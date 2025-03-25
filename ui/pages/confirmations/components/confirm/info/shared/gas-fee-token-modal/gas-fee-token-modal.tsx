@@ -22,18 +22,15 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/actions/transaction-controller';
-import { updateEditableParams } from '../../../../../../../store/actions';
-import { useDispatch } from 'react-redux';
+import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const dispatch = useDispatch();
 
   const {
     id: transactionId,
@@ -43,15 +40,12 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
 
   const handleTokenClick = useCallback(
     async (token: GasFeeToken) => {
-      await updateSelectedGasFeeToken(transactionId, token.tokenAddress);
+      const selectedAddress =
+        token.tokenAddress === NATIVE_TOKEN_ADDRESS
+          ? undefined
+          : token.tokenAddress;
 
-      await dispatch(
-        updateEditableParams(transactionId, {
-          gas: token.gas,
-          maxFeePerGas: token.maxFeePerGas,
-          maxPriorityFeePerGas: token.maxPriorityFeePerGas,
-        }),
-      );
+      await updateSelectedGasFeeToken(transactionId, selectedAddress);
 
       await updateBatchTransactions({
         transactionId,
