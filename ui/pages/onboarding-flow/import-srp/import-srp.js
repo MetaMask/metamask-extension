@@ -53,7 +53,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         </Typography>
       </div>
       <div className="import-srp__description">
-        <Typography variant={TypographyVariant.H4}>
+        <Typography align={TEXT_ALIGN.LEFT} variant={TypographyVariant.H4}>
           {t('accessYourWalletWithSRPDescription', [
             <a
               key="learnMore"
@@ -69,10 +69,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       </div>
       <div className="import-srp__actions">
         <Box textAlign={TEXT_ALIGN.LEFT}>
-          <SrpInput
-            onChange={setSecretRecoveryPhrase}
-            srpText={t('typeYourSRP')}
-          />
+          <SrpInput onChange={setSecretRecoveryPhrase} />
           <Button
             className="import-srp__confirm-button"
             type="primary"

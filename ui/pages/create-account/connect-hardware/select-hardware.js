@@ -305,6 +305,25 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
+        {this.state.selectedDevice === HardwareDeviceNames.ledger && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            marginTop={6}
+          >
+            <Text
+              className="hw-connect__error"
+              variant={TextVariant.bodyMd}
+              as="h5"
+              marginTop={5}
+              marginBottom={3}
+            >
+              {this.context.t('ledgerMultipleDevicesUnsupportedErrorMessage')}
+            </Text>
+          </Box>
+        )}
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
