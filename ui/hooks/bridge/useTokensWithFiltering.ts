@@ -11,6 +11,7 @@ import {
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -31,6 +32,7 @@ import type {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 
 type FilterPredicate = (
   symbol: string,
@@ -140,7 +142,8 @@ export const useTokensWithFiltering = (
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
             sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ] ?? token.iconUrl,
+          ] ??
+          (token.iconUrl || token.icon || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
         string: '0',
@@ -211,10 +214,15 @@ export const useTokensWithFiltering = (
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ] ??
-                  getAssetImageUrl(
-                    token.address,
-                    formatChainIdToCaip(token.chainId),
-                  ),
+                  MULTICHAIN_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+                  ] ??
+                  (getNativeAssetForChainId(token.chainId)?.icon ||
+                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
+                    getAssetImageUrl(
+                      token.address,
+                      formatChainIdToCaip(token.chainId),
+                    )),
               };
             } else {
               yield {

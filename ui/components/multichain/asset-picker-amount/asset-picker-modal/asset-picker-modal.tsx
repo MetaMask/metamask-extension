@@ -63,7 +63,6 @@ import {
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { getAssetsMetadata } from '../../../../selectors/assets';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useAssetMetadata } from '../../../../hooks/useAssetMetadata';
 import type {
@@ -203,7 +202,6 @@ export function AssetPickerModal({
     useMultichainBalances();
 
   const evmTokenMetadataByAddress = useSelector(getTokenList) as TokenListMap;
-  const nonEvmTokenMetadataByAddress = useSelector(getAssetsMetadata);
 
   const allowExternalServices = useSelector(getUseExternalServices);
   // Swaps top tokens
@@ -315,21 +313,8 @@ export function AssetPickerModal({
       }
 
       // Return early when SOLANA is selected since blocked and top tokens are not available
+      // All available solana tokens are in the multichainTokensWithBalance results
       if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
-        for (const [address, token] of Object.entries(
-          nonEvmTokenMetadataByAddress,
-        )) {
-          const [caipChainId] = address.split('/');
-
-          if (shouldAddToken(token.symbol, address, caipChainId)) {
-            yield {
-              ...token,
-              address,
-              chainId: caipChainId,
-              decimals: token.units[0].decimals,
-            };
-          }
-        }
         return;
       }
 
@@ -370,7 +355,6 @@ export function AssetPickerModal({
       selectedNetwork?.chainId,
       multichainTokensWithBalance,
       allDetectedTokens,
-      nonEvmTokenMetadataByAddress,
       topTokens,
       evmTokenMetadataByAddress,
       getIsDisabled,
