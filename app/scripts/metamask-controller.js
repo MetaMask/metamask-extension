@@ -345,7 +345,6 @@ import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import {
-  generateSecurityAlertId,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './lib/ppom/ppom-util';
