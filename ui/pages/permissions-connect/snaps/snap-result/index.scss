@@ -1,5 +1,6 @@
 .snap-result {
-  box-shadow: none;
+  border: 1px solid var(--color-border-muted);
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
   .page-container__footer {
     width: 100%;
