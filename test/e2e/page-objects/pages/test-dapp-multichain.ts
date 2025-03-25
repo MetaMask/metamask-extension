@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/multichain';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -93,7 +94,11 @@ class TestDappMultichain {
    */
   async connectExternallyConnectable(extensionId: string) {
     console.log('Connect multichain test dapp to Multichain API');
-    await this.fillExtensionIdInput(extensionId);
+    await this.fillExtensionIdInput(
+      process.env.SELENIUM_BROWSER === Browser.FIREFOX
+        ? 'window.postMessage'
+        : extensionId,
+    );
     await this.clickConnectExternallyConnectableButton();
     await this.driver.delay(largeDelayMs);
   }

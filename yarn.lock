@@ -6504,10 +6504,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-multichain@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/test-dapp-multichain@npm:0.6.0"
-  checksum: 10/23bb60422fa3986a648e487562697e7ca57dc97ac9ff693eeac391e673e5ebd838ad3a54160af8dbb195ab3eba497bf2a3767d76693bbbf6044ab6cdbd59b254
+"@metamask/test-dapp-multichain@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/test-dapp-multichain@npm:0.7.0"
+  checksum: 10/21db058ce94819e4bc5a3f46374e4ac838e7e88491a5bca30243324f4bf686e170a22308aeb668859d2e7946f0b1271b9e6ca6146569cb4be4ca67b0dffc21e3
   languageName: node
   linkType: hard
 
@@ -27335,7 +27335,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.14.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.1.0"
-    "@metamask/test-dapp-multichain": "npm:^0.6.0"
+    "@metamask/test-dapp-multichain": "npm:^0.7.0"
     "@metamask/transaction-controller": "npm:^50.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
