@@ -21,7 +21,9 @@ import {
 } from '../../../../../components/app/confirm/info/row';
 import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
 
-type ValueType = string | Record<string, TreeData> | TreeData[];
+export type DataTreeData = Record<string, TreeData> | TreeData[];
+
+type ValueType = string | DataTreeData;
 
 export type TreeData = {
   value: ValueType;
@@ -78,7 +80,7 @@ const NONE_DATE_VALUE = -1;
  * @param dataTreeData
  */
 const getTokenContractInDataTree = (
-  dataTreeData: Record<string, TreeData> | TreeData[],
+  dataTreeData: DataTreeData,
 ): Hex | undefined => {
   if (Array.isArray(dataTreeData)) {
     return undefined;
@@ -99,7 +101,7 @@ export const DataTree = ({
   tokenDecimals: tokenDecimalsProp,
   chainId,
 }: {
-  data: Record<string, TreeData> | TreeData[];
+  data: DataTreeData;
   primaryType?: PrimaryType;
   tokenDecimals?: number;
   chainId: string;

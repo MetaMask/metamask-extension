@@ -12,6 +12,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { tsMigrateWidenSignature } from '../../../shared/lib/typescript-migration-tools';
 
 /**
  * Gets the URL for an asset image, with IPFS support
@@ -80,22 +81,26 @@ export function getRandomFileName(): string {
  * @param chainId - current chainId
  * @returns The prices for the requested tokens
  */
-export const fetchTokenExchangeRates = async (
-  nativeCurrency: string,
-  tokenAddresses: Hex[],
-  chainId: Hex,
-): Promise<ContractExchangeRates> => {
-  try {
-    return await fetchTokenContractExchangeRates({
-      tokenPricesService: new CodefiTokenPricesServiceV2(),
-      nativeCurrency,
-      tokenAddresses,
-      chainId,
-    });
-  } catch (err) {
-    return {};
-  }
-};
+export const fetchTokenExchangeRates = tsMigrateWidenSignature<
+  [string, string[], string]
+>()(
+  async (
+    nativeCurrency: string,
+    tokenAddresses: Hex[],
+    chainId: Hex,
+  ): Promise<ContractExchangeRates> => {
+    try {
+      return await fetchTokenContractExchangeRates({
+        tokenPricesService: new CodefiTokenPricesServiceV2(),
+        nativeCurrency,
+        tokenAddresses,
+        chainId,
+      });
+    } catch (err) {
+      return {};
+    }
+  },
+);
 
 /**
  * Converts a hex string to UTF-8 text if possible
@@ -159,11 +164,15 @@ export const checkTokenIdExists = (
  * @param tokenPricePercentChange1dAgo - price percentage 1day ago
  * @returns token amount 1day ago
  */
-export const getCalculatedTokenAmount1dAgo = (
-  tokenFiatBalance?: number,
-  tokenPricePercentChange1dAgo?: number,
-): number => {
-  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
-    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
-    : tokenFiatBalance ?? 0;
-};
+export const getCalculatedTokenAmount1dAgo = tsMigrateWidenSignature<
+  [string | number | undefined, number | undefined]
+>()(
+  (
+    tokenFiatBalance: number | undefined,
+    tokenPricePercentChange1dAgo: number | undefined,
+  ): number => {
+    return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+      ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+      : tokenFiatBalance ?? 0;
+  },
+);
