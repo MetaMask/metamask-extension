@@ -57,6 +57,8 @@ import {
 } from './templates';
 
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
+const SNAP_ERROR_KEY_RESULT = 'snapAccountErrorMessage';
+const SNAP_MSG_KEY_RESULT_SUCCESS = 'snapAccountSuccessMessage';
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -299,6 +301,12 @@ export default function ConfirmationPage({
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
 
+  const hasHeader =
+    isSnapCustomUIDialog ||
+    pendingConfirmation?.requestData?.message?.key ===
+      SNAP_MSG_KEY_RESULT_SUCCESS ||
+    pendingConfirmation?.requestData?.error?.key === SNAP_ERROR_KEY_RESULT;
+
   const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
 
   // Generating templatedValues is potentially expensive, and if done on every render
@@ -507,6 +515,7 @@ export default function ConfirmationPage({
           />
           <Box
             className="confirmation-page__content"
+            padding={hasHeader ? 0 : 4}
             style={{
               overflowY: 'auto',
             }}
