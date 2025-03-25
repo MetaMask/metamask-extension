@@ -1761,7 +1761,6 @@ describe('Transaction Selectors', () => {
     it('returns confirmations from all networks', () => {
       const state = {
         metamask: {
-          incomingTransactionsPreferences: true,
           transactions: [
             {
               id: 1,
