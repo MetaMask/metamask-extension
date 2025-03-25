@@ -2863,11 +2863,20 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        this.txController.stopIncomingTransactionPolling();
+        const filteredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            this.preferencesController.state.incomingTransactionsPreferences[
+              networkId
+            ],
+        );
 
-        await this.txController.updateIncomingTransactions();
+        if (filteredChainIds.length > 0) {
+          this.txController.stopIncomingTransactionPolling();
 
-        this.txController.startIncomingTransactionPolling();
+          await this.txController.updateIncomingTransactions();
+
+          this.txController.startIncomingTransactionPolling();
+        }
       },
     );
 
@@ -8077,8 +8086,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #restartSmartTransactionPoller() {
-    this.txController.stopIncomingTransactionPolling();
-    this.txController.startIncomingTransactionPolling();
+    const filteredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
+    );
+
+    if (filteredChainIds.length > 0) {
+      this.txController.stopIncomingTransactionPolling();
+      this.txController.startIncomingTransactionPolling(filteredChainIds);
+    }
   }
 
   /**
