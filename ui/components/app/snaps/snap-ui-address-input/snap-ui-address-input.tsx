@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { debounce } from 'lodash';
 import {
   CaipAccountId,
   CaipChainId,
@@ -55,6 +54,7 @@ export const SnapUIAddressInput: FunctionComponent<
 
   const initialValue = getValue(name, form) as string;
 
+
   const [value, setValue] = useState(
     initialValue
       ? parseCaipAccountId(initialValue as CaipAccountId).address
@@ -83,21 +83,16 @@ export const SnapUIAddressInput: FunctionComponent<
     return accountsInfo[normalizedAddress];
   };
 
-  const debouncedHandleInputChange = debounce(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      handleInputChange(name, event.target.value ?? null, form);
-    },
-    80,
-  );
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     const matchedName = getMatchedAddressName(event.target.value);
     if (matchedName) {
       setMatchedAddressName(matchedName);
     }
+
+    const newValue = event.target.value ? `${chainId}:${event.target.value}` : null;
     // Debouncing to allow for rapid keystrokes before allowing the snap to react to the changes
-    debouncedHandleInputChange(event);
+    handleInputChange(name, newValue, form);
   };
 
   const handleFocus = () => setCurrentFocusedInput(name);
