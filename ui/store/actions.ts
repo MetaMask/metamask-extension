@@ -6091,6 +6091,20 @@ export async function sendMultichainTransaction(
 }
 ///: END:ONLY_INCLUDE_IF
 
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+export async function createSnapAccount(
+  snapId: SnapId,
+  options: Record<string, Json>,
+  internalOptions?: SnapKeyringInternalOptions,
+): Promise<InternalAccount> {
+  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
+    snapId,
+    options,
+    internalOptions,
+  ]);
+}
+///: END:ONLY_INCLUDE_IF
+
 export async function disableAccountUpgradeForChain(chainId: string) {
   return await submitRequestToBackground('disableAccountUpgradeForChain', [
     chainId,
