@@ -8,7 +8,7 @@ import {
   useDeleteAccountSyncDataProps,
 } from './profile-sync';
 
-jest.mock('../../../hooks/identity/useProfileSyncing');
+jest.mock('../../../hooks/identity/useAccountSyncing');
 
 describe('ProfileSyncDevSettings', () => {
   const mockDispatchDeleteAccountSyncingData = jest.fn();
