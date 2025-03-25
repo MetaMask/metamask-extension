@@ -1,6 +1,7 @@
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 
 import { migrate, version } from './148';
+import { KnownSessionProperties } from '../lib/rpc-method-middleware/handlers/wallet-createSession/constants';
 
 const oldVersion = 147;
 
@@ -98,7 +99,7 @@ describe(`migration #${version}`, () => {
 
   it('preserves existing sessionProperties in CAIP-25 permissions', async () => {
     const existingSessionProperties = {
-      solana_accountChanged_notifications: true,
+      [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
     };
 
     const oldStorage = {

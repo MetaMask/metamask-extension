@@ -105,14 +105,11 @@ async function walletCreateSessionHandler(
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
-  let filteredSessionProperties = {};
-  if (sessionProperties && Object.keys(sessionProperties).length > 0) {
-    filteredSessionProperties = Object.fromEntries(
-      Object.entries(sessionProperties).filter(([key]) =>
-        isKnownSessionPropertyValue(key),
-      ),
-    );
-  }
+  const filteredSessionProperties = Object.fromEntries(
+    Object.entries(sessionProperties ?? {}).filter(([key]) =>
+      isKnownSessionPropertyValue(key),
+    ),
+  );
 
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =

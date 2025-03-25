@@ -74,11 +74,13 @@ function transformState(state: VersionedData['data']) {
       continue;
     }
 
-    for (const caveat of caip25Permission.caveats) {
-      if (caveat.type === Caip25CaveatType && isObject(caveat.value)) {
-        if (!hasProperty(caveat.value, 'sessionProperties')) {
-          caveat.value.sessionProperties = {};
-        }
+    const caip25Caveat = caip25Permission.caveats.find(
+      (caveat) => caveat.type === Caip25CaveatType,
+    );
+
+    if (caip25Caveat && isObject(caip25Caveat.value)) {
+      if (!hasProperty(caip25Caveat.value, 'sessionProperties')) {
+        caip25Caveat.value.sessionProperties = {};
       }
     }
   }

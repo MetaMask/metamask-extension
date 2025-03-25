@@ -86,10 +86,11 @@ export const getOriginsWithSessionProperty = (state, property) => {
       subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
     const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
-    return caveat?.value?.sessionProperties?.[property]
+    const sessionProperty = caveat?.value?.sessionProperties?.[property];
+    return sessionProperty
       ? {
           ...acc,
-          [subject.origin]: caveat?.value?.sessionProperties?.[property],
+          [subject.origin]: sessionProperty,
         }
       : acc;
   }, {});

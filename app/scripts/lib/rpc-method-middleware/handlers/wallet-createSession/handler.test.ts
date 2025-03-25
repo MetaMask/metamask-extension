@@ -9,7 +9,7 @@ import * as Multichain from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
-
+import { KnownSessionProperties } from './constants';
 jest.mock('../../../util', () => ({
   ...jest.requireActual('../../../util'),
   shouldEmitDappViewedEvent: jest.fn(),
@@ -549,7 +549,8 @@ describe('wallet_createSession', () => {
                   },
                 },
                 sessionProperties: {
-                  solana_accountChanged_notifications: true,
+                  [KnownSessionProperties.SolanaAccountChangedNotifications]:
+                    true,
                 },
               },
             },
@@ -569,14 +570,14 @@ describe('wallet_createSession', () => {
       params: {
         ...baseRequest.params,
         sessionProperties: {
-          solana_accountChanged_notifications: true,
+          [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
         },
       },
     });
 
     expect(response.result).toStrictEqual({
       sessionProperties: {
-        solana_accountChanged_notifications: true,
+        [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
       },
       sessionScopes: {
         'eip155:5': {

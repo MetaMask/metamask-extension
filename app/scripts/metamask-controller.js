@@ -413,6 +413,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
+import { KnownSessionProperties } from './lib/rpc-method-middleware/handlers/wallet-createSession/constants';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2972,7 +2973,7 @@ export default class MetamaskController extends EventEmitter {
               const originsWithSolanaAccountChangedNotifications =
                 getOriginsWithSessionProperty(
                   this.permissionController.state,
-                  'solana_accountChanged_notifications',
+                  KnownSessionProperties.SolanaAccountChangedNotifications,
                 );
 
               const solanaAccounts = getPermittedAccountsForScopesByOrigin(
