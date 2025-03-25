@@ -10,8 +10,6 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../test/dat
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { toHex } from '@metamask/controller-utils';
 import { GasFeeToken } from '@metamask/transaction-controller';
-import exp from 'constants';
-import { symbol } from 'prop-types';
 
 const FROM_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 

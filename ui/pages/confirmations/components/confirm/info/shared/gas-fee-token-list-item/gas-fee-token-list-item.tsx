@@ -1,65 +1,81 @@
 import React from 'react';
-import { Box, Text } from '../../../../../../../components/component-library';
+import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import classnames from 'classnames';
+import { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import Identicon from '../../../../../../../components/ui/identicon';
-import { GasFeeToken } from '@metamask/transaction-controller';
-import BigNumber from 'bignumber.js';
-import classnames from 'classnames';
-import { useEthFiatAmount } from '../../../../../../../hooks/useEthFiatAmount';
-import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  useGasFeeToken,
+} from '../../hooks/useGasFeeToken';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 
 export type GasFeeTokenListItemProps = {
-  gasFeeToken: GasFeeToken;
+  tokenAddress: Hex;
   isSelected?: boolean;
   onClick?: (token: GasFeeToken) => void;
 };
 
 export function GasFeeTokenListItem({
-  gasFeeToken,
+  tokenAddress,
   isSelected,
   onClick,
 }: GasFeeTokenListItemProps) {
   const t = useI18nContext();
+  const gasFeeToken = useGasFeeToken({ tokenAddress });
+  const currentCurrency = useSelector(getCurrentCurrency);
 
-  const { amount, balance, decimals, rateWei, symbol, tokenAddress } =
-    gasFeeToken;
+  const hasInsufficientNative =
+    Boolean(useInsufficientBalanceAlerts().length) &&
+    tokenAddress === NATIVE_TOKEN_ADDRESS;
 
-  const amountFormatted = new BigNumber(amount).shift(-decimals).toString();
-  const amountFiat = useFiatTokenValue(amount, rateWei, decimals);
-  const balanceFiat = useFiatTokenValue(balance, rateWei, decimals);
+  if (!gasFeeToken) {
+    return null;
+  }
+
+  const { amountFiat, amountFormatted, balanceFiat, symbol } = gasFeeToken;
 
   return (
     <ListItem
-      image={<Identicon address={tokenAddress} diameter={32} />}
+      image={<TokenIcon tokenAddress={tokenAddress} />}
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`${t('confirmGasFeeTokenBalance')} ${balanceFiat}`}
+      leftSecondary={`${t(
+        'confirmGasFeeTokenBalance',
+      )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
+      warning={hasInsufficientNative && <InsufficientBalanceIndicator />}
       onClick={() => onClick?.(gasFeeToken)}
     />
   );
-}
-
-function useFiatTokenValue(tokenValue: Hex, rateWei: Hex, decimals: number) {
-  const nativeWei = new BigNumber(tokenValue)
-    .shift(-decimals)
-    .mul(new BigNumber(rateWei));
-
-  const nativeEth = nativeWei.shift(-18);
-
-  return useEthFiatAmount(nativeEth, {}, false);
 }
 
 function ListItem({
@@ -69,6 +85,7 @@ function ListItem({
   rightPrimary,
   rightSecondary,
   isSelected,
+  warning,
   onClick,
 }: {
   image: React.ReactNode;
@@ -77,6 +94,7 @@ function ListItem({
   rightPrimary: string;
   rightSecondary: string;
   isSelected?: boolean;
+  warning?: React.ReactNode;
   onClick?: () => void;
 }) {
   return (
@@ -101,14 +119,55 @@ function ListItem({
       >
         {image}
         <Box textAlign={TextAlign.Left} marginLeft={4}>
-          <Text variant={TextVariant.bodyMdMedium}>{leftPrimary}</Text>
-          <Text color={TextColor.textAlternative}>{leftSecondary}</Text>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={2}
+          >
+            <Text variant={TextVariant.bodyMdMedium}>{leftPrimary}</Text>
+            {warning}
+          </Box>
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+          >
+            {leftSecondary}
+          </Text>
         </Box>
       </Box>
-      <Box textAlign={TextAlign.Right}>
+      <Box textAlign={TextAlign.Right} paddingRight={2}>
         <Text variant={TextVariant.bodyMdMedium}>{rightPrimary}</Text>
-        <Text color={TextColor.textAlternative}>{rightSecondary}</Text>
+        <Text
+          variant={TextVariant.bodySmMedium}
+          color={TextColor.textAlternative}
+        >
+          {rightSecondary}
+        </Text>
       </Box>
+    </Box>
+  );
+}
+
+function InsufficientBalanceIndicator() {
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      borderColor={BorderColor.borderDefault}
+      padding={1}
+      gap={1}
+    >
+      <Icon
+        name={IconName.Warning}
+        size={IconSize.Xs}
+        color={IconColor.iconMuted}
+      />
+      <Text variant={TextVariant.bodyXsMedium} color={TextColor.textMuted}>
+        Insufficient funds
+      </Text>
     </Box>
   );
 }
@@ -119,6 +178,33 @@ function SelectedIndicator() {
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.primaryDefault}
       className="gas-fee-token-list-item__selected-indicator"
+    />
+  );
+}
+
+function TokenIcon({ tokenAddress }: { tokenAddress: Hex }) {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { chainId } = currentConfirmation;
+
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
+    return <Identicon address={tokenAddress} diameter={32} />;
+  }
+
+  const { nativeCurrency } = networkConfiguration;
+
+  const source =
+    CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
+
+  return (
+    <AvatarToken
+      src={source}
+      name={nativeCurrency}
+      size={AvatarTokenSize.Md}
+      backgroundColor={BackgroundColor.backgroundDefault}
     />
   );
 }
