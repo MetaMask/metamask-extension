@@ -78,10 +78,12 @@ function transformState(state: VersionedData['data']) {
       (caveat) => caveat.type === Caip25CaveatType,
     );
 
-    if (caip25Caveat && isObject(caip25Caveat.value)) {
-      if (!hasProperty(caip25Caveat.value, 'sessionProperties')) {
-        caip25Caveat.value.sessionProperties = {};
-      }
+    if (
+      caip25Caveat &&
+      isObject(caip25Caveat.value) &&
+      !hasProperty(caip25Caveat.value, 'sessionProperties')
+    ) {
+      caip25Caveat.value.sessionProperties = {};
     }
   }
 
