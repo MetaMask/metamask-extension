@@ -1,3 +1,5 @@
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+
 const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -102,11 +104,17 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
-        await driver.clickElement({
-          text: 'Reject all',
-          tag: 'button',
-        });
-
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
         // Wait for confirmation to close
         await driver.delay(2000);
 

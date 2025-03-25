@@ -1,3 +1,5 @@
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
@@ -134,10 +136,17 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  await driver.clickElement({
-    tag: 'button',
-    text: 'Cancel',
-  });
+  if (isManifestV3) {
+    await driver.clickElement({
+      tag: 'button',
+      text: 'Cancel',
+    });
+  } else {
+    await driver.clickElementAndWaitForWindowToClose({
+      tag: 'button',
+      text: 'Cancel',
+    });
+  }
 }
 
 async function confirmTransaction(driver) {

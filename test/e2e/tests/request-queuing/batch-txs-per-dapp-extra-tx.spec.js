@@ -1,3 +1,5 @@
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+
 const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -127,10 +129,17 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         );
 
         // Reject All Transactions
-        await driver.clickElement({
-          text: 'Reject all',
-          tag: 'button',
-        });
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -149,12 +158,18 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           css: 'p',
           text: 'Localhost 8546',
         });
-
         // Reject All Transactions
-        await driver.clickElement({
-          text: 'Reject all',
-          tag: 'button',
-        });
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
 
         // Wait for new confirmations queued from second dapp to open
         // We need a big delay to make sure dialog is not invalidated
