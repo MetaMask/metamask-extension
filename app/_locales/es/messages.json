@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
   },
-  "petnamesEnabledToggle": {
-    "message": "Permitir apodos"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Esto le permite asignar un apodo a cualquier dirección. Le sugeriremos nombres para las direcciones con las que interactúa cuando sea posible."
-  },
   "pinToTop": {
     "message": "Anclar arriba"
   },
