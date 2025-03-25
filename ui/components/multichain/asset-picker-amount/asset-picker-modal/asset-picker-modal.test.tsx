@@ -50,6 +50,11 @@ jest.mock('./AssetList', () => (props: unknown) => {
   return <>AssetList</>;
 });
 
+const mockUseAssetMetadata = jest.fn();
+jest.mock('../../../../hooks/useAssetMetadata', () => ({
+  useAssetMetadata: (...args: unknown[]) => mockUseAssetMetadata(...args),
+}));
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
@@ -673,6 +678,28 @@ describe('AssetPickerModal token filtering', () => {
 
     renderWithProvider(<AssetPickerModal {...defaultProps} />);
 
+    expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
+  });
+
+  it('should fetch metadata for unlisted tokens', async () => {
+    mockUseAssetMetadata.mockReturnValue({
+      address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f123',
+      chainId: '0x1',
+      decimals: 18,
+      image: 'https://example.com/image.png',
+      symbol: 'UNI',
+    });
+
+    renderWithProvider(<AssetPickerModal {...defaultProps} />);
+
+    const searchInput = screen.getByPlaceholderText(
+      'searchTokensByNameOrAddress',
+    );
+    fireEvent.change(searchInput, {
+      target: { value: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f123' },
+    });
+
+    expect(mockUseAssetMetadata.mock.calls.at(-1)).toMatchSnapshot();
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
   });
 });
