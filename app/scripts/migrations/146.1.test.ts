@@ -1,7 +1,7 @@
-import { migrate } from './151';
+import { migrate } from './146.1';
 
-const expectedVersion = 151;
-const previousVersion = expectedVersion - 1;
+const expectedVersion = 146.1;
+const previousVersion = 146;
 
 describe(`migration #${expectedVersion}`, () => {
   it('does nothing if state.NetworkController has no networkConfigurationsByChainId property', async () => {
