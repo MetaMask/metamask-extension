@@ -91,7 +91,7 @@ export const SnapUIAddressInput: FunctionComponent<
     }
 
     const newValue = event.target.value ? `${chainId}:${event.target.value}` : null;
-    // Debouncing to allow for rapid keystrokes before allowing the snap to react to the changes
+
     handleInputChange(name, newValue, form);
   };
 
@@ -112,7 +112,7 @@ export const SnapUIAddressInput: FunctionComponent<
           </Label>
         )}
         <Box
-          display={Display.InlineFlex}
+          display={Display.Flex}
           backgroundColor={BackgroundColor.backgroundDefault}
           alignItems={AlignItems.center}
           borderWidth={1}
@@ -121,20 +121,42 @@ export const SnapUIAddressInput: FunctionComponent<
           paddingLeft={4}
           paddingRight={4}
           gap={2}
-          style={{ height: '48px' }}
+          style={{
+            height: '48px',
+          }}
         >
-          <Jazzicon address={value} diameter={24} />
-          <Box flexDirection={FlexDirection.Column} gap={2}>
-            <Text fontWeight={FontWeight.Medium}>{matchedAddressName}</Text>
-            <Text variant={TextVariant.bodyXs} ellipsis>
-              {value}
-            </Text>
+          <Jazzicon address={value} diameter={24} style={{ height: '24px' }} />
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            gap={2}
+            style={{
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            <Box
+              flexDirection={FlexDirection.Column}
+              gap={2}
+              style={{
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              <Text fontWeight={FontWeight.Medium}>{matchedAddressName}</Text>
+              <Text variant={TextVariant.bodyXs} ellipsis>
+                {value}
+              </Text>
+            </Box>
           </Box>
           <Icon
             onClick={handleClear}
             name={IconName.Close}
             color={IconColor.infoDefault}
-            style={{ cursor: 'pointer' }}
+            style={{
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
           />
         </Box>
       </Box>
