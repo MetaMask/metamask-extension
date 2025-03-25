@@ -21,7 +21,7 @@ describe('Content-Security-Policy', function (this: Suite) {
               headers: [
                 {
                   key: 'Content-Security-Policy',
-                  value: `default-src 'none'`,
+                  value: `default-src 'self'`,
                 },
               ],
             },
@@ -34,10 +34,21 @@ describe('Content-Security-Policy', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+
         const isExtensionLoaded: boolean = await driver.executeScript(
           'return typeof window.ethereum !== "undefined"',
         );
         assert.equal(isExtensionLoaded, true);
+
+        const isInlineScriptLoaded: boolean = await driver.executeScript(
+          'return typeof window.inlineScriptLoaded !== "undefined"',
+        );
+        assert.equal(isInlineScriptLoaded, true);
+
+        const isScriptSrcLoaded: boolean = await driver.executeScript(
+          'return typeof window.scriptSrcLoaded !== "undefined"',
+        );
+        assert.equal(isScriptSrcLoaded, true);
       },
     );
   });
