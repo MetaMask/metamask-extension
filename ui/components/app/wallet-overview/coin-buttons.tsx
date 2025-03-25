@@ -468,7 +468,7 @@ const CoinButtons = ({
           className={`${classPrefix}-overview__button`}
           iconButtonClassName={iconButtonClassName}
           disabled={
-            !isSwapsChain ||
+            !isBridgeChain ||
             !isSigningEnabled ||
             isSolanaAccountWithoutExternalServices
           }
