@@ -1619,8 +1619,11 @@
   "destinationAccountPickerReceiveAt": {
     "message": "Receive at"
   },
-  "destinationAccountPickerSearchPlaceholder": {
-    "message": "Receiving address or SNS"
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "Receiving address or ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "Receiving address"
   },
   "details": {
     "message": "Details"
