@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 151;
+export const version = 146.1;
 
 /**
  * This migration sets the selectedNetworkClientId to mainnet if the current selectedNetworkClientId does not exist in the networkConfigurationsByChainId object.
