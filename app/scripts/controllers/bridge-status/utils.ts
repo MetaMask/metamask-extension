@@ -19,7 +19,7 @@ export const getStatusRequestDto = (
   const statusRequestNoQuoteFormatted = Object.fromEntries(
     Object.entries(statusRequestNoQuote).map(([key, value]) => [
       key,
-      value.toString(),
+      value?.toString(),
     ]),
   ) as unknown as Omit<StatusRequestDto, 'requestId'>;
 
