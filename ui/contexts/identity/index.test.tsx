@@ -9,6 +9,7 @@ import {
 import { MetamaskIdentityProvider } from '.';
 
 jest.mock('../../hooks/identity/useProfileSyncing');
+jest.mock('../../hooks/identity/useAccountSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
 
 describe('MetamaskIdentityProvider', () => {
