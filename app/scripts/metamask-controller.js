@@ -181,6 +181,7 @@ import {
   MAINNET_DISPLAY_NAME,
   DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
+  QUICKNODE_URLS_BY_INFURA_NETWORK_NAME,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -663,14 +664,24 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, endpointUrl, error }) => {
-        const parsedUrl = new URL(endpointUrl);
-        const hostParts = parsedUrl.host.split('.');
-        const rootDomainName = hostParts.slice(-2).join('.');
+        const isInfuraEndpointUrl = new RegExp(
+          `https://[^.]+.infura.io/v3/${opts.infuraProjectId}`,
+          'u',
+        ).test(endpointUrl);
+        const isQuicknodeEndpointUrl = Object.values(
+          QUICKNODE_URLS_BY_INFURA_NETWORK_NAME,
+        ).includes(endpointUrl);
         if (
-          (rootDomainName === 'infura.io' ||
-            rootDomainName === 'quicknode.pro') &&
+          (isInfuraEndpointUrl || isQuicknodeEndpointUrl) &&
           !isConnectionError(error)
         ) {
+          log.debug(
+            `Creating Segment event "${
+              MetaMetricsEventName.RpcServiceUnavailable
+            }" with chain_id_caip: "eip155:${chainId}", rpc_endpoint_url: ${onlyKeepHost(
+              endpointUrl,
+            )}`,
+          );
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceUnavailable,
@@ -685,13 +696,21 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
       async ({ chainId, endpointUrl }) => {
-        const parsedUrl = new URL(endpointUrl);
-        const hostParts = parsedUrl.host.split('.');
-        const rootDomainName = hostParts.slice(-2).join('.');
-        if (
-          rootDomainName === 'infura.io' ||
-          rootDomainName === 'quicknode.pro'
-        ) {
+        const isInfuraEndpointUrl = new RegExp(
+          `https://[^.]+.infura.io/v3/${opts.infuraProjectId}`,
+          'u',
+        ).test(endpointUrl);
+        const isQuicknodeEndpointUrl = Object.values(
+          QUICKNODE_URLS_BY_INFURA_NETWORK_NAME,
+        ).includes(endpointUrl);
+        if (isInfuraEndpointUrl || isQuicknodeEndpointUrl) {
+          log.debug(
+            `Creating Segment event "${
+              MetaMetricsEventName.RpcServiceDegraded
+            }" with chain_id_caip: "eip155:${chainId}", rpc_endpoint_url: ${onlyKeepHost(
+              endpointUrl,
+            )}`,
+          );
           this.metaMetricsController.trackEvent({
             category: MetaMetricsEventCategory.Network,
             event: MetaMetricsEventName.RpcServiceDegraded,
