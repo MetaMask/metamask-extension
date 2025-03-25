@@ -1559,9 +1559,6 @@
       }
     },
     "chokidar>braces": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "chokidar>braces>fill-range": true
       }
