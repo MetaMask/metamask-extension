@@ -45,6 +45,9 @@ describe('Test Snap Notification', function () {
           tag: 'button',
         });
 
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
