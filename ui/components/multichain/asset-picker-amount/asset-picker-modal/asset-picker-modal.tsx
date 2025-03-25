@@ -65,6 +65,7 @@ import {
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { useAssetMetadata } from '../../../../hooks/useAssetMetadata';
 import type {
   ERC20Asset,
   NativeAsset,
@@ -413,9 +414,11 @@ export function AssetPickerModal({
 
     // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
     // Otherwise use the default tokenGenerator
-    for (const token of (customTokenListGenerator ?? tokenListGenerator)(
+    const tokenGenerator = (customTokenListGenerator ?? tokenListGenerator)(
       shouldAddToken,
-    )) {
+    );
+
+    for (const token of tokenGenerator) {
       if (action === 'send' && token.balance === undefined) {
         continue;
       }
@@ -464,6 +467,17 @@ export function AssetPickerModal({
     conversionRate,
     currentCurrency,
   ]);
+
+  // This fetches the metadata for the asset if it is not already in the filteredTokenList
+  const unlistedAssetMetadata = useAssetMetadata(
+    searchQuery,
+    filteredTokenList.length === 0,
+    selectedNetwork?.chainId,
+  );
+
+  const displayedTokens = useMemo(() => {
+    return unlistedAssetMetadata ? [unlistedAssetMetadata] : filteredTokenList;
+  }, [unlistedAssetMetadata, filteredTokenList]);
 
   const getNetworkPickerLabel = () => {
     if (!isMultiselectEnabled) {
@@ -569,7 +583,7 @@ export function AssetPickerModal({
                   network={network}
                   handleAssetChange={handleAssetChange}
                   asset={asset?.type === AssetType.NFT ? undefined : asset}
-                  tokenList={filteredTokenList}
+                  tokenList={displayedTokens}
                   isTokenDisabled={getIsDisabled}
                   isTokenListLoading={isTokenListLoading}
                   assetItemProps={{
