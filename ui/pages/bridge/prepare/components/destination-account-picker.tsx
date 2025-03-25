@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   TextField,
   Box,
@@ -24,16 +24,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-// eslint-disable-next-line import/no-restricted-paths
-import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
-import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import { DestinationAccount } from '../types';
-import {
-  getDomainResolutions,
-  lookupDomainName,
-  resetDomainResolution,
-  initializeDomainSlice,
-} from '../../../../ducks/domains';
+import { useDestinationAccountResolution } from '../../hooks/useDestinationAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -52,104 +44,12 @@ export const DestinationAccountPicker = ({
   const [searchQuery, setSearchQuery] = useState('');
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
-  const dispatch = useDispatch();
-  const domainResolutions = useSelector(getDomainResolutions) || [];
 
-  // Initialize domain slice on mount
-  useEffect(() => {
-    dispatch(initializeDomainSlice());
-  }, [dispatch]);
-
-  // Check if search query is a valid address
-  const isValidAddress = useMemo(() => {
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) {
-      return false;
-    }
-
-    return isDestinationSolana
-      ? isSolanaAddress(trimmedQuery)
-      : isEthAddress(trimmedQuery);
-  }, [searchQuery, isDestinationSolana]);
-
-  // Check if search query is a valid ENS name
-  const isValidEnsName = useMemo(() => {
-    if (isDestinationSolana) {
-      return false;
-    }
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) {
-      return false;
-    }
-    return trimmedQuery.endsWith('.eth');
-  }, [searchQuery, isDestinationSolana]);
-
-  // Lookup ENS name when we detect a valid ENS name
-  useEffect(() => {
-    if (isValidEnsName) {
-      dispatch(lookupDomainName(searchQuery.trim()));
-    } else {
-      dispatch(resetDomainResolution());
-    }
-  }, [dispatch, isValidEnsName, searchQuery]);
-
-  // Create an external account object if valid address is not in internal accounts
-  const externalAccount = useMemo(() => {
-    if (!isValidAddress && !isValidEnsName) {
-      return null;
-    }
-
-    // If it's a valid ENS name and we have resolutions, use the resolved address
-    if (isValidEnsName && domainResolutions.length > 0) {
-      const { resolvedAddress } = domainResolutions[0];
-      const ensName = searchQuery.trim();
-
-      const addressExists = accounts.some(
-        (account) =>
-          account.address.toLowerCase() === resolvedAddress.toLowerCase(),
-      );
-
-      if (addressExists) {
-        return null;
-      }
-
-      return {
-        address: resolvedAddress,
-        metadata: {
-          name: ensName,
-        },
-        isExternal: true,
-      };
-    }
-
-    // For regular addresses
-    if (isValidAddress) {
-      const address = searchQuery.trim();
-      const addressExists = accounts.some(
-        (account) => account.address.toLowerCase() === address.toLowerCase(),
-      );
-
-      if (addressExists) {
-        return null;
-      }
-
-      return {
-        address,
-        metadata: {
-          name: address,
-        },
-        isExternal: true,
-      };
-    }
-
-    return null;
-  }, [
-    accounts,
-    isValidAddress,
-    isValidEnsName,
+  const { externalAccount } = useDestinationAccountResolution({
     searchQuery,
-    domainResolutions,
-  ]);
+    isDestinationSolana,
+    accounts,
+  });
 
   const filteredAccounts = useMemo(
     () =>
