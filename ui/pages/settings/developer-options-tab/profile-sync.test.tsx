@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useProfileSyncing';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import {
   ProfileSyncDevSettings,
