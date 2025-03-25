@@ -216,7 +216,7 @@ describe('Import flow', function () {
         await assetListPage.importCustomTokenByChain(
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
           'USDT',
-          'Polygon',
+          '0x89',
         );
         const tokenList = new AssetListPage(driver);
         await tokenList.check_tokenItemNumber(4); // Polygon, Eth, linea, USDT
