@@ -1545,6 +1545,7 @@
     },
     "@metamask/keyring-controller": {
       "globals": {
+        "console.error": true,
         "console.log": true
       },
       "packages": {
