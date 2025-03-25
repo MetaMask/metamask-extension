@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -50,6 +50,14 @@ export const ImportSrp = ({
   );
 
   const [loading, setLoading] = useState(false);
+
+  // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
+  // We want to hide the warning when the component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(actions.hideWarning());
+    };
+  }, [dispatch]);
 
   async function importWallet() {
     const joinedSrp = secretRecoveryPhrase.join(' ');
