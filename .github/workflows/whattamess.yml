@@ -10,10 +10,6 @@ jobs:
   grumbleblurf:
     name: Prepare dependencies
     runs-on: ubuntu-latest
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    outputs:
-      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,6 +25,3 @@ jobs:
       - name: PRINT THE MF
         id: show-me-your-commit-sha
         run: git rev-parse --short HEAD
-      - name: Get commit SHA
-        id: commit-sha
-        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
