@@ -18,7 +18,7 @@ import {
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUpdatedAndSortedAccounts } from '../../../selectors';
-import { getConsolidatedNetworkConfigurations } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -127,7 +127,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const networkConfigurationsByCaipChainId = useSelector(
-    getConsolidatedNetworkConfigurations,
+    getAllNetworkConfigurationsByCaipChainId,
   );
 
   const requestedNetworkConfigurations = Object.fromEntries(
@@ -266,6 +266,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
     useState(defaultCaip10AccountAddresses);
+
+  console.log('selectedCaip10AccountAddresses', selectedCaip10AccountAddresses);
 
   const onConfirm = () => {
     const _request = {

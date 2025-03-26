@@ -5,9 +5,8 @@ import {
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
-import { createDeepEqualSelector } from './util';
-import { parseCaipChainId } from '@metamask/utils';
 import { hexToDecimal } from '../conversion.utils';
+import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -67,12 +66,12 @@ export type ConsolidatedNetworkConfigurationsState = {
 };
 
 /**
- * Combines and returns network configurations from both, EVM and multichain sources.
+ * Combines and returns network configurations for all chains (EVM and not).
  *
  * @param state - Redux state.
  * @returns A consolidated object containing all available network configurations.
  */
-export const getConsolidatedNetworkConfigurations = createDeepEqualSelector(
+export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
   (state: ConsolidatedNetworkConfigurationsState) =>
     state.metamask.networkConfigurationsByChainId,
   (state: ConsolidatedNetworkConfigurationsState) =>
