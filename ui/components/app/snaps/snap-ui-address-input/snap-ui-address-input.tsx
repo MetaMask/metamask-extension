@@ -160,7 +160,7 @@ export const SnapUIAddressInput: FunctionComponent<
     );
   };
 
-  if (displayName || displayAvatar) {
+  if ((displayName || displayAvatar) && value) {
     return <MatchedAccountInfo />;
   }
 
