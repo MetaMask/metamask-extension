@@ -16,6 +16,7 @@
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
   width: 100%;
+  min-height: 0;
   height: auto;
   position: relative;
   background: var(--color-background-default);
