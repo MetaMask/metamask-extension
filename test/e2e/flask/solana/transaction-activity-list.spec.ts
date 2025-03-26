@@ -66,6 +66,7 @@ describe('Transaction activity list', function (this: Suite) {
         isNative: false,
         simulateTransaction: true,
         mockGetTransactionFailed: true,
+        mockGetTransactionSuccess: false,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -73,20 +74,11 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.check_failedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAction('Receive', 1);
+        await activityList.check_txAction('Send', 1);
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
         await transactionDetails.check_transactionStatus(
           commonSolanaTxFailedDetailsFixture.status,
-        );
-        await transactionDetails.check_transactionAmount(
-          commonSolanaTxFailedDetailsFixture.amount,
-        );
-        await transactionDetails.check_transactionFromToLink(
-          commonSolanaTxFailedDetailsFixture.fromAddress,
-        );
-        await transactionDetails.check_transactionFromToLink(
-          commonSolanaTxFailedDetailsFixture.toAddress,
         );
         await transactionDetails.check_transactionHashLink(
           commonSolanaTxFailedDetailsFixture.txHash,

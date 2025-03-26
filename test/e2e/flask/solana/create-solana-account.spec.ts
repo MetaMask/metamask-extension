@@ -2,10 +2,6 @@ import { Suite } from 'mocha';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import HomePage from '../../page-objects/pages/home/homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe.only('Opt-in Solana modal is displayed', function (this: Suite) {
