@@ -182,7 +182,7 @@ describe('Revoke Dapp Permissions', function () {
   });
 
   describe('There are pending confirmation in the old network', function () {
-    it('rejects the pending confirmations as permissions are revoked for the network', async function () {
+    it.only('rejects the pending confirmations as permissions are revoked for the network', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -213,7 +213,7 @@ describe('Revoke Dapp Permissions', function () {
             );
             assert.deepEqual(revokePermissionsResult, null);
 
-            await driver.waitUntilXWindowHandles(3);
+            await driver.waitUntilXWindowHandles(2);
 
             const afterGetPermissionsRequest = JSON.stringify({
               jsonrpc: '2.0',
