@@ -6,7 +6,6 @@ import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import FixtureBuilder from './fixture-builder';
 import {
-  convertToHexValue,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -14,23 +13,13 @@ import {
 } from './helpers';
 import { Driver } from './webdriver/driver';
 
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
-
 async function loadNewAccount(): Promise<number> {
   let loadingTimes: number = 0;
 
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: ganacheOptions,
+      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-loadNewAccount',
     },
