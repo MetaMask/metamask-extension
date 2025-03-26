@@ -50,7 +50,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CAIP_FORMATTED_TEST_CHAINS,
+  CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
@@ -67,9 +71,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -78,12 +82,9 @@ import {
   getAllRequestedChainIds,
 } from './utils';
 
-export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
-  `eip155:${hexToDecimal(CHAIN_IDS.SEPOLIA)}`,
-  `eip155:${hexToDecimal(CHAIN_IDS.LINEA_SEPOLIA)}`,
-  `eip155:${hexToDecimal(CHAIN_IDS.LOCALHOST)}`,
-  `eip155:${hexToDecimal(CHAIN_IDS.MEGAETH_TESTNET)}`,
-];
+const caipFormattedTestChains = TEST_CHAINS.map(
+  (chainId) => `eip155:${hexToDecimal(chainId)}`,
+);
 
 export type ConnectPageRequest = {
   id: string;
@@ -141,8 +142,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       Object.entries(requestedNetworkConfigurations).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
-          const isTestNetwork =
-            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
+          const isTestNetwork = caipFormattedTestChains.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
