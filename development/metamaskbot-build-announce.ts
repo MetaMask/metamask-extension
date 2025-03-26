@@ -1,12 +1,13 @@
 import { execFileSync } from 'child_process';
 import { promises as fs } from 'fs';
-import startCase from 'lodash/startCase';
 import path from 'path';
+import startCase from 'lodash/startCase';
+import { hasProperty } from '@metamask/utils';
 import { version as VERSION } from '../package.json';
 
 start().catch(console.error);
 
-function getHumanReadableSize(bytes) {
+function getHumanReadableSize(bytes: number): string {
   if (!bytes) {
     return '0 Bytes';
   }
@@ -25,24 +26,24 @@ function getHumanReadableSize(bytes) {
   )} ${magnitudes[magnitudeIndex]}`;
 }
 
-function getPercentageChange(from, to) {
-  return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
+function getPercentageChange(from: number, to: number): number {
+  return parseFloat((((to - from) / Math.abs(from)) * 100).toFixed(2));
 }
 
 /**
  * Check whether an artifact exists,
  *
- * @param {string} url - The URL of the artifact to check.
+ * @param url - The URL of the artifact to check.
  * @returns True if the artifact exists, false if it doesn't
  */
-async function artifactExists(url) {
+async function artifactExists(url: string): Promise<boolean> {
   // Using a regular GET request here rather than HEAD because for some reason CircleCI always
   // returns 404 for HEAD requests.
   const response = await fetch(url);
   return response.ok;
 }
 
-async function start() {
+async function start(): Promise<void> {
   const {
     PR_COMMENT_TOKEN,
     PR_NUMBER,
@@ -51,7 +52,8 @@ async function start() {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
-  } = process.env;
+    GITHUB_RUN_ID,
+  } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
@@ -61,8 +63,13 @@ async function start() {
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
+  type BuildType = {
+    chrome?: string;
+    firefox?: string;
+  };
+
   // links to extension builds
-  const buildMap = {
+  const buildMap: Record<string, BuildType> = {
     builds: {
       chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
@@ -110,7 +117,7 @@ async function start() {
   });
 
   // links to bundle browser builds
-  const bundles = {};
+  const bundles: Record<string, string[]> = {};
   const sourceMapRoot = '/build-artifacts/source-map-explorer/';
   const fileRoots = [
     'background',
@@ -157,15 +164,16 @@ async function start() {
 
   const gitHubArtifactList = await (
     await fetch(
-      `https://api.github.com/repos/metamask/metamask-extension/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts`,
+      `https://api.github.com/repos/metamask/metamask-extension/actions/runs/${GITHUB_RUN_ID}/artifacts`,
     )
   ).json();
 
   const userActionsArtifact = gitHubArtifactList.artifacts.find(
-    (artifact) => artifact.name === 'benchmark-chrome-browserify-userActions',
+    (artifact: { name: string }) =>
+      artifact.name === 'benchmark-chrome-browserify-userActions',
   );
 
-  const userActionsStatsUrl = `https://github.com/MetaMask/metamask-extension/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts/${userActionsArtifact.id}`;
+  const userActionsStatsUrl = `https://github.com/MetaMask/metamask-extension/actions/runs/${GITHUB_RUN_ID}/artifacts/${userActionsArtifact.id}`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">user actions</a>`;
 
   // link to artifacts
@@ -193,7 +201,15 @@ async function start() {
   const benchmarkPlatforms = ['chrome', 'firefox'];
   const buildTypes = ['browserify', 'webpack'];
 
-  const benchmarkResults = {};
+  type BenchmarkResults = Record<
+    (typeof benchmarkPlatforms)[number],
+    Record<
+      (typeof buildTypes)[number],
+      Record<string, Record<string, Record<string, string>>>
+    >
+  >;
+
+  const benchmarkResults: BenchmarkResults = {};
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
 
@@ -207,7 +223,11 @@ async function start() {
         const benchmark = JSON.parse(data);
         benchmarkResults[platform][buildType] = benchmark;
       } catch (error) {
-        if (error.code === 'ENOENT') {
+        if (
+          error instanceof Error &&
+          hasProperty(error, 'code') &&
+          error.code === 'ENOENT'
+        ) {
           console.log(
             `No benchmark data found for ${platform}-${buildType}; skipping`,
           );
@@ -240,11 +260,11 @@ async function start() {
       );
       const benchmarkSummary = `UI Startup Metrics (${summaryPageStartup} ± ${summaryPageStartupStandardDeviation} ms)`;
 
-      const allPlatforms = new Set();
-      const allBuildTypes = new Set();
-      const allPages = new Set();
-      const allMetrics = new Set();
-      const allMeasures = new Set();
+      const allPlatforms = new Set<string>();
+      const allBuildTypes = new Set<string>();
+      const allPages = new Set<string>();
+      const allMetrics = new Set<string>();
+      const allMeasures = new Set<string>();
       for (const platform of Object.keys(benchmarkResults)) {
         allPlatforms.add(platform);
         const platformBenchmark = benchmarkResults[platform];
@@ -269,15 +289,15 @@ async function start() {
         }
       }
 
-      const tableRows = [];
+      const tableRows: string[] = [];
       for (const platform of allPlatforms) {
-        const pageRows = [];
+        const pageRows: string[] = [];
 
         // We don't want to use allBuildTypes here because we might skip certain builds in the future
         const buildTypesInPlatform = Object.keys(benchmarkResults[platform]);
         for (const buildType of buildTypesInPlatform) {
           for (const page of allPages) {
-            const metricRows = [];
+            const metricRows: string[] = [];
             for (const metric of allMetrics) {
               let metricData = `<td>${metric}</td>`;
               for (const measure of allMeasures) {
@@ -346,20 +366,23 @@ async function start() {
     };
 
     const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      sizes[part] = devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
+      sizes[part as keyof typeof prSizes] =
+        devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
       return sizes;
-    }, {});
+    }, {} as Record<keyof typeof prSizes, number>);
 
     const diffs = Object.keys(prSizes).reduce((output, part) => {
-      output[part] = prSizes[part] - devSizes[part];
+      output[part] =
+        prSizes[part as keyof typeof prSizes] -
+        devSizes[part as keyof typeof prSizes];
       return output;
-    }, {});
+    }, {} as Record<string, number>);
 
     const sizeDiffRows = Object.keys(diffs).map(
       (part) =>
         `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
-          devSizes[part],
-          prSizes[part],
+          devSizes[part as keyof typeof prSizes],
+          prSizes[part as keyof typeof prSizes],
         )}%)`,
     );
 

@@ -5,7 +5,7 @@ env:
   COMMANDS: |
     {
       pageload: 'yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
-      userActions: 'yarn tsx test/e2e/user-actions-benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
+      userActions: 'yarn tsx test/e2e/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
@@ -21,24 +21,18 @@ jobs:
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
+      ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
-      - name: Compute ARTIFACT_NAME
-        run: |
-          ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}"
-
-          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_ENV"
-          echo "ARTIFACT_NAME is $ARTIFACT_NAME"
-
-      - name: Download artifact ${{env.ARTIFACT_NAME}}
+      - name: Download artifact ${{ env.ARTIFACT_NAME }}
         uses: actions/download-artifact@v4
         with:
           path: ./dist/
-          pattern: ${{env.ARTIFACT_NAME}}
+          pattern: ${{ env.ARTIFACT_NAME }}
           merge-multiple: true
 
       - name: Run the benchmark
@@ -51,38 +45,3 @@ jobs:
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
           path: test-artifacts/benchmarks/
-
-  bundle-size:
-    runs-on: ubuntu-latest
-    env:
-      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
-      SELENIUM_BROWSER: chrome
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-
-      - name: Download artifact prep-build-dist-browserify-chrome
-        uses: actions/download-artifact@v4
-        with:
-          path: ./dist/
-          pattern: prep-build-dist-browserify-chrome
-          merge-multiple: true
-
-      - name: Measure bundle size
-        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.mjs --out test-artifacts/chrome
-
-      - name: Install jq
-        run: sudo apt install jq -y
-
-      # TODO: fix this
-      - name: Record bundle size at commit
-        # if: ${{ github.ref_name	== 'main' }}
-        run: ./.circleci/scripts/bundle-stats-commit.sh
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: bundle-size
-          path: test-artifacts/chrome/
