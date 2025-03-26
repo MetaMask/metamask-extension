@@ -1,20 +1,20 @@
-const path = require('path');
-const { promises: fs } = require('fs');
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
-const { exitWithError } = require('../../development/lib/exit-with-error');
-const {
-  isWritable,
+import { promises as fs } from 'fs';
+import path from 'path';
+import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs/yargs';
+import { exitWithError } from '../../development/lib/exit-with-error.js';
+import {
   getFirstParentDirectoryThatExists,
-} = require('../helpers/file');
-const {
+  isWritable,
+} from '../helpers/file.js';
+import FixtureBuilder from './fixture-builder.js';
+import {
   convertToHexValue,
-  withFixtures,
-  openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
   unlockWallet,
-} = require('./helpers');
-const FixtureBuilder = require('./fixture-builder');
+  withFixtures,
+} from './helpers.js';
 
 const ganacheOptions = {
   accounts: [
@@ -34,6 +34,7 @@ async function loadNewAccount() {
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
+      title: 'benchmark-userActions-loadNewAccount',
     },
     async ({ driver }) => {
       await unlockWallet(driver);
@@ -66,6 +67,7 @@ async function confirmTx() {
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
+      title: 'benchmark-userActions-confirmTx',
     },
     async ({ driver }) => {
       await logInWithBalanceValidation(driver);
