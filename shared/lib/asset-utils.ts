@@ -20,7 +20,7 @@ import fetchWithCache from './fetch-with-cache';
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
-const buildAssetId = (
+export const toAssetId = (
   address: Hex | CaipAssetType | string,
   chainId: CaipChainId,
 ): CaipAssetType | undefined => {
@@ -51,7 +51,7 @@ export const getAssetImageUrl = (
     ? chainId
     : toEvmCaipChainId(chainId);
 
-  const assetIdInCaip = buildAssetId(assetId, chainIdInCaip);
+  const assetIdInCaip = toAssetId(assetId, chainIdInCaip);
   if (!assetIdInCaip) {
     return undefined;
   }
@@ -86,7 +86,7 @@ export const fetchAssetMetadata = async (
     ? chainId
     : toEvmCaipChainId(chainId);
 
-  const assetId = buildAssetId(address, chainIdInCaip);
+  const assetId = toAssetId(address, chainIdInCaip);
 
   if (!assetId) {
     return undefined;
