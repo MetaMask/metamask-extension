@@ -93,7 +93,14 @@ export function PendingApproval({ children, requestData, state, type }) {
             flexDirection: 'column',
           }}
         >
-          {children}
+          <Box
+            style={{
+              flex: '1 0 auto',
+              display: 'flex',
+            }}
+          >
+            {children}
+          </Box>
         </Box>
       </Box>
     </Provider>
