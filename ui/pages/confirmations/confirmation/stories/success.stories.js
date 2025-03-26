@@ -167,7 +167,7 @@ export const TemplateStory = () => {
         header: [
           {
             name: 'SnapAuthorshipHeader',
-            key: 'snapHeader',
+            key: 'snapAccountSuccessMessage',
             properties: { snapId: 'npm:@test/test-snap' },
           },
         ],
