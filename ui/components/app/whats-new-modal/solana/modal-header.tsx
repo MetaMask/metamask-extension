@@ -1,8 +1,8 @@
 import React from 'react';
 import {
+  AlignItems,
   Display,
   FlexDirection,
-  AlignItems,
 } from '../../../../helpers/constants/design-system';
 import {
   ModalHeader as BaseModalHeader,
