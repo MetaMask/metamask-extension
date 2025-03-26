@@ -2,7 +2,6 @@ import {
   CaipNamespace,
   Hex,
   CaipAccountId,
-  parseCaipChainId,
   parseCaipAccountId,
 } from '@metamask/utils';
 import {

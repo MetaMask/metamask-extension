@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
+import { CaipAccountId, CaipChainId } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,

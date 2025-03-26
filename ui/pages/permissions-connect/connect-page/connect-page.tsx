@@ -50,11 +50,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  CAIP_FORMATTED_TEST_CHAINS,
-  CHAIN_IDS,
-  TEST_CHAINS,
-} from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
