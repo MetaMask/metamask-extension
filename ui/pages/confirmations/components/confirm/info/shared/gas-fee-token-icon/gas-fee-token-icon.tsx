@@ -1,8 +1,8 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import Identicon from '../../../../../../../components/ui/identicon';

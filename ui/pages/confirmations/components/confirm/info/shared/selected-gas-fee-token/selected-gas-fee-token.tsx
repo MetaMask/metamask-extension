@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Icon,
@@ -12,9 +14,7 @@ import {
   BorderRadius,
   Display,
 } from '../../../../../../../helpers/constants/design-system';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useSelector } from 'react-redux';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import {
@@ -68,7 +68,11 @@ export function SelectedGasFeeToken() {
         />
         <Text>{symbol}</Text>
         {hasGasFeeTokens && (
-          <Icon data-testid='selected-gas-fee-token-arrow' name={IconName.ArrowDown} size={IconSize.Sm} />
+          <Icon
+            data-testid="selected-gas-fee-token-arrow"
+            name={IconName.ArrowDown}
+            size={IconSize.Sm}
+          />
         )}
       </Box>
     </>
