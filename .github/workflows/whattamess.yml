@@ -1,0 +1,34 @@
+name: messy action to test the action-checkout-and-setup action
+
+on:
+  push:
+    branches:
+      - naugtur/the-ugly-mess-i-have-to-make-to-debug-a-gh-action
+
+
+jobs:
+  grumbleblurf:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    outputs:
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@0df6a5d338bd77c9a0a7d9304f0152bc4d8c2dab
+        with:
+          is-high-risk-environment: false
+      - name: PRINT THE MF
+        id: show-me-your-commit-sha
+        run: git rev-parse --short HEAD
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
