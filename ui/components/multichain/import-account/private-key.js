@@ -9,7 +9,6 @@ import {
 import { hideWarning } from '../../../store/actions';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
@@ -31,12 +30,6 @@ export default function PrivateKeyImportView({
   }, [dispatch]);
 
   const warning = useSelector((state) => state.appState.warning);
-
-  useEffect(() => {
-    return () => {
-      dispatch(actions.hideWarning());
-    };
-  }, [dispatch]);
 
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {
