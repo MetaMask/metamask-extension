@@ -17,9 +17,9 @@ jest.mock('../../../../../../shared/lib/asset-utils', () => ({
 }));
 
 const mockChainId = '0x1';
-const mockSearchQuery = '0x123';
+const mockSearchQuery = '0x123asdfasdfasdfasdfasdfasadssdas';
 const mockAssetId = 'eip155:1/erc20:0x123';
-
+const mockAbortController = { current: new AbortController() };
 describe('useAssetMetadata', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,7 +31,7 @@ describe('useAssetMetadata', () => {
     (useSelector as jest.Mock).mockReturnValue(false); // allowExternalServices = false
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAssetMetadata(mockSearchQuery, true, mockChainId),
+      useAssetMetadata(mockSearchQuery, true, mockAbortController, mockChainId),
     );
 
     await waitForNextUpdate();
@@ -41,7 +41,7 @@ describe('useAssetMetadata', () => {
 
   it('should return undefined when chainId is not provided', async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAssetMetadata(mockSearchQuery, true, undefined),
+      useAssetMetadata(mockSearchQuery, true, mockAbortController),
     );
 
     await waitForNextUpdate();
@@ -51,7 +51,7 @@ describe('useAssetMetadata', () => {
 
   it('should return undefined when search query is empty', async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAssetMetadata('', true, mockChainId),
+      useAssetMetadata('', true, mockAbortController, mockChainId),
     );
 
     await waitForNextUpdate();
@@ -61,7 +61,7 @@ describe('useAssetMetadata', () => {
 
   it('should fetch and return asset metadata when conditions are met', async () => {
     const mockMetadata = {
-      address: '0x123',
+      address: '0x123asdfasdfasdfasdfasdfasadssdas',
       symbol: 'TEST',
       decimals: 18,
       assetId: mockAssetId,
@@ -71,7 +71,7 @@ describe('useAssetMetadata', () => {
     mockFetchAssetMetadata.mockResolvedValueOnce(mockMetadata);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAssetMetadata(mockSearchQuery, true, mockChainId),
+      useAssetMetadata(mockSearchQuery, true, mockAbortController, mockChainId),
     );
 
     await waitForNextUpdate();
@@ -89,6 +89,7 @@ describe('useAssetMetadata', () => {
     expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
       mockSearchQuery.trim(),
       mockChainId,
+      mockAbortController.current.signal,
     );
     expect(mockGetAssetImageUrl).toHaveBeenCalledWith(mockAssetId, mockChainId);
   });
@@ -97,7 +98,7 @@ describe('useAssetMetadata', () => {
     mockFetchAssetMetadata.mockResolvedValueOnce(undefined);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAssetMetadata(mockSearchQuery, true, mockChainId),
+      useAssetMetadata(mockSearchQuery, true, mockAbortController, mockChainId),
     );
 
     await waitForNextUpdate();
@@ -106,6 +107,7 @@ describe('useAssetMetadata', () => {
     expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
       mockSearchQuery.trim(),
       mockChainId,
+      mockAbortController.current.signal,
     );
   });
 
@@ -113,7 +115,7 @@ describe('useAssetMetadata', () => {
     mockFetchAssetMetadata.mockRejectedValueOnce(new Error('API Error'));
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAssetMetadata(mockSearchQuery, true, mockChainId),
+      useAssetMetadata(mockSearchQuery, true, mockAbortController, mockChainId),
     );
 
     await waitForNextUpdate();
@@ -122,6 +124,7 @@ describe('useAssetMetadata', () => {
     expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
       mockSearchQuery.trim(),
       mockChainId,
+      mockAbortController.current.signal,
     );
   });
 });
