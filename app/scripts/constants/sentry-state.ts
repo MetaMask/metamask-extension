@@ -43,9 +43,12 @@ export const SENTRY_BACKGROUND_STATE = {
   AuthenticationController: {
     isSignedIn: false,
     sessionData: {
+      token: {
+        accessToken: false,
+        expiresIn: true,
+        obtainedAt: true,
+      },
       profile: true,
-      accessToken: false,
-      expiresIn: true,
     },
   },
   NetworkOrderController: {
@@ -256,7 +259,6 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,
-      petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
     },

@@ -6,6 +6,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../../test/
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { useFourByte } from '../../hooks/useFourByte';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { RESULT_IDLE } from '../../../../../../../hooks/useAsync';
 import { NestedTransactionData } from './nested-transaction-data';
 
 jest.mock('../../hooks/useFourByte', () => ({
@@ -57,10 +58,7 @@ describe('NestedTransaction', () => {
     jest.resetAllMocks();
 
     useFourByteMock.mockReturnValue(undefined);
-    useDecodedTransactionDataMock.mockReturnValue({
-      value: undefined,
-      pending: false,
-    });
+    useDecodedTransactionDataMock.mockReturnValue(RESULT_IDLE);
   });
 
   it('renders label as transaction index', () => {

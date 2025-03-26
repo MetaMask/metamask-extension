@@ -37,13 +37,17 @@ import {
   updateSendAmount,
   updateSendAsset,
 } from '../../../../ducks/send';
+
 import {
   TokenStandard,
   AssetType,
   SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
+import {
+  INSUFFICIENT_FUNDS_ERROR,
+  INVALID_HEX_DATA_ERROR,
+} from '../../../../pages/confirmations/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -325,10 +329,13 @@ export const SendPage = () => {
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
+  const isHexDataInvalid = sendErrors.hexData === INVALID_HEX_DATA_ERROR;
+
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
     requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isSmartTransactionPending);
+    (isSwapAndSend && isSmartTransactionPending) ||
+    isHexDataInvalid;
 
   const isSendFormShown =
     draftTransactionExists &&
