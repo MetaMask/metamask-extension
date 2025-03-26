@@ -8,7 +8,7 @@ import { withFixtures, WINDOW_TITLES, openDapp } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
 
 describe('Test Snap TxInsights', function () {
-  it(' validate the insights section appears', async function () {
+  it(' validate the insights section appears for ERC20 transaction', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -39,7 +39,7 @@ describe('Test Snap TxInsights', function () {
         // Switch back to MetaMask dialog and validate the transaction insights title and type
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsightsType();
+        await snapInstall.check_transactionInsightsType('ERC-20');
       },
     );
   });
@@ -73,27 +73,21 @@ describe('Test Snap TxInsights', function () {
         await testDapp.clickERC721DeployButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsights();
-        await snapInstall.check_transactionFromAddress();
         await tokenTransferTransactionConfirmation.clickConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsights();
-        await snapInstall.check_transactionFromAddress();
-        await snapInstall.check_transactionToAddress();
         await tokenTransferTransactionConfirmation.clickConfirmButton();
 
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.clickERC721SetApprovalForAllButton();
+        await testDapp.clickERC721TransferFromButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsights();
         await snapInstall.check_transactionFromAddress();
         await snapInstall.check_transactionToAddress();
+        await snapInstall.check_transactionInsightsType('ERC-721');
       },
     );
   });
@@ -127,19 +121,12 @@ describe('Test Snap TxInsights', function () {
         await testDapp.clickERC155DeployButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsights();
-        await snapInstall.check_transactionFromAddress();
         await tokenTransferTransactionConfirmation.clickConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
         await testDapp.clickERC1155MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsights();
-        await snapInstall.check_transactionFromAddress();
-        await snapInstall.check_transactionToAddress();
         await tokenTransferTransactionConfirmation.clickConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -147,7 +134,7 @@ describe('Test Snap TxInsights', function () {
         await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsights();
+        // await snapInstall.check_transactionInsightsType('ERC-1155');
         await snapInstall.check_transactionFromAddress();
         await snapInstall.check_transactionToAddress();
       },

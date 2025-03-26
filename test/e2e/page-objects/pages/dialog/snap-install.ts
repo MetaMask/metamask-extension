@@ -27,15 +27,7 @@ class SnapInstall {
     tag: 'span',
   };
 
-  private readonly transactionType = {
-    css: 'p',
-    text: 'ERC-20',
-  };
-
-  private readonly transactionInsight = {
-    css: 'p',
-    text: 'Unknown',
-  };
+  private readonly transactionType = '.snap-ui-renderer__text';
 
   private readonly transactionFromAddress = {
     css: 'p',
@@ -131,14 +123,12 @@ class SnapInstall {
     await this.driver.waitForSelector(this.insightTitle);
   }
 
-  async check_transactionInsightsType() {
+  async check_transactionInsightsType(transactionType: string) {
     console.log('Checking transaction insights type');
-    await this.driver.waitForSelector(this.transactionType);
-  }
-
-  async check_transactionInsights() {
-    console.log('Checking transaction insights');
-    await this.driver.waitForSelector(this.transactionInsight);
+    await this.driver.waitForSelector({
+      css: this.transactionType,
+      text: transactionType,
+    });
   }
 
   async check_transactionFromAddress() {
