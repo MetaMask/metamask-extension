@@ -1619,8 +1619,14 @@
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
   },
-  "destinationAccountPickerSearchPlaceholder": {
-    "message": "Receiving address or SNS"
+  "destinationAccountPickerReceiveAt": {
+    "message": "Receive at"
+  },
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "Receiving address or ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "Receiving address"
   },
   "details": {
     "message": "Details"
