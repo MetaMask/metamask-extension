@@ -86,8 +86,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           .get('destinationToken')
           ?.toLowerCase();
         const walletAddress =
-          url.searchParams.get('walletAddress') ||
-          '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+          url.searchParams.get('walletAddress') || DEFAULT_WALLET_ADDRESS;
         const sourceAmount = url.searchParams.get('sourceAmount');
 
         const isEthToWeth =
