@@ -75,10 +75,10 @@ describe('useMultichainWalletSnapClient', () => {
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
 
-      await multichainWalletSnapClient.createAccount(
-        network,
-        'test-entropy-source',
-      );
+      await multichainWalletSnapClient.createAccount({
+        scope: network,
+        entropySource: 'test-entropy-source',
+      });
       expect(mockHandleSnapRequest).toHaveBeenCalledWith({
         origin: 'metamask',
         snapId,
@@ -101,7 +101,7 @@ describe('useMultichainWalletSnapClient', () => {
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
 
-      await multichainWalletSnapClient.createAccount(network);
+      await multichainWalletSnapClient.createAccount({ scope: network });
       expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
     });
 
@@ -113,7 +113,7 @@ describe('useMultichainWalletSnapClient', () => {
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
 
-      await multichainWalletSnapClient.createAccount(network);
+      await multichainWalletSnapClient.createAccount({ scope: network });
       expect(mockMultichainUpdateTransactions).toHaveBeenCalledWith(
         mockAccount.id,
       );
