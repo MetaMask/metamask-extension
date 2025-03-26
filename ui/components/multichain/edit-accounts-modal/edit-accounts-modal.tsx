@@ -1,10 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  CaipAccountAddress,
-  CaipAccountId,
-  CaipNamespace,
-  CaipReference,
-} from '@metamask/utils';
+import { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -46,9 +41,6 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 type EditAccountsModalProps = {
   accounts: {
     internalAccount: MergedInternalAccount;
-    address: CaipAccountAddress;
-    namespace: CaipNamespace;
-    reference: CaipReference;
     caipAccountId: CaipAccountId;
   }[];
   defaultSelectedAccountAddresses: CaipAccountId[];
