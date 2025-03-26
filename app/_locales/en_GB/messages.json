@@ -793,6 +793,9 @@
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
+  "bridgeCreateSolanaAccount": {
+    "message": "Create Solana account"
+  },
   "bridgeCreateSolanaAccountDescription": {
     "message": "To swap to the Solana network, you need an account and receiving address."
   },
@@ -4105,12 +4108,6 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
-  "petnamesEnabledToggle": {
-    "message": "Allow nicknames"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
-  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -5221,7 +5218,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"

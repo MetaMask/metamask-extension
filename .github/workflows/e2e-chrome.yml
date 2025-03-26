@@ -37,19 +37,6 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-chrome-flask:
-    uses: ./.github/workflows/run-e2e.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7]
-    with:
-      test-suite-name: test-e2e-chrome-flask
-      build-command: yarn build:test:flask
-      test-command: yarn test:e2e:chrome:flask
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
   test-e2e-chrome-multiple-providers:
     needs:
       - prep-build-test
@@ -70,17 +57,29 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
 
-  test-report:
+  test-e2e-chrome-flask:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7]
+    with:
+      test-suite-name: test-e2e-chrome-flask
+      build-command: yarn build:test:flask
+      test-command: yarn test:e2e:chrome:flask
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-report:
     needs:
       - test-e2e-chrome
-      - test-e2e-chrome-flask
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
+      - test-e2e-chrome-flask
     runs-on: ubuntu-latest
     if: always()
     continue-on-error: true # soft launch
     steps:
-      # We don't have to setup node or run yarn in this job
       - uses: actions/checkout@v4
 
       - name: Download test results
