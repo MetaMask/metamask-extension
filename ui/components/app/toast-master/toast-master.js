@@ -32,6 +32,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
+  getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getSelectedAccount,
   getSwitchedNetworkDetails,
@@ -352,6 +353,9 @@ function NewSrpAddedToast() {
   const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
   const autoHideDelay = 5 * SECOND;
 
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
+  const latestHdKeyringNumber = hdKeyrings.length;
+
   // This will close the toast if the user clicks the account menu.
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -373,7 +377,7 @@ function NewSrpAddedToast() {
     showNewSrpAddedToast && (
       <Toast
         key="new-srp-added-toast"
-        text={t('importWalletSuccess')}
+        text={t('importWalletSuccess', [latestHdKeyringNumber])}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
