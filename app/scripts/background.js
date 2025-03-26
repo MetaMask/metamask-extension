@@ -141,20 +141,10 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-if (isFirefox) {
+if (isFirefox || !isManifestV3) {
   browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install') {
       browser.storage.session.set({ isFirstTimeInstall: true });
-    } else if (details.reason === 'update') {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    }
-  });
-} else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === 'install') {
-      global.sessionStorage.setItem('isFirstTimeInstall', true);
-    } else if (details.reason === 'update') {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
     }
   });
 }
@@ -504,12 +494,6 @@ async function initialize() {
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
-
-    if (isManifestV3 || isFirefox) {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    } else {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
 
     resolveInitialization();
   } catch (error) {
@@ -1286,18 +1270,38 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-// On first install, open a new tab with MetaMask
-async function onInstall() {
+async function checkOnFirstInstall() {
+  log.debug('Checking whether the extension was just installed');
+  let firstInstallTriggered = false;
+  const onSessionUpdate = (changes) => {
+    if (changes?.isFirstTimeInstall?.newValue) {
+      firstInstallTriggered = true;
+      browser.storage.session.onChanged.removeListener(onSessionUpdate);
+      onFirstInstall();
+    }
+  };
+  browser.storage.session.onChanged.addListener(onSessionUpdate);
   const sessionData =
     isManifestV3 || isFirefox
       ? await browser.storage.session.get(['isFirstTimeInstall'])
       : await global.sessionStorage.getItem('isFirstTimeInstall');
 
-  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+  if (firstInstallTriggered) {
+    return;
+  }
+  if (sessionData?.isFirstTimeInstall) {
+    firstInstallTriggered = true;
+    browser.storage.session.onChanged.removeListener(onSessionUpdate);
+    onFirstInstall();
+  }
+}
 
+// On first install, open a new tab with MetaMask
+function onFirstInstall() {
+  log.debug('First install detected');
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
+  } else if (!process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();
@@ -1334,7 +1338,7 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  await onInstall();
+  checkOnFirstInstall();
   try {
     await initialize();
     if (process.env.IN_TEST) {
