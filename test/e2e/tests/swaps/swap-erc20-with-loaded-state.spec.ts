@@ -9,13 +9,19 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
+import {
+  mockEmptyHistoricalPrices,
+  mockEmptyPrices,
+} from '../tokens/utils/mocks';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
   const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
   const ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
-  const DEFAULT_WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
   return [
+    await mockEmptyHistoricalPrices(mockServer, ETH_ADDRESS, '0x1'),
+    await mockEmptyPrices(mockServer, '1'),
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
@@ -86,7 +92,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           .get('destinationToken')
           ?.toLowerCase();
         const walletAddress =
-          url.searchParams.get('walletAddress') || DEFAULT_WALLET_ADDRESS;
+          url.searchParams.get('walletAddress') || DEFAULT_FIXTURE_ACCOUNT;
         const sourceAmount = url.searchParams.get('sourceAmount');
 
         const isEthToWeth =
@@ -199,15 +205,15 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
 
 describe('Swap', function () {
   const swapTestCases = [
-    // {
-    //   name: 'should swap WETH to ETH',
-    //   sourceToken: 'WETH',
-    //   destinationToken: 'Ether',
-    //   sourceAmount: '10',
-    //   expectedWethBalance: '40',
-    //   expectedEthBalance: '34.99991',
-    //   dismissWarning: false,
-    // },
+    {
+      name: 'should swap WETH to ETH',
+      sourceToken: 'WETH',
+      destinationToken: 'Ether',
+      sourceAmount: '10',
+      expectedWethBalance: '40',
+      expectedEthBalance: '34.99991',
+      dismissWarning: false,
+    },
     {
       name: 'should swap ETH to WETH',
       sourceToken: 'Ethereum',
@@ -225,6 +231,13 @@ describe('Swap', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
+            .withPreferencesController({
+              preferences: {
+                tokenNetworkFilter: {
+                  '0x1': true,
+                },
+              },
+            })
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -278,11 +291,6 @@ describe('Swap', function () {
 
           // Swap tokens
           const assetListPage = new AssetListPage(driver);
-          // Remove ETH linea token to avoid potential flakiness
-          if (testCase.sourceToken === 'Ethereum') {
-            await assetListPage.openNetworksFilter();
-            await assetListPage.clickCurrentNetworkOption();
-          }
           await assetListPage.clickOnAsset(testCase.sourceToken);
 
           const tokenOverviewPage = new TokenOverviewPage(driver);

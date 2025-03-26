@@ -36,18 +36,10 @@ export class SwapSendPage {
     const indexOfButtonToClick = isDest ? 1 : 0;
     await buttons[indexOfButtonToClick].click();
 
-    const assets = await this.driver.findElements(
-      '[data-testid="multichain-token-list-item"]',
-    );
-    for (const asset of assets) {
-      const text = await asset.getText();
-      if (text.match(assetName)) {
-        console.log(`Clicking on ${assetName} in ${location}`);
-        await asset.click();
-        return;
-      }
-    }
-    throw new Error(`${assetName} button not found`);
+    await this.driver.clickElement({
+      css: '[data-testid="multichain-token-list-item"]',
+      text: assetName,
+    });
   }
 
   searchAndSelectToken = async (

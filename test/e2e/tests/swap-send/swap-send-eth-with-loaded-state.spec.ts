@@ -10,9 +10,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
-
-const RECIPIENT_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
@@ -172,7 +171,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
 
 describe('Swap-Send ETH', function () {
   describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
-    it.only('submits a transaction successfully with max amount', async function () {
+    it('submits a transaction successfully with max amount', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -211,6 +210,11 @@ describe('Swap-Send ETH', function () {
           const swapSendPage = new SwapSendPage(driver);
           await logInWithBalanceValidation(driver);
 
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
+
           // disable smart transactions
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_pageIsLoaded();
@@ -227,7 +231,7 @@ describe('Swap-Send ETH', function () {
           // START SWAP AND SEND FLOW
           await openActionMenuAndStartSendFlow(driver);
 
-          await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
+          await swapSendPage.fillRecipientAddressInput(DEFAULT_FIXTURE_ACCOUNT);
           await swapSendPage.fillAmountInput('1');
 
           await swapSendPage.verifyMaxButtonClick(
@@ -269,8 +273,6 @@ describe('Swap-Send ETH', function () {
             '≈ $21.93',
           );
 
-          // TODO assert swap api request payload
-
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
             'Send ETH as WETH',
@@ -279,9 +281,6 @@ describe('Swap-Send ETH', function () {
             '',
           );
 
-          // click token tab
-
-          const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
           await homePage.check_expectedTokenBalanceIsDisplayed(

@@ -19,10 +19,7 @@ class SwapPage {
     text: 'Close',
   };
 
-  private readonly closeButtonId = '[data-testid="page-container-footer-next"]';
-
-  private readonly transactionHeaderLocator =
-    '[data-testid="awaiting-swap-header"]';
+  private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -61,11 +58,11 @@ class SwapPage {
 
   async swapProcessingMessageCheck(message: string): Promise<void> {
     await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements({
-        css: this.transactionHeaderLocator,
+      const confirmedTxs = await this.driver.findElements({
+        css: this.transactionHeader,
         text: message,
       });
-      return confirmedTxes.length === 1;
+      return confirmedTxs.length === 1;
     }, 10000);
   }
 
@@ -76,7 +73,7 @@ class SwapPage {
     // await this.swapProcessingMessageCheck('Processing');
     console.log('Swap Transaction complete');
     await this.swapProcessingMessageCheck('Transaction complete');
-    await this.driver.clickElement(this.closeButtonId);
+    await this.driver.clickElement(this.closeButton);
   }
 
   async dismissManualTokenWarning(): Promise<void> {
