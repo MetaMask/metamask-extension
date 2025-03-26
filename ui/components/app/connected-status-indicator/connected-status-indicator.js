@@ -16,7 +16,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
-  getPermittedAccountsForCurrentTab,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
 
@@ -31,7 +30,9 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
+  // TODO: Fix this
+  // const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
+  const permittedAccounts = [];
   const currentTabIsConnectedToSelectedAddress = permittedAccounts.find(
     (account) => account === selectedAddress,
   );

@@ -57,7 +57,6 @@ import {
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
-  getPermittedAccountsForCurrentTab,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
@@ -1844,8 +1843,10 @@ export function setSelectedAccount(
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
     const internalAccount = getInternalAccountByAddress(state, address);
-    const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
+    // TODO: fix this
+    // const permittedAccountsForCurrentTab =
+    //   getPermittedAccountsForCurrentTab(state);
+    const permittedAccountsForCurrentTab = [];
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
       permittedAccountsForCurrentTab.includes(internalAccount.address);

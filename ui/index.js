@@ -24,7 +24,6 @@ import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getOriginOfCurrentTab,
-  getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
@@ -129,8 +128,10 @@ export async function setupInitialStore(
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-    const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(draftInitialState);
+    // TODO: Fix this
+    // const permittedAccountsForCurrentTab =
+    //   getPermittedAccountsForCurrentTab(draftInitialState);
+    const permittedAccountsForCurrentTab = [];
     const selectedAddress =
       getSelectedInternalAccount(draftInitialState)?.address ?? '';
     const unconnectedAccountAlertShownOrigins =
