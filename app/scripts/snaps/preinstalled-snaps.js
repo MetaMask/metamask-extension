@@ -1,4 +1,4 @@
-export const PREINSTALLED_SNAPS = Object.freeze([
+const PREINSTALLED_SNAPS = Object.freeze([
   '@metamask/message-signing-snap',
   '@metamask/ens-resolver-snap',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -12,3 +12,5 @@ export const PREINSTALLED_SNAPS = Object.freeze([
   '@metamask/solana-wallet-snap',
   ///: END:ONLY_INCLUDE_IF
 ]);
+
+module.exports = { PREINSTALLED_SNAPS };
