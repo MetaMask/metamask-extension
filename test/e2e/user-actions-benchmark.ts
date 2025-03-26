@@ -64,7 +64,7 @@ async function confirmTx(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: ganacheOptions,
+      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-confirmTx',
     },

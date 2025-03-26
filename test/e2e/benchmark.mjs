@@ -34,6 +34,7 @@ async function measurePage(pageName, pageLoads) {
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
+      localNodeOptions: 'ganache',
       title: 'benchmark-pageload',
     },
     async ({ driver }) => {
