@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { CaipAccountId, Hex } from '@metamask/utils';
+import { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,
@@ -27,6 +27,7 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 type Network = {
   name: string;
   chainId: string;
+  caipChainId: CaipChainId;
 };
 
 type SiteCellProps = {
@@ -34,9 +35,9 @@ type SiteCellProps = {
   testNetworks: Network[];
   accounts: MergedInternalAccount[];
   onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
-  onSelectChainIds: (chainIds: Hex[]) => void;
+  onSelectChainIds: (chainIds: CaipChainId[]) => void;
   selectedAccountAddresses: CaipAccountId[];
-  selectedChainIds: string[];
+  selectedChainIds: CaipChainId[];
   isConnectFlow?: boolean;
   hideAllToasts?: () => void;
 };
@@ -64,8 +65,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       isEqualCaseInsensitive(selectedAccountAddress, address),
     ),
   );
-  const selectedNetworks = allNetworks.filter(({ chainId }) =>
-    selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
+    selectedChainIds.includes(caipChainId),
   );
 
   const selectedChainIdsLength = selectedChainIds.length;

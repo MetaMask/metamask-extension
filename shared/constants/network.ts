@@ -4,7 +4,7 @@ import type {
 } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { hexToDecimal } from '../modules/conversion.utils';
 import { MultichainNetworks } from './multichain/networks';
 
@@ -547,12 +547,12 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.MEGAETH_TESTNET,
 ];
 
-export const CAIP_FORMATTED_TEST_CHAINS = [
-  `eip155:${hexToDecimal(CHAIN_IDS.SEPOLIA)}`,
-  `eip155:${hexToDecimal(CHAIN_IDS.LINEA_SEPOLIA)}`,
-  `eip155:${hexToDecimal(CHAIN_IDS.LOCALHOST)}`,
-  `eip155:${hexToDecimal(CHAIN_IDS.MEGAETH_TESTNET)}`,
-];
+// export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
+//   `eip155:${hexToDecimal(CHAIN_IDS.SEPOLIA)}`,
+//   `eip155:${hexToDecimal(CHAIN_IDS.LINEA_SEPOLIA)}`,
+//   `eip155:${hexToDecimal(CHAIN_IDS.LOCALHOST)}`,
+//   `eip155:${hexToDecimal(CHAIN_IDS.MEGAETH_TESTNET)}`,
+// ];
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
