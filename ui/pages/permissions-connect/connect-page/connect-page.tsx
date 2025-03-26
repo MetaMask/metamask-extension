@@ -51,7 +51,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import {
+  CAIP_FORMATTED_TEST_CHAINS,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
@@ -78,6 +81,7 @@ import {
   getAllRequestedAccounts,
   getAllRequestedChainIds,
 } from './utils';
+
 export type ConnectPageRequest = {
   id: string;
   origin: string;
@@ -113,9 +117,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     request.permissions,
   );
   const requestedAccounts = getAllRequestedAccounts(requestedCaip25CaveatValue);
-  const requestedChainIds = getAllRequestedChainIds(requestedCaip25CaveatValue);
+  const requestedCaipChainIds = getAllRequestedChainIds(
+    requestedCaip25CaveatValue,
+  );
 
-  const networkConfigurations = useSelector(
+  const networkConfigurationsByCaipChainId = useSelector(
     getConsolidatedNetworkConfigurations,
   );
 
@@ -125,8 +131,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   // );
 
   const requestedNetworkConfigurations = Object.fromEntries(
-    Object.entries(networkConfigurations).filter(([chainId]) =>
-      requestedChainIds.includes(chainId),
+    Object.entries(networkConfigurationsByCaipChainId).filter(([caipChainId]) =>
+      requestedCaipChainIds.includes(caipChainId),
     ),
   );
 
@@ -134,13 +140,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     () =>
       Object.entries(requestedNetworkConfigurations).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(
-            network as NetworkConfiguration,
-          );
+          const isTestNetwork = CAIP_FORMATTED_TEST_CHAINS.includes(chainId);
+          (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
+            ...network,
+            caipChainId: chainId,
+          });
           return [nonTestNetworksList, testNetworksList];
         },
-        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+        [
+          [] as (NetworkConfiguration & { caipChainId: string })[],
+          [] as (NetworkConfiguration & { caipChainId: string })[],
+        ],
       ),
     [requestedNetworkConfigurations],
   );
@@ -158,17 +168,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultSelectedNetworkList = selectedTestNetwork
-    ? [...nonTestNetworks, selectedTestNetwork].map(({ chainId }) => chainId)
-    : nonTestNetworks.map(({ chainId }) => chainId);
+    ? [...nonTestNetworks, selectedTestNetwork].map(
+        ({ caipChainId }) => caipChainId,
+      )
+    : nonTestNetworks.map(({ caipChainId }) => caipChainId);
 
   const allNetworksList = [...nonTestNetworks, ...testNetworks].map(
-    ({ chainId }) => chainId,
+    ({ caipChainId }) => caipChainId,
   );
 
-  const supportedRequestedChainIds = requestedChainIds.filter((chainId) =>
-    // TODO: Fix this with network configuration type
-    // @ts-expect-error Fix network configuration type
-    allNetworksList.includes(chainId),
+  const supportedRequestedChainIds = requestedCaipChainIds.filter(
+    (caipChainId) => allNetworksList.includes(caipChainId),
   );
 
   const defaultSelectedChainIds =
@@ -206,11 +216,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     }),
   ]);
 
+  // all accounts that match the requested namespaces
   const supportedAccountsForRequestedNamespaces = getFilteredAccounts(
     reformattedAllAccounts,
     requestedNamespaces,
   );
 
+  // all requested accounts that are found in the wallet
   const supportedRequestedAccounts = requestedAccounts.reduce(
     (acc, account) => {
       const supportedRequestedAccount =

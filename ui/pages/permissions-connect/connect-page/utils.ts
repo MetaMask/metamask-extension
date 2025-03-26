@@ -1,11 +1,9 @@
 import {
   CaipAccountAddress,
-  CaipAccountId,
   CaipNamespace,
   CaipReference,
   Hex,
   parseCaipAccountId,
-  parseCaipChainId,
 } from '@metamask/utils';
 import {
   Caip25CaveatType,
@@ -85,7 +83,7 @@ export function getCaip25PermissionsResponse(
  * Filters and returns accounts available for selection based on the scope requested.
  *
  * @param accounts - All available accounts.
- * @param requestedCaip25CaveatValue - CAIP-25 request values.
+ * @param requestedNamespaces - The namespaces requested.
  * @returns Accounts available for selection.
  */
 export function getFilteredAccounts(
