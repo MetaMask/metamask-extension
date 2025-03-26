@@ -5,12 +5,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
   CaipAccountId,
   CaipChainId,
   parseCaipAccountId,
+  parseCaipChainId,
 } from '@metamask/utils';
 import {
   Box,
@@ -23,7 +23,6 @@ import {
   Text,
 } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { getAccountInfoByCaipChainId } from '../../../../selectors/selectors';
 import {
   AlignItems,
   BackgroundColor,
@@ -35,7 +34,8 @@ import {
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Jazzicon from '../../../ui/jazzicon';
+import { SnapUIAvatar } from '../snap-ui-avatar';
+import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
 export type SnapUIAddressInputProps = {
   name: string;
@@ -63,9 +63,7 @@ export const SnapUIAddressInput: FunctionComponent<
     null,
   );
 
-  const accountsInfo: Record<string, string> = useSelector((state) =>
-    getAccountInfoByCaipChainId(state, chainId),
-  );
+  const { namespace, reference } = parseCaipChainId(chainId);
 
   /*
    * Focus input if the last focused input was this input
@@ -77,14 +75,18 @@ export const SnapUIAddressInput: FunctionComponent<
     }
   }, [inputRef]);
 
-  const getMatchedAddressName = (address: string) => {
-    const normalizedAddress = address.toLowerCase();
-    return accountsInfo[normalizedAddress];
-  };
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
-    const matchedName = getMatchedAddressName(event.target.value);
+
+    const matchedName = useDisplayName({
+      address: event.target.value,
+      chain: {
+        namespace,
+        reference,
+      },
+      chainId,
+    });
+
     if (matchedName) {
       setMatchedAddressName(matchedName);
     }
@@ -126,7 +128,7 @@ export const SnapUIAddressInput: FunctionComponent<
             height: '48px',
           }}
         >
-          <Jazzicon address={value} diameter={24} style={{ height: '24px' }} />
+          <SnapUIAvatar address={value} size="sm" />
           <Box
             display={Display.Flex}
             alignItems={AlignItems.center}
