@@ -906,7 +906,7 @@ exports[`SnapUIRenderer will render a matched address name 1`] = `
             style="height: 48px;"
           >
             <div
-              style="height: 24px;"
+              style="display: flex;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"

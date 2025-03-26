@@ -811,10 +811,10 @@ describe('SnapUIRenderer', () => {
     const matchedAddress = getByText(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
-    const jazzicon = container.querySelector('svg');
+    const avatar = container.querySelector('svg');
     expect(matchedAddressName).toBeDefined();
     expect(matchedAddress).toBeDefined();
-    expect(jazzicon).toBeDefined();
+    expect(avatar).toBeDefined();
 
     expect(container).toMatchSnapshot();
   });
