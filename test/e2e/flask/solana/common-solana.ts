@@ -7,8 +7,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const SOLANA_URL_REGEX =
-  /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
+const SOLANA_URL_REGEX = /^https:\/\/solana-(mainnet|devnet)\.infura\.io/u;
 // const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
 const SOLANA_SPOT_PRICE_API =
   /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
