@@ -325,9 +325,9 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-
   const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 
   // Here we are getting the keyring of the last selected account
   // if it is not an hd keyring, we will use the primary keyring
