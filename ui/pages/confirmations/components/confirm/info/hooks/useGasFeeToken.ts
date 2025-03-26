@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { Hex, add0x } from '@metamask/utils';
 import {
   BatchTransactionParams,
   GasFeeToken,
@@ -20,6 +20,7 @@ import { useFeeCalculations } from './useFeeCalculations';
 
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
+export const METAMASK_FEE_PERCENTAGE = 0.35;
 
 export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
   const { currentConfirmation: transactionMeta } =
@@ -39,6 +40,10 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
 
   const { amount, decimals } = gasFeeToken ?? { amount: '0x0', decimals: 0 };
 
+  const metaMaskFee = add0x(
+    new BigNumber(amount).times(METAMASK_FEE_PERCENTAGE).toString(16),
+  );
+
   const amountFormatted = formatAmount(
     locale,
     new BigNumber(amount).shift(-decimals),
@@ -46,6 +51,7 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
 
   const amountFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.amount);
   const balanceFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.balance);
+  const metamaskFeeFiat = useFiatTokenValue(gasFeeToken, metaMaskFee);
 
   if (!gasFeeToken) {
     return undefined;
@@ -58,6 +64,8 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
     amountFormatted,
     amountFiat,
     balanceFiat,
+    metaMaskFee,
+    metamaskFeeFiat,
     transferTransaction,
   };
 }
