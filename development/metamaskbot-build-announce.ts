@@ -159,7 +159,7 @@ async function start(): Promise<void> {
   const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
-  const userActionsStatsUrl = `${HOST_URL}/benchmark-chrome-browserify-userActions/benchmark-chrome-browserify-userActions.json`;
+  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
   // link to artifacts
@@ -199,7 +199,7 @@ async function start(): Promise<void> {
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      const benchmarkUrl = `${HOST_URL}/benchmark-${platform}-${buildType}-pageload/benchmark-${platform}-${buildType}-pageload.json`;
+      const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
       try {
         const benchmarkResponse = await fetch(benchmarkUrl);
         if (!benchmarkResponse.ok) {

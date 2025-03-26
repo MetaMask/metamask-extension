@@ -22,7 +22,7 @@ jobs:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
       ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
-      OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
+      OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -46,5 +46,5 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.OUTPUT_NAME }}
-          path: test-artifacts/benchmarks/
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
