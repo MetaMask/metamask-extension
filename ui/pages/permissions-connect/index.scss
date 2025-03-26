@@ -74,3 +74,9 @@
     background-color: var(--color-background-alternative); // main-container adds the width but overrides the boxProps. So, we need extra class to apply css
   }
 }
+
+.permission-approval-container {
+  .page-container__footer {
+    border-top: 0;
+  }
+}
