@@ -22,6 +22,7 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
+  getUniqueArrayItems,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
@@ -3220,8 +3221,8 @@ export function getPermissionSubjects(state) {
  * @param {string} origin - The origin/subject to get the permitted accounts for.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
-export function getPermittedAccounts(state, origin) {
-  return getAccountsFromPermission(
+export function getPermittedEthAccounts(state, origin) {
+  return getEthAccountsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
@@ -3229,6 +3230,12 @@ export function getPermittedAccounts(state, origin) {
 export function getPermittedChains(state, origin) {
   return getChainsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
+  );
+}
+
+export function getAllPermittedAccounts(state) {
+  return getAllAccountsFromPermission(
+    getCaip25PermissionFromSubject(getPermissionSubjects(state)),
   );
 }
 
@@ -3240,15 +3247,19 @@ export function getPermittedChains(state, origin) {
  * @returns {Array<string>} An empty array or an array of accounts.
  */
 export function getPermittedAccountsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+  return getPermittedEthAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedAccountsForSelectedTab(state, activeTab) {
-  return getPermittedAccounts(state, activeTab);
+export function getPermittedEthAccountsForSelectedTab(state, activeTab) {
+  return getPermittedEthAccounts(state, activeTab);
+}
+
+export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
+  return getAllPermittedAccounts(state, activeTab);
 }
 
 export function getPermittedChainsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+  return getPermittedChains(state, getOriginOfCurrentTab(state));
 }
 
 export function getPermittedChainsForSelectedTab(state, activeTab) {
@@ -3411,7 +3422,7 @@ function getCaip25PermissionFromSubject(subject = {}) {
 }
 
 function getAccountsFromSubject(subject) {
-  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
+  return getEthAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
 function getChainsFromSubject(subject) {
@@ -3425,7 +3436,25 @@ function getCaveatFromPermission(caip25Permission = {}) {
   );
 }
 
-function getAccountsFromPermission(caip25Permission) {
+function getAllAccountsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  if (!caip25Caveat) {
+    return [];
+  }
+
+  // TODO dry and or move to @metamask/chain-agnostic-permission
+  const requiredAccounts = Object.values(
+    caip25Caveat.value.requiredScopes,
+  ).flatMap((scope) => scope.accounts);
+
+  const optionalAccounts = Object.values(
+    caip25Caveat.value.optionalScopes,
+  ).flatMap((scope) => scope.accounts);
+
+  return getUniqueArrayItems([...requiredAccounts, ...optionalAccounts]);
+}
+
+function getEthAccountsFromPermission(caip25Permission) {
   const caip25Caveat = getCaveatFromPermission(caip25Permission);
   return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
 }

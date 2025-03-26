@@ -17,6 +17,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
+  getAllPermittedAccountsForSelectedTab,
   getConnectedSitesList,
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
@@ -174,8 +175,8 @@ export const ReviewPermissions = () => {
   });
 
   const connectedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+    getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  ) as CaipAccountId[];
 
   const handleSelectAccountAddresses = (addresses: string[]) => {
     if (addresses.length === 0) {
