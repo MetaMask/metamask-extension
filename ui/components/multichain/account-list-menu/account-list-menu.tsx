@@ -18,9 +18,11 @@ import {
   BtcAccountType,
   EthAccountType,
   SolAccountType,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   KeyringAccountType,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
@@ -64,6 +66,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsWatchEthereumAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -104,6 +108,8 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
