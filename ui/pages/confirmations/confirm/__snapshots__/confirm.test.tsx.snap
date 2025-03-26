@@ -4,6 +4,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -265,6 +266,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -737,6 +739,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -1156,6 +1159,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -2179,6 +2183,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -2709,6 +2714,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3574,6 +3580,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3685,6 +3692,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
