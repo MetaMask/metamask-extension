@@ -247,23 +247,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultCaip10AccountAddresses = defaultAccounts.map(
-    ({ caipAccountId }) => {
-      const {
-        address,
-        chain: { namespace, reference },
-      } = parseCaipAccountId(caipAccountId);
-      if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
-        // this is very hacky, but it works for now
-        return `${namespace}:1:${address}` as CaipAccountId;
-      }
-      return `${namespace}:${reference}:${address}` as CaipAccountId;
-    },
-  );
+    ({ caipAccountId }) => caipAccountId);
 
   const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
     useState(defaultCaip10AccountAddresses);
 
-  console.log('selectedCaip10AccountAddresses', selectedCaip10AccountAddresses);
+  const selectedAccounts = allAccountsWithCaipAccountId.filter(({caipAccountId}) => selectedCaip10AccountAddresses.includes(caipAccountId))
+
+  console.log('selectedCaip10AccountAddresses', selectedCaip10AccountAddresses, selectedAccounts);
 
   const onConfirm = () => {
     const _request = {
@@ -393,14 +384,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   scrollbarColor: 'var(--color-icon-muted) transparent',
                 }}
               >
-                {defaultAccounts.map((account) => (
+                {selectedAccounts.map((account) => (
                   <AccountListItem
                     account={account.internalAccount}
                     key={account.caipAccountId}
                     selected={false}
                   />
                 ))}
-                {defaultAccounts.length === 0 && (
+                {selectedAccounts.length === 0 && (
                   <Box
                     className="connect-page__accounts-empty"
                     display={Display.Flex}
@@ -417,7 +408,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   </Box>
                 )}
               </Box>
-              {defaultAccounts.length > 0 && (
+              {selectedAccounts.length > 0 && (
                 <Box
                   marginTop={4}
                   display={Display.Flex}
@@ -433,7 +424,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               )}
               {showEditAccountsModal && (
                 <EditAccountsModal
-                  accounts={defaultAccounts}
+                  accounts={allAccountsWithCaipAccountId}
                   defaultSelectedAccountAddresses={
                     selectedCaip10AccountAddresses
                   }
@@ -453,7 +444,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <SiteCell
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
-                accounts={defaultAccounts}
+                accounts={allAccountsWithCaipAccountId}
                 onSelectAccountAddresses={setSelectedCaip10AccountAddresses}
                 onSelectChainIds={setSelectedChainIds}
                 selectedAccountAddresses={selectedCaip10AccountAddresses}

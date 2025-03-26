@@ -37,7 +37,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
     : AvatarAccountVariant.Jazzicon;
 
   const avatarAccountsData = accounts?.map((account) => ({
-    avatarValue: account.address,
+    avatarValue: account.internalAccount.address,
   }));
 
   const avatarNetworksData = networks?.map((network) => ({
@@ -55,7 +55,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
           data-test-id="site-cell-tooltip"
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {accounts?.slice(0, TOOLTIP_LIMIT).map((acc) => {
+            {accounts?.slice(0, TOOLTIP_LIMIT).map(({internalAccount: acc}) => {
               return (
                 <Box
                   display={Display.Flex}
