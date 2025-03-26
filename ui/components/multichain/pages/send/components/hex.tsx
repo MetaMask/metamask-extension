@@ -1,9 +1,18 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Label } from '../../../../component-library';
-import { getSendHexData, updateSendHexData } from '../../../../../ducks/send';
+import { Label, Text } from '../../../../component-library';
+import {
+  getSendHexData,
+  updateSendHexData,
+  getSendHexDataError,
+} from '../../../../../ducks/send';
 import { Textarea } from '../../../../component-library/textarea';
+import { INVALID_HEX_DATA_ERROR } from '../../../../../pages/confirmations/send/send.constants';
+import {
+  TextVariant,
+  TextColor,
+} from '../../../../../helpers/constants/design-system';
 import { SendPageRow } from './send-page-row';
 
 export const SendHexData = () => {
@@ -11,6 +20,9 @@ export const SendHexData = () => {
   const dispatch = useDispatch();
 
   const data = useSelector(getSendHexData);
+  const error = useSelector(getSendHexDataError);
+  const isInvalidHexDataError = error === INVALID_HEX_DATA_ERROR;
+  const hasError = Boolean(error);
 
   return (
     <SendPageRow>
@@ -25,7 +37,13 @@ export const SendHexData = () => {
         placeholder={t('optional')}
         defaultValue={data || ''}
         data-testid="send-hex-textarea"
+        error={hasError}
       />
+      {isInvalidHexDataError && (
+        <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+          {t('invalidHexData')}
+        </Text>
+      )}
     </SendPageRow>
   );
 };

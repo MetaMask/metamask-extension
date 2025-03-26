@@ -59,7 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
       - name: Get commit SHA
@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
       - name: Generate Attributions

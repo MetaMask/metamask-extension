@@ -12,6 +12,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
+import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
 import SecurityTab from './security-tab.container';
 
 const mockOpenDeleteMetaMetricsDataModal = jest.fn();
@@ -46,6 +47,23 @@ jest.mock('../../../ducks/app/app.ts', () => {
     },
   };
 });
+
+const mockHistoryPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  // eslint-disable-next-line react/display-name
+  withRouter: (Component) => (props) =>
+    (
+      <Component
+        {...props}
+        {...{
+          history: {
+            push: mockHistoryPush,
+          },
+        }}
+      />
+    ),
+}));
 
 describe('Security Tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
@@ -136,7 +154,7 @@ describe('Security Tab', () => {
     ).toBe(true);
   });
 
-  it('toggles SRP Quiz', async () => {
+  it('toggles SRP Quiz if there is only one srp', async () => {
     renderWithProviders(<SecurityTab />, mockStore);
 
     expect(
@@ -154,6 +172,40 @@ describe('Security Tab', () => {
     expect(
       screen.queryByTestId(`srp_stage_introduction`),
     ).not.toBeInTheDocument();
+  });
+
+  it('redirects to srp list if there are multiple srps', async () => {
+    const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        keyrings: [
+          ...mockState.metamask.keyrings,
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x'],
+          },
+        ],
+        keyringsMetadata: [
+          ...mockState.metamask.keyringsMetadata,
+          {
+            id: '01JM1XSBQ78YXY1NNT003HT74V',
+            name: '',
+          },
+        ],
+      },
+    });
+    renderWithProviders(<SecurityTab />, mockStoreWithMultipleSRPs);
+
+    expect(
+      screen.queryByTestId(`srp_stage_introduction`),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('reveal-seed-words'));
+
+    expect(mockHistoryPush).toHaveBeenCalledWith({
+      pathname: REVEAL_SRP_LIST_ROUTE,
+    });
   });
 
   it('sets IPFS gateway', async () => {

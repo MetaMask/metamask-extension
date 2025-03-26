@@ -104,12 +104,12 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
+        "petnamesEnabled": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
-        "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
         "tokenNetworkFilter": {},
