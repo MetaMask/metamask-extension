@@ -1,9 +1,12 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import Eip7704AndSendCalls from '../../page-objects/pages/confirmations/prague/confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
 async function mockEip7702FeatureFlag(mockServer: Mockttp) {
@@ -16,7 +19,7 @@ async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           statusCode: 200,
           json: [
             {
-              'confirmations-eip-7702': {
+              'confirmations_eip_7702': {
                 contracts: {
                   '0xaa36a7': [
                     {
@@ -49,11 +52,13 @@ describe('Upgrade Account', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withNetworkControllerOnSepolia()
           .build(),
         localNodeOptions: [
           {
             type: 'anvil',
             options: {
+              chainId: 11155111,
               hardfork: 'prague',
               loadState: './test/e2e/seeder/network-states/withDelegator.json',
             },
@@ -68,6 +73,19 @@ describe('Upgrade Account', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSendCalls();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const upgradeAndBatchTxConfirmation = new Eip7704AndSendCalls(driver);
+        await upgradeAndBatchTxConfirmation.confirmUpgradeCheckbox();
+        await upgradeAndBatchTxConfirmation.confirmUpgradeAndBatchTx();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
