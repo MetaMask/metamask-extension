@@ -6,8 +6,8 @@ import {
 /**
  * Get the state of the `vaultRemoteMode` remote feature flag.
  *
- * @param {*} state
- * @returns The state of the `vaultRemoteMode` remote feature flag.
+ * @param state - The MetaMask state object
+ * @returns The state of the `vaultRemoteMode` remote feature flag
  */
 export function getIsRemoteModeEnabled(state: RemoteFeatureFlagsState) {
   const { vaultRemoteMode } = getRemoteFeatureFlags(state);
