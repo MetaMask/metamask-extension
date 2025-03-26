@@ -27,6 +27,9 @@ import {
   getQueuedRequestCount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -118,7 +121,13 @@ const mapStateToProps = (state) => {
   let TEMPORARY_DISABLE_WHATS_NEW = true;
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  TEMPORARY_DISABLE_WHATS_NEW = false;
+  const solanaSupportEnabled = getIsSolanaSupportEnabled(state);
+
+  // TODO: Remove this once the feature flag is enabled by default
+  // If the feature flag is enabled, we should show the whats new modal
+  if (solanaSupportEnabled) {
+    TEMPORARY_DISABLE_WHATS_NEW = false;
+  }
   ///: END:ONLY_INCLUDE_IF
 
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
