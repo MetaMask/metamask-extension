@@ -20,9 +20,7 @@ const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc/u;
-export const SOLANA_TOKEN_API_MAINNET =
-  /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
-export const SOLANA_TOKEN_API_DEVNET =
+export const SOLANA_TOKEN_API =
   /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
   /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
@@ -465,7 +463,7 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
     ],
   };
   return await mockServer
-    .forGet(SOLANA_TOKEN_API_MAINNET)
+    .forGet(SOLANA_TOKEN_API)
     .withQuery({
       assetIds:
         'solana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
@@ -496,7 +494,7 @@ export async function mockTokenApiDevnet(mockServer: Mockttp) {
     ],
   };
   return await mockServer
-    .forGet(SOLANA_TOKEN_API_DEVNET)
+    .forGet(SOLANA_TOKEN_API)
     .withQuery({
       assetIds:
         'solana%EtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501%2Csolana%EtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
