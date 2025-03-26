@@ -207,6 +207,6 @@ const DataField = memo(
       return <ConfirmInfoRowText text={String(value)} />;
     }
 
-    return <ConfirmInfoRowText text={sanitizeString(value)} />;
+    return <ConfirmInfoRowText text={sanitizeString(value) as string} />;
   },
 );
