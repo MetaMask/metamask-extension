@@ -20,6 +20,11 @@ class Confirmation {
     text: 'Alert',
   };
 
+  private alertModalSelectedAlert = {
+    css: '[data-testid="alert-modal__selected-alert"]',
+    text: 'You do not have enough ETH in your account to pay for network fees.',
+  };
+
   private nextPageButton: RawLocator;
 
   private previousPageButton: RawLocator;
@@ -90,6 +95,18 @@ class Confirmation {
       console.log('Timeout while waiting for navigation page numbers', e);
       throw e;
     }
+  }
+
+  async waitForAlert() {
+    await this.driver.waitForSelector(this.inlineAlertButton);
+  }
+
+  async waitForInsufficientBalanceAlert() {
+    await this.driver.waitForSelector(this.alertModalSelectedAlert);
+  }
+
+  async clickAlertModalButton() {
+    await this.driver.clickElement(this.alertModalButton);
   }
 }
 
