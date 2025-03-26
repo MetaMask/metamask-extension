@@ -98,7 +98,10 @@ import {
   SOLANA_TOKEN_IMAGE_URL,
   BITCOIN_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/multichain/networks';
-import { useMultichainTransactionDisplay } from '../../../hooks/useMultichainTransactionDisplay';
+import {
+  KEYRING_TRANSACTION_STATUS_KEY,
+  useMultichainTransactionDisplay,
+} from '../../../hooks/useMultichainTransactionDisplay';
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -668,6 +671,7 @@ const MultichainTransactionListItem = ({
   });
 
   let title = capitalize(type);
+  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
   if (type === TransactionType.swap) {
     title = `${t('swap')} ${from.asset.unit} ${'to'} ${to.asset.unit}`;
@@ -705,7 +709,7 @@ const MultichainTransactionListItem = ({
           display="block"
           positionObj={{ right: -4, top: -4 }}
         >
-          <TransactionIcon category={type} status={status} />
+          <TransactionIcon category={type} status={statusKey} />
         </BadgeWrapper>
       }
       rightContent={
@@ -732,7 +736,7 @@ const MultichainTransactionListItem = ({
             <TransactionStatusLabel
               date={formatTimestamp(transaction.timestamp)}
               error={{}}
-              status={transaction.status}
+              status={statusKey}
               statusOnly
             />
             <Text
@@ -752,7 +756,7 @@ const MultichainTransactionListItem = ({
           <TransactionStatusLabel
             date={formatTimestamp(transaction.timestamp)}
             error={{}}
-            status={transaction.status}
+            status={statusKey}
             statusOnly
           />
         )

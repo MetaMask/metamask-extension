@@ -27,6 +27,15 @@ export function isSolanaAccount(account: InternalAccount) {
   return Boolean(account && account.type === DataAccount);
 }
 
+export function isNonEvmAccount(account: InternalAccount) {
+  const { P2wpkh } = BtcAccountType;
+  const { DataAccount } = SolAccountType;
+
+  return Boolean(
+    account && (account.type === P2wpkh || account.type === DataAccount),
+  );
+}
+
 export const getInternalAccounts = createSelector(
   (state: AccountsState) =>
     Object.values(state.metamask.internalAccounts.accounts),
