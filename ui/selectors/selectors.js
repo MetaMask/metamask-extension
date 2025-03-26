@@ -129,6 +129,7 @@ import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getMultichainNetwork,
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
@@ -1260,9 +1261,8 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
-export function getPetnamesEnabled(state) {
-  const { petnamesEnabled = true } = getPreferences(state);
-  return petnamesEnabled;
+export function getUseExternalNameSources(state) {
+  return state.metamask.useExternalNameSources;
 }
 
 export const getTokenSortConfig = createDeepEqualSelector(
@@ -1752,7 +1752,19 @@ export function getIsSwapsChain(state, overrideChainId) {
 }
 
 export function getIsBridgeChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
+  const account = getSelectedInternalAccount(state);
+  const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
+    state,
+    account,
+  );
+
+  let currentChainId = selectedMultiChainId;
+
+  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
+  if (isEvmNetwork) {
+    currentChainId = getCurrentChainId(state);
+  }
+
   const chainId = overrideChainId ?? currentChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
