@@ -60,19 +60,20 @@ export type FeatureFlags = {
 };
 
 export type SignedTransaction = {
-  signedTx: string;
-  [key: string]: unknown;
+  id: string;
+  params: TransactionParams;
+  signedTx: Hex;
 };
 
 export type SubmitSmartTransactionRequest = {
-  transactionMeta?: TransactionMeta;
+  transactionMeta: TransactionMeta;
   signedTransactionInHex?: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
-  transactions: SignedTransaction[];
+  transactions?: SignedTransaction[];
 };
 
 class SmartTransactionHook {
@@ -80,7 +81,7 @@ class SmartTransactionHook {
 
   #approvalFlowId: string;
 
-  #chainId?: Hex;
+  #chainId: Hex;
 
   #controllerMessenger: SmartTransactionHookMessenger;
 
@@ -106,11 +107,11 @@ class SmartTransactionHook {
 
   #signedTransactionInHex?: string;
 
-  #txParams?: TransactionParams;
+  #transactions?: SignedTransaction[];
+
+  #txParams: TransactionParams;
 
   #shouldShowStatusPage: boolean;
-
-  #transactions: SignedTransaction[];
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -132,18 +133,19 @@ class SmartTransactionHook {
     this.#isSmartTransaction = isSmartTransaction;
     this.#controllerMessenger = controllerMessenger;
     this.#featureFlags = featureFlags;
-    this.#isDapp = transactionMeta?.origin !== ORIGIN_METAMASK;
-    this.#chainId = transactionMeta?.chainId;
-    this.#txParams = transactionMeta?.txParams;
+    this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
+    this.#chainId = transactionMeta.chainId;
+    this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
-    this.#shouldShowStatusPage =
-      transactionMeta?.type !== TransactionType.bridge ||
-      (this.#transactions && this.#transactions.length > 0);
+    this.#shouldShowStatusPage = Boolean(
+      transactionMeta.type !== TransactionType.bridge ||
+        (this.#transactions && this.#transactions.length > 0),
+    );
   }
 
   async submit() {
     const isUnsupportedTransactionTypeForSmartTransaction = this
-      .#transactionMeta?.type
+      .#transactionMeta.type
       ? [
           TransactionType.swapAndSend,
           TransactionType.swapApproval,
@@ -216,14 +218,21 @@ class SmartTransactionHook {
   }
 
   async submitBatch() {
+    // Will cause TransactionController to publish to the RPC provider as normal.
+    const useRegularTransactionSubmit = undefined;
+
+    if (!this.#isSmartTransaction) {
+      return useRegularTransactionSubmit;
+    }
+
     if (this.#shouldShowStatusPage) {
       await this.#startApprovalFlow();
     }
 
     try {
       const submitTransactionResponse = await this.#signAndSubmitTransactions();
-
       const uuid = submitTransactionResponse?.uuid;
+
       if (!uuid) {
         throw new Error('No smart transaction UUID');
       }
@@ -233,6 +242,7 @@ class SmartTransactionHook {
       const transactionHash = await this.#waitForTransactionHash({
         uuid,
       });
+
       if (transactionHash === null) {
         throw new Error(
           'Transaction does not have a transaction hash, there was a problem',
@@ -254,7 +264,7 @@ class SmartTransactionHook {
 
       return submitBatchResponse;
     } catch (error) {
-      log.error('Error in smart transaction publish hook', error);
+      log.error('Error in smart transaction publish batch hook', error);
       this.#onApproveOrReject();
       throw error;
     }
@@ -306,9 +316,7 @@ class SmartTransactionHook {
               uuid,
             },
             isDapp: this.#isDapp,
-            txId:
-              this.#transactionMeta?.id ||
-              (this.#transactions[0]?.id as string),
+            txId: this.#transactionMeta.id,
           },
         },
         true,
@@ -328,7 +336,7 @@ class SmartTransactionHook {
         requestState: {
           smartTransaction,
           isDapp: this.#isDapp,
-          txId: this.#transactionMeta?.id,
+          txId: this.#transactionMeta.id,
         },
       },
     );
@@ -386,7 +394,11 @@ class SmartTransactionHook {
   } = {}) {
     let signedTransactions: string[] = [];
 
-    if (this.#transactions && Array.isArray(this.#transactions)) {
+    if (
+      this.#transactions &&
+      Array.isArray(this.#transactions) &&
+      this.#transactions.length > 0
+    ) {
       // Batch transaction mode - extract signed transactions from this.#transactions[].signedTx
       signedTransactions = this.#transactions
         .filter((tx) => tx?.signedTx)
@@ -405,12 +417,8 @@ class SmartTransactionHook {
     return await this.#smartTransactionsController.submitSignedTransactions({
       signedTransactions,
       signedCanceledTransactions: [],
-      ...(this.#txParams && { txParams: this.#txParams }),
-      ...(this.#transactionMeta && {
-        // TODO: Replace `any` with type - version mismatch between smart-transactions-controller and transaction-controller breaking type safety
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: this.#transactionMeta as any,
-      }),
+      txParams: this.#txParams,
+      transactionMeta: this.#transactionMeta,
     });
   }
 
@@ -450,7 +458,7 @@ class SmartTransactionHook {
 
     const transactionsWithChainId = unsignedTransactions.map((tx) => ({
       ...tx,
-      chainId: tx.chainId || (this.#chainId as Hex),
+      chainId: tx.chainId || this.#chainId,
     }));
 
     return (await this.#transactionController.approveTransactionsWithSameNonce(
