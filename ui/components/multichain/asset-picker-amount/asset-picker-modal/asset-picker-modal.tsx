@@ -413,24 +413,6 @@ export function AssetPickerModal({
       );
     };
 
-    // If an asset is selected, display it first
-    if (
-      asset &&
-      'symbol' in asset &&
-      'address' in asset &&
-      'chainId' in asset
-    ) {
-      if (shouldAddToken(asset.symbol, asset.address, asset.chainId)) {
-        filteredTokens.push({
-          ...asset,
-          balance: 'balance' in asset ? asset.balance : '0',
-          string: 'string' in asset ? asset.string : '0',
-        } as unknown as AssetWithDisplayData<ERC20Asset | NativeAsset>);
-
-        filteredTokensAddresses.add(getTokenKey(asset.address, asset.chainId));
-      }
-    }
-
     // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
     // Otherwise use the default tokenGenerator
     const tokenGenerator = (customTokenListGenerator ?? tokenListGenerator)(
@@ -443,27 +425,32 @@ export function AssetPickerModal({
       }
 
       filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
-      if (!customTokenListGenerator && isStrictHexString(token.address)) {
-        filteredTokens.push(
-          getRenderableTokenData(
-            token.address
-              ? ({
-                  ...token,
-                  ...evmTokenMetadataByAddress[token.address.toLowerCase()],
-                  type: AssetType.token,
-                } as AssetWithDisplayData<ERC20Asset>)
-              : token,
-            tokenConversionRates,
-            conversionRate,
-            currentCurrency,
-            token.chainId,
-            evmTokenMetadataByAddress,
-          ),
-        );
+      const tokenWithBalanceData =
+        !customTokenListGenerator && isStrictHexString(token.address)
+          ? getRenderableTokenData(
+              token.address
+                ? ({
+                    ...token,
+                    ...evmTokenMetadataByAddress[token.address.toLowerCase()],
+                    type: AssetType.token,
+                  } as AssetWithDisplayData<ERC20Asset>)
+                : token,
+              tokenConversionRates,
+              conversionRate,
+              currentCurrency,
+              token.chainId,
+              evmTokenMetadataByAddress,
+            )
+          : (token as unknown as AssetWithDisplayData<ERC20Asset>);
+
+      // Add selected asset to the top of the list if it is the selected asset
+      if (
+        asset?.address === tokenWithBalanceData.address &&
+        selectedNetwork?.chainId === tokenWithBalanceData.chainId
+      ) {
+        filteredTokens.unshift(tokenWithBalanceData);
       } else {
-        filteredTokens.push(
-          token as unknown as AssetWithDisplayData<ERC20Asset>,
-        );
+        filteredTokens.push(tokenWithBalanceData);
       }
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
