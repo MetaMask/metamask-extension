@@ -1,7 +1,7 @@
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { KnownSessionProperties } from '../lib/rpc-method-middleware/handlers/wallet-createSession/constants';
 
-import { migrate, version } from './148';
+import { migrate, version } from './151';
 
 const oldVersion = 150;
 
