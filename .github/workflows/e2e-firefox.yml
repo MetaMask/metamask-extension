@@ -56,3 +56,5 @@ jobs:
           reporter: jest-junit
           fail-on-empty: false
           fail-on-error: false # soft launch
+          list-suites: 'failed'
+          list-tests: 'failed'
