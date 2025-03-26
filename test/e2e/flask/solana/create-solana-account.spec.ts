@@ -9,24 +9,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe.only('Opt-in Solana modal is displayed', function (this: Suite) {
-  it('when the user has no Solana account', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({
-          driver,
-          fillSrpWordByWord: true,
-          isFlask: true,
-        });
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await driver.delay(1000000);
-      },
-    );
-  });
   it('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
