@@ -1080,8 +1080,14 @@
   "confirmGasFeeTokenInsufficientBalance": {
     "message": "Insufficient funds"
   },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "Includes $1 fee"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
