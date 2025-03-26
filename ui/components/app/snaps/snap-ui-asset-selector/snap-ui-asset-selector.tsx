@@ -54,7 +54,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
     gap={4}
     style={{ overflow: 'hidden' }}
   >
-    <Box alignItems={AlignItems.center}>
+    <Box display={Display.Flex} alignItems={AlignItems.center}>
       <BadgeWrapper
         badge={
           <AvatarNetwork
