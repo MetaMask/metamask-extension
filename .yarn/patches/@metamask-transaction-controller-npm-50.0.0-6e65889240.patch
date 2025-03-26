@@ -78,6 +78,234 @@ index 3ecb211958f31624677c0db41c0e87b2cdb4cf76..92d1d34182a3b319253ee11cef27e385
          txMeta: transactionMeta,
      });
  }, _TransactionController_deleteTransaction = function _TransactionController_deleteTransaction(transactionId) {
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index ddb051c3fa6b160ee45c3b3c5968cdf6fef33f37..4d51b296f1c8668e31ce19b3c30b6e2a84f7fb15 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,6 +1,6 @@
+ export type { MethodData, Result, TransactionControllerActions, TransactionControllerEvents, TransactionControllerGetStateAction, TransactionControllerIncomingTransactionsReceivedEvent, TransactionControllerPostTransactionBalanceUpdatedEvent, TransactionControllerSpeedupTransactionAddedEvent, TransactionControllerState, TransactionControllerStateChangeEvent, TransactionControllerTransactionApprovedEvent, TransactionControllerTransactionConfirmedEvent, TransactionControllerTransactionDroppedEvent, TransactionControllerTransactionFailedEvent, TransactionControllerTransactionFinishedEvent, TransactionControllerTransactionNewSwapApprovalEvent, TransactionControllerTransactionNewSwapEvent, TransactionControllerTransactionPublishingSkipped, TransactionControllerTransactionRejectedEvent, TransactionControllerTransactionStatusUpdatedEvent, TransactionControllerTransactionSubmittedEvent, TransactionControllerUnapprovedTransactionAddedEvent, TransactionControllerMessenger, TransactionControllerOptions, } from "./TransactionController.cjs";
+ export { CANCEL_RATE, SPEED_UP_RATE, TransactionController, } from "./TransactionController.cjs";
+-export type { Authorization, AuthorizationList, BatchTransactionParams, DappSuggestedGasFees, DefaultGasEstimates, FeeMarketEIP1559Values, FeeMarketGasFeeEstimateForLevel, FeeMarketGasFeeEstimates, GasFeeEstimates, GasPriceGasFeeEstimates, GasPriceValue, InferTransactionTypeResult, LegacyGasFeeEstimates, Log, NestedTransactionMetadata, SavedGasFees, SecurityAlertResponse, SecurityProviderRequest, SendFlowHistoryEntry, SimulationBalanceChange, SimulationData, SimulationError, SimulationToken, SimulationTokenBalanceChange, TransactionBatchRequest, TransactionBatchResult, TransactionError, TransactionHistory, TransactionHistoryEntry, TransactionMeta, TransactionParams, TransactionReceipt, } from "./types.cjs";
++export type { Authorization, AuthorizationList, BatchTransactionParams, DappSuggestedGasFees, DefaultGasEstimates, FeeMarketEIP1559Values, FeeMarketGasFeeEstimateForLevel, FeeMarketGasFeeEstimates, GasFeeEstimates, GasPriceGasFeeEstimates, GasPriceValue, InferTransactionTypeResult, LegacyGasFeeEstimates, Log, NestedTransactionMetadata, SavedGasFees, SecurityAlertResponse, SecurityProviderRequest, SendFlowHistoryEntry, SimulationBalanceChange, SimulationData, SimulationError, SimulationToken, SimulationTokenBalanceChange, TransactionBatchRequest, TransactionBatchResult, TransactionError, TransactionHistory, TransactionHistoryEntry, TransactionMeta, TransactionParams, TransactionReceipt, ValidateSecurityRequest, } from "./types.cjs";
+ export { GasFeeEstimateLevel, GasFeeEstimateType, SimulationErrorCode, SimulationTokenStandard, TransactionEnvelopeType, TransactionStatus, TransactionType, UserFeeLevel, WalletDevice, } from "./types.cjs";
+ export { DISPLAYED_TRANSACTION_HISTORY_PATHS, MAX_TRANSACTION_HISTORY_LENGTH, } from "./utils/history.cjs";
+ export { determineTransactionType } from "./utils/transaction-type.cjs";
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 8e85dcca513f6f8879b3c217a65c34537ad25634..21a816f052d5ca2c55dc471613e14b2b2d7c86c0 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,6 +1,6 @@
+ export type { MethodData, Result, TransactionControllerActions, TransactionControllerEvents, TransactionControllerGetStateAction, TransactionControllerIncomingTransactionsReceivedEvent, TransactionControllerPostTransactionBalanceUpdatedEvent, TransactionControllerSpeedupTransactionAddedEvent, TransactionControllerState, TransactionControllerStateChangeEvent, TransactionControllerTransactionApprovedEvent, TransactionControllerTransactionConfirmedEvent, TransactionControllerTransactionDroppedEvent, TransactionControllerTransactionFailedEvent, TransactionControllerTransactionFinishedEvent, TransactionControllerTransactionNewSwapApprovalEvent, TransactionControllerTransactionNewSwapEvent, TransactionControllerTransactionPublishingSkipped, TransactionControllerTransactionRejectedEvent, TransactionControllerTransactionStatusUpdatedEvent, TransactionControllerTransactionSubmittedEvent, TransactionControllerUnapprovedTransactionAddedEvent, TransactionControllerMessenger, TransactionControllerOptions, } from "./TransactionController.mjs";
+ export { CANCEL_RATE, SPEED_UP_RATE, TransactionController, } from "./TransactionController.mjs";
+-export type { Authorization, AuthorizationList, BatchTransactionParams, DappSuggestedGasFees, DefaultGasEstimates, FeeMarketEIP1559Values, FeeMarketGasFeeEstimateForLevel, FeeMarketGasFeeEstimates, GasFeeEstimates, GasPriceGasFeeEstimates, GasPriceValue, InferTransactionTypeResult, LegacyGasFeeEstimates, Log, NestedTransactionMetadata, SavedGasFees, SecurityAlertResponse, SecurityProviderRequest, SendFlowHistoryEntry, SimulationBalanceChange, SimulationData, SimulationError, SimulationToken, SimulationTokenBalanceChange, TransactionBatchRequest, TransactionBatchResult, TransactionError, TransactionHistory, TransactionHistoryEntry, TransactionMeta, TransactionParams, TransactionReceipt, } from "./types.mjs";
++export type { Authorization, AuthorizationList, BatchTransactionParams, DappSuggestedGasFees, DefaultGasEstimates, FeeMarketEIP1559Values, FeeMarketGasFeeEstimateForLevel, FeeMarketGasFeeEstimates, GasFeeEstimates, GasPriceGasFeeEstimates, GasPriceValue, InferTransactionTypeResult, LegacyGasFeeEstimates, Log, NestedTransactionMetadata, SavedGasFees, SecurityAlertResponse, SecurityProviderRequest, SendFlowHistoryEntry, SimulationBalanceChange, SimulationData, SimulationError, SimulationToken, SimulationTokenBalanceChange, TransactionBatchRequest, TransactionBatchResult, TransactionError, TransactionHistory, TransactionHistoryEntry, TransactionMeta, TransactionParams, TransactionReceipt, ValidateSecurityRequest, } from "./types.mjs";
+ export { GasFeeEstimateLevel, GasFeeEstimateType, SimulationErrorCode, SimulationTokenStandard, TransactionEnvelopeType, TransactionStatus, TransactionType, UserFeeLevel, WalletDevice, } from "./types.mjs";
+ export { DISPLAYED_TRANSACTION_HISTORY_PATHS, MAX_TRANSACTION_HISTORY_LENGTH, } from "./utils/history.mjs";
+ export { determineTransactionType } from "./utils/transaction-type.mjs";
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index 693e50b14e0ceea7fd3e3a0184986b639d7f0647..df27da562cd642b3e9b2847524131b12e6651a11 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -918,10 +918,11 @@ export type TransactionError = {
+  * Type for security alert response from transaction validator.
+  */
+ export type SecurityAlertResponse = {
+-    reason: string;
+     features?: string[];
+-    result_type: string;
+     providerRequestsCount?: Record<string, number>;
++    reason: string;
++    result_type: string;
++    securityAlertId?: string;
+ };
+ /** Alternate priority levels for which values are provided in gas fee estimates. */
+ export declare enum GasFeeEstimateLevel {
+@@ -1185,8 +1186,17 @@ export type TransactionBatchRequest = {
+     origin?: string;
+     /** Whether an approval request should be created to require confirmation from the user. */
+     requireApproval?: boolean;
++    /** Security alert ID to persist on the transaction. */
++    securityAlertId?: string;
+     /** Transactions to be submitted as part of the batch. */
+     transactions: TransactionBatchSingleRequest[];
++    /**
++     * Callback to trigger security validation in the client.
++     *
++     * @param request - The JSON-RPC request to validate.
++     * @param chainId - The chain ID of the transaction batch.
++     */
++    validateSecurity?: (request: ValidateSecurityRequest, chainId: Hex) => Promise<void>;
+ };
+ /**
+  * Result from submitting a transaction batch.
+@@ -1195,5 +1205,16 @@ export type TransactionBatchResult = {
+     /** ID of the batch to locate related transactions. */
+     batchId: Hex;
+ };
++/**
++ * Request to validate security of a transaction in the client.
++ */
++export type ValidateSecurityRequest = {
++    /** JSON-RPC method to validate. */
++    method: string;
++    /** Parameters of the JSON-RPC method to validate. */
++    params: unknown[];
++    /** Optional EIP-7702 delegation to mock for the transaction sender. */
++    delegationMock?: Hex;
++};
+ export {};
+ //# sourceMappingURL=types.d.cts.map
+\ No newline at end of file
+diff --git a/dist/types.d.mts b/dist/types.d.mts
+index 450a27115a5f0d3ed3f719de6e98b14410e4de81..73084cf88c1c498671771ef560bf175d4aca8a82 100644
+--- a/dist/types.d.mts
++++ b/dist/types.d.mts
+@@ -918,10 +918,11 @@ export type TransactionError = {
+  * Type for security alert response from transaction validator.
+  */
+ export type SecurityAlertResponse = {
+-    reason: string;
+     features?: string[];
+-    result_type: string;
+     providerRequestsCount?: Record<string, number>;
++    reason: string;
++    result_type: string;
++    securityAlertId?: string;
+ };
+ /** Alternate priority levels for which values are provided in gas fee estimates. */
+ export declare enum GasFeeEstimateLevel {
+@@ -1185,8 +1186,17 @@ export type TransactionBatchRequest = {
+     origin?: string;
+     /** Whether an approval request should be created to require confirmation from the user. */
+     requireApproval?: boolean;
++    /** Security alert ID to persist on the transaction. */
++    securityAlertId?: string;
+     /** Transactions to be submitted as part of the batch. */
+     transactions: TransactionBatchSingleRequest[];
++    /**
++     * Callback to trigger security validation in the client.
++     *
++     * @param request - The JSON-RPC request to validate.
++     * @param chainId - The chain ID of the transaction batch.
++     */
++    validateSecurity?: (request: ValidateSecurityRequest, chainId: Hex) => Promise<void>;
+ };
+ /**
+  * Result from submitting a transaction batch.
+@@ -1195,5 +1205,16 @@ export type TransactionBatchResult = {
+     /** ID of the batch to locate related transactions. */
+     batchId: Hex;
+ };
++/**
++ * Request to validate security of a transaction in the client.
++ */
++export type ValidateSecurityRequest = {
++    /** JSON-RPC method to validate. */
++    method: string;
++    /** Parameters of the JSON-RPC method to validate. */
++    params: unknown[];
++    /** Optional EIP-7702 delegation to mock for the transaction sender. */
++    delegationMock?: Hex;
++};
+ export {};
+ //# sourceMappingURL=types.d.mts.map
+\ No newline at end of file
+diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
+index f2f3931df247fc8798f020900b32710b086b25dd..f1d677c80c5ffe77443ceeeaea8f3034d95c318d 100644
+--- a/dist/utils/batch.cjs
++++ b/dist/utils/batch.cjs
+@@ -25,7 +25,7 @@ async function addTransactionBatch(request) {
+         request: userRequest,
+         sizeLimit,
+     });
+-    const { batchId: batchIdOverride, from, networkClientId, requireApproval, transactions, } = userRequest;
++    const { batchId: batchIdOverride, from, networkClientId, requireApproval, securityAlertId, transactions, validateSecurity, } = userRequest;
+     log('Adding', userRequest);
+     const chainId = getChainId(networkClientId);
+     const ethQuery = request.getEthQuery(networkClientId);
+@@ -57,13 +57,34 @@ async function addTransactionBatch(request) {
+         txParams.type = types_1.TransactionEnvelopeType.setCode;
+         txParams.authorizationList = [{ address: upgradeContractAddress }];
+     }
++    if (validateSecurity) {
++        const securityRequest = {
++            method: 'eth_sendTransaction',
++            params: [
++                {
++                    ...txParams,
++                    authorizationList: undefined,
++                    type: types_1.TransactionEnvelopeType.feeMarket,
++                },
++            ],
++            delegationMock: txParams.authorizationList?.[0]?.address,
++        };
++        log('Security request', securityRequest);
++        validateSecurity(securityRequest, chainId).catch((error) => {
++            log('Security validation failed', error);
++        });
++    }
+     log('Adding batch transaction', txParams, networkClientId);
+     const batchId = batchIdOverride ?? generateBatchId();
++    const securityAlertResponse = securityAlertId
++        ? { securityAlertId }
++        : undefined;
+     const { result } = await addTransaction(txParams, {
+         batchId,
+         nestedTransactions,
+         networkClientId,
+         requireApproval,
++        securityAlertResponse,
+         type: types_1.TransactionType.batch,
+     });
+     // Wait for the transaction to be published.
+diff --git a/dist/utils/batch.mjs b/dist/utils/batch.mjs
+index c1a98754a78717ae716043c68bef3af10a5d5fc3..ae130ff924e6cc60a9aebf3450d08b8f0e3b3608 100644
+--- a/dist/utils/batch.mjs
++++ b/dist/utils/batch.mjs
+@@ -22,7 +22,7 @@ export async function addTransactionBatch(request) {
+         request: userRequest,
+         sizeLimit,
+     });
+-    const { batchId: batchIdOverride, from, networkClientId, requireApproval, transactions, } = userRequest;
++    const { batchId: batchIdOverride, from, networkClientId, requireApproval, securityAlertId, transactions, validateSecurity, } = userRequest;
+     log('Adding', userRequest);
+     const chainId = getChainId(networkClientId);
+     const ethQuery = request.getEthQuery(networkClientId);
+@@ -54,13 +54,34 @@ export async function addTransactionBatch(request) {
+         txParams.type = TransactionEnvelopeType.setCode;
+         txParams.authorizationList = [{ address: upgradeContractAddress }];
+     }
++    if (validateSecurity) {
++        const securityRequest = {
++            method: 'eth_sendTransaction',
++            params: [
++                {
++                    ...txParams,
++                    authorizationList: undefined,
++                    type: TransactionEnvelopeType.feeMarket,
++                },
++            ],
++            delegationMock: txParams.authorizationList?.[0]?.address,
++        };
++        log('Security request', securityRequest);
++        validateSecurity(securityRequest, chainId).catch((error) => {
++            log('Security validation failed', error);
++        });
++    }
+     log('Adding batch transaction', txParams, networkClientId);
+     const batchId = batchIdOverride ?? generateBatchId();
++    const securityAlertResponse = securityAlertId
++        ? { securityAlertId }
++        : undefined;
+     const { result } = await addTransaction(txParams, {
+         batchId,
+         nestedTransactions,
+         networkClientId,
+         requireApproval,
++        securityAlertResponse,
+         type: TransactionType.batch,
+     });
+     // Wait for the transaction to be published.
 diff --git a/dist/utils/feature-flags.cjs b/dist/utils/feature-flags.cjs
 index f5997a25468c27acb6f82f131906d87be0233b44..af10348ec8c726f99b64e67b8c78948e990a0a0b 100644
 --- a/dist/utils/feature-flags.cjs
