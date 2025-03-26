@@ -28734,10 +28734,14 @@ __metadata:
   linkType: hard
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "nanoid@npm:^3.3.10, nanoid@npm:^3.3.8":
 =======
 "nanoid@npm:^3.1.31, nanoid@npm:^3.3.10, nanoid@npm:^3.3.8":
 >>>>>>> cf4296fe55 (chore: Bump Snaps dependencies)
+=======
+"nanoid@npm:^3.3.10, nanoid@npm:^3.3.8":
+>>>>>>> 0c59cb3e19 (Bump snaps-execution-environments)
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
