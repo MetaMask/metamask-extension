@@ -303,6 +303,7 @@ export default function ConfirmationPage({
 
   const hasHeader =
     isSnapCustomUIDialog ||
+    isSnapDialog ||
     pendingConfirmation?.requestData?.message?.key ===
       SNAP_MSG_KEY_RESULT_SUCCESS ||
     pendingConfirmation?.requestData?.error?.key === SNAP_ERROR_KEY_RESULT;
