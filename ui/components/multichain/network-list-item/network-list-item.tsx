@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -84,7 +90,7 @@ export const NetworkListItem = ({
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const renderButton = () => {
+  const renderButton = useCallback(() => {
     return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
@@ -98,7 +104,15 @@ export const NetworkListItem = ({
         size={ButtonIconSize.Sm}
       />
     ) : null;
-  };
+  }, [
+    onDeleteClick,
+    onEditClick,
+    onDiscoverClick,
+    chainId,
+    t,
+    setNetworkListItemMenuRef,
+    setNetworkOptionsMenuOpen,
+  ]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
