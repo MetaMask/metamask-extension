@@ -243,7 +243,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@ethersproject/wallet": "^5.7.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@keystonehq/bc-ur-registry-eth": "^0.21.0",
+    "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.3",
