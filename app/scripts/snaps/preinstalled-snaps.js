@@ -1,3 +1,5 @@
+/* eslint-disable import/unambiguous */
+
 const PREINSTALLED_SNAPS = Object.freeze([
   '@metamask/message-signing-snap',
   '@metamask/ens-resolver-snap',
