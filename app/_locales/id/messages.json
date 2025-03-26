@@ -3857,12 +3857,6 @@
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
   },
-  "petnamesEnabledToggle": {
-    "message": "Izinkan nama panggilan"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Ini memungkinkan Anda untuk menetapkan nama panggilan ke alamat mana pun. Kami akan menyarankan nama untuk alamat tempat Anda berinteraksi, jika memungkinkan."
-  },
   "pinToTop": {
     "message": "Sematkan ke atas"
   },
