@@ -25,10 +25,7 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
-import {
-  getProviderConfig,
-  getCurrentChainId,
-} from '../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
@@ -52,14 +49,12 @@ export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentChainId,
   (
     unapprovedTxs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    chainId,
   ) =>
     txHelper(
       unapprovedTxs,
@@ -67,7 +62,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      chainId,
     ) || [],
 );
 
@@ -77,36 +71,19 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentChainId,
   (
     unapprovedTxs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    chainId,
-  ) => {
-    const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
-      (acc, address) => {
-        const transactions = { ...acc };
-
-        if (unapprovedTxs[address].chainId === chainId) {
-          transactions[address] = unapprovedTxs[address];
-        }
-
-        return transactions;
-      },
-      {},
-    );
-
-    return {
-      ...filteredUnapprovedTxs,
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
-  },
+  ) => ({
+    ...unapprovedTxs,
+    ...unapprovedPersonalMsgs,
+    ...unapprovedDecryptMsgs,
+    ...unapprovedEncryptionPublicKeyMsgs,
+    ...unapprovedTypedMessages,
+  }),
 );
 
 export const unconfirmedMessagesHashSelector = createSelector(
