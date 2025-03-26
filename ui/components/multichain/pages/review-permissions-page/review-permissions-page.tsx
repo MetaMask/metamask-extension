@@ -57,6 +57,7 @@ import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
 import { SiteCell } from './site-cell/site-cell';
+import { uniq } from 'lodash';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -173,9 +174,24 @@ export const ReviewPermissions = () => {
     };
   });
 
-  const connectedAccountAddresses = useSelector((state) =>
+  const _connectedAccountAddresses = useSelector((state) =>
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
   ) as CaipAccountId[];
+
+  // should this be at the selector level? :|
+  const connectedAccountAddresses = uniq(_connectedAccountAddresses.map(
+    (caipAccountId) => {
+      const {
+        address,
+        chain: { namespace, reference },
+      } = parseCaipAccountId(caipAccountId);
+      if (namespace === KnownCaipNamespace.Eip155) {
+        // this is very hacky, but it works for now
+        return `${namespace}:0:${address}` as CaipAccountId;
+      }
+      return `${namespace}:${reference}:${address}` as CaipAccountId;
+    },
+  ));
 
   const handleSelectAccountAddresses = (addresses: string[]) => {
     if (addresses.length === 0) {

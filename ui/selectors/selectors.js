@@ -3233,9 +3233,11 @@ export function getPermittedEVMChains(state, origin) {
   );
 }
 
-export function getAllPermittedAccounts(state) {
+export function getAllPermittedAccounts(state, origin) {
   return getAllAccountsFromPermission(
-    getCaip25PermissionFromSubject(getPermissionSubjects(state)),
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
+  );
+}
   );
 }
 
