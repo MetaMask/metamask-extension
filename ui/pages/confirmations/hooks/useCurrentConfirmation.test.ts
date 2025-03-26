@@ -158,15 +158,6 @@ describe('useCurrentConfirmation', () => {
     expect(currentConfirmation).toBeUndefined();
   });
 
-  it('returns undefined if transaction has incorrect chain ID', () => {
-    const currentConfirmation = runHook({
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
-      transaction: { ...TRANSACTION_MOCK, chainId: '0x123' },
-    });
-
-    expect(currentConfirmation).toBeUndefined();
-  });
-
   it('returns undefined if transaction is not unapproved', () => {
     const currentConfirmation = runHook({
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],

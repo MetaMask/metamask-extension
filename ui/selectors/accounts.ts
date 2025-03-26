@@ -5,6 +5,7 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { createSelector } from 'reselect';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
@@ -26,9 +27,20 @@ export function isSolanaAccount(account: InternalAccount) {
   return Boolean(account && account.type === DataAccount);
 }
 
-export function getInternalAccounts(state: AccountsState) {
-  return Object.values(state.metamask.internalAccounts.accounts);
+export function isNonEvmAccount(account: InternalAccount) {
+  const { P2wpkh } = BtcAccountType;
+  const { DataAccount } = SolAccountType;
+
+  return Boolean(
+    account && (account.type === P2wpkh || account.type === DataAccount),
+  );
 }
+
+export const getInternalAccounts = createSelector(
+  (state: AccountsState) =>
+    Object.values(state.metamask.internalAccounts.accounts),
+  (accounts) => accounts,
+);
 
 export function getSelectedInternalAccount(state: AccountsState) {
   const accountId = state.metamask.internalAccounts.selectedAccount;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -33,16 +33,21 @@ import {
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ConnectedSitePopover } from '../connected-site-popover';
 
 export const ConnectedSiteMenu = ({
   className,
   globalMenuColor,
   status,
   text,
-  onClick,
   disabled,
+  onClick,
 }) => {
   const t = useI18nContext();
+  const [showPopover, setShowPopover] = useState(false);
+
+  const referenceElement = useRef(null);
+
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
@@ -68,58 +73,73 @@ export const ConnectedSiteMenu = ({
     />
   );
   return (
-    <Box
-      className={classNames(
-        `multichain-connected-site-menu${disabled ? '--disabled' : ''}`,
-        className,
-      )}
-      data-testid="connection-menu"
-      as="button"
-      onClick={onClick}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.backgroundDefault}
-    >
-      {process.env.REMOVE_GNS ? (
-        iconElement
-      ) : (
-        <Tooltip
-          title={
-            status === STATUS_NOT_CONNECTED
-              ? t('statusNotConnectedAccount')
-              : `${selectedAccount?.metadata.name} ${text}`
-          }
-          data-testid="multichain-connected-site-menu__tooltip"
-          position="bottom"
-        >
-          <BadgeWrapper
-            positionObj={
-              isConnectedtoOtherAccountOrSnap
-                ? { bottom: -1, right: -2, zIndex: 1 }
-                : { bottom: -1, right: -4, zIndex: 1 }
+    <>
+      <Box
+        className={classNames(
+          `multichain-connected-site-menu${disabled ? '--disabled' : ''}`,
+          className,
+        )}
+        data-testid="connection-menu"
+        as="button"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        ref={referenceElement}
+        onClick={process.env.REMOVE_GNS ? () => setShowPopover(true) : onClick}
+      >
+        {process.env.REMOVE_GNS ? (
+          iconElement
+        ) : (
+          <Tooltip
+            title={
+              status === STATUS_NOT_CONNECTED
+                ? t('statusNotConnectedAccount')
+                : `${selectedAccount?.metadata.name} ${text}`
             }
-            badge={
-              <Box
-                backgroundColor={globalMenuColor}
-                className={classNames('multichain-connected-site-menu__badge', {
-                  'not-connected': isConnectedtoOtherAccountOrSnap,
-                })}
-                borderRadius={BorderRadius.full}
-                borderColor={
-                  isConnectedtoOtherAccountOrSnap
-                    ? BorderColor.successDefault
-                    : BorderColor.backgroundDefault
-                }
-                borderWidth={2}
-              />
-            }
+            data-testid="multichain-connected-site-menu__tooltip"
+            position="bottom"
           >
-            {iconElement}
-          </BadgeWrapper>
-        </Tooltip>
+            <BadgeWrapper
+              positionObj={
+                isConnectedtoOtherAccountOrSnap
+                  ? { bottom: -1, right: -2, zIndex: 1 }
+                  : { bottom: -1, right: -4, zIndex: 1 }
+              }
+              badge={
+                <Box
+                  backgroundColor={globalMenuColor}
+                  className={classNames(
+                    'multichain-connected-site-menu__badge',
+                    {
+                      'not-connected': isConnectedtoOtherAccountOrSnap,
+                    },
+                  )}
+                  borderRadius={BorderRadius.full}
+                  borderColor={
+                    isConnectedtoOtherAccountOrSnap
+                      ? BorderColor.successDefault
+                      : BorderColor.backgroundDefault
+                  }
+                  borderWidth={2}
+                />
+              }
+            >
+              {iconElement}
+            </BadgeWrapper>
+          </Tooltip>
+        )}
+      </Box>
+      {showPopover && (
+        <ConnectedSitePopover
+          referenceElement={referenceElement}
+          isOpen={showPopover}
+          isConnected={!currentTabHasNoAccounts}
+          onClick={onClick}
+          onClose={() => setShowPopover(false)}
+        />
       )}
-    </Box>
+    </>
   );
 };
 
