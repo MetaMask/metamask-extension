@@ -1,4 +1,5 @@
 import React from 'react';
+import { CaipAccountId, parseCaipChainId } from '@metamask/utils';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
@@ -40,10 +41,21 @@ const render = (
     mockState.metamask.internalAccounts.accounts,
   ) as unknown as MergedInternalAccount[];
 
+  const accountsWithCaipAccountId = accounts.map((account) => {
+    const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+    return {
+      internalAccount: account,
+      caipAccountId:
+        `${namespace}:${reference}:${account.address}` as CaipAccountId,
+    };
+  });
+
   return renderWithProvider(
     <EditAccountsModal
-      accounts={accounts}
-      defaultSelectedAccountAddresses={[accounts[0].address]}
+      accounts={accountsWithCaipAccountId}
+      defaultSelectedAccountAddresses={[
+        accountsWithCaipAccountId[0].caipAccountId,
+      ]}
       {...props}
     />,
     store,

@@ -78,7 +78,8 @@ import {
   getAllRequestedChainIds,
 } from './utils';
 
-const caipFormattedTestChains = TEST_CHAINS.map(
+// put this here because of some circular dependency issue
+export const caipFormattedTestChains = TEST_CHAINS.map(
   (chainId) => `eip155:${hexToDecimal(chainId)}`,
 );
 
@@ -189,7 +190,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getUpdatedAndSortedAccounts,
   ) as MergedInternalAccount[];
 
-  const reformattedAllAccounts = allAccounts.map((account) => {
+  const allAccountsWithCaipAccountId = allAccounts.map((account) => {
     // I hope we can reliably use the first scope to determine the namespace
     const { namespace, reference } = parseCaipChainId(account.scopes[0]);
     return {
@@ -211,7 +212,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ]);
 
   // all accounts that match the requested namespaces
-  const supportedAccountsForRequestedNamespaces = reformattedAllAccounts.filter(
+  const supportedAccountsForRequestedNamespaces = allAccountsWithCaipAccountId.filter(
     (account) => {
       const {
         chain: { namespace },
@@ -453,9 +454,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <SiteCell
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
-                accounts={defaultAccounts.map(
-                  ({ internalAccount }) => internalAccount,
-                )}
+                accounts={defaultAccounts}
                 onSelectAccountAddresses={setSelectedCaip10AccountAddresses}
                 onSelectChainIds={setSelectedChainIds}
                 selectedAccountAddresses={selectedCaip10AccountAddresses}

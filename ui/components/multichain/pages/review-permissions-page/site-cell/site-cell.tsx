@@ -33,7 +33,10 @@ type Network = {
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
-  accounts: MergedInternalAccount[];
+  accounts: {
+    internalAccount: MergedInternalAccount;
+    caipAccountId: CaipAccountId;
+  }[];
   onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
   onSelectChainIds: (chainIds: CaipChainId[]) => void;
   selectedAccountAddresses: CaipAccountId[];
@@ -60,9 +63,9 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
-  const selectedAccounts = accounts.filter(({ address }) =>
+  const selectedAccounts = accounts.filter(({ caipAccountId }) =>
     selectedAccountAddresses.some((selectedAccountAddress) =>
-      isEqualCaseInsensitive(selectedAccountAddress, address),
+      isEqualCaseInsensitive(selectedAccountAddress, caipAccountId),
     ),
   );
   const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
@@ -75,13 +78,15 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const accountMessageConnectedState =
     selectedAccounts.length === 1
       ? t('connectedWithAccountName', [
-          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
+          selectedAccounts[0].internalAccount.metadata.name ||
+            selectedAccounts[0].internalAccount.label,
         ])
       : t('connectedWithAccount', [selectedAccounts.length]);
   const accountMessageNotConnectedState =
     selectedAccounts.length === 1
       ? t('requestingForAccount', [
-          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
+          selectedAccounts[0].internalAccount.metadata.name ||
+            selectedAccounts[0].internalAccount.label,
         ])
       : t('requestingFor');
 
@@ -141,7 +146,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             // Why this difference?
             selectedAccounts.length === 1 ? (
               <AvatarAccount
-                address={selectedAccounts[0].address}
+                address={selectedAccounts[0].internalAccount.address}
                 size={AvatarAccountSize.Xs}
                 borderColor={BorderColor.transparent}
               />

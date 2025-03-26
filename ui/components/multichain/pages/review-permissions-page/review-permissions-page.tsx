@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  CaipAccountId,
+  CaipChainId,
+  parseCaipChainId,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   AlignItems,
@@ -12,7 +15,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getConnectedSitesList,
   getPermissionSubjects,
@@ -52,7 +55,7 @@ import {
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -111,19 +114,30 @@ export const ReviewPermissions = () => {
     dispatch(hidePermittedNetworkToast());
   };
 
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfigurationsByCaipChainId = useSelector(
+    getAllNetworkConfigurationsByCaipChainId,
+  );
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(networkConfigurations).reduce(
+      Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          const caipChainId = chainId as CaipChainId;
+          const isTestNetwork = caipFormattedTestChains.includes(caipChainId);
+          (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
+            ...network,
+            caipChainId,
+          });
           return [nonTestNetworksList, testNetworksList];
         },
-        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+        [
+          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
+          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
+        ],
       ),
-    [networkConfigurations],
+    [networkConfigurationsByCaipChainId],
   );
+
   const connectedChainIds = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as string[];
@@ -145,12 +159,19 @@ export const ReviewPermissions = () => {
     setShowNetworkToast(true);
   };
 
-  const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const evmAccounts: MergedInternalAccount[] = useMemo(() => {
-    return accounts.filter((account: InternalAccount) =>
-      isEvmAccountType(account.type),
-    );
-  }, [accounts]);
+  const allAccounts = useSelector(
+    getUpdatedAndSortedAccounts,
+  ) as MergedInternalAccount[];
+
+  const allAccountsWithCaipAccountId = allAccounts.map((account) => {
+    // I hope we can reliably use the first scope to determine the namespace
+    const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+    return {
+      internalAccount: account,
+      caipAccountId:
+        `${namespace}:${reference}:${account.address}` as CaipAccountId,
+    };
+  });
 
   const connectedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, activeTabOrigin),
@@ -193,7 +214,7 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={evmAccounts}
+              accounts={allAccountsWithCaipAccountId}
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
