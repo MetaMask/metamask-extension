@@ -1,13 +1,13 @@
 import React from 'react';
+import { toHex } from '@metamask/controller-utils';
+import { GasFeeToken } from '@metamask/transaction-controller';
+import { act } from 'react-dom/test-utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
-import { SelectedGasFeeToken } from './selected-gas-fee-token';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { toHex } from '@metamask/controller-utils';
-import { GasFeeToken } from '@metamask/transaction-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { act } from 'react-dom/test-utils';
+import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
