@@ -4,8 +4,8 @@ import type {
 } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { MultichainNetworks } from './multichain/networks';
 import { Hex } from '@metamask/utils';
+import { MultichainNetworks } from './multichain/networks';
 
 /**
  * A type representing built-in network types, used as an identifier.

@@ -212,14 +212,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ]);
 
   // all accounts that match the requested namespaces
-  const supportedAccountsForRequestedNamespaces = allAccountsWithCaipAccountId.filter(
-    (account) => {
+  const supportedAccountsForRequestedNamespaces =
+    allAccountsWithCaipAccountId.filter((account) => {
       const {
         chain: { namespace },
       } = parseCaipAccountId(account.caipAccountId);
       return requestedNamespaces.includes(namespace);
-    },
-  );
+    });
 
   // all requested accounts that are found in the wallet
   const supportedRequestedAccounts = Array.from(requestedCaipAccountIds).reduce(

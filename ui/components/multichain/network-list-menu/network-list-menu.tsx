@@ -59,8 +59,8 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
-  getPermittedChainsForSelectedTab,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -160,11 +160,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
 
   const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const currentlyOnTestnet = useMemo(() => {

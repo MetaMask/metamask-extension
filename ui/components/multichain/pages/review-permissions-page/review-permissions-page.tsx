@@ -20,8 +20,7 @@ import {
   getAllPermittedAccountsForSelectedTab,
   getConnectedSitesList,
   getPermissionSubjects,
-  getPermittedAccountsForSelectedTab,
-  getPermittedChainsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
   getShowPermittedNetworkToastOpen,
   getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
@@ -139,9 +138,9 @@ export const ReviewPermissions = () => {
     [networkConfigurationsByCaipChainId],
   );
 
-  const connectedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+  const connectedEVMChainIds = useSelector((state) =>
+    getPermittedEVMChainsForSelectedTab(state, activeTabOrigin),
+  );
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -151,7 +150,7 @@ export const ReviewPermissions = () => {
 
     dispatch(addPermittedChains(activeTabOrigin, chainIds));
 
-    connectedChainIds.forEach((chainId: string) => {
+    connectedEVMChainIds.forEach((chainId: string) => {
       if (!chainIds.includes(chainId)) {
         dispatch(removePermittedChain(activeTabOrigin, chainId));
       }
@@ -219,7 +218,7 @@ export const ReviewPermissions = () => {
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
-              selectedChainIds={connectedChainIds}
+              selectedChainIds={connectedEVMChainIds}
               hideAllToasts={hideAllToasts}
             />
           ) : (
