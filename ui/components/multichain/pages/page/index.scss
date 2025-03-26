@@ -30,7 +30,7 @@
 
     & .multichain-page__inner-container {
       border-radius: 0 0 2px 2px;
-      border-top: 0;
+      border: 0;
       // Matches the box-shadow of the .main-container
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     }
