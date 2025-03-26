@@ -7,7 +7,10 @@ import configureStore from '../../../../../../../store/store';
 
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
+
+jest.mock('../../../../../../../../shared/modules/selectors');
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
@@ -38,6 +41,7 @@ function getStore({
         metamask: {
           preferences: {
             showFiatInTestnets: true,
+            smartTransactionsOptInStatus: true,
           },
         },
       },
@@ -46,6 +50,13 @@ function getStore({
 }
 
 describe('SelectedGasFeeToken', () => {
+  const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    getIsSmartTransactionMock.mockReturnValue(true);
+  });
+
   it('renders native symbol', () => {
     const result = renderWithConfirmContextProvider(
       <SelectedGasFeeToken />,
@@ -79,6 +90,17 @@ describe('SelectedGasFeeToken', () => {
     const result = renderWithConfirmContextProvider(
       <SelectedGasFeeToken />,
       getStore({ gasFeeTokens: [] }),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if smart transactions disabled', () => {
+    getIsSmartTransactionMock.mockReturnValue(false);
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore(),
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();

@@ -8,7 +8,8 @@ import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { toHex } from '@metamask/controller-utils';
-import { GasFeeToken } from '@metamask/transaction-controller';
+import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
+import { mockNetworkState } from '../../../../../../../../test/stub/networks';
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
@@ -30,6 +31,7 @@ function getStore({
   return configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.MAINNET,
         gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
         selectedGasFeeToken: noSelectedGasFeeToken
           ? undefined
@@ -40,6 +42,35 @@ function getStore({
           preferences: {
             showFiatInTestnets: true,
           },
+          smartTransactionsFeatureFlags: {
+            enabled: true,
+          },
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: false,
+                smartTransactions: {
+                  expectedDeadline: 45,
+                  maxDeadline: 150,
+                  extensionReturnTxHashAsap: false,
+                },
+              },
+              smartTransactions: {
+                extensionActive: true,
+                mobileActive: false,
+              },
+            },
+          },
+          smartTransactionsState: {
+            liveness: true,
+          },
+          ...mockNetworkState({
+            id: 'network-configuration-id-1',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.infura.io/v3/',
+            ticker: 'ETH',
+          }),
         },
       },
     ),
