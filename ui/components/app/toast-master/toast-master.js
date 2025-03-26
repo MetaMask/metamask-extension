@@ -32,7 +32,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskHdKeyrings,
+  ///: END:ONLY_INCLUDE_IF
   getOriginOfCurrentTab,
   getSelectedAccount,
   getSwitchedNetworkDetails,
