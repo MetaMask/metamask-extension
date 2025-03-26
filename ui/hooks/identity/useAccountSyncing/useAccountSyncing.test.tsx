@@ -6,7 +6,7 @@ import {
   useAccountSyncing,
   useDeleteAccountSyncingDataFromUserStorage,
   useShouldDispatchAccountSyncing,
-} from './accountSyncing';
+} from './useAccountSyncing';
 
 type ArrangeMocksMetamaskStateOverrides = {
   isSignedIn?: boolean;
