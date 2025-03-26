@@ -19,7 +19,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: "31242"
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@0df6a5d338bd77c9a0a7d9304f0152bc4d8c2dab
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
       - name: PRINT THE MF
