@@ -180,10 +180,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-  // const supportedRequestedChainIds = requestedCaipChainIds.filter(
-  //   (caipChainId) => allNetworksList.includes(caipChainId),
-  // );
-
   const defaultSelectedChainIds =
     supportedRequestedCaipChainIds.length > 0
       ? supportedRequestedCaipChainIds
@@ -221,7 +217,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   // all accounts that match the requested namespaces
   const supportedAccountsForRequestedNamespaces = reformattedAllAccounts.filter(
     (account) => {
-      const { namespace } = parseCaipChainId(account.caipAccountId);
+      const {
+        chain: { namespace },
+      } = parseCaipAccountId(account.caipAccountId);
       return requestedNamespaces.includes(namespace);
     },
   );
@@ -246,7 +244,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   // TODO use currentAccount as well to determine default accounts
   // const currentAccount = useSelector(getSelectedInternalAccount);
-
   const defaultAccounts = getDefaultAccounts(
     requestedNamespaces,
     supportedRequestedAccounts,
