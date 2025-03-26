@@ -22,6 +22,7 @@ jobs:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
       ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
+      OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -40,8 +41,10 @@ jobs:
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
         run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
-          name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/

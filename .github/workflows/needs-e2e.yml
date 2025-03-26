@@ -1,4 +1,4 @@
-name: E2E Needs
+name: Needs E2E
 
 on:
   workflow_call:

@@ -17,7 +17,9 @@ on:
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
-    if: ${{ github.head_ref != 'l10n_crowdin_action' }}
+    # For a `pull_request` event, the branch is `github.head_ref``.
+    # For a `push` event, the branch is `github.ref_name`.
+    if: ${{ (github.head_ref || github.ref_name) != 'l10n_crowdin_action' }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -150,6 +152,10 @@ jobs:
     needs:
       - prep-build-test-browserify
       - prep-build-test-webpack
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
 
   run-tests:
     name: Run tests
@@ -164,6 +170,13 @@ jobs:
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -181,32 +194,33 @@ jobs:
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
 
       - name: Record bundle size at commit
-        if: ${{ github.ref_name	== 'main' }}
-        run: ./.circleci/scripts/bundle-stats-commit.sh
+        if: ${{ env.BRANCH == 'main' }}
+        run: ./.github/scripts/bundle-stats-commit.sh
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload 'bundle-size' to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
-          name: bundle-size
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome/
 
-  e2e-needs:
-    name: E2E Needs
+  needs-e2e:
     needs:
       - prep-deps
-    uses: ./.github/workflows/e2e-needs.yml
+    uses: ./.github/workflows/needs-e2e.yml
 
-  chrome-tests:
+  e2e-chrome:
     needs:
-      - e2e-needs
+      - needs-e2e
       - prep-build-test-browserify
-    if: ${{ needs.e2e-needs.outputs.needs-e2e == 'true' }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
 
-  firefox-tests:
+  e2e-firefox:
     needs:
-      - e2e-needs
-    if: ${{ needs.e2e-needs.outputs.needs-e2e == 'true' }}
+      - needs-e2e
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
 
   wait-for-circleci-workflow-status:
@@ -244,10 +258,11 @@ jobs:
     name: Publish prerelease
     if: ${{ github.event_name == 'pull_request' }}
     needs:
+      - run-benchmarks
+      - bundle-size
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
-      - run-benchmarks
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -267,7 +282,7 @@ jobs:
       - prep-build-test-browserify
       - prep-build-test-webpack
       - run-tests
-      - e2e-needs
+      - needs-e2e
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta

@@ -1,8 +1,5 @@
 import { execFileSync } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
 import startCase from 'lodash/startCase';
-import { hasProperty } from '@metamask/utils';
 import { version as VERSION } from '../package.json';
 
 start().catch(console.error);
@@ -52,7 +49,6 @@ async function start(): Promise<void> {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
-    GITHUB_RUN_ID,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -159,22 +155,12 @@ async function start(): Promise<void> {
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
-  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
+
+  const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
-  const gitHubArtifactList = await (
-    await fetch(
-      `https://api.github.com/repos/metamask/metamask-extension/actions/runs/${GITHUB_RUN_ID}/artifacts`,
-    )
-  ).json();
-
-  const userActionsArtifact = gitHubArtifactList.artifacts.find(
-    (artifact: { name: string }) =>
-      artifact.name === 'benchmark-chrome-browserify-userActions',
-  );
-
-  const userActionsStatsUrl = `https://github.com/MetaMask/metamask-extension/actions/runs/${GITHUB_RUN_ID}/artifacts/${userActionsArtifact.id}`;
-  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">user actions</a>`;
+  const userActionsStatsUrl = `${HOST_URL}/benchmark-chrome-browserify-userActions/benchmark-chrome-browserify-userActions.json`;
+  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/jobs/${CIRCLE_BUILD_NUM}/artifacts/`;
@@ -212,30 +198,21 @@ async function start(): Promise<void> {
   const benchmarkResults: BenchmarkResults = {};
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
-
     for (const buildType of buildTypes) {
-      const benchmarkPath = path.resolve(
-        `test-artifacts/benchmarks/benchmark-${platform}-${buildType}-pageload.json`,
-      );
-
+      const benchmarkUrl = `${HOST_URL}/benchmark-${platform}-${buildType}-pageload/benchmark-${platform}-${buildType}-pageload.json`;
       try {
-        const data = await fs.readFile(benchmarkPath, 'utf8');
-        const benchmark = JSON.parse(data);
-        benchmarkResults[platform][buildType] = benchmark;
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          hasProperty(error, 'code') &&
-          error.code === 'ENOENT'
-        ) {
-          console.log(
-            `No benchmark data found for ${platform}-${buildType}; skipping`,
-          );
-        } else {
-          console.error(
-            `Error encountered processing benchmark data for '${platform}': '${error}'`,
+        const benchmarkResponse = await fetch(benchmarkUrl);
+        if (!benchmarkResponse.ok) {
+          throw new Error(
+            `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
           );
         }
+        const benchmark = await benchmarkResponse.json();
+        benchmarkResults[platform][buildType] = benchmark;
+      } catch (error) {
+        console.error(
+          `Error encountered processing benchmark data for '${platform}': '${error}'`,
+        );
       }
     }
   }
@@ -346,18 +323,21 @@ async function start(): Promise<void> {
   }
 
   try {
-    const prBundleSizeStats = JSON.parse(
-      await fs.readFile(
-        path.resolve('test-artifacts/chrome/bundle_size.json'),
-        'utf-8',
-      ),
-    );
+    const prBundleSizeStatsResponse = await fetch(bundleSizeStatsUrl);
+    if (!prBundleSizeStatsResponse.ok) {
+      throw new Error(
+        `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
+      );
+    }
+    const prBundleSizeStats = await prBundleSizeStatsResponse.json();
 
-    const devBundleSizeStats = await (
-      await fetch(bundleSizeDataUrl, {
-        method: 'GET',
-      })
-    ).json();
+    const devBundleSizeStatsResponse = await fetch(bundleSizeDataUrl);
+    if (!devBundleSizeStatsResponse.ok) {
+      throw new Error(
+        `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
+      );
+    }
+    const devBundleSizeStats = await devBundleSizeStatsResponse.json();
 
     const prSizes = {
       background: prBundleSizeStats.background.size,

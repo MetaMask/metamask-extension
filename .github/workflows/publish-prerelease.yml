@@ -50,20 +50,6 @@ jobs:
 
           echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', build number '${build_num}', job id '${job_id}'"
 
-      - name: Get benchmark job artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./test-artifacts/benchmarks/
-          pattern: benchmark-*
-          merge-multiple: true
-
-      - name: Get bundle-size job artifact
-        uses: actions/download-artifact@v4
-        with:
-          path: ./test-artifacts/chrome/
-          pattern: bundle-size
-          merge-multiple: true
-
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
