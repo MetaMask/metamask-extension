@@ -337,7 +337,10 @@ import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
-import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
+import {
+  updateSecurityAlertResponse,
+  validateRequestWithPPOM,
+} from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 
@@ -2089,6 +2092,15 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledAccountUpgradeChains.bind(
               this.preferencesController,
             ),
+          validateSecurity: (securityAlertId, request, chainId) =>
+            validateRequestWithPPOM({
+              chainId,
+              ppomController: this.ppomController,
+              request,
+              securityAlertId,
+              updateSecurityAlertResponse:
+                this.updateSecurityAlertResponse.bind(this),
+            }),
         },
         this.controllerMessenger,
       ),
@@ -2863,11 +2875,20 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        this.txController.stopIncomingTransactionPolling();
+        const filteredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            this.preferencesController.state.incomingTransactionsPreferences[
+              networkId
+            ],
+        );
 
-        await this.txController.updateIncomingTransactions();
+        if (filteredChainIds.length > 0) {
+          this.txController.stopIncomingTransactionPolling();
 
-        this.txController.startIncomingTransactionPolling();
+          await this.txController.updateIncomingTransactions();
+
+          this.txController.startIncomingTransactionPolling();
+        }
       },
     );
 
@@ -8077,8 +8098,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #restartSmartTransactionPoller() {
-    this.txController.stopIncomingTransactionPolling();
-    this.txController.startIncomingTransactionPolling();
+    const filteredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
+    );
+
+    if (filteredChainIds.length > 0) {
+      this.txController.stopIncomingTransactionPolling();
+      this.txController.startIncomingTransactionPolling(filteredChainIds);
+    }
   }
 
   /**
