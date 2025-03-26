@@ -3650,7 +3650,3 @@ export function getRequestType(state, id) {
 }
 
 // #endregion permissions selectors
-
-export function getDelegationData(state) {
-  return state.metamask.delegationData;
-}

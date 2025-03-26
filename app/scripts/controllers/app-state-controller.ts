@@ -10,7 +10,7 @@ import {
 } from '@metamask/base-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import { Browser } from 'webextension-polyfill';
@@ -86,7 +86,7 @@ export type AppStateControllerState = {
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
-  delegationData: Json;
+  delegationData: Record<Hex, Json>;
 };
 
 const controllerName = 'AppStateController';

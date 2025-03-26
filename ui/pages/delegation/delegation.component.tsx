@@ -47,7 +47,7 @@ import {
   performSetStorage,
   setDelegationData,
 } from '../../store/actions';
-import { getDelegationData } from '../../selectors';
+import { getDelegationData } from '../../selectors/delegations';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
