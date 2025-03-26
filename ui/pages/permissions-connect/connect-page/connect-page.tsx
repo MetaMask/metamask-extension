@@ -7,20 +7,17 @@ import {
   getUniqueArrayItems,
 } from '@metamask/chain-agnostic-permission';
 import {
-  CaipAccountAddress,
   CaipAccountId,
   CaipChainId,
   CaipNamespace,
   CaipReference,
   KnownCaipNamespace,
+  parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getSelectedInternalAccount,
-  getUpdatedAndSortedAccounts,
-} from '../../../selectors';
+import { getUpdatedAndSortedAccounts } from '../../../selectors';
 import { getConsolidatedNetworkConfigurations } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
@@ -76,7 +73,6 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
-  getFilteredAccounts,
   getDefaultAccounts,
   getAllRequestedAccounts,
   getAllRequestedChainIds,
@@ -123,7 +119,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedAccounts = getAllRequestedAccounts(requestedCaip25CaveatValue);
+  const requestedCaipAccountIds = getAllRequestedAccounts(
+    requestedCaip25CaveatValue,
+  );
   const requestedCaipChainIds = getAllRequestedChainIds(
     requestedCaip25CaveatValue,
   );
@@ -131,11 +129,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const networkConfigurationsByCaipChainId = useSelector(
     getConsolidatedNetworkConfigurations,
   );
-
-  // const filteredNetworkConfigurations = getFilteredNetworks(
-  //   networkConfigurations,
-  //   requestedCaip25CaveatValue,
-  // );
 
   const requestedNetworkConfigurations = Object.fromEntries(
     Object.entries(networkConfigurationsByCaipChainId).filter(([caipChainId]) =>
@@ -209,9 +202,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     const { namespace, reference } = parseCaipChainId(account.scopes[0]);
     return {
       internalAccount: account,
-      address: account.address,
-      namespace,
-      reference,
       caipAccountId:
         `${namespace}:${reference}:${account.address}` as CaipAccountId,
     };
@@ -229,17 +219,19 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ]);
 
   // all accounts that match the requested namespaces
-  const supportedAccountsForRequestedNamespaces = getFilteredAccounts(
-    reformattedAllAccounts,
-    requestedNamespaces,
+  const supportedAccountsForRequestedNamespaces = reformattedAllAccounts.filter(
+    (account) => {
+      const { namespace } = parseCaipChainId(account.caipAccountId);
+      return requestedNamespaces.includes(namespace);
+    },
   );
 
   // all requested accounts that are found in the wallet
-  const supportedRequestedAccounts = requestedAccounts.reduce(
+  const supportedRequestedAccounts = Array.from(requestedCaipAccountIds).reduce(
     (acc, account) => {
       const supportedRequestedAccount =
-        supportedAccountsForRequestedNamespaces.find(({ address }) =>
-          isEqualCaseInsensitive(address, account.address),
+        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) =>
+          isEqualCaseInsensitive(caipAccountId, account),
         );
       if (supportedRequestedAccount) {
         acc.push(supportedRequestedAccount);
@@ -248,59 +240,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     },
     [] as {
       internalAccount: MergedInternalAccount;
-      address: CaipAccountAddress;
-      namespace: CaipNamespace;
-      reference: CaipReference;
       caipAccountId: CaipAccountId;
     }[],
   );
 
-  // This needs to be enhanced for new types
-  // const supportedRequestedAccounts = requestedAccounts.filter((account) =>
-  //   filteredAccounts.find(({ address }) =>
-  //     isEqualCaseInsensitive(address, account.address),
-  //   ),
-  // );
-
-  // use reduce instead
-  // const supportedRequestedAccountsWithInternalAccount = requestedAccounts.filter((account) =>
-  //   filteredAccounts.find(({ address }) =>
-  //     isEqualCaseInsensitive(address, account.address),
-  //     ),
-  //   )
-  //   .map((account) => ({
-  //     ...account,
-  //     internalAccount: account,
-  //   }));
-
-  // const supportedRequestedAccounts = requestedAccounts.reduce(
-  //   (acc, account) => {
-  //     const filteredAccount = requestedAccountsWithInternalAccount.find(
-  //       ({ address }) =>
-  //         isEqualCaseInsensitive(address, account.address),
-  //     );
-  //     if (filteredAccount) {
-  //       acc.push({
-  //         ...filteredAccount,
-  //         internalAccount: account,
-  //       });
-  //     }
-  //     return acc;
-  //   },
-  //   [],
-  // );
+  // TODO use currentAccount as well to determine default accounts
   // const currentAccount = useSelector(getSelectedInternalAccount);
-  // const currentAccountAddress = filteredAccounts.some(
-  //   (account) => account.address === currentAccount.address,
-  // )
-  //   ? [currentAccount.address]
-  //   : [filteredAccounts[0]?.address].filter(Boolean);
-
-  // We need at least one default per requested namespace
-  // const defaultAccountsAddresses =
-  //   supportedRequestedAccounts.length > 0
-  //     ? supportedRequestedAccounts
-  //     : currentAccountAddress;
 
   const defaultAccounts = getDefaultAccounts(
     requestedNamespaces,
@@ -309,7 +254,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultCaip10AccountAddresses = defaultAccounts.map(
-    ({ address, namespace, reference }) => {
+    ({ caipAccountId }) => {
+      const {
+        address,
+        chain: { namespace, reference },
+      } = parseCaipAccountId(caipAccountId);
       if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
         // this is very hacky, but it works for now
         return `${namespace}:1:${address}` as CaipAccountId;
@@ -329,27 +278,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ...generateCaip25Caveat(
           requestedCaip25CaveatValue,
           selectedCaip10AccountAddresses,
-          // TODO chainIds should be CaipChainId[] now
           selectedChainIds,
         ),
       },
     };
     approveConnection(_request);
   };
-
-  // const defaultAccounts = defaultAccounts.filter(
-  //   (
-  //     account,
-  //   ): account is {
-  //     internalAccount: MergedInternalAccount;
-  //     address: CaipAccountAddress;
-  //     namespace: CaipNamespace;
-  //     reference: CaipReference;
-  //   } =>
-  //     selectedCaip10AccountAddresses.some((selectedCaip10AccountAddress) =>
-  //       isEqualCaseInsensitive(selectedCaip10AccountAddress, account.address),
-  //     ),
-  // );
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
 
@@ -467,7 +401,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 {defaultAccounts.map((account) => (
                   <AccountListItem
                     account={account.internalAccount}
-                    key={account.address}
+                    key={account.caipAccountId}
                     selected={false}
                   />
                 ))}
