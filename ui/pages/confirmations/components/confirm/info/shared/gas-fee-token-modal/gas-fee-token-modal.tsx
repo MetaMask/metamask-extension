@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import {
   Modal,
   ModalBody,
@@ -43,10 +42,14 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     [onClose, transactionId],
   );
 
+  const hasNativeToken = gasFeeTokens?.some(
+    (token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS,
+  );
+
   const gasFeeTokenAddresses = [
-    NATIVE_TOKEN_ADDRESS,
+    ...(hasNativeToken ? [] : [NATIVE_TOKEN_ADDRESS]),
     ...(gasFeeTokens?.map((token) => token.tokenAddress) ?? []),
-  ] as Hex[];
+  ];
 
   return (
     <Modal
