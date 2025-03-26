@@ -8,6 +8,8 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import AlertModal from '../../../page-objects/pages/confirmations/redesign/alert-modal';
+import modal from '../../../../../ui/components/app/modals/modal';
 
 describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
@@ -30,21 +32,22 @@ describe('Alert for insufficient funds', function () {
 
         await mintNft(driver);
         const confirmation = new Confirmation(driver);
+        const alertModal = new AlertModal(driver);
 
-        await verifyAlertForInsufficientBalance(confirmation);
+
+        await verifyAlertForInsufficientBalance(confirmation, alertModal);
       },
     );
   });
 });
 
-async function verifyAlertForInsufficientBalance(confirmation: Confirmation) {
+async function verifyAlertForInsufficientBalance(confirmation: Confirmation, alertModal: AlertModal): Promise<void> {
 
   /*await driver.waitForSelector({
     //css: '[data-testid="inline-alert"]',
     text: 'Alert',
   }); */
-  await confirmation.waitForAlert();
-
+  await alertModal.waitForAlert();
 
 
   //await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
@@ -55,7 +58,7 @@ async function verifyAlertForInsufficientBalance(confirmation: Confirmation) {
   await driver.clickElement('[data-testid="alert-modal-button"]');*/
 
   await confirmation.clickInlineAlert();
-  await displayAlertForInsufficientBalance(confirmation);
+  await displayAlertForInsufficientBalance(alertModal);
 }
 
 async function mintNft(driver: Driver) {
@@ -67,14 +70,14 @@ async function mintNft(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
-async function displayAlertForInsufficientBalance(confirmation: Confirmation) {
+async function displayAlertForInsufficientBalance(alertModal: AlertModal): Promise<void> {
 
   /*await driver.waitForSelector({
     css: '[data-testid="alert-modal__selected-alert"]',
     text: 'You do not have enough ETH in your account to pay for network fees.',
   });*/
 
-  await confirmation.waitForInsufficientBalanceAlert();
-  await confirmation.clickAlertModalButton();
+  await alertModal.waitForInsufficientBalanceAlert();
+  await alertModal.clickAlertModalButton();
 
 }

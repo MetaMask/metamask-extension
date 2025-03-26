@@ -99,17 +99,7 @@ class Confirmation {
     }
   }
 
-  async waitForAlert() {
-    await this.driver.waitForSelector(this.inlineAlertButton);
-  }
 
-  async waitForInsufficientBalanceAlert() {
-    await this.driver.waitForSelector(this.alertModalSelectedAlert);
-  }
-
-  async clickAlertModalButton() {
-    await this.driver.clickElement(this.alertModalButton);
-  }
 }
 
 export default Confirmation;
