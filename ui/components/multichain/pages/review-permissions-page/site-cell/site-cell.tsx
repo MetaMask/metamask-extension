@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { CaipAccountId, Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,
@@ -33,9 +33,9 @@ type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
   accounts: MergedInternalAccount[];
-  onSelectAccountAddresses: (addresses: string[]) => void;
+  onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
   onSelectChainIds: (chainIds: Hex[]) => void;
-  selectedAccountAddresses: string[];
+  selectedAccountAddresses: CaipAccountId[];
   selectedChainIds: string[];
   isConnectFlow?: boolean;
   hideAllToasts?: () => void;

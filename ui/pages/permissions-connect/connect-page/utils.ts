@@ -90,12 +90,14 @@ export function getCaip25PermissionsResponse(
  */
 export function getFilteredAccounts(
   accounts: {
+    internalAccount: MergedInternalAccount;
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
   }[],
   requestedNamespaces: CaipNamespace[],
 ): {
+  internalAccount: MergedInternalAccount;
   address: CaipAccountAddress;
   namespace: CaipNamespace;
   reference: CaipReference;
@@ -246,7 +248,9 @@ export function getRequestedAccounts(
  * @param requestedCaip25CaveatValue - CAIP-25 request values.
  * @returns Accounts available for requesting.
  */
-export function getAllAccounts(requestedCaip25CaveatValue: Caip25CaveatValue) {
+export function getAllRequestedAccounts(
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+) {
   const requiredAccounts = Object.values(
     requestedCaip25CaveatValue.requiredScopes,
   )
@@ -293,7 +297,9 @@ export function getRequestedChainIds(caveatValue: Caip25CaveatValue): string[] {
   });
 }
 
-export function getAllChainIds(requestedCaip25CaveatValue: Caip25CaveatValue) {
+export function getAllRequestedChainIds(
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+) {
   const allScopes = [
     ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
     ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
@@ -351,17 +357,25 @@ export function getFilteredNetworks(
 export function getDefaultAccounts(
   requestedNamespaces: CaipNamespace[],
   supportedRequestedAccounts: {
+    internalAccount: MergedInternalAccount;
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
   }[],
   allAccounts: {
+    internalAccount: MergedInternalAccount;
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
   }[],
-): CaipAccountId[] {
+): {
+  internalAccount: MergedInternalAccount;
+  address: CaipAccountAddress;
+  namespace: CaipNamespace;
+  reference: CaipReference;
+}[] {
   const defaultAccounts: {
+    internalAccount: MergedInternalAccount;
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
@@ -384,8 +398,5 @@ export function getDefaultAccounts(
     }
   });
 
-  return defaultAccounts.map(
-    ({ address, namespace, reference }) =>
-      `${namespace}:${reference}:${address}` as CaipAccountId,
-  );
+  return defaultAccounts;
 }
