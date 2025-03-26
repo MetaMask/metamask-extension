@@ -3,6 +3,7 @@ import {
   Hex,
   CaipAccountId,
   parseCaipChainId,
+  parseCaipAccountId,
 } from '@metamask/utils';
 import {
   Caip25CaveatType,
@@ -196,7 +197,9 @@ export function getDefaultAccounts(
   }[] = [];
 
   supportedRequestedAccounts.forEach((account) => {
-    const { namespace } = parseCaipChainId(account.caipAccountId);
+    const {
+      chain: { namespace },
+    } = parseCaipAccountId(account.caipAccountId);
     if (requestedNamespaces.includes(namespace)) {
       defaultAccounts.push(account);
     }
@@ -205,16 +208,16 @@ export function getDefaultAccounts(
   requestedNamespaces.forEach((namespace) => {
     if (
       !defaultAccounts.find((account) => {
-        const { namespace: accountNamespace } = parseCaipChainId(
-          account.caipAccountId,
-        );
+        const {
+          chain: { namespace: accountNamespace },
+        } = parseCaipAccountId(account.caipAccountId);
         return accountNamespace === namespace;
       })
     ) {
       const defaultAccountForNamespace = allAccounts.find((account) => {
-        const { namespace: accountNamespace } = parseCaipChainId(
-          account.caipAccountId,
-        );
+        const {
+          chain: { namespace: accountNamespace },
+        } = parseCaipAccountId(account.caipAccountId);
         return accountNamespace === namespace;
       });
       if (defaultAccountForNamespace) {
