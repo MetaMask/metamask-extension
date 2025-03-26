@@ -1724,6 +1724,7 @@ export default class MetamaskController extends EventEmitter {
         const state = this._getMetaMaskState();
         return getFeatureFlagsByChainId(state);
       },
+      getRemoteFeatureFlags: () => ({ transactionsTxHashInAnalytics: true }),
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;

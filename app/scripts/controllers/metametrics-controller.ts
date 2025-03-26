@@ -912,23 +912,6 @@ export default class MetaMetricsController extends BaseController<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): void {
-    // Debug:transactions-tx-hash-in-analytics
-    // Debug:transactions-tx-hash-in-analytics
-    if (
-      payload.event === 'Swap Completed' ||
-      payload.event === 'Action Completed'
-    ) {
-      console.log('ANALYTICS EVENT:', {
-        event: payload.event,
-        hasTransactionHash: Boolean(
-          payload.sensitiveProperties?.transaction_hash,
-        ),
-        transactionHash: payload.sensitiveProperties?.transaction_hash,
-      });
-    }
-    // Debug:transactions-tx-hash-in-analytics
-    // Debug:transactions-tx-hash-in-analytics
-
     // validation is not caught and handled
     this.#validatePayload(payload);
     this.#submitEvent(payload, options).catch((err) => {
@@ -952,6 +935,16 @@ export default class MetaMetricsController extends BaseController<
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
     }
+
+    // Debug:transactions-tx-hash-in-analytics
+    console.log('ANALYTICS EVENT SUBMIT:', {
+      event: payload.event,
+      hasTransactionHash: Boolean(
+        payload.sensitiveProperties?.transaction_hash,
+      ),
+      transactionHash: payload.sensitiveProperties?.transaction_hash,
+    });
+    // Debug:transactions-tx-hash-in-analytics
 
     // We might track multiple events if sensitiveProperties is included, this array will hold
     // the promises returned from this._track.
