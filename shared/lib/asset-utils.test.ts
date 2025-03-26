@@ -1,11 +1,16 @@
-import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  CaipAssetTypeStruct,
+  CaipChainId,
+  Hex,
+} from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { toHex } from '@metamask/controller-utils';
 import { MINUTE } from '../constants/time';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import fetchWithCache from './fetch-with-cache';
-import { getAssetImageUrl, fetchAssetMetadata } from './asset-utils';
+import { getAssetImageUrl, fetchAssetMetadata, toAssetId } from './asset-utils';
 
 jest.mock('./fetch-with-cache');
 jest.mock('@metamask/multichain-network-controller');
@@ -14,6 +19,56 @@ jest.mock('@metamask/controller-utils');
 describe('asset-utils', () => {
   const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
   const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
+
+  describe('toAssetId', () => {
+    it('should return the same asset ID if input is already a CAIP asset type', () => {
+      const caipAssetId = CaipAssetTypeStruct.create('eip155:1/erc20:0x123');
+      const chainId = 'eip155:1' as CaipChainId;
+
+      const result = toAssetId(caipAssetId, chainId);
+      expect(result).toBe(caipAssetId);
+    });
+
+    it('should create Solana token asset ID correctly', () => {
+      const address = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+      const chainId = MultichainNetwork.Solana as CaipChainId;
+
+      const result = toAssetId(address, chainId);
+      expect(result).toBe(`${MultichainNetwork.Solana}/token:${address}`);
+    });
+
+    it('should create EVM token asset ID correctly', () => {
+      const address = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
+      const chainId = 'eip155:1' as CaipChainId;
+
+      const result = toAssetId(address, chainId);
+      expect(result).toBe(`eip155:1/erc20:${address}`);
+    });
+
+    it('should return undefined for non-hex address on EVM chains', () => {
+      const address = 'not-a-hex-address';
+      const chainId = 'eip155:1' as CaipChainId;
+
+      const result = toAssetId(address, chainId);
+      expect(result).toBeUndefined();
+    });
+
+    it('should handle different EVM chain IDs', () => {
+      const address = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
+      const chainId = 'eip155:137' as CaipChainId;
+
+      const result = toAssetId(address, chainId);
+      expect(result).toBe(`eip155:137/erc20:${address}`);
+    });
+
+    it('should handle checksummed addresses', () => {
+      const address = '0x1F9840a85d5aF5bf1D1762F925BDADdC4201F984';
+      const chainId = 'eip155:1' as CaipChainId;
+
+      const result = toAssetId(address, chainId);
+      expect(result).toBe(`eip155:1/erc20:${address}`);
+    });
+  });
 
   describe('getAssetImageUrl', () => {
     it('should return correct image URL for a CAIP asset ID', () => {
