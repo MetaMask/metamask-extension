@@ -121,10 +121,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
            * We make sure it's the expected error by comparing expected error code and message (we ignore `stack` property)
            */
           assert.deepEqual(
-            pick(
-              result.error,
-              ['code', 'message'],
-            ),
+            pick(result.error, ['code', 'message']),
             expectedError,
             `calling wallet_invokeMethod should throw an error for scope ${scope}`,
           );
