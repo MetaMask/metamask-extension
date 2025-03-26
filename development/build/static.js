@@ -6,6 +6,9 @@ const glob = require('fast-glob');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const {
+  PREINSTALLED_SNAPS,
+} = require('../../app/scripts/snaps/preinstalled-snaps');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
@@ -212,6 +215,12 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           },
         ]
       : []),
+    // TODO: Filter out not Snaps not meant to be included in this build type.
+    ...PREINSTALLED_SNAPS.map((snap) => ({
+      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
+      dest: `preinstalled-snaps/${snap}/preinstalled-snap.json`,
+      pattern: '',
+    })),
   ];
 
   const copyTargetsDev = [

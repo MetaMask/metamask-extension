@@ -47,6 +47,7 @@ import {
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -77,6 +78,7 @@ import rawFirstTimeState from './first-time-state';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import { PREINSTALLED_SNAPS } from './snaps/preinstalled-snaps';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -500,6 +502,8 @@ async function initialize() {
         }
       : {};
 
+    const preinstalledSnaps = await loadPreinstalledSnaps();
+
     setupController(
       initState,
       initLangCode,
@@ -507,6 +511,7 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
+      preinstalledSnaps,
     );
 
     // `setupController` sets up the `controller` object, so we can use it now:
@@ -522,6 +527,18 @@ async function initialize() {
   } catch (error) {
     rejectInitialization(error);
   }
+}
+
+async function loadPreinstalledSnaps() {
+  const fetchWithTimeout = getFetchWithTimeout();
+  const promises = PREINSTALLED_SNAPS.map(async (snap) => {
+    const response = await fetchWithTimeout(
+      `../preinstalled-snaps/${snap}/preinstalled-snap.json`,
+    );
+    return await response.json();
+  });
+
+  return Promise.all(promises);
 }
 
 /**
@@ -777,6 +794,7 @@ function trackAppOpened(environment) {
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
+ * @param preinstalledSnaps
  */
 export function setupController(
   initState,
@@ -785,6 +803,7 @@ export function setupController(
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
+  preinstalledSnaps,
 ) {
   //
   // MetaMask Controller
@@ -813,6 +832,7 @@ export function setupController(
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
+    preinstalledSnaps,
   });
 
   setupEnsIpfsResolver({

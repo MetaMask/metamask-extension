@@ -7,7 +7,6 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   SnapControllerInitMessenger,
@@ -37,6 +36,7 @@ export const SnapControllerInit: ControllerInitFunction<
   controllerMessenger,
   persistedState,
   removeAllConnections,
+  preinstalledSnaps,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
@@ -109,7 +109,7 @@ export const SnapControllerInit: ControllerInitFunction<
     // @ts-expect-error: `PREINSTALLED_SNAPS` is readonly, but the controller
     // expects a mutable array.
     // TODO: Update the controller to accept a readonly array.
-    preinstalledSnaps: PREINSTALLED_SNAPS,
+    preinstalledSnaps,
     getFeatureFlags,
   });
 
