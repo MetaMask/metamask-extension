@@ -236,7 +236,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     defaultAccountsAddresses,
   );
 
-  // TODO accounts should be CaipAccountId[] now
   const onConfirm = () => {
     const _request = {
       ...request,
@@ -245,6 +244,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ...generateCaip25Caveat(
           requestedCaip25CaveatValue,
           selectedAccountAddresses,
+          // TODO chainIds should be CaipChainId[] now
           selectedChainIds,
         ),
       },
