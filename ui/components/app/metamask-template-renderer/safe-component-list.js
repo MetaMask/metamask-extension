@@ -50,6 +50,7 @@ import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -109,6 +110,7 @@ export const safeComponentList = {
   SnapUIRadioGroup,
   SnapUISelector,
   SnapUITooltip,
+  SnapUIAssetSelector,
   span: 'span',
   Spinner,
   Skeleton,
