@@ -54,7 +54,6 @@ export const SnapUIAddressInput: FunctionComponent<
 
   const initialValue = getValue(name, form) as string;
 
-
   const [value, setValue] = useState(
     initialValue
       ? parseCaipAccountId(initialValue as CaipAccountId).address
@@ -90,7 +89,9 @@ export const SnapUIAddressInput: FunctionComponent<
       setMatchedAddressName(matchedName);
     }
 
-    const newValue = event.target.value ? `${chainId}:${event.target.value}` : null;
+    const newValue = event.target.value
+      ? `${chainId}:${event.target.value}`
+      : null;
 
     handleInputChange(name, newValue, form);
   };
