@@ -41,5 +41,5 @@ export const CASH_SLIDE = {
 
 export const ZERO_BALANCE = '0x00';
 
-export const SWEEPSTAKES_START = new Date('2025-03-25T00:00:00Z');
+export const SWEEPSTAKES_START = new Date('2025-04-09T00:00:00Z');
 export const SWEEPSTAKES_END = new Date('2025-04-15T23:59:59Z');
