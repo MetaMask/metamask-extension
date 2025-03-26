@@ -226,12 +226,13 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
-    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@keystonehq/metamask-airgapped-keyring@npm:^0.14.1": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch"
+    "@keystonehq/metamask-airgapped-keyring@npm:^0.14.1": "npm:@dawnseeker8/metamask-airgapped-keyring@0.15.0-preview",
+    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
     "@blockaid/ppom_release": "^1.5.3",
+    "@dawnseeker8/metamask-airgapped-keyring": "0.15.0-preview",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@ethersproject/abi": "^5.6.4",
@@ -243,8 +244,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@ethersproject/wallet": "^5.7.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@keystonehq/bc-ur-registry-eth": "^0.19.1",
-    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch",
+    "@keystonehq/bc-ur-registry-eth": "^0.21.0",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.3",
     "@material-ui/core": "^4.11.0",
@@ -710,7 +710,6 @@
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>es5-ext": false,
       "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>utf-8-validate": false,
       "web3>web3-shh": false,
-      "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>hdkey>secp256k1": false,
       "@metamask/base-controller>simple-git-hooks": false,
       "@storybook/core>@storybook/core-server>webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
       "resolve-url-loader>es6-iterator>es5-ext": false,
