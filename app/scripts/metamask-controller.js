@@ -2968,8 +2968,6 @@ export default class MetamaskController extends EventEmitter {
               account.type === 'solana:data-account' &&
               account.address !== lastSelectedSolanaAccountAddress
             ) {
-              lastSelectedSolanaAccountAddress = account.address;
-
               const originsWithSolanaAccountChangedNotifications =
                 getOriginsWithSessionProperty(
                   this.permissionController.state,
@@ -2995,6 +2993,7 @@ export default class MetamaskController extends EventEmitter {
                   parsedSolanaAddresses.includes(account.address) &&
                   originsWithSolanaAccountChangedNotifications[origin]
                 ) {
+                  lastSelectedSolanaAccountAddress = account.address;
                   this._notifySolanaAccountChange(origin, account.address);
                 }
               }
