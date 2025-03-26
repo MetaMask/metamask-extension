@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,
@@ -27,16 +27,17 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 type Network = {
   name: string;
   chainId: string;
+  caipChainId: CaipChainId;
 };
 
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
   accounts: MergedInternalAccount[];
-  onSelectAccountAddresses: (addresses: string[]) => void;
-  onSelectChainIds: (chainIds: Hex[]) => void;
-  selectedAccountAddresses: string[];
-  selectedChainIds: string[];
+  onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
+  onSelectChainIds: (chainIds: CaipChainId[]) => void;
+  selectedAccountAddresses: CaipAccountId[];
+  selectedChainIds: CaipChainId[];
   isConnectFlow?: boolean;
   hideAllToasts?: () => void;
 };
@@ -64,8 +65,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       isEqualCaseInsensitive(selectedAccountAddress, address),
     ),
   );
-  const selectedNetworks = allNetworks.filter(({ chainId }) =>
-    selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
+    selectedChainIds.includes(caipChainId),
   );
 
   const selectedChainIdsLength = selectedChainIds.length;
@@ -86,11 +87,11 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
   const networkMessageConnectedState =
     selectedChainIdsLength === 1
-      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
+      ? t('connectedWithNetworkName', [selectedNetworks[0]?.name])
       : t('connectedWithNetwork', [selectedChainIdsLength]);
   const networkMessageNotConnectedState =
     selectedChainIdsLength === 1
-      ? t('requestingForNetwork', [selectedNetworks[0].name])
+      ? t('requestingForNetwork', [selectedNetworks[0]?.name])
       : t('requestingFor');
 
   const handleOpenAccountsModal = () => {

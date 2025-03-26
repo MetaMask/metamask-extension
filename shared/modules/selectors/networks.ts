@@ -6,6 +6,8 @@ import {
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
 import { createDeepEqualSelector } from './util';
+import { parseCaipChainId } from '@metamask/utils';
+import { hexToDecimal } from '../conversion.utils';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -43,6 +45,60 @@ export function getSelectedNetworkClientId(
 ) {
   return state.metamask.selectedNetworkClientId;
 }
+/**
+ * Type to extend InternalNetworkState with multichain configurations.
+ */
+type ExtendedInternalNetworkState = InternalNetworkState & {
+  multichainNetworkConfigurationsByChainId: Record<
+    string,
+    NetworkConfiguration
+  >;
+};
+
+/**
+ * State type that includes both standard and multichain network configurations.
+ */
+export type ConsolidatedNetworkConfigurationsState = {
+  metamask: Pick<
+    ExtendedInternalNetworkState,
+    | 'networkConfigurationsByChainId'
+    | 'multichainNetworkConfigurationsByChainId'
+  >;
+};
+
+/**
+ * Combines and returns network configurations from both, EVM and multichain sources.
+ *
+ * @param state - Redux state.
+ * @returns A consolidated object containing all available network configurations.
+ */
+export const getConsolidatedNetworkConfigurations = createDeepEqualSelector(
+  (state: ConsolidatedNetworkConfigurationsState) =>
+    state.metamask.networkConfigurationsByChainId,
+  (state: ConsolidatedNetworkConfigurationsState) =>
+    state.metamask.multichainNetworkConfigurationsByChainId,
+  (
+    networkConfigurationsByChainId,
+    multichainNetworkConfigurationsByChainId,
+  ) => {
+    const caipFormattedEvmNetworkConfigurations: Record<
+      string,
+      NetworkConfiguration
+    > = {};
+
+    Object.entries(networkConfigurationsByChainId).forEach(
+      ([chainId, network]) => {
+        const caipChainId = `eip155:${hexToDecimal(chainId)}`;
+        caipFormattedEvmNetworkConfigurations[caipChainId] = network;
+      },
+    );
+
+    return {
+      ...caipFormattedEvmNetworkConfigurations,
+      ...multichainNetworkConfigurationsByChainId,
+    };
+  },
+);
 
 /**
  * Get the provider configuration for the current selected network.
