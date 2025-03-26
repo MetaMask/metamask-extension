@@ -27,7 +27,7 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
-  const { gasFeeTokens } = transactionMeta;
+  const { gasFeeTokens } = transactionMeta ?? {};
 
   let gasFeeToken = gasFeeTokens?.find(
     (token) => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase(),
@@ -66,7 +66,7 @@ export function useSelectedGasFeeToken() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { selectedGasFeeToken } = transactionMeta;
+  const { selectedGasFeeToken } = transactionMeta ?? {};
 
   return useGasFeeToken({ tokenAddress: selectedGasFeeToken ?? '0x' });
 }
@@ -75,7 +75,7 @@ function useNativeGasFeeToken(): GasFeeToken {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { id: transactionId, txParams } = transactionMeta;
+  const { id: transactionId, txParams } = transactionMeta ?? {};
 
   const { estimatedFeeNativeHex } = useFeeCalculations(
     transactionMeta?.txParams
@@ -84,14 +84,14 @@ function useNativeGasFeeToken(): GasFeeToken {
   );
 
   const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, transactionMeta.chainId),
+    selectNetworkConfigurationByChainId(state, transactionMeta?.chainId),
   );
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
   );
 
-  const { nativeCurrency } = networkConfiguration;
+  const { nativeCurrency } = networkConfiguration ?? {};
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
   return {
