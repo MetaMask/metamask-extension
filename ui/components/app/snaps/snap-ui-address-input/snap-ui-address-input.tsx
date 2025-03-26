@@ -59,9 +59,6 @@ export const SnapUIAddressInput: FunctionComponent<
       ? parseCaipAccountId(initialValue as CaipAccountId).address
       : '',
   );
-  const [matchedAddressName, setMatchedAddressName] = useState<string | null>(
-    null,
-  );
 
   const displayName = useDisplayName({
     address: value,
@@ -82,14 +79,6 @@ export const SnapUIAddressInput: FunctionComponent<
     }
   }, [inputRef]);
 
-  useEffect(() => {
-    if (displayName) {
-      setMatchedAddressName(displayName);
-    } else {
-      setMatchedAddressName(null);
-    }
-  }, [displayName]);
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
 
@@ -105,7 +94,6 @@ export const SnapUIAddressInput: FunctionComponent<
 
   const handleClear = () => {
     setValue('');
-    setMatchedAddressName(null);
   };
 
   const MatchedAccountInfo = () => {
@@ -148,7 +136,7 @@ export const SnapUIAddressInput: FunctionComponent<
                 flex: 1,
               }}
             >
-              <Text fontWeight={FontWeight.Medium}>{matchedAddressName}</Text>
+              <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
               <Text variant={TextVariant.bodyXs} ellipsis>
                 {value}
               </Text>
@@ -168,7 +156,7 @@ export const SnapUIAddressInput: FunctionComponent<
     );
   };
 
-  if (matchedAddressName) {
+  if (displayName) {
     return <MatchedAccountInfo />;
   }
 
