@@ -42,11 +42,12 @@ export type SnapUIAddressInputProps = {
   form?: string;
   label?: string;
   chainId: CaipChainId;
+  displayAvatar?: boolean;
 };
 
 export const SnapUIAddressInput: FunctionComponent<
   SnapUIAddressInputProps & FormTextFieldProps<'div'>
-> = ({ name, form, label, chainId, error, ...props }) => {
+> = ({ name, form, label, chainId, displayAvatar, error, ...props }) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
@@ -94,6 +95,7 @@ export const SnapUIAddressInput: FunctionComponent<
 
   const handleClear = () => {
     setValue('');
+    handleInputChange(name, null, form);
   };
 
   const MatchedAccountInfo = () => {
@@ -136,7 +138,9 @@ export const SnapUIAddressInput: FunctionComponent<
                 flex: 1,
               }}
             >
-              <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+              {displayName && (
+                <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+              )}
               <Text variant={TextVariant.bodyXs} ellipsis>
                 {value}
               </Text>
@@ -156,7 +160,7 @@ export const SnapUIAddressInput: FunctionComponent<
     );
   };
 
-  if (displayName) {
+  if (displayName || displayAvatar) {
     return <MatchedAccountInfo />;
   }
 

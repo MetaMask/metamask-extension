@@ -818,4 +818,25 @@ describe('SnapUIRenderer', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('will render matched address info when displayAvatar is true', () => {
+    const testAddress = '0xabcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+    const { container, getByText } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          displayAvatar: true,
+        }),
+      }),
+      { state: { input: `eip155:0:${testAddress}` } },
+    );
+
+    const matchedAddress = getByText(testAddress);
+    expect(matchedAddress).toBeDefined();
+    const avatar = container.querySelector('svg');
+    expect(avatar).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
 });

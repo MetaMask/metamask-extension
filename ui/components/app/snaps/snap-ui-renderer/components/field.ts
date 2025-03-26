@@ -38,6 +38,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           name: addressInput.props.name,
           placeholder: addressInput.props.placeholder,
           chainId: addressInput.props.chainId,
+          displayAvatar: addressInput.props.displayAvatar,
           label: element.props.label,
           form,
           error: element.props.error,
