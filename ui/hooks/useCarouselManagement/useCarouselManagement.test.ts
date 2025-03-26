@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide, updateSlides } from '../../store/actions';
+import { CarouselSlide } from '../../../shared/constants/app-state';
 import {
   useCarouselManagement,
   getSweepstakesCampaignActive,
@@ -14,7 +15,6 @@ import {
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
 } from './constants';
-import { CarouselSlide } from '../../../shared/constants/app-state';
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),

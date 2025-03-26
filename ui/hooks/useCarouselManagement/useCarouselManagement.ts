@@ -15,10 +15,10 @@ import {
   SWEEPSTAKES_END,
 } from './constants';
 
-interface UseSlideManagementProps {
+type UseSlideManagementProps = {
   hasZeroBalance: boolean;
   testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
-}
+};
 
 export function getSweepstakesCampaignActive(currentDate: Date) {
   return currentDate >= SWEEPSTAKES_START && currentDate <= SWEEPSTAKES_END;
