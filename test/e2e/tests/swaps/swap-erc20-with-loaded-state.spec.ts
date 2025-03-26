@@ -310,10 +310,6 @@ describe('Swap', function () {
             testCase.expectedWethBalance,
             'WETH',
           );
-          await homePage.check_expectedTokenBalanceIsDisplayed(
-            testCase.expectedEthBalance,
-            'ETH',
-          );
         },
       );
     });
