@@ -1677,10 +1677,10 @@ export default class MetamaskController extends EventEmitter {
       clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, ...requestOptions }) =>
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
         await fetchWithCache({
           url,
-          fetchOptions: { method: 'GET', headers },
+          fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
       config: {
