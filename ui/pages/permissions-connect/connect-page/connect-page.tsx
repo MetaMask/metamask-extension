@@ -12,6 +12,7 @@ import {
   CaipChainId,
   CaipNamespace,
   CaipReference,
+  KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
 
@@ -211,6 +212,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       address: account.address,
       namespace,
       reference,
+      caipAccountId:
+        `${namespace}:${reference}:${account.address}` as CaipAccountId,
     };
   });
 
@@ -248,6 +251,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       address: CaipAccountAddress;
       namespace: CaipNamespace;
       reference: CaipReference;
+      caipAccountId: CaipAccountId;
     }[],
   );
 
@@ -305,8 +309,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultCaip10AccountAddresses = defaultAccounts.map(
-    ({ address, namespace, reference }) =>
-      `${namespace}:${reference}:${address}` as CaipAccountId,
+    ({ address, namespace, reference }) => {
+      if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
+        // this is very hacky, but it works for now
+        return `${namespace}:1:${address}` as CaipAccountId;
+      }
+      return `${namespace}:${reference}:${address}` as CaipAccountId;
+    },
   );
 
   const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
@@ -328,19 +337,19 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     approveConnection(_request);
   };
 
-  const selectedAccounts = defaultAccounts.filter(
-    (
-      account,
-    ): account is {
-      internalAccount: MergedInternalAccount;
-      address: CaipAccountAddress;
-      namespace: CaipNamespace;
-      reference: CaipReference;
-    } =>
-      selectedCaip10AccountAddresses.some((selectedCaip10AccountAddress) =>
-        isEqualCaseInsensitive(selectedCaip10AccountAddress, account.address),
-      ),
-  );
+  // const defaultAccounts = defaultAccounts.filter(
+  //   (
+  //     account,
+  //   ): account is {
+  //     internalAccount: MergedInternalAccount;
+  //     address: CaipAccountAddress;
+  //     namespace: CaipNamespace;
+  //     reference: CaipReference;
+  //   } =>
+  //     selectedCaip10AccountAddresses.some((selectedCaip10AccountAddress) =>
+  //       isEqualCaseInsensitive(selectedCaip10AccountAddress, account.address),
+  //     ),
+  // );
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
 
@@ -455,14 +464,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   scrollbarColor: 'var(--color-icon-muted) transparent',
                 }}
               >
-                {selectedAccounts.map((account) => (
+                {defaultAccounts.map((account) => (
                   <AccountListItem
                     account={account.internalAccount}
                     key={account.address}
                     selected={false}
                   />
                 ))}
-                {selectedAccounts.length === 0 && (
+                {defaultAccounts.length === 0 && (
                   <Box
                     className="connect-page__accounts-empty"
                     display={Display.Flex}
@@ -479,7 +488,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   </Box>
                 )}
               </Box>
-              {selectedAccounts.length > 0 && (
+              {defaultAccounts.length > 0 && (
                 <Box
                   marginTop={4}
                   display={Display.Flex}
@@ -495,9 +504,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               )}
               {showEditAccountsModal && (
                 <EditAccountsModal
-                  accounts={defaultAccounts.map(
-                    ({ internalAccount }) => internalAccount,
-                  )}
+                  accounts={defaultAccounts}
                   defaultSelectedAccountAddresses={
                     selectedCaip10AccountAddresses
                   }

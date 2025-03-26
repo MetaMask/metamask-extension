@@ -4,6 +4,7 @@ import {
   CaipReference,
   Hex,
   parseCaipAccountId,
+  CaipAccountId,
 } from '@metamask/utils';
 import {
   Caip25CaveatType,
@@ -92,6 +93,7 @@ export function getFilteredAccounts(
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
+    caipAccountId: CaipAccountId;
   }[],
   requestedNamespaces: CaipNamespace[],
 ): {
@@ -99,6 +101,7 @@ export function getFilteredAccounts(
   address: CaipAccountAddress;
   namespace: CaipNamespace;
   reference: CaipReference;
+  caipAccountId: CaipAccountId;
 }[] {
   const filteredAccounts = accounts.filter((account) => {
     return requestedNamespaces.includes(account.namespace);
@@ -257,6 +260,7 @@ export function getAllRequestedAccounts(
       address: parseCaipAccountId(account).address,
       namespace: parseCaipAccountId(account).chain.namespace,
       reference: parseCaipAccountId(account).chain.reference,
+      fullCaipAccountId: account,
     }));
 
   const optionalAccounts = Object.values(
@@ -267,6 +271,7 @@ export function getAllRequestedAccounts(
       address: parseCaipAccountId(account).address,
       namespace: parseCaipAccountId(account).chain.namespace,
       reference: parseCaipAccountId(account).chain.reference,
+      fullCaipAccountId: account,
     }));
 
   return [...requiredAccounts, ...optionalAccounts];
@@ -359,24 +364,28 @@ export function getDefaultAccounts(
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
+    caipAccountId: CaipAccountId;
   }[],
   allAccounts: {
     internalAccount: MergedInternalAccount;
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
+    caipAccountId: CaipAccountId;
   }[],
 ): {
   internalAccount: MergedInternalAccount;
   address: CaipAccountAddress;
   namespace: CaipNamespace;
   reference: CaipReference;
+  caipAccountId: CaipAccountId;
 }[] {
   const defaultAccounts: {
     internalAccount: MergedInternalAccount;
     address: CaipAccountAddress;
     namespace: CaipNamespace;
     reference: CaipReference;
+    caipAccountId: CaipAccountId;
   }[] = [];
 
   supportedRequestedAccounts.forEach((account) => {
