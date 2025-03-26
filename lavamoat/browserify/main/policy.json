@@ -1739,7 +1739,6 @@
     },
     "@metamask/keyring-controller": {
       "globals": {
-        "console.error": true,
         "console.log": true
       },
       "packages": {
@@ -2001,6 +2000,18 @@
       }
     },
     "@metamask/assets-controllers>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2428,7 +2439,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
