@@ -304,6 +304,7 @@ describe('Swap', function () {
           if (testCase.dismissWarning) {
             await swapPage.dismissManualTokenWarning();
           }
+          await driver.delay(1500);
           await swapPage.submitSwap();
 
           await homePage.check_expectedTokenBalanceIsDisplayed(

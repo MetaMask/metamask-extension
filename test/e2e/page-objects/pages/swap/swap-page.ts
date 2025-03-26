@@ -69,6 +69,7 @@ class SwapPage {
   async submitSwap(): Promise<void> {
     console.log('Submit Swap');
     await this.driver.clickElement(this.swapButton);
+    await this.driver.delay(1500);
     // console.log('Processing Swap');
     // await this.swapProcessingMessageCheck('Processing');
     console.log('Swap Transaction complete');
