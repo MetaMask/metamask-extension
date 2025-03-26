@@ -1,6 +1,6 @@
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
-import { useIsMultichainSwap } from './useIsMultichainSwap';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { useIsMultichainSwap } from './useIsMultichainSwap';
 
 jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
