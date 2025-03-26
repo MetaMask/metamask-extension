@@ -89,6 +89,42 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
       [pendingPermitId]: pendingApproval,
     },
     pendingApprovalCount: 1,
+    names: {
+      ethereumAddress: {
+        '0x60e4d786628fea6478f785a6d7e704777c86a7c6': {
+          '*': {
+            name: 'MutantApeYachtClub',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+          '*': {
+            name: 'USDC',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
+          '*': {
+            name: 'Wrapped Ether',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+        '0x8a90cab2b38dba80c64b7734e58ee1db38b8992e': {
+          '*': {
+            name: 'Doodles',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+      },
+    },
   };
 };
 

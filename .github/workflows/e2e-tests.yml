@@ -50,11 +50,17 @@ jobs:
           name: changed-files
           path: ./changed-files/
 
-  chrome-tests:
+  test-e2e-chrome:
     needs:
       - needs-e2e
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
+
+  test-e2e-firefox:
+    needs:
+      - needs-e2e
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
+    uses: ./.github/workflows/e2e-firefox.yml
 
   run-e2e-pom-validation:
     needs:
