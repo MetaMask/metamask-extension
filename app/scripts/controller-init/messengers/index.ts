@@ -29,6 +29,10 @@ import {
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
 } from './identity';
+import {
+  getNotificationServicesControllerMessenger,
+  getNotificationServicesPushControllerMessenger,
+} from './notifications';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -61,6 +65,15 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainNetworkController: {
     getMessenger: getMultichainNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NotificationServicesController: {
+    getMessenger: getNotificationServicesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NotificationServicesPushController: {
+    getMessenger: getNotificationServicesPushControllerMessenger,
+    getInitMessenger: noop,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
