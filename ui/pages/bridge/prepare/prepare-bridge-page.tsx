@@ -339,6 +339,7 @@ const PrepareBridgePage = () => {
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
+      providerConfig?.rpcUrl,
     ],
   );
 
