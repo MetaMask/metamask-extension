@@ -51,8 +51,8 @@ export const SnapUIAddressInput: FunctionComponent<
     useSnapInterfaceContext();
 
   const inputRef = useRef<HTMLDivElement>(null);
-
   const initialValue = getValue(name, form) as string;
+  const { namespace, reference } = parseCaipChainId(chainId);
 
   const [value, setValue] = useState(
     initialValue
@@ -63,7 +63,14 @@ export const SnapUIAddressInput: FunctionComponent<
     null,
   );
 
-  const { namespace, reference } = parseCaipChainId(chainId);
+  const displayName = useDisplayName({
+    address: value,
+    chain: {
+      namespace,
+      reference,
+    },
+    chainId,
+  });
 
   /*
    * Focus input if the last focused input was this input
@@ -75,21 +82,16 @@ export const SnapUIAddressInput: FunctionComponent<
     }
   }, [inputRef]);
 
+  useEffect(() => {
+    if (displayName) {
+      setMatchedAddressName(displayName);
+    } else {
+      setMatchedAddressName(null);
+    }
+  }, [displayName]);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
-
-    const matchedName = useDisplayName({
-      address: event.target.value,
-      chain: {
-        namespace,
-        reference,
-      },
-      chainId,
-    });
-
-    if (matchedName) {
-      setMatchedAddressName(matchedName);
-    }
 
     const newValue = event.target.value
       ? `${chainId}:${event.target.value}`
@@ -128,7 +130,7 @@ export const SnapUIAddressInput: FunctionComponent<
             height: '48px',
           }}
         >
-          <SnapUIAvatar address={value} size="sm" />
+          <SnapUIAvatar address={`${chainId}:${value}`} size="sm" />
           <Box
             display={Display.Flex}
             alignItems={AlignItems.center}
