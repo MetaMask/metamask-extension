@@ -90,6 +90,7 @@ export function PendingApproval({ children, requestData, state, type }) {
           style={{
             display: 'flex',
             height: '100%',
+            flexDirection: 'column',
           }}
         >
           {children}

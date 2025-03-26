@@ -304,9 +304,16 @@ export default function ConfirmationPage({
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
     isSnapCustomUIDialog ||
+    // checking pendingConfirmation?.requestData?.header?.[0] based on storybook test data. I'm unsure of the data structure here.
+    // I found the same key in pendingConfirmation?.requestData?.message?.key on the local, non-storybook build.
+    pendingConfirmation?.requestData?.header?.[0]?.key ===
+      SNAP_MSG_KEY_RESULT_SUCCESS ||
+    pendingConfirmation?.requestData?.header?.[0]?.key ===
+      SNAP_ERROR_KEY_RESULT ||
     pendingConfirmation?.requestData?.message?.key ===
       SNAP_MSG_KEY_RESULT_SUCCESS ||
     pendingConfirmation?.requestData?.error?.key === SNAP_ERROR_KEY_RESULT;
+
   const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
 
   // Generating templatedValues is potentially expensive, and if done on every render

@@ -108,6 +108,7 @@ export const TemplateStory = () => {
                 borderRadius: '10px',
                 boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
               },
+              key: 'snapAccountSuccessMessage',
             },
             children: [
               {
