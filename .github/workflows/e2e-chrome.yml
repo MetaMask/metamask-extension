@@ -99,3 +99,5 @@ jobs:
           fail-on-error: false # soft launch
           list-suites: 'failed'
           list-tests: 'failed'
+          only-summary: 'false'
+          use-actions-summary: 'true'
