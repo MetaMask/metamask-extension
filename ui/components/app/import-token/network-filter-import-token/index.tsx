@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TextVariant,
@@ -58,10 +58,17 @@ export const NetworkFilterImportToken = ({
   const currentNetworkImageUrl = getImageForChainId(currentNetwork?.chainId);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
-  });
+  const allOpts = useMemo(
+    () =>
+      Object.keys(allNetworks || {}).reduce<Record<string, boolean>>(
+        (acc, chain) => {
+          acc[chain] = true;
+          return acc;
+        },
+        {},
+      ),
+    [allNetworks],
+  );
 
   const isCurrentNetwork = networkFilter
     ? Object.keys(networkFilter).length === 1 &&

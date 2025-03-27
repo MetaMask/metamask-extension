@@ -112,6 +112,7 @@ const NetworkFilter = ({
   ).map((chain) => {
     return allNetworks[chain].name;
   });
+  const filter = networkFilter || tokenNetworkFilter;
 
   return (
     <>
@@ -184,12 +185,7 @@ const NetworkFilter = ({
         </Box>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={
-          networkFilter
-            ? Object.keys(networkFilter).length === 1 && networkFilter[chainId]
-            : Object.keys(tokenNetworkFilter).length === 1 &&
-              tokenNetworkFilter[chainId]
-        }
+        isSelected={Object.keys(filter).length === 1 && filter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"
       >
