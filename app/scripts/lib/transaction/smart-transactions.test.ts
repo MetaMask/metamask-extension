@@ -676,7 +676,6 @@ describe('submitBatchSmartTransactionHook', () => {
               id: '1',
               signedTx: '0x1234',
               params: {
-                from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
                 to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
                 value: '0x0',
               },
@@ -685,7 +684,6 @@ describe('submitBatchSmartTransactionHook', () => {
               id: '2',
               signedTx: '0x5678',
               params: {
-                from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
                 to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
                 value: '0x0',
               },

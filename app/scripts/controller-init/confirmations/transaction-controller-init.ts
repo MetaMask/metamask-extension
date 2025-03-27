@@ -1,6 +1,7 @@
 import {
   CHAIN_IDS,
   type PublishBatchHookRequest,
+  type PublishBatchHookTransaction,
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
@@ -19,7 +20,6 @@ import {
   SmartTransactionHookMessenger,
   submitSmartTransactionHook,
   submitBatchSmartTransactionHook,
-  type SignedTransaction,
 } from '../../lib/transaction/smart-transactions';
 import { getTransactionById } from '../../lib/transaction/util';
 import { trace } from '../../../../shared/lib/trace';
@@ -164,7 +164,7 @@ export const TransactionControllerInit: ControllerInitFunction<
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
           flatState: getFlatState(),
-          transactions: _request.transactions as SignedTransaction[],
+          transactions: _request.transactions as PublishBatchHookTransaction[],
         }),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
@@ -271,7 +271,7 @@ function publishBatchSmartTransactionHook({
   smartTransactionsController: SmartTransactionsController;
   hookControllerMessenger: SmartTransactionHookMessenger;
   flatState: ControllerFlatState;
-  transactions: SignedTransaction[];
+  transactions: PublishBatchHookTransaction[];
 }) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
   // Ideally all backend logic would instead rely on messenger event / state subscriptions.
@@ -291,7 +291,7 @@ function publishBatchSmartTransactionHook({
   // Get transactionMeta based on the last transaction ID
   const lastTransaction = transactions[transactions.length - 1];
   const transactionMeta = getTransactionById(
-    lastTransaction.id,
+    lastTransaction.id ?? '',
     transactionController,
   );
 

@@ -13,6 +13,7 @@ import {
   TransactionMeta,
   TransactionParams,
   TransactionType,
+  type PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import { RestrictedMessenger } from '@metamask/base-controller';
@@ -60,12 +61,6 @@ export type FeatureFlags = {
   };
 };
 
-export type SignedTransaction = {
-  id: string;
-  params: TransactionParams;
-  signedTx: Hex;
-};
-
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
   signedTransactionInHex?: string;
@@ -74,7 +69,7 @@ export type SubmitSmartTransactionRequest = {
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
-  transactions?: SignedTransaction[];
+  transactions?: PublishBatchHookTransaction[];
 };
 
 class SmartTransactionHook {
@@ -111,7 +106,7 @@ class SmartTransactionHook {
 
   #signedTransactionInHex?: string;
 
-  #transactions?: SignedTransaction[];
+  #transactions?: PublishBatchHookTransaction[];
 
   #txParams: TransactionParams;
 
