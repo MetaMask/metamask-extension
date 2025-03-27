@@ -1732,9 +1732,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dawnseeker8/metamask-airgapped-keyring@npm:0.15.0-preview, @keystonehq/metamask-airgapped-keyring@npm:@dawnseeker8/metamask-airgapped-keyring@0.15.0-preview":
-  version: 0.15.0-preview
-  resolution: "@dawnseeker8/metamask-airgapped-keyring@npm:0.15.0-preview"
+"@dawnseeker8/metamask-airgapped-keyring@npm:0.15.2, @keystonehq/metamask-airgapped-keyring@npm:@dawnseeker8/metamask-airgapped-keyring@0.15.2":
+  version: 0.15.2
+  resolution: "@dawnseeker8/metamask-airgapped-keyring@npm:0.15.2"
   dependencies:
     "@ethereumjs/rlp": "npm:^4.0.1"
     "@ethereumjs/tx": "npm:5.1.0"
@@ -1744,7 +1744,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     rlp: "npm:^2.2.6"
     uuid: "npm:^8.3.2"
-  checksum: 10/8e1038b617d17ea6851a30c421a2f4828092a44e0e538b6c8fdd339982b26bfcdb447f257aeb7447c49f16df7248efa6b9030da8e18ead411104c0ecf8daaf1e
+  checksum: 10/505ea9ded8048083d61a8de98d6ef60bf7594f4f764009bb97e863cef503fb751d801a76be07367a26bff459e1635abfc15f6e9107ef1bc24b9972074ea5b5cb
   languageName: node
   linkType: hard
 
@@ -27137,7 +27137,7 @@ __metadata:
     "@babel/register": "npm:^7.25.9"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch"
     "@blockaid/ppom_release": "npm:^1.5.3"
-    "@dawnseeker8/metamask-airgapped-keyring": "npm:0.15.0-preview"
+    "@dawnseeker8/metamask-airgapped-keyring": "npm:0.15.2"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
     "@ethersproject/abi": "npm:^5.6.4"
