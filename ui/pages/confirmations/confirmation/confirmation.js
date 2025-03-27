@@ -310,6 +310,7 @@ export default function ConfirmationPage({
   const hasHeader =
     isSnapCustomUIDialog ||
     pendingConfirmation?.key === 'snapHeader' ||
+    pendingConfirmationHeaderKey === 'snapHeader' ||
     // checking pendingConfirmationHeaderKey based on storybook test data. I'm unsure of the data structure here.
     // I found the same key value in pendingConfirmationMessageKey on the local, non-storybook build.
     pendingConfirmationHeaderKey === SNAP_MSG_KEY_RESULT_SUCCESS ||
