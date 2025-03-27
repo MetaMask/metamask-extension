@@ -185,6 +185,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -199,6 +200,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportFailed,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
           reason: 'bad password',
         },
       });
@@ -218,6 +220,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -232,6 +235,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRevealed,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
@@ -304,6 +308,7 @@ describe('Reveal Seed Page', () => {
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
           copy_method: 'clipboard',
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -312,6 +317,7 @@ describe('Reveal Seed Page', () => {
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
           copy_method: 'clipboard',
+          hd_entropy_index: 0,
         },
       });
     });
@@ -351,6 +357,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportCanceled,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -358,6 +365,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.SrpRevealCancelled,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
     });

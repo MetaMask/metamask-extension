@@ -94,6 +94,7 @@ describe('Import Wallet Events', () => {
           properties: {
             method: FirstTimeFlowType.import,
             is_profile_syncing_enabled: true,
+            hd_entropy_index: 0,
           },
         }),
       ]),

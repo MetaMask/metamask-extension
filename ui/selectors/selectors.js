@@ -545,6 +545,18 @@ export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
 }
 
+export function getHDEntropyIndex(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+    keyring.accounts.includes(selectedAddress),
+  );
+  return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
+}
+
 /**
  * Get account balances state.
  *
@@ -2880,6 +2892,18 @@ export function getIsCustomNetwork(state) {
   return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
 }
 
+/**
+ * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * This flag determines whether the user should see a `Discover` button on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ */
+export function getIsPortfolioDiscoverButtonEnabled(state) {
+  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
+  return Boolean(nePortfolioDiscoverButton);
+}
+
 export function getBlockExplorerLinkText(
   state,
   accountDetailsModalComponent = false,
@@ -2922,33 +2946,6 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   const hasNoTokens = getNumberOfTokens(state) === 0;
 
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
-}
-
-export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
-    state.metamask;
-
-  const [primaryKeyring] = getMetaMaskHdKeyrings(state);
-
-  if (!isUnlocked || !primaryKeyring) {
-    return false;
-  }
-
-  const selectedAccount = getSelectedInternalAccount(state);
-  // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
-
-  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
-    selectedAccount.address.toLowerCase(),
-  );
-
-  const showMessage =
-    isAccountFromPrimarySrp &&
-    seedPhraseBackedUp === false &&
-    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false;
-
-  return showMessage;
 }
 
 export function getUnconnectedAccounts(state, activeTab) {
