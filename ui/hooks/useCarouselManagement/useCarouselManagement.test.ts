@@ -254,15 +254,12 @@ describe('useCarouselManagement', () => {
         SWEEPSTAKES_START.getTime() + 1000,
       ).toISOString();
 
-      const { result, rerender } = renderHook(
-        (props) => useCarouselManagement(props),
-        {
-          initialProps: {
-            hasZeroBalance: false,
-            testDate,
-          },
+      const { rerender } = renderHook((props) => useCarouselManagement(props), {
+        initialProps: {
+          hasZeroBalance: false,
+          testDate,
         },
-      );
+      });
 
       let updatedSlides = mockUpdateSlides.mock.calls[0][0] as CarouselSlide[];
       expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
