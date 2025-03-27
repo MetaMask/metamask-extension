@@ -778,6 +778,7 @@ export const createBridgeMockStore = (
           },
         },
       },
+      slides: [],
       ...mockTokenData,
       ...metamaskStateOverrides,
       bridgeState: {
