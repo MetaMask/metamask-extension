@@ -135,8 +135,7 @@ export default function SnapInstall({
           overflowY: 'auto',
           flex: !isLoading && !hasError && '1',
         }}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
       >
         {isLoading && (
           <Box
