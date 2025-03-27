@@ -121,8 +121,7 @@ export default function SnapUpdate({
           overflowY: 'auto',
           flex: !isLoading && '1',
         }}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
       >
         {!isLoading && !hasError && (
           <Text
