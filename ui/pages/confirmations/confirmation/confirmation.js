@@ -544,7 +544,6 @@ export default function ConfirmationPage({
                   isSnapPrompt && pendingConfirmation?.requestData.placeholder
                 }
                 onCancel={handleSnapDialogCancel}
-                useFooter={isSnapDefaultDialog}
               />
             ) : (
               <MetaMaskTemplateRenderer sections={templatedValues.content} />

@@ -40,7 +40,6 @@ const SnapUIRendererComponent = ({
   onInputChange,
   placeholder,
   interfaceId,
-  useFooter = false,
   onCancel,
   contentBackgroundColor,
   PERF_DEBUG,
@@ -81,13 +80,12 @@ const SnapUIRendererComponent = ({
         map: {},
         element: content,
         onCancel,
-        useFooter,
         promptLegacyProps,
         t,
         contentBackgroundColor: backgroundColor,
         componentMap: COMPONENT_MAPPING,
       }),
-    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
+    [content, onCancel, promptLegacyProps, t, backgroundColor],
   );
 
   if (isLoading || !content) {
@@ -106,10 +104,6 @@ const SnapUIRendererComponent = ({
 
   const { state: initialState, context } = interfaceState;
 
-  // The renderer should only have a footer if there is a default cancel action
-  // or if the footer component has been used.
-  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
-
   return (
     <SnapInterfaceContextProvider
       snapId={snapId}
@@ -123,7 +117,6 @@ const SnapUIRendererComponent = ({
         backgroundColor={backgroundColor}
         style={{
           overflowY: 'auto',
-          marginBottom: useFooter && hasFooter ? '80px' : '0',
         }}
       >
         <MetaMaskTemplateRenderer sections={sections} />
@@ -147,7 +140,6 @@ SnapUIRendererComponent.propTypes = {
   onInputChange: PropTypes.func,
   placeholder: PropTypes.string,
   interfaceId: PropTypes.string,
-  useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
   PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
