@@ -151,6 +151,9 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
@@ -196,6 +199,9 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
