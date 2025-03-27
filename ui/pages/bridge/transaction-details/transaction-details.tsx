@@ -64,6 +64,7 @@ import {
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { MINUTE } from '../../../../shared/constants/time';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -142,11 +143,13 @@ export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
+  const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
       bridgeHistoryItem?.startTime &&
       Date.now() >
         bridgeHistoryItem.startTime +
+          tenMinutesInMs +
           bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };

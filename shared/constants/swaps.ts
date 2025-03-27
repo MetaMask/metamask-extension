@@ -323,3 +323,115 @@ export enum Slippage {
   default = 2,
   high = 3,
 }
+
+const ETH_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
+};
+
+const BSC_USDT_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDT,
+  name: 'Tether USD',
+  address: '0x55d398326f99059ff775485246999027b3197955',
+  decimals: 18,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/56/0x55d398326f99059ff775485246999027b3197955.png',
+};
+
+const POLYGON_USDT_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDT,
+  name: 'Tether USD',
+  address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/137/0xc2132d05d31c914a87c6611c10748aeb04b58e8f.png',
+};
+
+const ARBITRUM_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/42161/0xaf88d065e77c8cc2239327c5edb3a432268e5831.png',
+};
+
+const AVALANCHE_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/43114/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e.png',
+};
+
+const OPTIMISM_WETH_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.WETH,
+  name: 'Wrapped Ether',
+  address: '0x4200000000000000000000000000000000000006',
+  decimals: 18,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/10/0x4200000000000000000000000000000000000006.png',
+};
+
+const BASE_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/8453/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.png',
+};
+
+const LINEA_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/59144/0x176211869ca2b568f2a7d4ee941e073a821ee1ff.png',
+};
+
+const ZKSYNC_USDT_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDT,
+  name: 'USD Coin',
+  address: '0x493257fd37edb34451f62edf8d2a0c418852ba4c',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/324/0x493257fd37edb34451f62edf8d2a0c418852ba4c.png',
+};
+
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+const SOLANA_USDC_TOKEN_OBJECT = {
+  address:
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  name: 'USD Coin',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+};
+///: END:ONLY_INCLUDE_IF
+
+/**
+ * The most common token pair for each chain
+ * ex: for mainnet, the main token is ETH and the most common swap is USDC
+ */
+export const SWAPS_CHAINID_COMMON_TOKEN_PAIR = {
+  [CHAIN_IDS.MAINNET]: ETH_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.BSC]: BSC_USDT_TOKEN_OBJECT,
+  [CHAIN_IDS.POLYGON]: POLYGON_USDT_TOKEN_OBJECT,
+  [CHAIN_IDS.ARBITRUM]: ARBITRUM_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.AVALANCHE]: AVALANCHE_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.OPTIMISM]: OPTIMISM_WETH_TOKEN_OBJECT,
+  [CHAIN_IDS.BASE]: BASE_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.LINEA_MAINNET]: LINEA_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_USDT_TOKEN_OBJECT,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  [MultichainNetworks.SOLANA]: SOLANA_USDC_TOKEN_OBJECT,
+  ///: END:ONLY_INCLUDE_IF
+};

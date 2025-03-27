@@ -78,11 +78,11 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
 
         await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -258,8 +258,8 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);

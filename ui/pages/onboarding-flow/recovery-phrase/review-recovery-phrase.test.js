@@ -16,7 +16,27 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-const mockStore = configureMockStore()();
+const mockStore = configureMockStore()({
+  metamask: {
+    internalAccounts: {
+      accounts: {
+        accountId: {
+          address: '0x0000000000000000000000000000000000000000',
+          metadata: {
+            keyring: 'HD Key Tree',
+          },
+        },
+      },
+      selectedAccount: 'accountId',
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0x0000000000000000000000000000000000000000'],
+      },
+    ],
+  },
+});
 
 describe('Review Recovery Phrase Component', () => {
   const TEST_SEED =

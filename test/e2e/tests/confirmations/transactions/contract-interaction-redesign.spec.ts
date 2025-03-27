@@ -88,13 +88,13 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         async ({
           driver,
           contractRegistry,
-          ganacheServer,
+          localNodes,
         }: TestSuiteArguments) => {
           // Seed the Trezor account with balance
-          await ganacheServer?.setAccountBalance(
+          (await localNodes?.[0]?.setAccountBalance(
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
-          );
+          )) ?? console.error('localNodes is undefined or empty');
 
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
@@ -129,7 +129,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .build(),
           localNodeOptions: {
             ...defaultGanacheOptionsForType2Transactions,
-            network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
           },
           smartContract,

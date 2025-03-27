@@ -50,8 +50,6 @@ describe('Sign in with ethereum', function () {
           text: '127.0.0.1:8080',
         });
 
-        await driver.clickElement('[data-testid="sectionCollapseButton"]');
-
         // Check the displayed information in popup content
         await driver.findElement({
           css: 'p',

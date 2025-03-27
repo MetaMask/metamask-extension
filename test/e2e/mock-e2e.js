@@ -14,10 +14,13 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
+const { MOCK_META_METRICS_ID } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
+
+const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -36,7 +39,7 @@ const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
-const blacklistedHosts = [
+const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'goerli.infura.io',
   'mainnet.infura.io',
@@ -116,14 +119,26 @@ async function setupMocking(
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
-    beforeRequest: (req) => {
-      const { host } = req.headers;
-      if (blacklistedHosts.includes(host)) {
+    beforeRequest: ({ headers: { host }, url }) => {
+      if (blocklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
         };
+      } else if (
+        ALLOWLISTED_URLS.includes(url) ||
+        ALLOWLISTED_HOSTS.includes(host)
+      ) {
+        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+        console.log('Request going to a live server ============', url);
+        return {};
       }
-      return {};
+      console.log('Request redirected to the catch all mock ============', url);
+      return {
+        // If the URL or the host is not in the allowlsit nor blocklisted, we return a 200.
+        response: {
+          statusCode: 200,
+        },
+      };
     },
   });
 
@@ -160,7 +175,9 @@ async function setupMocking(
   });
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
+    .forPost(
+      `${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x${chainId.toString(16)}`,
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -401,8 +418,8 @@ async function setupMocking(
 
   let surveyCallCount = 0;
   [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
   ].forEach(
     async (url) =>
       await server.forGet(url).thenCallback(() => {

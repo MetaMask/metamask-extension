@@ -1459,6 +1459,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
           keyrings: [],
         });
 
@@ -1488,6 +1489,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.ProfileId]: undefined,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
           [MetaMetricsUserTrait.MmiAccountAddress]: null,
@@ -1558,6 +1560,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
           keyrings: [],
         });
 
@@ -1618,6 +1621,18 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+              metaMetricsId: 'testid',
+            },
+          },
           keyrings: [],
         });
 
@@ -1627,6 +1642,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
+          [MetaMetricsUserTrait.ProfileId]: 'profileId',
         });
       });
     });
@@ -1686,6 +1702,18 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+              metaMetricsId: 'testid',
+            },
+          },
           keyrings: [],
         });
 
@@ -1736,6 +1764,18 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+              metaMetricsId: 'testid',
+            },
+          },
           keyrings: [],
         });
         expect(updatedTraits).toStrictEqual(null);

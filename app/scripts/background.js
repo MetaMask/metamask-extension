@@ -370,9 +370,10 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  const port = args[0];
 
-  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+  const port = args[0];
+  const isDappConnecting = port.sender.tab?.id;
+  if (isDappConnecting && process.env.MULTICHAIN_API) {
     connectExternalCaip(...args);
   } else {
     connectExternalExtension(...args);
@@ -995,6 +996,10 @@ export function setupController(
   };
 
   connectExternalCaip = async (remotePort) => {
+    if (!process.env.MULTICHAIN_API) {
+      return;
+    }
+
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
@@ -1044,10 +1049,12 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-    updateBadge,
-  );
+  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
+    controller.controllerMessenger.subscribe(
+      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
+      updateBadge,
+    );
+  }
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,

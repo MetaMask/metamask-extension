@@ -765,9 +765,6 @@
     "message": "Importa",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importa Account"
-  },
   "importAccountMsg": {
     "message": " Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Scopri di più sugli account importati "
   },
