@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { Hex } from '@metamask/utils';
 import { Box } from '../../../../../../../components/component-library';
 import { Toast } from '../../../../../../../components/multichain';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
@@ -8,7 +9,6 @@ import {
   useGasFeeToken,
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
-import { Hex } from '@metamask/utils';
 import { GasFeeTokenIcon } from '../gas-fee-token-icon';
 
 const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
