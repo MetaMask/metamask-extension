@@ -5,9 +5,7 @@ import {
   deleteAccountSyncingDataFromUserStorage,
   syncInternalAccountsWithUserStorage,
 } from '../../../store/actions';
-import {
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { getUseExternalServices } from '../../../selectors';
 import {
   getCompletedOnboarding,

@@ -1350,6 +1350,7 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this.userStorageController.lock();
           const { address } = this.accountsController.getSelectedAccount();
 
           await this._addAccountsWithBalance();
@@ -1361,6 +1362,8 @@ export default class MetamaskController extends EventEmitter {
           await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
           });
+
+          await this.userStorageController.unlock();
         }
       }, this.onboardingController.state),
     );
@@ -4418,6 +4421,7 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
+    this.userStorageController.lock();
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
@@ -4457,6 +4461,7 @@ export default class MetamaskController extends EventEmitter {
       return newAccountAddress;
     } finally {
       releaseLock();
+      await this.userStorageController.unlock();
     }
   }
 
@@ -4501,6 +4506,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
+    this.userStorageController.lock();
     try {
       const { completedOnboarding } = this.onboardingController.state;
 
@@ -4541,12 +4547,12 @@ export default class MetamaskController extends EventEmitter {
       }
     } finally {
       releaseLock();
+      await this.userStorageController.unlock();
     }
   }
 
   async _addAccountsWithBalance(keyringId) {
     try {
-      this.userStorageController.lock();
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
@@ -4600,8 +4606,6 @@ export default class MetamaskController extends EventEmitter {
       }
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
-    } finally {
-      await this.userStorageController.unlock();
     }
   }
 
