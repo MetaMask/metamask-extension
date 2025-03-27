@@ -99,15 +99,15 @@ const getTitle = (
       return t('confirmTitleRevokeDelegation');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
-        if (tokenStandard === TokenStandard.ERC721) {
-          return t('setApprovalForAllRedesignedTitle');
-        }
-
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return t('confirmTitleRevokeApproveTransaction');
+        }
+
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('setApprovalForAllRedesignedTitle');
         }
 
         return t('confirmTitlePermitTokens');
@@ -169,7 +169,7 @@ const getDescription = (
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return '';
         }
 
@@ -236,6 +236,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
@@ -259,6 +260,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );

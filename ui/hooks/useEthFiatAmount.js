@@ -11,7 +11,7 @@ import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils
 /**
  * Get an Eth amount converted to fiat and formatted for display
  *
- * @param {string} [ethAmount] - The eth amount to convert
+ * @param {string | BigNumber} [ethAmount] - The eth amount to convert
  * @param {object} [overrides] - A configuration object that allows the called to explicitly
  *                              ensure fiat is shown even if the property is not set in state.
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey

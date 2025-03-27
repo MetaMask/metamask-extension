@@ -710,8 +710,26 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "We don't recommend proceeding with this request."
+  "blockaidAlertInfoDescription": {
+    "message": "A third party known for scams has access to this site. If you proceed, you'll lose assets."
+  },
+  "blockaidAlertInfoDescription2": {
+    "message": "The site may look safe, but a third party might have access to its information. If you sign in, your assets could get stolen."
+  },
+  "blockaidAlertInfoDescription3": {
+    "message": "If you confirm, you could lose all your funds and assets."
+  },
+  "blockaidAlertInfoDescription4": {
+    "message": "If you sign in, any or all assets you've listed on OpenSea are at risk."
+  },
+  "blockaidAlertInfoDescription5": {
+    "message": "If you sign in, any or all assets you've listed on Blur are at risk."
+  },
+  "blockaidAlertInfoDescription6": {
+    "message": "This site is recognized as a malicious domain. If you sign in, you will lose funds and assets. We strongly suggest you cancel this request."
+  },
+  "blockaidAlertInfoDescription7": {
+    "message": "If you sign in, you could lose all your assets. We recommend you cancel this request."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -774,6 +792,9 @@
   },
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
+  },
+  "bridgeCreateSolanaAccount": {
+    "message": "Create Solana account"
   },
   "bridgeCreateSolanaAccountDescription": {
     "message": "To swap to the Solana network, you need an account and receiving address."
@@ -1053,6 +1074,21 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmGasFeeTokenBalance": {
+    "message": "Bal:"
+  },
+  "confirmGasFeeTokenInsufficientBalance": {
+    "message": "Insufficient funds"
+  },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "Includes $1 fee"
+  },
+  "confirmGasFeeTokenModalTitle": {
+    "message": "Select a token"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+  },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
   },
@@ -1131,8 +1167,8 @@
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
   },
-  "confirmationAlertModalTitle": {
-    "message": "This request is suspicious"
+  "confirmationAlertModalTitleDescription": {
+    "message": "Your assets may be at risk"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -1598,8 +1634,14 @@
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
   },
-  "destinationAccountPickerSearchPlaceholder": {
-    "message": "Receiving address or SNS"
+  "destinationAccountPickerReceiveAt": {
+    "message": "Receive at"
+  },
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "Receiving address or ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "Receiving address"
   },
   "details": {
     "message": "Details"
@@ -1645,6 +1687,9 @@
   "disconnectedSingleAccountToast": {
     "message": "$1 disconnected from $2",
     "description": "$1 is name of the name and $2 represents the dapp name`"
+  },
+  "discover": {
+    "message": "Discover"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -2017,6 +2062,9 @@
   "extendWalletWithSnaps": {
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
+  },
+  "externalAccount": {
+    "message": "External Account"
   },
   "externalExtension": {
     "message": "External extension"
@@ -2540,6 +2588,9 @@
   "invalidCustomNetworkAlertTitle": {
     "message": "Invalid custom network"
   },
+  "invalidHexData": {
+    "message": "Invalid hex data"
+  },
   "invalidHexNumber": {
     "message": "Invalid hexadecimal number."
   },
@@ -2717,6 +2768,9 @@
   },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+  },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "Multiple Ledger devices cannot be connected at the same time. To connect a new Ledger device, you'll need to first disconnect the previous one."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
@@ -4060,8 +4114,8 @@
   "permitSimulationChange_receive": {
     "message": "You receive"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Spending cap"
+  "permitSimulationChange_revoke2": {
+    "message": "Revoke"
   },
   "permitSimulationChange_transfer": {
     "message": "You send"
@@ -4074,12 +4128,6 @@
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Allow nicknames"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
   },
   "pinToTop": {
     "message": "Pin to top"
@@ -4464,6 +4512,9 @@
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -4521,6 +4572,10 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokePermissionTitle": {
+    "message": "Remove $1 permission",
+    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
@@ -4691,7 +4746,9 @@
   "selectRpcUrl": {
     "message": "Select RPC URL"
   },
-  "selectSecretRecoveryPhrase": { "message": "Select Secret Recovery Phrase" },
+  "selectSecretRecoveryPhrase": {
+    "message": "Select Secret Recovery Phrase"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -4830,6 +4887,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -5110,6 +5170,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUIAssetSelectorTitle": {
+    "message": "Select an asset"
+  },
   "snapUpdateAlertDescription": {
     "message": "Get the latest version of $1",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
@@ -5179,7 +5242,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5298,7 +5361,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
@@ -6245,9 +6307,6 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
-  },
-  "typeYourSRP": {
-    "message": "Type your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",

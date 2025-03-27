@@ -123,6 +123,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         );
       },
     },
+    publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
@@ -177,9 +178,13 @@ function getApi(
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
     updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
+    updateBatchTransactions:
+      controller.updateBatchTransactions.bind(controller),
     updateEditableParams: controller.updateEditableParams.bind(controller),
     updatePreviousGasParams:
       controller.updatePreviousGasParams.bind(controller),
+    updateSelectedGasFeeToken:
+      controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
     updateTransactionSendFlowHistory:

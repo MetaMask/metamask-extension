@@ -241,7 +241,6 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
-      "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
