@@ -40,6 +40,7 @@ const SnapUIRendererComponent = ({
   onInputChange,
   placeholder,
   interfaceId,
+  useFooter = false,
   onCancel,
   contentBackgroundColor,
   PERF_DEBUG,
@@ -80,12 +81,13 @@ const SnapUIRendererComponent = ({
         map: {},
         element: content,
         onCancel,
+        useFooter,
         promptLegacyProps,
         t,
         contentBackgroundColor: backgroundColor,
         componentMap: COMPONENT_MAPPING,
       }),
-    [content, onCancel, promptLegacyProps, t, backgroundColor],
+    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
 
   if (isLoading || !content) {
@@ -140,6 +142,7 @@ SnapUIRendererComponent.propTypes = {
   onInputChange: PropTypes.func,
   placeholder: PropTypes.string,
   interfaceId: PropTypes.string,
+  useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
   PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
