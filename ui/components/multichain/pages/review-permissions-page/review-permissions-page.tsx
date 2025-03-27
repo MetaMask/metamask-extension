@@ -219,6 +219,8 @@ export const ReviewPermissions = () => {
     setShowNetworkToast(false);
   };
 
+  console.log({connectedAccountAddresses})
+
   return (
     <Page
       data-testid="connections-page"
