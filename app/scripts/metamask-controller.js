@@ -353,7 +353,10 @@ import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
-import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
+import {
+  updateSecurityAlertResponse,
+  validateRequestWithPPOM,
+} from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 
@@ -2180,6 +2183,15 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledAccountUpgradeChains.bind(
               this.preferencesController,
             ),
+          validateSecurity: (securityAlertId, request, chainId) =>
+            validateRequestWithPPOM({
+              chainId,
+              ppomController: this.ppomController,
+              request,
+              securityAlertId,
+              updateSecurityAlertResponse:
+                this.updateSecurityAlertResponse.bind(this),
+            }),
         },
         this.controllerMessenger,
       ),
@@ -2954,11 +2966,20 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        this.txController.stopIncomingTransactionPolling();
+        const filteredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            this.preferencesController.state.incomingTransactionsPreferences[
+              networkId
+            ],
+        );
 
-        await this.txController.updateIncomingTransactions();
+        if (filteredChainIds.length > 0) {
+          this.txController.stopIncomingTransactionPolling();
 
-        this.txController.startIncomingTransactionPolling();
+          await this.txController.updateIncomingTransactions();
+
+          this.txController.startIncomingTransactionPolling();
+        }
       },
     );
 
@@ -5724,6 +5745,23 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * Returns the index of the HD keyring containing the selected account.
+   *
+   * @returns {number | undefined} The index of the HD keyring containing the selected account.
+   */
+  getHDEntropyIndex() {
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const hdKeyrings = this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    const index = hdKeyrings.findIndex((keyring) =>
+      keyring.accounts.includes(selectedAccount.address),
+    );
+
+    return index === -1 ? undefined : index;
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -6301,6 +6339,7 @@ export default class MetamaskController extends EventEmitter {
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
+        getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
@@ -7401,6 +7440,7 @@ export default class MetamaskController extends EventEmitter {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
       },
+      getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
     };
     return {
       ...controllerActions,
@@ -8168,8 +8208,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #restartSmartTransactionPoller() {
-    this.txController.stopIncomingTransactionPolling();
-    this.txController.startIncomingTransactionPolling();
+    const filteredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
+    );
+
+    if (filteredChainIds.length > 0) {
+      this.txController.stopIncomingTransactionPolling();
+      this.txController.startIncomingTransactionPolling(filteredChainIds);
+    }
   }
 
   /**

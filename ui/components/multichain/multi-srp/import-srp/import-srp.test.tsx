@@ -229,4 +229,29 @@ describe('ImportSrp', () => {
       expect(onActionComplete).not.toHaveBeenCalled();
     });
   });
+
+  it('clears validation errors when switching to 24-word seed phrase mode', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { getByText, getByTestId } = render;
+
+    // First paste an invalid SRP to trigger validation errors
+    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
+    pasteSrpIntoFirstInput(render, invalidSRP);
+
+    // Verify that validation errors are present
+    const firstInput = getByTestId(
+      'import-multi-srp__srp-word-0',
+    ).querySelector('input');
+    expect(firstInput).toBeInvalid();
+
+    // Click the "I have a 24 word seed phrase" button
+    const switchTo24WordsButton = getByText('I have a 24 word recovery phrase');
+    fireEvent.click(switchTo24WordsButton);
+
+    // Verify that validation errors are cleared
+    expect(firstInput).not.toBeInvalid();
+  });
 });
