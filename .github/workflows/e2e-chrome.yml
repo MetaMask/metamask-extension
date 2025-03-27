@@ -84,9 +84,11 @@ jobs:
           is-high-risk-environment: false
 
       - name: Install Chromium
-        run: yarn playwright install chromium
+        run: yarn playwright install chromium --with-deps
 
       - name: Run Swap E2E tests
+        env:
+          HEADLESS: true
         run: yarn test:e2e:swap
 
       - name: Upload test reports
