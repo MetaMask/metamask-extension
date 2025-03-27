@@ -20,6 +20,10 @@ jest.mock('../../../../../selectors', () => ({
   pendingApprovalsSortedSelector: jest.fn(),
 }));
 
+jest.mock('../../../../../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
 describe('<QueuedRequestsBannerAlert />', () => {
   const useSelectorMock = useSelector as jest.Mock;
 
