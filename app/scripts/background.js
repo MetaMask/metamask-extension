@@ -144,9 +144,13 @@ export const statePersistenceEvents = new EventEmitter();
 if (isFirefox || !isManifestV3) {
   browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install') {
-      browser.storage.session.set({ isFirstTimeInstall: true });
+      onFirstInstall();
     }
   });
+} else if (globalThis.__metamaskWasJustInstalled) {
+  onFirstInstall();
+} else {
+  globalThis.__metamaskTriggerOnInstall = () => onFirstInstall();
 }
 
 /**
@@ -1270,32 +1274,6 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-async function checkOnFirstInstall() {
-  log.debug('Checking whether the extension was just installed');
-  let firstInstallTriggered = false;
-  const onSessionUpdate = (changes) => {
-    if (changes?.isFirstTimeInstall?.newValue) {
-      firstInstallTriggered = true;
-      browser.storage.session.onChanged.removeListener(onSessionUpdate);
-      onFirstInstall();
-    }
-  };
-  browser.storage.session.onChanged.addListener(onSessionUpdate);
-  const sessionData =
-    isManifestV3 || isFirefox
-      ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.sessionStorage.getItem('isFirstTimeInstall');
-
-  if (firstInstallTriggered) {
-    return;
-  }
-  if (sessionData?.isFirstTimeInstall) {
-    firstInstallTriggered = true;
-    browser.storage.session.onChanged.removeListener(onSessionUpdate);
-    onFirstInstall();
-  }
-}
-
 // On first install, open a new tab with MetaMask
 function onFirstInstall() {
   log.debug('First install detected');
@@ -1338,7 +1316,6 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  checkOnFirstInstall();
   try {
     await initialize();
     if (process.env.IN_TEST) {

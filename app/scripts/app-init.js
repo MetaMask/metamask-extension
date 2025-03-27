@@ -186,7 +186,11 @@ const registerInPageContentScript = async () => {
 
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
-    chrome.storage.session.set({ isFirstTimeInstall: true });
+    if (globalThis.__metamaskTriggerOnInstall) {
+      globalThis.__metamaskTriggerOnInstall();
+    } else {
+      globalThis.__metamaskWasJustInstalled = true;
+    }
   }
 });
 
