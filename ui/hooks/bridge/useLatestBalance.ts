@@ -8,7 +8,6 @@ import {
   ChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors';
 import { useAsyncResult } from '../useAsync';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -18,7 +17,6 @@ import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 
 /**
@@ -45,7 +43,6 @@ const useLatestBalance = (
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  const { rpcUrl } = useSelector(getProviderConfig);
 
   const nonEvmBalances = nonEvmBalancesByAccountId?.[id];
 
@@ -72,8 +69,7 @@ const useLatestBalance = (
 
     if (
       token.address &&
-      formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId) &&
-      rpcUrl
+      formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId)
     ) {
       return (
         await calcLatestSrcBalance(
@@ -86,7 +82,7 @@ const useLatestBalance = (
     }
 
     return undefined;
-  }, [currentChainId, token, selectedAddress, rpcUrl, nonEvmBalances]);
+  }, [currentChainId, token, selectedAddress, nonEvmBalances]);
 
   if (token && !token.decimals) {
     throw new Error(
