@@ -120,7 +120,9 @@ export const SnapUIAddressInput: FunctionComponent<
             height: '48px',
           }}
         >
-          <SnapUIAvatar address={`${chainId}:${value}`} size="sm" />
+          {displayAvatar && (
+            <SnapUIAvatar address={`${chainId}:${value}`} size="sm" />
+          )}
           <Box
             display={Display.Flex}
             alignItems={AlignItems.center}
@@ -138,9 +140,7 @@ export const SnapUIAddressInput: FunctionComponent<
                 flex: 1,
               }}
             >
-              {displayName && (
-                <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-              )}
+              <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
               <Text variant={TextVariant.bodyXs} ellipsis>
                 {value}
               </Text>
@@ -160,7 +160,7 @@ export const SnapUIAddressInput: FunctionComponent<
     );
   };
 
-  if ((displayName || displayAvatar) && value) {
+  if (displayName) {
     return <MatchedAccountInfo />;
   }
 
@@ -182,6 +182,11 @@ export const SnapUIAddressInput: FunctionComponent<
       textFieldProps={{
         borderRadius: BorderRadius.LG,
       }}
+      startAccessory={
+        displayAvatar && value ? (
+          <SnapUIAvatar address={`${chainId}:${value}`} size="sm" />
+        ) : null
+      }
       endAccessory={
         value ? (
           <Icon
