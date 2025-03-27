@@ -37,9 +37,16 @@ export const handleBridgeTransactionComplete = async (
   {
     backgroundState,
     trackEvent,
+    getRemoteFeatureFlags,
+    getParticipateInMetrics,
   }: {
     backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
+    getRemoteFeatureFlags: () => {
+      'transactions-tx-hash-in-analytics'?: boolean;
+      [key: string]: boolean | undefined;
+    };
+    getParticipateInMetrics: () => boolean;
   },
 ) => {
   const { bridgeHistoryItem } = payload;
@@ -109,10 +116,39 @@ export const handleBridgeTransactionComplete = async (
     destination_transaction,
   };
 
+  // Create sensitiveProperties object for the transaction hash
+  const sensitiveProperties: Record<string, string> = {};
+
+  // Add transaction hash if remote feature flag is enabled and user has opted into metrics
+  if (
+    getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
+    getParticipateInMetrics() &&
+    bridgeHistoryItem.status.srcChain.txHash
+  ) {
+    sensitiveProperties.transaction_hash =
+      bridgeHistoryItem.status.srcChain.txHash;
+
+    // Debug logging - remove before production
+    if (!globalThis.debugEvents) {
+      globalThis.debugEvents = [];
+    }
+    globalThis.debugEvents.push({
+      time: Date.now(),
+      type: 'Action Completed',
+      hash: bridgeHistoryItem.status.srcChain.txHash,
+      flagSource: 'remote',
+    });
+    // Debug logging - remove before production
+  }
+
   trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
     event: MetaMetricsEventName.ActionCompleted,
     properties,
+    sensitiveProperties:
+      Object.keys(sensitiveProperties).length > 0
+        ? sensitiveProperties
+        : undefined,
   });
 };
 

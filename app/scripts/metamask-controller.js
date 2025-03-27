@@ -1727,6 +1727,7 @@ export default class MetamaskController extends EventEmitter {
         const state = this._getMetaMaskState();
         return getFeatureFlagsByChainId(state);
       },
+      getRemoteFeatureFlags: () => ({ transactionsTxHashInAnalytics: true }),
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
@@ -1873,6 +1874,15 @@ export default class MetamaskController extends EventEmitter {
         },
       }),
     });
+
+    // Debug:transactions-tx-hash-in-analytics
+    this.controllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (newState) => {
+        console.log('REMOTE FEATURE FLAGS UPDATED:', newState.remoteFeatureFlags);
+      }
+    );
+    // Debug:transactions-tx-hash-in-analytics
 
     const existingControllers = [
       this.networkController,
@@ -7331,6 +7341,9 @@ export default class MetamaskController extends EventEmitter {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
       },
+      getFeatureFlags: () => this.preferencesController.state.featureFlags,
+      getRemoteFeatureFlags: () =>
+        this.remoteFeatureFlagController.state.remoteFeatureFlags,
     };
     return {
       ...controllerActions,

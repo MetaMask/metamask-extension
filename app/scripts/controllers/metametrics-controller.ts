@@ -936,6 +936,16 @@ export default class MetaMetricsController extends BaseController<
       return;
     }
 
+    // Debug:transactions-tx-hash-in-analytics
+    console.log('ANALYTICS EVENT SUBMIT:', {
+      event: payload.event,
+      hasTransactionHash: Boolean(
+        payload.sensitiveProperties?.transaction_hash,
+      ),
+      transactionHash: payload.sensitiveProperties?.transaction_hash,
+    });
+    // Debug:transactions-tx-hash-in-analytics
+
     // We might track multiple events if sensitiveProperties is included, this array will hold
     // the promises returned from this._track.
     const events = [];
