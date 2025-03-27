@@ -42,7 +42,10 @@ export function renderInterface(
     },
   });
 
-  const reducer: Reducer<MetaMaskReduxState> = (storeState = store.getState(), action) => {
+  const reducer: Reducer<MetaMaskReduxState> = (
+    storeState = store.getState(),
+    action,
+  ) => {
     if (action.type === 'updateInterface') {
       return {
         ...storeState,
@@ -65,7 +68,10 @@ export function renderInterface(
 
   store.replaceReducer(reducer);
 
-  const updateInterface = (newContent: JSXElement, newState: Record<string, unknown> | null = null) => {
+  const updateInterface = (
+    newContent: JSXElement,
+    newState: Record<string, unknown> | null = null,
+  ) => {
     store.dispatch({
       type: 'updateInterface',
       content: newContent,
