@@ -4409,6 +4409,7 @@ export default class MetamaskController extends EventEmitter {
     const otherDetailsAreERC20Like =
       tokenDetails.decimals !== undefined && tokenDetails.symbol;
 
+    // boolean to check if the token can be treated as an ERC20
     const tokenCanBeTreatedAsAnERC20 =
       tokenDetailsStandardIsERC20 ||
       (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
