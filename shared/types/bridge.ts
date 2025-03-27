@@ -79,6 +79,7 @@ export type BridgeAsset = {
   name: string;
   decimals: number;
   icon?: string;
+  iconUrl?: string;
 };
 
 // Generic types for the quote request

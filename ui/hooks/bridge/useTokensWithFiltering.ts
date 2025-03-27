@@ -1,13 +1,17 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
+import {
+  type CaipChainId,
+  isStrictHexString,
+  type Hex,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
   selectERC20TokensByChain,
 } from '../../selectors';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -38,7 +42,7 @@ import {
   MultichainNetworks,
   MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../../shared/constants/multichain/networks';
-import { type BridgeToken } from '../../../shared/types/bridge';
+import { BridgeAsset, type BridgeToken } from '../../../shared/types/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 
 type FilterPredicate = (
@@ -78,7 +82,7 @@ export const useTokensWithFiltering = (
   const cachedTokens = useSelector(selectERC20TokensByChain);
 
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
-    Record<string, SwapsTokenObject>
+    Record<string, BridgeAsset>
   >(async () => {
     if (chainId && chainId !== MultichainNetworks.SOLANA) {
       const hexChainId = formatChainIdToHex(chainId);
@@ -114,7 +118,7 @@ export const useTokensWithFiltering = (
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
   const buildTokenData = (
-    token?: SwapsTokenObject,
+    token?: BridgeAsset,
   ): AssetWithDisplayData<NativeAsset | ERC20Asset> | undefined => {
     if (!chainId || !token || !isStrictHexString(chainId)) {
       return undefined;
@@ -249,7 +253,6 @@ export const useTokensWithFiltering = (
                 image: getAssetImageUrl(assetId, chainId) ?? '',
                 balance: '',
                 string: undefined,
-                address: assetId,
                 chainId,
               };
             }
@@ -263,13 +266,16 @@ export const useTokensWithFiltering = (
               isTokenV3Asset(token_) &&
               shouldAddToken(token_.symbol, token_.assetId, chainId)
             ) {
+              const { assetReference } = parseCaipAssetType(
+                token_.assetId as `${string}:${string}/${string}:${string}`,
+              );
               yield {
                 ...token_,
                 type: AssetType.token,
                 image: getAssetImageUrl(token_.assetId, chainId) ?? '',
                 balance: '',
                 string: undefined,
-                address: token_.assetId,
+                address: assetReference,
                 chainId,
               };
             }
