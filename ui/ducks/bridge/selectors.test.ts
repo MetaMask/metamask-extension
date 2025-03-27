@@ -57,6 +57,7 @@ describe('Bridge selectors', () => {
             networkClientId: expect.anything(),
             type: 'custom',
             url: 'https://localhost/rpc/0xa4b1',
+            failoverUrls: [],
           },
         ],
       });
@@ -89,6 +90,7 @@ describe('Bridge selectors', () => {
             networkClientId: expect.anything(),
             type: 'custom',
             url: 'https://localhost/rpc/0xe708',
+            failoverUrls: [],
           },
         ],
         nativeCurrency: 'ETH',
@@ -125,6 +127,7 @@ describe('Bridge selectors', () => {
                 networkClientId: expect.anything(),
                 type: 'custom',
                 url: `https://localhost/rpc/${rpcDefinition.chainId}`,
+                failoverUrls: [],
               },
             ],
           }),

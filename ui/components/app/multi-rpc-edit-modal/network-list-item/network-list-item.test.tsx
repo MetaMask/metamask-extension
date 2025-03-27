@@ -30,6 +30,7 @@ describe('NetworkListItem', () => {
           {
             name: 'Infura Mainnet',
             url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+            failoverUrls: [],
           },
         ],
       },
@@ -46,6 +47,7 @@ describe('NetworkListItem', () => {
           {
             name: 'Infura Mainnet',
             url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+            failoverUrls: [],
           },
         ],
       },
@@ -66,6 +68,7 @@ describe('NetworkListItem', () => {
             name: 'Infura Mainnet',
             type: RpcEndpointType.Infura,
             url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+            failoverUrls: [],
           },
         ],
       },
