@@ -26,7 +26,8 @@ describe('Bridge tests', function (this: Suite) {
         false,
       ),
       async ({ driver }) => {
-        await await unlockWallet(driver);
+        await unlockWallet(driver);
+        await driver.delay(2000);
 
         await bridgeTransaction(
           driver,
