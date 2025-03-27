@@ -7,10 +7,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import {
-  getMemoizedCurrentCurrency,
-  getMemoizedInternalAccountByAddress,
-} from '../../../../selectors';
+import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
@@ -24,6 +21,7 @@ import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../shared/constants/bridge';
+import { getMemoizedCurrentCurrency } from '../../../../selectors/snaps';
 
 /**
  * An asset for the SnapUIAssetSelector.
