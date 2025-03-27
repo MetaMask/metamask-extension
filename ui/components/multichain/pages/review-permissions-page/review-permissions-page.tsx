@@ -205,9 +205,24 @@ export const ReviewPermissions = () => {
 
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
-    connectedAccountAddresses.forEach((address: string) => {
-      if (!addresses.includes(address)) {
-        dispatch(removePermittedAccount(activeTabOrigin, address));
+    connectedAccountAddresses.forEach((connectedAddress: string) => {
+      const parsedConnectedAddress = parseCaipAccountId(connectedAddress as CaipAccountId);
+
+      // this needs a rewrite or an minimum better var names T_T
+      const includesAddress = addresses.some((address) => {
+        const parsedAddress = parseCaipAccountId(address as CaipAccountId);
+
+        if (parsedConnectedAddress.chain.namespace !== parsedAddress.chain.namespace
+          || parsedConnectedAddress.address !== parsedAddress.address) {
+            return false
+          }
+
+        return parsedAddress.chain.reference === '0' || parsedAddress.chain.reference === parsedConnectedAddress.chain.reference
+      })
+
+
+      if (!includesAddress) {
+        dispatch(removePermittedAccount(activeTabOrigin, connectedAddress));
       }
     });
 

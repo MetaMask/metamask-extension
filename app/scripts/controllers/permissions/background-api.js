@@ -15,6 +15,7 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
+import { KnownCaipNamespace, parseCaipAccountId } from '@metamask/utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -49,15 +50,28 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    const ethAccounts = getEthAccounts(caip25Caveat.value);
+    // TODO dry this into core
+    const permittedAccounts = new Set()
+    Object.values(caip25Caveat.value.requiredScopes).forEach(({accounts}) => {
+      accounts.forEach(account => {
+        permittedAccounts.add(account)
+      })
+    })
+    Object.values(caip25Caveat.value.optionalScopes).forEach(({accounts}) => {
+      accounts.forEach(account => {
+        permittedAccounts.add(account)
+      })
+    })
 
-    const updatedEthAccounts = Array.from(
-      new Set([...ethAccounts, ...accounts]),
-    );
+    accounts.forEach(account => {
+      permittedAccounts.add(account)
+    })
 
-    const updatedCaveatValue = setEthAccounts(
+    const updatedAccounts = Array.from(permittedAccounts);
+
+    const updatedCaveatValue = setPermittedAccounts(
       caip25Caveat.value,
-      updatedEthAccounts,
+      updatedAccounts,
     );
 
     permissionController.updateCaveat(
@@ -176,10 +190,38 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      const existingAccounts = getEthAccounts(caip25Caveat.value);
+      const permittedAccounts = new Set()
+      Object.values(caip25Caveat.value.requiredScopes).forEach(({accounts}) => {
+        accounts.forEach(account => {
+          permittedAccounts.add(account)
+        })
+      })
+      Object.values(caip25Caveat.value.optionalScopes).forEach(({accounts}) => {
+        accounts.forEach(account => {
+          permittedAccounts.add(account)
+        })
+      })
+
+      const existingAccounts = Array.from(permittedAccounts)
+
+      const {
+        address,
+        chain: { namespace, reference },
+      } = parseCaipAccountId(account);
 
       const remainingAccounts = existingAccounts.filter(
-        (existingAccount) => existingAccount !== account,
+        (existingAccount) => {
+          const {
+            address: existingAddress,
+            chain: { namespace: existingNamespace, reference: existingReference},
+          } = parseCaipAccountId(existingAccount);
+
+          if (namespace !== existingNamespace || address !== existingAddress) {
+            return true;
+          }
+          // hacky way to handle eoa :/
+          return reference !== '0' && reference !== existingReference
+        },
       );
 
       if (remainingAccounts.length === existingAccounts.length) {
@@ -192,7 +234,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setEthAccounts(
+        const updatedCaveatValue = setPermittedAccounts(
           caip25Caveat.value,
           remainingAccounts,
         );
