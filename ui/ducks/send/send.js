@@ -596,7 +596,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       !transaction.dappSuggestedGasFees?.gas ||
       !transaction.userEditedGasLimit
     ) {
-      gasLimit = await estimateGasLimitForSend({
+      const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
@@ -608,7 +608,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         chainId,
         gasLimit: draftTransaction.gas.gasLimit,
       });
-
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
         gasLimit,
@@ -2315,8 +2314,6 @@ export function editExistingTransaction(assetType, transactionId) {
           ],
         }),
       );
-      const tokenIdTest =
-        getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
 
       await dispatch(
         updateSendAsset(
