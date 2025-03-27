@@ -42,10 +42,9 @@ export function renderInterface(
     },
   });
 
-  const reducer: Reducer<MetaMaskReduxState> = (
-    storeState = store.getState(),
-    action,
-  ) => {
+  const reducer: Reducer<MetaMaskReduxState> = (reduxState, action) => {
+    const storeState = reduxState ?? store.getState();
+
     if (action.type === 'updateInterface') {
       return {
         ...storeState,
@@ -55,7 +54,7 @@ export function renderInterface(
             [MOCK_INTERFACE_ID]: {
               snapId: MOCK_SNAP_ID,
               content: action.content,
-              state: action.state ?? state,
+              state: action.state ?? reduxState,
               context: null,
               contentType: null,
             },
