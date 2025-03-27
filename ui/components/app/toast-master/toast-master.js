@@ -110,6 +110,7 @@ export function ToastMaster() {
   return null;
 }
 
+// TODO: Fix this file
 function ConnectAccountToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
