@@ -1290,7 +1290,7 @@ const addAppInstalledEvent = () => {
 function onInstall() {
   log.debug('First install detected');
   addAppInstalledEvent();
-  if (!process.env.METAMASK_DEBUG) {
+  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();
