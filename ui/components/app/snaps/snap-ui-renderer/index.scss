@@ -42,6 +42,10 @@
     }
   }
 
+  &__address-input > .mm-text-field {
+    border-color: var(--color-border-muted);
+  }
+
   &__panel {
     gap: 8px;
   }

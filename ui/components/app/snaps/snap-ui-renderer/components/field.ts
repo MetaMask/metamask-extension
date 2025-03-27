@@ -6,6 +6,7 @@ import {
   RadioGroupElement,
   CheckboxElement,
   SelectorElement,
+  AddressInputElement,
   AssetSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
@@ -32,6 +33,23 @@ export const field: UIComponentFactory<FieldElement> = ({
   const child = children[primaryChildIndex] as JSXElement;
 
   switch (child.type) {
+    case 'AddressInput': {
+      const addressInput = child as AddressInputElement;
+      return {
+        element: 'SnapUIAddressInput',
+        props: {
+          name: addressInput.props.name,
+          placeholder: addressInput.props.placeholder,
+          chainId: addressInput.props.chainId,
+          displayAvatar: addressInput.props.displayAvatar,
+          label: element.props.label,
+          form,
+          error: element.props.error,
+          disabled: addressInput.props.disabled,
+        },
+      };
+    }
+
     case 'FileInput': {
       return {
         element: 'SnapUIFileInput',
