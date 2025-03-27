@@ -22,7 +22,7 @@ import {
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import {
   fetchBridgeTokens,
