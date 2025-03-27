@@ -224,6 +224,26 @@ function getControllers(
   };
 }
 
+function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
+  // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
+  // Ideally all backend logic would instead rely on messenger event / state subscriptions.
+  const uiState = getUIState(flatState);
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const isSmartTransaction = getIsSmartTransaction(uiState);
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const featureFlags = getFeatureFlagsByChainId(uiState);
+
+  const isHardwareWalletAccount = isHardwareWallet(uiState);
+
+  return {
+    isSmartTransaction,
+    featureFlags,
+    isHardwareWalletAccount,
+  };
+}
+
 function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
@@ -232,20 +252,13 @@ function publishSmartTransactionHook(
   transactionMeta: TransactionMeta,
   signedTransactionInHex: Hex,
 ) {
-  // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
-  // Ideally all backend logic would instead rely on messenger event / state subscriptions.
-  const uiState = getUIState(flatState);
-
-  // @ts-expect-error Smart transaction selector types does not match controller state
-  const isSmartTransaction = getIsSmartTransaction(uiState);
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState);
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
     return { transactionHash: undefined };
   }
-
-  // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlags = getFeatureFlagsByChainId(uiState);
 
   return submitSmartTransactionHook({
     transactionMeta,
@@ -254,7 +267,7 @@ function publishSmartTransactionHook(
     smartTransactionsController,
     controllerMessenger: hookControllerMessenger,
     isSmartTransaction,
-    isHardwareWallet: isHardwareWallet(uiState),
+    isHardwareWallet: isHardwareWalletAccount,
     // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
     featureFlags,
   });
@@ -273,20 +286,13 @@ function publishBatchSmartTransactionHook({
   flatState: ControllerFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
-  // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
-  // Ideally all backend logic would instead rely on messenger event / state subscriptions.
-  const uiState = getUIState(flatState);
-
-  // @ts-expect-error Smart transaction selector types does not match controller state
-  const isSmartTransaction = getIsSmartTransaction(uiState);
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState);
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
     return undefined;
   }
-
-  // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlags = getFeatureFlagsByChainId(uiState);
 
   // Get transactionMeta based on the last transaction ID
   const lastTransaction = transactions[transactions.length - 1];
@@ -309,7 +315,7 @@ function publishBatchSmartTransactionHook({
     smartTransactionsController,
     controllerMessenger: hookControllerMessenger,
     isSmartTransaction,
-    isHardwareWallet: isHardwareWallet(uiState),
+    isHardwareWallet: isHardwareWalletAccount,
     // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
     featureFlags,
     transactionMeta,
