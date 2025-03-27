@@ -34,7 +34,6 @@ import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRe
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { Row } from '../layout';
 import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
@@ -91,8 +90,6 @@ export const BridgeCTAButton = ({
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
 
-  const ticker = useSelector(getNativeCurrency);
-
   const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
 
   const isInsufficientGasBalance =
@@ -145,16 +142,16 @@ export const BridgeCTAButton = ({
     isLoading,
     fromAmount,
     toToken,
-    ticker,
     isTxSubmittable,
-    balanceAmount,
-    isInsufficientBalance,
     isQuoteExpired,
+    wasTxDeclined,
+    needsDestinationAddress,
+    activeQuote,
+    isNoQuotesAvailable,
+    isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
-    wasTxDeclined,
-    isQuoteExpired,
-    needsDestinationAddress,
+    t,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -163,7 +160,7 @@ export const BridgeCTAButton = ({
       return t('bridgeFetchNewQuotes');
     }
     return undefined;
-  }, [wasTxDeclined, isQuoteExpired]);
+  }, [wasTxDeclined, isQuoteExpired, t]);
 
   return activeQuote && !secondaryButtonLabel ? (
     <ButtonPrimary
