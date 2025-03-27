@@ -217,11 +217,11 @@ class SmartTransactionHook {
   }
 
   async submitBatch() {
-    // Will cause TransactionController to publish to the RPC provider as normal.
-    const useRegularTransactionSubmit = undefined;
-
+    // No fallback to regular transaction submission
     if (!this.#isSmartTransaction) {
-      return useRegularTransactionSubmit;
+      throw new Error(
+        'submitBatch: Smart Transaction is required for batch submissions',
+      );
     }
 
     if (this.#shouldShowStatusPage) {
@@ -233,7 +233,7 @@ class SmartTransactionHook {
       const uuid = submitTransactionResponse?.uuid;
 
       if (!uuid) {
-        throw new Error('No smart transaction UUID');
+        throw new Error('submitBatch: No smart transaction UUID');
       }
 
       await this.#processApprovalIfNeeded(uuid);
@@ -244,7 +244,7 @@ class SmartTransactionHook {
 
       if (transactionHash === null) {
         throw new Error(
-          'Transaction does not have a transaction hash, there was a problem',
+          'submitBatch: Transaction does not have a transaction hash, there was a problem',
         );
       }
 
@@ -263,7 +263,10 @@ class SmartTransactionHook {
 
       return submitBatchResponse;
     } catch (error) {
-      log.error('Error in smart transaction publish batch hook', error);
+      log.error(
+        'submitBatch: Error in smart transaction publish batch hook',
+        error,
+      );
       this.#onApproveOrReject();
       throw error;
     }

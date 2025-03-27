@@ -291,7 +291,9 @@ function publishBatchSmartTransactionHook({
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
-    return undefined;
+    throw new Error(
+      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
+    );
   }
 
   // Get transactionMeta based on the last transaction ID
@@ -303,10 +305,9 @@ function publishBatchSmartTransactionHook({
 
   // If we couldn't find the transaction, we should handle that gracefully
   if (!transactionMeta) {
-    console.warn(
-      `Publish batch hook: could not find transaction with id ${lastTransaction.id}`,
+    throw new Error(
+      `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
     );
-    return undefined;
   }
 
   return submitBatchSmartTransactionHook({
