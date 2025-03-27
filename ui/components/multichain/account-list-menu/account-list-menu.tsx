@@ -19,12 +19,6 @@ import {
   EthAccountType,
   SolAccountType,
   KeyringAccountType,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  BtcScope,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SolScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { CaipChainId } from '@metamask/utils';
@@ -661,7 +655,7 @@ export const AccountListMenu = ({
                       return await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
                         {
-                          scope: SolScope.Mainnet,
+                          scope: MultichainNetworks.SOLANA,
                           entropySource: primaryKeyring.metadata.id,
                         },
                         ACTION_MODES.ADD_SOLANA,
@@ -688,7 +682,7 @@ export const AccountListMenu = ({
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
                         {
-                          scope: BtcScope.Mainnet,
+                          scope: MultichainNetworks.BITCOIN,
                         },
                         ACTION_MODES.ADD_BITCOIN,
                       );
@@ -714,7 +708,7 @@ export const AccountListMenu = ({
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
                         {
-                          scope: BtcScope.Testnet,
+                          scope: MultichainNetworks.BITCOIN_TESTNET,
                         },
                         ACTION_MODES.ADD_BITCOIN_TESTNET,
                       );
