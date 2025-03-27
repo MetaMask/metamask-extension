@@ -16,21 +16,35 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
+import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { getIsRevokeDAIPermit } from '../utils';
+import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   if (generalAlerts.length === 0) {
     return null;
   }
 
+  const onClickSupportLink = () => {
+    const properties = {
+      properties: {
+        external_link_clicked: 'security_alert_support_link',
+      },
+    };
+    updateSignatureEventFragment(properties);
+    updateTransactionEventFragment(properties, ownerId);
+  };
   return (
     <Box marginTop={3}>
       {generalAlerts.map((alert) => (
@@ -44,6 +58,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
             details={alert.alertDetails}
             reportUrl={alert.reportUrl}
             children={alert.content}
+            onClickSupportLink={onClickSupportLink}
           />
         </Box>
       ))}
@@ -71,6 +86,7 @@ const getTitle = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
+    case TransactionType.batch:
       return t('confirmTitleTransaction');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
@@ -79,11 +95,21 @@ const getTitle = (
         return t('confirmTitleSIWESignature');
       }
       return t('confirmTitleSignature');
+    case TransactionType.revokeDelegation:
+      return t('confirmTitleRevokeDelegation');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
+          return t('confirmTitleRevokeApproveTransaction');
+        }
+
         if (tokenStandard === TokenStandard.ERC721) {
           return t('setApprovalForAllRedesignedTitle');
         }
+
         return t('confirmTitlePermitTokens');
       }
       return t('confirmTitleSignature');
@@ -123,6 +149,7 @@ const getDescription = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
+    case TransactionType.batch:
       return '';
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
@@ -131,11 +158,21 @@ const getDescription = (
         return t('confirmTitleDescSIWESignature');
       }
       return t('confirmTitleDescSign');
+    case TransactionType.revokeDelegation:
+      return t('confirmTitleDescRevokeDelegation');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {
           return t('confirmTitleDescApproveTransaction');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
+          return '';
+        }
+
         return t('confirmTitleDescPermitSignature');
       }
       return t('confirmTitleDescSign');
@@ -199,6 +236,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
@@ -222,6 +260,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
@@ -237,7 +276,7 @@ const ConfirmTitle: React.FC = memo(() => {
         <Text
           variant={TextVariant.headingLg}
           paddingTop={4}
-          paddingBottom={4}
+          paddingBottom={2}
           textAlign={TextAlign.Center}
         >
           {title}

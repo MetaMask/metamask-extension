@@ -39,8 +39,10 @@ type AssertSignatureMetricsOptions = {
   withAnonEvents?: boolean;
   securityAlertReason?: string;
   securityAlertResponse?: string;
+  securityAlertSource?: string;
   decodingChangeTypes?: string[];
   decodingResponse?: string;
+  decodingDescription?: string | null;
 };
 
 type SignatureEventProperty = {
@@ -51,12 +53,15 @@ type SignatureEventProperty = {
   locale: 'en';
   security_alert_reason: string;
   security_alert_response: string;
+  security_alert_source?: string;
   signature_type: string;
   eip712_primary_type?: string;
   decoding_change_types?: string[];
   decoding_response?: string;
+  decoding_description?: string | null;
   ui_customizations?: string[];
   location?: string;
+  hd_entropy_index?: number;
 };
 
 const signatureAnonProperties = {
@@ -81,17 +86,21 @@ export async function initializePages(driver: Driver) {
  * @param uiCustomizations
  * @param securityAlertReason
  * @param securityAlertResponse
+ * @param securityAlertSource
  * @param decodingChangeTypes
  * @param decodingResponse
+ * @param decodingDescription
  */
 function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
   uiCustomizations: string[],
-  securityAlertReason: string = BlockaidReason.checkingChain,
+  securityAlertReason: string = BlockaidReason.inProgress,
   securityAlertResponse: string = BlockaidResultType.Loading,
+  securityAlertSource: string = 'api',
   decodingChangeTypes?: string[],
   decodingResponse?: string,
+  decodingDescription?: string | null,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -102,7 +111,9 @@ function getSignatureEventProperty(
     locale: 'en',
     security_alert_reason: securityAlertReason,
     security_alert_response: securityAlertResponse,
+    security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
+    hd_entropy_index: 0,
   };
 
   if (primaryType !== '') {
@@ -112,7 +123,9 @@ function getSignatureEventProperty(
   if (decodingResponse) {
     signatureEventProperty.decoding_change_types = decodingChangeTypes;
     signatureEventProperty.decoding_response = decodingResponse;
+    signatureEventProperty.decoding_description = decodingDescription;
   }
+
   return signatureEventProperty;
 }
 
@@ -145,8 +158,10 @@ export async function assertSignatureConfirmedMetrics({
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
+  securityAlertSource,
   decodingChangeTypes,
   decodingResponse,
+  decodingDescription,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -155,8 +170,10 @@ export async function assertSignatureConfirmedMetrics({
     uiCustomizations,
     securityAlertReason,
     securityAlertResponse,
+    securityAlertSource,
     decodingChangeTypes,
     decodingResponse,
+    decodingDescription,
   );
 
   assertSignatureRequestedMetrics(
@@ -190,8 +207,10 @@ export async function assertSignatureRejectedMetrics({
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
+  securityAlertSource,
   decodingChangeTypes,
   decodingResponse,
+  decodingDescription,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -200,8 +219,10 @@ export async function assertSignatureRejectedMetrics({
     uiCustomizations,
     securityAlertReason,
     securityAlertResponse,
+    securityAlertSource,
     decodingChangeTypes,
     decodingResponse,
+    decodingDescription,
   );
 
   assertSignatureRequestedMetrics(
@@ -213,6 +234,7 @@ export async function assertSignatureRejectedMetrics({
   assertEventPropertiesMatch(events, 'Signature Rejected', {
     ...signatureEventProperty,
     location,
+    hd_entropy_index: 0,
     ...expectedProps,
   });
 
@@ -239,6 +261,7 @@ export async function assertAccountDetailsMetrics(
     locale: 'en',
     chain_id: '0x539',
     environment_type: 'notification',
+    hd_entropy_index: 0,
   });
 }
 
@@ -255,7 +278,7 @@ function assertEventPropertiesMatch(
 
   compareDecodingAPIResponse(actualProperties, expectedProps, eventName);
 
-  compareSecurityAlertResponse(actualProperties, expectedProps, eventName);
+  compareSecurityAlertProperties(actualProperties, expectedProps, eventName);
 
   assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
@@ -265,7 +288,7 @@ function assertEventPropertiesMatch(
   );
 }
 
-function compareSecurityAlertResponse(
+function compareSecurityAlertProperties(
   actualProperties: Record<string, unknown>,
   expectedProperties: Record<string, unknown>,
   eventName: string,
@@ -286,6 +309,19 @@ function compareSecurityAlertResponse(
     // Remove the property from both objects to avoid comparison
     delete actualProperties.security_alert_response;
     delete expectedProperties.security_alert_response;
+  }
+
+  if (expectedProperties.security_alert_source) {
+    if (
+      actualProperties.security_alert_source !== 'api' &&
+      expectedProperties.security_alert_source !== 'api'
+    ) {
+      assert.fail(
+        `${eventName} event properties do not match: security_alert_source is ${actualProperties.security_alert_source}`,
+      );
+    }
+    delete actualProperties.security_alert_source;
+    delete expectedProperties.security_alert_source;
   }
 }
 
@@ -314,12 +350,21 @@ function compareDecodingAPIResponse(
       expectedProperties.decoding_response,
       `${eventName} event properties do not match: decoding_response is ${actualProperties.decoding_response}`,
     );
+    assert.equal(
+      actualProperties.decoding_description,
+      expectedProperties.decoding_description,
+      `${eventName} event properties do not match: decoding_response is ${actualProperties.decoding_description}`,
+    );
   }
   // Remove the property from both objects to avoid comparison
   delete expectedProperties.decoding_change_types;
   delete expectedProperties.decoding_response;
+  delete expectedProperties.decoding_description;
+  delete expectedProperties.decoding_latency;
   delete actualProperties.decoding_change_types;
   delete actualProperties.decoding_response;
+  delete actualProperties.decoding_description;
+  delete actualProperties.decoding_latency;
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {

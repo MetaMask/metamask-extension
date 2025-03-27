@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
@@ -27,7 +28,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import {
   hexToText,
   sanitizeString,
@@ -37,6 +37,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
+import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { isValidUTF8 } from '../utils';
 import { SIWESignInfo } from './siwe-sign';
@@ -137,6 +138,7 @@ const PersonalSignInfo: React.FC = () => {
         </ConfirmInfoSection>
       )}
       <ConfirmInfoSection>
+        <NetworkRow isShownWithAlertsOnly />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}

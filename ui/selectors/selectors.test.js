@@ -14,6 +14,8 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
@@ -305,7 +307,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -1083,11 +1084,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
@@ -1185,51 +1181,14 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  it('#getTotalUnapprovedSignatureRequestCount', () => {
-    const totalUnapprovedSignatureRequestCount =
-      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
-    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
-  });
-
-  describe('#getPetnamesEnabled', () => {
-    function createMockStateWithPetnamesEnabled(petnamesEnabled) {
-      return { metamask: { preferences: { petnamesEnabled } } };
-    }
-
-    describe('usePetnamesEnabled', () => {
-      const tests = [
-        {
-          petnamesEnabled: true,
-          expectedResult: true,
-        },
-        {
-          petnamesEnabled: false,
-          expectedResult: false,
-        },
-        {
-          // Petnames is enabled by default.
-          petnamesEnabled: undefined,
-          expectedResult: true,
-        },
-      ];
-
-      tests.forEach(({ petnamesEnabled, expectedResult }) => {
-        it(`should return ${String(
-          expectedResult,
-        )} when petnames preference is ${String(petnamesEnabled)}`, () => {
-          const result = selectors.getPetnamesEnabled(
-            createMockStateWithPetnamesEnabled(petnamesEnabled),
-          );
-          expect(result).toBe(expectedResult);
-        });
-      });
-    });
-  });
-
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isOptimismSupported).toBeTruthy();
@@ -1237,9 +1196,27 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isFantomSupported).toBeFalsy();
+
+    const isSolanaSupported = selectors.getIsBridgeChain({
+      metamask: {
+        ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: {
+            '0xabc': { metadata: { keyring: {} } },
+            type: 'solana',
+          },
+        },
+      },
+    });
+    expect(isSolanaSupported).toBeTruthy();
   });
 
   it('returns proper values for snaps privacy warning shown status', () => {
@@ -1297,6 +1274,7 @@ describe('Selectors', () => {
       'npm:@metamask/test-snap-networkAccess': false,
       'npm:@metamask/test-snap-notify': false,
       'npm:@metamask/test-snap-wasm': false,
+      'local:snap-id': false,
     });
   });
 
@@ -1386,15 +1364,25 @@ describe('Selectors', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -1428,6 +1416,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1453,6 +1442,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1477,6 +1467,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1503,6 +1494,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1520,7 +1512,7 @@ describe('Selectors', () => {
           name: 'Snap Account 1',
           snap: {
             enabled: true,
-            id: 'snap-id',
+            id: 'local:snap-id',
             name: 'snap-name',
           },
         },
@@ -1536,6 +1528,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1555,6 +1548,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
@@ -2159,21 +2153,6 @@ describe('#getConnectedSitesList', () => {
     });
   });
 
-  describe('#getRemoteFeatureFlags', () => {
-    it('returns remoteFeatureFlags in state', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            existingFlag: true,
-          },
-        },
-      };
-      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
-        existingFlag: true,
-      });
-    });
-  });
-
   describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
     beforeEach(() => {
       process.env.PORTFOLIO_VIEW = 'true';
@@ -2230,6 +2209,142 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
         false,
       );
+    });
+  });
+
+  describe('getTokenNetworkFilter', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('always returns an object containing the network if portfolio view is disabled', () => {
+      process.env.PORTFOLIO_VIEW = undefined;
+
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+      });
+    });
+
+    it('always returns an object containing the network if it is not included in popular networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0xNotPopularNetwork': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0xNotPopularNetwork': {
+              chainId: '0xNotPopularNetwork',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        '0xNotPopularNetwork': true,
+      });
+    });
+
+    it('returns an object containing all the popular networks for portfolio view', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.LINEA_MAINNET]: true,
+        [CHAIN_IDS.ARBITRUM]: true,
+        [CHAIN_IDS.AVALANCHE]: true,
+        [CHAIN_IDS.BSC]: true,
+        [CHAIN_IDS.OPTIMISM]: true,
+        [CHAIN_IDS.POLYGON]: true,
+        [CHAIN_IDS.ZKSYNC_ERA]: true,
+        [CHAIN_IDS.BASE]: true,
+      });
+    });
+
+    it('always returns the same object (memoized) if the same state is given', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      const result1 = selectors.getTokenNetworkFilter(state);
+      const result2 = selectors.getTokenNetworkFilter(state);
+      expect(result1 === result2).toBe(true);
     });
   });
 });

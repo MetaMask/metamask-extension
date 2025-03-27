@@ -20,6 +20,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AllowedBridgeChainIds,
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../../shared/constants/bridge';
 
 type I18nFunction = (
   key: string,
@@ -49,15 +53,20 @@ const getBridgeActionText = (
     ? networkConfigurationsByChainId[hexDestChainId]
     : undefined;
 
+  const destChainName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      destNetworkConfiguration?.chainId as AllowedBridgeChainIds
+    ];
+
+  const destSymbol = step.destAsset?.symbol;
+
+  if (!destSymbol) {
+    return null;
+  }
+
   return stepStatus === StatusTypes.COMPLETE
-    ? t('bridgeStepActionBridgeComplete', [
-        step.destAsset.symbol,
-        destNetworkConfiguration?.name,
-      ])
-    : t('bridgeStepActionBridgePending', [
-        step.destAsset.symbol,
-        destNetworkConfiguration?.name,
-      ]);
+    ? t('bridgeStepActionBridgeComplete', [destSymbol, destChainName])
+    : t('bridgeStepActionBridgePending', [destSymbol, destChainName]);
 };
 
 const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
@@ -106,15 +115,16 @@ const getSwapActionText = (
   status: StatusTypes | null,
   step: Step,
 ) => {
+  const srcSymbol = step.srcAsset?.symbol;
+  const destSymbol = step.destAsset?.symbol;
+
+  if (!srcSymbol || !destSymbol) {
+    return null;
+  }
+
   return status === StatusTypes.COMPLETE
-    ? t('bridgeStepActionSwapComplete', [
-        step.srcAsset.symbol,
-        step.destAsset.symbol,
-      ])
-    : t('bridgeStepActionSwapPending', [
-        step.srcAsset.symbol,
-        step.destAsset.symbol,
-      ]);
+    ? t('bridgeStepActionSwapComplete', [srcSymbol, destSymbol])
+    : t('bridgeStepActionSwapPending', [srcSymbol, destSymbol]);
 };
 
 export const getStepStatus = ({

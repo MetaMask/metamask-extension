@@ -1,7 +1,7 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
   CHAIN_IDS,
   LINEA_MAINNET_DISPLAY_NAME,
@@ -10,7 +10,10 @@ import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
-import { mockNetworkState } from '../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../test/stub/networks';
 
 const state = {
   invalidCustomNetwork: {
@@ -310,7 +313,6 @@ const state = {
     connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
-    isAccountMenuOpen: false,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
     internalAccounts: {
       accounts: {
@@ -326,6 +328,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
           address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
@@ -339,6 +342,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
           address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
@@ -352,6 +356,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
           address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
@@ -365,6 +370,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         'b990b846-b384-4508-93d9-587461f1123e': {
           address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
@@ -378,6 +384,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -677,8 +684,6 @@ const state = {
         ],
       },
     ],
-    pendingTokens: {},
-    customNonceValue: '',
     send: {
       gasLimit: '0xcb28',
       gasPrice: null,
@@ -702,7 +707,6 @@ const state = {
     },
     useBlockie: false,
     featureFlags: {},
-    welcomeScreenSeen: false,
     slides: [],
     currentLocale: 'en',
     preferences: {
@@ -731,7 +735,6 @@ const state = {
       },
     },
     participateInMetaMetrics: true,
-    nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
@@ -1257,6 +1260,16 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
+    keyringsMetadata: [
+      {
+        id: '01JN08SYECPZHFHB3K0J1NHJ4H',
+        name: '',
+      },
+      {
+        id: '01JN08T38HEXPYQX2HKP1FCRMZ',
+        name: '',
+      },
+    ],
     ...mockNetworkState(
       {
         id: 'test-networkConfigurationId-1',
@@ -1288,6 +1301,7 @@ const state = {
         nickname: 'Localhost 8545',
       },
     ),
+    ...mockMultichainNetworkState(),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [
@@ -1322,7 +1336,6 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    useNonceField: false,
     usePhishDetect: true,
     useTokenDetection: true,
     useCurrencyRateCheck: true,
@@ -1429,17 +1442,27 @@ const state = {
     subjects: {
       'https://app.uniswap.org': {
         permissions: {
-          eth_accounts: {
-            invoker: 'https://app.uniswap.org',
-            parentCapability: 'eth_accounts',
-            id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
-            date: 1620710693178,
+          'endowment:caip25': {
             caveats: [
               {
-                type: 'restrictReturnedAccounts',
-                value: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: [
+                        'eip155:1:0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+                      ],
+                    },
+                  },
+                  isMultichainOrigin: false,
+                },
               },
             ],
+            invoker: 'https://app.uniswap.org',
+            id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
+            date: 1620710693178,
+            parentCapability: 'endowment:caip25',
           },
         },
       },
@@ -1630,6 +1653,12 @@ const state = {
     openSeaEnabled: true,
   },
   appState: {
+    isAccountMenuOpen: false,
+    welcomeScreenSeen: false,
+    pendingTokens: {},
+    confirmationExchangeRates: {},
+    customNonceValue: '',
+    nextNonce: 71,
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -1665,7 +1694,6 @@ const state = {
     isLoading: false,
     warning: null,
     buyView: {},
-    gasIsLoading: false,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",
@@ -1850,7 +1878,7 @@ export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
-    iconColor: 'var(--mainnet)',
+    iconColor: 'var(--color-primary-default)',
     isATestNetwork: false,
     labelKey: 'mainnet',
     providerType: 'mainnet',

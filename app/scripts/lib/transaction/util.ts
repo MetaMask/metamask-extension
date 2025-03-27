@@ -24,7 +24,7 @@ import {
   UpdateSecurityAlertResponse,
 } from '../ppom/types';
 import {
-  SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+  LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -208,7 +208,7 @@ async function addUserOperationWithController(
   };
 }
 
-function getTransactionById(
+export function getTransactionById(
   transactionId: string,
   transactionController: TransactionController,
 ) {
@@ -287,13 +287,13 @@ async function validateSecurity(request: AddTransactionRequest) {
       updateSecurityAlertResponse,
     });
 
-    const securityAlertResponseCheckingChain: SecurityAlertResponse = {
-      ...SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+    const securityAlertResponseLoading: SecurityAlertResponse = {
+      ...LOADING_SECURITY_ALERT_RESPONSE,
       securityAlertId,
     };
 
     request.transactionOptions.securityAlertResponse =
-      securityAlertResponseCheckingChain;
+      securityAlertResponseLoading;
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }

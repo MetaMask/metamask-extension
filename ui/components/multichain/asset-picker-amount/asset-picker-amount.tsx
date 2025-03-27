@@ -114,7 +114,7 @@ export const AssetPickerAmount = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
   const nftImageURL = useGetAssetImageUrl(
-    asset?.details?.image ?? null,
+    asset?.details?.image ?? undefined,
     ipfsGateway,
   );
 
@@ -194,7 +194,8 @@ export const AssetPickerAmount = ({
       type: asset.type as AssetType.NFT,
       tokenId: asset.details.tokenId,
       image: asset.details.image,
-      symbol: asset.details.symbol,
+      symbol: (asset.details.symbol || asset.details.name) ?? undefined,
+      address: asset.details.address,
     };
   }
 

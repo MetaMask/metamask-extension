@@ -1,4 +1,6 @@
 import React from 'react';
+import { GasFeeToken } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -6,6 +8,7 @@ import {
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -22,12 +25,25 @@ import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import Footer from './footer';
+
+const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
+  amount: toHex(1000),
+  balance: toHex(2345),
+  decimals: 3,
+  gas: '0x3',
+  maxFeePerGas: '0x4',
+  maxPriorityFeePerGas: '0x5',
+  rateWei: toHex('1798170000000000000'),
+  recipient: '0x1234567890123456789012345678901234567890',
+  symbol: 'TEST',
+  tokenAddress: '0x1234567890123456789012345678901234567890',
+};
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -45,6 +61,8 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../hooks/useOriginThrottling');
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
 
@@ -52,6 +70,14 @@ const render = (args?: Record<string, unknown>) => {
 };
 
 describe('ConfirmFooter', () => {
+  const mockUseOriginThrottling = useOriginThrottling as jest.Mock;
+
+  beforeEach(() => {
+    mockUseOriginThrottling.mockReturnValue({
+      shouldThrottleOrigin: false,
+    });
+  });
+
   it('should match snapshot with signature confirmation', () => {
     const { container } = render(getMockPersonalSignConfirmState());
     expect(container).toMatchSnapshot();
@@ -112,20 +138,6 @@ describe('ConfirmFooter', () => {
       });
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
-
-      const confirmButton = getByText('Confirm');
-      expect(confirmButton).toBeDisabled();
-    });
-
-    it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: permitSignatureMsg,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
-      const mockStatePermit =
-        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
-      const { getByText } = render(mockStatePermit);
 
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();
@@ -212,6 +224,20 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
+  it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
+    mockUseOriginThrottling.mockReturnValue({
+      shouldThrottleOrigin: true,
+    });
+    const rejectSpy = jest.spyOn(Actions, 'rejectPendingApproval');
+
+    const { getAllByRole } = render(getMockPersonalSignConfirmState());
+
+    const cancelButton = getAllByRole('button')[0];
+    fireEvent.click(cancelButton);
+
+    expect(rejectSpy).not.toHaveBeenCalled();
+  });
+
   it('disables submit button if required LedgerHidConnection is not yet established', () => {
     const { getAllByRole } = render(
       getMockPersonalSignConfirmStateForRequest(
@@ -237,32 +263,85 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('submit button should be disabled if useMMIConfirmations returns true for mmiSubmitDisabled', () => {
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: () => Promise.resolve(),
-        mmiOnTransactionCallback: () => Promise.resolve(),
-        mmiSubmitDisabled: true,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    expect(submitButton).toBeDisabled();
-  });
+  describe('submit with transaction', () => {
+    it('updates and approves transaction', () => {
+      const { getAllByRole } = render(getMockContractInteractionConfirmState());
+      const submitButton = getAllByRole('button')[1];
 
-  it('invoke mmiOnSignCallback returned from hook useMMIConfirmations when submit button is clicked', () => {
-    const mockFn = jest.fn();
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: mockFn,
-        mmiOnTransactionCallback: mockFn,
-        mmiSubmitDisabled: false,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    fireEvent.click(submitButton);
-    expect(mockFn).toHaveBeenCalledTimes(1);
+      const updateApproveSpy = jest
+        .spyOn(Actions, 'updateAndApproveTx')
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => ({} as any));
+
+      fireEvent.click(submitButton);
+
+      expect(updateApproveSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('updates transaction with batch transactions if selected gas fee token', () => {
+      const { getAllByRole } = render(
+        getMockConfirmStateForTransaction(
+          genUnapprovedContractInteractionConfirmation({
+            selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+            gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          }),
+        ),
+      );
+      const submitButton = getAllByRole('button')[1];
+
+      const updateApproveSpy = jest
+        .spyOn(Actions, 'updateAndApproveTx')
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => ({} as any));
+
+      fireEvent.click(submitButton);
+
+      expect(updateApproveSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          batchTransactions: [
+            expect.objectContaining({
+              to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+            }),
+          ],
+        }),
+        true,
+        '',
+      );
+    });
+
+    it('updates transaction with gas properties matching selected gas fee token', () => {
+      const { getAllByRole } = render(
+        getMockConfirmStateForTransaction(
+          genUnapprovedContractInteractionConfirmation({
+            selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+            gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          }),
+        ),
+      );
+      const submitButton = getAllByRole('button')[1];
+
+      const updateApproveSpy = jest
+        .spyOn(Actions, 'updateAndApproveTx')
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => ({} as any));
+
+      fireEvent.click(submitButton);
+
+      expect(updateApproveSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          txParams: expect.objectContaining({
+            gas: GAS_FEE_TOKEN_MOCK.gas,
+            maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+            maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+          }),
+        }),
+        true,
+        '',
+      );
+    });
   });
 
   describe('ConfirmButton', () => {

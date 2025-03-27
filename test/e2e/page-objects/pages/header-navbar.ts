@@ -18,9 +18,6 @@ class HeaderNavbar {
 
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private readonly mmiPortfolioButton =
-    '[data-testid="global-menu-mmi-portfolio"]';
-
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
 
@@ -29,6 +26,15 @@ class HeaderNavbar {
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
   private readonly networkPicker = '.mm-picker-network';
+
+  private readonly notificationsButton =
+    '[data-testid="notifications-menu-item"]';
+
+  private readonly notificationCountOption =
+    '[data-testid="global-menu-notification-count"]';
+
+  private readonly firstTimeTurnOnNotificationsButton =
+    '[data-testid="turn-on-notifications-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -54,6 +60,7 @@ class HeaderNavbar {
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector('.multichain-account-menu-popover__list');
   }
 
   async openAccountDetailsModal(): Promise<void> {
@@ -65,10 +72,6 @@ class HeaderNavbar {
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.threeDotMenuButton);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
   }
 
   async openPermissionsPage(): Promise<void> {
@@ -92,6 +95,32 @@ class HeaderNavbar {
   async clickSwitchNetworkDropDown(): Promise<void> {
     console.log(`Click switch network menu`);
     await this.driver.clickElement(this.switchNetworkDropDown);
+  }
+
+  async enableNotifications(): Promise<void> {
+    console.log('Enabling notifications for the first time');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.notificationsButton);
+    await this.driver.clickElement(this.firstTimeTurnOnNotificationsButton);
+  }
+
+  async goToNotifications(): Promise<void> {
+    console.log('Click notifications button');
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async clickNotificationsOptions(): Promise<void> {
+    console.log('Click notifications options');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async check_notificationCountInMenuOption(count: number): Promise<void> {
+    await this.openThreeDotMenu();
+    await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
   }
 
   async check_currentSelectedNetwork(networkName: string): Promise<void> {

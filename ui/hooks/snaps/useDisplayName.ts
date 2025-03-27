@@ -1,5 +1,8 @@
-import { NamespaceId } from '@metamask/snaps-utils';
-import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  KnownCaipNamespace,
+  CaipNamespace,
+} from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   getMemoizedAccountName,
@@ -12,7 +15,7 @@ import { decimalToHex } from '../../../shared/modules/conversion.utils';
 
 export type UseDisplayNameParams = {
   chain: {
-    namespace: NamespaceId;
+    namespace: CaipNamespace;
     reference: string;
   };
   chainId: CaipChainId;

@@ -15,14 +15,10 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
-  CONFIRM_DEPLOY_CONTRACT_PATH,
-  CONFIRM_SEND_ETHER_PATH,
-  CONFIRM_TOKEN_METHOD_PATH,
   CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
 import usePolling from '../../../hooks/usePolling';
@@ -41,17 +37,13 @@ import {
 } from '../../../store/actions';
 import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
-import ConfirmContractInteraction from '../confirm-contract-interaction';
-import ConfirmDeployContract from '../confirm-deploy-contract';
-import ConfirmSendEther from '../confirm-send-ether';
-import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
@@ -203,26 +195,6 @@ const ConfirmTransaction = () => {
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
   return isValidTransactionId ? (
     <Switch>
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_DEPLOY_CONTRACT_PATH}`}
-        component={ConfirmDeployContract}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_ETHER_PATH}`}
-        component={ConfirmSendEther}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
-        component={ConfirmContractInteraction}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
-        component={ConfirmSignatureRequest}
-      />
       <Route
         exact
         path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}

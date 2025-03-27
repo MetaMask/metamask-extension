@@ -6,7 +6,12 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { filterE2eChangedFiles } = require('./changedFilesUtil');
+const {
+  filterE2eChangedFiles,
+  getChangedAndNewFiles,
+  readChangedAndNewFilesWithStatus,
+  shouldE2eQualityGateBeSkipped,
+} = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [];
@@ -64,13 +69,16 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
-  const changedOrNewTests = filterE2eChangedFiles();
+  const changedandNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
+  const changedandNewFilesPaths = getChangedAndNewFiles(
+    changedandNewFilesPathsWithStatus,
+  );
+  const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = applyQualityGate(
-    testPaths.join('\n'),
-    changedOrNewTests,
-  );
+  const fullTestList = shouldE2eQualityGateBeSkipped()
+    ? testPaths.join('\n')
+    : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
@@ -104,6 +112,58 @@ function runningOnCircleCI(testPaths) {
   return { fullTestList: myTestList, changedOrNewTests };
 }
 
+// For running E2Es in parallel in GitHub Actions
+function runningOnGitHubActions(testPaths) {
+  const changedandNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
+  const changedandNewFilesPaths = getChangedAndNewFiles(
+    changedandNewFilesPathsWithStatus,
+  );
+  const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
+  console.log('Changed or new test list:', changedOrNewTests);
+
+  const fullTestList = shouldE2eQualityGateBeSkipped()
+    ? testPaths.join('\n')
+    : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
+
+  console.log('Full test list:', fullTestList);
+  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
+
+  // Determine the test matrix division
+  // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
+  // Improve test strategy maybe in the future?
+  const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
+  const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
+
+  console.log(
+    `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs`,
+  );
+
+  // Split the tests evenly amongst the matrix jobs
+  const testsArray = fullTestList.split('\n').filter(Boolean);
+  const chunkSize = Math.ceil(testsArray.length / matrixTotal);
+  const startIndex = matrixIndex * chunkSize;
+  const endIndex = Math.min(startIndex + chunkSize, testsArray.length);
+
+  if (startIndex >= testsArray.length) {
+    console.log(
+      'run-all.js info: Skipping this node because there are no tests for this matrix index',
+    );
+    return { fullTestList: [] };
+  }
+
+  const myTestList = testsArray.slice(startIndex, endIndex);
+  console.log(
+    `Running tests ${startIndex + 1} to ${endIndex} of ${
+      testsArray.length
+    } total tests`,
+  );
+
+  // Write the list to a file similar to CircleCI
+  fs.writeFileSync('test/test-results/myTestList.txt', myTestList.join(' '));
+
+  return { fullTestList: myTestList, changedOrNewTests };
+}
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage(
@@ -120,10 +180,6 @@ async function main() {
             default: true,
             description:
               'Run tests in debug mode, logging each driver interaction',
-            type: 'boolean',
-          })
-          .option('mmi', {
-            description: `Run only mmi related tests`,
             type: 'boolean',
           })
           .option('rpc', {
@@ -164,7 +220,6 @@ async function main() {
     browser,
     debug,
     retries,
-    mmi,
     rpc,
     buildType,
     updateSnapshot,
@@ -206,9 +261,6 @@ async function main() {
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
-  } else if (buildType === 'mmi') {
-    const testDir = path.join(__dirname, 'tests');
-    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -238,9 +290,6 @@ async function main() {
   if (updatePrivacySnapshot) {
     args.push('--update-privacy-snapshot');
   }
-  if (mmi) {
-    args.push('--mmi');
-  }
 
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
@@ -249,6 +298,9 @@ async function main() {
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnCircleCI(testPaths));
+  } else if (process.env.GITHUB_ACTION) {
+    ({ fullTestList: myTestList, changedOrNewTests = [] } =
+      runningOnGitHubActions(testPaths));
   } else {
     myTestList = testPaths;
   }

@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   WINDOW_TITLES,
   switchToNotificationWindow,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
@@ -21,18 +20,20 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 

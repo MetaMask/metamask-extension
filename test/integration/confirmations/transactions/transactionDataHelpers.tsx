@@ -25,6 +25,7 @@ export const getUnapprovedContractInteractionTransaction = (
       maxFeePerGas: '0x5b06b0c0d',
       maxPriorityFeePerGas: '0x59682f00',
     },
+    gasLimitNoBuffer: '0x16a92',
     userEditedGasLimit: false,
     verifiedOnBlockchain: false,
     type: TransactionType.contractInteraction,
@@ -143,6 +144,7 @@ export const getUnapprovedSetApprovalForAllTransaction = (
   accountAddress: string,
   pendingTransactionId: string,
   pendingTransactionTime: number,
+  paramValueApproved: boolean = true,
 ) => {
   return {
     ...getUnapprovedContractInteractionTransaction(
@@ -156,7 +158,9 @@ export const getUnapprovedSetApprovalForAllTransaction = (
         pendingTransactionId,
         pendingTransactionTime,
       ).txParams,
-      data: '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000001',
+      data: paramValueApproved
+        ? '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000001'
+        : '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000000',
     },
     type: TransactionType.tokenMethodSetApprovalForAll,
   };

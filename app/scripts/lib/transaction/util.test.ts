@@ -9,7 +9,6 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import {
   generateSecurityAlertId,
-  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import {
@@ -100,7 +99,6 @@ describe('Transaction Utils', () => {
   let userOperationController: jest.Mocked<UserOperationController>;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
-  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -125,7 +123,6 @@ describe('Transaction Utils', () => {
     });
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
-    isChainSupportedMock.mockResolvedValue(true);
 
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
@@ -399,7 +396,7 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: BlockaidReason.checkingChain,
+            reason: BlockaidReason.inProgress,
             result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },

@@ -33,20 +33,6 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
-              class="mm-box"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-left.svg');"
-                />
-              </button>
-            </div>
-            <div
               class="mm-box mm-box--width-full"
             >
               <h4
@@ -121,20 +107,6 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
           <header
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
-            <div
-              class="mm-box"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-left.svg');"
-                />
-              </button>
-            </div>
             <div
               class="mm-box mm-box--width-full"
             >

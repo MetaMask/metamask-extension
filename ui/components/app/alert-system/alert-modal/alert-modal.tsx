@@ -1,7 +1,26 @@
-import React, { useCallback, useEffect } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
-
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import React, { useCallback, useEffect } from 'react';
+import {
+  BlockaidReason,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  IconColor,
+  Severity,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import {
   Box,
   Button,
@@ -18,22 +37,6 @@ import {
   ModalOverlay,
   Text,
 } from '../../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  Severity,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useAlerts from '../../../../hooks/useAlerts';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
@@ -137,9 +140,41 @@ function AlertHeader({
 
 function BlockaidAlertDetails() {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext();
+  const { securityAlertResponse } = currentConfirmation;
+  let copy;
+  switch (securityAlertResponse?.reason) {
+    case BlockaidReason.rawSignatureFarming:
+      copy = t('blockaidAlertInfoDescription3');
+      break;
+    case BlockaidReason.approvalFarming:
+    case BlockaidReason.setApprovalForAll:
+    case BlockaidReason.permitFarming:
+      copy = t('blockaidAlertInfoDescription2');
+      break;
+    case BlockaidReason.transferFarming:
+    case BlockaidReason.transferFromFarming:
+    case BlockaidReason.rawNativeTokenTransfer:
+      copy = t('blockaidAlertInfoDescription');
+      break;
+    case BlockaidReason.seaportFarming:
+      copy = t('blockaidAlertInfoDescription4');
+      break;
+    case BlockaidReason.blurFarming:
+      copy = t('blockaidAlertInfoDescription5');
+      break;
+    case BlockaidReason.maliciousDomain:
+      copy = t('blockaidAlertInfoDescription6');
+      break;
+    case BlockaidReason.tradeOrderFarming:
+    case BlockaidReason.other:
+    default:
+      copy = t('blockaidAlertInfoDescription7');
+  }
+
   return (
     <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
-      {t('blockaidAlertInfo')}
+      {copy}
     </Text>
   );
 }
@@ -329,15 +364,22 @@ export function AlertModal({
     }
   }, [selectedAlert, trackAlertRender]);
 
+  const isConfirmed = selectedAlert
+    ? isAlertConfirmed(selectedAlert.key)
+    : false;
+  const isAlertDanger = selectedAlert
+    ? selectedAlert.severity === Severity.Danger
+    : false;
+
+  const handleCheckboxClick = useCallback(() => {
+    if (selectedAlert) {
+      setAlertConfirmed(selectedAlert.key, !isConfirmed);
+    }
+  }, [isConfirmed, selectedAlert, setAlertConfirmed]);
+
   if (!selectedAlert) {
     return null;
   }
-  const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const isAlertDanger = selectedAlert.severity === Severity.Danger;
-
-  const handleCheckboxClick = useCallback(() => {
-    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
     <Modal isOpen onClose={handleClose} data-testid="alert-modal">
@@ -355,7 +397,7 @@ export function AlertModal({
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          {selectedAlert?.provider === SecurityProvider.Blockaid ? (
+          {selectedAlert.provider === SecurityProvider.Blockaid ? (
             <BlockaidAlertDetails />
           ) : (
             <AlertDetails

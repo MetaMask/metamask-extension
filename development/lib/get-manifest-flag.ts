@@ -6,7 +6,7 @@ import { exec as callbackExec } from 'node:child_process';
 import { hasProperty } from '@metamask/utils';
 import { merge } from 'lodash';
 
-import type { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
+import type { ManifestFlags } from '../../shared/lib/manifestFlags';
 
 const exec = promisify(callbackExec);
 const PR_BODY_FILEPATH = path.resolve(

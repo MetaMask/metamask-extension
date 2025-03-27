@@ -102,10 +102,10 @@ describe('Permit Batch Signature Tests', () => {
       'Estimated changes',
       "You're giving the spender permission to spend this many tokens from your account.",
       'Spending cap',
-      '0xA0b86...6eB48',
-      '1,461,501,637,3...',
+      'USDC',
+      'Unlimited',
       '0xb0B86...6EB48',
-      '2,461,501,637,3...',
+      'Unlimited',
     ];
 
     verifyDetails(simulationSection, simulationDetails);

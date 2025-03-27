@@ -1,5 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
@@ -39,6 +40,7 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => ({
     push: mockHistoryPush,
   }),
+  useParams: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/send/index.js', () => ({
@@ -72,6 +74,7 @@ describe('NFT Details', () => {
   });
 
   it('should match minimal props and state snapshot', async () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.GOERLI });
     getAssetImageURL.mockResolvedValue(
       'https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link',
     );
@@ -88,6 +91,7 @@ describe('NFT Details', () => {
   });
 
   it(`should route to '/' route when the back button is clicked`, () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -101,6 +105,7 @@ describe('NFT Details', () => {
   });
 
   it(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, async () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -109,7 +114,8 @@ describe('NFT Details', () => {
     const openOptionMenuButton = queryByTestId('nft-options__button');
     fireEvent.click(openOptionMenuButton);
 
-    const removeNftButton = queryByTestId('nft-item-remove');
+    const removeNftButton = queryByTestId('nft-item-remove')?.firstChild;
+    expect(removeNftButton).toBeInTheDocument();
     fireEvent.click(removeNftButton);
 
     await expect(removeAndIgnoreNft).toHaveBeenCalledWith(
@@ -121,6 +127,7 @@ describe('NFT Details', () => {
   });
 
   it(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -132,7 +139,7 @@ describe('NFT Details', () => {
     const openOptionMenuButton = queryByTestId('nft-options__button');
     fireEvent.click(openOptionMenuButton);
 
-    const removeNftButton = queryByTestId('nft-item-remove');
+    const removeNftButton = queryByTestId('nft-item-remove')?.firstChild;
     fireEvent.click(removeNftButton);
 
     await expect(removeAndIgnoreNft).toHaveBeenCalledWith(
@@ -144,6 +151,7 @@ describe('NFT Details', () => {
   });
 
   it('should copy nft address', async () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -156,6 +164,7 @@ describe('NFT Details', () => {
   });
 
   it('should navigate to draft transaction send route with ERC721 data', async () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const nftProps = {
       nft: nfts[5],
     };
@@ -179,6 +188,7 @@ describe('NFT Details', () => {
   });
 
   it('should not render send button if isCurrentlyOwned is false', () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const sixthNftProps = {
       nft: nfts[6],
     };
@@ -194,6 +204,7 @@ describe('NFT Details', () => {
   });
 
   it('should render send button if it is an ERC1155', () => {
+    useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
     const nftProps = {
       nft: nfts[1],
     };
@@ -210,6 +221,7 @@ describe('NFT Details', () => {
 
   describe(`Alternative Networks' OpenSea Links`, () => {
     it('should open opeasea link with goeli testnet chainId', async () => {
+      useParams.mockReturnValue({ chainId: CHAIN_IDS.GOERLI });
       global.platform = { openTab: jest.fn() };
 
       const { queryByTestId } = renderWithProvider(
@@ -217,20 +229,23 @@ describe('NFT Details', () => {
         mockStore,
       );
 
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
+
       const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
-        expect(global.platform.openTab).toHaveBeenCalledWith({
+        expect(openTabSpy).toHaveBeenCalledWith({
           url: `https://testnets.opensea.io/assets/goerli/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
     it('should open tab to mainnet opensea url with nft info', async () => {
+      useParams.mockReturnValue({ chainId: CHAIN_IDS.MAINNET });
       global.platform = { openTab: jest.fn() };
 
       const mainnetState = {
@@ -242,6 +257,8 @@ describe('NFT Details', () => {
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
 
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
+
       const { queryByTestId } = renderWithProvider(
         <NftDetails {...props} />,
         mainnetMockStore,
@@ -250,25 +267,31 @@ describe('NFT Details', () => {
       const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
-        expect(global.platform.openTab).toHaveBeenCalledWith({
+        expect(openTabSpy).toHaveBeenCalledWith({
           url: `https://opensea.io/assets/ethereum/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
     it('should open tab to polygon opensea url with nft info', async () => {
+      useParams.mockReturnValue({ chainId: CHAIN_IDS.POLYGON });
       const polygonState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.POLYGON,
+            nickname: 'polygon',
+          }),
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
+
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
       const { queryByTestId } = renderWithProvider(
         <NftDetails {...props} />,
@@ -278,25 +301,31 @@ describe('NFT Details', () => {
       const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
-        expect(global.platform.openTab).toHaveBeenCalledWith({
+        expect(openTabSpy).toHaveBeenCalledWith({
           url: `https://opensea.io/assets/matic/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
     it('should open tab to sepolia opensea url with nft info', async () => {
+      useParams.mockReturnValue({ chainId: CHAIN_IDS.SEPOLIA });
       const sepoliaState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.SEPOLIA,
+            nickname: 'sepolia',
+          }),
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
+
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
       const { queryByTestId } = renderWithProvider(
         <NftDetails {...props} />,
@@ -306,17 +335,18 @@ describe('NFT Details', () => {
       const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
-        expect(global.platform.openTab).toHaveBeenCalledWith({
+        expect(openTabSpy).toHaveBeenCalledWith({
           url: `https://testnets.opensea.io/assets/sepolia/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
     it('should not render opensea redirect button', async () => {
+      useParams.mockReturnValue({ chainId: '0x99' });
       const randomNetworkState = {
         ...mockState,
         metamask: {
@@ -336,7 +366,7 @@ describe('NFT Details', () => {
       const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
       await waitFor(() => {
         expect(openOpenSea).not.toBeInTheDocument();
       });

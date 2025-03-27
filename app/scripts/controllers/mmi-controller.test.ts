@@ -19,7 +19,7 @@ import {
 } from '../../../shared/constants/network';
 import { MMIController, AllowedActions } from './mmi-controller';
 import { AppStateController } from './app-state-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -87,7 +87,6 @@ const mockMetaMetricsId = 'mock-metametrics-id';
 describe('MMIController', function () {
   let mmiController,
     mmiConfigurationController,
-    controllerMessenger,
     accountsController,
     keyringController,
     custodyController,
@@ -104,13 +103,10 @@ describe('MMIController', function () {
       subscribe: jest.fn(),
     };
 
-    const controllerMessenger = new ControllerMessenger<
-      AllowedActions,
-      never
-    >();
+    const messenger = new Messenger<AllowedActions, never>();
 
     accountsController = new AccountsController({
-      messenger: controllerMessenger.getRestricted({
+      messenger: messenger.getRestricted({
         name: 'AccountsController',
         allowedEvents: [
           'SnapController:stateChange',
@@ -118,6 +114,10 @@ describe('MMIController', function () {
           'KeyringController:stateChange',
           'KeyringController:persistAllKeyrings',
           'AccountsController:selectedAccountChange',
+          'SnapKeyring:accountAssetListUpdated',
+          'SnapKeyring:accountBalancesUpdated',
+          'SnapKeyring:accountTransactionsUpdated',
+          'MultichainNetworkController:networkDidChange',
         ],
         allowedActions: [
           'AccountsController:setCurrentAccount',
@@ -152,7 +152,7 @@ describe('MMIController', function () {
     );
 
     keyringController = new KeyringController({
-      messenger: controllerMessenger.getRestricted({
+      messenger: messenger.getRestricted({
         name: 'KeyringController',
         allowedActions: [
           'KeyringController:getState',
@@ -174,7 +174,11 @@ describe('MMIController', function () {
         ],
       }),
       keyringBuilders: [...custodianKeyringBuilders],
-      state: {},
+      state: {
+        keyrings: [],
+        isUnlocked: true,
+        keyringsMetadata: [],
+      },
       encryptor: {
         encrypt(_, object) {
           this.object = object;
@@ -206,26 +210,23 @@ describe('MMIController', function () {
       },
     });
 
-    controllerMessenger.registerActionHandler(
-      'MetaMetricsController:getState',
-      () => ({
-        metaMetricsId: mockMetaMetricsId,
-      }),
-    );
+    messenger.registerActionHandler('MetaMetricsController:getState', () => ({
+      metaMetricsId: mockMetaMetricsId,
+    }));
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getState',
       jest
         .fn()
         .mockReturnValue(mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA })),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:setActiveNetwork',
       InfuraNetworkType['sepolia'],
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getNetworkClientById',
       jest.fn().mockReturnValue({
         configuration: {
@@ -234,12 +235,12 @@ describe('MMIController', function () {
       }),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getNetworkConfigurationByChainId',
       jest.fn().mockReturnValue(createMockNetworkConfiguration()),
     );
 
-    mmiControllerMessenger = controllerMessenger.getRestricted({
+    mmiControllerMessenger = messenger.getRestricted({
       name: 'MMIController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -312,10 +313,11 @@ describe('MMIController', function () {
       const type = 'mock-keyring-type';
       mmiController.keyringController.getKeyringsByType = jest
         .fn()
-        .mockReturnValue([]);
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['new-keyring']);
       mmiController.keyringController.addNewKeyring = jest
         .fn()
-        .mockResolvedValue('new-keyring');
+        .mockResolvedValue('new-keyring-metadata');
 
       const result = await mmiController.addKeyringIfNotExists(type);
 
@@ -777,6 +779,9 @@ describe('MMIController', function () {
 
   describe('handleMmiDashboardData', () => {
     it('should return internalAccounts as identities', async () => {
+      jest
+        .spyOn(mmiController.keyringController, 'getAccounts')
+        .mockReturnValue([mockAccount.address, mockAccount2.address]);
       const controllerMessengerSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.handleMmiDashboardData();
 

@@ -2,6 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
+import PrivacySettings from './settings/privacy-settings';
+import HeaderNavbar from './header-navbar';
+import SettingsPage from './settings/settings-page';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -30,12 +33,12 @@ class AccountListPage {
     '[data-testid="submit-add-account-with-name"]';
 
   private readonly addBtcAccountButton = {
-    text: messages.addNewBitcoinAccount.message,
+    text: messages.addBitcoinAccountLabel.message,
     tag: 'button',
   };
 
   private readonly addSolanaAccountButton = {
-    text: messages.addNewSolanaAccount.message,
+    text: messages.addNewSolanaAccountLabel.message,
     tag: 'button',
   };
 
@@ -46,7 +49,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton = {
-    text: 'Add hardware wallet',
+    text: 'Hardware wallet',
     tag: 'button',
   };
 
@@ -129,6 +132,41 @@ class AccountListPage {
     tag: 'h4',
   };
 
+  private readonly selectAccountSelector =
+    '.multichain-account-list-item__account-name';
+
+  private readonly importSrpButton = {
+    text: 'Secret Recovery Phrase',
+    tag: 'button',
+  };
+
+  private readonly importSrpModalTitle = {
+    text: 'Import Secret Recovery Phrase',
+    tag: 'h4',
+  };
+
+  private readonly importSrpInput = '#import-multi-srp__srp-word-0';
+
+  private readonly importSrpConfirmButton = {
+    text: 'Import wallet',
+    tag: 'button',
+  };
+
+  private readonly exportSrpButton = {
+    text: 'Show Secret Recovery Phrase',
+    tag: 'button',
+  };
+
+  private readonly srpListTitle = {
+    text: 'Select Secret Recovery Phrase',
+    tag: 'label',
+  };
+
+  private readonly viewAccountOnExplorerButton = {
+    text: 'View on explorer',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -207,11 +245,55 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new Solana account with optional custom name.
+   *
+   * @param options - Options for creating the Solana account
+   * @param [options.solanaAccountCreationEnabled] - Whether Solana account creation is enabled. If false, verifies the create button is disabled.
+   * @param [options.accountName] - Optional custom name for the new account
+   * @returns Promise that resolves when account creation is complete
+   */
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new Solana account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addSolanaAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
+    }
+  }
+
+  /**
    * Adds a new account of the specified type with an optional custom name.
    *
    * @param options - Options for adding a new account
    * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
    * @param [options.accountName] - Optional custom name for the new account
+   * @param [options.srpIndex] - Optional SRP index for the new account
    * @throws {Error} If the specified account type is not supported
    * @example
    * // Add a new Ethereum account with default name
@@ -223,9 +305,11 @@ class AccountListPage {
   async addAccount({
     accountType,
     accountName,
+    srpIndex,
   }: {
     accountType: ACCOUNT_TYPE;
     accountName?: string;
+    srpIndex?: number;
   }) {
     console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
     await this.driver.clickElement(this.createAccountButton);
@@ -245,6 +329,20 @@ class AccountListPage {
     }
 
     await this.driver.clickElement(addAccountButton);
+
+    // Run if there are multiple srps
+    if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
+      const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
+      // First, we first click here to go to the SRP List.
+      await this.driver.clickElement({
+        text: 'Secret Recovery Phrase 1',
+      });
+      // Then, we select the SRP that we want to add the account to.
+      await this.driver.clickElement({
+        text: srpName,
+      });
+    }
+
     if (accountName) {
       console.log(
         `Customize the new account with account name: ${accountName}`,
@@ -333,6 +431,19 @@ class AccountListPage {
   }
 
   /**
+   * View the account on explorer for the specified account in account list.
+   *
+   * @param accountLabel - The label of the account to view on explorer.
+   */
+  async viewAccountOnExplorer(accountLabel: string): Promise<void> {
+    console.log(
+      `View account on explorer in account list for account ${accountLabel}`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.viewAccountOnExplorerButton);
+  }
+
+  /**
    * Checks that the account value and suffix is displayed in the account list.
    *
    * @param expectedValueAndSuffix - The expected value and suffix to check.
@@ -343,10 +454,16 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountValueAndSuffix,
-      text: expectedValueAndSuffix,
-    });
+    await this.driver.findElement(this.accountValueAndSuffix, 5000);
+    await this.driver.waitForSelector(
+      {
+        css: this.accountValueAndSuffix,
+        text: expectedValueAndSuffix,
+      },
+      {
+        timeout: 20000,
+      },
+    );
   }
 
   async check_addBitcoinAccountAvailable(
@@ -483,6 +600,18 @@ class AccountListPage {
     });
   }
 
+  async check_accountNotDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
   /**
    * Checks that the account with the specified label is not displayed in the account list.
    *
@@ -605,6 +734,54 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.assertElementNotPresent(this.removeAccountButton);
+  }
+
+  async selectAccount(accountLabel: string): Promise<void> {
+    await this.driver.clickElement({
+      css: this.selectAccountSelector,
+      text: accountLabel,
+    });
+  }
+
+  async startImportSecretPhrase(srp: string): Promise<void> {
+    console.log(`Importing ${srp.split(' ').length} word srp`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.importSrpButton);
+    await this.driver.waitForSelector(this.importSrpModalTitle);
+    await this.driver.pasteIntoField(this.importSrpInput, srp);
+    await this.driver.clickElement(this.importSrpConfirmButton);
+  }
+
+  async startExportSrpForAccount(accountLabel: string): Promise<void> {
+    console.log(`Exporting SRP for account ${accountLabel}`);
+    await this.openAccountDetailsModal(accountLabel);
+    await this.driver.delay(500);
+    await this.driver.clickElement(this.exportSrpButton);
+  }
+
+  async check_accountBelongsToSrp(
+    accountName: string,
+    srpIndex: number,
+  ): Promise<void> {
+    console.log(`Check that current account is an imported account`);
+    await new HeaderNavbar(this.driver).openSettingsPage();
+    const settingsPage = new SettingsPage(this.driver);
+    await settingsPage.check_pageIsLoaded();
+    await settingsPage.goToPrivacySettings();
+
+    const privacySettings = new PrivacySettings(this.driver);
+    await privacySettings.openSrpList();
+
+    if (srpIndex === 0) {
+      throw new Error('SRP index must be > 0');
+    }
+    const srps = await this.driver.findElements('.select-srp__container');
+    const selectedSrp = srps[srpIndex - 1];
+
+    await this.driver.findNestedElement(selectedSrp, {
+      text: accountName,
+      tag: 'p',
+    });
   }
 }
 

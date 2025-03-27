@@ -1,6 +1,8 @@
 .mm-textarea {
   $resize: none, both, horizontal, vertical, initial, inherit;
 
+  max-width: 100%;
+
   &--is-disabled,
   &:disabled {
     opacity: var(--opacity-disabled);

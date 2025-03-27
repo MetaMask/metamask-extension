@@ -1,6 +1,6 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -49,24 +49,21 @@ const appStateController = {
   },
 };
 
-const controllerMessenger = new ControllerMessenger();
+const messenger = new Messenger();
 
-controllerMessenger.registerActionHandler(
-  'PreferencesController:getState',
-  () => ({
-    ...getDefaultPreferencesControllerState(),
-    currentLocale: 'en_US',
-  }),
-);
+messenger.registerActionHandler('PreferencesController:getState', () => ({
+  ...getDefaultPreferencesControllerState(),
+  currentLocale: 'en_US',
+}));
 
-controllerMessenger.registerActionHandler(
+messenger.registerActionHandler(
   'NetworkController:getState',
   jest.fn().mockReturnValue({
     selectedNetworkClientId: 'selectedNetworkClientId',
   }),
 );
 
-controllerMessenger.registerActionHandler(
+messenger.registerActionHandler(
   'NetworkController:getNetworkClientById',
   jest.fn().mockReturnValue({
     configuration: {
@@ -82,7 +79,7 @@ const metaMetricsController = new MetaMetricsController({
     fragments: {},
     events: {},
   },
-  messenger: controllerMessenger.getRestricted({
+  messenger: messenger.getRestricted({
     name: 'MetaMetricsController',
     allowedActions: [
       'PreferencesController:getState',
@@ -113,8 +110,7 @@ const createHandler = (opts) =>
     globalRateLimitMaxAmount: 0,
     appStateController,
     metaMetricsController,
-    isConfirmationRedesignEnabled: () => false,
-    isRedesignedConfirmationsDeveloperEnabled: () => false,
+    getHDEntropyIndex: jest.fn(),
     ...opts,
   });
 
@@ -214,20 +210,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
-    const originalEnableConfirmationRedesign =
-      process.env.ENABLE_CONFIRMATION_REDESIGN;
-
     beforeEach(() => {
       metaMetricsController.setParticipateInMetaMetrics(true);
-    });
-
-    beforeAll(() => {
-      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-    });
-
-    afterAll(() => {
-      process.env.ENABLE_CONFIRMATION_REDESIGN =
-        originalEnableConfirmationRedesign;
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
@@ -330,11 +314,15 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
+          hd_entropy_index: undefined,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ],
         },
         referrer: { url: 'some.dapp' },
         uniqueIdentifier: expectedUniqueIdentifier,
@@ -600,38 +588,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it('should track Confirmation Redesign through ui_customizations prop if enabled', async () => {
-      const req = {
-        id: MOCK_ID,
-        method: MESSAGE_TYPE.PERSONAL_SIGN,
-        origin: 'some.dapp',
-      };
-      const res = {
-        error: null,
-      };
-      const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler({
-        isConfirmationRedesignEnabled: () => true,
-      });
-
-      await handler(req, res, next);
-      await executeMiddlewareStack();
-
-      expect(trackEventSpy).toHaveBeenCalledTimes(2);
-
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureApproved,
-        properties: {
-          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ],
-        },
-        referrer: { url: 'some.dapp' },
-      });
-    });
-
     it('should not track Confirmation Redesign through ui_customizations prop if not enabled', async () => {
       const req = {
         id: MOCK_ID,
@@ -685,7 +641,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+            MetaMetricsEventUiCustomization.Siwe,
+          ],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -745,7 +704,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+            MetaMetricsEventUiCustomization.Permit,
+          ],
           eip712_primary_type: 'Permit',
         },
         referrer: { url: 'some.dapp' },
@@ -800,7 +762,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [MetaMetricsEventUiCustomization.Order],
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+            MetaMetricsEventUiCustomization.Order,
+          ],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -832,13 +797,12 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           eip712_primary_type: 'Unknown',
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ],
         },
         referrer: { url: 'some.dapp' },
       });
-
-      expect(trackEventSpy.mock.calls[1][0].properties).not.toHaveProperty(
-        'ui_customizations',
-      );
     });
 
     describe('when request is flagged as safe by security provider', () => {
@@ -971,6 +935,72 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0].properties.params).toStrictEqual(
           expected,
+        );
+      },
+    );
+
+    it.each([
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        [
+          {
+            calls: [
+              {
+                from: '0x1',
+                to: '0x2',
+              },
+              {
+                from: '0x2',
+                to: '0x3',
+              },
+            ],
+          },
+        ],
+        {
+          batch_transaction_count: 2,
+          method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        },
+      ],
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
+        ['0x123'],
+        {
+          method: MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
+        },
+      ],
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+        ['0x123'],
+        {
+          method: MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+        },
+      ],
+    ])(
+      `should generate %s event from %s method`,
+      async (event, method, params, properties) => {
+        const req = {
+          id: MOCK_ID,
+          method,
+          origin: 'some.dapp',
+          params,
+        };
+
+        const res = {
+          error: null,
+        };
+
+        const { next } = getNext();
+        const handler = createHandler();
+
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].event).toBe(event);
+        expect(trackEventSpy.mock.calls[0][0].properties).toStrictEqual(
+          properties,
         );
       },
     );

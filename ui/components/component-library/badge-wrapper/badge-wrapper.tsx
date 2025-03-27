@@ -2,9 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
-import type { BoxProps, PolymorphicRef } from '..';
 
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,

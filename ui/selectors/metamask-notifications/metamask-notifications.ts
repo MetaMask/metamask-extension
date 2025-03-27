@@ -270,3 +270,8 @@ export const getIsCheckingAccountsPresence = createSelector(
   [getMetamask],
   (metamask) => metamask.isCheckingAccountsPresence,
 );
+
+export const getValidNotificationAccounts = createSelector(
+  [getMetamask],
+  (metamask) => metamask.subscriptionAccountsSeen,
+);

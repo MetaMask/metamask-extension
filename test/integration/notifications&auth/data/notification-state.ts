@@ -40,6 +40,7 @@ export const getMockedNotificationsState = () => {
     isProfileSyncingUpdateLoading: false,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
+    isAccountSyncingInProgress: false,
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
@@ -52,5 +53,6 @@ export const getMockedNotificationsState = () => {
     useExternalServices: true,
     pendingApprovalCount: 0,
     pendingApprovals: {},
+    subscriptionAccountsSeen: [notificationsAccountAddress],
   };
 };

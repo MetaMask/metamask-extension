@@ -1,7 +1,7 @@
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import {
   ERC20_DEFAULT_DECIMALS,
   parseTokenDetailDecimals,
@@ -18,17 +18,16 @@ import {
 export const useGetTokenStandardAndDetails = (
   tokenAddress?: Hex | string | undefined,
 ) => {
-  if (!tokenAddress) {
-    return { decimalsNumber: undefined };
-  }
+  const { value: details } =
+    useAsyncResult<TokenDetailsERC20 | null>(async () => {
+      if (!tokenAddress) {
+        return Promise.resolve(null);
+      }
 
-  const { value: details } = useAsyncResult<TokenDetailsERC20>(
-    async () =>
-      (await memoizedGetTokenStandardAndDetails(
+      return (await memoizedGetTokenStandardAndDetails(
         tokenAddress,
-      )) as TokenDetailsERC20,
-    [tokenAddress],
-  );
+      )) as TokenDetailsERC20;
+    }, [tokenAddress]);
 
   if (!details) {
     return { decimalsNumber: undefined };

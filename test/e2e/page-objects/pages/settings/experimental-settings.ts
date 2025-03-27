@@ -16,12 +16,6 @@ class ExperimentalSettings {
     tag: 'h4',
   };
 
-  private readonly redesignedSignatureToggle =
-    '[data-testid="toggle-redesigned-confirmations-container"]';
-
-  private readonly requestQueueToggle =
-    '[data-testid="experimental-setting-toggle-request-queue"] label';
-
   private readonly watchAccountToggleState =
     '[data-testid="watch-account-toggle"]';
 
@@ -66,16 +60,6 @@ class ExperimentalSettings {
   async toggleAddAccountSnap(): Promise<void> {
     console.log('Toggle Add Account Snap on experimental setting page');
     await this.driver.clickElement(this.addAccountSnapToggle);
-  }
-
-  async toggleRedesignedSignature(): Promise<void> {
-    console.log('Toggle Redesigned Signature on experimental setting page');
-    await this.driver.clickElement(this.redesignedSignatureToggle);
-  }
-
-  async toggleRequestQueue(): Promise<void> {
-    console.log('Toggle Request Queue on experimental setting page');
-    await this.driver.clickElement(this.requestQueueToggle);
   }
 
   async toggleWatchAccount(): Promise<void> {

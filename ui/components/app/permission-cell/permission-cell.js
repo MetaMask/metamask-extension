@@ -42,7 +42,7 @@ const PermissionCell = ({
   showOptions,
   hideStatus,
   accounts,
-  permissionValue,
+  chainIds,
 }) => {
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
@@ -71,7 +71,7 @@ const PermissionCell = ({
   }
 
   const networksInfo = useSelector((state) =>
-    getRequestingNetworkInfo(state, permissionValue),
+    getRequestingNetworkInfo(state, chainIds),
   );
 
   return (
@@ -171,7 +171,7 @@ PermissionCell.propTypes = {
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
-  permissionValue: PropTypes.array,
+  chainIds: PropTypes.array,
 };
 
 export default PermissionCell;

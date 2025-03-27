@@ -2,7 +2,6 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
@@ -27,17 +26,17 @@ import {
   triggerSignature,
 } from './signature-helpers';
 
-describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
         await initializePages(driver);
 
@@ -72,8 +71,9 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -115,8 +115,9 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
       },
       mockSignatureRejectedWithDecoding,

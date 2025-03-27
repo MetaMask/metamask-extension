@@ -2,8 +2,8 @@ import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  QuoteRequest,
-} from '../../../shared/types/bridge';
+  type GenericQuoteRequest,
+} from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -68,29 +68,9 @@ export const resetBridgeState = () => {
 };
 
 // User actions
-export const setFromChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_SRC_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
-export const setToChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_DEST_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
-export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
+export const updateQuoteRequestParams = (
+  params: Partial<GenericQuoteRequest>,
+) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),

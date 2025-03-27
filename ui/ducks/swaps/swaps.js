@@ -57,6 +57,7 @@ import {
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -67,6 +68,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getSelectedInternalAccount,
   getSelectedNetwork,
+  getHDEntropyIndex,
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -85,6 +87,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   Slippage,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/swaps';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
@@ -99,6 +102,7 @@ import {
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
+import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 
 const debugLog = createProjectLogger('swaps');
 
@@ -629,6 +633,7 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const selectedNetwork = getSelectedNetwork(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
@@ -767,6 +772,9 @@ export const fetchQuotesAndSetQuoteState = (
         stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
         anonymizedData: true,
       },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     try {
@@ -833,7 +841,7 @@ export const fetchQuotesAndSetQuoteState = (
         );
 
         // Firefox and Chrome have different implementations of the APIs
-        // that we rely on for communication accross the app. On Chrome big
+        // that we rely on for communication across the app. On Chrome big
         // numbers are converted into number strings, on firefox they remain
         // Big Number objects. As such, we convert them here for both
         // browsers.
@@ -860,6 +868,9 @@ export const fetchQuotesAndSetQuoteState = (
             stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
             gas_included: newSelectedQuote.isGasIncludedTrade,
             anonymizedData: true,
+          },
+          properties: {
+            hd_entropy_index: hdEntropyIndex,
           },
         });
 
@@ -890,18 +901,19 @@ export const signAndSendSwapsSmartTransaction = ({
   return async (dispatch, getState) => {
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const fetchParams = getFetchParams(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
-    const swapsNetworkConfig = getSwapsNetworkConfig(state);
     const selectedNetwork = getSelectedNetwork(state);
+    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsNetworkConfig?.stxBatchStatusRefreshTime,
+        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
       ),
     );
 
@@ -946,6 +958,9 @@ export const signAndSendSwapsSmartTransaction = ({
       event: 'STX Swap Started',
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     if (
@@ -1065,6 +1080,7 @@ export const signAndSendTransactions = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
@@ -1233,6 +1249,9 @@ export const signAndSendTransactions = (
       event: MetaMetricsEventName.SwapStarted,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
@@ -1365,7 +1384,10 @@ export function fetchMetaSwapsGasPriceEstimates() {
       dispatch(swapGasPriceEstimatesFetchFailed());
 
       try {
-        const gasPrice = await global.ethQuery.gasPrice();
+        const gasPrice = await global.ethereumProvider.request({
+          method: 'eth_gasPrice',
+          params: [],
+        });
         const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10));
 
         dispatch(retrievedFallbackSwapsGasPrice(gasPriceInDecGWEI));
@@ -1431,3 +1453,55 @@ export function cancelSwapsSmartTransaction(uuid) {
     }
   };
 }
+
+export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+  const sourceTokenAmount = calcTokenAmount(
+    usedQuote?.sourceAmount,
+    usedQuote?.sourceTokenInfo?.decimals,
+  );
+  // Disabled because it's not a hook
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const sourceTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.sourceTokenInfo?.address,
+    sourceTokenAmount || 0,
+    usedQuote?.sourceTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const destinationTokenAmount = calcTokenAmount(
+    usedQuote?.destinationAmount,
+    usedQuote?.destinationTokenInfo?.decimals,
+  );
+  // Disabled because it's not a hook
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const destinationTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.destinationTokenInfo?.address,
+    destinationTokenAmount || 0,
+    usedQuote?.destinationTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const adjustedReturnValue =
+    destinationTokenFiatAmount && rawNetworkFees
+      ? new BigNumber(destinationTokenFiatAmount).minus(
+          new BigNumber(rawNetworkFees),
+        )
+      : null;
+  const isEstimatedReturnLow =
+    sourceTokenFiatAmount && adjustedReturnValue
+      ? adjustedReturnValue.lt(
+          new BigNumber(sourceTokenFiatAmount).times(
+            1 - SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+          ),
+        )
+      : false;
+  return isEstimatedReturnLow;
+};
