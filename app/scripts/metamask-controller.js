@@ -4220,7 +4220,6 @@ export default class MetamaskController extends EventEmitter {
         // in this case.
         const keyring = await this.getSnapKeyring();
 
-        console.log('@@ internalOptions', internalOptions);
         return await keyring.createAccount(snapId, options, internalOptions);
       },
       ///: END:ONLY_INCLUDE_IF
