@@ -6420,16 +6420,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^6.20.0":
-  version: 6.20.0
-  resolution: "@metamask/snaps-sdk@npm:6.20.0"
+"@metamask/snaps-sdk@npm:^6.21.0":
+  version: 6.21.0
+  resolution: "@metamask/snaps-sdk@npm:6.21.0"
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/providers": "npm:^21.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.2.0"
-  checksum: 10/aaba5dbcf368dda415a0e48d2eb4b322ce594aa065fb8906f186180f58479f9e6ddcae168aadc086ec2ab8f55a784eb891e81845db4acb8bcb9b486ed4d07881
+  checksum: 10/d143adea65cd5200b7e97a23d38b2bc86ca46e5d4853901092fe3e4ef7d13051c243bed0fdc675e4fff9f64bbd46b8fa50081cf02582efb4fda0ca8ddf42ff72
   languageName: node
   linkType: hard
 
@@ -27354,7 +27354,7 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^11.1.0"
     "@metamask/snaps-execution-environments": "npm:^7.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
-    "@metamask/snaps-sdk": "npm:^6.20.0"
+    "@metamask/snaps-sdk": "npm:^6.21.0"
     "@metamask/snaps-utils": "npm:^9.1.0"
     "@metamask/solana-wallet-snap": "npm:^1.15.1"
     "@metamask/test-bundler": "npm:^1.0.0"
