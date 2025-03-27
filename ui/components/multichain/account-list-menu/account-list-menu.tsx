@@ -22,6 +22,9 @@ import {
   KeyringAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { CaipChainId } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   BITCOIN_WALLET_NAME,
@@ -75,8 +78,12 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
-  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
+  getHdKeyringOfSelectedAccountOrPrimaryKeyring,
+  getMetaMaskHdKeyrings,
+  ///: END:ONLY_INCLUDE_IF
+  getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -126,6 +133,9 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { CreateSnapAccount } from '../create-snap-account';
+///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import {
@@ -135,6 +145,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
+import { SrpList } from '../multi-srp/srp-list';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -153,12 +164,38 @@ const ACTION_MODES = {
   // Same but for testnet
   ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  // Displays the add account form controls (for solana account)
+  ADD_SOLANA: 'add-solana',
+  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  CREATE_SRP: 'create-srp',
   IMPORT_SRP: 'import-srp',
+  SELECT_SRP: 'select-srp',
   ///: END:ONLY_INCLUDE_IF
 };
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+const SNAP_CLIENT_CONFIG_MAP: Record<
+  string,
+  { clientType: WalletClientType | null; chainId: CaipChainId | null }
+> = {
+  [ACTION_MODES.ADD_BITCOIN]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN,
+  },
+  [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_TESTNET,
+  },
+  [ACTION_MODES.ADD_SOLANA]: {
+    clientType: WalletClientType.Solana,
+    chainId: MultichainNetworks.SOLANA,
+  },
+};
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Gets the title for a given action mode.
@@ -182,11 +219,19 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    case ACTION_MODES.ADD_SOLANA:
+      return t('addAccount');
+    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case ACTION_MODES.CREATE_SRP:
+      return t('createSecretRecoveryPhrase');
     case ACTION_MODES.IMPORT_SRP:
       return t('importSecretRecoveryPhrase');
+    case ACTION_MODES.SELECT_SRP:
+      return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     default:
       return t('selectAnAccount');
@@ -215,6 +260,7 @@ export const AccountListMenu = ({
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
@@ -240,9 +286,11 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
-  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const [previousActionMode, setPreviousActionMode] = useState(
+    ACTION_MODES.LIST,
+  );
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -258,6 +306,9 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const multiSrpEnabled = true;
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
@@ -271,6 +322,7 @@ export const AccountListMenu = ({
         snap_id: ACCOUNT_WATCHER_SNAP_ID,
         snap_name: ACCOUNT_WATCHER_NAME,
         location: 'Main Menu',
+        hd_entropy_index: hdEntropyIndex,
       },
     });
     onClose();
@@ -311,20 +363,36 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 
-  let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
-  if (searchQuery) {
-    const fuse = new Fuse(filteredAccounts, {
-      threshold: 0.2,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: ['metadata.name', 'address'],
-    });
-    fuse.setCollection(filteredAccounts);
-    searchResults = fuse.search(searchQuery);
-  }
+  // Here we are getting the keyring of the last selected account
+  // if it is not an hd keyring, we will use the primary keyring
+  const hdKeyring = useSelector(getHdKeyringOfSelectedAccountOrPrimaryKeyring);
+  const [selectedKeyringId, setSelectedKeyringId] = useState(
+    hdKeyring.metadata.id,
+  );
+  ///: END:ONLY_INCLUDE_IF
+
+  const searchResults: MergedInternalAccount[] = useMemo(() => {
+    let _searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
+    if (searchQuery) {
+      const fuse = new Fuse(filteredAccounts, {
+        threshold: 0.2,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: ['metadata.name', 'address'],
+      });
+      fuse.setCollection(filteredAccounts);
+      _searchResults = fuse.search(searchQuery);
+    }
+
+    return _searchResults;
+  }, [filteredAccounts, filteredUpdatedAccountList, searchQuery]);
 
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),
@@ -336,37 +404,117 @@ export const AccountListMenu = ({
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    } else if (actionMode === ACTION_MODES.SELECT_SRP) {
+      onBack = () => setActionMode(previousActionMode);
+      ///: END:ONLY_INCLUDE_IF
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
 
   const onAccountListItemItemClicked = useCallback(
-    (account) => {
-      return () => {
-        onClose();
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.NavAccountSwitched,
-          properties: {
-            location: 'Main Menu',
-          },
-        });
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-        trace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-        dispatch(setSelectedAccount(account.address));
-      };
+    (account: MergedInternalAccount) => {
+      onClose();
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.NavAccountSwitched,
+        properties: {
+          location: 'Main Menu',
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+      endTrace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      dispatch(setSelectedAccount(account.address));
     },
-    [dispatch, onClose, trackEvent],
+    [dispatch, onClose, trackEvent, defaultHomeActiveTabName, hdEntropyIndex],
   );
+
+  const accountListItems = useMemo(() => {
+    return searchResults.map((account) => {
+      const connectedSite = connectedSites[account.address]?.find(
+        ({ origin }) => origin === currentTabOrigin,
+      );
+
+      const hideAccountListItem = searchQuery.length === 0 && account.hidden;
+
+      /* NOTE: Hidden account will be displayed only in the search list */
+
+      return (
+        <Box
+          className={
+            account.hidden
+              ? 'multichain-account-menu-popover__list--menu-item-hidden'
+              : 'multichain-account-menu-popover__list--menu-item'
+          }
+          display={hideAccountListItem ? Display.None : Display.Block}
+          key={account.address}
+        >
+          <AccountListItem
+            onClick={onAccountListItemItemClicked}
+            account={account}
+            key={account.address}
+            selected={selectedAccount.address === account.address}
+            closeMenu={onClose}
+            connectedAvatar={connectedSite?.iconUrl}
+            menuType={AccountListItemMenuTypes.Account}
+            isPinned={Boolean(account.pinned)}
+            isHidden={Boolean(account.hidden)}
+            currentTabOrigin={currentTabOrigin}
+            isActive={Boolean(account.active)}
+            privacyMode={privacyMode}
+            {...accountListItemProps}
+          />
+        </Box>
+      );
+    });
+  }, [
+    searchResults,
+    connectedSites,
+    currentTabOrigin,
+    privacyMode,
+    accountListItemProps,
+    selectedAccount,
+    onClose,
+    onAccountListItemItemClicked,
+    searchQuery,
+  ]);
+
+  const onActionComplete = useCallback(
+    async (confirmed: boolean) => {
+      if (confirmed) {
+        onClose();
+      } else {
+        setActionMode(ACTION_MODES.LIST);
+      }
+    },
+    [onClose, setActionMode],
+  );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const onSelectSrp = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+    });
+    setPreviousActionMode(actionMode);
+    setActionMode(ACTION_MODES.SELECT_SRP);
+  }, [setActionMode, actionMode, trackEvent]);
+
+  const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
+    clientType: null,
+    chainId: null,
+  };
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -386,16 +534,29 @@ export const AccountListMenu = ({
         {actionMode === ACTION_MODES.ADD ? (
           <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateEthAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
+              onActionComplete={onActionComplete}
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              selectedKeyringId={selectedKeyringId}
+              onSelectSrp={onSelectSrp}
+              ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          clientType && chainId ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateSnapAccount
+                onActionComplete={onActionComplete}
+                selectedKeyringId={selectedKeyringId}
+                onSelectSrp={onSelectSrp}
+                clientType={clientType}
+                chainId={chainId}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -403,15 +564,7 @@ export const AccountListMenu = ({
             paddingBottom={4}
             paddingTop={0}
           >
-            <ImportAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
+            <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
         {
@@ -424,19 +577,24 @@ export const AccountListMenu = ({
               paddingTop={0}
               style={{ overflowY: 'scroll' }}
             >
-              <ImportSrp
-                onActionComplete={(confirmed: boolean) => {
-                  if (confirmed) {
-                    onClose();
-                  } else {
-                    setActionMode(ACTION_MODES.LIST);
-                  }
-                }}
-              />
+              <ImportSrp onActionComplete={onActionComplete} />
             </Box>
           )
           ///: END:ONLY_INCLUDE_IF
         }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          actionMode === ACTION_MODES.SELECT_SRP && (
+            <SrpList
+              onActionComplete={(keyringId: string) => {
+                setSelectedKeyringId(keyringId);
+                setActionMode(previousActionMode);
+              }}
+            />
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
@@ -459,6 +617,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Default,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   setActionMode(ACTION_MODES.ADD);
@@ -485,15 +644,20 @@ export const AccountListMenu = ({
                           snap_id: SOLANA_WALLET_SNAP_ID,
                           snap_name: SOLANA_WALLET_NAME,
                           location: 'Main Menu',
+                          hd_entropy_index: hdEntropyIndex,
                         },
                       });
+
+                      if (multiSrpEnabled) {
+                        return setActionMode(ACTION_MODES.ADD_SOLANA);
+                      }
 
                       // The account creation + renaming is handled by the
                       // Snap account bridge, so we need to close the current
                       // modal
                       onClose();
 
-                      await solanaWalletSnapClient.createAccount(
+                      return await solanaWalletSnapClient.createAccount(
                         MultichainNetworks.SOLANA,
                         primaryKeyring.metadata.id,
                       );
@@ -575,6 +739,11 @@ export const AccountListMenu = ({
                   startIconName={IconName.Wallet}
                   startIconProps={{ size: IconSize.Md }}
                   onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+                    });
                     setActionMode(ACTION_MODES.IMPORT_SRP);
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
@@ -598,6 +767,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Imported,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   setActionMode(ACTION_MODES.IMPORT);
@@ -627,6 +797,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Hardware,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -657,6 +828,7 @@ export const AccountListMenu = ({
                         properties: {
                           account_type: MetaMetricsEventAccountType.Snap,
                           location: 'Main Menu',
+                          hd_entropy_index: hdEntropyIndex,
                         },
                       });
                       global.platform.openTab({
@@ -713,9 +885,8 @@ export const AccountListMenu = ({
                     size: Size.SM,
                   }}
                   inputProps={{ autoFocus: true }}
-                  // TODO: These props are required in the TextFieldSearch component. These should be optional
-                  endAccessory
-                  className
+                  endAccessory={null}
+                  className=""
                 />
               </Box>
             ) : null}
@@ -731,44 +902,7 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
-
-                const hideAccountListItem =
-                  searchQuery.length === 0 && account.hidden;
-
-                /* NOTE: Hidden account will be displayed only in the search list */
-
-                return (
-                  <Box
-                    className={
-                      account.hidden
-                        ? 'multichain-account-menu-popover__list--menu-item-hidden'
-                        : 'multichain-account-menu-popover__list--menu-item'
-                    }
-                    display={hideAccountListItem ? Display.None : Display.Block}
-                    key={account.address}
-                  >
-                    <AccountListItem
-                      onClick={onAccountListItemItemClicked(account)}
-                      account={account}
-                      key={account.address}
-                      selected={selectedAccount.address === account.address}
-                      closeMenu={onClose}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      menuType={AccountListItemMenuTypes.Account}
-                      isPinned={Boolean(account.pinned)}
-                      isHidden={Boolean(account.hidden)}
-                      currentTabOrigin={currentTabOrigin}
-                      isActive={Boolean(account.active)}
-                      privacyMode={privacyMode}
-                      {...accountListItemProps}
-                    />
-                  </Box>
-                );
-              })}
+              {accountListItems}
             </Box>
             {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
             {hiddenAddresses.length > 0 ? (

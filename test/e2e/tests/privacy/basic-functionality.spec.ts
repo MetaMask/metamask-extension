@@ -30,12 +30,31 @@ async function mockApis(mockServer: Mockttp) {
       }),
     await mockServer
       .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+      .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
             fakedata: 0,
+          },
+        };
+      }),
+
+    await mockServer
+      .forGet(
+        'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
+      )
+      .withQuery({
+        limit: 50,
+        includeTopBid: 'true',
+        chainIds: ['1', '59144'],
+        continuation: '',
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            tokens: [],
           },
         };
       }),

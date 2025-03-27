@@ -10,7 +10,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  MultichainNetworks,
+  SOLANA_BLOCK_EXPLORER_URL,
+} from '../../../../shared/constants/multichain/networks';
+import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -133,10 +138,12 @@ describe('MultichainTransactionDetailsModal', () => {
       userAddress: string;
     } = mockProps,
   ) => {
+    const store = configureStore(mockState.metamask);
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
+      store,
     );
   };
 
@@ -191,20 +198,23 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(['confirmed', 'pending', 'failed'] as const)(
+  it.each([
+    [TransactionStatus.Confirmed, 'Confirmed'],
+    [TransactionStatus.Unconfirmed, 'Pending'],
+    [TransactionStatus.Failed, 'Failed'],
+    [TransactionStatus.Submitted, 'Submitted'],
+  ])(
     'handles different transaction status: %s',
-    (status: string) => {
+    (status: TransactionStatus, expectedLabel: string) => {
       const propsWithStatus = {
         ...mockProps,
         transaction: {
           ...mockTransaction,
-          status: status as TransactionStatus,
+          status,
         },
       };
       renderComponent(propsWithStatus);
-      expect(
-        screen.getByText(status.charAt(0).toUpperCase() + status.slice(1)),
-      ).toBeInTheDocument();
+      expect(screen.getByText(expectedLabel)).toBeInTheDocument();
     },
   );
 
@@ -214,7 +224,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/tx/${txId}`,
+      `https://mempool.space/tx/${txId}`,
     );
   });
 
@@ -224,7 +234,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/testnet/tx/${txId}`,
+      `https://mempool.space/testnet/tx/${txId}`,
     );
   });
 
@@ -234,7 +244,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}`,
     );
   });
 
@@ -244,7 +254,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}?cluster=devnet`,
     );
   });
 
@@ -253,7 +263,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}`,
     );
   });
 
@@ -262,7 +272,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}?cluster=devnet`,
     );
   });
 
@@ -271,7 +281,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/address/${address}`,
+      `https://mempool.space/address/${address}`,
     );
   });
 
@@ -280,7 +290,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/testnet/address/${address}`,
+      `https://mempool.space/testnet/address/${address}`,
     );
   });
 

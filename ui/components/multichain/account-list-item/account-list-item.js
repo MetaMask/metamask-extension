@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { BigNumber } from 'bignumber.js';
 ///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
@@ -57,7 +57,7 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -69,6 +69,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -79,7 +80,7 @@ import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
@@ -105,9 +106,10 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const locale = useSelector(getIntlLocale);
   ///: END:ONLY_INCLUDE_IF
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -163,10 +165,12 @@ const AccountListItem = ({
     formattedTokensWithBalancesPerChain,
   );
   // cross chain agg balance
-  const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
-    (item) => ({
-      avatarValue: item.iconUrl,
-    }),
+  const mappedOrderedTokenList = useMemo(
+    () =>
+      accountTotalFiatBalances.orderedTokenList.map((item) => ({
+        avatarValue: item.iconUrl,
+      })),
+    [accountTotalFiatBalances.orderedTokenList],
   );
   let balanceToTranslate;
   if (isEvmNetwork) {
@@ -178,7 +182,7 @@ const AccountListItem = ({
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     balanceToTranslate = multichainAggregatedBalance;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
     const bnBalance = new BigNumber(balanceOrFallback);
     const formattedBalanceToTranslate = formatWithThreshold(
@@ -226,7 +230,7 @@ const AccountListItem = ({
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
       !isEvmNetwork;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     isAggregatedFiatOverviewBalance =
       !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
@@ -238,7 +242,7 @@ const AccountListItem = ({
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     value = account.balance;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     value = isEvmNetwork ? account.balance : balanceToTranslate;
     ///: END:ONLY_INCLUDE_IF
     return value;
@@ -259,7 +263,7 @@ const AccountListItem = ({
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
-          onClick?.();
+          onClick?.(account);
         }
       }}
     >
@@ -338,7 +342,7 @@ const AccountListItem = ({
                 as="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClick?.();
+                  onClick?.(account);
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
@@ -463,6 +467,7 @@ const AccountListItem = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Account Options',
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
             }

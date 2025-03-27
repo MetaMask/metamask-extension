@@ -90,7 +90,6 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
-      "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
@@ -108,6 +107,11 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "MegaETH": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
       },
       "SepoliaETH": {
         "conversionDate": "number",

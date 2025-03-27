@@ -86,12 +86,14 @@ describe('Signature Approved Event', function () {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
           eip712_primary_type: 'Mail',
+          hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
           eip712_primary_type: 'Mail',
+          hd_entropy_index: 0,
           security_alert_response: 'Benign',
           security_alert_source: 'api',
         });
@@ -126,6 +128,7 @@ describe('Signature Approved Event', function () {
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
+          hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
@@ -133,6 +136,7 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_signTypedData_v3',
           security_alert_response: 'Benign',
           security_alert_source: 'api',
+          hd_entropy_index: 0,
         });
       },
     );
@@ -165,6 +169,7 @@ describe('Signature Approved Event', function () {
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
+          hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
@@ -172,6 +177,7 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_signTypedData',
           security_alert_response: 'Benign',
           security_alert_source: 'api',
+          hd_entropy_index: 0,
         });
       },
     );
@@ -204,6 +210,7 @@ describe('Signature Approved Event', function () {
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
+          hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
@@ -211,6 +218,7 @@ describe('Signature Approved Event', function () {
           signature_type: 'personal_sign',
           security_alert_response: 'Benign',
           security_alert_source: 'api',
+          hd_entropy_index: 0,
         });
       },
     );
