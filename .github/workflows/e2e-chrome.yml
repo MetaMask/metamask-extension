@@ -76,28 +76,6 @@ jobs:
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
       - test-e2e-chrome-flask
-    runs-on: ubuntu-latest
-    if: always()
-    continue-on-error: true # soft launch
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download test results
-        uses: actions/download-artifact@v4
-        with:
-          path: .
-          pattern: test-e2e-*
-          merge-multiple: true
-
-      - name: Test Report
-        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
-        with:
-          name: '📝 Consolidated E2E Tests Report'
-          path: './test/test-results/e2e/**/*.xml'
-          reporter: jest-junit
-          fail-on-empty: false
-          fail-on-error: false # soft launch
-          list-suites: 'failed'
-          list-tests: 'failed'
-          only-summary: 'false'
-          use-actions-summary: 'true'
+    uses: ./.github/workflows/e2e-test-report.yml
+    with:
+      report-name: 'Chrome E2E'

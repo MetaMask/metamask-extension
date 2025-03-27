@@ -1,0 +1,53 @@
+name: E2E Test Report
+
+on:
+  workflow_call:
+    inputs:
+      report-name:
+        required: true
+        type: string
+        description: 'Name of the test report (e.g., Chrome E2E, Firefox E2E)'
+
+jobs:
+  generate-test-report:
+    runs-on: ubuntu-latest
+    if: always()
+    continue-on-error: true # soft launch
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-*
+          merge-multiple: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies for custom reporter
+        run: |
+          yarn add --dev @actions/core @actions/github @octokit/rest xml2js glob@11.1.0 tsx
+          yarn add --dev @types/node @types/xml2js @types/glob
+
+      - name: Custom Test Report
+        id: custom-report
+        continue-on-error: true
+        run: yarn tsx .github/scripts/parse-test-results.ts
+
+      - name: Test Report (Fallback)
+        if: steps.custom-report.outcome == 'failure'
+        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
+        with:
+          name: '📝 Consolidated ${{ inputs.report-name }} Tests Report'
+          path: './test/test-results/e2e/**/*.xml'
+          reporter: jest-junit
+          fail-on-empty: false
+          fail-on-error: false # soft launch
+          list-suites: 'failed'
+          list-tests: 'failed'
+          only-summary: 'false'
+          use-actions-summary: 'true'
