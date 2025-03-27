@@ -5,7 +5,7 @@ import * as actions from '../../../store/actions';
 import {
   useDisableProfileSyncing,
   useEnableProfileSyncing,
-} from './profileSyncing';
+} from './useProfileSyncing';
 
 describe('useEnableProfileSyncing()', () => {
   it('should enable profile syncing', async () => {

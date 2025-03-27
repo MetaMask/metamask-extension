@@ -23,10 +23,6 @@ on:
         type: number
         default: 30
         description: The timeout in minutes for the test command
-      tests_report_path:
-        type: string
-        default: './test/test-results/e2e/**/*.xml'
-        description: The path to the test report files
       matrix-index:
         type: number
         default: 0
