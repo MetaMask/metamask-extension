@@ -40,6 +40,7 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
+import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 import OriginThrottleModal from './origin-throttle-modal';
 import { Acknowledge } from './acknowledge';
@@ -166,6 +167,7 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
+  const selectedGasFeeToken = useSelectedGasFeeToken();
   const [isUpgradeCancelModalOpen, setUpgradeCancelModalOpen] = useState(false);
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -205,14 +207,14 @@ const Footer = () => {
       const serializedError = serializeError(error);
       dispatch(rejectPendingApproval(currentConfirmationId, serializedError));
     },
-    [currentConfirmationId],
+    [currentConfirmationId, dispatch],
   );
 
-  const resetTransactionState = () => {
+  const resetTransactionState = useCallback(() => {
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
     dispatch(clearConfirmTransaction());
-  };
+  }, [dispatch]);
 
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
@@ -228,8 +230,39 @@ const Footer = () => {
       rejectApproval({ location });
       resetTransactionState();
     },
-    [currentConfirmation, isUpgradeTransaction],
+    [
+      currentConfirmation,
+      isUpgradeTransaction,
+      rejectApproval,
+      resetTransactionState,
+    ],
   );
+
+  const onTransactionSubmit = useCallback(() => {
+    const transactionMeta = currentConfirmation as TransactionMeta;
+
+    const finalTransactionMeta: TransactionMeta = {
+      ...transactionMeta,
+      batchTransactions: selectedGasFeeToken
+        ? [selectedGasFeeToken.transferTransaction]
+        : undefined,
+      customNonceValue,
+      txParams: {
+        ...transactionMeta.txParams,
+        ...(selectedGasFeeToken
+          ? {
+              gas: selectedGasFeeToken.gas,
+              maxFeePerGas: selectedGasFeeToken.maxFeePerGas,
+              maxPriorityFeePerGas: selectedGasFeeToken.maxPriorityFeePerGas,
+            }
+          : {}),
+      },
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    dispatch(updateAndApproveTx(finalTransactionMeta, true, ''));
+    ///: END:ONLY_INCLUDE_IF
+  }, [currentConfirmation, customNonceValue, dispatch, selectedGasFeeToken]);
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
@@ -241,25 +274,17 @@ const Footer = () => {
     );
 
     if (isTransactionConfirmation) {
-      const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
-        customNonceValue
-          ? {
-              ...transactionData,
-              customNonceValue,
-            }
-          : transactionData;
-
-      const updatedTx = mergeTxDataWithNonce(
-        currentConfirmation as TransactionMeta,
-      );
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      dispatch(updateAndApproveTx(updatedTx, true, ''));
-      ///: END:ONLY_INCLUDE_IF
+      onTransactionSubmit();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
     resetTransactionState();
-  }, [currentConfirmation, customNonceValue]);
+  }, [
+    currentConfirmation,
+    dispatch,
+    onTransactionSubmit,
+    resetTransactionState,
+  ]);
 
   const handleFooterCancel = useCallback(() => {
     if (shouldThrottleOrigin) {
@@ -267,7 +292,7 @@ const Footer = () => {
       return;
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [currentConfirmation, onCancel]);
+  }, [onCancel, shouldThrottleOrigin]);
 
   return (
     <PageFooter
