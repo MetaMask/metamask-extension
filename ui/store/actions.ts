@@ -4,6 +4,7 @@
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
 // I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
@@ -125,7 +126,6 @@ import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/con
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-import { canSafelyAutoCloseThisPopup } from '../../shared/lib/canSafelyAutoCloseThisPopup';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -4849,18 +4849,39 @@ export function getGasFeeTimeEstimate(
 }
 
 export async function attemptCloseNotificationPopup() {
-  await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
+  // Check if the current window is NOT a popup - if confirmed, we should not close it
   try {
-    // Try closing this tab if possible.
-    // As of 2025-03-17, a "tab" in this context could be a popup window.
+    const currentWindow = await browser.windows.getCurrent();
+    if (currentWindow.type && currentWindow.type !== 'popup') {
+      console.warn(
+        `Not safe to close a window that is not a popup: It is of type: ${currentWindow.type}`,
+      );
+      // We've confirmed this is not a popup window, so it's not safe to close.
+      return;
+    }
+  } catch (error) {
+    // Error occurred while checking window type - we cannot confirm it's not a popup, so continue
+    // with the closing attempt as we haven't ruled out that it might be a popup
+  }
+
+  await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
+
+  // First attempt: Try window.close()
+  // This has limitations according to MDN:
+  // - Only works on windows opened by Window.open()
+  // - Or top-level windows with single history entry
+  // - Otherwise fails silently with console error: "Scripts may not close windows that were not opened by script"
+  window.close();
+
+  // Second attempt: If we reach here, window.close() failed
+  // Try to close via the browser tabs API
+  try {
     const tab = await browser.tabs.getCurrent();
     await browser.tabs.remove(tab.id);
   } catch (error) {
-    if (!(await canSafelyAutoCloseThisPopup())) {
-      // In case we are running in a tab, we don't want to close the window.
-      return;
-    }
-    global.platform.closeCurrentWindow();
+    // If closing the tab fails, we don't want to close the entire browser window.
+    // See issue: https://github.com/MetaMask/metamask-extension/issues/29821
+    console.error('attemptCloseNotificationPopup: Failed to close tab', error);
   }
 }
 

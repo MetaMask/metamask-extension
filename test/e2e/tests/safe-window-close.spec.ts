@@ -28,7 +28,7 @@ describe('Notification window closing', function () {
           `window.ethereum.request(${requestPermissionsRequest})`,
         );
 
-        await driver.delay(30000);
+        // await driver.delay(30000);
 
         // confirm connect account
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
