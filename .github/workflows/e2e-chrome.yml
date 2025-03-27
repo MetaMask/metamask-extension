@@ -19,6 +19,21 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
+  test-e2e-chrome-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-chrome-webpack
+      build-artifact: prep-build-test-webpack-chrome
+      build-command: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+      test-command: yarn test:e2e:chrome:webpack
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
   test-e2e-chrome-multiple-providers:
     uses: ./.github/workflows/run-e2e.yml
     with:
@@ -59,17 +74,24 @@ jobs:
       build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
 
-  test-e2e-chrome-webpack:
-    uses: ./.github/workflows/run-e2e.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        index:
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-    with:
-      test-suite-name: test-e2e-chrome-webpack
-      build-artifact: prep-build-test-webpack-chrome
-      build-command: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
-      test-command: yarn test:e2e:chrome:webpack
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
+  test-e2e-swap-playwright:
+    runs-on: ubuntu-latest
+    continue-on-error: true # soft launch
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+
+      - name: Install Chromium
+        run: yarn playwright install chromium
+
+      - name: Run Swap E2E tests
+        run: yarn test:e2e:swap
+
+      - name: Upload test reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-reports
+          path: public/playwright/playwright-reports

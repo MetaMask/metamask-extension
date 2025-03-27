@@ -95,7 +95,7 @@ jobs:
         run: ${{ inputs.test-command }} --retries 1
 
       - name: Upload test results and artifacts
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format('-{0}', inputs.matrix-index) || '' }}
