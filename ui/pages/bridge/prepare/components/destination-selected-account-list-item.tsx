@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
   AvatarAccount,
@@ -21,8 +20,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import { getUseBlockie } from '../../../../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DestinationAccount } from '../types';
 
@@ -66,16 +63,25 @@ const DestinationSelectedAccountListItem: React.FC<
       />
 
       <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {isExternalAccount ? t('externalAccount') : account.metadata.name}
-        </Text>
-
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
           data-testid="account-list-address"
+          marginBottom={1}
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
+          {t('destinationAccountPickerReceiveAt')}
+        </Text>
+
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
+          {(() => {
+            if (isExternalAccount) {
+              if (account.metadata.name.endsWith('.eth')) {
+                return account.metadata.name;
+              }
+              return t('externalAccount');
+            }
+            return account.metadata.name;
+          })()}
         </Text>
       </Box>
     </Box>
