@@ -141,16 +141,26 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-if (isFirefox || !isManifestV3) {
+// On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+// is never called.
+// There is no `app-init` file on MV2 builds, so we add a listener here instead.
+if (!isManifestV3) {
   browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install') {
-      onFirstInstall();
+      onInstall();
     }
   });
+
+  // This condition is for when the `onInstalled` listener in `app-init` was called before
+  // `background.js` was loaded.
 } else if (globalThis.__metamaskWasJustInstalled) {
-  onFirstInstall();
+  onInstall();
+  // Delete just to clean up global namespace
+  delete globalThis.__metamaskWasJustInstalled;
+  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+  // called.
 } else {
-  globalThis.__metamaskTriggerOnInstall = () => onFirstInstall();
+  globalThis.__metamaskTriggerOnInstall = () => onInstall();
 }
 
 /**
@@ -1274,8 +1284,10 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-// On first install, open a new tab with MetaMask
-function onFirstInstall() {
+/**
+ * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
+ */
+function onInstall() {
   log.debug('First install detected');
   if (process.env.IN_TEST) {
     addAppInstalledEvent();

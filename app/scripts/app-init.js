@@ -184,10 +184,19 @@ const registerInPageContentScript = async () => {
   }
 };
 
+// On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+// is never called.
+// For MV2 builds, the listener is added in `background.js` instead.
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
+    // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+    // called.
     if (globalThis.__metamaskTriggerOnInstall) {
       globalThis.__metamaskTriggerOnInstall();
+      // Delete just to clean up global namespace
+      delete globalThis.__metamaskTriggerOnInstall;
+      // This condition is for when the `onInstalled` listener in `app-init` was called before
+      // `background.js` was loaded.
     } else {
       globalThis.__metamaskWasJustInstalled = true;
     }
