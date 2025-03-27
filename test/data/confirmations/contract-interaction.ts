@@ -2,6 +2,7 @@ import {
   AuthorizationList,
   BatchTransactionParams,
   CHAIN_IDS,
+  GasFeeToken,
   SimulationData,
   TransactionMeta,
   TransactionStatus,
@@ -30,12 +31,16 @@ export const genUnapprovedContractInteractionConfirmation = ({
   chainId = CHAIN_ID,
   nestedTransactions,
   simulationData,
+  gasFeeTokens,
+  selectedGasFeeToken,
 }: {
   address?: Hex;
   authorizationList?: AuthorizationList;
   txData?: Hex;
   chainId?: string;
   nestedTransactions?: BatchTransactionParams[];
+  gasFeeTokens?: GasFeeToken[];
+  selectedGasFeeToken?: Hex;
   simulationData?: SimulationData;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
@@ -51,6 +56,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       maxPriorityFeePerGas: '0x59682f00',
     },
     gasFeeEstimatesLoaded: true,
+    gasFeeTokens,
     history: [
       {
         actionId: String(400855682),
@@ -148,6 +154,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       reason: '',
       result_type: 'Benign',
     },
+    selectedGasFeeToken,
     sendFlowHistory: [],
     simulationData: {
       nativeBalanceChange: {
