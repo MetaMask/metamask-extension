@@ -2746,6 +2746,7 @@ export function updateSendAsset(
           );
         }
       }
+
       await dispatch(
         actions.updateAsset({ asset, initialAssetSet, isReceived }),
       );
@@ -3153,6 +3154,7 @@ export function startNewDraftTransaction(asset) {
         history: [`sendFlow - User started new draft transaction`],
       }),
     );
+
     await dispatch(
       updateSendAsset({
         type: asset.type ?? AssetType.native,
