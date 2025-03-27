@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
 import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
@@ -63,7 +63,7 @@ export class Anvil {
     const anvilBinaryDir = join(process.cwd(), 'node_modules', '.bin');
 
     // Prepend the anvil binary directory to the PATH environment variable
-    process.env.PATH = `${anvilBinaryDir}:${process.env.PATH}`;
+    process.env.PATH = `${anvilBinaryDir}${delimiter}${process.env.PATH}`;
 
     // Verify that the anvil binary is accessible
     try {
