@@ -2936,33 +2936,6 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
 
-export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
-    state.metamask;
-
-  const [primaryKeyring] = getMetaMaskHdKeyrings(state);
-
-  if (!isUnlocked || !primaryKeyring) {
-    return false;
-  }
-
-  const selectedAccount = getSelectedInternalAccount(state);
-  // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
-
-  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
-    selectedAccount.address.toLowerCase(),
-  );
-
-  const showMessage =
-    isAccountFromPrimarySrp &&
-    seedPhraseBackedUp === false &&
-    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false;
-
-  return showMessage;
-}
-
 export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
