@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import {
   Modal,
   ModalBody,
@@ -16,24 +15,41 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { updateSelectedGasFeeToken } from '../../../../../../../store/actions/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { gasFeeTokens, selectedGasFeeToken } = currentConfirmation;
+
+  const {
+    id: transactionId,
+    gasFeeTokens,
+    selectedGasFeeToken,
+  } = currentConfirmation;
 
   const handleTokenClick = useCallback(
-    async (_token: GasFeeToken) => {
+    async (token: GasFeeToken) => {
+      const selectedAddress =
+        token.tokenAddress === NATIVE_TOKEN_ADDRESS
+          ? undefined
+          : token.tokenAddress;
+
+      await updateSelectedGasFeeToken(transactionId, selectedAddress);
+
       onClose?.();
     },
-    [onClose],
+    [onClose, transactionId],
+  );
+
+  const hasNativeToken = gasFeeTokens?.some(
+    (token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS,
   );
 
   const gasFeeTokenAddresses = [
-    NATIVE_TOKEN_ADDRESS,
+    ...(hasNativeToken ? [] : [NATIVE_TOKEN_ADDRESS]),
     ...(gasFeeTokens?.map((token) => token.tokenAddress) ?? []),
-  ] as Hex[];
+  ];
 
   return (
     <Modal

@@ -1,7 +1,13 @@
-import { Hex } from '@metamask/utils';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import { Hex, add0x } from '@metamask/utils';
+import {
+  BatchTransactionParams,
+  GasFeeToken,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import { formatAmount } from '../../../simulation-details/formatAmount';
@@ -14,6 +20,7 @@ import { useFeeCalculations } from './useFeeCalculations';
 
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
+export const METAMASK_FEE_PERCENTAGE = 0.35;
 
 export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
   const { currentConfirmation: transactionMeta } =
@@ -21,7 +28,7 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
-  const { gasFeeTokens } = transactionMeta;
+  const { gasFeeTokens } = transactionMeta ?? {};
 
   let gasFeeToken = gasFeeTokens?.find(
     (token) => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase(),
@@ -33,6 +40,10 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
 
   const { amount, decimals } = gasFeeToken ?? { amount: '0x0', decimals: 0 };
 
+  const metaMaskFee = add0x(
+    new BigNumber(amount).times(METAMASK_FEE_PERCENTAGE).toString(16),
+  );
+
   const amountFormatted = formatAmount(
     locale,
     new BigNumber(amount).shift(-decimals),
@@ -40,16 +51,22 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
 
   const amountFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.amount);
   const balanceFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.balance);
+  const metamaskFeeFiat = useFiatTokenValue(gasFeeToken, metaMaskFee);
 
   if (!gasFeeToken) {
     return undefined;
   }
+
+  const transferTransaction = getTransferTransaction(gasFeeToken);
 
   return {
     ...gasFeeToken,
     amountFormatted,
     amountFiat,
     balanceFiat,
+    metaMaskFee,
+    metamaskFeeFiat,
+    transferTransaction,
   };
 }
 
@@ -57,7 +74,7 @@ export function useSelectedGasFeeToken() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { selectedGasFeeToken } = transactionMeta;
+  const { selectedGasFeeToken } = transactionMeta ?? {};
 
   return useGasFeeToken({ tokenAddress: selectedGasFeeToken ?? '0x' });
 }
@@ -66,20 +83,24 @@ function useNativeGasFeeToken(): GasFeeToken {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { id: transactionId } = transactionMeta;
-  const { estimatedFeeNativeHex } = useFeeCalculations(transactionMeta);
+  const { id: transactionId, txParams } = transactionMeta ?? {};
+
+  const { estimatedFeeNativeHex } = useFeeCalculations(
+    transactionMeta?.txParams
+      ? transactionMeta
+      : ({ txParams: {} } as TransactionMeta),
+  );
 
   const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, transactionMeta.chainId),
+    selectNetworkConfigurationByChainId(state, transactionMeta?.chainId),
   );
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
   );
 
-  const { nativeCurrency } = networkConfiguration;
-  const { txParams } = transactionMeta;
-  const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams;
+  const { nativeCurrency } = networkConfiguration ?? {};
+  const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
   return {
     amount: estimatedFeeNativeHex,
@@ -110,4 +131,20 @@ function useFiatTokenValue(
   const fiatValue = useEthFiatAmount(nativeEth, {}, true);
 
   return gasFeeToken ? fiatValue : '';
+}
+
+function getTransferTransaction(
+  gasFeeToken: GasFeeToken,
+): BatchTransactionParams {
+  const data = new Interface(abiERC20).encodeFunctionData('transfer', [
+    gasFeeToken.recipient,
+    gasFeeToken.amount,
+  ]) as Hex;
+
+  return {
+    data,
+    maxFeePerGas: gasFeeToken.maxFeePerGas,
+    maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
+    to: gasFeeToken.tokenAddress,
+  };
 }
