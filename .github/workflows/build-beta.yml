@@ -46,6 +46,7 @@ jobs:
         with:
           is-high-risk-environment: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          skip-allow-scripts: true
 
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}

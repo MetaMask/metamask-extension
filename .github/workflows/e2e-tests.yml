@@ -28,6 +28,7 @@ jobs:
           # because in the workflow, we would like to parse the latest commit tag.
           # Specifying `ref` ensures that the head commit is checked out directly.
           ref: ${{ env.HEAD_COMMIT_HASH }}
+          skip-allow-scripts: true
 
       - name: Determine Needs E2E
         id: needs-e2e
@@ -71,6 +72,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download changed-files artifact
         continue-on-error: true

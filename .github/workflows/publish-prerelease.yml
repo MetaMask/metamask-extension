@@ -16,6 +16,7 @@ jobs:
         with:
           is-high-risk-environment: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
+          skip-allow-scripts: true
 
       - name: Get merge base commit hash
         id: get-merge-base

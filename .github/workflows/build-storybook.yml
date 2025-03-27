@@ -15,6 +15,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
+          skip-allow-scripts: true
 
       - name: Build storybook
         run: yarn storybook:build

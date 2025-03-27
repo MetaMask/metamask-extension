@@ -24,6 +24,7 @@ jobs:
         with:
           is-high-risk-environment: false
           cache-node-modules: true
+          skip-allow-scripts: true
 
   lint-workflows:
     name: Lint workflows
@@ -44,6 +45,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -78,6 +80,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - run: yarn build:test
 
@@ -96,6 +99,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
         env:
