@@ -6,6 +6,8 @@ import {
   CaipChainId,
   parseCaipChainId,
   NonEmptyArray,
+  parseCaipAccountId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
@@ -18,6 +20,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllPermittedAccountsForSelectedTab,
+  getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
   getPermissionSubjects,
   getPermittedEVMChainsForSelectedTab,
@@ -139,9 +142,10 @@ export const ReviewPermissions = () => {
     [networkConfigurationsByCaipChainId],
   );
 
-  const connectedEVMChainIds = useSelector((state) =>
-    getPermittedEVMChainsForSelectedTab(state, activeTabOrigin),
-  );
+  // TODO: Fix this typing upstream?
+  const connectedChainIds = useSelector((state) =>
+    getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
+  ) as CaipChainId[];
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -151,7 +155,7 @@ export const ReviewPermissions = () => {
 
     dispatch(addPermittedChains(activeTabOrigin, chainIds));
 
-    connectedEVMChainIds.forEach((chainId: string) => {
+    connectedChainIds.forEach((chainId: string) => {
       if (!chainIds.includes(chainId)) {
         dispatch(removePermittedChain(activeTabOrigin, chainId));
       }
@@ -234,7 +238,7 @@ export const ReviewPermissions = () => {
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
-              selectedChainIds={connectedEVMChainIds}
+              selectedChainIds={connectedChainIds}
               hideAllToasts={hideAllToasts}
             />
           ) : (

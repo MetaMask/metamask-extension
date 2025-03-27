@@ -58,7 +58,7 @@ export const EditNetworksModal = ({
   ]);
 
   const selectAll = () => {
-    const allNetworksChainIds = allNetworks.map(({ chainId }) => chainId);
+    const allNetworksChainIds = allNetworks.map(({ caipChainId }) => caipChainId);
     setSelectedChainIds(allNetworksChainIds);
   };
 
@@ -121,13 +121,13 @@ export const EditNetworksModal = ({
             <NetworkListItem
               name={network.name}
               iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-              key={network.chainId}
+              key={network.caipChainId}
               onClick={() => {
-                handleNetworkClick(network.chainId);
+                handleNetworkClick(network.caipChainId);
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.chainId)}
+                  isChecked={selectedChainIds.includes(network.caipChainId)}
                 />
               }
             />
@@ -138,14 +138,14 @@ export const EditNetworksModal = ({
           {testNetworks.map((network) => (
             <NetworkListItem
               name={network.name}
-              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-              key={network.chainId}
+              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.caipChainId]}
+              key={network.caipChainId}
               onClick={() => {
-                handleNetworkClick(network.chainId);
+                handleNetworkClick(network.caipChainId);
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.chainId)}
+                  isChecked={selectedChainIds.includes(network.caipChainId)}
                 />
               }
               showEndAccessory={false}
@@ -236,7 +236,7 @@ EditNetworksModal.propTypes = {
    */
   nonTestNetworks: PropTypes.arrayOf(
     PropTypes.shape({
-      chainId: PropTypes.string.isRequired, // The chain ID of the network
+      caipChainId: PropTypes.string.isRequired, // The chain ID of the network
       name: PropTypes.string.isRequired, // Display name of the network
     }),
   ).isRequired,
@@ -246,7 +246,7 @@ EditNetworksModal.propTypes = {
    */
   testNetworks: PropTypes.arrayOf(
     PropTypes.shape({
-      chainId: PropTypes.string.isRequired, // The chain ID of the network
+      caipChainId: PropTypes.string.isRequired, // The chain ID of the network
       name: PropTypes.string.isRequired, // Display name of the network
     }),
   ).isRequired,

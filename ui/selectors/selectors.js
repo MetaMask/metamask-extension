@@ -3238,8 +3238,13 @@ export function getAllPermittedAccounts(state, origin) {
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
+
+export function getAllPermittedScopes(state, origin) {
+  return getAllScopesFromPermission(
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
+
 
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
@@ -3266,6 +3271,10 @@ export function getPermittedEVMChainsForCurrentTab(state) {
 
 export function getPermittedEVMChainsForSelectedTab(state, activeTab) {
   return getPermittedEVMChains(state, activeTab);
+}
+
+export function getAllPermittedChainsForSelectedTab(state, activeTab) {
+  return getAllPermittedScopes(state, activeTab);
 }
 
 /**
@@ -3455,6 +3464,27 @@ function getAllAccountsFromPermission(caip25Permission) {
 
   return getUniqueArrayItems([...requiredAccounts, ...optionalAccounts]);
 }
+
+function getAllScopesFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  if (!caip25Caveat) {
+    return [];
+  }
+
+  // TODO dry and or move to @metamask/chain-agnostic-permission
+  const requiredScopes = Object.keys(
+    caip25Caveat.value.requiredScopes,
+  )
+
+  const optionalScopes = Object.keys(
+    caip25Caveat.value.optionalScopes,
+  )
+
+  // TODO: May need to filter out wallet scopes here?
+
+  return getUniqueArrayItems([...requiredScopes, ...optionalScopes]);
+}
+
 
 function getEVMAccountsFromPermission(caip25Permission) {
   const caip25Caveat = getCaveatFromPermission(caip25Permission);

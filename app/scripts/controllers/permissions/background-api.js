@@ -10,6 +10,7 @@ import {
   setEthAccounts,
   getPermittedEthChainIds,
   setPermittedEthChainIds,
+  addPermittedChainId,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 
@@ -73,17 +74,19 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
-    const updatedEthChainIds = Array.from(
-      new Set([...ethChainIds, ...chainIds]),
-    );
+    let caveatValueWithChains = caip25Caveat.value
 
-    const caveatValueWithChains = setPermittedEthChainIds(
-      caip25Caveat.value,
-      updatedEthChainIds,
-    );
+    chainIds.forEach(chainId => {
+      caveatValueWithChains = addPermittedChainId(
+        caip25Caveat.value,
+        chainId,
+      );
+    });
 
+
+
+    // TODO: Do we need to do this for solana?..
     // ensure that the list of permitted eth accounts is set for the newly added eth scopes
     const ethAccounts = getEthAccounts(caveatValueWithChains);
     const caveatValueWithAccountsSynced = setEthAccounts(
