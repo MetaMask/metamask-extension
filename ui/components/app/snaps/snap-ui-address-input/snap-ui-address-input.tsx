@@ -47,7 +47,7 @@ export type SnapUIAddressInputProps = {
 
 export const SnapUIAddressInput: FunctionComponent<
   SnapUIAddressInputProps & FormTextFieldProps<'div'>
-> = ({ name, form, label, chainId, displayAvatar, error, ...props }) => {
+> = ({ name, form, label, chainId, displayAvatar = true, error, ...props }) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
