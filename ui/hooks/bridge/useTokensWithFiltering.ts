@@ -136,7 +136,7 @@ export const useTokensWithFiltering = (
           CHAIN_ID_TOKEN_IMAGE_MAP[
             sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
           ] ??
-          (token.iconUrl || token.icon || ''),
+          (token.iconUrl || getAssetImageUrl(token.address, chainId) || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
         string: '0',
@@ -146,7 +146,7 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? token.icon ?? '',
+      image: token.iconUrl ?? getAssetImageUrl(token.address, chainId) ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
@@ -245,7 +245,7 @@ export const useTokensWithFiltering = (
             if (
               matchedToken &&
               isTokenV3Asset(matchedToken) &&
-              shouldAddToken(matchedToken.symbol, matchedToken.assetId, chainId)
+              shouldAddToken(matchedToken.symbol, tokenAddress, chainId)
             ) {
               yield {
                 ...matchedToken,
@@ -263,8 +263,9 @@ export const useTokensWithFiltering = (
             if (
               token_ &&
               !token_.symbol.includes('$') &&
+              token_.symbol !== 'SOL' &&
               isTokenV3Asset(token_) &&
-              shouldAddToken(token_.symbol, token_.assetId, chainId)
+              shouldAddToken(token_.symbol, token_.address, chainId)
             ) {
               const { assetReference } = parseCaipAssetType(
                 token_.assetId as `${string}:${string}/${string}:${string}`,
