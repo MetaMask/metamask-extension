@@ -4385,7 +4385,7 @@ export default class MetamaskController extends EventEmitter {
         STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     }
 
-    const tokenListDetails = tokenList[address.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
