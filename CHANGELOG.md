@@ -54,6 +54,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent SrpViewSrpText from firing more than once ([#30658](https://github.com/MetaMask/metamask-extension/pull/30658))
 - Profile sync can now be searched in settings ([#30687](https://github.com/MetaMask/metamask-extension/pull/30687))
 
+## [12.14.2]
+### Fixed
+- Fix state corruption resulting in inability to create/add accounts ([#31293](https://github.com/MetaMask/metamask-extension/pull/31293))
+- Fix infinite load for users who had added MetaETH testnet before v12.14.1 update ([#31298](https://github.com/MetaMask/metamask-extension/pull/31298))
+
 ## [12.14.1]
 ### Fixed
 - Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
@@ -5876,7 +5881,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...HEAD
-[12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.15.0
+[12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0
+[12.14.2]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.14.2
 [12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
 [12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0
 [12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
