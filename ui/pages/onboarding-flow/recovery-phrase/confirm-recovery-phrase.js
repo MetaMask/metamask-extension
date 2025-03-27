@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
@@ -24,12 +24,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = secretRecoveryPhrase.split(' ');
   const indicesToCheck = [2, 3, 7];
   const [matching, setMatching] = useState(false);
@@ -108,6 +110,9 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
               category: MetaMetricsEventCategory.Onboarding,
               event:
                 MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+              properties: {
+                hd_entropy_index: hdEntropyIndex,
+              },
             });
             history.push(ONBOARDING_COMPLETION_ROUTE);
           }}
