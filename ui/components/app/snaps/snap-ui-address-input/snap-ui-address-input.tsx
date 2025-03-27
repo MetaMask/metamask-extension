@@ -85,7 +85,7 @@ export const SnapUIAddressInput: FunctionComponent<
 
     const newValue = event.target.value
       ? `${chainId}:${event.target.value}`
-      : null;
+      : '';
 
     handleInputChange(name, newValue, form);
   };
@@ -95,7 +95,7 @@ export const SnapUIAddressInput: FunctionComponent<
 
   const handleClear = () => {
     setValue('');
-    handleInputChange(name, null, form);
+    handleInputChange(name, '', form);
   };
 
   const MatchedAccountInfo = () => {
