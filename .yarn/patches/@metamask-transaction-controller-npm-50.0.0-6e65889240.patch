@@ -1,5 +1,5 @@
 diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
-index 5f244a7192ebc9b39ba230d92ee3bf36b47a36cd..247aac66bc90f29d2168e2dfcebfe3523b77a64c 100644
+index 5f244a7192ebc9b39ba230d92ee3bf36b47a36cd..bad32607ec183eaeeed2fb24ffca1810ed1975e7 100644
 --- a/dist/TransactionController.cjs
 +++ b/dist/TransactionController.cjs
 @@ -559,7 +559,12 @@ class TransactionController extends base_controller_1.BaseController {
@@ -30,7 +30,25 @@ index 5f244a7192ebc9b39ba230d92ee3bf36b47a36cd..247aac66bc90f29d2168e2dfcebfe352
          const gas = (0, gas_1.addGasBuffer)(estimatedGas, blockGasLimit, multiplier);
          return {
              gas,
-@@ -2097,6 +2107,7 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+@@ -2012,6 +2022,9 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+         tokenBalanceChanges: [],
+     };
+     if (__classPrivateFieldGet(this, _TransactionController_isSimulationEnabled, "f").call(this)) {
++        const authorizationAddress = txParams?.authorizationList?.[0]?.address;
++        const senderCode = authorizationAddress &&
++            (eip7702_1.DELEGATION_PREFIX + (0, utils_1.remove0x)(authorizationAddress));
+         simulationData = await __classPrivateFieldGet(this, _TransactionController_trace, "f").call(this, { name: 'Simulate', parentContext: traceContext }, () => (0, simulation_1.getSimulationData)({
+             chainId,
+             from: from,
+@@ -2020,6 +2033,7 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+             data: data,
+         }, {
+             blockTime,
++            senderCode,
+         }));
+         if (blockTime &&
+             prevSimulationData &&
+@@ -2097,6 +2111,7 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
          chainId,
          ethQuery,
          isCustomNetwork,
@@ -39,9 +57,27 @@ index 5f244a7192ebc9b39ba230d92ee3bf36b47a36cd..247aac66bc90f29d2168e2dfcebfe352
      });
  }, _TransactionController_deleteTransaction = function _TransactionController_deleteTransaction(transactionId) {
 diff --git a/dist/TransactionController.mjs b/dist/TransactionController.mjs
-index 3ecb211958f31624677c0db41c0e87b2cdb4cf76..92d1d34182a3b319253ee11cef27e385c04c1945 100644
+index 3ecb211958f31624677c0db41c0e87b2cdb4cf76..060d60eddb796c74e79cac8014b92b8971871119 100644
 --- a/dist/TransactionController.mjs
 +++ b/dist/TransactionController.mjs
+@@ -23,7 +23,7 @@ const EthQuery = $importDefault($EthQuery);
+ import { NetworkClientType } from "@metamask/network-controller";
+ import { NonceTracker } from "@metamask/nonce-tracker";
+ import { errorCodes, rpcErrors, providerErrors } from "@metamask/rpc-errors";
+-import { add0x, hexToNumber } from "@metamask/utils";
++import { add0x, hexToNumber, remove0x } from "@metamask/utils";
+ import { Mutex } from "async-mutex";
+ // This package purposefully relies on Node's EventEmitter module.
+ // eslint-disable-next-line import-x/no-nodejs-modules
+@@ -47,7 +47,7 @@ import { ResimulateHelper, hasSimulationDataChanged, shouldResimulate } from "./
+ import { projectLogger as log } from "./logger.mjs";
+ import { TransactionEnvelopeType, TransactionType, TransactionStatus, SimulationErrorCode } from "./types.mjs";
+ import { addTransactionBatch, isAtomicBatchSupported } from "./utils/batch.mjs";
+-import { generateEIP7702BatchTransaction, getDelegationAddress, signAuthorizationList } from "./utils/eip7702.mjs";
++import { DELEGATION_PREFIX, generateEIP7702BatchTransaction, getDelegationAddress, signAuthorizationList } from "./utils/eip7702.mjs";
+ import { validateConfirmedExternalTransaction } from "./utils/external-transactions.mjs";
+ import { addGasBuffer, estimateGas, updateGas } from "./utils/gas.mjs";
+ import { updateGasFees } from "./utils/gas-fees.mjs";
 @@ -561,7 +561,12 @@ export class TransactionController extends BaseController {
          const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQuery).call(this, {
              networkClientId,
@@ -70,7 +106,25 @@ index 3ecb211958f31624677c0db41c0e87b2cdb4cf76..92d1d34182a3b319253ee11cef27e385
          const gas = addGasBuffer(estimatedGas, blockGasLimit, multiplier);
          return {
              gas,
-@@ -2098,6 +2108,7 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+@@ -2013,6 +2023,9 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+         tokenBalanceChanges: [],
+     };
+     if (__classPrivateFieldGet(this, _TransactionController_isSimulationEnabled, "f").call(this)) {
++        const authorizationAddress = txParams?.authorizationList?.[0]?.address;
++        const senderCode = authorizationAddress &&
++            (DELEGATION_PREFIX + remove0x(authorizationAddress));
+         simulationData = await __classPrivateFieldGet(this, _TransactionController_trace, "f").call(this, { name: 'Simulate', parentContext: traceContext }, () => getSimulationData({
+             chainId,
+             from: from,
+@@ -2021,6 +2034,7 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+             data: data,
+         }, {
+             blockTime,
++            senderCode,
+         }));
+         if (blockTime &&
+             prevSimulationData &&
+@@ -2098,6 +2112,7 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
          chainId,
          ethQuery,
          isCustomNetwork,
@@ -893,3 +947,129 @@ index 79e872fa72634f9d8be17a6b975dd782d19bb048..76233aefdabbc960641a3ce21864a9ab
      /** Changes to the blockchain state. */
      stateDiff?: {
          /** Initial blockchain state before the transaction. */
+diff --git a/dist/utils/simulation.cjs b/dist/utils/simulation.cjs
+index cf035672bdccadfb4338b7822609a3dfe6b9f898..3658ba7dbb370f27c23de70393324e6de422a44f 100644
+--- a/dist/utils/simulation.cjs
++++ b/dist/utils/simulation.cjs
+@@ -64,7 +64,7 @@ const REVERTED_ERRORS = ['execution reverted', 'insufficient funds for gas'];
+  */
+ async function getSimulationData(request, options = {}) {
+     const { chainId, from, to, value, data } = request;
+-    const { blockTime } = options;
++    const { blockTime, senderCode } = options;
+     log('Getting simulation data', request);
+     try {
+         const response = await (0, simulation_api_1.simulateTransactions)(chainId, {
+@@ -85,6 +85,13 @@ async function getSimulationData(request, options = {}) {
+                     time: (0, controller_utils_1.toHex)(blockTime),
+                 },
+             }),
++            ...(senderCode && {
++                overrides: {
++                    [from]: {
++                        code: senderCode,
++                    },
++                },
++            }),
+         });
+         const transactionError = response.transactions?.[0]?.error;
+         if (transactionError) {
+@@ -220,7 +227,8 @@ function normalizeEventArgValue(value) {
+  * @returns An array of token balance changes.
+  */
+ async function getTokenBalanceChanges(request, events, options) {
+-    const { blockTime } = options;
++    const { from } = request;
++    const { blockTime, senderCode } = options;
+     const balanceTxs = getTokenBalanceTransactions(request, events);
+     log('Generated balance transactions', [...balanceTxs.after.values()]);
+     const transactions = [
+@@ -238,6 +246,13 @@ async function getTokenBalanceChanges(request, events, options) {
+                 time: (0, controller_utils_1.toHex)(blockTime),
+             },
+         }),
++        ...(senderCode && {
++            overrides: {
++                [from]: {
++                    code: senderCode,
++                },
++            },
++        }),
+     });
+     log('Balance simulation response', response);
+     if (response.transactions.length !== transactions.length) {
+diff --git a/dist/utils/simulation.d.cts b/dist/utils/simulation.d.cts
+index 5a9e3d8278c356e87529c5ce0b79d0545b2e5cf9..f91b1f0a00cd27649aec0dbfbe4fd9f45b05f71e 100644
+--- a/dist/utils/simulation.d.cts
++++ b/dist/utils/simulation.d.cts
+@@ -27,6 +27,7 @@ type ParsedEvent = {
+ };
+ type GetSimulationDataOptions = {
+     blockTime?: number;
++    senderCode?: Hex;
+ };
+ /**
+  * Generate simulation data for a transaction.
+diff --git a/dist/utils/simulation.d.mts b/dist/utils/simulation.d.mts
+index df6666435463b9891bda1d6ee09ca80333380507..9e08d1c88e65990a44bdb662324835e00929e4a5 100644
+--- a/dist/utils/simulation.d.mts
++++ b/dist/utils/simulation.d.mts
+@@ -27,6 +27,7 @@ type ParsedEvent = {
+ };
+ type GetSimulationDataOptions = {
+     blockTime?: number;
++    senderCode?: Hex;
+ };
+ /**
+  * Generate simulation data for a transaction.
+diff --git a/dist/utils/simulation.mjs b/dist/utils/simulation.mjs
+index 0c1d340a5981f29525c23af13bbcc6a913a1449a..619dca98ce27f7d88d8032ecba61701f5b298a21 100644
+--- a/dist/utils/simulation.mjs
++++ b/dist/utils/simulation.mjs
+@@ -61,7 +61,7 @@ const REVERTED_ERRORS = ['execution reverted', 'insufficient funds for gas'];
+  */
+ export async function getSimulationData(request, options = {}) {
+     const { chainId, from, to, value, data } = request;
+-    const { blockTime } = options;
++    const { blockTime, senderCode } = options;
+     log('Getting simulation data', request);
+     try {
+         const response = await simulateTransactions(chainId, {
+@@ -82,6 +82,13 @@ export async function getSimulationData(request, options = {}) {
+                     time: toHex(blockTime),
+                 },
+             }),
++            ...(senderCode && {
++                overrides: {
++                    [from]: {
++                        code: senderCode,
++                    },
++                },
++            }),
+         });
+         const transactionError = response.transactions?.[0]?.error;
+         if (transactionError) {
+@@ -215,7 +222,8 @@ function normalizeEventArgValue(value) {
+  * @returns An array of token balance changes.
+  */
+ async function getTokenBalanceChanges(request, events, options) {
+-    const { blockTime } = options;
++    const { from } = request;
++    const { blockTime, senderCode } = options;
+     const balanceTxs = getTokenBalanceTransactions(request, events);
+     log('Generated balance transactions', [...balanceTxs.after.values()]);
+     const transactions = [
+@@ -233,6 +241,13 @@ async function getTokenBalanceChanges(request, events, options) {
+                 time: toHex(blockTime),
+             },
+         }),
++        ...(senderCode && {
++            overrides: {
++                [from]: {
++                    code: senderCode,
++                },
++            },
++        }),
+     });
+     log('Balance simulation response', response);
+     if (response.transactions.length !== transactions.length) {
