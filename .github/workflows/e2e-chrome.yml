@@ -48,30 +48,30 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-chrome-report:
-    needs:
-      - test-e2e-chrome
-      - test-e2e-chrome-multiple-providers
-      - test-e2e-chrome-rpc
-      - test-e2e-chrome-flask
-    runs-on: ubuntu-latest
-    if: always()
-    continue-on-error: true # soft launch
-    steps:
-      - uses: actions/checkout@v4
+  test-e2e-chrome-vault-decryption:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+    with:
+      test-suite-name: test-e2e-chrome-vault-decryption
+      build-artifact: prep-build-dist-browserify-chrome
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      # GHA does not allow the : ? ternary operator, you must write && ||
+      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
+      test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
 
-      - name: Download test results
-        uses: actions/download-artifact@v4
-        with:
-          path: .
-          pattern: test-e2e-*
-          merge-multiple: true
-
-      - name: Test Report
-        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
-        with:
-          name: '📝 Consolidated E2E Tests Report'
-          path: './test/test-results/e2e/**/*.xml'
-          reporter: jest-junit
-          fail-on-empty: false
-          fail-on-error: false # soft launch
+  test-e2e-chrome-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-chrome-webpack
+      build-artifact: prep-build-test-webpack-chrome
+      build-command: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+      test-command: yarn test:e2e:chrome:webpack
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
