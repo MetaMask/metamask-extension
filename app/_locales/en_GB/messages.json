@@ -787,6 +787,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Block explorer link copied!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },

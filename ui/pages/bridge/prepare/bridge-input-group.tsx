@@ -69,6 +69,7 @@ export const BridgeInputGroup = ({
   amountInFiat,
   onMaxButtonClick,
   isMultiselectEnabled,
+  onBlockExplorerClick,
 }: {
   amountInFiat?: BigNumber;
   onAmountChange?: (value: string) => void;
@@ -78,6 +79,7 @@ export const BridgeInputGroup = ({
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
   onMaxButtonClick?: (value: string) => void;
+  onBlockExplorerClick?: (token: BridgeToken) => void;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
@@ -118,40 +120,40 @@ export const BridgeInputGroup = ({
   const isSwap = useIsMultichainSwap();
 
   const handleAddressClick = () => {
-    if (isAmountReadOnly && token && selectedChainId) {
+    if (token && selectedChainId) {
       const caipChainId = formatChainIdToCaip(selectedChainId);
       const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
+      let blockExplorerUrl = '';
       if (isSolana) {
         const blockExplorerUrls =
           MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
         if (blockExplorerUrls) {
-          const solanaExplorerUrl = formatBlockExplorerAddressUrl(
+          blockExplorerUrl = formatBlockExplorerAddressUrl(
             blockExplorerUrls,
             token.address.split(':').at(-1) ?? token.address,
           );
-          global.platform.openTab({
-            url: solanaExplorerUrl,
-          });
         }
       } else {
-        const blockExplorerUrl =
+        const explorerUrl =
           networkProps?.network?.blockExplorerUrls?.[
             networkProps?.network?.defaultBlockExplorerUrlIndex ?? 0
           ];
-        if (blockExplorerUrl) {
-          const blockExplorerTokenLink = getAccountLink(
+        if (explorerUrl) {
+          blockExplorerUrl = getAccountLink(
             token.address,
             selectedChainId,
             {
-              blockExplorerUrl,
+              blockExplorerUrl: explorerUrl,
             },
             undefined,
           );
-          global.platform.openTab({
-            url: blockExplorerTokenLink,
-          });
         }
+      }
+
+      if (blockExplorerUrl) {
+        handleCopy(blockExplorerUrl);
+        onBlockExplorerClick?.(token);
       }
     }
   };
