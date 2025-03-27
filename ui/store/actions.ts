@@ -203,9 +203,7 @@ export function createNewVaultAndRestore(
 
     // Encode the secret recovery phrase as an array of integers so that it is
     // serialized as JSON properly.
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(seedPhrase, 'utf8').values(),
-    );
+    const encodedSeedPhrase = [...new TextEncoder().encode(seedPhrase)];
 
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -240,9 +238,10 @@ export function importMnemonicToVault(
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
+    const arrayMnemonic = [...new TextEncoder().encode(mnemonic)];
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
+      callBackgroundMethod('importMnemonicToVault', [arrayMnemonic], (err) => {
         if (err) {
           reject(err);
           return;
@@ -383,7 +382,7 @@ export async function getSeedPhrase(
   keyringId: string,
   ///: END:ONLY_INCLUDE_IF
 ) {
-  const encodedSeedPhrase = await submitRequestToBackground<string>(
+  const encodedSeedPhrase = await submitRequestToBackground<number[]>(
     'getSeedPhrase',
     [
       password,
@@ -392,7 +391,7 @@ export async function getSeedPhrase(
       ///: END:ONLY_INCLUDE_IF
     ],
   );
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+  return new TextDecoder().decode(Uint8Array.from(encodedSeedPhrase));
 }
 
 export function requestRevealSeedWords(
