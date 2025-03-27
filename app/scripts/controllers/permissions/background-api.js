@@ -11,6 +11,8 @@ import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
   addPermittedChainId,
+  setPermittedChainIds,
+  setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 
@@ -74,24 +76,40 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
+    // TODO dry and or move to @metamask/chain-agnostic-permission
+    const requiredScopes = Object.keys(
+      caip25Caveat.value.requiredScopes,
+    )
+    const optionalScopes = Object.keys(
+      caip25Caveat.value.optionalScopes,
+    )
+    const updatedChainIds = Array.from(
+      new Set([...requiredScopes, ...optionalScopes, ...chainIds]),
+    );
 
-    let caveatValueWithChains = caip25Caveat.value
 
-    chainIds.forEach(chainId => {
-      caveatValueWithChains = addPermittedChainId(
-        caip25Caveat.value,
-        chainId,
-      );
-    });
+    const caveatValueWithChains = setPermittedChainIds(
+      caip25Caveat.value,
+      updatedChainIds
+    )
 
+    // TODO dry this into core
+    const permittedAccounts = new Set()
+    Object.values(caip25Caveat.value.requiredScopes).forEach(({accounts}) => {
+      accounts.forEach(account => {
+        permittedAccounts.add(account)
+      })
+    })
+    Object.values(caip25Caveat.value.optionalScopes).forEach(({accounts}) => {
+      accounts.forEach(account => {
+        permittedAccounts.add(account)
+      })
+    })
 
-
-    // TODO: Do we need to do this for solana?..
-    // ensure that the list of permitted eth accounts is set for the newly added eth scopes
-    const ethAccounts = getEthAccounts(caveatValueWithChains);
-    const caveatValueWithAccountsSynced = setEthAccounts(
+    // ensure that the list of permitted accounts is set for the newly added scopes
+    const caveatValueWithAccountsSynced = setPermittedAccounts(
       caveatValueWithChains,
-      ethAccounts,
+      Array.from(permittedAccounts),
     );
 
     permissionController.updateCaveat(
@@ -199,13 +217,24 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      const existingEthChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
-      const remainingChainIds = existingEthChainIds.filter(
+      // TODO dry and or move to @metamask/chain-agnostic-permission
+      const requiredScopes = Object.keys(
+        caip25Caveat.value.requiredScopes,
+      )
+      const optionalScopes = Object.keys(
+        caip25Caveat.value.optionalScopes,
+      )
+
+      const existingChainIds = Array.from(
+        new Set([...requiredScopes, ...optionalScopes]),
+      );
+
+      const remainingChainIds = existingChainIds.filter(
         (existingChainId) => existingChainId !== chainId,
       );
 
-      if (remainingChainIds.length === existingEthChainIds.length) {
+      if (remainingChainIds.length === existingChainIds.length) {
         return;
       }
 
@@ -215,7 +244,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setPermittedEthChainIds(
+        const updatedCaveatValue = setPermittedChainIds(
           caip25Caveat.value,
           remainingChainIds,
         );
