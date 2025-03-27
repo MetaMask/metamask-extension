@@ -196,14 +196,73 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
 
   sortedOwners.forEach(team => {
     const emoji = teamEmojis[team] || '👨‍🔧';
-    commentBody += `${emoji} ${team}\n`;
-    teamFiles[team].forEach(file => {
-      commentBody += `- \`${file}\`\n`;
-    });
-    commentBody += '\n';
+    const files = teamFiles[team];
+
+    // Create a collapsible section for each team
+    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${files.length} files)</summary>\n\n`;
+
+    // Create a file tree structure
+    const fileTree = buildFileTree(files);
+    commentBody += renderFileTree(fileTree, 0);
+
+    commentBody += '</details>\n\n---\n';
   });
 
   return commentBody;
+}
+
+// Helper function to build a file tree structure
+function buildFileTree(files: string[]): Record<string, any> {
+  const tree: Record<string, any> = {};
+
+  files.forEach(file => {
+    const parts = file.split('/');
+    let current = tree;
+
+    // Build the nested structure
+    parts.forEach((part, i) => {
+      if (i === parts.length - 1) {
+        // Leaf node (file)
+        current[part] = null;
+      } else {
+        // Directory
+        if (!current[part]) {
+          current[part] = {};
+        }
+        current = current[part];
+      }
+    });
+  });
+
+  return tree;
+}
+
+// Helper function to render the file tree with indentation
+function renderFileTree(node: Record<string, any>, depth: number): string {
+  let result = '';
+  const indent = '  '.repeat(depth);
+
+  // Sort keys to keep directories first, then files
+  const keys = Object.keys(node).sort((a, b) => {
+    const aIsDir = node[a] !== null;
+    const bIsDir = node[b] !== null;
+    if (aIsDir && !bIsDir) return -1;
+    if (!aIsDir && bIsDir) return 1;
+    return a.localeCompare(b);
+  });
+
+  keys.forEach(key => {
+    if (node[key] === null) {
+      // File
+      result += `${indent}- ${key}\n`;
+    } else {
+      // Directory
+      result += `${indent}- **${key}/**\n`;
+      result += renderFileTree(node[key], depth + 1);
+    }
+  });
+
+  return result;
 }
 
 async function deleteExistingComment(
