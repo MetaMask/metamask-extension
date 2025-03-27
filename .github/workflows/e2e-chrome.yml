@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7]
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     with:
       test-suite-name: test-e2e-chrome-flask
       build-command: yarn build:test:flask
@@ -84,7 +84,7 @@ jobs:
           is-high-risk-environment: false
 
       - name: Install Chromium
-        run: yarn playwright install chromium --with-deps
+        run: yarn playwright install chromium
 
       - name: Run Swap E2E tests
         env:
@@ -95,5 +95,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-reports
+          name: test-e2e-swap-playwright
           path: public/playwright/playwright-reports
