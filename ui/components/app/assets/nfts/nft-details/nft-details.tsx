@@ -292,7 +292,7 @@ export function NftDetailsComponent({
         type: AssetType.NFT,
         details: {
           ...nft,
-          tokenId: Number(nft.tokenId),
+          tokenId: nft.tokenId as unknown as number,
           image: nft.image ?? undefined,
         },
       }),
