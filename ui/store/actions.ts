@@ -6071,9 +6071,11 @@ export async function sendMultichainTransaction(
   {
     account,
     scope,
+    assetId,
   }: {
     account: string;
     scope: string;
+    assetId?: CaipAssetId;
   },
 ) {
   await handleSnapRequest({
@@ -6085,6 +6087,7 @@ export async function sendMultichainTransaction(
       params: {
         account,
         scope,
+        assetId,
       },
     },
   });
