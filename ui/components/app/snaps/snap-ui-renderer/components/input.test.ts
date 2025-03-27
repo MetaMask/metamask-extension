@@ -63,7 +63,7 @@ describe('SnapUIInput', () => {
       { state: { input: 'bar' } },
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input.value).toStrictEqual('bar');
 

@@ -43,7 +43,8 @@ describe('SnapUIFileInput', () => {
       return new Uint8Array([102, 111, 111]);
     };
 
-    const input = container.querySelector('#input');
+    const input = container.querySelector('#input') as HTMLInputElement;
+    expect(input).toBeDefined();
     await userEvent.upload(input, file);
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(

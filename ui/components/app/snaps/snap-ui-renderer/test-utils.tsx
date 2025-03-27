@@ -1,21 +1,30 @@
 import React from 'react';
-import configureStore from '../../../../store/store';
+import configureStore, { MetaMaskReduxState } from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
+import { JSXElement } from '@metamask/snaps-sdk/jsx';
+import { Reducer } from 'redux';
 
 export const MOCK_SNAP_ID = 'npm:@metamask/test-snap-bip44';
 export const MOCK_INTERFACE_ID = 'interfaceId';
 
+type RenderInterfaceOptions = {
+  useFooter?: boolean;
+  useDelineator?: boolean;
+  onCancel?: () => void;
+  contentBackgroundColor?: string;
+  state?: Record<string, unknown>;
+};
+
 export function renderInterface(
-  content,
+  content: JSXElement,
   {
     useFooter = false,
-    useDelineator = false,
     onCancel,
     contentBackgroundColor,
     state = {},
-  } = {},
+  }: RenderInterfaceOptions = {},
 ) {
   const store = configureStore({
     ...mockState,
@@ -33,7 +42,7 @@ export function renderInterface(
     },
   });
 
-  const reducer = (storeState, action) => {
+  const reducer: Reducer<MetaMaskReduxState> = (storeState = store.getState(), action) => {
     if (action.type === 'updateInterface') {
       return {
         ...storeState,
@@ -56,7 +65,7 @@ export function renderInterface(
 
   store.replaceReducer(reducer);
 
-  const updateInterface = (newContent, newState = null) => {
+  const updateInterface = (newContent: JSXElement, newState: Record<string, unknown> | null = null) => {
     store.dispatch({
       type: 'updateInterface',
       content: newContent,
@@ -68,7 +77,6 @@ export function renderInterface(
     <SnapUIRenderer
       snapId={MOCK_SNAP_ID}
       interfaceId={MOCK_INTERFACE_ID}
-      useDelineator={useDelineator}
       useFooter={useFooter}
       onCancel={onCancel}
       contentBackgroundColor={contentBackgroundColor}
@@ -79,7 +87,7 @@ export function renderInterface(
 
   const getRenderCount = () =>
     parseInt(
-      result.getByTestId('performance').getAttribute('data-renders'),
+      result.getByTestId('performance').getAttribute('data-renders') as string,
       10,
     );
 

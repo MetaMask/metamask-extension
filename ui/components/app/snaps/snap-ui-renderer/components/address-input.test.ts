@@ -13,7 +13,7 @@ describe('SnapUIAddressInput', () => {
       }),
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input.value).toStrictEqual('');
 
@@ -33,7 +33,7 @@ describe('SnapUIAddressInput', () => {
       },
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input.value).toStrictEqual(
       '0x1234567890123456789012345678901234567890',
@@ -53,7 +53,7 @@ describe('SnapUIAddressInput', () => {
       }),
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input.placeholder).toStrictEqual('Enter an address');
 
@@ -71,7 +71,7 @@ describe('SnapUIAddressInput', () => {
       }),
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input).toBeDisabled();
 
@@ -93,7 +93,7 @@ describe('SnapUIAddressInput', () => {
       }),
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     const label = getByText('Address');
     expect(label).toBeDefined();
@@ -111,7 +111,7 @@ describe('SnapUIAddressInput', () => {
       }),
     );
 
-    const input = getByRole('textbox');
+    const input = getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, {
       target: {
         value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
