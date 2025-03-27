@@ -15,10 +15,10 @@ import {
 /**
  * Creates a transaction URL for block explorer based on network type
  * Different networks have different URL patterns:
- * Bitcoin Mainnet: https://blockstream.info/tx/{txId}
- * Bitcoin Testnet: https://blockstream.info/testnet/tx/{txId}
- * Solana Mainnet: https://explorer.solana.com/tx/{txId}
- * Solana Devnet: https://explorer.solana.com/tx/{txId}?cluster=devnet
+ * Bitcoin Mainnet: https://mempool.space/tx/{txId}
+ * Bitcoin Testnet: https://mempool.space/testnet/tx/{txId}
+ * Solana Mainnet: https://solscan.io/tx/{txId}
+ * Solana Devnet: https://solscan.io/tx/{txId}?cluster=devnet
  *
  * @param txId - Transaction ID
  * @param chainId - Network chain ID
@@ -39,10 +39,10 @@ export const getTransactionUrl = (txId: string, chainId: string): string => {
 /**
  * Creates an address URL for block explorer based on network type
  * Different networks have different URL patterns:
- * Bitcoin Mainnet: https://blockstream.info/address/{address}
- * Bitcoin Testnet: https://blockstream.info/testnet/address/{address}
- * Solana Mainnet: https://explorer.solana.com/address/{address}
- * Solana Devnet: https://explorer.solana.com/address/{address}?cluster=devnet
+ * Bitcoin Mainnet: https://mempool.space/address/{address}
+ * Bitcoin Testnet: https://mempool.space/testnet/address/{address}
+ * Solana Mainnet: https://solscan.io/account/{address}
+ * Solana Devnet: https://solscan.io/account/{address}?cluster=devnet
  *
  * @param address - Wallet address
  * @param chainId - Network chain ID

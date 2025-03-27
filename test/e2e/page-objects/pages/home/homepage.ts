@@ -128,6 +128,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
@@ -203,6 +207,22 @@ class HomePage {
     console.log(
       `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
+  }
+
+  /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
   }
 
   /**

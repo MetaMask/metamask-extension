@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "받음:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "지출 한도"
-  },
   "permitSimulationChange_transfer": {
     "message": "보냄:"
   },
@@ -3859,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
-  },
-  "petnamesEnabledToggle": {
-    "message": "닉네임 허용"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "이 기능을 사용하면 모든 주소에 닉네임을 지정할 수 있습니다. 가능한 경우 상호 작용하는 주소에 닉네임을 추천합니다."
   },
   "pinToTop": {
     "message": "맨 위에 고정"
@@ -5955,9 +5946,6 @@
   },
   "twelveHrTitle": {
     "message": "12시간:"
-  },
-  "typeYourSRP": {
-    "message": "비밀복구구문을 입력하세요"
   },
   "u2f": {
     "message": "U2F",
