@@ -3238,8 +3238,6 @@ export function getAllPermittedAccounts(state, origin) {
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
-  );
-}
 
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
