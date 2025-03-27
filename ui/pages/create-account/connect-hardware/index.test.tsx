@@ -32,6 +32,10 @@ jest.mock('../../../selectors', () => ({
   },
 }));
 
+jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
 jest.mock('../../../ducks/bridge/selectors', () => ({
   getAllBridgeableNetworks: () => [],
 }));
