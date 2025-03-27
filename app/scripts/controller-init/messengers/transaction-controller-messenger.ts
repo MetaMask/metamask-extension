@@ -102,6 +102,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'ApprovalController:acceptRequest',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',
