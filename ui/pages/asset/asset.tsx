@@ -1,33 +1,31 @@
+import { Nft } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import { Hex } from '@metamask/utils';
-import { Nft } from '@metamask/assets-controllers';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
-import { getSelectedAccountTokensAcrossChains } from '../../selectors';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { Token } from '../../components/app/assets/types';
-import TokenAsset from './components/token-asset';
-import { findAssetByAddress } from './util';
+import { getSelectedAccountTokenByAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
+import TokenAsset from './components/token-asset';
 
 /** A page representing a native, token, or NFT asset */
 const Asset = () => {
-  const selectedAccountTokensChains: Record<Hex, Token[]> = useSelector(
-    getSelectedAccountTokensAcrossChains,
-  ) as Record<Hex, Token[]>;
   const params = useParams<{
     chainId: Hex;
     asset: string;
     id: string;
   }>();
+
   const { chainId, asset, id } = params;
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
-  const token = findAssetByAddress(selectedAccountTokensChains, asset, chainId);
+  const token = useSelector((state) =>
+    getSelectedAccountTokenByAddressAndChainId(state, asset, chainId),
+  );
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
@@ -44,10 +42,10 @@ const Asset = () => {
   if (nft) {
     content = <NftDetails nft={nft} />;
   } else if (token && chainId) {
-    if (token?.address) {
-      content = <TokenAsset chainId={chainId} token={token} />;
-    } else {
+    if (token.isNative || !token.address) {
       content = <NativeAsset chainId={chainId} token={token} />;
+    } else {
+      content = <TokenAsset chainId={chainId} token={token} />;
     }
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;

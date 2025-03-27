@@ -1,21 +1,21 @@
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
-import { getSelectedInternalAccount } from '../../../../selectors';
-import {
-  TranslateFunction,
-  networkTitleOverrides,
-} from '../util/networkTitleOverrides';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { useSelector } from 'react-redux';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
-import { TokenWithFiatAmount } from '../types';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getSelectedInternalAccount } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
+import { TokenWithFiatAmount } from '../types';
+import { formatWithThreshold } from '../util/formatWithThreshold';
+import {
+  TranslateFunction,
+  networkTitleOverrides,
+} from '../util/networkTitleOverrides';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();
@@ -32,7 +32,7 @@ const useMultiChainAssets = () => {
   // balances render as expected without this condition during local testing
   const cachedBalance = useSelector(getMultichainSelectedAccountCachedBalance);
   if (cachedBalance === 0) {
-    return [
+    const result: TokenWithFiatAmount[] = [
       {
         chainId: MultichainNetworks.SOLANA,
         address: '' as Hex,
@@ -48,6 +48,7 @@ const useMultiChainAssets = () => {
         isStakeable: false,
       },
     ];
+    return result;
   }
 
   return multichainAssets.map((asset: TokenWithFiatAmount) => {
@@ -56,16 +57,16 @@ const useMultiChainAssets = () => {
       currency: currentCurrency.toUpperCase(),
     });
 
-    return {
+    const result: TokenWithFiatAmount = {
       ...asset,
       title: asset.isNative
         ? networkTitleOverrides(t as TranslateFunction, {
             title: asset.title,
-          })
+          }) ?? asset.title
         : asset.title,
-
-      secondary: fiatAmount, // secondary balance (usually in fiat)
+      secondary: fiatAmount as unknown as number, // secondary balance (usually in fiat)
     };
+    return result;
   });
 };
 

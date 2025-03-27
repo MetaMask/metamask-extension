@@ -2,20 +2,29 @@ import {
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
-import { BigNumber } from 'bignumber.js';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
+  CaipAssetReference,
   CaipAssetType,
   CaipChainId,
   Hex,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getTokenBalances } from '../ducks/metamask/metamask';
+import { BigNumber } from 'bignumber.js';
+import { groupBy } from 'lodash';
 import { TEST_CHAINS } from '../../shared/constants/network';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
+import { getTokenBalances } from '../ducks/metamask/metamask';
+import { findAssetByAddress } from '../pages/asset/util';
+import { getSelectedInternalAccount } from './accounts';
+import {
+  getMultichainBalances,
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -23,9 +32,9 @@ import {
   getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
   getPreferences,
+  getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -178,7 +187,8 @@ export const getMultiChainAssets = createDeepEqualSelector(
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
+      const { chainId, assetNamespace, assetReference } =
+        parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
@@ -196,7 +206,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
       if (!hideZeroBalanceTokens || balance.amount !== '0' || isNative) {
         allAssets.push({
           title: metadata.name,
-          address: assetId,
+          address: assetReference, // The EVM address represents the asset_reference portion of the CAIP-19 asset type
           symbol: metadata.symbol,
           image: metadata.iconUrl,
           decimals,
@@ -214,6 +224,43 @@ export const getMultiChainAssets = createDeepEqualSelector(
     return allAssets;
   },
 );
+
+/**
+ * Gets a {@link Token} (EVM or Multichain) owned by the selected account by address and chainId.
+ *
+ * @param state - Redux state object
+ * @param tokenAddress - Token address
+ * @param chainId - Chain ID
+ * @returns Token object
+ */
+export const getSelectedAccountTokenByAddressAndChainId =
+  createDeepEqualSelector(
+    (state) => state,
+    (_state, tokenAddress?: Hex | CaipAssetReference) => tokenAddress,
+    (
+      _state,
+      _tokenAddress?: Hex | CaipAssetReference,
+      _chainId?: Hex | CaipChainId,
+    ) => _chainId,
+    (state) => getSelectedInternalAccount(state),
+    (state, tokenAddress, chainId, selectedInternalAccount) => {
+      const isEvm = getMultichainIsEvm(state, selectedInternalAccount);
+
+      const assetsToSearch = isEvm
+        ? (getSelectedAccountTokensAcrossChains(state) as Record<
+            string,
+            TokenWithFiatAmount[]
+          >)
+        : groupBy(
+            getMultiChainAssets(state, selectedInternalAccount),
+            'chainId',
+          );
+
+      const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+
+      return result;
+    },
+  );
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
