@@ -189,6 +189,11 @@ async function walletCreateSessionHandler(
       supportedOptionalScopes,
     ]);
 
+    const allSupportedRequestedCaipChainIds = getAllScopesFromScopesObjects([
+      supportedRequiredScopes,
+      supportedOptionalScopes,
+    ]);
+
     // Fetch EVM accounts from native wallet keyring
     const existingEvmAddresses = hooks
       .listAccounts()
@@ -229,24 +234,23 @@ async function walletCreateSessionHandler(
         supportedRequestedAccountAddresses,
       );
 
-    const allSupportedRequestedCaipChainIds = getAllScopesFromScopesObjects([
-      supportedRequiredScopes,
-      supportedOptionalScopes,
-    ]);
-
     // if `promptToCreateSolanaAccount` is true and there are no other valid scopes requested,
     // we add a `wallet` scope to the request in order to get passed the CAIP-25 caveat validator.
     // This is very hacky but is necessary because the solana opt-in flow breaks key assumptions
     // of the CAIP-25 permission specification -  namely that we can have valid requests with no scopes.
-    if (
-      promptToCreateSolanaAccount &&
-      allSupportedRequestedCaipChainIds.length === 0
-    ) {
-      requestedCaip25CaveatValueWithSupportedAccounts.optionalScopes[
-        KnownCaipNamespace.Wallet
-      ] = {
-        accounts: [],
-      };
+    if (allSupportedRequestedCaipChainIds.length === 0) {
+      if (promptToCreateSolanaAccount) {
+        requestedCaip25CaveatValueWithSupportedAccounts.optionalScopes[
+          KnownCaipNamespace.Wallet
+        ] = {
+          accounts: [],
+        };
+      } else {
+        // if solana is not requested and there are no supported scopes, we return an error
+        return end(
+          new JsonRpcError(5100, 'Requested scopes are not supported'),
+        );
+      }
     }
 
     const [grantedPermissions] = await hooks.requestPermissionsForOrigin(
