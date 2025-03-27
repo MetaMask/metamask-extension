@@ -44,7 +44,6 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
       </Box>
       <Box
         className="add-non-evm-account-modal__footer"
-        backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}
       >
