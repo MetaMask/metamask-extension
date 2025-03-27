@@ -4546,6 +4546,10 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance(keyringId) {
     try {
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
+
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
