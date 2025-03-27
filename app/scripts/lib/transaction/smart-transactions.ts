@@ -21,6 +21,7 @@ import {
   UpdateRequestState,
   StartFlow,
   EndFlow,
+  AcceptRequest,
 } from '@metamask/approval-controller';
 
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
@@ -37,8 +38,8 @@ export type AllowedActions =
   | AddApprovalRequest
   | UpdateRequestState
   | StartFlow
+  | AcceptRequest
   | EndFlow;
-
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
 export type SmartTransactionHookMessenger = RestrictedMessenger<
@@ -77,6 +78,9 @@ export type SubmitSmartTransactionRequest = {
 };
 
 class SmartTransactionHook {
+  // Static property to store the approval flow ID across instances
+  static #sharedApprovalFlowId = '';
+
   #approvalFlowEnded: boolean;
 
   #approvalFlowId: string;
@@ -270,11 +274,46 @@ class SmartTransactionHook {
     }
   }
 
+  /**
+   * Ends an existing approval flow and clears the shared approval flow ID
+   *
+   * @param approvalFlowId - The ID of the approval flow to end
+   * @returns Promise that resolves when the flow is successfully ended or errors are handled
+   */
+  async #endExistingApprovalFlow(approvalFlowId: string): Promise<void> {
+    try {
+      // End the existing flow
+      await this.#controllerMessenger.call('ApprovalController:endFlow', {
+        id: approvalFlowId,
+      });
+
+      // Accept the request to close the UI
+      await this.#controllerMessenger.call(
+        'ApprovalController:acceptRequest',
+        approvalFlowId,
+      );
+
+      SmartTransactionHook.#sharedApprovalFlowId = '';
+    } catch (error) {
+      log.error('Error ending existing approval flow', error);
+    }
+  }
+
   async #startApprovalFlow() {
+    if (SmartTransactionHook.#sharedApprovalFlowId) {
+      await this.#endExistingApprovalFlow(
+        SmartTransactionHook.#sharedApprovalFlowId,
+      );
+    }
+
+    // Create a new approval flow
     const { id: approvalFlowId } = await this.#controllerMessenger.call(
       'ApprovalController:startFlow',
     );
+
+    // Store the flow ID both in the instance and in the static property
     this.#approvalFlowId = approvalFlowId;
+    SmartTransactionHook.#sharedApprovalFlowId = approvalFlowId;
   }
 
   async #processApprovalIfNeeded(uuid: string) {
@@ -293,9 +332,18 @@ class SmartTransactionHook {
       return;
     }
     this.#approvalFlowEnded = true;
-    this.#controllerMessenger.call('ApprovalController:endFlow', {
-      id: this.#approvalFlowId,
-    });
+    try {
+      this.#controllerMessenger.call('ApprovalController:endFlow', {
+        id: this.#approvalFlowId,
+      });
+    } catch (error) {
+      // If the flow is already ended, we can ignore the error.
+    }
+
+    // Clear the shared approval flow ID when we end the flow
+    if (SmartTransactionHook.#sharedApprovalFlowId === this.#approvalFlowId) {
+      SmartTransactionHook.#sharedApprovalFlowId = '';
+    }
   }
 
   #addApprovalRequest({ uuid }: { uuid: string }) {
