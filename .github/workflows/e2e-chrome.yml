@@ -50,8 +50,6 @@ jobs:
 
   test-e2e-chrome-vault-decryption:
     uses: ./.github/workflows/run-e2e.yml
-    strategy:
-      fail-fast: false
     with:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: prep-build-dist-browserify-chrome
