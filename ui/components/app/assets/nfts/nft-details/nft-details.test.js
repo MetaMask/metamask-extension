@@ -180,7 +180,7 @@ describe('NFT Details', () => {
     await waitFor(() => {
       expect(startNewDraftTransaction).toHaveBeenCalledWith({
         type: AssetType.NFT,
-        details: { ...nfts[5], tokenId: 1 },
+        details: { ...nfts[5], tokenId: '1' },
       });
 
       expect(mockHistoryPush).toHaveBeenCalledWith(SEND_ROUTE);
