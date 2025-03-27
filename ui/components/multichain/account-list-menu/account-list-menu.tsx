@@ -83,6 +83,7 @@ import {
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
+  getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -259,6 +260,7 @@ export const AccountListMenu = ({
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
@@ -320,6 +322,7 @@ export const AccountListMenu = ({
         snap_id: ACCOUNT_WATCHER_SNAP_ID,
         snap_name: ACCOUNT_WATCHER_NAME,
         location: 'Main Menu',
+        hd_entropy_index: hdEntropyIndex,
       },
     });
     onClose();
@@ -418,6 +421,7 @@ export const AccountListMenu = ({
         event: MetaMetricsEventName.NavAccountSwitched,
         properties: {
           location: 'Main Menu',
+          hd_entropy_index: hdEntropyIndex,
         },
       });
       endTrace({
@@ -432,7 +436,7 @@ export const AccountListMenu = ({
       });
       dispatch(setSelectedAccount(account.address));
     },
-    [dispatch, onClose, trackEvent, defaultHomeActiveTabName],
+    [dispatch, onClose, trackEvent, defaultHomeActiveTabName, hdEntropyIndex],
   );
 
   const accountListItems = useMemo(() => {
@@ -609,6 +613,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Default,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   setActionMode(ACTION_MODES.ADD);
@@ -635,6 +640,7 @@ export const AccountListMenu = ({
                           snap_id: SOLANA_WALLET_SNAP_ID,
                           snap_name: SOLANA_WALLET_NAME,
                           location: 'Main Menu',
+                          hd_entropy_index: hdEntropyIndex,
                         },
                       });
 
@@ -752,6 +758,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Imported,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   setActionMode(ACTION_MODES.IMPORT);
@@ -781,6 +788,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Hardware,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -811,6 +819,7 @@ export const AccountListMenu = ({
                         properties: {
                           account_type: MetaMetricsEventAccountType.Snap,
                           location: 'Main Menu',
+                          hd_entropy_index: hdEntropyIndex,
                         },
                       });
                       global.platform.openTab({
