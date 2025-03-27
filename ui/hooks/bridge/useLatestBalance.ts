@@ -6,6 +6,7 @@ import {
   formatChainIdToCaip,
   formatChainIdToHex,
   ChainId,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors';
@@ -18,6 +19,7 @@ import {
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -32,6 +34,7 @@ const useLatestBalance = (
     symbol: string;
     string?: string;
     chainId?: Hex | CaipChainId | ChainId;
+    assetId?: string;
   } | null,
 ) => {
   const { address: selectedAddress, id } = useMultichainSelector(
@@ -56,8 +59,11 @@ const useLatestBalance = (
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
     // multichain balances controller
     if (isSolanaChainId(chainId) && token.decimals) {
+      const caipAssetType = isNativeAddress(token.address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : token.assetId ?? token.address;
       return Numeric.from(
-        nonEvmBalances?.[token.address]?.amount ?? token.string,
+        nonEvmBalances?.[caipAssetType]?.amount ?? token?.string,
         10,
       )
         .shiftedBy(-1 * token.decimals)
