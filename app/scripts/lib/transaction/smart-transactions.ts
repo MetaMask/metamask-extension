@@ -25,6 +25,7 @@ import {
 
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
+import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
@@ -143,7 +144,8 @@ class SmartTransactionHook {
     const useRegularTransactionSubmit = { transactionHash: undefined };
     if (
       !this.#isSmartTransaction ||
-      isUnsupportedTransactionTypeForSmartTransaction
+      isUnsupportedTransactionTypeForSmartTransaction ||
+      isLegacyTransaction(this.#transactionMeta)
     ) {
       return useRegularTransactionSubmit;
     }

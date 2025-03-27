@@ -341,7 +341,10 @@ import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
-import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
+import {
+  updateSecurityAlertResponse,
+  validateRequestWithPPOM,
+} from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 
@@ -1677,10 +1680,10 @@ export default class MetamaskController extends EventEmitter {
       clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, ...requestOptions }) =>
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
         await fetchWithCache({
           url,
-          fetchOptions: { method: 'GET', headers },
+          fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
       config: {
@@ -2101,6 +2104,15 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledAccountUpgradeChains.bind(
               this.preferencesController,
             ),
+          validateSecurity: (securityAlertId, request, chainId) =>
+            validateRequestWithPPOM({
+              chainId,
+              ppomController: this.ppomController,
+              request,
+              securityAlertId,
+              updateSecurityAlertResponse:
+                this.updateSecurityAlertResponse.bind(this),
+            }),
         },
         this.controllerMessenger,
       ),
@@ -2883,13 +2895,11 @@ export default class MetamaskController extends EventEmitter {
         );
 
         if (filteredChainIds.length > 0) {
-          await this.txController.stopIncomingTransactionPolling();
+          this.txController.stopIncomingTransactionPolling();
 
-          await this.txController.updateIncomingTransactions(filteredChainIds);
+          await this.txController.updateIncomingTransactions();
 
-          await this.txController.startIncomingTransactionPolling(
-            filteredChainIds,
-          );
+          this.txController.startIncomingTransactionPolling();
         }
       },
     );
@@ -3414,7 +3424,8 @@ export default class MetamaskController extends EventEmitter {
       getNextAvailableAccountName:
         accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
+      getAccountsBySnapId: (snapId) =>
+        getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
       ///: END:ONLY_INCLUDE_IF
 
       // hardware wallets
@@ -7632,9 +7643,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions([
-      this.#getGlobalChainId(),
-    ]);
+    await this.txController.updateIncomingTransactions();
   }
 
   _notifyAccountsChange(origin, newAccounts) {
