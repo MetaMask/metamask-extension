@@ -4875,6 +4875,9 @@ export async function attemptCloseNotificationPopup() {
   // - Only works on windows opened by Window.open()
   // - Or top-level windows with single history entry
   // - Otherwise fails silently with console error: "Scripts may not close windows that were not opened by script"
+  //
+  // Note: we opted for window.close() instead of browser.windows.remove(id) because the latter closes the
+  // entire window and all its tabs (if there are other tabs open).
   window.close();
 
   // Second attempt: If we reach here, window.close() failed
