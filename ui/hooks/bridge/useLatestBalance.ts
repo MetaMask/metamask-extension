@@ -2,7 +2,7 @@ import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { useMultichainSelector } from '../useMultichainSelector';

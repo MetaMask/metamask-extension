@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Vous recevez"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Plafond de dépenses"
-  },
   "permitSimulationChange_transfer": {
     "message": "Vous envoyez"
   },
@@ -3859,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Autoriser les pseudonymes"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Cette option vous permet d’attribuer un pseudonyme à n’importe quelle adresse. Nous vous suggérerons, si possible, des pseudonymes que vous pourrez attribuer aux adresses avec lesquelles vous interagissez."
   },
   "pinToTop": {
     "message": "Épingler en haut de la page"

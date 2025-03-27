@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Aldığınız:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Harcama üst limiti"
-  },
   "permitSimulationChange_transfer": {
     "message": "Gönderdiğiniz:"
   },
@@ -3859,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Takma adlara izin ver"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Bu, dilediğiniz adrese takma ad atamanıza olanak sağlar. Mümkün olduğunda etkileşimde bulunduğunuz adresler için ad önerilerinde bulunacağız."
   },
   "pinToTop": {
     "message": "Yukarıya sabitle"
