@@ -14,15 +14,20 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getAllPermittedAccountsForCurrentTab,
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
 
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  // I hope we can reliably use the first scope to determine the namespace
+  const parsedSelectedAccountScope = parseCaipChainId(selectedAccount.scopes[0]);
 
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
@@ -30,12 +35,23 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  // TODO: Fix this
-  // const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
-  const permittedAccounts = [];
-  const currentTabIsConnectedToSelectedAddress = permittedAccounts.find(
-    (account) => account === selectedAddress,
-  );
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
+    (account) => {
+      const parsedPermittedAccount = parseCaipAccountId(account);
+      if(parsedPermittedAccount.chain.namespace !== parsedSelectedAccountScope.namespace) {
+        return false;
+      }
+      if(parsedPermittedAccount.address !== selectedAccount.address) {
+        return false;
+      }
+      if (parsedSelectedAccountScope.reference !== '0' && parsedPermittedAccount.chain.reference !== parsedSelectedAccountScope.reference) {
+        return false;
+      }
+      return true;
+  });
+
+  console.log({permittedAccounts, parsedSelectedAccountScope, currentTabIsConnectedToSelectedAddress})
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {

@@ -3261,6 +3261,10 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
   return getPermittedEVMAccounts(state, activeTab);
 }
 
+export function getAllPermittedAccountsForCurrentTab(state) {
+  return getAllPermittedAccounts(state, getOriginOfCurrentTab(state));
+}
+
 export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
   return getAllPermittedAccounts(state, activeTab);
 }
