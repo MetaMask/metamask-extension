@@ -1,17 +1,17 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
-import {
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-} from '../../../shared/types/bridge';
-import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,
@@ -400,9 +400,9 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
+        assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
-        iconUrl: './images/eth_logo.svg',
         image: './images/eth_logo.svg',
         name: 'Ether',
         symbol: 'ETH',
@@ -419,9 +419,9 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
+        assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
-        iconUrl: './images/eth_logo.svg',
         image: './images/eth_logo.svg',
         name: 'Ether',
         symbol: 'ETH',
@@ -581,7 +581,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: 5,
         quotesInitialLoadTimeMs: 11000,
         isQuoteGoingToRefresh: false,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -705,7 +705,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: 2,
         isQuoteGoingToRefresh: true,
         quotesInitialLoadTimeMs: 11000,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
@@ -830,7 +830,7 @@ describe('Bridge selectors', () => {
         isLoading: false,
         quotesRefreshCount: 1,
         isQuoteGoingToRefresh: false,
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
   });
@@ -845,12 +845,12 @@ describe('Bridge selectors', () => {
         activeQuote: undefined,
         isLoading: false,
         isQuoteGoingToRefresh: false,
-        quotesLastFetchedMs: undefined,
+        quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
         recommendedQuote: undefined,
-        quotesInitialLoadTimeMs: undefined,
+        quotesInitialLoadTimeMs: null,
         sortedQuotes: [],
-        quoteFetchError: undefined,
+        quoteFetchError: null,
       });
     });
 
