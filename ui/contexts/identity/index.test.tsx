@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import * as redux from 'react-redux';
-import { useAccountSyncing } from '../../hooks/identity/useProfileSyncing';
+import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
@@ -9,6 +9,7 @@ import {
 import { MetamaskIdentityProvider } from '.';
 
 jest.mock('../../hooks/identity/useProfileSyncing');
+jest.mock('../../hooks/identity/useAccountSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
 
 describe('MetamaskIdentityProvider', () => {

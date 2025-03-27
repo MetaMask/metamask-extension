@@ -7,6 +7,10 @@ jest.mock('../selectors', () => ({
   getTheme: jest.fn(),
 }));
 
+jest.mock('../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderProviderWithTheme: any = (

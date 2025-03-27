@@ -33,6 +33,7 @@ async function measurePage(pageName) {
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
+      localNodeOptions: 'ganache',
     },
     async ({ driver }) => {
       await driver.delay(tinyDelayMs);
