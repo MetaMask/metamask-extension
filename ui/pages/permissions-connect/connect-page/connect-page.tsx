@@ -128,15 +128,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getAllNetworkConfigurationsByCaipChainId,
   );
 
-  const requestedNetworkConfigurations = Object.fromEntries(
-    Object.entries(networkConfigurationsByCaipChainId).filter(([caipChainId]) =>
-      requestedCaipChainIds.includes(caipChainId),
-    ),
-  );
-
   const [nonTestNetworkConfigurations, testNetworkConfigurations] = useMemo(
     () =>
-      Object.entries(requestedNetworkConfigurations).reduce(
+      Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork = caipFormattedTestChains.includes(caipChainId);
@@ -151,13 +145,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
         ],
       ),
-    [requestedNetworkConfigurations],
+    [networkConfigurationsByCaipChainId],
   );
 
-  const supportedRequestedCaipChainIds: CaipChainId[] = [
-    ...nonTestNetworkConfigurations,
-    ...testNetworkConfigurations,
-  ].map(({ caipChainId }) => caipChainId);
+  const allNetworksList = [...nonTestNetworkConfigurations, ...testNetworkConfigurations].map(
+    ({ caipChainId }) => caipChainId,
+  );
+
+  const supportedRequestedCaipChainIds = requestedCaipChainIds.filter((caipChainId) =>
+    allNetworksList.includes(caipChainId as CaipChainId),
+  );
+
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
 
@@ -183,7 +181,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       : defaultSelectedNetworkList;
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    defaultSelectedChainIds,
+    defaultSelectedChainIds as CaipChainId[],
   );
 
   const allAccounts = useSelector(
@@ -254,7 +252,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const selectedAccounts = allAccountsWithCaipAccountId.filter(({caipAccountId}) => selectedCaip10AccountAddresses.includes(caipAccountId))
 
-  console.log('selectedCaip10AccountAddresses', selectedCaip10AccountAddresses, selectedAccounts);
+  console.log({nonTestNetworkConfigurations, testNetworkConfigurations, selectedChainIds});
 
   const onConfirm = () => {
     const _request = {

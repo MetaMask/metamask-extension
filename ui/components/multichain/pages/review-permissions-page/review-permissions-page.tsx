@@ -205,6 +205,7 @@ export const ReviewPermissions = () => {
 
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
+
     connectedAccountAddresses.forEach((connectedAddress: string) => {
       const parsedConnectedAddress = parseCaipAccountId(connectedAddress as CaipAccountId);
 
