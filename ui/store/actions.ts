@@ -4864,8 +4864,12 @@ export async function attemptCloseNotificationPopup() {
       return;
     }
   } catch (error) {
-    // Error occurred while checking window type - we cannot confirm it's not a popup, so continue
+    // Error occurred while checking window type - we cannot confirm rule out a popup, so continue
     // with the closing attempt as we haven't ruled out that it might be a popup
+    console.warn(
+      'attemptCloseNotificationPopup: Error encountered while checking window type',
+      error,
+    );
   }
 
   await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
