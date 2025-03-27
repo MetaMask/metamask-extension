@@ -272,18 +272,20 @@ class SmartTransactionHook {
     }
   }
 
-  /**
-   * Ends an existing approval flow and clears the shared approval flow ID
-   *
-   * @param approvalFlowId - The ID of the approval flow to end
-   * @returns Promise that resolves when the flow is successfully ended or errors are handled
-   */
+  async #endApprovalFlow(flowId: string): Promise<void> {
+    try {
+      await this.#controllerMessenger.call('ApprovalController:endFlow', {
+        id: flowId,
+      });
+    } catch (error) {
+      // If the flow is already ended, we can ignore the error.
+    }
+  }
+
   async #endExistingApprovalFlow(approvalFlowId: string): Promise<void> {
     try {
       // End the existing flow
-      await this.#controllerMessenger.call('ApprovalController:endFlow', {
-        id: approvalFlowId,
-      });
+      await this.#endApprovalFlow(approvalFlowId);
 
       // Accept the request to close the UI
       await this.#controllerMessenger.call(
@@ -330,13 +332,7 @@ class SmartTransactionHook {
       return;
     }
     this.#approvalFlowEnded = true;
-    try {
-      this.#controllerMessenger.call('ApprovalController:endFlow', {
-        id: this.#approvalFlowId,
-      });
-    } catch (error) {
-      // If the flow is already ended, we can ignore the error.
-    }
+    this.#endApprovalFlow(this.#approvalFlowId);
 
     // Clear the shared approval flow ID when we end the flow
     if (SmartTransactionHook.#sharedApprovalFlowId === this.#approvalFlowId) {
