@@ -10,6 +10,7 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constan
 import {
   AvatarToken,
   AvatarTokenSize,
+  Box,
 } from '../../../../../../../components/component-library';
 import { BackgroundColor } from '../../../../../../../helpers/constants/design-system';
 
@@ -34,10 +35,12 @@ export function GasFeeTokenIcon({
 
   if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
     return (
-      <Identicon
-        address={tokenAddress}
-        diameter={size === GasFeeTokenIconSize.Md ? 32 : 12}
-      />
+      <Box data-testid="token-icon">
+        <Identicon
+          address={tokenAddress}
+          diameter={size === GasFeeTokenIconSize.Md ? 32 : 12}
+        />
+      </Box>
     );
   }
 
@@ -47,15 +50,17 @@ export function GasFeeTokenIcon({
     CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
 
   return (
-    <AvatarToken
-      src={source}
-      name={nativeCurrency}
-      size={
-        size === GasFeeTokenIconSize.Md
-          ? AvatarTokenSize.Md
-          : AvatarTokenSize.Xs
-      }
-      backgroundColor={BackgroundColor.backgroundDefault}
-    />
+    <Box data-testid="native-icon">
+      <AvatarToken
+        src={source}
+        name={nativeCurrency}
+        size={
+          size === GasFeeTokenIconSize.Md
+            ? AvatarTokenSize.Md
+            : AvatarTokenSize.Xs
+        }
+        backgroundColor={BackgroundColor.backgroundDefault}
+      />
+    </Box>
   );
 }
