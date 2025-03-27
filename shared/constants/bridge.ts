@@ -1,3 +1,4 @@
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
@@ -5,8 +6,13 @@ import {
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
-// TODO read from feature flags
-export const ALLOWED_BRIDGE_CHAIN_IDS = [
+const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  MultichainNetworks.SOLANA,
+  ///: END:ONLY_INCLUDE_IF
+];
+
+const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
   CHAIN_IDS.POLYGON,
@@ -16,12 +22,25 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+];
+
+export const ALLOWED_BRIDGE_CHAIN_IDS = [
+  ...ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
+  ...ALLOWED_EVM_BRIDGE_CHAIN_IDS,
+  CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.BASE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MultichainNetworks.SOLANA,
   ///: END:ONLY_INCLUDE_IF
 ];
 
-export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];
+const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP = ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(
+  toEvmCaipChainId,
+).concat(ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS);
+
+export type AllowedBridgeChainIds =
+  | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
+  | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 
 export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
   ? BRIDGE_DEV_API_BASE_URL
@@ -41,6 +60,17 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.OPTIMISM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
   [CHAIN_IDS.ZKSYNC_ERA]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
+  [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
+  [toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET)]: 'Linea',
+  [toEvmCaipChainId(CHAIN_IDS.POLYGON)]: NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON],
+  [toEvmCaipChainId(CHAIN_IDS.AVALANCHE)]: 'Avalanche',
+  [toEvmCaipChainId(CHAIN_IDS.BSC)]: NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC],
+  [toEvmCaipChainId(CHAIN_IDS.ARBITRUM)]:
+    NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM],
+  [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]:
+    NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
+  [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
+  [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
