@@ -39,10 +39,12 @@ export function useDecodedTransactionData({
       return undefined;
     }
 
-    return await decodeTransactionData({
+    const responseDecoded = await decodeTransactionData({
       transactionData,
       chainId,
       contractAddress: transactionTo,
     });
+    console.log('🚀 ~ responseDecoded:', responseDecoded);
+    return responseDecoded;
   }, [isDecodeEnabled, transactionData, transactionTo, chainId]);
 }

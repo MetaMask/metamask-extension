@@ -590,30 +590,39 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         chainId,
       }),
     );
+    console.log('!!!!! here inside computeEstimatedGasLimit');
 
     if (
       send.stage !== SEND_STAGES.EDIT ||
       !transaction.dappSuggestedGasFees?.gas ||
       !transaction.userEditedGasLimit
     ) {
-      const gasLimit = await estimateGasLimitForSend({
-        gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress: selectedAccount.address,
-        sendToken: draftTransaction.sendAsset.details,
-        to: draftTransaction.recipient.address?.toLowerCase(),
-        value: draftTransaction.amount.value,
-        data: draftTransaction.userInputHexData,
-        isNonStandardEthChain,
-        chainId,
-        gasLimit: draftTransaction.gas.gasLimit,
-      });
+      let gasLimit = null;
+      try {
+        gasLimit = await estimateGasLimitForSend({
+          gasPrice: draftTransaction.gas.gasPrice,
+          blockGasLimit: metamask.currentBlockGasLimit,
+          selectedAddress: selectedAccount.address,
+          sendToken: draftTransaction.sendAsset.details,
+          to: draftTransaction.recipient.address?.toLowerCase(),
+          value: draftTransaction.amount.value,
+          data: draftTransaction.userInputHexData,
+          isNonStandardEthChain,
+          chainId,
+          gasLimit: draftTransaction.gas.gasLimit,
+        });
+      } catch (err) {
+        console.log('!!!!! here inside computeEstimatedGasLimit 3', err.stack);
+      }
+
+      console.log('!!!!! here inside computeEstimatedGasLimit 1');
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
         gasLimit,
         gasTotalForLayer1,
       };
     }
+    console.log('!!!!! here inside computeEstimatedGasLimit 2');
     return null;
   },
 );
@@ -1123,6 +1132,7 @@ const slice = createSlice({
      */
     updateAsset: (state, action) => {
       const { asset, initialAssetSet, isReceived } = action.payload;
+      console.log('🚀 ~ asset:', asset);
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
@@ -1279,6 +1289,12 @@ const slice = createSlice({
         state.draftTransactions[state.currentTransactionUUID];
       if (draftTransaction) {
         draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
+        console.log(
+          '============================================ update Gas Limit',
+          draftTransaction.gas.gasLimit,
+          action.payload,
+          addHexPrefix(action.payload),
+        );
         slice.caseReducers.calculateGasTotal(state);
       }
     },
@@ -1930,7 +1946,9 @@ const slice = createSlice({
         // checks and gasTotal calculation. First set gasEstimateIsLoading to
         // false.
         state.gasEstimateIsLoading = false;
+        console.log('#########################', action.payload?.gasLimit);
         if (action.payload?.gasLimit) {
+          console.log('before calling updateGasLimit', action.payload.gasLimit);
           slice.caseReducers.updateGasLimit(state, {
             payload: action.payload.gasLimit,
           });
@@ -2314,6 +2332,9 @@ export function editExistingTransaction(assetType, transactionId) {
           ],
         }),
       );
+      const tokenIdTest =
+        getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
+      console.log('🚀 ~ return ~ tokenIdTest:', tokenIdTest);
 
       await dispatch(
         updateSendAsset(
@@ -2662,6 +2683,7 @@ export function updateSendAsset(
         details = {
           ...providedDetails,
         };
+        console.log('🚀 ~ return ~ details:', details);
       } else {
         details = {
           ...providedDetails,
@@ -2746,7 +2768,12 @@ export function updateSendAsset(
           );
         }
       }
-
+      console.log(
+        '🚀 ~ asset:::::::::::::',
+        asset,
+        initialAssetSet,
+        isReceived,
+      );
       await dispatch(
         actions.updateAsset({ asset, initialAssetSet, isReceived }),
       );
@@ -3154,7 +3181,7 @@ export function startNewDraftTransaction(asset) {
         history: [`sendFlow - User started new draft transaction`],
       }),
     );
-
+    console.log('🚀 ~ startNewDraftTransaction ~ asset:', asset);
     await dispatch(
       updateSendAsset({
         type: asset.type ?? AssetType.native,

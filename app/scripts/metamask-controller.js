@@ -5612,6 +5612,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async estimateGas(estimateGasParams) {
+    console.log(
+      '🚀 ~ MetamaskController ~ estimateGas ~ estimateGasParams:',
+      estimateGasParams,
+    );
     return new Promise((resolve, reject) => {
       this.provider
         .request({

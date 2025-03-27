@@ -85,6 +85,7 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
+import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
@@ -350,14 +351,6 @@ export function NftDetailsComponent({
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-
-  const renderShortTokenId = (text: string, chars: number) => {
-    if (text.length <= MAX_TOKEN_ID_LENGTH) {
-      return text;
-    }
-    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
-  };
-
   const nftItemSrc = isImageHosted ? image : nftImageURL;
 
   return (
