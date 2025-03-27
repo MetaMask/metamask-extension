@@ -55,7 +55,10 @@
   .main-container {
     width: 85vw;
     min-height: 90vh;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+
+    &--has-shadow {
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    }
   }
 }
 
@@ -63,7 +66,10 @@
   .main-container {
     width: 80vw;
     min-height: 82vh;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+
+    &--has-shadow {
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    }
   }
 }
 
@@ -71,7 +77,10 @@
   .main-container {
     width: 62vw;
     min-height: 82vh;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+
+    &--has-shadow {
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    }
   }
 }
 
