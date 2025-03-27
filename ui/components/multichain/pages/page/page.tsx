@@ -44,6 +44,7 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundAlternative}
       className={classNames}
+      data-testid="multichain-page"
     >
       <Box
         width={BlockSize.Full}
