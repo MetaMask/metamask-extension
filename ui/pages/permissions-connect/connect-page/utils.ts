@@ -204,6 +204,30 @@ export function getDefaultAccounts(
     }
   });
 
+  // sort accounts by lastSelected descending
+  const allAccountsSortedByLastSelected =  allAccounts.sort((a, b) =>  {
+    const lastSelectedA = a.internalAccount.metadata.lastSelected;
+    const lastSelectedB = b.internalAccount.metadata.lastSelected;
+    if (!lastSelectedA && !lastSelectedB) {
+      return 0;
+    }
+    if (!lastSelectedA) {
+      return 1;
+    }
+    if (!lastSelectedB) {
+      return -1;
+    }
+
+    if (lastSelectedA > lastSelectedB) {
+      return -1;
+    } else if (lastSelectedA < lastSelectedB) {
+      return 1;
+    }
+    return 0;
+  })
+
+  console.log({allAccountsSortedByLastSelected})
+
   requestedNamespaces.forEach((namespace) => {
     if (
       !defaultAccounts.find((account) => {
@@ -213,7 +237,7 @@ export function getDefaultAccounts(
         return accountNamespace === namespace;
       })
     ) {
-      const defaultAccountForNamespace = allAccounts.find((account) => {
+      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find((account) => {
         const {
           chain: { namespace: accountNamespace },
         } = parseCaipAccountId(account.caipAccountId);
