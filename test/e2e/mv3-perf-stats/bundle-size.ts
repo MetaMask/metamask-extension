@@ -1,29 +1,25 @@
-#!/usr/bin/env node
-
-/* eslint-disable node/shebang */
-const path = require('path');
-const { promises: fs } = require('fs');
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
-const {
-  isWritable,
+import { promises as fs } from 'fs';
+import path from 'path';
+import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs/yargs';
+import { exitWithError } from '../../../development/lib/exit-with-error';
+import {
   getFirstParentDirectoryThatExists,
-} = require('../../helpers/file');
-
-const { exitWithError } = require('../../../development/lib/exit-with-error');
+  isWritable,
+} from '../../helpers/file';
 
 /**
  * The e2e test case is used to capture bundle time statistics for extension.
  */
 
-const backgroundFiles = [
+const backgroundFiles: string[] = [
   'scripts/runtime-lavamoat.js',
   'scripts/lockdown-more.js',
   'scripts/sentry-install.js',
   'scripts/policy-load.js',
 ];
 
-const uiFiles = [
+const uiFiles: string[] = [
   'scripts/sentry-install.js',
   'scripts/runtime-lavamoat.js',
   'scripts/lockdown-more.js',
@@ -34,28 +30,38 @@ const BackgroundFileRegex = /background-[0-9]*.js/u;
 const CommonFileRegex = /common-[0-9]*.js/u;
 const UIFileRegex = /ui-[0-9]*.js/u;
 
-async function main() {
+type FileStat = {
+  name: string;
+  size: number;
+};
+
+type BundleStats = {
+  name: string;
+  size: number;
+  fileList: FileStat[];
+};
+
+async function main(): Promise<void> {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
     'Capture bundle size stats',
     (_yargs) =>
       _yargs.option('out', {
         description:
-          'Output filename. Output printed to STDOUT of this is omitted.',
+          'Output filename. Output printed to STDOUT if this is omitted.',
         type: 'string',
         normalize: true,
       }),
   );
-  const { out } = argv;
+  const { out } = argv as { out?: string };
 
   const distFolder = 'dist/chrome';
-  const backgroundFileList = [];
-  const uiFileList = [];
-  const commonFileList = [];
+  const backgroundFileList: FileStat[] = [];
+  const uiFileList: FileStat[] = [];
+  const commonFileList: FileStat[] = [];
 
   const files = await fs.readdir(distFolder);
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+  for (const file of files) {
     if (CommonFileRegex.test(file)) {
       const stats = await fs.stat(`${distFolder}/${file}`);
       commonFileList.push({ name: file, size: stats.size });
@@ -86,7 +92,7 @@ async function main() {
     0,
   );
 
-  const result = {
+  const result: Record<string, BundleStats> = {
     background: {
       name: 'background',
       size: backgroundBundleSize,

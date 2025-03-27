@@ -545,6 +545,18 @@ export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
 }
 
+export function getHDEntropyIndex(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+    keyring.accounts.includes(selectedAddress),
+  );
+  return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
+}
+
 /**
  * Get account balances state.
  *

@@ -5666,6 +5666,23 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * Returns the index of the HD keyring containing the selected account.
+   *
+   * @returns {number | undefined} The index of the HD keyring containing the selected account.
+   */
+  getHDEntropyIndex() {
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const hdKeyrings = this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    const index = hdKeyrings.findIndex((keyring) =>
+      keyring.accounts.includes(selectedAccount.address),
+    );
+
+    return index === -1 ? undefined : index;
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -6243,6 +6260,7 @@ export default class MetamaskController extends EventEmitter {
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
+        getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
@@ -7343,6 +7361,7 @@ export default class MetamaskController extends EventEmitter {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
       },
+      getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
     };
     return {
       ...controllerActions,
