@@ -12,7 +12,6 @@ import {
   ButtonPrimarySize,
 } from '../../../component-library';
 import {
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
