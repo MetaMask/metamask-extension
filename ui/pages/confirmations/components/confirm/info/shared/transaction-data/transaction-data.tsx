@@ -215,12 +215,11 @@ function ParamValue({
   }
   // if its a long string value truncate it
   let valueString = value.toString();
-  if (valueString.length > 10) {
-    valueString = renderShortTokenId(valueString, 5);
-  }
-
   if (!Array.isArray(value) && valueString.startsWith('0x')) {
     valueString = hexStripZeros(valueString);
+  }
+  if (valueString.length > 10 && !valueString.startsWith('0x')) {
+    valueString = renderShortTokenId(valueString, 5);
   }
 
   return <ConfirmInfoRowText text={valueString} />;
