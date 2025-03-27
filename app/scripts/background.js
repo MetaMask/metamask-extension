@@ -1289,15 +1289,13 @@ const addAppInstalledEvent = () => {
  */
 function onInstall() {
   log.debug('First install detected');
-  if (process.env.IN_TEST) {
-    addAppInstalledEvent();
-  } else if (!process.env.METAMASK_DEBUG) {
+  addAppInstalledEvent();
+  if (!process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
-  onNavigateToTab();
 }
 
 function onNavigateToTab() {
@@ -1328,6 +1326,7 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
+  onNavigateToTab();
   try {
     await initialize();
     if (process.env.IN_TEST) {
