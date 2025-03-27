@@ -91,6 +91,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
       }}
       disabled={disabled}
     >
+      {children}
       {selected && (
         <Box
           borderRadius={BorderRadius.pill}
@@ -105,7 +106,6 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
           }}
         />
       )}
-      {children}
     </ButtonBase>
   );
 };
