@@ -580,6 +580,16 @@ export const getIsBridgeTx = createDeepEqualSelector(
       : false,
 );
 
+export const getIsSwap = createDeepEqualSelector(
+  getQuoteRequest,
+  ({ srcChainId, destChainId }) =>
+    Boolean(
+      srcChainId &&
+        destChainId &&
+        formatChainIdToCaip(srcChainId) === formatChainIdToCaip(destChainId),
+    ),
+);
+
 const _getValidatedSrcAmount = createSelector(
   getFromToken,
   (state: BridgeAppState) => state.metamask.quoteRequest.srcTokenAmount,

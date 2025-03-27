@@ -20,6 +20,7 @@ import {
   getFromChains,
   getFromToken,
   getIsBridgeTx,
+  getIsSwap,
   getToChain,
   getToChains,
   getToToken,
@@ -1338,6 +1339,70 @@ describe('Bridge selectors', () => {
         undefined,
       );
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
+    });
+  });
+
+  describe('getIsSwap', () => {
+    it('returns true when source and destination chains are the same', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: '0x1',
+            destChainId: '0x1',
+          },
+        },
+      });
+
+      const result = getIsSwap(state as never);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when source and destination chains are different', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: '0x1',
+            destChainId: '0x89',
+          },
+        },
+      });
+
+      const result = getIsSwap(state as never);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when either chain ID is missing', () => {
+      const stateNoSrc = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            destChainId: '0x1',
+          },
+        },
+      });
+      const stateNoDest = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: '0x1',
+          },
+        },
+      });
+
+      expect(getIsSwap(stateNoSrc as never)).toBe(false);
+      expect(getIsSwap(stateNoDest as never)).toBe(false);
+    });
+
+    it('handles CAIP chain ID format', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: 'eip155:1',
+            destChainId: 'eip155:1',
+          },
+        },
+      });
+
+      const result = getIsSwap(state as never);
+      expect(result).toBe(true);
     });
   });
 });
