@@ -1,11 +1,14 @@
 import log from 'loglevel';
-import browser from 'webextension-polyfill';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
-import ExtensionStore from './extension-store';
-import ReadOnlyNetworkStore from './read-only-network-store';
+import {
+  type MetaMaskStateType,
+  MetaMaskStorageStructure,
+  BaseStore,
+} from './base-store';
+
+const STATE_LOCK = 'state-lock';
 
 /**
  * The PersistenceManager class serves as a high-level manager for handling
@@ -63,17 +66,12 @@ export class PersistenceManager {
 
   #isExtensionInitialized: boolean = false;
 
-  #localStore: ExtensionStore | ReadOnlyNetworkStore;
+  #localStore: BaseStore;
 
-  #vaultReference: string | null;
+  #vaultReference: string | null = null;
 
-  constructor({
-    localStore,
-  }: {
-    localStore: ExtensionStore | ReadOnlyNetworkStore;
-  }) {
+  constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
-    this.#vaultReference = null;
   }
 
   setMetadata(metadata: { version: number }) {
@@ -84,45 +82,52 @@ export class PersistenceManager {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!this.#metadata) {
+    const metadata = this.#metadata;
+    if (!metadata) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
-    try {
-      await this.#localStore.set({ data: state, meta: this.#metadata });
-      const keyringController =
-        state.KeyringController as KeyringControllerState;
-      const newVaultReference = keyringController?.vault ?? null;
-      if (newVaultReference !== this.#vaultReference) {
-        if (newVaultReference && this.#vaultReference === null) {
-          browser.storage.local.remove('vaultHasNotYetBeenCreated');
-        }
+    const keyringController = state.KeyringController as KeyringControllerState;
+    const newVaultReference = keyringController?.vault ?? null;
+
+    const vaultHasNotYetBeenCreated =
+      newVaultReference && this.#vaultReference === null ? false : true;
+    await navigator.locks.request(STATE_LOCK, async () => {
+      try {
+        // atomically set all the keys
+        await this.#localStore.set({
+          data: state,
+          meta: metadata,
+          vaultHasNotYetBeenCreated,
+        });
         this.#vaultReference = newVaultReference;
+        if (this.#dataPersistenceFailing) {
+          this.#dataPersistenceFailing = false;
+        }
+      } catch (err) {
+        if (!this.#dataPersistenceFailing) {
+          this.#dataPersistenceFailing = true;
+          captureException(err);
+        }
+        log.error('error setting state in local store:', err);
+      } finally {
+        this.#isExtensionInitialized = true;
       }
-      if (this.#dataPersistenceFailing) {
-        this.#dataPersistenceFailing = false;
-      }
-    } catch (err) {
-      if (!this.#dataPersistenceFailing) {
-        this.#dataPersistenceFailing = true;
-        captureException(err);
-      }
-      log.error('error setting state in local store:', err);
-    } finally {
-      this.#isExtensionInitialized = true;
-    }
+    });
   }
 
-  async get() {
-    const result = await this.#localStore.get();
+  async get(): Promise<MetaMaskStorageStructure | MetaMaskStateType | null> {
+    return await navigator.locks.request(STATE_LOCK, async () => {
+      const result = await this.#localStore.get();
 
-    if (isEmpty(result)) {
-      this.#mostRecentRetrievedState = null;
-      return undefined;
-    }
-    if (!this.#isExtensionInitialized) {
-      this.#mostRecentRetrievedState = result;
-    }
-    return result;
+      if (isEmpty(result)) {
+        this.#mostRecentRetrievedState = null;
+        return undefined;
+      }
+      if (!this.#isExtensionInitialized) {
+        this.#mostRecentRetrievedState = result;
+      }
+      return result;
+    });
   }
 
   get mostRecentRetrievedState() {

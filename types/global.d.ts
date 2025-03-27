@@ -279,3 +279,33 @@ export declare global {
 
   function setPreference(key: keyof Preferences, value: boolean);
 }
+
+//#region Promise.withResolvers polyfill
+
+// this polyfill can be removed once our TS libs include withResolvers.
+// at time of writing we use TypeScript Version 5.4.5, which includes it in
+// esnext
+
+export declare global {
+  interface PromiseWithResolvers<T> {
+    promise: Promise<T>;
+    resolve: (value: T | PromiseLike<T>) => void;
+    reject: (reason?: any) => void;
+  }
+
+  interface PromiseConstructor {
+    /**
+     * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
+     *
+     * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
+     *
+     * @returns An object with the properties `promise`, `resolve`, and `reject`.
+     *
+     * ```ts
+     * const { promise, resolve, reject } = Promise.withResolvers<T>();
+     * ```
+     */
+    withResolvers<T>(): PromiseWithResolvers<T>;
+  }
+}
+//#endregion

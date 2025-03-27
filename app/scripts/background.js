@@ -143,25 +143,41 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
+const onInstallProm = Promise.withResolvers();
+function onStartup() {
+  browser.runtime.onStartup.removeListener(onStartup);
+  onInstallProm.resolve();
+}
 if (isFirefox) {
-  browser.runtime.onInstalled.addListener(function (details) {
+  browser.runtime.onInstalled.addListener(async function (details) {
+    browser.runtime.onStartup.removeListener(onStartup);
     if (details.reason === 'install') {
-      browser.storage.session.set({ isFirstTimeInstall: true });
-      browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
+      await browser.storage.session.set({ isFirstTimeInstall: true });
+      await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
     } else if (details.reason === 'update') {
-      browser.storage.session.set({ isFirstTimeInstall: false });
+      await browser.storage.session.set({ isFirstTimeInstall: false });
     }
+    onInstallProm.resolve();
   });
 } else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
+  browser.runtime.onInstalled.addListener(async function (details) {
+    browser.runtime.onStartup.removeListener(onStartup);
     if (details.reason === 'install') {
       global.sessionStorage.setItem('isFirstTimeInstall', true);
-      browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
+      await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
     } else if (details.reason === 'update') {
       global.sessionStorage.setItem('isFirstTimeInstall', false);
     }
+    onInstallProm.resolve();
   });
 }
+// `onStartup` doesn't fire in private browsing modes
+if (browser.extension.inIncognitoContext) {
+  browser.runtime.onStartup.addListener(onStartup);
+} else {
+  setTimeout(() => onInstallProm.resolve(), 5000);
+}
+
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -672,11 +688,12 @@ export async function loadStateFromPersistence() {
     preMigrationVersionedData?.data?.KeyringController?.vault,
   );
 
-  if (!vaultDataPresent) {
-    const { vaultHasNotYetBeenCreated } = await browser.storage.local.get(
-      'vaultHasNotYetBeenCreated',
-    );
-    const weShouldHaveAVault = vaultHasNotYetBeenCreated === undefined;
+  if (vaultDataPresent === false) {
+    // so we don't have a vault... don't panic yet! there is a chance we aren't
+    // supposed to have one at this point.
+    // `vaultHasNotYetBeenCreated` can be `true`, `false`, or `undefined`. If it
+    // is `!== true`, we *should* have a vault... and now we can panic.
+    const weShouldHaveAVault = preMigrationVersionedData.vaultHasNotYetBeenCreated !== true;
     if (weShouldHaveAVault) {
       throw new Error(MISSING_VAULT_ERROR);
     }
