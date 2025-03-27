@@ -6,4 +6,9 @@
     width: 100%;
     border-top: 0;
   }
+
+  &__content {
+    flex: 1 0 auto;
+    overflow-y: auto;
+  }
 }

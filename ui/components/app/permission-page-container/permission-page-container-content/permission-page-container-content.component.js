@@ -65,6 +65,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       subjectType === SubjectType.Website ? getURLHost(origin) : origin;
     return (
       <Box
+        className="permission-page-container-content"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.flexStart}
@@ -73,9 +74,6 @@ export default class PermissionPageContainerContent extends PureComponent {
         paddingLeft={4}
         paddingRight={4}
         backgroundColor={BackgroundColor.backgroundAlternative}
-        style={{
-          flex: '1 0 auto',
-        }}
       >
         <Box
           display={Display.Flex}

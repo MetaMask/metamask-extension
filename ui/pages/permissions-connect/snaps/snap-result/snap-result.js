@@ -151,10 +151,6 @@ export default function SnapResult({
         padding={4}
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        style={{
-          flex: '1 0 auto',
-          overflowY: 'auto',
-        }}
         backgroundColor={BackgroundColor.backgroundAlternative}
         height={BlockSize.Full}
         justifyContent={JustifyContent.center}
