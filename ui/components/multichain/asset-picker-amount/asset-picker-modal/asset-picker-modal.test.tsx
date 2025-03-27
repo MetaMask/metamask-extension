@@ -584,13 +584,58 @@ describe('AssetPickerModal token filtering', () => {
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
   });
 
-  it('should show selected token first', async () => {
+  it('should show selected token first when selected network is not active', () => {
+    renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        isMultiselectEnabled={false}
+        selectedChainIds={[MultichainNetworks.SOLANA]}
+        network={
+          {
+            chainId: MultichainNetworks.SOLANA,
+            name: 'Solana',
+          } as unknown as NetworkConfiguration
+        }
+        asset={{
+          address: 'NEWTOKEN',
+          chainId: MultichainNetworks.SOLANA,
+          symbol: 'USDT',
+          image: 'image.png',
+          type: AssetType.token,
+        }}
+        customTokenListGenerator={() =>
+          [
+            {
+              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+              balance: '50',
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              decimals: 6,
+              isNative: false,
+              symbol: 'USDC',
+              type: 'TOKEN',
+            },
+            {
+              address: 'NEWTOKEN',
+              chainId: MultichainNetworks.SOLANA,
+              symbol: 'USDT',
+              image: 'image.png',
+              type: AssetType.token,
+            },
+          ] as unknown as (keyof typeof AssetPickerModal)['customTokenListGenerator']
+        }
+      />,
+    );
+
+    expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
+  });
+
+  it('should show selected token first when selected network is active', () => {
     renderWithProvider(
       <AssetPickerModal
         {...defaultProps}
         asset={{
           address: 'NEWTOKEN',
-          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          chainId: '0xa',
           symbol: 'USDT',
           image: 'image.png',
           type: AssetType.token,

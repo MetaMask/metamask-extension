@@ -583,12 +583,12 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
 ]
 `;
 
-exports[`AssetPickerModal token filtering should show selected token first 1`] = `
+exports[`AssetPickerModal token filtering should show selected token first when selected network is active 1`] = `
 [
   {
     "asset": {
       "address": "NEWTOKEN",
-      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "chainId": "0xa",
       "image": "image.png",
       "symbol": "USDT",
       "type": "TOKEN",
@@ -605,15 +605,6 @@ exports[`AssetPickerModal token filtering should show selected token first 1`] =
       "name": "Optimism",
     },
     "tokenList": [
-      {
-        "address": "NEWTOKEN",
-        "balance": "0",
-        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "image": "image.png",
-        "string": "0",
-        "symbol": "USDT",
-        "type": "TOKEN",
-      },
       {
         "address": "",
         "balance": "1.5",
@@ -660,6 +651,49 @@ exports[`AssetPickerModal token filtering should show selected token first 1`] =
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should show selected token first when selected network is not active 1`] = `
+[
+  {
+    "asset": {
+      "address": "NEWTOKEN",
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "image": "image.png",
+      "symbol": "USDT",
+      "type": "TOKEN",
+    },
+    "assetItemProps": {
+      "isTitleHidden": true,
+      "isTitleNetworkName": false,
+    },
+    "handleAssetChange": [MockFunction],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana",
+    },
+    "tokenList": [
+      {
+        "address": "NEWTOKEN",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "image": "image.png",
+        "symbol": "USDT",
+        "type": "TOKEN",
+      },
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "50",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
       },
     ],
   },
