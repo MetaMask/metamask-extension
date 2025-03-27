@@ -22,6 +22,7 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   type CaipChainId,
+  type Hex,
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
@@ -47,6 +48,7 @@ import {
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
+  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import {
@@ -64,6 +66,8 @@ import {
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
+  getIsPortfolioDiscoverButtonEnabled,
+  getAllChainsToPoll,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -108,6 +112,7 @@ import {
 } from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { openWindow } from '../../../helpers/utils/window';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -147,6 +152,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
+  // This selector provides the indication if the "Discover" button
+  // is enabled based on the remote feature flag.
+  const isPortfolioDiscoverButtonEnabled = useSelector(
+    getIsPortfolioDiscoverButtonEnabled,
+  );
   // This selector provides an array with two elements.
   // 1 - All network configurations including EVM and non-EVM with the data type
   // MultichainNetworkConfiguration from @metamask/multichain-network-controller
@@ -166,6 +176,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
+
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
@@ -291,7 +303,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     dispatch(setActiveNetwork(networkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-    dispatch(detectNfts());
+    dispatch(detectNfts(allChainIds));
 
     dispatch(toggleNetworkMenu());
 
@@ -379,6 +391,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
+  const isDiscoverBtnEnabled = useCallback(
+    (hexChainId: Hex): boolean => {
+      // For now, the "Discover" button should be enabled only for Linea network base on
+      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      return (
+        isPortfolioDiscoverButtonEnabled &&
+        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+      );
+    },
+    [isPortfolioDiscoverButtonEnabled],
+  );
+
   const hasMultiRpcOptions = useCallback(
     (network: MultichainNetworkConfiguration): boolean =>
       network.isEvm &&
@@ -432,6 +456,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           );
           setActionMode(ACTION_MODE.ADD_EDIT);
         },
+        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
+          ? () => {
+              openWindow(
+                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                '_blank',
+              );
+            }
+          : undefined,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
               setActionMode(ACTION_MODE.SELECT_RPC);
@@ -444,7 +476,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           : undefined,
       };
     },
-    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked],
+    [
+      currentChainId,
+      dispatch,
+      hasMultiRpcOptions,
+      isUnlocked,
+      isDiscoverBtnEnabled,
+    ],
   );
 
   // Renders a network in the network list
@@ -453,7 +491,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   ) => {
     const { chainId } = network;
     const isCurrentNetwork = chainId === currentChainId;
-    const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
+    const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+      getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
     return (
@@ -475,6 +514,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
+        onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
       />
@@ -500,9 +540,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   marginRight={4}
                   borderRadius={BorderRadius.LG}
                   padding={4}
-                  marginBottom={4}
                   marginTop={2}
-                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  gap={4}
+                  backgroundColor={BackgroundColor.backgroundMuted}
                   startAccessory={
                     <Box
                       display={Display.Flex}

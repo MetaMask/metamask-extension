@@ -20,6 +20,7 @@ import {
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
+  setSlippage,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -324,8 +325,8 @@ const PrepareBridgePage = () => {
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
-      slippage: isSwap ? 0 : slippage,
+      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('localhost')),
+      slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
     }),
@@ -419,11 +420,14 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  // Set the default destination token for the swap
+  // Set the default destination token and slippage for swaps
   useEffect(() => {
-    if (isSwap && fromChain && !toToken) {
-      dispatch(setToChainId(fromChain.chainId));
-      dispatch(setToToken(SOLANA_USDC_ASSET));
+    if (isSwap) {
+      dispatch(setSlippage(undefined));
+      if (fromChain && !toToken) {
+        dispatch(setToChainId(fromChain.chainId));
+        dispatch(setToToken(SOLANA_USDC_ASSET));
+      }
     }
   }, []);
 
@@ -501,6 +505,7 @@ const PrepareBridgePage = () => {
           value: fromAmount || undefined,
         }}
         isTokenListLoading={isFromTokensLoading}
+        buttonProps={{ testId: 'bridge-source-button' }}
       />
 
       <Column
@@ -641,6 +646,7 @@ const PrepareBridgePage = () => {
               : 'amount-input',
           }}
           isTokenListLoading={isToTokensLoading}
+          buttonProps={{ testId: 'bridge-destination-button' }}
         />
 
         {isSolanaBridgeEnabled && isToOrFromSolana && (
