@@ -538,6 +538,84 @@ describe('submitSmartTransactionHook', () => {
       },
     );
   });
+
+  it('ends existing approval flow when starting a new one', async () => {
+    // First submission to set up existing approval flow
+    const firstApprovalId = 'firstApprovalId';
+    const secondApprovalId = 'secondApprovalId';
+    let currentApprovalFlowId = firstApprovalId;
+
+    const customStartFlowSpy = jest.fn().mockImplementation(() => {
+      return { id: currentApprovalFlowId };
+    });
+
+    const endFlowSpy = jest.fn();
+    const acceptRequestSpy = jest.fn();
+
+    // Create a mock messenger
+    const mockMessenger = {
+      call: jest.fn().mockImplementation((method, ...args) => {
+        if (method === 'ApprovalController:startFlow') {
+          return customStartFlowSpy();
+        }
+        if (method === 'ApprovalController:endFlow') {
+          return endFlowSpy(...args);
+        }
+        if (method === 'ApprovalController:acceptRequest') {
+          return acceptRequestSpy(...args);
+        }
+        return undefined;
+      }),
+      subscribe: jest.fn(),
+      registerActionHandler: jest.fn(),
+      publish: jest.fn(),
+    };
+
+    // Type assertion using SubmitSmartTransactionRequest parameter type
+    const typedMessenger =
+      mockMessenger as unknown as SubmitSmartTransactionRequest['controllerMessenger'];
+
+    withRequest(
+      {
+        options: {
+          controllerMessenger: typedMessenger,
+        },
+      },
+      async ({ request }) => {
+        // Mock the transaction success for both submissions
+        // We do this outside the messenger to avoid type issues
+        setImmediate(() => {
+          request.smartTransactionsController.submitSignedTransactions = jest
+            .fn()
+            .mockReturnValue({
+              uuid,
+              txHash,
+            });
+        });
+
+        // First submission - creates a flow
+        await submitSmartTransactionHook(request);
+
+        // Verify first flow created
+        expect(customStartFlowSpy).toHaveBeenCalledTimes(1);
+
+        // Change approval flow ID for second transaction
+        currentApprovalFlowId = secondApprovalId;
+
+        // Second submission - should end the first flow and start a new one
+        await submitSmartTransactionHook(request);
+
+        // Verify endFlow and acceptRequest were called for the first flow
+        expect(endFlowSpy).toHaveBeenCalledWith({
+          id: firstApprovalId,
+        });
+        expect(acceptRequestSpy).toHaveBeenCalledWith(firstApprovalId);
+
+        // Verify startFlow was called again for the second transaction
+        expect(customStartFlowSpy).toHaveBeenCalledTimes(2);
+      },
+    );
+  });
 });
 
 describe('submitBatchSmartTransactionHook', () => {
