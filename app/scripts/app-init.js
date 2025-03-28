@@ -6,6 +6,9 @@ let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
+/**
+ * @type {globalThis.stateHooks}
+ */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
 const loadTimeLogs = [];
