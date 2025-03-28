@@ -2887,7 +2887,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        if (this.preferencesController.state.useExternalServices) {
+        if (this.preferencesController.state.useExternalServices === true) {
           this.txController.stopIncomingTransactionPolling();
 
           await this.txController.updateIncomingTransactions();
@@ -8118,7 +8118,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #restartSmartTransactionPoller() {
-    if (this.preferencesController.state.useExternalServices) {
+    if (this.preferencesController.state.useExternalServices === true) {
       this.txController.stopIncomingTransactionPolling();
       this.txController.startIncomingTransactionPolling();
     }

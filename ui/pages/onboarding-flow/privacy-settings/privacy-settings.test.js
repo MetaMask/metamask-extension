@@ -116,9 +116,9 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[0]); // setUseTokenDetectionStub
     fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
 
-    fireEvent.click(toggles[6]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[7]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[8]); // setUseMultiAccountBalanceCheckerStub
+    fireEvent.click(toggles[2]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[3]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[4]); // setUseMultiAccountBalanceCheckerStub
 
     // Default Settings - Security category
     const itemCategorySecurity = queryByTestId('category-item-Security');
