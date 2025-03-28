@@ -3,6 +3,7 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -45,7 +46,7 @@ describe('Wallet Created Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -73,6 +74,7 @@ describe('Wallet Created Events', function () {
           chain_id: '0x539',
           environment_type: 'fullscreen',
           is_profile_syncing_enabled: true,
+          hd_entropy_index: 0,
         });
       },
     );
@@ -83,7 +85,7 @@ describe('Wallet Created Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),

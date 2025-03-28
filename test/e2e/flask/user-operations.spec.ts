@@ -200,7 +200,11 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 }
 
 async function withAccountSnap(
-  { title, paymaster }: { title?: string; paymaster?: string },
+  {
+    title,
+    paymaster,
+    localNodeOptions,
+  }: { title?: string; paymaster?: string; localNodeOptions?: object },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
 ) {
   await withFixtures(
@@ -210,8 +214,10 @@ async function withAccountSnap(
       useBundler: true,
       usePaymaster: Boolean(paymaster),
       dapp: true,
-      ganacheOptions: {
+      localNodeOptions: localNodeOptions || {
         hardfork: 'london',
+        mnemonic:
+          'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
       testSpecificMock: mockSwapsTransactionQuote,
     },
@@ -291,7 +297,20 @@ describe('User Operations', function () {
 
   it('with paymaster', async function (this: Mocha.Context) {
     await withAccountSnap(
-      { title: this.test?.fullTitle(), paymaster: VERIFYING_PAYMASTER },
+      {
+        title: this.test?.fullTitle(),
+        paymaster: VERIFYING_PAYMASTER,
+        localNodeOptions: [
+          {
+            type: 'ganache',
+            options: {
+              hardfork: 'london',
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            },
+          },
+        ],
+      },
       async (driver, bundlerServer) => {
         await createDappTransaction(driver, {
           from: ERC_4337_ACCOUNT,

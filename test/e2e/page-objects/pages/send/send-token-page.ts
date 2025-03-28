@@ -43,6 +43,12 @@ class SendTokenPage {
   private readonly warning =
     '[data-testid="send-warning"] .mm-box--min-width-0 span';
 
+  private readonly maxAmountButton = '[data-testid="max-clear-button"]';
+
+  private readonly gasFeeField = '[data-testid="first-gas-field"]';
+
+  private readonly fiatFeeField = '[data-testid="native-currency"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -138,8 +144,25 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
   }
 
+  async clickMaxAmountButton(): Promise<void> {
+    await this.driver.clickElement(this.maxAmountButton);
+  }
+
   async goToNextScreen(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async validateSendFees(): Promise<void> {
+    // Wait for both fields to be present and have the expected values
+    await this.driver.waitForSelector({
+      css: this.gasFeeField,
+      text: '0.0004',
+    });
+    await this.driver.waitForSelector({
+      css: this.fiatFeeField,
+      text: '$0.75',
+    });
+    console.log('Send fees validation successful');
   }
 
   /**

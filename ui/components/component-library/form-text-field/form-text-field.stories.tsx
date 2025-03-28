@@ -11,23 +11,18 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import {
-  Box,
-  ButtonLink,
-  ButtonPrimary,
-  ButtonSecondary,
-  HelpText,
-  Label,
-  Text,
-  TextFieldType,
-  Icon,
-  IconName,
-  IconSize,
-} from '..';
-
 import { FormTextField } from './form-text-field';
 
 import README from './README.mdx';
+import { Text } from '../text';
+import { Box } from '../box';
+import { ButtonSecondary } from '../button-secondary';
+import { ButtonPrimary } from '../button-primary';
+import { Icon, IconName, IconSize } from '../icon';
+import { Label } from '../label';
+import { ButtonLink } from '../button-link';
+import { HelpText } from '../help-text';
+import { TextFieldType } from '../text-field';
 
 export default {
   title: 'Components/ComponentLibrary/FormTextField',

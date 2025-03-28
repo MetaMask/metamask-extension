@@ -10,9 +10,8 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box, Icon } from '..';
-import { IconSize } from '../icon';
-import { BoxProps, PolymorphicRef } from '../box';
+import { Box, BoxProps, PolymorphicRef } from '../box';
+import { Icon, IconSize } from '../icon';
 import {
   ButtonIconSize,
   ButtonIconProps,

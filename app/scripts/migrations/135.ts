@@ -43,7 +43,6 @@ function transformState(state: VersionedData['data']) {
 
   if (
     currentOptInStatus === undefined ||
-    currentOptInStatus === null ||
     (currentOptInStatus === false && !hasExistingSmartTransactions(state))
   ) {
     state.PreferencesController.preferences = {

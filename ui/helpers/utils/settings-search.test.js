@@ -52,10 +52,6 @@ const t = (key) => {
       return 'Show test networks';
     case 'showTestnetNetworksDescription':
       return 'Select this to show test networks in network list';
-    case 'nonceField':
-      return 'Customize transaction nonce';
-    case 'nonceFieldDesc':
-      return 'Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously.';
     case 'autoLockTimeLimit':
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
@@ -142,6 +138,10 @@ const t = (key) => {
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
       return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
+    case 'watch-only':
+      return 'Watch Ethereum Accounts (Beta)';
+    case 'bitcoin-support':
+      return 'Enable "Add a new Bitcoin account (Beta)"';
     default:
       return '';
   }
@@ -167,7 +167,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(11);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
     });
 
     it('returns "Contact" section count', () => {
@@ -177,7 +177,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(21);
+      ).toStrictEqual(22);
     });
 
     it('returns "Network" section count', () => {
@@ -186,7 +186,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        3,
+        4,
       );
     });
 

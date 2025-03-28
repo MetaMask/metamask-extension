@@ -1,25 +1,31 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
+import {
+  Display,
+  FlexDirection,
+  Severity,
+} from '../../../../../helpers/constants/design-system';
+import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   doesAddressRequireLedgerHidConnection,
   getCustomNonceValue,
 } from '../../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
-import { getNoteToTraderMessage } from '../../../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
-import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
@@ -29,13 +35,15 @@ import {
   ///: END:ONLY_INCLUDE_IF
   updateCustomNonce,
 } from '../../../../../store/actions';
-import { isSignatureTransactionType } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
+import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
+import { UpgradeCancelModal } from './upgrade-cancel-modal';
+import OriginThrottleModal from './origin-throttle-modal';
+import { Acknowledge } from './acknowledge';
 
 export type OnCancelHandler = ({
   location,
@@ -159,16 +167,16 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
+  const selectedGasFeeToken = useSelectedGasFeeToken();
+  const [isUpgradeCancelModalOpen, setUpgradeCancelModalOpen] = useState(false);
 
   const { currentConfirmation, isScrollToBottomCompleted } =
-    useConfirmContext();
-  const { from } = getConfirmationSender(currentConfirmation);
+    useConfirmContext<TransactionMeta>();
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const noteToTraderMessage = useSelector(getNoteToTraderMessage);
-  const { mmiOnTransactionCallback, mmiOnSignCallback, mmiSubmitDisabled } =
-    useMMIConfirmations();
-  ///: END:ONLY_INCLUDE_IF
+  const { from } = getConfirmationSender(currentConfirmation);
+  const { shouldThrottleOrigin } = useOriginThrottling();
+  const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
+  const { id: currentConfirmationId } = currentConfirmation || {};
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -178,13 +186,35 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isUpgradeTransaction = useIsUpgradeTransaction();
+  const [isAcknowledged, setIsAcknowledged] = useState(false);
+  const isAcknowledgeRequired = isUpgradeTransaction;
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiSubmitDisabled ||
-    ///: END:ONLY_INCLUDE_IF
-    hardwareWalletRequiresConnection;
+    hardwareWalletRequiresConnection ||
+    (isAcknowledgeRequired && !isAcknowledged);
+
+  const rejectApproval = useCallback(
+    ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
+      if (!currentConfirmationId) {
+        return;
+      }
+
+      const error = providerErrors.userRejectedRequest();
+      error.data = { location };
+
+      const serializedError = serializeError(error);
+      dispatch(rejectPendingApproval(currentConfirmationId, serializedError));
+    },
+    [currentConfirmationId, dispatch],
+  );
+
+  const resetTransactionState = useCallback(() => {
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
+    dispatch(clearConfirmTransaction());
+  }, [dispatch]);
 
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
@@ -192,17 +222,47 @@ const Footer = () => {
         return;
       }
 
-      const error = providerErrors.userRejectedRequest();
-      error.data = { location };
+      if (isUpgradeTransaction) {
+        setUpgradeCancelModalOpen(true);
+        return;
+      }
 
-      dispatch(
-        rejectPendingApproval(currentConfirmation.id, serializeError(error)),
-      );
-      dispatch(updateCustomNonce(''));
-      dispatch(setNextNonce(''));
+      rejectApproval({ location });
+      resetTransactionState();
     },
-    [currentConfirmation],
+    [
+      currentConfirmation,
+      isUpgradeTransaction,
+      rejectApproval,
+      resetTransactionState,
+    ],
   );
+
+  const onTransactionSubmit = useCallback(() => {
+    const transactionMeta = currentConfirmation as TransactionMeta;
+
+    const finalTransactionMeta: TransactionMeta = {
+      ...transactionMeta,
+      batchTransactions: selectedGasFeeToken
+        ? [selectedGasFeeToken.transferTransaction]
+        : undefined,
+      customNonceValue,
+      txParams: {
+        ...transactionMeta.txParams,
+        ...(selectedGasFeeToken
+          ? {
+              gas: selectedGasFeeToken.gas,
+              maxFeePerGas: selectedGasFeeToken.maxFeePerGas,
+              maxPriorityFeePerGas: selectedGasFeeToken.maxPriorityFeePerGas,
+            }
+          : {}),
+      },
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    dispatch(updateAndApproveTx(finalTransactionMeta, true, ''));
+    ///: END:ONLY_INCLUDE_IF
+  }, [currentConfirmation, customNonceValue, dispatch, selectedGasFeeToken]);
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
@@ -214,63 +274,62 @@ const Footer = () => {
     );
 
     if (isTransactionConfirmation) {
-      const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
-        customNonceValue
-          ? {
-              ...transactionData,
-              customNonceValue,
-            }
-          : transactionData;
-
-      const updatedTx = mergeTxDataWithNonce(
-        currentConfirmation as TransactionMeta,
-      );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnTransactionCallback(updatedTx, noteToTraderMessage);
-      ///: END:ONLY_INCLUDE_IF
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      dispatch(updateAndApproveTx(updatedTx, true, ''));
-      ///: END:ONLY_INCLUDE_IF
+      onTransactionSubmit();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnSignCallback();
-      ///: END:ONLY_INCLUDE_IF
     }
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
+    resetTransactionState();
   }, [
     currentConfirmation,
-    customNonceValue,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteToTraderMessage,
-    ///: END:ONLY_INCLUDE_IF
+    dispatch,
+    onTransactionSubmit,
+    resetTransactionState,
   ]);
 
-  const onFooterCancel = useCallback(() => {
+  const handleFooterCancel = useCallback(() => {
+    if (shouldThrottleOrigin) {
+      setShowOriginThrottleModal(true);
+      return;
+    }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [currentConfirmation, onCancel]);
+  }, [onCancel, shouldThrottleOrigin]);
 
   return (
-    <PageFooter className="confirm-footer_page-footer">
-      <Button
-        block
-        data-testid="confirm-footer-cancel-button"
-        onClick={onFooterCancel}
-        size={ButtonSize.Lg}
-        variant={ButtonVariant.Secondary}
-      >
-        {t('cancel')}
-      </Button>
-      <ConfirmButton
-        alertOwnerId={currentConfirmation?.id}
-        onSubmit={() => onSubmit()}
-        disabled={isConfirmDisabled}
-        onCancel={onCancel}
+    <PageFooter
+      className="confirm-footer_page-footer"
+      flexDirection={FlexDirection.Column}
+    >
+      <OriginThrottleModal
+        isOpen={showOriginThrottleModal}
+        onConfirmationCancel={onCancel}
       />
+      <UpgradeCancelModal
+        isOpen={isUpgradeCancelModalOpen}
+        onClose={() => setUpgradeCancelModalOpen(false)}
+        onReject={rejectApproval}
+      />
+      <Acknowledge
+        isAcknowledged={isAcknowledged}
+        onAcknowledgeToggle={setIsAcknowledged}
+      />
+      <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
+        <Button
+          block
+          data-testid="confirm-footer-cancel-button"
+          onClick={handleFooterCancel}
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Secondary}
+          endIconName={isUpgradeTransaction ? IconName.ArrowDown : undefined}
+        >
+          {t('cancel')}
+        </Button>
+        <ConfirmButton
+          alertOwnerId={currentConfirmation?.id}
+          onSubmit={() => onSubmit()}
+          disabled={isConfirmDisabled}
+          onCancel={onCancel}
+        />
+      </Box>
     </PageFooter>
   );
 };

@@ -75,18 +75,17 @@ export default function NftFullImage() {
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.center}
-            paddingTop={4}
+            paddingBottom={12}
           >
             <Box>
               <NftItem
                 src={isImageHosted ? image : nftImageURL}
-                alt={image ? nftImageAlt : ''}
+                alt={nftImageAlt}
                 name={name}
                 tokenId={tokenId}
                 networkName={currentChain.nickname ?? ''}
                 networkSrc={currentChain.rpcPrefs?.imageUrl}
                 isIpfsURL={isIpfsURL}
-                badgeWrapperClassname="badge-wrapper"
               />
             </Box>
           </Box>

@@ -1,25 +1,21 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../fixture-builder';
-import { generateGanacheOptions } from '../../helpers';
 import {
-  BRIDGE_CLIENT_ID,
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} from '../../../../shared/constants/bridge';
+  type FeatureFlagResponse,
+  BridgeClientId,
+} from '@metamask/bridge-controller';
+
+import { emptyHtmlPage } from '../../mock-e2e';
+import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
+import { TOP_ASSETS_API_MOCK_RESULT } from '../../../data/mock-data';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
+  MOCK_BRIDGE_ETH_TO_LINEA,
 } from './constants';
-
-const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 export class BridgePage {
   driver: Driver;
@@ -62,76 +58,105 @@ export class BridgePage {
       css: '[data-testid="multichain-token-list-button"]',
       text: symbol,
     });
-
-    await this.driver.delay(2000);
-    assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
+    await this.driver.waitForUrlContaining({
+      url: 'asset',
+    });
   };
 
-  verifyPortfolioTab = async (expectedHandleCount: number) => {
-    await this.driver.delay(4000);
-    await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
-    assert.equal(
-      (await this.driver.getAllWindowHandles()).length,
-      IS_FIREFOX || !isManifestV3
-        ? expectedHandleCount
-        : expectedHandleCount + 1,
-    );
-    assert.match(
-      await this.driver.getCurrentUrl(),
-      /^https:\/\/portfolio\.metamask\.io\/bridge/u,
-    );
+  verifyPortfolioTab = async () => {
+    await this.driver.switchToWindowWithTitle('E2E Test Page');
+    await this.driver.waitForUrlContaining({
+      url: 'portfolio.metamask.io/bridge',
+    });
   };
 
-  verifySwapPage = async (expectedHandleCount: number) => {
-    await this.driver.delay(4000);
-    assert.equal(
-      (await this.driver.getAllWindowHandles()).length,
-      IS_FIREFOX || !isManifestV3
-        ? expectedHandleCount
-        : expectedHandleCount + 1,
-    );
-    assert.match(await this.driver.getCurrentUrl(), /.+cross-chain\/swaps/u);
+  verifySwapPage = async () => {
+    await this.driver.waitForUrlContaining({
+      url: 'cross-chain/swaps',
+    });
   };
 }
 
-const mockServer =
-  (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
-  async (mockServer_: Mockttp) => {
-    const featureFlagMocks = [
-      `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
-      `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
-    ].map(
-      async (url) =>
-        await mockServer_
-          .forGet(url)
-          .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
-          .always()
-          .thenCallback(() => {
-            return {
-              statusCode: 200,
-              json: {
-                ...DEFAULT_FEATURE_FLAGS_RESPONSE,
-                ...featureFlagOverrides,
-                'extension-config': {
-                  ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-                  ...featureFlagOverrides['extension-config'],
-                },
-              },
-            };
-          }),
-    );
-    const portfolioMock = async () =>
-      await mockServer_
-        .forGet('https://portfolio.metamask.io/bridge')
-        .always()
-        .thenCallback(() => {
-          return {
-            statusCode: 200,
-            json: {},
-          };
-        });
-    return Promise.all([...featureFlagMocks, portfolioMock]);
-  };
+async function mockFeatureFlag(
+  mockServer: Mockttp,
+  featureFlagOverrides: Partial<FeatureFlagResponse>,
+) {
+  return await mockServer
+    .forGet(/getAllFeatureFlags/u)
+    .withHeaders({ 'X-Client-Id': BridgeClientId.EXTENSION })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE,
+          ...featureFlagOverrides,
+          'extension-config': {
+            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+            ...featureFlagOverrides['extension-config'],
+          },
+        },
+      };
+    });
+}
+
+async function mockPortfolioPage(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://portfolio.metamask.io/bridge`)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage(),
+      };
+    });
+}
+
+async function mockGetTxStatus(mockServer: Mockttp) {
+  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
+    const urlObj = new URL(req.url);
+    const txHash = urlObj.searchParams.get('srcTxHash');
+    const srcChainId = urlObj.searchParams.get('srcChainId');
+    const destChainId = urlObj.searchParams.get('destChainId');
+    return {
+      statusCode: 200,
+      json: {
+        status: 'COMPLETE',
+        isExpectedToken: true,
+        bridge: 'across',
+        srcChain: {
+          chainId: srcChainId,
+          txHash,
+        },
+        destChain: {
+          chainId: destChainId,
+          txHash,
+        },
+      },
+    };
+  });
+}
+
+async function mockTopAssets(mockServer: Mockttp) {
+  return await mockServer.forGet(/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_API_MOCK_RESULT,
+    };
+  });
+}
+
+async function mockGetQuote(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_ETH_TO_LINEA,
+      };
+    });
+}
 
 export const getBridgeFixtures = (
   title?: string,
@@ -141,26 +166,48 @@ export const getBridgeFixtures = (
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
-    .withNetworkControllerOnMainnet()
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withBridgeControllerDefaultState();
+    .withBridgeControllerDefaultState()
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              symbol: 'DAI',
+              decimals: 18,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+    });
 
   if (withErc20) {
     fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
   }
 
   return {
-    driverOptions: {
-      // openDevToolsForTabs: true,
-    },
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: mockServer(featureFlags),
-    smartContract: SMART_CONTRACTS.HST,
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, featureFlags),
+      await mockGetTxStatus(mockServer),
+      await mockTopAssets(mockServer),
+      await mockGetQuote(mockServer),
+      await mockPortfolioPage(mockServer),
+    ],
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    ganacheOptions: generateGanacheOptions({
-      hardfork: 'london',
-      chain: { chainId: CHAIN_IDS.MAINNET },
-    }),
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+          loadState: './test/e2e/seeder/network-states/with50Dai.json',
+        },
+      },
+    ],
     title,
   };
 };

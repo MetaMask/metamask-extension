@@ -59,6 +59,7 @@ const initialState = {
       conversionRate: null,
     },
   },
+  throttledOrigins: {},
 };
 
 /**
@@ -242,6 +243,15 @@ export const getNfts = (state) => {
   const { chainId } = getProviderConfig(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getAllNfts = (state) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  return allNfts?.[selectedAddress] ?? [];
 };
 
 export const getNFTsByChainId = (state, chainId) => {

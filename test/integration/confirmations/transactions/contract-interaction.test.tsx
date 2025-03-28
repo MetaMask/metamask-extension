@@ -245,6 +245,7 @@ describe('Contract Interaction Confirmation', () => {
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
               transaction_type: TransactionType.contractInteraction,
+              hd_entropy_index: 0,
             },
           }),
         ]),
@@ -327,7 +328,7 @@ describe('Contract Interaction Confirmation', () => {
     const firstGasField = await within(editGasFeesRow).findByTestId(
       'first-gas-field',
     );
-    expect(firstGasField).toHaveTextContent('0.0001 SepoliaETH');
+    expect(firstGasField).toHaveTextContent('0.0001');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
@@ -429,7 +430,7 @@ describe('Contract Interaction Confirmation', () => {
     const maxFee = await screen.findByTestId('gas-fee-details-max-fee');
     expect(gasFeesSection).toContainElement(maxFee);
     expect(maxFee).toHaveTextContent(tEn('maxFee') as string);
-    expect(maxFee).toHaveTextContent('0.0023 SepoliaETH');
+    expect(maxFee).toHaveTextContent('0.0023');
 
     const nonceSection = await screen.findByTestId(
       'advanced-details-nonce-section',
@@ -490,5 +491,47 @@ describe('Contract Interaction Confirmation', () => {
     const bodyText = tEn('blockaidDescriptionTransferFarming') as string;
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
+  });
+
+  it('tracks external link clicked in transaction metrics', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithMaliciousUnapprovedContractInteraction(
+        account.address,
+      );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('disclosure'));
+    expect(
+      await screen.findByTestId('alert-provider-report-link'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('alert-provider-report-link'));
+
+    fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
+
+    expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });

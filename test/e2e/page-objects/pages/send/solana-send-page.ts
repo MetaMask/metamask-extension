@@ -1,3 +1,4 @@
+import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class SendSolanaPage {
@@ -20,6 +21,9 @@ class SendSolanaPage {
   };
 
   private readonly clearToAddressField = '#send-clear-button';
+
+  private readonly amountCurrencyLabel = (tokenName: string) =>
+    By.xpath(`//label[@for="send-amount-input"]/..//p[text()="${tokenName}"]`);
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -136,10 +140,75 @@ class SendSolanaPage {
     }
   }
 
-  async check_pageIsLoaded() {
+  async check_pageIsLoaded(amount: string = '') {
     await this.driver.waitForControllersLoaded();
-    await this.driver.waitForSelector(this.toAddressInput, { timeout: 2000 });
+    await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
+    console.log('check_pageIsLoaded after waitForSelector');
+    if (amount) {
+      await this.driver.waitForSelector(
+        {
+          text: `${amount}`,
+          tag: 'p',
+        },
+        { timeout: 60000 },
+      );
+    }
     await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
+  }
+
+  async check_TxSimulationFailed(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(
+      { text: 'Transaction simulation failed', tag: 'p' },
+      { timeout: 5000 },
+    );
+    await this.driver.waitForSelector(
+      { text: 'This transaction was reverted during simulation.', tag: 'p' },
+      { timeout: 5000 },
+    );
+    console.log('Tx simulation failed');
+  }
+
+  async check_tokenByNameIsDisplayed(tokenName: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(
+      {
+        text: tokenName,
+        tag: 'p',
+      },
+      { timeout: 2000 },
+    );
+  }
+
+  async selectTokenFromTokenList(tokenName: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement({
+      text: tokenName,
+      tag: 'p',
+    });
+  }
+
+  async check_tokenBalanceIsDisplayed(
+    amount: string,
+    tokenName: string,
+  ): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement({
+      text: `Balance: ${amount} ${tokenName}`,
+      tag: 'p',
+    });
+  }
+
+  async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
+  }
+
+  async openTokenList(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement(
+      By.xpath('//label[@for="send-asset-selector"]/../button'),
+    );
   }
 }
 

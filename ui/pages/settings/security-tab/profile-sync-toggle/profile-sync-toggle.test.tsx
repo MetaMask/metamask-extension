@@ -3,7 +3,7 @@ import * as Redux from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications';
-import * as ProfileSyncingHook from '../../../../hooks/identity/useProfileSyncing/profileSyncing';
+import * as ProfileSyncingHook from '../../../../hooks/identity/useProfileSyncing/useProfileSyncing';
 import ProfileSyncToggle from './profile-sync-toggle';
 
 const mockStore = configureMockStore();
@@ -29,6 +29,7 @@ describe('ProfileSyncToggle', () => {
     expect(getByTestId('profileSyncToggle')).toBeInTheDocument();
   });
 
+  // Logic to disable profile syncing is not tested here because it happens in confirm-turn-off-profile-syncing.test.tsx
   it('calls enableProfileSyncing when toggle is turned on', () => {
     const store = initialStore();
     store.metamask.isProfileSyncingEnabled = false; // We want to test enabling this toggle

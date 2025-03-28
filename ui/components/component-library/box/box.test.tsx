@@ -14,8 +14,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
-import { Box } from '.';
+import { Box } from './box';
 
 describe('Box', () => {
   it('should render the Box without crashing', () => {
