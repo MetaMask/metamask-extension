@@ -1633,14 +1633,6 @@ class FixtureBuilder {
       });
   }
 
-  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
-    return this.withPreferencesController({
-      featureFlags: {
-        showIncomingTransactions: incomingTransactionsPreferences,
-      },
-    });
-  }
-
   withIncomingTransactionsCache(cache) {
     return this.withTransactionController({ lastFetchedBlockNumbers: cache });
   }
