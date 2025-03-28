@@ -1,6 +1,6 @@
 import { Driver } from '../../../../webdriver/driver';
 
-class Eip7704AndSendCalls {
+class Eip7702AndSendCalls {
   protected driver: Driver;
 
   private readonly confirmUpgradeAccountCheckbox: string =
