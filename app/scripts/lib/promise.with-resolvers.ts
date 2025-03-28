@@ -5,7 +5,7 @@
 if (typeof Promise.withResolvers === 'undefined') {
   Promise.withResolvers = function withResolvers<T>() {
     let resolve!: (value: T | PromiseLike<T>) => void;
-    let reject!: (reason?: any) => void;
+    let reject!: (reason?: unknown) => void;
     const promise = new this<T>((res, rej) => {
       resolve = res;
       reject = rej;
@@ -13,3 +13,5 @@ if (typeof Promise.withResolvers === 'undefined') {
     return { promise, resolve, reject };
   };
 }
+
+export {};

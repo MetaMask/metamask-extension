@@ -27549,6 +27549,7 @@ __metadata:
     mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^3.10.1"
     nanoid: "npm:^3.3.8"
+    navigator.locks: "npm:^0.8.6"
     nock: "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch"
     node-fetch: "npm:^2.6.1"
     nyc: "npm:^15.1.0"
@@ -28769,6 +28770,13 @@ __metadata:
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
   checksum: 10/23ad088b08f898fc9b53011d7bb78ec48e79de7627e01ab5518e806033861bef68d5b0cd0e2205c2f36690ac9571ff6bcb05eb777ced2eeda8d4ac5b44592c3d
+  languageName: node
+  linkType: hard
+
+"navigator.locks@npm:^0.8.6":
+  version: 0.8.6
+  resolution: "navigator.locks@npm:0.8.6"
+  checksum: 10/07df5ab88cc632ca4671b37579ffc8c4c467b27365f57aa0ff1282a346603f2c04dd57d40901bb14e0d3680fcbcaeb1758f382f0586305272c99e6a71af53ef2
   languageName: node
   linkType: hard
 

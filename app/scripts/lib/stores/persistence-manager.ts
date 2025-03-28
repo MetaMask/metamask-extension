@@ -89,8 +89,9 @@ export class PersistenceManager {
     const keyringController = state.KeyringController as KeyringControllerState;
     const newVaultReference = keyringController?.vault ?? null;
 
-    const vaultHasNotYetBeenCreated =
-      newVaultReference && this.#vaultReference === null ? false : true;
+    const vaultHasNotYetBeenCreated = !(
+      newVaultReference && this.#vaultReference === null
+    );
     await navigator.locks.request(STATE_LOCK, async () => {
       try {
         // atomically set all the keys

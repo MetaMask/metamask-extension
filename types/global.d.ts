@@ -280,19 +280,22 @@ export declare global {
   function setPreference(key: keyof Preferences, value: boolean);
 }
 
-//#region Promise.withResolvers polyfill
+// #region Promise.withResolvers polyfill
 
 // this polyfill can be removed once our TS libs include withResolvers.
 // at time of writing we use TypeScript Version 5.4.5, which includes it in
 // esnext
 
 export declare global {
-  interface PromiseWithResolvers<T> {
+  type PromiseWithResolvers<T> = {
     promise: Promise<T>;
     resolve: (value: T | PromiseLike<T>) => void;
     reject: (reason?: any) => void;
-  }
+  };
 
+  // we're extending the PromiseConstructor interface, to we have to use
+  // `interface` (`type` won't work)
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface PromiseConstructor {
     /**
      * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
@@ -308,4 +311,4 @@ export declare global {
     withResolvers<T>(): PromiseWithResolvers<T>;
   }
 }
-//#endregion
+// #endregion

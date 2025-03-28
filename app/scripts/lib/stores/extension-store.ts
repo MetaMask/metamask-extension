@@ -34,7 +34,11 @@ export default class ExtensionStore implements BaseStore {
 
   /**
    * Overwrite data in `local` extension storage area
+   *
    * @param data - The data to set
+   * @param data.data
+   * @param data.meta
+   * @param data.vaultHasNotYetBeenCreated
    */
   async set({
     data,

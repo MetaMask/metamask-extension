@@ -176,7 +176,6 @@ if (browser.extension.inIncognitoContext) {
   setTimeout(() => onInstallProm.resolve(), 5000);
 }
 
-
 /**
  * This deferred Promise is used to track whether initialization has finished.
  *
@@ -370,6 +369,14 @@ function maybeDetectPhishing(theController) {
     },
     isManifestV2 ? ['blocking'] : [],
   );
+}
+
+function stringifyError(error) {
+  return JSON.stringify({
+    message: error.message,
+    name: error.name,
+    stack: error.stack,
+  });
 }
 
 // These are set after initialization
@@ -644,7 +651,8 @@ export async function loadStateFromPersistence() {
     // supposed to have one at this point.
     // `vaultHasNotYetBeenCreated` can be `true`, `false`, or `undefined`. If it
     // is `!== true`, we *should* have a vault... and now we can panic.
-    const weShouldHaveAVault = preMigrationVersionedData.vaultHasNotYetBeenCreated !== true;
+    const weShouldHaveAVault =
+      preMigrationVersionedData.vaultHasNotYetBeenCreated !== true;
     if (weShouldHaveAVault) {
       throw new Error(MISSING_VAULT_ERROR);
     }

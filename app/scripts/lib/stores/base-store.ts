@@ -57,8 +57,8 @@ export type MetaMaskStorageStructure = {
  * storage system. This method should handle necessary validation or
  * error handling to ensure the state is persisted correctly.
  */
-export interface BaseStore {
+export type BaseStore = {
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 
   get: () => Promise<MetaMaskStorageStructure | null>;
-}
+};
