@@ -1,16 +1,12 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
-import { retrievePullRequestFiles } from './shared/pull-request';
+import { retrievePullRequestFiles, PullRequestFile } from './shared/pull-request';
 import micromatch from 'micromatch';
 
-type FileChange = {
-  filename: string;
-  additions: number;
-  deletions: number;
-}
 
-type TeamFiles = Record<string, FileChange[]>;
+
+type TeamFiles = Record<string, PullRequestFile[]>;
 
 type TeamChanges = {
   files: number;
@@ -69,36 +65,18 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // Get the changed files in the PR
-  const filenames = await retrievePullRequestFiles(octokit, owner, repo, prNumber);
-
   // Get detailed file change information
-  const fileChanges: FileChange[] = [];
-
-  const { data: detailedFiles } = await octokit.rest.pulls.listFiles({
-    owner,
-    repo,
-    pull_number: prNumber,
-  });
-
-  // Create array of FileChange objects
-  for (const file of detailedFiles) {
-    fileChanges.push({
-      filename: file.filename,
-      additions: file.additions || 0,
-      deletions: file.deletions || 0
-    });
-  }
+  const filesInfo: PullRequestFile[] = await retrievePullRequestFiles(octokit, owner, repo, prNumber);
 
   // Read and parse the CODEOWNERS file
   const codeownersContent = await getCodeownersContent(octokit, owner, repo);
   const codeowners = parseCodeowners(codeownersContent);
 
   // Match files to codeowners
-  const fileOwners = matchFilesToCodeowners(fileChanges, codeowners);
+  const fileOwners = matchFilesToCodeowners(filesInfo, codeowners);
 
   // Group files by team
-  const teamFiles = groupFilesByTeam(fileOwners, fileChanges);
+  const teamFiles = groupFilesByTeam(fileOwners, filesInfo);
 
   // If no teams need to review, don't create or update comments
   if (Object.keys(teamFiles).length === 0) {
@@ -152,7 +130,7 @@ function parseCodeowners(content: string): CodeOwnerRule[] {
     });
 }
 
-function matchFilesToCodeowners(files: FileChange[], codeowners: CodeOwnerRule[]): Map<string, Set<string>> {
+function matchFilesToCodeowners(files: PullRequestFile[], codeowners: CodeOwnerRule[]): Map<string, Set<string>> {
   const fileOwners: Map<string, Set<string>> = new Map();
 
   files.forEach(file => {
@@ -188,12 +166,12 @@ function isFileMatchingPattern(file: string, pattern: string): boolean {
   return micromatch.isMatch(file, pattern);
 }
 
-function groupFilesByTeam(fileOwners: Map<string, Set<string>>, fileChanges: FileChange[]): TeamFiles {
+function groupFilesByTeam(fileOwners: Map<string, Set<string>>, filesInfo: PullRequestFile[]): TeamFiles {
   const teamFiles: TeamFiles = {};
 
   // Create a map for faster lookups
-  const changeMap = new Map<string, FileChange>();
-  fileChanges.forEach(file => {
+  const changeMap = new Map<string, PullRequestFile>();
+  filesInfo.forEach(file => {
     changeMap.set(file.filename, file);
   });
 
@@ -219,7 +197,7 @@ function groupFilesByTeam(fileOwners: Map<string, Set<string>>, fileChanges: Fil
 }
 
 // Calculate total changes for a team
-function calculateTeamChanges(files: FileChange[]): TeamChanges {
+function calculateTeamChanges(files: PullRequestFile[]): TeamChanges {
   return files.reduce((acc, file) => {
     acc.files += 1;
     acc.additions += file.additions;
@@ -266,8 +244,8 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   return commentBody;
 }
 
-function buildSimpleDirectoryTree(files: FileChange[]): { [key: string]: FileChange[] | { [key: string]: any } } {
-  const tree: { [key: string]: FileChange[] | { [key: string]: any } } = {};
+function buildSimpleDirectoryTree(files: PullRequestFile[]): { [key: string]: PullRequestFile[] | { [key: string]: any } } {
+  const tree: { [key: string]: PullRequestFile[] | { [key: string]: any } } = {};
 
   files.forEach(file => {
     const parts = file.filename.split('/');
@@ -283,7 +261,7 @@ function buildSimpleDirectoryTree(files: FileChange[]): { [key: string]: FileCha
         if (!currentObj['__files__']) {
           currentObj['__files__'] = [];
         }
-        (currentObj['__files__'] as FileChange[]).push({
+        (currentObj['__files__'] as PullRequestFile[]).push({
           filename: part,
           additions: file.additions,
           deletions: file.deletions
@@ -321,7 +299,7 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
 
   // Process files if any
   if (node['__files__']) {
-    const files = node['__files__'] as FileChange[];
+    const files = node['__files__'] as PullRequestFile[];
     files.sort((a, b) => a.filename.localeCompare(b.filename)); // Sort files alphabetically
 
     files.forEach(file => {
