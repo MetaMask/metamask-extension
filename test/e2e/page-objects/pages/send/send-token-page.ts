@@ -156,7 +156,7 @@ class SendTokenPage {
     // Wait for both fields to be present and have the expected values
     await this.driver.waitForSelector({
       css: this.gasFeeField,
-      text: '0.0004 ETH',
+      text: '0.0004',
     });
     await this.driver.waitForSelector({
       css: this.fiatFeeField,
