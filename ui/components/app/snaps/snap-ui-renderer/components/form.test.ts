@@ -26,7 +26,7 @@ describe('SnapUIForm', () => {
     jest.resetAllMocks();
   });
 
-  it('supports forms', () => {
+  it('will render', () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: Form({
@@ -123,7 +123,7 @@ describe('SnapUIForm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('supports forms with fields', () => {
+  it('will render with fields', () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: Form({

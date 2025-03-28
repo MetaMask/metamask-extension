@@ -3,21 +3,6 @@ import { fireEvent } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
 
 describe('SnapUIFooter', () => {
-  it('renders footers', () => {
-    const { container, getByText } = renderInterface(
-      Container({
-        children: [
-          Box({ children: Text({ children: 'Hello world!' }) }),
-          Footer({ children: Button({ children: 'Foo' }) }),
-        ],
-      }),
-      { useFooter: true },
-    );
-
-    expect(getByText('Foo')).toBeDefined();
-    expect(container).toMatchSnapshot();
-  });
-
   it('supports the onCancel prop', () => {
     const onCancel = jest.fn();
     const { container, getByText } = renderInterface(

@@ -20,7 +20,7 @@ describe('SnapUIFileInput', () => {
     jest.resetAllMocks();
   });
 
-  it('supports file inputs', async () => {
+  it('renders and emits events when used', async () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: Form({

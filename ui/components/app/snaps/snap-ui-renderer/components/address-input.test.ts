@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
 
 describe('SnapUIAddressInput', () => {
-  it('supports address inputs', () => {
+  it('will render', () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: AddressInput({
@@ -20,8 +20,8 @@ describe('SnapUIAddressInput', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('supports address inputs with existing state', () => {
-    const { container, getByRole } = renderInterface(
+  it('supports existing state', () => {
+    const { getByRole } = renderInterface(
       Box({
         children: AddressInput({
           name: 'input',
@@ -38,12 +38,10 @@ describe('SnapUIAddressInput', () => {
     expect(input.value).toStrictEqual(
       '0x1234567890123456789012345678901234567890',
     );
-
-    expect(container).toMatchSnapshot();
   });
 
-  it('supports address inputs with a placeholder', () => {
-    const { container, getByRole } = renderInterface(
+  it('supports a placeholder', () => {
+    const { getByRole } = renderInterface(
       Box({
         children: AddressInput({
           name: 'input',
@@ -56,12 +54,10 @@ describe('SnapUIAddressInput', () => {
     const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input.placeholder).toStrictEqual('Enter an address');
-
-    expect(container).toMatchSnapshot();
   });
 
-  it('supports address inputs with a disabled prop', () => {
-    const { container, getByRole } = renderInterface(
+  it('supports the disabled prop', () => {
+    const { getByRole } = renderInterface(
       Box({
         children: AddressInput({
           name: 'input',
@@ -74,12 +70,10 @@ describe('SnapUIAddressInput', () => {
     const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
     expect(input).toBeDisabled();
-
-    expect(container).toMatchSnapshot();
   });
 
-  it('supports address inputs within a field', () => {
-    const { container, getByRole, getByText } = renderInterface(
+  it('will render within a field', () => {
+    const { getByRole, getByText } = renderInterface(
       Box({
         children: [
           Field({
@@ -97,8 +91,6 @@ describe('SnapUIAddressInput', () => {
     expect(input).toBeDefined();
     const label = getByText('Address');
     expect(label).toBeDefined();
-
-    expect(container).toMatchSnapshot();
   });
 
   it('will render a matched address name', () => {

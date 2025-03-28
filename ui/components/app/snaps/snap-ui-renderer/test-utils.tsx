@@ -30,7 +30,7 @@ type RenderWithProviderResult = RenderResult & {
 type RenderInterfaceResult = RenderWithProviderResult & {
   updateInterface: (
     newContent: JSXElement,
-    newState: Record<string, unknown> | null,
+    newState?: Record<string, unknown> | null,
   ) => void;
   getRenderCount: () => number;
 };
