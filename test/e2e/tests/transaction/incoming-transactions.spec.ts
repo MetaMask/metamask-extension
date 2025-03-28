@@ -88,9 +88,7 @@ describe('Incoming Transactions', function () {
   it('adds standard incoming transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
       },
@@ -110,9 +108,7 @@ describe('Incoming Transactions', function () {
   it('ignores token transfer transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockAccountsApi(server, {
@@ -132,9 +128,7 @@ describe('Incoming Transactions', function () {
   it('ignores outgoing transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockAccountsApi(server, {
@@ -148,28 +142,10 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  it('does nothing if preference disabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(false)
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await driver.delay(2000);
-        await activityList.check_noTxInActivity();
-      },
-    );
-  });
-
   it('ignores duplicate transactions already in state', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
           .withTransactions([
             {
               hash: RESPONSE_STANDARD_MOCK.hash,
