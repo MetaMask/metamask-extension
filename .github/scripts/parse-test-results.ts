@@ -2,7 +2,6 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 import * as xml2js from 'xml2js';
-import { Octokit } from '@octokit/rest';
 import * as core from '@actions/core';
 import { context } from '@actions/github';
 
@@ -14,14 +13,16 @@ interface GitHubContext {
   runId: number;
 }
 
-interface TestFailure {
+interface TestResult {
   testName: string;
-  message: string;
+  status: 'pass' | 'fail';
+  message?: string;
   build: string;
   job: string;
   jobWithMatrix: string;
   spec: string;
   runId: string;
+  duration?: string;
 }
 
 // Get GitHub context from environment variables
@@ -105,9 +106,9 @@ function extractPathFromTest(fullPath: string): string {
   return fullPath;
 }
 
-// Function to extract failure information
-function extractFailures(testsuites: any, filePath: string): TestFailure[] {
-  const failures: TestFailure[] = [];
+// Function to extract test results (both passing and failing)
+function extractTestResults(testsuites: any, filePath: string): TestResult[] {
+  const results: TestResult[] = [];
   const { build, job, jobWithMatrix, runId } = getGitHubActionInfo();
 
   // Handle single testsuite or array of testsuites
@@ -135,74 +136,125 @@ function extractFailures(testsuites: any, filePath: string): TestFailure[] {
       : [testsuite.testcase];
 
     for (const testcase of testCases) {
+      // Get test duration if available
+      const duration = testcase.$.time ? `${testcase.$.time}s` : undefined;
+
       if (testcase.failure) {
         const failureMessage = typeof testcase.failure === 'object'
           ? testcase.failure._ || testcase.failure.message
           : testcase.failure;
 
-        failures.push({
+        results.push({
           testName: `${testsuite.name}: ${testcase.$.name || 'Unnamed test'}`,
+          status: 'fail',
           message: testcase.failure.message || failureMessage || 'No failure message provided',
           build,
           job,
           jobWithMatrix,
           spec,
-          runId
+          runId,
+          duration
+        });
+      } else {
+        // This is a passing test
+        results.push({
+          testName: `${testsuite.name}: ${testcase.$.name || 'Unnamed test'}`,
+          status: 'pass',
+          build,
+          job,
+          jobWithMatrix,
+          spec,
+          runId,
+          duration
         });
       }
     }
   }
 
-  return failures;
+  return results;
 }
 
-// Format the failures into a PR comment
-function formatPrComment(failures: TestFailure[], githubContext: GitHubContext): string {
-  if (failures.length === 0) {
-    return '✅ All tests passed!';
-  }
+// Create a summary of test results using GitHub Actions Summary API
+async function createTestSummary(
+  passedTests: TestResult[],
+  failedTests: TestResult[],
+  githubContext: GitHubContext
+): Promise<void> {
 
-  let comment = `# ❌ E2E Test Failures\n\n`;
-  comment += `Found ${failures.length} test failure${failures.length > 1 ? 's' : ''}:\n\n`;
+  await core.summary.clear();
 
-  failures.forEach((failure) => {
-    const jobUrl = getJobUrl(
-      githubContext.owner,
-      githubContext.repo,
-      failure.job,
-      failure.runId,
-      process.env.MATRIX_INDEX
-    );
+  const totalTests = passedTests.length + failedTests.length;
+  const passRate = Math.round((passedTests.length / totalTests) * 100);
 
-    comment += `**Build**: ${failure.build}\n`;
-    comment += `**Job**: [${failure.jobWithMatrix}](${jobUrl})\n`;
-    comment += `**Spec**: \`${failure.spec}\`\n\n`;
-    comment += "```\n";
-    comment += failure.message;
-    comment += "\n```\n\n";
-    comment += "---\n\n";
-  });
+  // Start with a heading and summary statistics
+  core.summary
+    .addHeading('E2E Test Results')
+    .addRaw(`**Total Tests:** ${totalTests} | **Passed:** ${passedTests.length} | **Failed:** ${failedTests.length} | **Pass Rate:** ${passRate}%`)
+    .addSeparator();
 
-  return comment;
-}
+  // If there are failed tests, show them first
+  if (failedTests.length > 0) {
+    core.summary
+      .addHeading('❌ Failed Tests', 2)
+      .addRaw(`${failedTests.length} test${failedTests.length !== 1 ? 's' : ''} failed`)
+      .addSeparator();
 
-// Post a comment to the PR
-async function postPrComment(comment: string, githubContext: GitHubContext): Promise<void> {
-  try {
-    const octokit = new Octokit({ auth: githubContext.token });
+    // Create a table for failed tests
+    const failedRows = failedTests.map(test => {
+      const jobUrl = getJobUrl(
+        githubContext.owner,
+        githubContext.repo,
+        test.job,
+        test.runId,
+        process.env.MATRIX_INDEX
+      );
+      const jobLink = `[${test.jobWithMatrix}](${jobUrl})`;
 
-    await octokit.rest.issues.createComment({
-      owner: githubContext.owner,
-      repo: githubContext.repo,
-      issue_number: githubContext.prNumber,
-      body: comment
+      return [
+        test.testName,
+        test.spec,
+        jobLink,
+        test.duration || '-',
+        ':x:'
+      ];
     });
 
-    core.info(`Successfully posted comment to PR #${githubContext.prNumber}`);
-  } catch (error) {
-    core.setFailed(`Failed to post comment to PR: ${error}`);
-    throw error;
+    core.summary.addTable([
+      [{ data: 'Test Name', header: true }, { data: 'Spec File', header: true }, { data: 'Job', header: true }, { data: 'Duration', header: true }, { data: 'Status', header: true }],
+      ...failedRows
+    ]);
+
+    // For each failed test, add details with the error message
+    failedTests.forEach((test, index) => {
+      core.summary
+        .addDetails(`Error details for: ${test.testName}`, `\`\`\`\n${test.message}\n\`\`\``)
+        .addSeparator();
+    });
   }
+
+  // Show passing tests
+  if (passedTests.length > 0) {
+    core.summary
+      .addHeading('✅ Passing Tests', 2)
+      .addRaw(`${passedTests.length} test${passedTests.length !== 1 ? 's' : ''} passed`)
+      .addSeparator();
+
+    // Create a table for passing tests
+    const passedRows = passedTests.map(test => [
+      test.testName,
+      test.spec,
+      test.duration || '-',
+      ':white_check_mark:'
+    ]);
+
+    core.summary.addTable([
+      [{ data: 'Test Name', header: true }, { data: 'Spec File', header: true }, { data: 'Duration', header: true }, { data: 'Status', header: true }],
+      ...passedRows
+    ]);
+  }
+
+  // Write the summary to the GitHub Actions UI
+  await core.summary.write();
 }
 
 async function findXmlFiles(): Promise<string[]> {
@@ -216,7 +268,7 @@ async function findXmlFiles(): Promise<string[]> {
 }
 
 // Process a single XML file
-async function processXmlFile(file: string): Promise<TestFailure[]> {
+async function processXmlFile(file: string): Promise<TestResult[]> {
   const fullPath = path.resolve(__dirname, file);
 
   try {
@@ -227,13 +279,7 @@ async function processXmlFile(file: string): Promise<TestFailure[]> {
       return [];
     }
 
-    const failureCount = parseInt(parsedXml.testsuites.$.failures, 10) || 0;
-
-    if (failureCount > 0) {
-      return extractFailures(parsedXml.testsuites, fullPath);
-    }
-
-    return [];
+    return extractTestResults(parsedXml.testsuites, fullPath);
   } catch (error) {
     core.warning(`Error processing file ${file}: ${error}`);
     return [];
@@ -257,19 +303,28 @@ async function main() {
     core.info(`Found ${xmlFiles.length} test result files`);
 
     // Process all XML files concurrently
-    const failuresArrays = await Promise.all(
+    const resultsArrays = await Promise.all(
       xmlFiles.map(file => processXmlFile(file))
     );
 
     // Flatten the array of arrays
-    const allFailures = failuresArrays.flat();
+    const allResults = resultsArrays.flat();
 
-    if (allFailures.length === 0) {
-      core.info('✅ All tests passed! No comment needed.');
+    // Separate passing and failing tests
+    const passedTests = allResults.filter(test => test.status === 'pass');
+    const failedTests = allResults.filter(test => test.status === 'fail');
+
+    core.info(`Test results: ${passedTests.length} passed, ${failedTests.length} failed`);
+
+    // Create and write the summary
+    await createTestSummary(passedTests, failedTests, githubContext);
+
+    if (failedTests.length === 0) {
+      core.info('✅ All tests passed!');
     } else {
-      core.info(`❌ Found ${allFailures.length} test failures. Posting comment to PR #${githubContext.prNumber}`);
-      const comment = formatPrComment(allFailures, githubContext);
-      await postPrComment(comment, githubContext);
+      core.info(`❌ Found ${failedTests.length} test failures.`);
+      // Set an output variable that can be used by other steps
+      core.setOutput('test_failures', failedTests.length);
     }
 
     core.info('Test results parser completed successfully');
