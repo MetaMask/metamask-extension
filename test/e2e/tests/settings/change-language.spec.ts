@@ -17,7 +17,7 @@ const selectors = {
   currentLanguageEnglish: { tag: 'p', text: 'Current language' },
   currentLanguageMagyar: { tag: 'p', text: 'Aktuális nyelv' },
   currentLanguageSpanish: { tag: 'p', text: 'Idioma actual' },
-  currentLanguageवर्तमान: { tag: 'p', text: 'वर्तमान भाषा'},
+  currentLanguageवर्तमान: { tag: 'p', text: 'वर्तमान भाषा' },
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
@@ -185,7 +185,7 @@ describe('Settings - general tab', function (this: Suite) {
         // Select "मानक हिन्दी" language
         await generalSettings.changeLanguage('मानक हिन्दी');
 
-        const  isLabelTextChanged = await driver.isElementPresent(
+        const isLabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageवर्तमान,
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
@@ -232,7 +232,7 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Select "Magyar" language
         await generalSettings.changeLanguage('Magyar');
-        const  isLabelTextChanged = await driver.isElementPresent(
+        const isLabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageMagyar,
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
