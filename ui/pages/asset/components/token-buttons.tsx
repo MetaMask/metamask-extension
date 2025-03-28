@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
-import { SnapId } from '@metamask/snaps-sdk';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -26,7 +24,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
   getSelectedInternalAccount,
-  getMemoizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -37,8 +34,6 @@ import {
   showModal,
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
-  setDefaultHomeActiveTabName,
-  sendMultichainTransaction,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -65,7 +60,9 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
-import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
+///: END:ONLY_INCLUDE_IF
 import type { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -100,9 +97,11 @@ const TokenButtons = ({
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
-  const currentActivityTabName = useSelector(
-    // @ts-expect-error TODO: fix state type
-    (state) => state.metamask.defaultHomeActiveTabName,
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  const handleSendNonEvm = useHandleSendNonEvm(
+    `${multichainChainId}/token:${token.address}`,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -140,29 +139,6 @@ const TokenButtons = ({
     }
   }, [currentChainId, multichainChainId, networks, token.chainId, dispatch]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  );
-
-  useEffect(() => {
-    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
-      (approval) => {
-        return (
-          approval.type === 'snap_dialog' &&
-          account.metadata.snap &&
-          account.metadata.snap.id === approval.origin &&
-          isMultichainWalletSnap(account.metadata.snap.id as SnapId)
-        );
-      },
-    );
-
-    if (templatedSnapApproval) {
-      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
-    }
-  }, [unapprovedTemplatedConfirmations, history, account]);
-  ///: END:ONLY_INCLUDE_IF
-
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
     trackEvent({
@@ -194,32 +170,7 @@ const TokenButtons = ({
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     if (!isEvmAccountType(account.type)) {
-      // Non-EVM (Snap) Send flow
-      if (!account.metadata.snap) {
-        throw new Error('Non-EVM needs to be Snap accounts');
-      }
-
-      // TODO: Remove this once we want to enable all non-EVM Snaps
-      if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
-        throw new Error(
-          `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
-        );
-      }
-
-      try {
-        // FIXME: We switch the tab before starting the send flow (we
-        // faced some inconsistencies when changing it after).
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        await sendMultichainTransaction(account.metadata.snap.id, {
-          account: account.id,
-          scope: currentChainId,
-          assetId: token.address,
-        });
-      } catch {
-        // Restore the previous tab in case of any error (see FIXME comment above).
-        await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
-      }
-
+      await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
     }
@@ -246,9 +197,8 @@ const TokenButtons = ({
     history,
     token,
     setCorrectChain,
-    currentActivityTabName,
-    currentChainId,
     account,
+    handleSendNonEvm,
   ]);
 
   const handleSwapOnClick = useCallback(async () => {

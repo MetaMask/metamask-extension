@@ -6071,11 +6071,11 @@ export async function sendMultichainTransaction(
   {
     account,
     scope,
-    assetId,
+    assetType,
   }: {
     account: string;
     scope: string;
-    assetId?: CaipAssetId;
+    assetType?: CaipAssetType;
   },
 ) {
   await handleSnapRequest({
@@ -6087,7 +6087,7 @@ export async function sendMultichainTransaction(
       params: {
         account,
         scope,
-        assetId,
+        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
       },
     },
   });
