@@ -333,9 +333,15 @@ export default function TransactionList({
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
+<<<<<<< HEAD
+        paddingBottom={2}
+        paddingInline={4}
+        variant={TextVariant.bodyMdMedium}
+=======
         paddingTop={2}
         paddingInline={4}
         variant={TextVariant.bodyMd}
+>>>>>>> origin/main
         color={TextColor.textAlternative}
         key={dateGroup.dateMillis}
       >
@@ -495,21 +501,123 @@ export default function TransactionList({
                 ).map((dateGroup) => (
                   <Fragment key={dateGroup.date}>
                     <Text
-                      paddingTop={4}
+                      paddingTop={2}
+                      paddingBottom={2}
                       paddingInline={4}
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
+                      variant={TextVariant.bodyMdMedium}
+                      color={TextColor.textAlternative}
                     >
                       {dateGroup.date}
                     </Text>
                     {dateGroup.transactionGroups.map((transaction, index) => (
                       <MultichainTransactionListItem
                         key={`${transaction.account}:${index}`}
+<<<<<<< HEAD
+                        className="custom-class"
+                        data-testid="activity-list-item"
+                        onClick={() => toggleShowDetails(transaction)}
+                        icon={
+                          <BadgeWrapper
+                            anchorElementShape="circular"
+                            badge={
+                              <AvatarNetwork
+                                borderColor="background-default"
+                                borderWidth={1}
+                                className="activity-tx__network-badge"
+                                data-testid="activity-tx-network-badge"
+                                name={
+                                  isSolanaAccount
+                                    ? MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.SOLANA
+                                      ].nickname
+                                    : MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.BITCOIN
+                                      ].nickname
+                                }
+                                size="xs"
+                                src={
+                                  isSolanaAccount
+                                    ? SOLANA_TOKEN_IMAGE_URL
+                                    : BITCOIN_TOKEN_IMAGE_URL
+                                }
+                              />
+                            }
+                            display="block"
+                            positionObj={{ right: -4, top: -4 }}
+                          >
+                            <TransactionIcon
+                              category={transaction.type}
+                              status={transaction.status}
+                            />
+                          </BadgeWrapper>
+                        }
+                        rightContent={
+                          <>
+                            <Text
+                              className="activity-list-item__primary-currency"
+                              color="text-default"
+                              data-testid="transaction-list-item-primary-currency"
+                              ellipsis
+                              fontWeight="medium"
+                              textAlign="right"
+                              title="Primary Currency"
+                              variant="body-md-medium"
+                            >
+                              {getTransactionDisplayAmount(
+                                transaction,
+                                selectedAccount.address,
+                              )}
+                            </Text>
+                          </>
+                        }
+                        title={
+                          transaction.isBridgeTx
+                            ? t('bridge')
+                            : formatTransactionTitle(
+                                transaction,
+                                selectedAccount.address,
+                              )
+                        }
+                        // eslint-disable-next-line react/jsx-no-duplicate-props
+                        subtitle={
+                          transaction.isBridgeTx && transaction.bridgeInfo ? (
+                            <>
+                              <TransactionStatusLabel
+                                date={formatTimestamp(transaction.timestamp)}
+                                error={{}}
+                                status={transaction.status}
+                                statusOnly
+                              />
+                              <Text
+                                variant={TextVariant.bodyMd}
+                                color={TextColor.textAlternative}
+                              >
+                                {`${t('to')} ${
+                                  transaction.bridgeInfo.destAsset?.symbol
+                                } ${t('on')} ${
+                                  // Use the pre-computed chain name from our hook, or fall back to chain ID
+                                  transaction.bridgeInfo.destChainName ||
+                                  transaction.bridgeInfo.destChainId
+                                }`}
+                              </Text>
+                            </>
+                          ) : (
+                            <TransactionStatusLabel
+                              date={formatTimestamp(transaction.timestamp)}
+                              error={{}}
+                              status={transaction.status}
+                              statusOnly
+                            />
+                          )
+                        }
+                      ></ActivityListItem>
+=======
                         transaction={transaction}
                         userAddress={selectedAccount.address}
                         index={index}
                         toggleShowDetails={toggleShowDetails}
                       />
+>>>>>>> origin/main
                     ))}
                   </Fragment>
                 ))}
