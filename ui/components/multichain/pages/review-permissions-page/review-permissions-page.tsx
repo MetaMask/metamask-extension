@@ -10,6 +10,7 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { uniq } from 'lodash';
 import {
   AlignItems,
   BlockSize,
@@ -23,7 +24,6 @@ import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
   getPermissionSubjects,
-  getPermittedEVMChainsForSelectedTab,
   getShowPermittedNetworkToastOpen,
   getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
@@ -60,7 +60,6 @@ import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
 import { SiteCell } from './site-cell/site-cell';
-import { uniq } from 'lodash';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -183,8 +182,8 @@ export const ReviewPermissions = () => {
   ) as CaipAccountId[];
 
   // should this be at the selector level? :|
-  const connectedAccountAddresses = uniq(_connectedAccountAddresses.map(
-    (caipAccountId) => {
+  const connectedAccountAddresses = uniq(
+    _connectedAccountAddresses.map((caipAccountId) => {
       const {
         address,
         chain: { namespace, reference },
@@ -194,8 +193,8 @@ export const ReviewPermissions = () => {
         return `${namespace}:0:${address}` as CaipAccountId;
       }
       return `${namespace}:${reference}:${address}` as CaipAccountId;
-    },
-  ));
+    }),
+  );
 
   const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
     if (caipAccountIds.length === 0) {
@@ -205,32 +204,45 @@ export const ReviewPermissions = () => {
 
     // Temporarily pass only the address part of the caipAccountId until
     // the rest of the UI has been refactored to work with CaipAccountIds
-    const addresses = caipAccountIds.map(caipAccountId => {
-      const { address } = parseCaipAccountId(caipAccountId)
+    const addresses = caipAccountIds.map((caipAccountId) => {
+      const { address } = parseCaipAccountId(caipAccountId);
       return address;
-    })
+    });
 
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
     connectedAccountAddresses.forEach((connectedAddress: string) => {
-      const parsedConnectedAddress = parseCaipAccountId(connectedAddress as CaipAccountId);
+      const parsedConnectedAddress = parseCaipAccountId(
+        connectedAddress as CaipAccountId,
+      );
 
       const includesCaipAccountId = caipAccountIds.some((caipAccountId) => {
         const parsedAddress = parseCaipAccountId(caipAccountId);
 
-        if (parsedConnectedAddress.chain.namespace !== parsedAddress.chain.namespace
-          || parsedConnectedAddress.address !== parsedAddress.address) {
-            return false
-          }
+        if (
+          parsedConnectedAddress.chain.namespace !==
+            parsedAddress.chain.namespace ||
+          parsedConnectedAddress.address !== parsedAddress.address
+        ) {
+          return false;
+        }
 
-        return parsedAddress.chain.reference === '0' || parsedAddress.chain.reference === parsedConnectedAddress.chain.reference
-      })
-
+        return (
+          parsedAddress.chain.reference === '0' ||
+          parsedAddress.chain.reference ===
+            parsedConnectedAddress.chain.reference
+        );
+      });
 
       if (!includesCaipAccountId) {
         // Temporarily pass only the address part of the caipAccountId until
         // the rest of the UI has been refactored to work with CaipAccountIds
-        dispatch(removePermittedAccount(activeTabOrigin, parsedConnectedAddress.address));
+        dispatch(
+          removePermittedAccount(
+            activeTabOrigin,
+            parsedConnectedAddress.address,
+          ),
+        );
       }
     });
 
@@ -242,7 +254,7 @@ export const ReviewPermissions = () => {
     setShowNetworkToast(false);
   };
 
-  console.log({connectedAccountAddresses})
+  console.log({ connectedAccountAddresses });
 
   return (
     <Page

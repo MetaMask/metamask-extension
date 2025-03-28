@@ -55,35 +55,37 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
           data-test-id="site-cell-tooltip"
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {accounts?.slice(0, TOOLTIP_LIMIT).map(({internalAccount: acc}) => {
-              return (
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Row}
-                  alignItems={AlignItems.center}
-                  textAlign={TextAlign.Left}
-                  key={acc.address}
-                  padding={1}
-                  paddingInline={2}
-                  gap={2}
-                >
-                  <AvatarAccount
-                    size={AvatarAccountSize.Xs}
-                    address={acc.address}
-                    variant={avatarAccountVariant}
-                    borderStyle={BorderStyle.none}
-                  />
-                  <Text
-                    color={TextColor.overlayInverse}
-                    variant={TextVariant.bodyMdMedium}
-                    data-testid="accounts-list-item-connected-account-name"
-                    ellipsis
+            {accounts
+              ?.slice(0, TOOLTIP_LIMIT)
+              .map(({ internalAccount: acc }) => {
+                return (
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Row}
+                    alignItems={AlignItems.center}
+                    textAlign={TextAlign.Left}
+                    key={acc.address}
+                    padding={1}
+                    paddingInline={2}
+                    gap={2}
                   >
-                    {acc.metadata.name || acc.label}
-                  </Text>
-                </Box>
-              );
-            })}
+                    <AvatarAccount
+                      size={AvatarAccountSize.Xs}
+                      address={acc.address}
+                      variant={avatarAccountVariant}
+                      borderStyle={BorderStyle.none}
+                    />
+                    <Text
+                      color={TextColor.overlayInverse}
+                      variant={TextVariant.bodyMdMedium}
+                      data-testid="accounts-list-item-connected-account-name"
+                      ellipsis
+                    >
+                      {acc.metadata.name || acc.label}
+                    </Text>
+                  </Box>
+                );
+              })}
             {networks?.slice(0, TOOLTIP_LIMIT).map((network) => {
               return (
                 <Box

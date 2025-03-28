@@ -25,14 +25,15 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getPermittedChainsForSelectedTab } from '../../../../selectors';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, connection.origin),
-  );
+  // TODO: fix this
+  // const connectedNetworks = useSelector((state) =>
+  //   getPermittedChainsForSelectedTab(state, connection.origin),
+  // );
+  const connectedNetworks = [];
 
   return (
     <Box

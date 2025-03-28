@@ -205,7 +205,7 @@ export function getDefaultAccounts(
   });
 
   // sort accounts by lastSelected descending
-  const allAccountsSortedByLastSelected =  allAccounts.sort((a, b) =>  {
+  const allAccountsSortedByLastSelected = allAccounts.sort((a, b) => {
     const lastSelectedA = a.internalAccount.metadata.lastSelected;
     const lastSelectedB = b.internalAccount.metadata.lastSelected;
     if (!lastSelectedA && !lastSelectedB) {
@@ -224,9 +224,9 @@ export function getDefaultAccounts(
       return 1;
     }
     return 0;
-  })
+  });
 
-  console.log({allAccountsSortedByLastSelected})
+  console.log({ allAccountsSortedByLastSelected });
 
   requestedNamespaces.forEach((namespace) => {
     if (
@@ -237,12 +237,14 @@ export function getDefaultAccounts(
         return accountNamespace === namespace;
       })
     ) {
-      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find((account) => {
-        const {
-          chain: { namespace: accountNamespace },
-        } = parseCaipAccountId(account.caipAccountId);
-        return accountNamespace === namespace;
-      });
+      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
+        (account) => {
+          const {
+            chain: { namespace: accountNamespace },
+          } = parseCaipAccountId(account.caipAccountId);
+          return accountNamespace === namespace;
+        },
+      );
       if (defaultAccountForNamespace) {
         defaultAccounts.push(defaultAccountForNamespace);
       }

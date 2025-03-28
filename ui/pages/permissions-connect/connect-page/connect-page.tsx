@@ -11,7 +11,6 @@ import {
   CaipChainId,
   CaipNamespace,
   CaipReference,
-  KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -148,14 +147,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [networkConfigurationsByCaipChainId],
   );
 
-  const allNetworksList = [...nonTestNetworkConfigurations, ...testNetworkConfigurations].map(
-    ({ caipChainId }) => caipChainId,
-  );
+  const allNetworksList = [
+    ...nonTestNetworkConfigurations,
+    ...testNetworkConfigurations,
+  ].map(({ caipChainId }) => caipChainId);
 
-  const supportedRequestedCaipChainIds = requestedCaipChainIds.filter((caipChainId) =>
-    allNetworksList.includes(caipChainId as CaipChainId),
+  const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
   );
-
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
 
@@ -245,14 +244,22 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultCaip10AccountAddresses = defaultAccounts.map(
-    ({ caipAccountId }) => caipAccountId);
+    ({ caipAccountId }) => caipAccountId,
+  );
 
   const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
     useState(defaultCaip10AccountAddresses);
 
-  const selectedAccounts = allAccountsWithCaipAccountId.filter(({caipAccountId}) => selectedCaip10AccountAddresses.includes(caipAccountId))
+  const selectedAccounts = allAccountsWithCaipAccountId.filter(
+    ({ caipAccountId }) =>
+      selectedCaip10AccountAddresses.includes(caipAccountId),
+  );
 
-  console.log({nonTestNetworkConfigurations, testNetworkConfigurations, selectedChainIds});
+  console.log({
+    nonTestNetworkConfigurations,
+    testNetworkConfigurations,
+    selectedChainIds,
+  });
 
   const onConfirm = () => {
     const _request = {

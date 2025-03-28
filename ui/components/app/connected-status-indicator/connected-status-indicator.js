@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -19,7 +20,6 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
-import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
@@ -41,13 +41,20 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
       return selectedAccount.scopes.some((scope) => {
         const { namespace, reference } = parseCaipChainId(scope);
 
-        if (namespace !== parsedPermittedAccount.chain.namespace || selectedAccount.address !== parsedPermittedAccount.address) {
+        if (
+          namespace !== parsedPermittedAccount.chain.namespace ||
+          selectedAccount.address !== parsedPermittedAccount.address
+        ) {
           return false;
         }
 
-        return reference === '0' || reference === parsedPermittedAccount.chain.reference
-      })
-  });
+        return (
+          reference === '0' ||
+          reference === parsedPermittedAccount.chain.reference
+        );
+      });
+    },
+  );
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {

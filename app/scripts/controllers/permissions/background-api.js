@@ -6,21 +6,16 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  getEthAccounts,
-  setEthAccounts,
-  getPermittedEthChainIds,
-  setPermittedEthChainIds,
-  addPermittedChainId,
   setPermittedChainIds,
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
-import { KnownCaipNamespace, parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
-  accountsController
+  accountsController,
 }) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (origin) => {
@@ -51,31 +46,33 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    const internalAccounts = addresses.map(address => {
-      return accountsController.getAccountByAddress(address)
-    })
+    const internalAccounts = addresses.map((address) => {
+      return accountsController.getAccountByAddress(address);
+    });
 
-    const accounts = internalAccounts.map(internalAccount => {
-      const { namespace, reference } = parseCaipChainId(internalAccount.scopes[0]);
-      return `${namespace}:${reference}:${internalAccount.address}`
-    })
+    const caipAccountIds = internalAccounts.map((internalAccount) => {
+      const { namespace, reference } = parseCaipChainId(
+        internalAccount.scopes[0],
+      );
+      return `${namespace}:${reference}:${internalAccount.address}`;
+    });
 
     // TODO dry this into core
-    const permittedAccounts = new Set()
-    Object.values(caip25Caveat.value.requiredScopes).forEach(({accounts}) => {
-      accounts.forEach(account => {
-        permittedAccounts.add(account)
-      })
-    })
-    Object.values(caip25Caveat.value.optionalScopes).forEach(({accounts}) => {
-      accounts.forEach(account => {
-        permittedAccounts.add(account)
-      })
-    })
+    const permittedAccounts = new Set();
+    Object.values(caip25Caveat.value.requiredScopes).forEach(({ accounts }) => {
+      accounts.forEach((account) => {
+        permittedAccounts.add(account);
+      });
+    });
+    Object.values(caip25Caveat.value.optionalScopes).forEach(({ accounts }) => {
+      accounts.forEach((account) => {
+        permittedAccounts.add(account);
+      });
+    });
 
-    accounts.forEach(account => {
-      permittedAccounts.add(account)
-    })
+    caipAccountIds.forEach((account) => {
+      permittedAccounts.add(account);
+    });
 
     const updatedAccounts = Array.from(permittedAccounts);
 
@@ -101,34 +98,29 @@ export function getPermissionBackgroundApiMethods({
     }
 
     // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requiredScopes = Object.keys(
-      caip25Caveat.value.requiredScopes,
-    )
-    const optionalScopes = Object.keys(
-      caip25Caveat.value.optionalScopes,
-    )
+    const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
+    const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
     const updatedChainIds = Array.from(
       new Set([...requiredScopes, ...optionalScopes, ...chainIds]),
     );
 
-
     const caveatValueWithChains = setPermittedChainIds(
       caip25Caveat.value,
-      updatedChainIds
-    )
+      updatedChainIds,
+    );
 
     // TODO dry this into core
-    const permittedAccounts = new Set()
-    Object.values(caip25Caveat.value.requiredScopes).forEach(({accounts}) => {
-      accounts.forEach(account => {
-        permittedAccounts.add(account)
-      })
-    })
-    Object.values(caip25Caveat.value.optionalScopes).forEach(({accounts}) => {
-      accounts.forEach(account => {
-        permittedAccounts.add(account)
-      })
-    })
+    const permittedAccounts = new Set();
+    Object.values(caip25Caveat.value.requiredScopes).forEach(({ accounts }) => {
+      accounts.forEach((account) => {
+        permittedAccounts.add(account);
+      });
+    });
+    Object.values(caip25Caveat.value.optionalScopes).forEach(({ accounts }) => {
+      accounts.forEach((account) => {
+        permittedAccounts.add(account);
+      });
+    });
 
     // ensure that the list of permitted accounts is set for the newly added scopes
     const caveatValueWithAccountsSynced = setPermittedAccounts(
@@ -196,46 +188,51 @@ export function getPermissionBackgroundApiMethods({
       const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
-          `Cannot remove account "${account}": No permissions exist for origin "${origin}".`,
+          `Cannot remove account "${address}": No permissions exist for origin "${origin}".`,
         );
       }
 
-      const permittedAccounts = new Set()
-      Object.values(caip25Caveat.value.requiredScopes).forEach(({accounts}) => {
-        accounts.forEach(account => {
-          permittedAccounts.add(account)
-        })
-      })
-      Object.values(caip25Caveat.value.optionalScopes).forEach(({accounts}) => {
-        accounts.forEach(account => {
-          permittedAccounts.add(account)
-        })
-      })
-
-      const existingAccounts = Array.from(permittedAccounts)
-
-      const internalAccount = accountsController.getAccountByAddress(address)
-
-      const remainingAccounts = existingAccounts.filter(
-        (existingAccount) => {
-          const {
-            address: existingAddress,
-            chain: { namespace: existingNamespace, reference: existingReference},
-          } = parseCaipAccountId(existingAccount);
-
-          const matchesExistingAccount = internalAccount.scopes.some((scope) => {
-            const { namespace, reference } = parseCaipChainId(scope);
-
-            if (namespace !== existingNamespace || internalAccount.address !== existingAddress) {
-              return false;
-            }
-
-            return reference === '0' || reference === existingReference
-          })
-
-          return !matchesExistingAccount;
+      const permittedAccounts = new Set();
+      Object.values(caip25Caveat.value.requiredScopes).forEach(
+        ({ accounts }) => {
+          accounts.forEach((account) => {
+            permittedAccounts.add(account);
+          });
         },
       );
+      Object.values(caip25Caveat.value.optionalScopes).forEach(
+        ({ accounts }) => {
+          accounts.forEach((account) => {
+            permittedAccounts.add(account);
+          });
+        },
+      );
+
+      const existingAccounts = Array.from(permittedAccounts);
+
+      const internalAccount = accountsController.getAccountByAddress(address);
+
+      const remainingAccounts = existingAccounts.filter((existingAccount) => {
+        const {
+          address: existingAddress,
+          chain: { namespace: existingNamespace, reference: existingReference },
+        } = parseCaipAccountId(existingAccount);
+
+        const matchesExistingAccount = internalAccount.scopes.some((scope) => {
+          const { namespace, reference } = parseCaipChainId(scope);
+
+          if (
+            namespace !== existingNamespace ||
+            internalAccount.address !== existingAddress
+          ) {
+            return false;
+          }
+
+          return reference === '0' || reference === existingReference;
+        });
+
+        return !matchesExistingAccount;
+      });
 
       if (remainingAccounts.length === existingAccounts.length) {
         return;
@@ -272,14 +269,9 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-
       // TODO dry and or move to @metamask/chain-agnostic-permission
-      const requiredScopes = Object.keys(
-        caip25Caveat.value.requiredScopes,
-      )
-      const optionalScopes = Object.keys(
-        caip25Caveat.value.optionalScopes,
-      )
+      const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
+      const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
 
       const existingChainIds = Array.from(
         new Set([...requiredScopes, ...optionalScopes]),

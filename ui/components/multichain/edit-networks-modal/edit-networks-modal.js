@@ -58,7 +58,9 @@ export const EditNetworksModal = ({
   ]);
 
   const selectAll = () => {
-    const allNetworksChainIds = allNetworks.map(({ caipChainId }) => caipChainId);
+    const allNetworksChainIds = allNetworks.map(
+      ({ caipChainId }) => caipChainId,
+    );
     setSelectedChainIds(allNetworksChainIds);
   };
 

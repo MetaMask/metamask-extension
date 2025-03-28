@@ -6,6 +6,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
+import { parseCaipChainId, parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -39,7 +40,6 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
-import { parseCaipChainId, parseCaipAccountId } from '@metamask/utils';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -132,26 +132,33 @@ export async function setupInitialStore(
     const { origin } = draftInitialState.activeTab;
 
     // Not entirely sure if these changes are correct. The original logic kind of confuses me.
-    const permittedAccountsForCurrentTab = getAllPermittedAccountsForCurrentTab(draftInitialState);
+    const permittedAccountsForCurrentTab =
+      getAllPermittedAccountsForCurrentTab(draftInitialState);
 
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
     let currentTabIsConnectedToSelectedAddress;
     if (selectedAccount) {
-      currentTabIsConnectedToSelectedAddress = permittedAccountsForCurrentTab.some(
-        (account) => {
+      currentTabIsConnectedToSelectedAddress =
+        permittedAccountsForCurrentTab.some((account) => {
           const parsedPermittedAccount = parseCaipAccountId(account);
 
           return selectedAccount.scopes.some((scope) => {
             const { namespace, reference } = parseCaipChainId(scope);
 
-            if (namespace !== parsedPermittedAccount.chain.namespace || selectedAccount.address !== parsedPermittedAccount.address) {
+            if (
+              namespace !== parsedPermittedAccount.chain.namespace ||
+              selectedAccount.address !== parsedPermittedAccount.address
+            ) {
               return false;
             }
 
-            return reference === '0' || reference === parsedPermittedAccount.chain.reference
-          })
-      });
+            return (
+              reference === '0' ||
+              reference === parsedPermittedAccount.chain.reference
+            );
+          });
+        });
     }
 
     const unconnectedAccountAlertShownOrigins =

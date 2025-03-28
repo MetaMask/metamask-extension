@@ -3245,7 +3245,6 @@ export function getAllPermittedScopes(state, origin) {
   );
 }
 
-
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
@@ -3476,19 +3475,14 @@ function getAllScopesFromPermission(caip25Permission) {
   }
 
   // TODO dry and or move to @metamask/chain-agnostic-permission
-  const requiredScopes = Object.keys(
-    caip25Caveat.value.requiredScopes,
-  )
+  const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
 
-  const optionalScopes = Object.keys(
-    caip25Caveat.value.optionalScopes,
-  )
+  const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
 
   // TODO: May need to filter out wallet scopes here?
 
   return getUniqueArrayItems([...requiredScopes, ...optionalScopes]);
 }
-
 
 function getEVMAccountsFromPermission(caip25Permission) {
   const caip25Caveat = getCaveatFromPermission(caip25Permission);

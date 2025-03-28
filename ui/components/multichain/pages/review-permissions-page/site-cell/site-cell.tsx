@@ -72,7 +72,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
     selectedChainIds.includes(caipChainId),
   );
 
-  console.log({allNetworks, selectedNetworks, selectedChainIds})
+  console.log({ allNetworks, selectedNetworks, selectedChainIds });
 
   const selectedChainIdsLength = selectedChainIds.length;
 
