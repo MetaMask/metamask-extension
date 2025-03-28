@@ -783,7 +783,7 @@
         "define": true
       },
       "packages": {
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur": true,
+        "@ngraveio/bc-ur": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "browserify>buffer": true,
@@ -795,7 +795,7 @@
         "define": true
       },
       "packages": {
-        "@dawnseeker8/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur": true,
+        "@ngraveio/bc-ur": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "browserify>buffer": true,
@@ -2540,30 +2540,6 @@
         "addons-linter>sha.js": true
       }
     },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur": {
-      "packages": {
-        "@ngraveio/bc-ur>@keystonehq/alias-sampling": true,
-        "browserify>assert": true,
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>bignumber.js": true,
-        "browserify>buffer": true,
-        "@ngraveio/bc-ur>cbor-sync": true,
-        "@ngraveio/bc-ur>crc": true,
-        "@ngraveio/bc-ur>jsbi": true,
-        "addons-linter>sha.js": true
-      }
-    },
-    "@dawnseeker8/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur": {
-      "packages": {
-        "@ngraveio/bc-ur>@keystonehq/alias-sampling": true,
-        "browserify>assert": true,
-        "@dawnseeker8/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>bignumber.js": true,
-        "browserify>buffer": true,
-        "@ngraveio/bc-ur>cbor-sync": true,
-        "@ngraveio/bc-ur>crc": true,
-        "@ngraveio/bc-ur>jsbi": true,
-        "addons-linter>sha.js": true
-      }
-    },
     "@metamask/profile-sync-controller>@noble/ciphers": {
       "globals": {
         "TextDecoder": true,
@@ -3357,18 +3333,6 @@
       }
     },
     "@ngraveio/bc-ur>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@dawnseeker8/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
