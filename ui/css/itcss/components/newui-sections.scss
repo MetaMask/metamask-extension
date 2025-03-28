@@ -32,8 +32,6 @@
 
 // Main container
 .main-container {
-  display: flex;
-  flex-direction: column;
   z-index: design-system.$main-container-z-index;
 }
 
@@ -55,10 +53,7 @@
   .main-container {
     width: 85vw;
     min-height: 90vh;
-
-    &--has-shadow {
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-    }
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 }
 
@@ -66,10 +61,7 @@
   .main-container {
     width: 80vw;
     min-height: 82vh;
-
-    &--has-shadow {
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-    }
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 }
 
@@ -77,10 +69,7 @@
   .main-container {
     width: 62vw;
     min-height: 82vh;
-
-    &--has-shadow {
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-    }
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 }
 
