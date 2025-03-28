@@ -197,14 +197,11 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     const emoji = teamEmojis[team] || '👨‍🔧';
     const files = teamFiles[team];
 
-    // Create a collapsible section for each team
-    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${files.length} files)</summary>\n\n`;
+    commentBody += `\n${emoji} **${team}** (${files.length} files)\n`;
 
-    // Create a file tree structure
-    const fileTree = buildFileTree(files);
-    commentBody += renderFileTree(fileTree, 0);
-
-    commentBody += '</details>\n';
+    // List files in a simplified, but properly-indented format
+    const dirTree = buildSimpleDirectoryTree(files);
+    commentBody += renderSimpleDirectoryTree(dirTree, '');
 
     // Only add divider if not the last team
     if (index < sortedOwners.length - 1) {
@@ -215,64 +212,63 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   return commentBody;
 }
 
-// Helper function to build a file tree structure
-function buildFileTree(files: string[]): Record<string, any> {
-  const tree: Record<string, any> = {};
+// Build a simplified directory tree
+function buildSimpleDirectoryTree(files: string[]): { [key: string]: string[] | { [key: string]: any } } {
+  const tree: { [key: string]: string[] | { [key: string]: any } } = {};
 
   files.forEach(file => {
     const parts = file.split('/');
-    let current = tree;
+    let currentPath = '';
+    let currentObj = tree;
 
-    // Build the nested structure
-    parts.forEach((part, i) => {
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      currentPath = currentPath ? `${currentPath}/${part}` : part;
+
       if (i === parts.length - 1) {
-        // Leaf node (file)
-        current[part] = null;
-      } else {
-        // Directory
-        if (!current[part]) {
-          current[part] = {};
+        // This is a file
+        if (!currentObj['__files__']) {
+          currentObj['__files__'] = [];
         }
-        current = current[part];
+        (currentObj['__files__'] as string[]).push(part);
+      } else {
+        // This is a directory
+        if (!currentObj[part]) {
+          currentObj[part] = {};
+        }
+        currentObj = currentObj[part] as { [key: string]: any };
       }
-    });
+    }
   });
 
   return tree;
 }
 
-// Helper function to render the file tree with indentation
-function renderFileTree(node: Record<string, any>, depth: number): string {
+// Render the directory tree using GitHub-compliant list indentation
+function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string): string {
   let result = '';
 
-  // Use different bullet styles for directories vs files
-  const getBullet = (isDir: boolean) => {
-    return isDir ? '◦' : '▪'; // Round bullet for directories, square for files
-  };
+  // Process directories (skip the special __files__ key)
+  const dirs = Object.keys(node).filter(key => key !== '__files__');
+  dirs.sort(); // Sort directories alphabetically
 
-  // Sort keys to keep directories first, then files
-  const keys = Object.keys(node).sort((a, b) => {
-    const aIsDir = node[a] !== null;
-    const bIsDir = node[b] !== null;
-    if (aIsDir && !bIsDir) return -1;
-    if (!aIsDir && bIsDir) return 1;
-    return a.localeCompare(b);
+  dirs.forEach(dir => {
+    // Add this directory - only italic with dots after slash
+    result += `${prefix}* *${dir}/..*\n`;
+
+    // Recursively process subdirectories with increased indentation
+    result += renderSimpleDirectoryTree(node[dir], `${prefix}  `);
   });
 
-  keys.forEach(key => {
-    const isDir = node[key] !== null;
-    const indent = '  '.repeat(depth);
-    const bullet = getBullet(isDir);
+  // Process files if any
+  if (node['__files__']) {
+    const files = node['__files__'] as string[];
+    files.sort(); // Sort files alphabetically
 
-    if (!isDir) {
-      // File - use code formatting which appears as a different color in GitHub
-      result += `${indent}${bullet} \`${key}\`\n`;
-    } else {
-      // Directory - with italic instead of bold
-      result += `${indent}${bullet} *${key}/*\n`;
-      result += renderFileTree(node[key], depth + 1);
-    }
-  });
+    files.forEach(file => {
+      result += `${prefix}  * \`${file}\`\n`;
+    });
+  }
 
   return result;
 }
