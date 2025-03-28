@@ -25,15 +25,15 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  // TODO: fix this
-  // const connectedNetworks = useSelector((state) =>
-  //   getPermittedChainsForSelectedTab(state, connection.origin),
-  // );
-  const connectedNetworks = [];
+  const permittedChains = useSelector((state) =>
+    getAllPermittedChainsForSelectedTab(state, connection.origin),
+  );
 
   return (
     <Box
@@ -90,7 +90,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               variant={TextVariant.bodyMd}
             >
               {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
-              {connectedNetworks.length} {t('networksSmallCase')}
+              {permittedChains.length} {t('networksSmallCase')}
             </Text>
           </Box>
         )}
