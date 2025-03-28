@@ -43,8 +43,6 @@ export type SnapUISelectorProps = {
   label?: string;
   error?: string;
   disabled?: boolean;
-  findSelectedOptionIndex?: (selectedOptionValue: State | undefined) => number;
-  showSelectedOption?: boolean;
   onSelect?: (value: State) => void;
 };
 
@@ -95,20 +93,6 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
       }}
       disabled={disabled}
     >
-      {selected && (
-        <Box
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-          marginRight={3}
-          style={{
-            position: 'absolute',
-            height: 'calc(100% - 8px)',
-            width: '4px',
-            top: '4px',
-            left: '4px',
-          }}
-        />
-      )}
       {children}
       {selected && (
         <Box
@@ -138,7 +122,6 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   label,
   error,
   disabled,
-  findSelectedOptionIndex,
   onSelect,
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
@@ -168,9 +151,17 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
     handleModalClose();
   };
 
-  const selectedOptionIndex =
-    findSelectedOptionIndex?.(selectedOptionValue) ??
-    options.findIndex((option) => option.value === selectedOptionValue);
+  /**
+   * Find the index of the selected option in the options array.
+   * If the option is an object, use the provided key to compare the values.
+   * If the option is a primitive, compare the values directly.
+   */
+  const selectedOptionIndex = options.findIndex((option) =>
+    option.key && isObject(option.value)
+      ? option.value[option.key as keyof typeof option.value] ===
+        selectedOptionValue?.[option.key as keyof typeof selectedOptionValue]
+      : option.value === selectedOptionValue,
+  );
 
   const selectedOption = optionComponents[selectedOptionIndex];
 
