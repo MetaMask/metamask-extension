@@ -11,7 +11,6 @@ import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
-import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
@@ -59,7 +58,6 @@ const Confirm = () => (
               <PluggableSection />
             </ScrollToBottom>
             <Footer />
-            <NetworkChangeToast />
           </Page>
         </ConfirmAlerts>
       </GasFeeContextProviderWrapper>

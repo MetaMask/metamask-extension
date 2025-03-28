@@ -10,7 +10,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  BITCOIN_BLOCK_EXPLORER_URL,
+  MultichainNetworks,
+  SOLANA_BLOCK_EXPLORER_URL,
+} from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
@@ -218,7 +222,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/tx/${txId}`,
+      `${BITCOIN_BLOCK_EXPLORER_URL}/tx/${txId}`,
     );
   });
 
@@ -228,7 +232,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/testnet/tx/${txId}`,
+      `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/${txId}`,
     );
   });
 
@@ -238,7 +242,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}`,
     );
   });
 
@@ -248,7 +252,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}?cluster=devnet`,
     );
   });
 
@@ -257,7 +261,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}`,
     );
   });
 
@@ -266,7 +270,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}?cluster=devnet`,
     );
   });
 
@@ -275,7 +279,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/address/${address}`,
+      `${BITCOIN_BLOCK_EXPLORER_URL}/address/${address}`,
     );
   });
 
@@ -284,7 +288,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/testnet/address/${address}`,
+      `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/address/${address}`,
     );
   });
 

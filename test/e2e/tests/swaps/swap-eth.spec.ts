@@ -1,6 +1,6 @@
+import FixtureBuilder from '../../fixture-builder';
 import { unlockWallet, withFixtures } from '../../helpers';
 import {
-  withFixturesOptions,
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
@@ -14,7 +14,7 @@ describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockEthDaiTrade,
         title: this.test?.fullTitle(),
       },
@@ -57,7 +57,7 @@ describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockEthDaiTrade,
         title: this.test?.fullTitle(),
       },

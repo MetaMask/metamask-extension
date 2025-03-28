@@ -20,16 +20,16 @@ describe('Trezor Hardware', function (this: Suite) {
       },
       async ({
         driver,
-        ganacheServer,
+        localNodes,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodes: Ganache[] | undefined[];
       }) => {
         // Seed the Trezor account with balance
-        await ganacheServer?.setAccountBalance(
+        (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
-        );
+        )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed('1208925.8196');

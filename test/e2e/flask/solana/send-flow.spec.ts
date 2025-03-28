@@ -196,7 +196,7 @@ describe('Send full flow of USD', function (this: Suite) {
     );
   });
 });
-describe.skip('Send full flow of SOL', function (this: Suite) {
+describe('Send full flow of SOL', function (this: Suite) {
   // Temporarily disabled on Mar 26, 2025 because of CI failures.
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('with a positive balance account', async function () {

@@ -4,7 +4,12 @@ import {
 } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import { CaipAssetId } from '@metamask/keyring-api';
-import { Hex, parseCaipAssetType } from '@metamask/utils';
+import {
+  CaipAssetType,
+  CaipChainId,
+  Hex,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { TEST_CHAINS } from '../../shared/constants/network';
@@ -105,7 +110,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             calculateTokenBalance({
               isNative,
               chainId,
-              address,
+              address: address as Hex,
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
@@ -135,9 +140,10 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
           ) {
             tokensWithBalance.push({
               ...token,
+              address: token.address as CaipAssetType,
               balance,
               tokenFiatAmount,
-              chainId,
+              chainId: chainId as CaipChainId,
               string: String(balance),
               primary: '',
               secondary: 0,
@@ -157,16 +163,21 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
+  getPreferences,
   (
     selectedAccountAddress,
     multichainBalances,
     accountAssets,
     assetsMetadata,
     assetRates,
+    preferences,
   ) => {
+    const { hideZeroBalanceTokens } = preferences;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
-    return assetIds.map((assetId: CaipAssetId) => {
+
+    const allAssets: TokenWithFiatAmount[] = [];
+    assetIds.forEach((assetId: CaipAssetId) => {
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
@@ -182,22 +193,25 @@ export const getMultiChainAssets = createDeepEqualSelector(
 
       const metadata = assetsMetadata[assetId] || assetMetadataFallback;
       const decimals = metadata.units[0]?.decimals || 0;
-
-      return {
-        title: metadata.name,
-        address: assetId,
-        symbol: metadata.symbol,
-        image: metadata.iconUrl,
-        decimals,
-        chainId,
-        isNative,
-        primary: balance.amount,
-        secondary: balanceInFiat.toNumber(),
-        string: '',
-        tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
-        isStakeable: false,
-      };
+      if (!hideZeroBalanceTokens || balance.amount !== '0' || isNative) {
+        allAssets.push({
+          title: metadata.name,
+          address: assetId,
+          symbol: metadata.symbol,
+          image: metadata.iconUrl,
+          decimals,
+          chainId,
+          isNative,
+          primary: balance.amount,
+          secondary: balanceInFiat.toNumber(),
+          string: '',
+          tokenFiatAmount: balanceInFiat.toNumber(), // for now we are keeping this is to satisfy sort, this should be fiat amount
+          isStakeable: false,
+        });
+      }
     });
+
+    return allAssets;
   },
 );
 

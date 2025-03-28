@@ -30,6 +30,8 @@ import {
   RateLimitController,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
+import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
+import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -38,6 +40,7 @@ import SwapsController from '../controllers/swaps';
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | AuthenticationController
   | CronjobController
   | ExecutionService
   | GasFeeController
@@ -65,13 +68,15 @@ export type Controller =
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
-    });
+    })
+  | UserStorageController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &
+  AuthenticationController['state'] &
   CronjobController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
@@ -94,4 +99,5 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   TransactionController['state'] &
-  SwapsController['state'];
+  SwapsController['state'] &
+  UserStorageController['state'];

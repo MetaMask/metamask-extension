@@ -2,7 +2,6 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -18,14 +17,8 @@ describe('Switch network - ', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
 
         // Validate the default network is Localhost 8545
@@ -35,19 +28,19 @@ describe('Switch network - ', function (this: Suite) {
 
         // Validate the switch network functionality to Ethereum Mainnet
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
         await switchToNetworkFlow(driver, 'Localhost 8545', true);
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
         await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum Mainnet
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
       },
     );
   });
