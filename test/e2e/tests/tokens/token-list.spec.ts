@@ -48,6 +48,7 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed();
         await assetListPage.importCustomToken(tokenAddress, symbol);
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
