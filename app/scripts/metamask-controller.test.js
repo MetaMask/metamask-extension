@@ -34,7 +34,7 @@ import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -1068,6 +1068,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1106,6 +1107,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1147,6 +1149,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1196,6 +1199,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:100:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1234,6 +1238,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1272,6 +1277,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1318,6 +1324,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1370,6 +1377,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:5:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1418,6 +1426,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1458,6 +1467,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1507,6 +1517,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1562,6 +1573,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },

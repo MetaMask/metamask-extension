@@ -1,8 +1,8 @@
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
-import * as Multichain from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
+import * as Multichain from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   CaveatTypes,
@@ -11,8 +11,8 @@ import {
 import { PermissionNames } from '../../../controllers/permissions';
 import { getPermissionsHandler } from './wallet-getPermissions';
 
-jest.mock('@metamask/multichain', () => ({
-  ...jest.requireActual('@metamask/multichain'),
+jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   getPermittedEthChainIds: jest.fn(),
 }));
 const MockMultichain = jest.mocked(Multichain);

@@ -2,7 +2,7 @@ import {
   Caip25CaveatValue,
   InternalScopesObject,
   InternalScopeString,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 
 /**
  * Returns a map containing key/value pairs for those that have been

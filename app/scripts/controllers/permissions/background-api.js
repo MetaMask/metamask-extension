@@ -10,7 +10,7 @@ import {
   setEthAccounts,
   getPermittedEthChainIds,
   setPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 
 export function getPermissionBackgroundApiMethods({

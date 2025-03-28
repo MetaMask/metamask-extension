@@ -77,6 +77,7 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
+import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
@@ -143,10 +144,25 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
+import {
+  hasProperty,
+  hexToBigInt,
+  toCaipChainId,
+  parseCaipAccountId,
+} from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+
+import {
+  multichainMethodCallValidatorMiddleware,
+  MultichainSubscriptionManager,
+  MultichainMiddlewareManager,
+  walletGetSession,
+  walletRevokeSession,
+  walletInvokeMethod,
+  MultichainApiNotifications,
+} from '@metamask/multichain-api-middleware';
 
 import {
   Caip25CaveatMutators,
@@ -156,13 +172,8 @@ import {
   getSessionScopes,
   setPermittedEthChainIds,
   setEthAccounts,
-  multichainMethodCallValidatorMiddleware,
-  MultichainSubscriptionManager,
-  MultichainMiddlewareManager,
-  walletGetSession,
-  walletRevokeSession,
-  walletInvokeMethod,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
+
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -245,6 +256,7 @@ import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import {
@@ -320,6 +332,8 @@ import {
   getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
+  getPermittedAccountsForScopesByOrigin,
+  getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -393,6 +407,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
+import { KnownSessionProperties } from './lib/rpc-method-middleware/handlers/wallet-createSession/constants';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 
@@ -1254,6 +1269,14 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
           ),
+        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:isSupportedScope',
+        ),
+        getNonEvmAccountAddresses: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:getSupportedAccounts',
+        ),
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications(),
@@ -1304,6 +1327,28 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.SubjectMetadataController,
       subjectCacheLimit: 100,
+    });
+
+    const multichainRouterMessenger = this.controllerMessenger.getRestricted({
+      name: 'MultichainRouter',
+      allowedActions: [
+        `SnapController:getAll`,
+        `SnapController:handleRequest`,
+        `${this.permissionController.name}:getPermissions`,
+        `AccountsController:listMultichainAccounts`,
+      ],
+      allowedEvents: [],
+    });
+
+    this.multichainRouter = new MultichainRouter({
+      messenger: multichainRouterMessenger,
+      // Binding the call to provide the selector only giving the controller the option to pass the operation
+      withSnapKeyring: this.keyringController.withKeyring.bind(
+        this.keyringController,
+        {
+          type: 'Snap Keyring',
+        },
+      ),
     });
 
     // account tracker watches balances, nonces, and any code at their address
@@ -2726,6 +2771,20 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
+    let lastSelectedSolanaAccountAddress;
+
+    if (process.env.MULTICHAIN_API) {
+      // this throws if there is no solana account... perhaps we should handle this better at the controller level
+      try {
+        lastSelectedSolanaAccountAddress =
+          this.accountsController.getSelectedMultichainAccount(
+            MultichainNetworks.SOLANA,
+          )?.address;
+      } catch {
+        // noop
+      }
+    }
+
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
@@ -2782,7 +2841,10 @@ export default class MetamaskController extends EventEmitter {
             origin,
             authorization,
           ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization);
+            const sessionScopes = getSessionScopes(authorization, {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+            });
             // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
             // then remove middleware and unsubscribe
             Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
@@ -2803,7 +2865,10 @@ export default class MetamaskController extends EventEmitter {
             origin,
             authorization,
           ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization);
+            const sessionScopes = getSessionScopes(authorization, {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+            });
 
             // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
             // then get the subscriptionManager going for that scope
@@ -2833,6 +2898,47 @@ export default class MetamaskController extends EventEmitter {
         },
         getAuthorizedScopesByOrigin,
       );
+      if (process.env.MULTICHAIN_API) {
+        this.controllerMessenger.subscribe(
+          `${this.accountsController.name}:selectedAccountChange`,
+          async (account) => {
+            if (
+              account.type === 'solana:data-account' &&
+              account.address !== lastSelectedSolanaAccountAddress
+            ) {
+              const originsWithSolanaAccountChangedNotifications =
+                getOriginsWithSessionProperty(
+                  this.permissionController.state,
+                  KnownSessionProperties.SolanaAccountChangedNotifications,
+                );
+
+              const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+                this.permissionController.state,
+                [
+                  MultichainNetworks.SOLANA,
+                  MultichainNetworks.SOLANA_DEVNET,
+                  MultichainNetworks.SOLANA_TESTNET,
+                ],
+              );
+
+              for (const [origin, accounts] of solanaAccounts.entries()) {
+                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                  const { address } = parseCaipAccountId(caipAccountId);
+                  return address;
+                });
+
+                if (
+                  parsedSolanaAddresses.includes(account.address) &&
+                  originsWithSolanaAccountChangedNotifications[origin]
+                ) {
+                  lastSelectedSolanaAccountAddress = account.address;
+                  this._notifySolanaAccountChange(origin, account.address);
+                }
+              }
+            }
+          },
+        );
+      }
     }
 
     this.controllerMessenger.subscribe(
@@ -5375,6 +5481,7 @@ export default class MetamaskController extends EventEmitter {
       {
         requiredScopes: {},
         optionalScopes: {},
+        sessionProperties: {},
         isMultichainOrigin: false,
       },
       [chainId],
@@ -5425,6 +5532,7 @@ export default class MetamaskController extends EventEmitter {
       {
         requiredScopes: {},
         optionalScopes: {},
+        sessionProperties: {},
         isMultichainOrigin: false,
       },
       [chainId],
@@ -5510,6 +5618,7 @@ export default class MetamaskController extends EventEmitter {
           accounts: [],
         },
       },
+      sessionProperties: {},
       isMultichainOrigin: false,
     };
 
@@ -5534,6 +5643,14 @@ export default class MetamaskController extends EventEmitter {
       },
     };
   }
+
+  getNonEvmSupportedMethods(scope) {
+    return this.controllerMessenger.call(
+      'MultichainRouter:getSupportedMethods',
+      scope,
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -6720,6 +6837,16 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:isSupportedScope',
+        ),
+        handleNonEvmRequestForOrigin: (params) =>
+          this.controllerMessenger.call('MultichainRouter:handleRequest', {
+            ...params,
+            origin,
+          }),
       }),
     );
 
@@ -6855,7 +6982,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // add new notification subscriptions for changed authorizations
-      const sessionScopes = getSessionScopes(caip25Caveat.value);
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      });
 
       // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
       // then get the subscriptionManager going for that scope
@@ -7009,7 +7138,6 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyConnections(origin, payload, apiType) {
     const connections = this.connections[origin];
-
     if (connections) {
       Object.values(connections).forEach((conn) => {
         if (apiType && conn.apiType !== apiType) {
@@ -7691,9 +7819,29 @@ export default class MetamaskController extends EventEmitter {
     this.notifyConnections(
       origin,
       {
-        method: NOTIFICATION_NAMES.sessionChanged,
+        method: MultichainApiNotifications.sessionChanged,
         params: {
-          sessionScopes: getSessionScopes(newAuthorization),
+          sessionScopes: getSessionScopes(newAuthorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          }),
+        },
+      },
+      API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+  async _notifySolanaAccountChange(origin, accountAddress) {
+    this.notifyConnections(
+      origin,
+      {
+        method: MultichainApiNotifications.walletNotify,
+        params: {
+          scope: MultichainNetworks.SOLANA,
+          notification: {
+            method: NOTIFICATION_NAMES.accountsChanged,
+            params: [accountAddress],
+          },
         },
       },
       API_TYPE.CAIP_MULTICHAIN,

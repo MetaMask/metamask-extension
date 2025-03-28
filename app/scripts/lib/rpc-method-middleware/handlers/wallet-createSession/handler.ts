@@ -12,12 +12,13 @@ import {
   NormalizedScopesObject,
   getSupportedScopeObjects,
   Caip25CaveatValue,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
   RequestedPermissions,
 } from '@metamask/permission-controller';
 import {
+  CaipChainId,
   Hex,
   isPlainObject,
   Json,
@@ -38,6 +39,7 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
+import { isKnownSessionPropertyValue } from './constants';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -59,6 +61,8 @@ import { GrantedPermissions } from '../types';
  * @param hooks.findNetworkClientIdByChainId - The hook that returns the networkClientId for a chainId.
  * @param hooks.requestPermissionsForOrigin - The hook that approves and grants requested permissions.
  * @param hooks.sendMetrics - The hook that tracks an analytics event.
+ * @param hooks.getNonEvmSupportedMethods - The hook that returns the supported methods for a non EVM scope.
+ * @param hooks.isNonEvmScopeSupported - The hook that returns true if a non EVM scope is supported.
  * @param hooks.metamaskState - The wallet state.
  * @param hooks.metamaskState.metaMetricsId - The analytics id.
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
@@ -82,6 +86,8 @@ async function walletCreateSessionHandler(
       payload: MetaMetricsEventPayload,
       options?: MetaMetricsEventOptions,
     ) => void;
+    getNonEvmSupportedMethods: (scope: CaipChainId) => string[];
+    isNonEvmScopeSupported: (scope: CaipChainId) => boolean;
     metamaskState: {
       metaMetricsId: string;
       permissionHistory: Record<string, unknown>;
@@ -99,14 +105,24 @@ async function walletCreateSessionHandler(
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
+  const filteredSessionProperties = Object.fromEntries(
+    Object.entries(sessionProperties ?? {}).filter(([key]) =>
+      isKnownSessionPropertyValue(key),
+    ),
+  );
+
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
     const requiredScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedRequiredScopes);
+      getSupportedScopeObjects(normalizedRequiredScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+      });
     const optionalScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedOptionalScopes);
+      getSupportedScopeObjects(normalizedOptionalScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+      });
 
     const networkClientExistsForChainId = (chainId: Hex) => {
       try {
@@ -120,16 +136,20 @@ async function walletCreateSessionHandler(
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       requiredScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
       optionalScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
@@ -149,12 +169,20 @@ async function walletCreateSessionHandler(
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
+      sessionProperties: filteredSessionProperties,
     };
 
     const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
       requestedCaip25CaveatValue,
       supportedEthAccounts,
     );
+
+    // Note that we do not verify non-evm accounts here. Instead we rely on
+    // the CAIP-25 caveat validator to throw an error about the requested
+    // accounts being invalid. Once the Approval UI supports displaying and selecting
+    // non-evm accounts and networks, we should add the non-evm account filtering
+    // logic to this handler so that unsupported/invalid non-evm accounts
+    // never make it into the approval request in the first place.
 
     const [grantedPermissions] = await hooks.requestPermissionsForOrigin({
       [Caip25EndowmentPermissionName]: {
@@ -176,7 +204,12 @@ async function walletCreateSessionHandler(
       throw rpcErrors.internal();
     }
 
-    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue);
+    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue, {
+      getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+    });
+
+    const { sessionProperties: approvedSessionProperties = {} } =
+      approvedCaip25CaveatValue;
 
     // TODO: Contact analytics team for how they would prefer to track this
     // first time connection to dapp will lead to no log in the permissionHistory
@@ -205,7 +238,7 @@ async function walletCreateSessionHandler(
 
     res.result = {
       sessionScopes,
-      sessionProperties,
+      sessionProperties: approvedSessionProperties,
     };
     return end();
   } catch (err) {
@@ -222,5 +255,7 @@ export const walletCreateSession = {
     requestPermissionsForOrigin: true,
     sendMetrics: true,
     metamaskState: true,
+    getNonEvmSupportedMethods: true,
+    isNonEvmScopeSupported: true,
   },
 };

@@ -4,11 +4,12 @@ import {
   Caip25EndowmentPermissionName,
   Caip25Authorization,
   NormalizedScopesObject,
-} from '@metamask/multichain';
-import * as Multichain from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
+import * as Multichain from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
+import { KnownSessionProperties } from './constants';
 
 jest.mock('../../../util', () => ({
   ...jest.requireActual('../../../util'),
@@ -16,8 +17,8 @@ jest.mock('../../../util', () => ({
 }));
 const MockUtil = jest.mocked(Util);
 
-jest.mock('@metamask/multichain', () => ({
-  ...jest.requireActual('@metamask/multichain'),
+jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
   getSessionScopes: jest.fn(),
@@ -91,6 +92,8 @@ const createMockedHandler = () => {
     },
   };
   const listAccounts = jest.fn().mockReturnValue([]);
+  const getNonEvmSupportedMethods = jest.fn().mockReturnValue([]);
+  const isNonEvmScopeSupported = jest.fn().mockReturnValue(false);
   const response = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -107,6 +110,8 @@ const createMockedHandler = () => {
       metamaskState,
       sendMetrics,
       listAccounts,
+      getNonEvmSupportedMethods,
+      isNonEvmScopeSupported,
     });
 
   return {
@@ -118,6 +123,8 @@ const createMockedHandler = () => {
     metamaskState,
     sendMetrics,
     listAccounts,
+    getNonEvmSupportedMethods,
+    isNonEvmScopeSupported,
     handler,
   };
 };
@@ -193,7 +200,7 @@ describe('wallet_createSession', () => {
   });
 
   it('filters the required scopesObjects', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, getNonEvmSupportedMethods } = createMockedHandler();
     MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {
         'eip155:1': {
@@ -206,17 +213,23 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(1, {
-      'eip155:1': {
-        methods: ['eth_chainId'],
-        notifications: ['accountsChanged', 'chainChanged'],
-        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
+      1,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
       },
-    });
+      {
+        getNonEvmSupportedMethods,
+      },
+    );
   });
 
   it('filters the optional scopesObjects', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, getNonEvmSupportedMethods } = createMockedHandler();
     MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {},
       normalizedOptionalScopes: {
@@ -229,17 +242,24 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(2, {
-      'eip155:1': {
-        methods: ['eth_chainId'],
-        notifications: ['accountsChanged', 'chainChanged'],
-        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
+      2,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
       },
-    });
+      {
+        getNonEvmSupportedMethods,
+      },
+    );
   });
 
   it('buckets the required scopes', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, getNonEvmSupportedMethods, isNonEvmScopeSupported } =
+      createMockedHandler();
     MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {
         'eip155:1': {
@@ -262,18 +282,21 @@ describe('wallet_createSession', () => {
         },
       },
       expect.objectContaining({
-        isChainIdSupported: expect.any(Function),
-        isChainIdSupportable: expect.any(Function),
+        isEvmChainIdSupported: expect.any(Function),
+        isEvmChainIdSupportable: expect.any(Function),
+        getNonEvmSupportedMethods,
+        isNonEvmScopeSupported,
       }),
     );
 
-    const isChainIdSupportedBody =
-      MockMultichain.bucketScopes.mock.calls[0][1].isChainIdSupported.toString();
-    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+    const isEvmChainIdSupportedBody =
+      MockMultichain.bucketScopes.mock.calls[0][1].isEvmChainIdSupported.toString();
+    expect(isEvmChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
   });
 
   it('buckets the optional scopes', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, getNonEvmSupportedMethods, isNonEvmScopeSupported } =
+      createMockedHandler();
     MockMultichain.validateAndNormalizeScopes.mockReturnValue({
       normalizedRequiredScopes: {},
       normalizedOptionalScopes: {
@@ -296,14 +319,16 @@ describe('wallet_createSession', () => {
         },
       },
       expect.objectContaining({
-        isChainIdSupported: expect.any(Function),
-        isChainIdSupportable: expect.any(Function),
+        isEvmChainIdSupported: expect.any(Function),
+        isEvmChainIdSupportable: expect.any(Function),
+        getNonEvmSupportedMethods,
+        isNonEvmScopeSupported,
       }),
     );
 
-    const isChainIdSupportedBody =
-      MockMultichain.bucketScopes.mock.calls[1][1].isChainIdSupported.toString();
-    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+    const isEvmChainIdSupportedBody =
+      MockMultichain.bucketScopes.mock.calls[1][1].isEvmChainIdSupported.toString();
+    expect(isEvmChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
   });
 
   it('gets a list of evm accounts in the wallet', async () => {
@@ -363,6 +388,7 @@ describe('wallet_createSession', () => {
                 },
               },
               isMultichainOrigin: true,
+              sessionProperties: {},
             },
           },
         ],
@@ -406,7 +432,7 @@ describe('wallet_createSession', () => {
     });
   });
 
-  it('returns the session ID, properties, and session scopes', async () => {
+  it('returns the known sessionProperties and approved session scopes', async () => {
     const { handler, response } = createMockedHandler();
     MockMultichain.getSessionScopes.mockReturnValue({
       'eip155:5': {
@@ -428,10 +454,7 @@ describe('wallet_createSession', () => {
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
-      sessionProperties: {
-        expiry: 'date',
-        foo: 'bar',
-      },
+      sessionProperties: {},
       sessionScopes: {
         'eip155:5': {
           methods: ['eth_chainId', 'net_version'],
@@ -447,6 +470,121 @@ describe('wallet_createSession', () => {
           methods: [],
           notifications: [],
           accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+        },
+      },
+    });
+  });
+
+  it('filters out unknown session properties', async () => {
+    const { handler, requestPermissionsForOrigin, listAccounts } =
+      createMockedHandler();
+    listAccounts.mockReturnValue([
+      { address: '0x1' },
+      { address: '0x3' },
+      { address: '0x4' },
+    ]);
+    MockMultichain.bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1337': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
+        },
+        supportableScopes: {},
+        unsupportableScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:100': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
+          },
+        },
+        supportableScopes: {},
+        unsupportableScopes: {},
+      });
+    await handler(baseRequest);
+    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {
+                'eip155:1337': {
+                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+                },
+              },
+              optionalScopes: {
+                'eip155:100': {
+                  accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                },
+              },
+              isMultichainOrigin: true,
+              sessionProperties: {},
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('preserves known session properties', async () => {
+    const { handler, response, requestPermissionsForOrigin } =
+      createMockedHandler();
+    requestPermissionsForOrigin.mockReturnValue([
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                optionalScopes: {
+                  'eip155:5': {
+                    accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+                    methods: ['eth_chainId', 'net_version'],
+                    notifications: ['accountsChanged', 'chainChanged'],
+                  },
+                },
+                sessionProperties: {
+                  [KnownSessionProperties.SolanaAccountChangedNotifications]:
+                    true,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+    MockMultichain.getSessionScopes.mockReturnValue({
+      'eip155:5': {
+        methods: ['eth_chainId', 'net_version'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+      },
+    });
+    await handler({
+      ...baseRequest,
+      params: {
+        ...baseRequest.params,
+        sessionProperties: {
+          [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
+        },
+      },
+    });
+
+    expect(response.result).toStrictEqual({
+      sessionProperties: {
+        [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
+      },
+      sessionScopes: {
+        'eip155:5': {
+          accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+          methods: ['eth_chainId', 'net_version'],
+          notifications: ['accountsChanged', 'chainChanged'],
         },
       },
     });

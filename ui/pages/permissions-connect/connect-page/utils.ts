@@ -5,7 +5,7 @@ import {
   Caip25EndowmentPermissionName,
   setEthAccounts,
   setPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 
 export type PermissionsRequest = Record<
   string,
@@ -27,6 +27,7 @@ export function getRequestedCaip25CaveatValue(
     )?.value ?? {
       optionalScopes: {},
       requiredScopes: {},
+      sessionProperties: {},
       isMultichainOrigin: false,
     }
   );

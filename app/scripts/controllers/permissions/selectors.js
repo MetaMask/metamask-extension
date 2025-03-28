@@ -2,8 +2,9 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
+  getPermittedAccountsForScopes,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { createSelector } from 'reselect';
 
 /**
@@ -43,6 +44,58 @@ export const getPermittedAccountsByOrigin = createSelector(
     }, new Map());
   },
 );
+
+/**
+ * Get the permitted accounts for a given origin and scope.
+ *
+ * @param {Record<string, Record<string, unknown>>} state - The PermissionController state
+ * @param {string[]} scopes - The scopes to get the permitted accounts for
+ * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scope
+ */
+export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
+  const subjects = getSubjects(state);
+
+  return Object.values(subjects).reduce((originToAccountsMap, subject) => {
+    const caveats =
+      subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+    const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+    if (caveat) {
+      const scopeAccounts = getPermittedAccountsForScopes(caveat.value, scopes);
+
+      if (scopeAccounts.length > 0) {
+        originToAccountsMap.set(subject.origin, scopeAccounts);
+      }
+    }
+    return originToAccountsMap;
+  }, new Map());
+};
+
+/**
+ * Get the origins with a given session property.
+ *
+ * @param state - The PermissionController state
+ * @param property - The property to check for
+ * @returns An object with keys of origins and values of session properties
+ */
+export const getOriginsWithSessionProperty = (state, property) => {
+  const subjects = getSubjects(state);
+  const result = {};
+
+  Object.values(subjects).forEach((subject) => {
+    const caveats =
+      subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+    const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+    const sessionProperty = caveat?.value?.sessionProperties?.[property];
+    if (sessionProperty !== undefined) {
+      result[subject.origin] = sessionProperty;
+    }
+  });
+
+  return result;
+};
 
 /**
  * Get the authorized CAIP-25 scopes for each subject, keyed by origin.
