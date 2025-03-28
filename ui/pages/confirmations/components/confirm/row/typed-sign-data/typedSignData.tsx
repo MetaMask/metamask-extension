@@ -8,7 +8,7 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
 import { parseSanitizeTypedDataMessage } from '../../../../utils';
-import { DataTree } from '../dataTree';
+import { DataTree, DataTreeData } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignData = ({
   data,
@@ -38,7 +38,7 @@ export const ConfirmInfoRowTypedSignData = ({
       </ConfirmInfoRow>
       <Box style={{ marginLeft: -8 }}>
         <DataTree
-          data={sanitizedMessage.value}
+          data={sanitizedMessage.value as DataTreeData}
           primaryType={primaryType}
           tokenDecimals={tokenDecimals}
           chainId={chainId}
