@@ -3,13 +3,7 @@ import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import {
-  DAPP_URL,
-  withFixtures,
-  WINDOW_TITLES,
-  openDapp,
-  tinyDelayMs,
-} from '../helpers';
+import { DAPP_URL, withFixtures, WINDOW_TITLES, openDapp } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
@@ -81,7 +75,7 @@ describe('Test Snap TxInsights', function () {
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
         await testDapp.clickERC721TransferFromButton();
-        await driver.delay(tinyDelayMs); // this is needed for the transaction to be processed
+        await driver.delayFirefox(1000); // this is needed for the transaction to be processed in firefox browser
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
         await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
