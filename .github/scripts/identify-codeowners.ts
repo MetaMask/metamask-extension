@@ -225,7 +225,7 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     const files = teamFiles[team];
     const changes = calculateTeamChanges(files);
 
-    // Add collapsible section with italic change statistics
+    // Add collapsible section with change statistics
     commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${changes.files} files, +${changes.additions} -${changes.deletions})</summary>\n\n`;
 
     // List files in a simplified, but properly-indented format
