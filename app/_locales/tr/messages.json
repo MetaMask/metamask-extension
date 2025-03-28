@@ -5821,9 +5821,6 @@
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Bu işlem size ekstra ücretlere mal olacaktı, bu yüzden bunu durdurduk. Paranız hala cüzdanınızda."
-  },
   "transactionFlowNetwork": {
     "message": "Ağ"
   },
