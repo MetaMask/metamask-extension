@@ -6,7 +6,7 @@ import {
   Button,
   Input,
 } from '@metamask/snaps-sdk/jsx';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import * as backgroundConnection from '../../../../store/background-connection';
 import { renderInterface, MOCK_INTERFACE_ID, MOCK_SNAP_ID } from './test-utils';
@@ -99,6 +99,26 @@ describe('SnapUIRenderer', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('supports the onCancel prop', () => {
+    const onCancel = jest.fn();
+    const { container, getByText } = renderInterface(
+      Container({
+        children: [
+          Box({ children: Text({ children: 'Hello world!' }) }),
+          Footer({ children: Button({ children: 'Foo' }) }),
+        ],
+      }),
+      { useFooter: true, onCancel },
+    );
+
+    const button = getByText('Cancel');
+    expect(button).toBeDefined();
+    expect(container).toMatchSnapshot();
+
+    fireEvent.click(button);
+    expect(onCancel).toHaveBeenCalled();
+  });
+
   it('supports interactive inputs', () => {
     const { container, getByRole } = renderInterface(
       Box({ children: Input({ name: 'input' }) }),
@@ -146,6 +166,33 @@ describe('SnapUIRenderer', () => {
     const input = getByRole('textbox');
     expect(input).toBeDefined();
     expect(input.value).toStrictEqual('bar');
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('re-focuses input after re-render', async () => {
+    const {
+      container,
+      getAllByRole,
+      getByRole,
+      updateInterface,
+      getRenderCount,
+    } = renderInterface(Box({ children: Input({ name: 'input' }) }));
+
+    const input = getByRole('textbox');
+    input.focus();
+    expect(input).toHaveFocus();
+
+    updateInterface(
+      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+    );
+
+    const inputs = getAllByRole('textbox');
+    expect(inputs).toHaveLength(2);
+
+    await waitFor(() => expect(inputs[0]).toHaveFocus());
+
+    expect(getRenderCount()).toBe(2);
 
     expect(container).toMatchSnapshot();
   });
