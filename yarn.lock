@@ -6291,6 +6291,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/sample-controllers@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/sample-controllers@npm:0.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+  peerDependencies:
+    "@metamask/network-controller": ^23.0.0
+  checksum: 10/016bf9f68117e2cd25b69d11a341a57c5783bdbb4de4e311e9b04d2db2ff8d078efffa4a7b3d206d8b4fffe96af914a9457b10d7eb3db3a8873fee94f031701c
+  languageName: node
+  linkType: hard
+
 "@metamask/scure-bip39@npm:^2.0.3, @metamask/scure-bip39@npm:^2.1.1":
   version: 2.1.1
   resolution: "@metamask/scure-bip39@npm:2.1.1"
@@ -27373,6 +27385,7 @@ __metadata:
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
+    "@metamask/sample-controllers": "npm:^0.1.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^26.0.0"

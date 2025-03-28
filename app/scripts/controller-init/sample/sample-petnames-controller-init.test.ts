@@ -1,20 +1,18 @@
 import { Hex } from '@metamask/utils';
+import type { SamplePetnamesControllerMessenger } from '@metamask/sample-controllers';
 import type { ControllerInitRequest } from '../types';
-import type {
-  SamplePetnamesControllerMessenger,
-  SamplePetnamesControllerState,
-} from '../../controllers/sample';
+import { buildControllerInitRequestMock } from '../test/utils';
 import { SamplePetnamesControllerInit } from './sample-petnames-controller-init';
 
-// Mock the controller class
-jest.mock('../../controllers/sample', () => ({
+// Mock the controller class from the package
+jest.mock('@metamask/sample-controllers', () => ({
   SamplePetnamesController: jest.fn().mockImplementation(() => ({
     assignPetname: jest.fn(),
   })),
 }));
 
 const { SamplePetnamesController } = jest.requireMock(
-  '../../controllers/sample',
+  '@metamask/sample-controllers',
 ) as { SamplePetnamesController: jest.Mock };
 
 describe('SamplePetnamesControllerInit', () => {
@@ -22,8 +20,8 @@ describe('SamplePetnamesControllerInit', () => {
   const mockControllerMessenger = {} as SamplePetnamesControllerMessenger;
   const mockPersistedState = {
     SamplePetnamesController: {
-      samplePetnamesByChainIdAndAddress: {},
-    } as Partial<SamplePetnamesControllerState>,
+      namesByChainIdAndAddress: {},
+    },
   };
 
   const mockControllerInstance = {
@@ -35,12 +33,15 @@ describe('SamplePetnamesControllerInit', () => {
    *
    * @returns A properly configured controller init request
    */
-  const createMockRequest = () => {
-    return {
-      controllerMessenger: mockControllerMessenger,
-      persistedState: mockPersistedState,
-    } as ControllerInitRequest<SamplePetnamesControllerMessenger>;
-  };
+  const createMockRequest =
+    (): ControllerInitRequest<SamplePetnamesControllerMessenger> => {
+      return {
+        ...buildControllerInitRequestMock(),
+        controllerMessenger: mockControllerMessenger,
+        persistedState: mockPersistedState,
+        initMessenger: undefined,
+      };
+    };
 
   /**
    * Sample test data for petname assignments

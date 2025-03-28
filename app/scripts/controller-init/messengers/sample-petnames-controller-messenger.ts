@@ -1,5 +1,5 @@
 import { ActionConstraint, Messenger } from '@metamask/base-controller';
-import { SamplePetnamesControllerMessenger } from '../../controllers/sample';
+import { SamplePetnamesControllerMessenger } from '@metamask/sample-controllers';
 
 type MessengerActions = ActionConstraint;
 

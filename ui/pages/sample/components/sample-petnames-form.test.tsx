@@ -45,7 +45,7 @@ describe('SamplePetnamesForm', () => {
     const mockStore = configureStore([]);
     return mockStore({
       metamask: {
-        samplePetnamesByChainIdAndAddress: {},
+        namesByChainIdAndAddress: {},
       },
     });
   };

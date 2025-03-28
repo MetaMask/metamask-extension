@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import {
   SamplePetnamesController,
   SamplePetnamesControllerMessenger,
-} from '../../controllers/sample';
+} from '@metamask/sample-controllers';
 import { ControllerInitFunction } from '../types';
 
 export const SamplePetnamesControllerInit: ControllerInitFunction<

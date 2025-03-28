@@ -4,44 +4,45 @@ import {
   getSamplePetnamesByChainIdAndAddress,
   getPetnamesForCurrentChain,
 } from './selectors';
+import { SamplePetnamesControllerState } from '@metamask/sample-controllers';
 
-const mockChainId = '0x1' as Hex;
+const mockAddress1 = '0xabc' as Hex;
+const mockAddress2 = '0xdef' as Hex;
 
+// Mock the networks selector
 jest.mock('../../../shared/modules/selectors/networks', () => ({
-  getCurrentChainId: () => mockChainId,
+  getCurrentChainId: () => '0x1',
 }));
 
 describe('sample-petnames-controller selectors', () => {
-  const mockAddress1 = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
-  const mockAddress2 = '0xabcdef1234567890abcdef1234567890abcdef12' as Hex;
-
-  const mockState = {
-    metamask: {
-      samplePetnamesByChainIdAndAddress: {
-        [mockChainId]: {
-          [mockAddress1]: 'TestName1',
-          [mockAddress2]: 'TestName2',
+  describe('selectors', () => {
+    const mockState = {
+      metamask: {
+        namesByChainIdAndAddress: {
+          '0x1': {
+            [mockAddress1]: 'Test Name 1',
+            [mockAddress2]: 'Test Name 2',
+          },
+          '0x2': {
+            '0x123': 'Test Name 3',
+          },
         },
-        '0x2': {
-          [mockAddress1]: 'TestNameOnOtherChain',
+        provider: {
+          chainId: '0x1',
         },
       },
-    },
-  } as unknown as MetaMaskReduxState;
+    } as unknown as MetaMaskReduxState;
 
-  describe('selectors', () => {
     it('should select the pet names by chain and address', () => {
       const result = getSamplePetnamesByChainIdAndAddress(mockState);
-      expect(result).toEqual(
-        mockState.metamask.samplePetnamesByChainIdAndAddress,
-      );
+      expect(result).toEqual(mockState.metamask.namesByChainIdAndAddress);
     });
 
     it('should select pet names for the current chain', () => {
       const result = getPetnamesForCurrentChain(mockState);
       expect(result).toEqual({
-        [mockAddress1]: 'TestName1',
-        [mockAddress2]: 'TestName2',
+        [mockAddress1]: 'Test Name 1',
+        [mockAddress2]: 'Test Name 2',
       });
     });
   });
