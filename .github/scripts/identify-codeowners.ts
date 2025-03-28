@@ -191,10 +191,9 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   const sortFn = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase());
   const sortedTeamOwners = teamOwners.sort(sortFn);
   const sortedIndividualOwners = individualOwners.sort(sortFn);
+  const sortedOwners = [...sortedTeamOwners, ...sortedIndividualOwners];
 
-  const sortedOwners= [...sortedTeamOwners, ...sortedIndividualOwners];
-
-  sortedOwners.forEach(team => {
+  sortedOwners.forEach((team, index) => {
     const emoji = teamEmojis[team] || '👨‍🔧';
     const files = teamFiles[team];
 
@@ -205,7 +204,12 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     const fileTree = buildFileTree(files);
     commentBody += renderFileTree(fileTree, 0);
 
-    commentBody += '</details>\n\n---\n';
+    commentBody += '</details>\n';
+
+    // Only add divider if not the last team
+    if (index < sortedOwners.length - 1) {
+      commentBody += '\n---\n';
+    }
   });
 
   return commentBody;
@@ -240,7 +244,11 @@ function buildFileTree(files: string[]): Record<string, any> {
 // Helper function to render the file tree with indentation
 function renderFileTree(node: Record<string, any>, depth: number): string {
   let result = '';
-  const indent = '  '.repeat(depth);
+
+  // Use different bullet styles for directories vs files
+  const getBullet = (isDir: boolean) => {
+    return isDir ? '◦' : '▪'; // Round bullet for directories, square for files
+  };
 
   // Sort keys to keep directories first, then files
   const keys = Object.keys(node).sort((a, b) => {
@@ -252,12 +260,16 @@ function renderFileTree(node: Record<string, any>, depth: number): string {
   });
 
   keys.forEach(key => {
-    if (node[key] === null) {
-      // File
-      result += `${indent}- ${key}\n`;
+    const isDir = node[key] !== null;
+    const indent = '  '.repeat(depth);
+    const bullet = getBullet(isDir);
+
+    if (!isDir) {
+      // File - use code formatting which appears as a different color in GitHub
+      result += `${indent}${bullet} \`${key}\`\n`;
     } else {
-      // Directory
-      result += `${indent}- **${key}/**\n`;
+      // Directory - with italic instead of bold
+      result += `${indent}${bullet} *${key}/*\n`;
       result += renderFileTree(node[key], depth + 1);
     }
   });
