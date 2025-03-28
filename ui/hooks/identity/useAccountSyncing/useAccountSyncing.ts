@@ -5,10 +5,7 @@ import {
   deleteAccountSyncingDataFromUserStorage,
   syncInternalAccountsWithUserStorage,
 } from '../../../store/actions';
-import {
-  selectIsAccountSyncingReadyToBeDispatched,
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { getUseExternalServices } from '../../../selectors';
 import {
   getCompletedOnboarding,
@@ -23,9 +20,6 @@ import { selectIsSignedIn } from '../../../selectors/identity/authentication';
  * @returns a boolean if internally we can perform account syncing or not.
  */
 export const useShouldDispatchAccountSyncing = () => {
-  const isAccountSyncingReadyToBeDispatched = useSelector(
-    selectIsAccountSyncingReadyToBeDispatched,
-  );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const basicFunctionality: boolean | undefined = useSelector(
     getUseExternalServices,
@@ -41,8 +35,7 @@ export const useShouldDispatchAccountSyncing = () => {
       isProfileSyncingEnabled &&
       isUnlocked &&
       isSignedIn &&
-      completedOnboarding &&
-      isAccountSyncingReadyToBeDispatched,
+      completedOnboarding,
   );
 
   return shouldDispatchProfileSyncing;
