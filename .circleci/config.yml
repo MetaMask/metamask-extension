@@ -174,7 +174,7 @@ workflows:
       - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-build
-      - test-e2e-chrome-vault-decryption:
+      - test-e2e-chrome-dist:
           filters:
             branches:
               only:
@@ -182,6 +182,14 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+      - test-e2e-firefox-dist:
+          filters:
+            branches:
+              only:
+                - main
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+          requires:
+            - prep-build-mv2
       - validate-source-maps:
           requires:
             - prep-build
@@ -213,7 +221,7 @@ workflows:
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
-            - test-e2e-chrome-vault-decryption
+            - test-e2e-chrome-dist
             - test-e2e-chrome-webpack
       - job-publish-prerelease:
           requires:
@@ -776,7 +784,7 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-vault-decryption:
+  test-e2e-chrome-dist:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone-and-enable-vnc
@@ -784,8 +792,29 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test:e2e:single
+          name: Vault decryptor tests
           command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
+          no_output_timeout: 5m
+      - run:
+          name: First install tests
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/first-install.spec.ts --browser chrome
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-firefox-dist:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: First install tests
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/first-install.spec.ts --browser firefox
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts

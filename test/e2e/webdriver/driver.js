@@ -24,6 +24,14 @@ const PAGES = {
 };
 
 /**
+ * Error messages used by driver methods.
+ */
+const errorMessages = {
+  waitUntilXWindowHandlesTimeout:
+    'waitUntilXWindowHandles timed out polling window handles',
+};
+
+/**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
@@ -1097,7 +1105,7 @@ class Driver {
     }
 
     throw new Error(
-      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
+      `${errorMessages.waitUntilXWindowHandlesTimeout}. Expected: ${x}, Actual: ${windowHandles.length}`,
     );
   }
 
@@ -1515,4 +1523,4 @@ function collectMetrics() {
   };
 }
 
-module.exports = { Driver, PAGES };
+module.exports = { Driver, PAGES, errorMessages };

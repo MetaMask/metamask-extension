@@ -260,6 +260,11 @@ type StateHooks = {
    * the `onInstalled` listener is called.
    */
   metamaskTriggerOnInstall?: () => void;
+  /**
+   * Reload the extension. This is used to trigger extension reload from a page context by E2E
+   * tests.
+   */
+  reloadExtension?: () => void;
 };
 
 export declare global {
