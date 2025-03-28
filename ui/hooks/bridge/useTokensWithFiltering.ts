@@ -11,6 +11,7 @@ import {
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -24,28 +25,20 @@ import {
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import {
-  BRIDGE_API_BASE_URL,
-  STATIC_METAMASK_BASE_URL,
-} from '../../../shared/constants/bridge';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import type {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 
 type FilterPredicate = (
   symbol: string,
   address?: string,
   tokenChainId?: string,
 ) => boolean;
-
-// Returns the image url for a caip-formatted asset
-const getAssetImageUrl = (assetId: string) =>
-  `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId?.replaceAll(
-    ':',
-    '/',
-  )}.png`;
 
 /**
  * Returns a token list generator that filters and sorts tokens in this order
@@ -149,7 +142,8 @@ export const useTokensWithFiltering = (
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
             sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ] ?? token.iconUrl,
+          ] ??
+          (token.iconUrl || token.icon || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
         string: '0',
@@ -159,11 +153,10 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? '',
+      image: token.iconUrl ?? token.icon ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: isSolanaChainId(chainId) ? token.assetId : token.address,
     };
   };
 
@@ -207,7 +200,7 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            if (isNativeAddress(token.address)) {
+            if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -220,7 +213,16 @@ export const useTokensWithFiltering = (
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ?? getAssetImageUrl(token.address),
+                  ] ??
+                  MULTICHAIN_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+                  ] ??
+                  (getNativeAssetForChainId(token.chainId)?.icon ||
+                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
+                    getAssetImageUrl(
+                      token.address,
+                      formatChainIdToCaip(token.chainId),
+                    )),
               };
             } else {
               yield {
@@ -235,7 +237,11 @@ export const useTokensWithFiltering = (
                 image:
                   (token.image ||
                     tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
-                  getAssetImageUrl(token.address),
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ) ??
+                  '',
               };
             }
           }
