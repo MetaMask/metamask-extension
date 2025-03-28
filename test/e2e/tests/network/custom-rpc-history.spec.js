@@ -279,7 +279,7 @@ describe('Custom RPC history', function () {
     );
   });
 
-  it.only('deletes a custom RPC', async function () {
+  it('deletes a custom RPC', async function () {
     const networkState = mockNetworkStateOld(
       {
         rpcUrl: 'http://127.0.0.1:8545/1',
