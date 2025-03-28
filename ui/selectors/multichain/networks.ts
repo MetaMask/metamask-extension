@@ -3,6 +3,7 @@ import {
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
   toMultichainNetworkConfiguration,
+  ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
@@ -51,6 +52,12 @@ export type MultichainNetworkConfigurationsByChainIdState = {
   };
 };
 
+export type NetworksWithActivityByAccountsState = {
+  metamask: {
+    networksWithActivity: ActiveNetworksByAddress;
+  };
+};
+
 /**
  * This type takes into account the state
  * of the multichain-network-controller and
@@ -61,7 +68,8 @@ export type MultichainNetworkConfigState =
     SelectedNetworkChainIdState &
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
-    ProviderConfigState;
+    ProviderConfigState &
+    NetworksWithActivityByAccountsState;
 
 // Selectors
 
@@ -187,3 +195,6 @@ export const getSelectedMultichainNetworkConfiguration = (
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
+
+export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
+  state.metamask.networksWithActivity;

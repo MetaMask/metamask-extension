@@ -128,6 +128,7 @@ const mockState: TestState = {
         status: NetworkStatus.Available,
       },
     },
+    networksWithActivity: {},
     internalAccounts: {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
       accounts: {
