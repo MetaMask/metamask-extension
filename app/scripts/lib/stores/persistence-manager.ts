@@ -1,9 +1,15 @@
 import log from 'loglevel';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
-import ExtensionStore from './extension-store';
-import ReadOnlyNetworkStore from './read-only-network-store';
+import type {
+  MetaMaskStateType,
+  MetaMaskStorageStructure,
+  BaseStore,
+  MetaData,
+} from './base-store';
+
+const STATE_LOCK = 'state-lock';
 
 /**
  * The PersistenceManager class serves as a high-level manager for handling
@@ -57,21 +63,19 @@ export class PersistenceManager {
    * includes a single key which is 'version' and contains the current version
    * number of the state tree.
    */
-  #metadata?: { version: number };
+  #metadata?: MetaData;
 
   #isExtensionInitialized: boolean = false;
 
-  #localStore: ExtensionStore | ReadOnlyNetworkStore;
+  #localStore: BaseStore;
 
-  constructor({
-    localStore,
-  }: {
-    localStore: ExtensionStore | ReadOnlyNetworkStore;
-  }) {
+  #vaultReference: string | null = null;
+
+  constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
   }
 
-  setMetadata(metadata: { version: number }) {
+  setMetadata(metadata: MetaData) {
     this.#metadata = metadata;
   }
 
@@ -79,36 +83,53 @@ export class PersistenceManager {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!this.#metadata) {
+    const meta = this.#metadata;
+    if (!meta) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
-    try {
-      await this.#localStore.set({ data: state, meta: this.#metadata });
-      if (this.#dataPersistenceFailing) {
-        this.#dataPersistenceFailing = false;
+    const keyringController = state.KeyringController as KeyringControllerState;
+    const newVaultReference = keyringController?.vault ?? null;
+
+    const vaultHasNotYetBeenCreated = !(
+      newVaultReference !== null && this.#vaultReference === null
+    );
+    await navigator.locks.request(STATE_LOCK, async () => {
+      try {
+        // atomically set all the keys
+        await this.#localStore.set({
+          data: state,
+          meta,
+          vaultHasNotYetBeenCreated,
+        });
+        this.#vaultReference = newVaultReference;
+        if (this.#dataPersistenceFailing) {
+          this.#dataPersistenceFailing = false;
+        }
+      } catch (err) {
+        if (!this.#dataPersistenceFailing) {
+          this.#dataPersistenceFailing = true;
+          captureException(err);
+        }
+        log.error('error setting state in local store:', err);
+      } finally {
+        this.#isExtensionInitialized = true;
       }
-    } catch (err) {
-      if (!this.#dataPersistenceFailing) {
-        this.#dataPersistenceFailing = true;
-        captureException(err);
-      }
-      log.error('error setting state in local store:', err);
-    } finally {
-      this.#isExtensionInitialized = true;
-    }
+    });
   }
 
-  async get() {
-    const result = await this.#localStore.get();
+  async get(): Promise<MetaMaskStorageStructure | null> {
+    return await navigator.locks.request(STATE_LOCK, async () => {
+      const result = await this.#localStore.get();
 
-    if (isEmpty(result)) {
-      this.#mostRecentRetrievedState = null;
-      return undefined;
-    }
-    if (!this.#isExtensionInitialized) {
-      this.#mostRecentRetrievedState = result;
-    }
-    return result;
+      if (isEmpty(result)) {
+        this.#mostRecentRetrievedState = null;
+        return undefined;
+      }
+      if (!this.#isExtensionInitialized) {
+        this.#mostRecentRetrievedState = result;
+      }
+      return result;
+    });
   }
 
   get mostRecentRetrievedState() {

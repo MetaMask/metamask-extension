@@ -480,9 +480,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.LoggingController,
     });
 
-    // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.persistanceManager;
-
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
     // observable state store

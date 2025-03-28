@@ -17,7 +17,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-
+import { MISSING_VAULT_ERROR } from '../../shared/constants/errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -86,12 +86,6 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const migrator = new Migrator({
-  migrations,
-  defaultVersion: process.env.WITH_STATE
-    ? FIXTURE_STATE_METADATA_VERSION
-    : null,
-});
 
 const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
@@ -141,22 +135,47 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-if (isFirefox) {
-  browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === 'install') {
-      browser.storage.session.set({ isFirstTimeInstall: true });
-    } else if (details.reason === 'update') {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    }
-  });
-} else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === 'install') {
-      global.sessionStorage.setItem('isFirstTimeInstall', true);
-    } else if (details.reason === 'update') {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-  });
+let onInstallProm;
+if (!isManifestV3) {
+  onInstallProm = globalThis.stateHooks.onInstallProm;
+} else {
+  onInstallProm = Promise.withResolvers();
+  function onStartup() {
+    browser.runtime.onStartup.removeListener(onStartup);
+    onInstallProm.resolve();
+  }
+  if (isFirefox) {
+    browser.runtime.onInstalled.addListener(async function (details) {
+      // if we got an `onInstalled`, we don't need to listen to onStartup any more
+      browser.runtime.onStartup.removeListener(onStartup);
+      if (details.reason === 'install') {
+        await browser.storage.session.set({ isFirstTimeInstall: true });
+        await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
+      } else if (details.reason === 'update') {
+        await browser.storage.session.set({ isFirstTimeInstall: false });
+      }
+      onInstallProm.resolve();
+    });
+  } else if (!isManifestV3) {
+    browser.runtime.onInstalled.addListener(async function (details) {
+      // if we got an `onInstalled`, we don't need to listen to onStartup any more
+      browser.runtime.onStartup.removeListener(onStartup);
+      if (details.reason === 'install') {
+        global.sessionStorage.setItem('isFirstTimeInstall', true);
+        await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
+      } else if (details.reason === 'update') {
+        global.sessionStorage.setItem('isFirstTimeInstall', false);
+      }
+      onInstallProm.resolve();
+    });
+  }
+  // `onStartup` doesn't fire in private browsing modes
+  if (browser.extension.inIncognitoContext) {
+    // so lets make sure we do eventually start up
+    setTimeout(() => onInstallProm.resolve(), 5000);
+  } else {
+    browser.runtime.onStartup.addListener(onStartup);
+  }
 }
 
 /**
@@ -354,6 +373,14 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+function stringifyError(error) {
+  return JSON.stringify({
+    message: error.message,
+    name: error.name,
+    stack: error.stack,
+  });
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -361,10 +388,23 @@ let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  try {
+    await isInitialized;
+    connectRemote(...args);
+  } catch (error) {
+    const port = args[0];
+
+    const _state = await localStore.get();
+    sentry?.captureException(error);
+
+    port.postMessage({
+      target: 'ui',
+      error: stringifyError(error),
+      metamaskState: JSON.stringify(_state),
+    });
+  }
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -444,9 +484,8 @@ async function initialize() {
   try {
     const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initData = await loadStateFromPersistence();
+    const initState = await loadStateFromPersistence();
 
-    const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
     let isFirstMetaMaskControllerSetup;
@@ -590,24 +629,51 @@ async function loadPhishingWarningPage() {
  * Migrates that data schema in case it was last loaded on an older version.
  *
  * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @throws {Error} If the vault is missing or if the migration fails.
  */
 export async function loadStateFromPersistence() {
-  // migrations
-  migrator.on('error', console.warn);
-
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
+  // make sure we have updated the `vaultHasNotYetBeenCreated` flag if needed
+  await onInstallProm.promise;
+
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData =
-    (await persistenceManager.get()) ||
-    migrator.generateInitialState(firstTimeState);
+  let preMigrationVersionedData = await persistenceManager.get();
+
+  const vaultDataPresent = Boolean(
+    preMigrationVersionedData?.data?.KeyringController?.vault,
+  );
+
+  if (vaultDataPresent === false) {
+    // so we don't have a vault... don't panic yet! there is a chance we aren't
+    // supposed to have one at this point.
+    // `vaultHasNotYetBeenCreated` can be `true`, `false`, or `undefined`. If it
+    // is `!== true`, we *should* have a vault... and now we can panic.
+    const weShouldHaveAVault =
+      preMigrationVersionedData.vaultHasNotYetBeenCreated !== true;
+    if (weShouldHaveAVault) {
+      throw new Error(MISSING_VAULT_ERROR);
+    }
+  }
+
+  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
+  }
+
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.WITH_STATE
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
+    console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
@@ -638,10 +704,10 @@ export async function loadStateFromPersistence() {
   persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  persistenceManager.set(versionedData.data);
+  await persistenceManager.set(versionedData.data);
 
   // return just the data
-  return versionedData;
+  return versionedData.data;
 }
 
 /**
@@ -800,7 +866,6 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -1334,8 +1399,8 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  await onInstall();
   try {
+    await onInstall();
     await initialize();
     if (process.env.IN_TEST) {
       // Send message to offscreen document
@@ -1351,6 +1416,7 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
