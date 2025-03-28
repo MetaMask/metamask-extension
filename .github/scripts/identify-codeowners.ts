@@ -253,8 +253,8 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
   dirs.sort(); // Sort directories alphabetically
 
   dirs.forEach(dir => {
-    // Add this directory - only italic with dots after slash
-    result += `${prefix}* *${dir}/..*\n`;
+    // Add this directory with square filled bullet and italic formatting
+    result += `${prefix}■ *${dir}/..*\n`;
 
     // Recursively process subdirectories with increased indentation
     result += renderSimpleDirectoryTree(node[dir], `${prefix}  `);
@@ -266,7 +266,8 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
     files.sort(); // Sort files alphabetically
 
     files.forEach(file => {
-      result += `${prefix}  * \`${file}\`\n`;
+      // Add files with round empty bullet
+      result += `${prefix}  ○ \`${file}\`\n`;
     });
   }
 
