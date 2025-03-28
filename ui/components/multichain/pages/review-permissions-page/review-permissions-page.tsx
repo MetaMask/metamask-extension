@@ -1,10 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  CaipAccountId,
+  CaipChainId,
+  parseCaipChainId,
+  NonEmptyArray,
+  parseCaipAccountId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { uniq } from 'lodash';
 import {
   AlignItems,
   BlockSize,
@@ -12,12 +18,12 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
+  getAllPermittedAccountsForSelectedTab,
+  getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
   getPermissionSubjects,
-  getPermittedAccountsForSelectedTab,
-  getPermittedChainsForSelectedTab,
   getShowPermittedNetworkToastOpen,
   getUpdatedAndSortedAccounts,
 } from '../../../../selectors';
@@ -52,7 +58,7 @@ import {
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -111,22 +117,34 @@ export const ReviewPermissions = () => {
     dispatch(hidePermittedNetworkToast());
   };
 
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfigurationsByCaipChainId = useSelector(
+    getAllNetworkConfigurationsByCaipChainId,
+  );
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(networkConfigurations).reduce(
+      Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          const caipChainId = chainId as CaipChainId;
+          const isTestNetwork = caipFormattedTestChains.includes(caipChainId);
+          (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
+            ...network,
+            caipChainId,
+          });
           return [nonTestNetworksList, testNetworksList];
         },
-        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+        [
+          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
+          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
+        ],
       ),
-    [networkConfigurations],
+    [networkConfigurationsByCaipChainId],
   );
+
+  // TODO: Fix this typing upstream?
   const connectedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+    getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
+  ) as CaipChainId[];
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -145,28 +163,86 @@ export const ReviewPermissions = () => {
     setShowNetworkToast(true);
   };
 
-  const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const evmAccounts: MergedInternalAccount[] = useMemo(() => {
-    return accounts.filter((account: InternalAccount) =>
-      isEvmAccountType(account.type),
-    );
-  }, [accounts]);
+  const allAccounts = useSelector(
+    getUpdatedAndSortedAccounts,
+  ) as MergedInternalAccount[];
 
-  const connectedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+  const allAccountsWithCaipAccountId = allAccounts.map((account) => {
+    // I hope we can reliably use the first scope to determine the namespace
+    const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+    return {
+      internalAccount: account,
+      caipAccountId:
+        `${namespace}:${reference}:${account.address}` as CaipAccountId,
+    };
+  });
 
-  const handleSelectAccountAddresses = (addresses: string[]) => {
-    if (addresses.length === 0) {
+  const _connectedAccountAddresses = useSelector((state) =>
+    getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  ) as CaipAccountId[];
+
+  // should this be at the selector level? :|
+  const connectedAccountAddresses = uniq(
+    _connectedAccountAddresses.map((caipAccountId) => {
+      const {
+        address,
+        chain: { namespace, reference },
+      } = parseCaipAccountId(caipAccountId);
+      if (namespace === KnownCaipNamespace.Eip155) {
+        // this is very hacky, but it works for now
+        return `${namespace}:0:${address}` as CaipAccountId;
+      }
+      return `${namespace}:${reference}:${address}` as CaipAccountId;
+    }),
+  );
+
+  const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
+    if (caipAccountIds.length === 0) {
       setShowDisconnectAllModal(true);
       return;
     }
 
+    // Temporarily pass only the address part of the caipAccountId until
+    // the rest of the UI has been refactored to work with CaipAccountIds
+    const addresses = caipAccountIds.map((caipAccountId) => {
+      const { address } = parseCaipAccountId(caipAccountId);
+      return address;
+    });
+
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
-    connectedAccountAddresses.forEach((address: string) => {
-      if (!addresses.includes(address)) {
-        dispatch(removePermittedAccount(activeTabOrigin, address));
+    connectedAccountAddresses.forEach((connectedAddress: string) => {
+      const parsedConnectedAddress = parseCaipAccountId(
+        connectedAddress as CaipAccountId,
+      );
+
+      const includesCaipAccountId = caipAccountIds.some((caipAccountId) => {
+        const parsedAddress = parseCaipAccountId(caipAccountId);
+
+        if (
+          parsedConnectedAddress.chain.namespace !==
+            parsedAddress.chain.namespace ||
+          parsedConnectedAddress.address !== parsedAddress.address
+        ) {
+          return false;
+        }
+
+        return (
+          parsedAddress.chain.reference === '0' ||
+          parsedAddress.chain.reference ===
+            parsedConnectedAddress.chain.reference
+        );
+      });
+
+      if (!includesCaipAccountId) {
+        // Temporarily pass only the address part of the caipAccountId until
+        // the rest of the UI has been refactored to work with CaipAccountIds
+        dispatch(
+          removePermittedAccount(
+            activeTabOrigin,
+            parsedConnectedAddress.address,
+          ),
+        );
       }
     });
 
@@ -177,6 +253,8 @@ export const ReviewPermissions = () => {
     setShowAccountToast(false);
     setShowNetworkToast(false);
   };
+
+  console.log({ connectedAccountAddresses });
 
   return (
     <Page
@@ -193,7 +271,7 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={evmAccounts}
+              accounts={allAccountsWithCaipAccountId}
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}

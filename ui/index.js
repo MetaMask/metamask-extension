@@ -6,6 +6,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
+import { parseCaipChainId, parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -24,11 +25,11 @@ import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getOriginOfCurrentTab,
-  getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
+  getAllPermittedAccountsForCurrentTab,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -129,10 +130,37 @@ export async function setupInitialStore(
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
+
+    // Not entirely sure if these changes are correct. The original logic kind of confuses me.
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress =
-      getSelectedInternalAccount(draftInitialState)?.address ?? '';
+      getAllPermittedAccountsForCurrentTab(draftInitialState);
+
+    const selectedAccount = getSelectedInternalAccount(draftInitialState);
+
+    let currentTabIsConnectedToSelectedAddress;
+    if (selectedAccount) {
+      currentTabIsConnectedToSelectedAddress =
+        permittedAccountsForCurrentTab.some((account) => {
+          const parsedPermittedAccount = parseCaipAccountId(account);
+
+          return selectedAccount.scopes.some((scope) => {
+            const { namespace, reference } = parseCaipChainId(scope);
+
+            if (
+              namespace !== parsedPermittedAccount.chain.namespace ||
+              selectedAccount.address !== parsedPermittedAccount.address
+            ) {
+              return false;
+            }
+
+            return (
+              reference === '0' ||
+              reference === parsedPermittedAccount.chain.reference
+            );
+          });
+        });
+    }
+
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -143,7 +171,7 @@ export async function setupInitialStore(
       unconnectedAccountAlertIsEnabled &&
       !unconnectedAccountAlertShownOrigins[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
-      !permittedAccountsForCurrentTab.includes(selectedAddress)
+      !currentTabIsConnectedToSelectedAddress
     ) {
       draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,

@@ -61,8 +61,8 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
-  getPermittedChainsForSelectedTab,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -170,11 +170,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
 
   const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -333,7 +333,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
 
     if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, hexChainId));
+      dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
       }

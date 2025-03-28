@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { CaipAccountId, CaipChainId } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,
@@ -27,16 +27,20 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 type Network = {
   name: string;
   chainId: string;
+  caipChainId: CaipChainId;
 };
 
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
-  accounts: MergedInternalAccount[];
-  onSelectAccountAddresses: (addresses: string[]) => void;
-  onSelectChainIds: (chainIds: Hex[]) => void;
-  selectedAccountAddresses: string[];
-  selectedChainIds: string[];
+  accounts: {
+    internalAccount: MergedInternalAccount;
+    caipAccountId: CaipAccountId;
+  }[];
+  onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
+  onSelectChainIds: (chainIds: CaipChainId[]) => void;
+  selectedAccountAddresses: CaipAccountId[];
+  selectedChainIds: CaipChainId[];
   isConnectFlow?: boolean;
   hideAllToasts?: () => void;
 };
@@ -59,14 +63,16 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
-  const selectedAccounts = accounts.filter(({ address }) =>
+  const selectedAccounts = accounts.filter(({ caipAccountId }) =>
     selectedAccountAddresses.some((selectedAccountAddress) =>
-      isEqualCaseInsensitive(selectedAccountAddress, address),
+      isEqualCaseInsensitive(selectedAccountAddress, caipAccountId),
     ),
   );
-  const selectedNetworks = allNetworks.filter(({ chainId }) =>
-    selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
+    selectedChainIds.includes(caipChainId),
   );
+
+  console.log({ allNetworks, selectedNetworks, selectedChainIds });
 
   const selectedChainIdsLength = selectedChainIds.length;
 
@@ -74,23 +80,25 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const accountMessageConnectedState =
     selectedAccounts.length === 1
       ? t('connectedWithAccountName', [
-          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
+          selectedAccounts[0].internalAccount.metadata.name ||
+            selectedAccounts[0].internalAccount.label,
         ])
       : t('connectedWithAccount', [selectedAccounts.length]);
   const accountMessageNotConnectedState =
     selectedAccounts.length === 1
       ? t('requestingForAccount', [
-          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
+          selectedAccounts[0].internalAccount.metadata.name ||
+            selectedAccounts[0].internalAccount.label,
         ])
       : t('requestingFor');
 
   const networkMessageConnectedState =
     selectedChainIdsLength === 1
-      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
+      ? t('connectedWithNetworkName', [selectedNetworks[0]?.name])
       : t('connectedWithNetwork', [selectedChainIdsLength]);
   const networkMessageNotConnectedState =
     selectedChainIdsLength === 1
-      ? t('requestingForNetwork', [selectedNetworks[0].name])
+      ? t('requestingForNetwork', [selectedNetworks[0]?.name])
       : t('requestingFor');
 
   const handleOpenAccountsModal = () => {
@@ -140,7 +148,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             // Why this difference?
             selectedAccounts.length === 1 ? (
               <AvatarAccount
-                address={selectedAccounts[0].address}
+                address={selectedAccounts[0].internalAccount.address}
                 size={AvatarAccountSize.Xs}
                 borderColor={BorderColor.transparent}
               />
