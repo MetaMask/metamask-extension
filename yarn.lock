@@ -6574,17 +6574,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^24.0.1":
-  version: 24.0.1
-  resolution: "@metamask/user-operation-controller@npm:24.0.1"
+"@metamask/user-operation-controller@npm:^31.0.0":
+  version: 31.0.0
+  resolution: "@metamask/user-operation-controller@npm:31.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/polling-controller": "npm:^12.0.3"
+    "@metamask/polling-controller": "npm:^13.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
@@ -6592,11 +6592,11 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/keyring-controller": ^19.0.0
-    "@metamask/network-controller": ^22.0.0
-    "@metamask/transaction-controller": ^45.0.0
-  checksum: 10/68ed675c959c44ea4316f193c8a7cbf515125dee1be60320e86b0dd042bc87212bb24c215291da20ca633171d7f820c7791aec4f160bbdd945075fa80032905f
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/transaction-controller": ^52.0.0
+  checksum: 10/a6ec2eb62c308b6e40f9e27105896c2e9ce938e1d6b4929b9a0b998d2b6a9c90b81f8cb3de1889632d591761738c8e5942975e59fbc09bb24889b7d2029987af
   languageName: node
   linkType: hard
 
@@ -27284,7 +27284,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
     "@metamask/transaction-controller": "npm:^52.2.0"
-    "@metamask/user-operation-controller": "npm:^24.0.1"
+    "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
     "@noble/hashes": "npm:^1.3.3"
