@@ -29,15 +29,7 @@ class SnapInstall {
 
   private readonly transactionType = '.snap-ui-renderer__text';
 
-  private readonly transactionFromAddress = {
-    css: 'p',
-    text: '0x5CfE7...6a7e1',
-  };
-
-  private readonly transactionToAddress = {
-    css: 'p',
-    text: '0x581c3...45947',
-  };
+  private readonly transactionAddress = '[data-testid="snap-ui-address"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -131,14 +123,12 @@ class SnapInstall {
     });
   }
 
-  async check_transactionFromAddress() {
-    console.log('Checking transaction from address');
-    await this.driver.waitForSelector(this.transactionFromAddress);
-  }
-
-  async check_transactionToAddress() {
-    console.log('Checking transaction to address');
-    await this.driver.waitForSelector(this.transactionToAddress);
+  async check_transactionAddress(address: string) {
+    console.log('Checking transaction address');
+    await this.driver.waitForSelector({
+      css: this.transactionAddress,
+      text: address,
+    });
   }
 
   async check_messageResultSpan(

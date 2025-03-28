@@ -77,8 +77,8 @@ describe('Test Snap TxInsights', function () {
         await testDapp.clickERC721TransferFromButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionFromAddress();
-        await snapInstall.check_transactionToAddress();
+        await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
+        await snapInstall.check_transactionAddress('0x581c3...45947');
         await snapInstall.check_transactionInsightsType('ERC-721');
       },
     );
@@ -116,8 +116,8 @@ describe('Test Snap TxInsights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
         // await snapInstall.check_transactionInsightsType('ERC-1155');
-        await snapInstall.check_transactionFromAddress();
-        await snapInstall.check_transactionToAddress();
+        await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
+        await snapInstall.check_transactionAddress('0x581c3...45947');
       },
     );
   });
