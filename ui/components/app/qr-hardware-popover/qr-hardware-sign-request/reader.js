@@ -17,7 +17,6 @@ const Reader = ({
   };
 
   const handleSuccess = async (ur) => {
-    console.error('handleSuccess', ur);
     if (ur.type === 'eth-signature') {
       const ethSignature = ETHSignature.fromCBOR(ur.cbor);
       const buffer = ethSignature.getRequestId();
