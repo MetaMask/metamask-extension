@@ -312,6 +312,7 @@
     "@metamask/remote-feature-flag-controller": "^1.6.0",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
+    "@metamask/sample-controllers": "^0.1.0",
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^19.0.0",
     "@metamask/signature-controller": "^26.0.0",

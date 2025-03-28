@@ -34,6 +34,7 @@ import { Controller as AuthenticationController } from '@metamask/profile-sync-c
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import { SamplePetnamesController } from '@metamask/sample-controllers';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -73,6 +74,7 @@ export type Controller =
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
     })
+  | SamplePetnamesController
   | UserStorageController;
 
 /**

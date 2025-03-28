@@ -25,6 +25,7 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
+import { getSamplePetnamesControllerMessenger } from './sample-petnames-controller-messenger';
 import {
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
@@ -45,6 +46,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SamplePetnamesController: {
+    getMessenger: getSamplePetnamesControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {
