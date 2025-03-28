@@ -25,6 +25,7 @@ import {
 import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -305,6 +306,7 @@ export const ImportSrp = ({
           disabled={!isValidSrp}
           loading={loading}
           onClick={async () => {
+            trace({ name: TraceName.ImportSrp });
             try {
               setLoading(true);
               await importWallet();
@@ -315,6 +317,9 @@ export const ImportSrp = ({
                 e instanceof Error ? e.message : 'An unknown error occurred',
               );
               setLoading(false);
+            } finally {
+              console.log('endTrace');
+              endTrace({ name: TraceName.ImportSrp });
             }
           }}
         >
