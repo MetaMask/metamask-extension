@@ -9,6 +9,7 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
+import type { ChainId } from '@metamask/bridge-controller';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -21,7 +22,6 @@ import {
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
@@ -35,6 +35,7 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getMemoizedUnapprovedConfirmations,
   getSelectedInternalAccount,
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -48,6 +49,10 @@ export default function useHandleTx() {
   );
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
   const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
+
+  const networkConfigurationIds = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
 
   const handleEvmTx = async ({
     txType,
@@ -84,6 +89,11 @@ export default function useHandleTx() {
       maxPriorityFeePerGas,
     };
 
+    const networkClientId =
+      networkConfigurationIds[
+        hexChainId as keyof typeof networkConfigurationIds
+      ];
+
     // For the bridge tx only
     // Need access to the txMeta.id right away so we can track it in BridgeStatusController,
     // so we call addTransaction instead of addTransactionAndWaitForPublish
@@ -91,11 +101,13 @@ export default function useHandleTx() {
     let txMeta: TransactionMeta;
     if (txType === TransactionType.bridge && shouldUseSmartTransaction) {
       txMeta = await addTransaction(finalTxParams, {
+        networkClientId,
         requireApproval: false,
         type: txType,
       });
     } else {
       txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
+        networkClientId,
         requireApproval: false,
         type: txType,
       });

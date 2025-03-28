@@ -1,5 +1,7 @@
 import {
   CHAIN_IDS,
+  type PublishBatchHookRequest,
+  type PublishBatchHookTransaction,
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
@@ -17,7 +19,9 @@ import {
 import {
   SmartTransactionHookMessenger,
   submitSmartTransactionHook,
+  submitBatchSmartTransactionHook,
 } from '../../lib/transaction/smart-transactions';
+import { getTransactionById } from '../../lib/transaction/util';
 import { trace } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
@@ -48,7 +52,6 @@ import { TransactionMetricsRequest } from '../../../../shared/types/metametrics'
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   TransactionControllerMessenger,
   TransactionControllerInitMessenger
 > = (request) => {
@@ -124,6 +127,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         );
       },
     },
+    publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
@@ -153,6 +157,15 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
           rawTx,
         ),
+      publishBatch: async (_request: PublishBatchHookRequest) =>
+        await publishBatchSmartTransactionHook({
+          transactionController: controller,
+          smartTransactionsController: smartTransactionsController(),
+          hookControllerMessenger:
+            initMessenger as SmartTransactionHookMessenger,
+          flatState: getFlatState(),
+          transactions: _request.transactions as PublishBatchHookTransaction[],
+        }),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
@@ -177,9 +190,14 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
+    updateBatchTransactions:
+      controller.updateBatchTransactions.bind(controller),
     updateEditableParams: controller.updateEditableParams.bind(controller),
     updatePreviousGasParams:
       controller.updatePreviousGasParams.bind(controller),
+    updateSelectedGasFeeToken:
+      controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
     updateTransactionSendFlowHistory:
@@ -189,7 +207,6 @@ function getApi(
 
 function getControllers(
   request: ControllerInitRequest<
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >,
@@ -240,6 +257,62 @@ function publishSmartTransactionHook(
     isHardwareWallet: isHardwareWallet(uiState),
     // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
     featureFlags,
+  });
+}
+
+function publishBatchSmartTransactionHook({
+  transactionController,
+  smartTransactionsController,
+  hookControllerMessenger,
+  flatState,
+  transactions,
+}: {
+  transactionController: TransactionController;
+  smartTransactionsController: SmartTransactionsController;
+  hookControllerMessenger: SmartTransactionHookMessenger;
+  flatState: ControllerFlatState;
+  transactions: PublishBatchHookTransaction[];
+}) {
+  // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
+  // Ideally all backend logic would instead rely on messenger event / state subscriptions.
+  const uiState = getUIState(flatState);
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const isSmartTransaction = getIsSmartTransaction(uiState);
+
+  if (!isSmartTransaction) {
+    // Will cause TransactionController to publish to the RPC provider as normal.
+    return undefined;
+  }
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const featureFlags = getFeatureFlagsByChainId(uiState);
+
+  // Get transactionMeta based on the last transaction ID
+  const lastTransaction = transactions[transactions.length - 1];
+  const transactionMeta = getTransactionById(
+    lastTransaction.id ?? '',
+    transactionController,
+  );
+
+  // If we couldn't find the transaction, we should handle that gracefully
+  if (!transactionMeta) {
+    console.warn(
+      `Publish batch hook: could not find transaction with id ${lastTransaction.id}`,
+    );
+    return undefined;
+  }
+
+  return submitBatchSmartTransactionHook({
+    transactions,
+    transactionController,
+    smartTransactionsController,
+    controllerMessenger: hookControllerMessenger,
+    isSmartTransaction,
+    isHardwareWallet: isHardwareWallet(uiState),
+    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
+    featureFlags,
+    transactionMeta,
   });
 }
 

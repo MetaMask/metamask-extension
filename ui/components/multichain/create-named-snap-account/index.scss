@@ -6,9 +6,11 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
+  // prevent overflow-x
+  max-width: 100%;
   width: 100%;
   flex-flow: column nowrap;
-  margin: 0 auto;
+  margin: 0 auto !important;
 
   @include design-system.screen-sm-max {
     height: $height-screen-sm-max;

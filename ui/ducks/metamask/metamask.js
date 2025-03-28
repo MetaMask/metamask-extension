@@ -246,6 +246,15 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
+export const getAllNfts = (state) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  return allNfts?.[selectedAddress] ?? [];
+};
+
 export const getNFTsByChainId = (state, chainId) => {
   const {
     metamask: { allNfts },

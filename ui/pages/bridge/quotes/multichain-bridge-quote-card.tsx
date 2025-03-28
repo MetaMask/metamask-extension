@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  isSolanaChainId,
+  BRIDGE_MM_FEE_RATE,
+  formatChainIdToHex,
+} from '@metamask/bridge-controller';
+import type { ChainId } from '@metamask/bridge-controller';
+import {
   Text,
   PopoverPosition,
   IconName,
@@ -14,6 +20,7 @@ import {
   getBridgeQuotes,
   getFromChain,
   getToChain,
+  getIsBridgeTx,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -34,18 +41,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import type { ChainId } from '../../../../shared/types/bridge';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = () => {
@@ -61,28 +63,29 @@ export const MultichainBridgeQuoteCard = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
+  const isBridgeTx = useSelector(getIsBridgeTx);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
   const getNetworkImage = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
+    if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
     }
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      `0x${decimalToHex(
+      formatChainIdToHex(
         chainId,
-      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   };
 
   const getNetworkName = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
-      return 'Solana';
+    if (isSolanaChainId(chainId)) {
+      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA];
     }
     return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-      `0x${decimalToHex(
+      formatChainIdToHex(
         chainId,
-      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ];
   };
 
@@ -123,32 +126,34 @@ export const MultichainBridgeQuoteCard = () => {
               </Text>
             </Row>
 
-            {/* Bridging */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {t('multichainQuoteCardBridgingLabel')}
-              </Text>
-              <Row gap={1}>
-                <AvatarNetwork
-                  name={fromChain?.name ?? ''}
-                  src={getNetworkImage(activeQuote.quote.srcChainId)}
-                  size={AvatarNetworkSize.Xs}
-                  backgroundColor={BackgroundColor.transparent}
-                />
-                <Text>{getNetworkName(activeQuote.quote.srcChainId)}</Text>
-                <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
-                <AvatarNetwork
-                  name={toChain?.name ?? ''}
-                  src={getNetworkImage(activeQuote.quote.destChainId)}
-                  size={AvatarNetworkSize.Xs}
-                  backgroundColor={BackgroundColor.transparent}
-                />
-                <Text>{getNetworkName(activeQuote.quote.destChainId)}</Text>
+            {/* Bridging - Only show when it's a bridge transaction */}
+            {isBridgeTx && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('multichainQuoteCardBridgingLabel')}
+                </Text>
+                <Row gap={1}>
+                  <AvatarNetwork
+                    name={fromChain?.name ?? ''}
+                    src={getNetworkImage(activeQuote.quote.srcChainId)}
+                    size={AvatarNetworkSize.Xs}
+                    backgroundColor={BackgroundColor.transparent}
+                  />
+                  <Text>{getNetworkName(activeQuote.quote.srcChainId)}</Text>
+                  <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
+                  <AvatarNetwork
+                    name={toChain?.name ?? ''}
+                    src={getNetworkImage(activeQuote.quote.destChainId)}
+                    size={AvatarNetworkSize.Xs}
+                    backgroundColor={BackgroundColor.transparent}
+                  />
+                  <Text>{getNetworkName(activeQuote.quote.destChainId)}</Text>
+                </Row>
               </Row>
-            </Row>
+            )}
 
             {/* Network Fee */}
             <Row justifyContent={JustifyContent.spaceBetween}>

@@ -34,6 +34,9 @@ import {
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  hasCreatedSolanaAccount,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
@@ -45,7 +48,7 @@ import {
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { useAsyncResult } from '../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
@@ -73,6 +76,7 @@ import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
+import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
@@ -167,6 +171,16 @@ export function AssetPickerModal({
   const tokenConversionRates = useMultichainSelector(getTokenExchangeRates);
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
   const currentCurrency = useSelector(getMultichainCurrentCurrency);
+
+  // Default to false before the code fence is enabled (will not render the prompt)
+  let needsSolanaAccount = false;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  // Check if we need to show the Solana account creation UI when Solana is selected
+  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
+  needsSolanaAccount =
+    !hasSolanaAccount && selectedNetwork.chainId === MultichainNetworks.SOLANA;
+  ///: END:ONLY_INCLUDE_IF
 
   const { address: selectedEvmAddress } = useSelector(
     getSelectedEvmInternalAccount,
@@ -535,43 +549,53 @@ export function AssetPickerModal({
           </Box>
         )}
         <Box className="modal-tab__wrapper">
-          <AssetPickerModalTabs {...tabProps}>
-            <React.Fragment key={TabName.TOKENS}>
-              <Search
-                searchQuery={searchQuery}
-                onChange={(value) => setSearchQuery(value)}
-                autoFocus={autoFocus}
-              />
-              <AssetList
-                network={network}
-                handleAssetChange={handleAssetChange}
-                asset={asset?.type === AssetType.NFT ? undefined : asset}
-                tokenList={filteredTokenList}
-                isTokenDisabled={getIsDisabled}
-                isTokenListLoading={isTokenListLoading}
-                assetItemProps={{
-                  isTitleNetworkName:
-                    // For src cross-chain swaps assets
-                    isMultiselectEnabled,
-                  isTitleHidden:
-                    // For dest cross-chain swaps assets
-                    !isSelectedNetworkActive,
-                }}
-              />
-            </React.Fragment>
-            <AssetPickerModalNftTab
-              key={TabName.NFTS}
-              searchQuery={searchQuery}
-              onClose={onClose}
-              renderSearch={() => (
+          {/* Show Solana account creation prompt if the destination is Solana but no Solana account exists */}
+          {needsSolanaAccount ? (
+            <SolanaAccountCreationPrompt
+              onSuccess={() => {
+                // Refresh the component after account creation
+                onClose();
+              }}
+            />
+          ) : (
+            <AssetPickerModalTabs {...tabProps}>
+              <React.Fragment key={TabName.TOKENS}>
                 <Search
-                  isNFTSearch
                   searchQuery={searchQuery}
                   onChange={(value) => setSearchQuery(value)}
+                  autoFocus={autoFocus}
                 />
-              )}
-            />
-          </AssetPickerModalTabs>
+                <AssetList
+                  network={network}
+                  handleAssetChange={handleAssetChange}
+                  asset={asset?.type === AssetType.NFT ? undefined : asset}
+                  tokenList={filteredTokenList}
+                  isTokenDisabled={getIsDisabled}
+                  isTokenListLoading={isTokenListLoading}
+                  assetItemProps={{
+                    isTitleNetworkName:
+                      // For src cross-chain swaps assets
+                      isMultiselectEnabled,
+                    isTitleHidden:
+                      // For dest cross-chain swaps assets
+                      !isSelectedNetworkActive,
+                  }}
+                />
+              </React.Fragment>
+              <AssetPickerModalNftTab
+                key={TabName.NFTS}
+                searchQuery={searchQuery}
+                onClose={onClose}
+                renderSearch={() => (
+                  <Search
+                    isNFTSearch
+                    searchQuery={searchQuery}
+                    onChange={(value) => setSearchQuery(value)}
+                  />
+                )}
+              />
+            </AssetPickerModalTabs>
+          )}
         </Box>
       </ModalContent>
     </Modal>
