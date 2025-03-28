@@ -1,12 +1,9 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import {
-  removeSlide,
-  getNetworksWithActivityByAccounts,
-} from '../../../store/actions';
+import { removeSlide } from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getSelectedAccountCachedBalance,
@@ -28,8 +25,6 @@ import {
   useCarouselManagement,
   ZERO_BALANCE,
 } from '../../../hooks/useCarouselManagement';
-import { getNetworksWithActivity } from '../../../selectors/multichain/networks';
-import { getInternalAccounts } from '../../../selectors/accounts';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -48,8 +43,6 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
-  const networksWithActivity = useSelector(getNetworksWithActivity);
-  const accounts = useSelector(getInternalAccounts);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -114,13 +107,6 @@ export const AccountOverviewLayout = ({
     },
     [hasRendered, trackEvent],
   );
-
-  useEffect(() => {
-    dispatch(getNetworksWithActivityByAccounts(accounts));
-  }, [dispatch, accounts]);
-
-  console.log('networks /w activity', networksWithActivity);
-  console.log('accounts:', accounts);
 
   return (
     <>

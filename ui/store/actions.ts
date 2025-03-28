@@ -2633,9 +2633,7 @@ export function setActiveNetworkWithError(
   };
 }
 
-export function getNetworksWithActivityByAccounts(
-  addresses: InternalAccount[],
-): ThunkAction<
+export function getNetworksWithActivityByAccounts(): ThunkAction<
   Promise<NetworkConfiguration[]>,
   MetaMaskReduxState,
   unknown,
@@ -2646,7 +2644,6 @@ export function getNetworksWithActivityByAccounts(
     try {
       return await submitRequestToBackground(
         'getNetworksWithActivityByAccounts',
-        [addresses],
       );
     } catch (error) {
       logErrorWithMessage(error);
