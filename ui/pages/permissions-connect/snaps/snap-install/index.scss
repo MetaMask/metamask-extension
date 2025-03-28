@@ -1,8 +1,7 @@
 @use "design-system";
 
 .snap-install {
-  border: 1px solid var(--color-border-muted);
-  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  box-shadow: none;
 
   &__content {
     position: relative;

@@ -135,12 +135,9 @@ class SettingsPage extends PureComponent {
 
     return (
       <div
-        className={classnames(
-          'main-container main-container--has-shadow settings-page',
-          {
-            'settings-page--selected': currentPath !== SETTINGS_ROUTE,
-          },
-        )}
+        className={classnames('main-container settings-page', {
+          'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+        })}
       >
         <Box
           className="settings-page__header"

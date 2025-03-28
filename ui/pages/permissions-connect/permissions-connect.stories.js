@@ -1,10 +1,8 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { Box } from '../../components/component-library';
 import { PermissionPageContainerContent } from '../../components/app/permission-page-container';
 import PermissionsConnectFooter from '../../components/app/permissions-connect-footer';
 import { PageContainerFooter } from '../../components/ui/page-container';
-import { BackgroundColor } from '../../helpers/constants/design-system';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import ChooseAccount from './choose-account';
 
@@ -77,10 +75,7 @@ export const PermissionPageContainerComponent = () => {
           eth_accounts: true,
         }}
       />
-      <Box
-        className="permission-approval-container__footers"
-        backgroundColor={BackgroundColor.backgroundAlternative}
-      >
+      <div className="permission-approval-container__footers">
         <PermissionsConnectFooter />
         <PageContainerFooter
           cancelButtonType="default"
@@ -88,7 +83,7 @@ export const PermissionPageContainerComponent = () => {
           submitText="connect"
           buttonSizeLarge={false}
         />
-      </Box>
+      </div>
     </div>
   );
 };

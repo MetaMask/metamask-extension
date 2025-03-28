@@ -6344,9 +6344,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.2.0":
-  version: 16.2.0
-  resolution: "@metamask/smart-transactions-controller@npm:16.2.0"
+"@metamask/smart-transactions-controller@npm:^16.3.0":
+  version: 16.3.0
+  resolution: "@metamask/smart-transactions-controller@npm:16.3.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6368,7 +6368,7 @@ __metadata:
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/3cf74a5ab01ce62e32d0c006d1519bdaccf3252636d83be9537c915caba049e151d981b74a58e4a1122defcf6a1d13d689d53b8f3cbbc31870d2896fa43a5b31
+  checksum: 10/0dc4fc7ce58c45af6598b8209646e8ce1eff7f31fc3fd7abe6ceae5d3ead9e4eafa7445eff6ecdc2b606fea9af30658adf5e2e15fce3bdbfdcee41bceb31795e
   languageName: node
   linkType: hard
 
@@ -8117,7 +8117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^8.33.1":
+"@sentry/browser@npm:8.33.1":
   version: 8.33.1
   resolution: "@sentry/browser@npm:8.33.1"
   dependencies:
@@ -8129,6 +8129,21 @@ __metadata:
     "@sentry/types": "npm:8.33.1"
     "@sentry/utils": "npm:8.33.1"
   checksum: 10/085717b19c89184fad0c9e17dee679401ff87616678f952d91afff574ebcc56114845c216bbbd7b81c93d54c2a42b3db4232af1c707843424cdd6800a99030a5
+  languageName: node
+  linkType: hard
+
+"@sentry/browser@patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch":
+  version: 8.33.1
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch::version=8.33.1&hash=ee8496"
+  dependencies:
+    "@sentry-internal/browser-utils": "npm:8.33.1"
+    "@sentry-internal/feedback": "npm:8.33.1"
+    "@sentry-internal/replay": "npm:8.33.1"
+    "@sentry-internal/replay-canvas": "npm:8.33.1"
+    "@sentry/core": "npm:8.33.1"
+    "@sentry/types": "npm:8.33.1"
+    "@sentry/utils": "npm:8.33.1"
+  checksum: 10/58b130febb3dd8c533334e027f387b6aabdbab8d625244aee4ccbeb86fa43bd7631c67e5dd8debba807002d0ecc7e2363e4aa6124b4fd0e9ff5820ae1b2b99d4
   languageName: node
   linkType: hard
 
@@ -27376,7 +27391,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^26.0.0"
-    "@metamask/smart-transactions-controller": "npm:^16.2.0"
+    "@metamask/smart-transactions-controller": "npm:^16.3.0"
     "@metamask/snaps-controllers": "npm:^11.1.0"
     "@metamask/snaps-execution-environments": "npm:^7.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
@@ -27401,7 +27416,7 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@sentry/browser": "npm:^8.33.1"
+    "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"

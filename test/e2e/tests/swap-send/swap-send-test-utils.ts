@@ -56,6 +56,11 @@ export class SwapSendPage {
       );
       await f.press(i);
     }
+    // Search input is debounced, so we need to wait for the token list to update
+    await this.driver.elementCountBecomesN(
+      '[data-testid="multichain-token-list-item"]',
+      1,
+    );
     // Verify that only matching tokens are listed
     assert.equal(
       (
