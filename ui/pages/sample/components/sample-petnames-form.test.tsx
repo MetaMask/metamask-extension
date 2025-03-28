@@ -1,16 +1,14 @@
 import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { useSamplePetnames } from '../../../ducks/sample-petnames';
-import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
-import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
 import {
   FormValues,
   useSamplePetnamesForm,
 } from '../hooks/useSamplePetnamesForm';
 import { SamplePetnamesForm } from './sample-petnames-form';
-import { Hex } from '@metamask/utils';
 
 // Mock all external dependencies
 jest.mock('../../../ducks/sample-petnames');
