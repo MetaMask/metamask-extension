@@ -197,11 +197,15 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     const emoji = teamEmojis[team] || '👨‍🔧';
     const files = teamFiles[team];
 
-    commentBody += `\n${emoji} **${team}** (${files.length} files)\n`;
+    // Add collapsible section using details/summary HTML tags
+    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${files.length} files)</summary>\n\n`;
 
     // List files in a simplified, but properly-indented format
     const dirTree = buildSimpleDirectoryTree(files);
     commentBody += renderSimpleDirectoryTree(dirTree, '');
+
+    // Close the details tag
+    commentBody += `</details>\n`;
 
     // Only add divider if not the last team
     if (index < sortedOwners.length - 1) {
@@ -253,8 +257,8 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
   dirs.sort(); // Sort directories alphabetically
 
   dirs.forEach(dir => {
-    // Add this directory with square filled bullet and italic formatting
-    result += `${prefix}■ *${dir}/..*\n`;
+    // Add this directory with proper Markdown list indentation (using -)
+    result += `${prefix}- 📁 *${dir}/*\n`;
 
     // Recursively process subdirectories with increased indentation
     result += renderSimpleDirectoryTree(node[dir], `${prefix}  `);
@@ -266,8 +270,8 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
     files.sort(); // Sort files alphabetically
 
     files.forEach(file => {
-      // Add files with round empty bullet
-      result += `${prefix}  ○ \`${file}\`\n`;
+      // Add files with proper Markdown list indentation (using -)
+      result += `${prefix}  - 📄 \`${file}\`\n`;
     });
   }
 
