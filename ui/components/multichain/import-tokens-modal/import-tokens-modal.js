@@ -111,7 +111,7 @@ import { NetworkSelectorCustomImport } from '../../app/import-token/network-sele
 import { getImageForChainId } from '../../../selectors/multichain';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
-import ImportTokensModalConfirm from './import-tokens-modal-confirm';
+import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
   // Displays the import token modal

@@ -77,9 +77,7 @@ export default function TokenSearch({
   };
 
   useEffect(() => {
-    // When the token network filter changes, reset the search query.
-    handleSearch('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    clear();
   }, [isTokenNetworkFilterEqualCurrentNetwork]);
 
   return (

@@ -28,7 +28,7 @@ import TokenBalance from '../../ui/token-balance/token-balance';
 import { I18nContext } from '../../../contexts/i18n';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
-export default function ImportTokensModalConfirm({ networkFilter }) {
+export const ImportTokensModalConfirm = ({ networkFilter }) => {
   const t = useContext(I18nContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
@@ -118,7 +118,7 @@ export default function ImportTokensModalConfirm({ networkFilter }) {
       </Box>
     </Box>
   );
-}
+};
 
 ImportTokensModalConfirm.propTypes = {
   networkFilter: PropTypes.object.isRequired,

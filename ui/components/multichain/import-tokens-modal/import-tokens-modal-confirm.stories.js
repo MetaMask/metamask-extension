@@ -4,7 +4,7 @@ import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import ImportTokensModalConfirm from './import-tokens-modal-confirm';
+import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const createStore = (
   chainId = CHAIN_IDS.MAINNET,
