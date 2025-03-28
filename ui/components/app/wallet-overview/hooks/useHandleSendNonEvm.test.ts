@@ -1,4 +1,3 @@
-import { useHandleSendNonEvm } from './useHandleSendNonEvm';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   sendMultichainTransaction,
@@ -6,6 +5,7 @@ import {
 } from '../../../../store/actions';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
+import { useHandleSendNonEvm } from './useHandleSendNonEvm';
 
 jest.mock('../../../../store/actions', () => ({
   sendMultichainTransaction: jest.fn(),
@@ -68,7 +68,7 @@ const mockState = {
 };
 
 describe('useHandleSendNonEvm', () => {
-  it('should throw an error if the selected account has no snap metadata', async () => {
+  it('throws an error if the selected account has no snap metadata', async () => {
     const mockStateWithoutSnapMetadata = {
       metamask: {
         ...mockState.metamask,
@@ -98,7 +98,7 @@ describe('useHandleSendNonEvm', () => {
     );
   });
 
-  it('should throw an error if the selected account is not a Snap account', async () => {
+  it('throws an error if the selected account is not a Snap account', async () => {
     const mockStateWithoutSnapMetadata = {
       metamask: {
         ...mockState.metamask,
@@ -132,7 +132,7 @@ describe('useHandleSendNonEvm', () => {
     );
   });
 
-  it('should restore the previous tab in case of error', async () => {
+  it('restores the previous tab in case of error with the snap', async () => {
     (sendMultichainTransaction as jest.Mock).mockRejectedValue(
       new Error('Error'),
     );
@@ -179,7 +179,7 @@ describe('useHandleSendNonEvm', () => {
 
   describe('when a caipAssetType is not provided', () => {
     describe('and the selected account has a native asset', () => {
-      it("should return the chain's native asset and push the confirmation page in history", async () => {
+      it("returns the chain's native asset and pushes the confirmation page in history", async () => {
         const { result } = renderHookWithProvider(
           () => useHandleSendNonEvm(),
           mockState,
@@ -204,7 +204,7 @@ describe('useHandleSendNonEvm', () => {
     });
 
     describe('and the selected account has no native asset', () => {
-      it('should throw an error', async () => {
+      it('throws an error', async () => {
         const mockStateWithoutNativeAsset = {
           metamask: {
             ...mockState.metamask,
