@@ -32,7 +32,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -96,7 +96,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -162,7 +162,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
