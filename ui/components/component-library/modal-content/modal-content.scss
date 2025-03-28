@@ -30,6 +30,10 @@
   &__dialog {
     --modal-content-size: var(--size, 360px);
 
+    // modal-dialog-slide-up animation may get stuck and set overflow-y to hidden
+    // Adding !important is a hack to override the style set by the animation
+    // @see {@link https://github.com/MetaMask/metamask-extension/issues/31405}
+    overflow-y: auto! important;
     max-height: 100%;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
