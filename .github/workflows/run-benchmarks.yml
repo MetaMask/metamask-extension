@@ -21,7 +21,8 @@ jobs:
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
-      ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
+      BENCHMARK_OR_TEST: ${{ matrix.buildType == 'webpack' && 'benchmark' || 'test' }}
+      ARTIFACT_NAME: prep-build-${{ BENCHMARK_OR_TEST }}-${{ matrix.buildType }}-${{ matrix.browser }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
     steps:
       - name: Checkout and setup environment

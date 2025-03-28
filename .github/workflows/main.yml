@@ -105,9 +105,7 @@ jobs:
         with:
           is-high-risk-environment: false
 
-      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --browser=firefox --lockdown --sentry --snow --env production
-        env:
-          SEGMENT_PROD_WRITE_KEY: '-'
+      - run: yarn build:test:webpack
 
       - name: Upload artifact prep-build-test-webpack-chrome
         uses: actions/upload-artifact@v4
@@ -119,6 +117,32 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: prep-build-test-webpack-firefox
+          path: ./dist/**/firefox # it's really in dist/firefox, but the ** is there so that it's uploaded relative to `dist`
+
+  prep-build-benchmark-webpack:
+    needs:
+      - prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --browser=firefox --lockdown --sentry --snow --env production
+        env:
+          SEGMENT_PROD_WRITE_KEY: 'FAKE'
+
+      - name: Upload artifact prep-build-benchmark-webpack-chrome
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-benchmark-webpack-chrome
+          path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
+
+      - name: Upload artifact prep-build-benchmark-webpack-firefox
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-benchmark-webpack-firefox
           path: ./dist/**/firefox # it's really in dist/firefox, but the ** is there so that it's uploaded relative to `dist`
 
   prep-build-dist-browserify:
@@ -138,7 +162,7 @@ jobs:
       # GHA does not allow the : ? ternary operator, you must write && ||
       - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
         env:
-          INFURA_PROJECT_ID: '-'
+          INFURA_PROJECT_ID: 'FAKE'
 
       - name: Upload artifact prep-build-dist-browserify-chrome
         uses: actions/upload-artifact@v4
@@ -156,7 +180,7 @@ jobs:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - prep-build-test-browserify
-      - prep-build-test-webpack
+      - prep-build-benchmark-webpack
     permissions:
       contents: read
       # id-token permission is required for uploading to s3

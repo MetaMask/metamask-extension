@@ -29,7 +29,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: prep-build-test-webpack-chrome
-      build-command: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+      build-command: yarn build:test:webpack
       test-command: yarn test:e2e:chrome:webpack
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
@@ -71,25 +71,48 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       # GHA does not allow the : ? ternary operator, you must write && ||
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: INFURA_PROJECT_ID='FAKE' ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
 
   test-e2e-swap-playwright:
     runs-on: ubuntu-latest
+    container:
+      image: cimg/node:22.14-browsers
     continue-on-error: true # soft launch
     steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
+      # not installed by checkout-and-setup when cache is restored
+      - name: Install anvil
+        run: yarn foundryup
+
       - name: Install Chromium
         run: yarn playwright install chromium
 
-      - name: Run Swap E2E tests
+      - name: Download build artifact
+        id: download-build-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: prep-build-dist-browserify-chrome
+          path: ./dist/
+
+      - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
+        if: ${{ steps.download-build-artifact.outcome == 'failure' }}
         env:
-          HEADLESS: true
-        run: yarn test:e2e:swap
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          INFURA_PROJECT_ID: 'FAKE'
+
+      - name: Run Swap E2E tests
+        run: xvfb-run yarn test:e2e:swap
 
       - name: Upload test reports
         if: ${{ !cancelled() }}
