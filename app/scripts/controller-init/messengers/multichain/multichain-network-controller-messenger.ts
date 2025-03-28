@@ -3,11 +3,17 @@ import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts
 import {
   type NetworkControllerSetActiveNetworkAction,
   type NetworkControllerGetStateAction,
+  type NetworkControllerRemoveNetworkAction,
+  type NetworkControllerGetSelectedChainIdAction,
+  type NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
 
 type Actions =
+  | NetworkControllerGetStateAction
   | NetworkControllerSetActiveNetworkAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerRemoveNetworkAction
+  | NetworkControllerGetSelectedChainIdAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 
 type Events = AccountsControllerSelectedAccountChangeEvent;
 
@@ -30,6 +36,9 @@ export function getMultichainNetworkControllerMessenger(
     allowedActions: [
       'NetworkController:setActiveNetwork',
       'NetworkController:getState',
+      'NetworkController:removeNetwork',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getSelectedChainId',
     ],
     allowedEvents: ['AccountsController:selectedAccountChange'],
   });
