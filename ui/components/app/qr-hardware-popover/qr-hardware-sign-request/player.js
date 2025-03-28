@@ -12,18 +12,22 @@ import {
 import { PageContainerFooter } from '../../../ui/page-container';
 import { Text, Box } from '../../../component-library';
 
+// QR code configuration constants to help with memory optimization
+const QR_FRAGMENT_SIZE = 400;
+const QR_REFRESH_RATE = 250;
+const QR_CODE_SIZE = 225;
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   const t = useI18nContext();
   const urEncoder = useMemo(
-    // For NGRAVE ZERO support please keep to a maximum fragment size of 200
-    () => new UREncoder(new UR(Buffer.from(cbor, 'hex'), type), 200),
+    () =>
+      new UREncoder(new UR(Buffer.from(cbor, 'hex'), type), QR_FRAGMENT_SIZE),
     [cbor, type],
   );
   const [currentQRCode, setCurrentQRCode] = useState(urEncoder.nextPart());
   useEffect(() => {
     const id = setInterval(() => {
       setCurrentQRCode(urEncoder.nextPart());
-    }, 100);
+    }, QR_REFRESH_RATE);
     return () => {
       clearInterval(id);
     };
@@ -49,7 +53,7 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
             backgroundColor: 'var(--qr-code-white-background)',
           }}
         >
-          <QRCodeSVG value={currentQRCode.toUpperCase()} size={250} />
+          <QRCodeSVG value={currentQRCode.toUpperCase()} size={QR_CODE_SIZE} />
         </div>
       </Box>
       <Box paddingBottom={4} paddingLeft={4} paddingRight={4}>
