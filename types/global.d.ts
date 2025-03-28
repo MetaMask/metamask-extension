@@ -263,6 +263,10 @@ export declare global {
 
   var stateHooks: StateHooks;
 
+  // Used in `app-init.js` and `background.js` to trigger install event
+  var __metamaskWasJustInstalled: boolean | undefined;
+  var __metamaskTriggerOnInstall: (() => void) | undefined;
+
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
