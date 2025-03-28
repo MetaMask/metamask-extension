@@ -1,7 +1,7 @@
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import {
   ERC20_DEFAULT_DECIMALS,
   parseTokenDetailDecimals,

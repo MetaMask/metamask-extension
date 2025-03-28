@@ -6,13 +6,17 @@ import {
 } from '@metamask/approval-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { NotificationListUpdatedEvent } from '@metamask/notification-services-controller/notification-services';
+import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
+import { MultichainAssetsControllerGetStateAction } from '@metamask/assets-controllers';
 
 type Actions =
   | MaybeUpdateState
   | TestOrigin
   | HasApprovalRequest
   | AcceptRequest
-  | GetSnap;
+  | GetSnap
+  | AccountsControllerGetAccountByAddressAction
+  | MultichainAssetsControllerGetStateAction;
 
 type Events = NotificationListUpdatedEvent;
 
@@ -39,6 +43,8 @@ export function getSnapInterfaceControllerMessenger(
       `ApprovalController:hasRequest`,
       `ApprovalController:acceptRequest`,
       `SnapController:get`,
+      'AccountsController:getAccountByAddress',
+      'MultichainAssetsController:getState',
     ],
     allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
   });

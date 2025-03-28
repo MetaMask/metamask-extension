@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
@@ -23,7 +27,8 @@ const useNonEvmAssetsWithBalances = (): (
   | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
       chainId: `${string}:${string}`;
       decimals: number;
-      address: `${string}:${string}`;
+      address: string;
+      assetId: `${string}:${string}`;
       string: string;
       balance: string;
       tokenFiatAmount: number;
@@ -58,17 +63,18 @@ const useNonEvmAssetsWithBalances = (): (
     return assetIds
       .filter((caipAssetId) => assetMetadataById[caipAssetId])
       .map((caipAssetId) => {
-        const [caipChainId, address] = caipAssetId.split('/');
-        const [type] = address.split(':');
+        const { chainId, assetReference, assetNamespace } =
+          parseCaipAssetType(caipAssetId);
         return {
-          chainId: caipChainId as `${string}:${string}`,
+          chainId,
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
-          address: caipAssetId,
+          assetId: caipAssetId,
+          address: assetReference,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
-          type: type === 'token' ? AssetType.token : AssetType.native,
+          type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )

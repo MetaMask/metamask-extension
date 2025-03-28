@@ -11,6 +11,9 @@ class NotificationsListPage {
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
 
+  private readonly snapsNotificationMessage =
+    '.snap-notifications__item__details__message';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -41,6 +44,22 @@ class NotificationsListPage {
       `On notifications list page, navigating to notifications settings`,
     );
     await this.driver.clickElement(this.notificationsSettingsButton);
+  }
+
+  async check_snapsNotificationMessage(expectedMessage: string): Promise<void> {
+    console.log('Checking snap notification message');
+    await this.driver.waitForSelector({
+      css: this.snapsNotificationMessage,
+      text: expectedMessage,
+    });
+  }
+
+  async clickSpecificNotificationMessage(message: string): Promise<void> {
+    console.log('Clicking specific notification message in the list');
+    await this.driver.clickElement({
+      css: this.snapsNotificationMessage,
+      text: message,
+    });
   }
 }
 

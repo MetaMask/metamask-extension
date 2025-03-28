@@ -40,16 +40,20 @@ jobs:
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Setup environment
+      - name: Checkout and setup high risk environment
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: true
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         env:
-          INFURA_PROJECT_ID: 00000000000
-          INFURA_BETA_PROJECT_ID: 00000000000
+          INFURA_PROJECT_ID: ${{ vars.INFURA_PROJECT_ID }}
+          INFURA_BETA_PROJECT_ID: ${{ vars.INFURA_BETA_PROJECT_ID }}
           SEGMENT_BETA_WRITE_KEY: 00000000000
+          SENTRY_DSN: https://fake@sentry.io/0000000
           ENABLE_MV3: true
         run: |
           yarn build --build-type beta --platform='chrome' dist

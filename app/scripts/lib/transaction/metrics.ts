@@ -1,10 +1,18 @@
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import {
+  NestedTransactionMetadata,
   TransactionMeta,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { Json } from '@metamask/utils';
+import { Hex } from 'viem';
+import { errorCodes } from '@metamask/rpc-errors';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
 import {
   GasRecommendations,
   PriorityLevels,
@@ -320,12 +328,17 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionMetricsRequest.getHDEntropyIndex - Returns Index of the currently selected HD Keyring
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent }: TransactionMetricsRequest,
+  {
+    getParticipateInMetrics,
+    trackEvent,
+    getHDEntropyIndex,
+  }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -337,9 +350,12 @@ export const handlePostTransactionBalanceUpdate = async (
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
-        event: 'Swap Failed',
-        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        event: MetaMetricsEventName.SwapFailed,
         category: MetaMetricsEventCategory.Swaps,
+        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        properties: {
+          hd_entropy_index: getHDEntropyIndex(),
+        },
       });
     } else {
       const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -392,6 +408,9 @@ export const handlePostTransactionBalanceUpdate = async (
           // browsers.
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
+        },
+        properties: {
+          hd_entropy_index: getHDEntropyIndex(),
         },
       });
     }
@@ -973,6 +992,11 @@ async function buildEventFragmentProperties({
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
 
+  // Add Entropy Properties
+  const hdEntropyProperties = {
+    hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
+  };
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -1000,9 +1024,12 @@ async function buildEventFragmentProperties({
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
-    transaction_contract_method: transactionContractMethod,
+    transaction_contract_method: transactionContractMethod
+      ? [transactionContractMethod]
+      : [],
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
+    ...hdEntropyProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
@@ -1029,7 +1056,9 @@ async function buildEventFragmentProperties({
     first_seen: time,
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
-    transaction_contract_address: transactionContractAddress,
+    transaction_contract_address: transactionContractAddress
+      ? [transactionContractAddress]
+      : [],
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
@@ -1046,6 +1075,13 @@ async function buildEventFragmentProperties({
         transactionApprovalAmountVsProposedRatio,
     };
   }
+
+  await addBatchProperties(
+    transactionMeta,
+    transactionMetricsRequest.getMethodData,
+    properties,
+    sensitiveProperties,
+  );
 
   return { properties, sensitiveProperties };
 }
@@ -1145,4 +1181,68 @@ function allowanceAmountInRelationToTokenBalance(
       .round(2)}`;
   }
   return null;
+}
+
+async function addBatchProperties(
+  transactionMeta: TransactionMeta,
+  getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+  properties: Record<string, Json | undefined>,
+  sensitiveProperties: Record<string, Json | undefined>,
+) {
+  const isExternal = origin && origin !== ORIGIN_METAMASK;
+  const { delegationAddress, nestedTransactions, txParams } = transactionMeta;
+  const { authorizationList } = txParams;
+  const isBatch = Boolean(nestedTransactions?.length);
+  const isUpgrade = Boolean(authorizationList?.length);
+
+  if (isExternal) {
+    properties.api_method = isBatch
+      ? MESSAGE_TYPE.WALLET_SEND_CALLS
+      : MESSAGE_TYPE.ETH_SEND_TRANSACTION;
+  }
+
+  if (isBatch) {
+    properties.batch_transaction_count = nestedTransactions?.length;
+    properties.batch_transaction_method = 'eip7702';
+
+    properties.transaction_contract_method = await getNestedMethodNames(
+      nestedTransactions ?? [],
+      getMethodData,
+    );
+
+    sensitiveProperties.transaction_contract_address = nestedTransactions
+      ?.filter(
+        (tx) =>
+          tx.type === TransactionType.contractInteraction && tx.to?.length,
+      )
+      .map((tx) => tx.to as string);
+  }
+
+  if (transactionMeta.status === TransactionStatus.rejected) {
+    const { error } = transactionMeta;
+
+    properties.eip7702_upgrade_rejection =
+      // @ts-expect-error Code has string type in controller
+      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
+  }
+
+  properties.eip7702_upgrade_transaction = isUpgrade;
+  sensitiveProperties.account_eip7702_upgraded = delegationAddress;
+}
+
+async function getNestedMethodNames(
+  transactions: NestedTransactionMetadata[],
+  getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+): Promise<string[]> {
+  const allData = transactions
+    .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
+    .map((tx) => tx.data as Hex);
+
+  const results = await Promise.all(allData.map((data) => getMethodData(data)));
+
+  const names = results
+    .map((result) => result?.name)
+    .filter((name) => name?.length) as string[];
+
+  return names;
 }

@@ -71,9 +71,9 @@ describe('Sign Typed Data Signature Request', function () {
             .build(),
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
-          const addresses = await ganacheServer.getAccounts();
-          const publicAddress = addresses[0];
+        async ({ driver, localNodes }) => {
+          const addresses = await localNodes[0].getAccounts();
+          const publicAddress = addresses[0].toLowerCase();
           await unlockWallet(driver);
 
           await openDapp(driver);

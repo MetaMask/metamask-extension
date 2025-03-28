@@ -72,7 +72,7 @@ type AppState = {
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
-    onekey: string;
+    oneKey: string;
     ledger: string;
     lattice: string;
   };
@@ -120,6 +120,9 @@ type AppState = {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   errorInSettings: string | null;
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  showNewSrpAddedToast: boolean;
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export type AppSliceState = {
@@ -178,7 +181,7 @@ const initialState: AppState = {
   buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
-    onekey: `m/44'/60'/0'/0`,
+    oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },
@@ -216,6 +219,9 @@ const initialState: AppState = {
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   errorInSettings: null,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  showNewSrpAddedToast: false,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -735,6 +741,13 @@ export default function reduceApp(
           snapName: '',
           result: 'none',
         },
+      };
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
+      return {
+        ...appState,
+        showNewSrpAddedToast: action.payload,
       };
     ///: END:ONLY_INCLUDE_IF
 

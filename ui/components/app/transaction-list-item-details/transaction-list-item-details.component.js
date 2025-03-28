@@ -24,6 +24,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -31,9 +32,7 @@ export default class TransactionListItemDetails extends PureComponent {
     trackEvent: PropTypes.func,
   };
 
-  static defaultProps = {
-    recipientEns: null,
-  };
+  static defaultProps = {};
 
   static propTypes = {
     onCancel: PropTypes.func,
@@ -46,20 +45,18 @@ export default class TransactionListItemDetails extends PureComponent {
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
-    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientName: PropTypes.string,
-    recipientMetadataName: PropTypes.string,
-    rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
-    recipientNickname: PropTypes.string,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
     showErrorBanner: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
+    chainId: PropTypes.string,
+    networkConfiguration: PropTypes.object,
   };
 
   state = {
@@ -69,11 +66,22 @@ export default class TransactionListItemDetails extends PureComponent {
   handleBlockExplorerClick = () => {
     const {
       transactionGroup: { primaryTransaction },
-      rpcPrefs,
+      networkConfiguration,
       isCustomNetwork,
       history,
       onClose,
+      chainId,
     } = this.props;
+    const blockExplorerUrl =
+      networkConfiguration?.[chainId]?.blockExplorerUrls[
+        networkConfiguration?.[chainId]?.defaultBlockExplorerUrlIndex
+      ];
+
+    const rpcPrefs = {
+      blockExplorerUrl,
+      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
+    };
+
     const blockExplorerLink = getBlockExplorerLink(
       primaryTransaction,
       rpcPrefs,
@@ -147,16 +155,13 @@ export default class TransactionListItemDetails extends PureComponent {
       primaryCurrency,
       showSpeedUp,
       showRetry,
-      recipientEns,
       recipientAddress,
       recipientName,
-      recipientMetadataName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
       title,
       onClose,
-      recipientNickname,
       showCancel,
       showErrorBanner,
       transactionStatus: TransactionStatus,
@@ -260,11 +265,8 @@ export default class TransactionListItemDetails extends PureComponent {
                 warnUserOnAccountMismatch={false}
                 variant={DEFAULT_VARIANT}
                 addressOnly
-                recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
-                recipientNickname={recipientNickname}
                 recipientName={recipientName}
-                recipientMetadataName={recipientMetadataName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 chainId={chainId}
@@ -300,6 +302,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
+                chainId={chainId}
               />
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (

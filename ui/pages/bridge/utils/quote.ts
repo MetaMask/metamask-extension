@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js';
+import {
+  type QuoteResponse,
+  type Quote,
+  type L1GasFees,
+  type TokenAmountValues,
+  type SolanaFees,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import type {
-  QuoteResponse,
-  Quote,
-  L1GasFees,
-  TokenAmountValues,
-  SolanaFees,
-} from '../../../../shared/types/bridge';
 import {
   hexToDecimal,
   sumDecimals,
@@ -16,7 +17,6 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
-import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 
 export const isQuoteExpired = (
   isQuoteGoingToRefresh: boolean,

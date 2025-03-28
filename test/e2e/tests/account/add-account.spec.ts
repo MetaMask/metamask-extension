@@ -13,18 +13,22 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
 describe('Add account', function () {
+  const localNodeOptions = {
+    accounts: 1,
+  };
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodes }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -44,7 +48,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -66,7 +70,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList(
@@ -86,6 +90,7 @@ describe('Add account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
