@@ -6,7 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [12.14.0]
+## [12.14.2]
+### Fixed
+- Fix state corruption resulting in inability to create/add accounts ([#31293](https://github.com/MetaMask/metamask-extension/pull/31293))
+- Fix infinite load for users who had added MetaETH testnet before v12.14.1 update ([#31298](https://github.com/MetaMask/metamask-extension/pull/31298))
+
+## [12.14.1]
+### Fixed
+- Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
+
+## [12.14.0] [DEPRECATED]
 ### Added
 - Add Unichain logo ([#30361](https://github.com/MetaMask/metamask-extension/pull/30361))
 - Add modal to include metric ID before redirecting to the support page ([#30415](https://github.com/MetaMask/metamask-extension/pull/30415))
@@ -5823,7 +5832,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...HEAD
+[12.14.2]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.14.2
+[12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
 [12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0
 [12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
 [12.13.0]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.13.0
