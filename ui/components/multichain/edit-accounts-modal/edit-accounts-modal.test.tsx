@@ -80,7 +80,7 @@ describe('EditAccountsModal', () => {
     });
     fireEvent.click(getByTestId('connect-more-accounts-button'));
     expect(onSubmit).toHaveBeenCalledWith([
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     ]);
   });
 
