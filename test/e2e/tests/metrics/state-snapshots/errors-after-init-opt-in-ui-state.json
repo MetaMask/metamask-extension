@@ -125,7 +125,7 @@
       }
     },
     "throttledOrigins": "object",
-    "samplePetnamesByChainIdAndAddress": "object",
+    "namesByChainIdAndAddress": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
