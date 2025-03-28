@@ -28,6 +28,7 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
+  getAllPermittedAccountsForCurrentTab,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -38,6 +39,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+import { parseCaipChainId, parseCaipAccountId } from '@metamask/utils';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -128,12 +130,31 @@ export async function setupInitialStore(
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-    // TODO: Fix this
-    // const permittedAccountsForCurrentTab =
-    //   getPermittedAccountsForCurrentTab(draftInitialState);
-    const permittedAccountsForCurrentTab = [];
-    const selectedAddress =
-      getSelectedInternalAccount(draftInitialState)?.address ?? '';
+
+    // Not entirely sure if these changes are correct. The original logic kind of confuses me.
+    const permittedAccountsForCurrentTab = getAllPermittedAccountsForCurrentTab(draftInitialState);
+
+    const selectedAccount = getSelectedInternalAccount(draftInitialState);
+
+    let currentTabIsConnectedToSelectedAddress;
+    if (selectedAccount) {
+      const parsedSelectedAccountScope = parseCaipChainId(selectedAccount.scopes[0]);
+      currentTabIsConnectedToSelectedAddress = permittedAccountsForCurrentTab.some(
+        (account) => {
+          const parsedPermittedAccount = parseCaipAccountId(account);
+          if(parsedPermittedAccount.chain.namespace !== parsedSelectedAccountScope.namespace) {
+            return false;
+          }
+          if(parsedPermittedAccount.address !== selectedAccount.address) {
+            return false;
+          }
+          if (parsedSelectedAccountScope.reference !== '0' && parsedPermittedAccount.chain.reference !== parsedSelectedAccountScope.reference) {
+            return false;
+          }
+          return true;
+      });
+    }
+
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -144,7 +165,7 @@ export async function setupInitialStore(
       unconnectedAccountAlertIsEnabled &&
       !unconnectedAccountAlertShownOrigins[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
-      !permittedAccountsForCurrentTab.includes(selectedAddress)
+      !currentTabIsConnectedToSelectedAddress
     ) {
       draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
