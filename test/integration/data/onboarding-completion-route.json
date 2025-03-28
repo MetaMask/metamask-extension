@@ -57,11 +57,9 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
-  "bridgeState": {
-    "bridgeFeatureFlags": {
-      "extensionConfig": {
-        "support": false
-      }
+  "bridgeFeatureFlags": {
+    "extensionConfig": {
+      "support": false
     }
   },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
@@ -243,7 +241,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": false,
     "smartTransactionsOptInStatus": true,
-    "petnamesEnabled": true,
     "showConfirmationAdvancedDetails": false,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,

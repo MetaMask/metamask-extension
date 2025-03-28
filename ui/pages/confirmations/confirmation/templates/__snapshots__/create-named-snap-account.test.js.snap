@@ -61,14 +61,14 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirmation-page__content mm-box--padding-4"
+      class="mm-box confirmation-page__content mm-box--padding-0"
       style="overflow-y: auto;"
     >
       <div
-        class="mm-box name-snap-account-page mm-box--padding-4"
+        class="mm-box name-snap-account-page mm-box--padding-6"
       >
         <header
-          class="mm-box mm-header-base mm-modal-header mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-header-base mm-modal-header mm-box--padding-top-2 mm-box--padding-right-0 mm-box--padding-bottom-4 mm-box--padding-left-0 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <div
             class="mm-box mm-box--width-full"
