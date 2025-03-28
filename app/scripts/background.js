@@ -141,15 +141,25 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-// On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
-// is never called.
-// There is no `app-init` file on MV2 builds, so we add a listener here instead.
 if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
+  /**
+   * `onInstalled` event handler.
+   *
+   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+   * is never called.
+   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
+   *
+   * @param {object} details - Event details.
+   * @param {string} details.reason - The reason that this event was dispatched.
+   */
+  const onInstalledListener = (details) => {
     if (details.reason === 'install') {
       onInstall();
+      browser.runtime.onInstalled.removeListener(onInstalledListener);
     }
-  });
+  };
+
+  browser.runtime.onInstalled.addListener(onInstalledListener);
 
   // This condition is for when the `onInstalled` listener in `app-init` was called before
   // `background.js` was loaded.
