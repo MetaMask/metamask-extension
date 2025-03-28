@@ -258,7 +258,7 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
 
   dirs.forEach(dir => {
     // Add this directory with proper Markdown list indentation (using -)
-    result += `${prefix}- 📁 *${dir}/*\n`;
+    result += `${prefix}- 📁 ${dir}/\n`;
 
     // Recursively process subdirectories with increased indentation
     result += renderSimpleDirectoryTree(node[dir], `${prefix}  `);
