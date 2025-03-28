@@ -149,8 +149,7 @@ if (!isManifestV3) {
    * is never called.
    * There is no `app-init` file on MV2 builds, so we add a listener here instead.
    *
-   * @param {object} details - Event details.
-   * @param {string} details.reason - The reason that this event was dispatched.
+   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
    */
   const onInstalledListener = (details) => {
     if (details.reason === 'install') {
