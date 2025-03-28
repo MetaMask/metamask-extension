@@ -25,6 +25,23 @@ export class SwapSendPage {
     );
   };
 
+  async clickOnAsset(
+    assetName: string,
+    location: 'src' | 'dest' = 'src',
+  ): Promise<void> {
+    const isDest = location === 'dest';
+    const buttons = await this.driver.findElements(
+      '[data-testid="asset-picker-button"]',
+    );
+    const indexOfButtonToClick = isDest ? 1 : 0;
+    await buttons[indexOfButtonToClick].click();
+
+    await this.driver.clickElement({
+      css: '[data-testid="multichain-token-list-item"]',
+      text: assetName,
+    });
+  }
+
   searchAndSelectToken = async (
     symbol: string,
     location: 'src' | 'dest' = 'src',
