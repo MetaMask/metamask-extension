@@ -335,7 +335,7 @@ class AccountListPage {
       const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
       // First, we first click here to go to the SRP List.
       await this.driver.clickElement({
-        text: 'Secret Recovery Phrase 1',
+        text: 'Secret Recovery Phrase 2',
       });
       // Then, we select the SRP that we want to add the account to.
       await this.driver.clickElement({
