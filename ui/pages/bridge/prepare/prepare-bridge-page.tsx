@@ -13,6 +13,13 @@ import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
+  isSolanaChainId,
+  isValidQuoteRequest,
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  type GenericQuoteRequest,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
@@ -61,21 +68,17 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import {
   setActiveNetwork,
   setActiveNetworkWithError,
   setSelectedAccount,
 } from '../../../store/actions';
-import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
-import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -98,21 +101,17 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  SOLANA_USDC_ASSET,
-} from '../../../../shared/constants/bridge';
+import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
@@ -144,7 +143,7 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const providerConfig = useSelector(getProviderConfig);
+  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -192,15 +191,15 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const nativeAssetBalance = useLatestBalance(
-    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-      fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-    ],
-    fromChain?.chainId,
+  const nativeAsset = useMemo(
+    () =>
+      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
+    [fromChain?.chainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const { tokenAlert } = useTokenAlerts();
-  const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
+  const srcTokenBalance = useLatestBalance(fromToken);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
 
@@ -302,7 +301,7 @@ const PrepareBridgePage = () => {
     if (!toChain?.chainId) {
       return false;
     }
-    return formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+    return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
   const quoteParams = useMemo(
@@ -322,7 +321,7 @@ const PrepareBridgePage = () => {
           : undefined,
       srcChainId: fromChain?.chainId,
       destChainId: toChain?.chainId,
-      // This override allows quotes to be returned when the rpcUrl is a tenderly fork
+      // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('localhost')),
@@ -337,10 +336,10 @@ const PrepareBridgePage = () => {
       fromAmount,
       fromChain?.chainId,
       toChain?.chainId,
-      providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
+      providerConfig?.rpcUrl,
     ],
   );
 
@@ -475,7 +474,7 @@ const PrepareBridgePage = () => {
               dispatch(setToToken(null));
             }
             if (
-              networkConfig.chainId === MultichainNetworks.SOLANA &&
+              isSolanaChainId(networkConfig.chainId) &&
               selectedSolanaAccount
             ) {
               dispatch(setSelectedAccount(selectedSolanaAccount.address));
@@ -574,8 +573,7 @@ const PrepareBridgePage = () => {
                     : undefined;
                 if (
                   toChain?.chainId &&
-                  formatChainIdToCaip(toChain.chainId) ===
-                    MultichainNetworks.SOLANA &&
+                  isSolanaChainId(toChain.chainId) &&
                   selectedSolanaAccount
                 ) {
                   // Switch accounts to switch to solana

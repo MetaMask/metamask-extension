@@ -2,12 +2,19 @@ import React from 'react';
 
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
+import { act } from '@testing-library/react';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  updateBatchTransactions,
+  updateSelectedGasFeeToken,
+} from '../../../../../../../store/actions/transaction-controller';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
+
+jest.mock('../../../../../../../store/actions/transaction-controller');
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
@@ -17,9 +24,9 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567891',
   symbol: 'USDC',
-  tokenAddress: '0xabc',
+  tokenAddress: '0x1234567890123456789012345678901234567892',
 };
 
 const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
@@ -30,9 +37,9 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567893',
   symbol: 'WETH',
-  tokenAddress: '0xdef',
+  tokenAddress: '0x1234567890123456789012345678901234567894',
 };
 
 function getState({
@@ -58,6 +65,15 @@ function getState({
 const store = configureStore(getState());
 
 describe('GasFeeTokenModal', () => {
+  const updateSelectedGasFeeTokenMock = jest.mocked(updateSelectedGasFeeToken);
+  const updateBatchTransactionsMock = jest.mocked(updateBatchTransactions);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    updateSelectedGasFeeTokenMock.mockResolvedValue(undefined);
+    updateBatchTransactionsMock.mockResolvedValue(undefined);
+  });
+
   it('renders multiple list items', () => {
     const result = renderWithConfirmContextProvider(
       <GasFeeTokenModal />,
@@ -96,6 +112,23 @@ describe('GasFeeTokenModal', () => {
 
     expect(result.queryAllByTestId('gas-fee-token-list-item')[0]).toHaveClass(
       'gas-fee-token-list-item--selected',
+    );
+  });
+
+  it('updates selected gas fee token on click', async () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(getState()),
+    );
+
+    await act(async () => {
+      result.queryAllByTestId('gas-fee-token-list-item')[2].click();
+    });
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
+      expect.any(String),
+      GAS_FEE_TOKEN_2_MOCK.tokenAddress,
     );
   });
 });

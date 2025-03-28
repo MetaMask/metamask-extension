@@ -101,7 +101,7 @@ export const GasFeesDetails = ({
           </Box>
         </ConfirmInfoAlertRow>
       )}
-      {showAdvancedDetails && (
+      {showAdvancedDetails && !transactionMeta.selectedGasFeeToken && (
         <GasFeesRow
           data-testid="gas-fee-details-max-fee"
           label={t('maxFee')}
