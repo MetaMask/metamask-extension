@@ -40,6 +40,7 @@ const state = {
         date: null,
       },
     },
+    domains: [],
     orderedNetworkList: [],
     pinnedAccountList: [],
     hiddenAccountList: [],

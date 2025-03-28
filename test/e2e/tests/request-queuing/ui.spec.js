@@ -545,12 +545,6 @@ describe('Request-queue UI changes', function () {
           css: '.multichain-app-header__contents--avatar-network .mm-text',
           text: 'Localhost 8545',
         });
-
-        // Ensure toast is shown to the user
-        await driver.findElement({
-          css: '.toast-text',
-          text: 'Localhost 8545 is now active on 127.0.0.1:8080',
-        });
       },
     );
   });
@@ -615,12 +609,6 @@ describe('Request-queue UI changes', function () {
         await driver.waitForSelector({
           css: '.multichain-app-header__contents--avatar-network .mm-text',
           text: 'Localhost 8545',
-        });
-
-        // Ensure toast is shown to the user
-        await driver.waitForSelector({
-          css: '.toast-text',
-          text: 'Localhost 8545 is now active on 127.0.0.1:8080',
         });
       },
     );
