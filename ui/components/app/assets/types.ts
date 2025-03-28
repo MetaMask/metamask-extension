@@ -1,4 +1,4 @@
-import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import { CaipAssetReference, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
@@ -24,7 +24,7 @@ export type BaseToken = {
 
 // type created for non-evm tokens
 export type NonEvmBaseToken = {
-  address: CaipAssetType;
+  address: CaipAssetReference;
   symbol: string;
   image: string;
   decimals: number;
