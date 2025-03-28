@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import NetworkFilterDropdown from '.';
+import { NetworkFilterDropdown } from '.';
 
 describe('NetworkFilterDropdown', () => {
   it('should render correctly', () => {
@@ -9,7 +9,7 @@ describe('NetworkFilterDropdown', () => {
         title="mockTitle"
         buttonDataTestId="mockButtonDataTestId"
         isCurrentNetwork={true}
-        openListNetwork={() => {}}
+        openListNetwork={() => null}
         currentNetworkImageUrl="mockCurrentNetworkImageUrl"
         allOpts={{}}
         isDropdownOpen={true}
