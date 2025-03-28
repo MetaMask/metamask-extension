@@ -34,7 +34,7 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
     (token) => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase(),
   );
 
-  if (!gasFeeToken && tokenAddress === NATIVE_TOKEN_ADDRESS) {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
     gasFeeToken = nativeFeeToken;
   }
 
