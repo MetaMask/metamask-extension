@@ -4105,12 +4105,6 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
-  "petnamesEnabledToggle": {
-    "message": "Allow nicknames"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
-  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -4728,7 +4722,9 @@
   "selectRpcUrl": {
     "message": "Select RPC URL"
   },
-  "selectSecretRecoveryPhrase": { "message": "Select Secret Recovery Phrase" },
+  "selectSecretRecoveryPhrase": {
+    "message": "Select Secret Recovery Phrase"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -5219,7 +5215,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5338,7 +5334,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"

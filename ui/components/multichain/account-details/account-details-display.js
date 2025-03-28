@@ -43,7 +43,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 
 function SmartAccountPill({ address }) {
   const t = useI18nContext();
