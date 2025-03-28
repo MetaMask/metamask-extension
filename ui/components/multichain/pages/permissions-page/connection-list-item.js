@@ -26,7 +26,6 @@ import {
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
 import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
