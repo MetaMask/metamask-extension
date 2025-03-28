@@ -248,7 +248,7 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     const changes = calculateTeamChanges(files);
 
     // Add collapsible section with italic change statistics
-    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${changes.files} files) *+${changes.additions} -${changes.deletions}*</summary>\n\n`;
+    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${changes.files} files, +${changes.additions} -${changes.deletions})</summary>\n\n`;
 
     // List files in a simplified, but properly-indented format
     const dirTree = buildSimpleDirectoryTree(files);
