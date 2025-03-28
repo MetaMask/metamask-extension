@@ -45,6 +45,9 @@ describe('Test Snap Dialog', function () {
           tag: 'button',
         });
 
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
@@ -148,6 +151,9 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
@@ -194,6 +200,9 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
@@ -217,6 +226,9 @@ describe('Test Snap Dialog', function () {
 
         // fill '2323' in form field
         await driver.pasteIntoField('#custom-input', '2323');
+
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click confirm button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({

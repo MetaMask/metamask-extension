@@ -423,9 +423,14 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             style="cursor: default;"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              class="mm-box"
+              data-testid="native-icon"
             >
-              E
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              >
+                E
+              </div>
             </div>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
