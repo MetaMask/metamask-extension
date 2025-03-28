@@ -34,7 +34,7 @@ export default function OnboardingPinBillboard() {
         fill="white"
         xmlSpace="preserve"
         style={{ whiteSpace: 'pre' }}
-        fontFamily="Euclid Circular A"
+        fontFamily="CentraNo1"
         fontSize="29"
         fontWeight="bold"
         letterSpacing="0em"
@@ -47,7 +47,7 @@ export default function OnboardingPinBillboard() {
         fill="var(--color-text-default)"
         xmlSpace="preserve"
         style={{ whiteSpace: 'pre' }}
-        fontFamily="Euclid Circular B"
+        fontFamily="CentraNo1"
         fontSize="18"
         letterSpacing="0em"
       >
@@ -65,7 +65,7 @@ export default function OnboardingPinBillboard() {
         fill="white"
         xmlSpace="preserve"
         style={{ whiteSpace: 'pre' }}
-        fontFamily="Euclid Circular A"
+        fontFamily="CentraNo1"
         fontSize="29"
         fontWeight="bold"
         letterSpacing="0em"
@@ -78,7 +78,7 @@ export default function OnboardingPinBillboard() {
         fill="var(--color-text-default)"
         xmlSpace="preserve"
         style={{ whiteSpace: 'pre' }}
-        fontFamily="Euclid Circular B"
+        fontFamily="CentraNo1"
         fontSize="18"
         letterSpacing="0em"
       >

@@ -16,8 +16,8 @@ exports[`ConnectPage should render correctly 1`] = `
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <div
+            class="mm-box mm-text mm-text--body-md-bold mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center"
@@ -67,7 +67,7 @@ exports[`ConnectPage should render correctly 1`] = `
                 Learn more
               </button>
             </div>
-          </p>
+          </div>
         </div>
       </div>
       <div
@@ -384,8 +384,8 @@ exports[`ConnectPage should render with defaults from the requested permissions 
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <div
+            class="mm-box mm-text mm-text--body-md-bold mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center"
@@ -435,7 +435,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                 Learn more
               </button>
             </div>
-          </p>
+          </div>
         </div>
       </div>
       <div

@@ -57,10 +57,10 @@ export const Header = ({
       <Text
         display={Display.Block}
         variant={TextVariant.bodyMdBold}
+        as="div"
         textAlign={TextAlign.Center}
         paddingInlineStart={8}
         paddingInlineEnd={8}
-        ellipsis
         {...textProps}
       >
         {children}
