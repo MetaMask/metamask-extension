@@ -25,6 +25,7 @@ import {
   KeyringTypes,
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
+import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
@@ -142,7 +143,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, SolScope } from '@metamask/keyring-api';
 import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -163,6 +164,8 @@ import {
   walletRevokeSession,
   walletInvokeMethod,
 } from '@metamask/multichain';
+import { KeyringClient } from '@metamask/keyring-snap-client';
+import { ConsoleLogEntry } from 'selenium-webdriver/bidi/logEntries';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -247,6 +250,7 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4440,6 +4444,7 @@ export default class MetamaskController extends EventEmitter {
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async importMnemonicToVault(mnemonic) {
+    console.log('@@ IMPORTING NEW SRP');
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
@@ -4471,11 +4476,39 @@ export default class MetamaskController extends EventEmitter {
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
-      const account =
+      const newAccount =
         this.accountsController.getAccountByAddress(newAccountAddress);
-      this.accountsController.setSelectedAccount(account.id);
+      this.accountsController.setSelectedAccount(newAccount.id);
 
       await this._addAccountsWithBalance(id);
+
+      // TODO: Run the discovery here
+      const entropySource = 'entropy-source';
+      const client = new KeyringInternalSnapClient({
+        messenger: this.controllerMessenger,
+        snapId: SOLANA_WALLET_SNAP_ID,
+      });
+      const discovered = await client.discoverAccounts(
+        [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+        entropySource,
+        0,
+      );
+      console.log('@@ Discovered:', discovered);
+      const keyring = await this.getSnapKeyring();
+      for (const account of discovered) {
+        const options = {
+          // FIXME: We probably should have multiple scopes as parameter, and not a single one here (not for Solana at least)
+          scope: account.scopes[0],
+          entropySource,
+        };
+
+        // await client.createAccount(options);
+        await keyring.createAccount(SOLANA_WALLET_SNAP_ID, options, {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: true,
+        });
+      }
 
       return newAccountAddress;
     } finally {

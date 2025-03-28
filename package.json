@@ -223,7 +223,15 @@
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@keystonehq/metamask-airgapped-keyring@npm:^0.14.1": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch"
+    "@keystonehq/metamask-airgapped-keyring@npm:^0.14.1": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.14.1-bb25561255.patch",
+    "@metamask/keyring-api@17.3.0": "npm:@metamask-previews/keyring-api@17.3.0-fe8156c",
+    "@metamask/keyring-api@^17.2.0": "npm:@metamask-previews/keyring-api@17.3.0-fe8156c",
+    "@metamask/keyring-internal-api@^6.0.0": "npm:@metamask-previews/keyring-internal-api@6.0.0-fe8156c",
+    "@metamask/eth-snap-keyring@^12.0.0": "npm:@metamask-previews/eth-snap-keyring@12.1.0-fe8156c",
+    "@metamask/keyring-snap-client@4.0.1": "npm:@metamask-previews/keyring-snap-client@4.0.1-fe8156c",
+    "@metamask/keyring-snap-client@^4.0.1": "npm:@metamask-previews/keyring-snap-client@4.0.1-fe8156c",
+    "@metamask/keyring-internal-snap-client@^4.0.1": "npm:@metamask-previews/keyring-internal-snap-client@4.0.1-fe8156c",
+    "@metamask/solana-wallet-snap": "file:../snap-solana-wallet/packages/snap"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -284,6 +292,7 @@
     "@metamask/keyring-api": "^17.3.0",
     "@metamask/keyring-controller": "^21.0.1",
     "@metamask/keyring-internal-api": "^6.0.0",
+    "@metamask/keyring-internal-snap-client": "^4.0.1",
     "@metamask/keyring-snap-client": "^4.0.1",
     "@metamask/logging-controller": "^6.0.4",
     "@metamask/logo": "^4.0.0",
