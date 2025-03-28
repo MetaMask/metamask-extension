@@ -454,6 +454,7 @@ describe('Transaction Selectors', () => {
 
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
       expect(selectedTx).toStrictEqual([
+        state.metamask.transactions[2],
         state.metamask.transactions[1],
         state.metamask.transactions[0],
       ]);
