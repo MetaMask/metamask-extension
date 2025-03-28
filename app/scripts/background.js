@@ -135,42 +135,47 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-const onInstallProm = Promise.withResolvers();
-function onStartup() {
-  browser.runtime.onStartup.removeListener(onStartup);
-  onInstallProm.resolve();
-}
-if (isFirefox) {
-  browser.runtime.onInstalled.addListener(async function (details) {
-    // if we got an `onInstalled`, we don't need to listen to onStartup any more
-    browser.runtime.onStartup.removeListener(onStartup);
-    if (details.reason === 'install') {
-      await browser.storage.session.set({ isFirstTimeInstall: true });
-      await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
-    } else if (details.reason === 'update') {
-      await browser.storage.session.set({ isFirstTimeInstall: false });
-    }
-    onInstallProm.resolve();
-  });
-} else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(async function (details) {
-    // if we got an `onInstalled`, we don't need to listen to onStartup any more
-    browser.runtime.onStartup.removeListener(onStartup);
-    if (details.reason === 'install') {
-      global.sessionStorage.setItem('isFirstTimeInstall', true);
-      await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
-    } else if (details.reason === 'update') {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-    onInstallProm.resolve();
-  });
-}
-// `onStartup` doesn't fire in private browsing modes
-if (browser.extension.inIncognitoContext) {
-  // so lets make sure we do eventually start up
-  setTimeout(() => onInstallProm.resolve(), 5000);
+let onInstallProm;
+if (!isManifestV3) {
+  onInstallProm = globalThis.stateHooks.onInstallProm;
 } else {
-  browser.runtime.onStartup.addListener(onStartup);
+  onInstallProm = Promise.withResolvers();
+  function onStartup() {
+    browser.runtime.onStartup.removeListener(onStartup);
+    onInstallProm.resolve();
+  }
+  if (isFirefox) {
+    browser.runtime.onInstalled.addListener(async function (details) {
+      // if we got an `onInstalled`, we don't need to listen to onStartup any more
+      browser.runtime.onStartup.removeListener(onStartup);
+      if (details.reason === 'install') {
+        await browser.storage.session.set({ isFirstTimeInstall: true });
+        await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
+      } else if (details.reason === 'update') {
+        await browser.storage.session.set({ isFirstTimeInstall: false });
+      }
+      onInstallProm.resolve();
+    });
+  } else if (!isManifestV3) {
+    browser.runtime.onInstalled.addListener(async function (details) {
+      // if we got an `onInstalled`, we don't need to listen to onStartup any more
+      browser.runtime.onStartup.removeListener(onStartup);
+      if (details.reason === 'install') {
+        global.sessionStorage.setItem('isFirstTimeInstall', true);
+        await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
+      } else if (details.reason === 'update') {
+        global.sessionStorage.setItem('isFirstTimeInstall', false);
+      }
+      onInstallProm.resolve();
+    });
+  }
+  // `onStartup` doesn't fire in private browsing modes
+  if (browser.extension.inIncognitoContext) {
+    // so lets make sure we do eventually start up
+    setTimeout(() => onInstallProm.resolve(), 5000);
+  } else {
+    browser.runtime.onStartup.addListener(onStartup);
+  }
 }
 
 /**

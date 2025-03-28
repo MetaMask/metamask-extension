@@ -184,13 +184,29 @@ const registerInPageContentScript = async () => {
   }
 };
 
-chrome.runtime.onInstalled.addListener(function (details) {
+const onInstallProm = Promise.withResolvers();
+function onStartup() {
+  chrome.runtime.onStartup.removeListener(onStartup);
+  onInstallProm.resolve();
+}
+globalThis.stateHooks.onInstallProm = onInstallProm;
+chrome.runtime.onInstalled.addListener(async function (details) {
   if (details.reason === 'install') {
-    chrome.storage.session.set({ isFirstTimeInstall: true });
-    chrome.storage.local.set({ vaultHasNotYetBeenCreated: true });
+    chrome.runtime.onStartup.removeListener(onStartup);
+    await chrome.storage.session.set({ isFirstTimeInstall: true });
+    await chrome.storage.local.set({ vaultHasNotYetBeenCreated: true });
+    onInstallProm.resolve();
   } else if (details.reason === 'update') {
-    chrome.storage.session.set({ isFirstTimeInstall: false });
+    await chrome.storage.session.set({ isFirstTimeInstall: false });
   }
 });
+
+// `onStartup` doesn't fire in private browsing modes
+if (chrome.extension.inIncognitoContext) {
+  // so lets make sure we do eventually start up
+  setTimeout(() => onInstallProm.resolve(), 5000);
+} else {
+  chrome.runtime.onStartup.addListener(onStartup);
+}
 
 registerInPageContentScript();
