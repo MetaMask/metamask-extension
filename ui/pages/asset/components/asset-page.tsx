@@ -224,6 +224,7 @@ const AssetPage = ({
     fiat: String(tokenFiatAmount),
   };
 
+  const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
     () =>
       getPortfolioUrl(
@@ -408,17 +409,18 @@ const AssetPage = ({
                     </Box>
                   </Box>
                 )}
-                {renderRow(
-                  t('spendingCaps'),
-                  <ButtonLink
-                    className="asset-page__spending-caps mm-text--body-md-medium"
-                    href={portfolioSpendingCapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('editInPortfolio')}
-                  </ButtonLink>,
-                )}
+                {shouldShowSpendingCaps &&
+                  renderRow(
+                    t('spendingCaps'),
+                    <ButtonLink
+                      className="asset-page__spending-caps mm-text--body-md-medium"
+                      href={portfolioSpendingCapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('editInPortfolio')}
+                    </ButtonLink>,
+                  )}
               </Box>
             </Box>
           )}
