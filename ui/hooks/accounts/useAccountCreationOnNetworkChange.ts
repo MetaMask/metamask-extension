@@ -25,12 +25,15 @@ export const useAccountCreationOnNetworkChange =
     const createAccount = async (chainId: CaipChainId) => {
       switch (chainId) {
         case MultichainNetworks.BITCOIN:
-          await bitcoinWalletSnapClient.createAccount(
-            MultichainNetworks.BITCOIN,
-          );
+          await bitcoinWalletSnapClient.createAccount({
+            scope: MultichainNetworks.BITCOIN,
+          });
           break;
         case MultichainNetworks.SOLANA:
-          await solanaWalletSnapClient.createAccount(MultichainNetworks.SOLANA);
+          // TODO: We might wanna change this flow to let the use pick the SRP he wants to use.
+          await solanaWalletSnapClient.createAccount({
+            scope: MultichainNetworks.SOLANA,
+          });
           break;
         default:
           throw new Error(`Unsupported chainId: ${chainId}`);

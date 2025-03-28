@@ -45,15 +45,15 @@ export const CreateSnapAccount = ({
   const snapClient = useMultichainWalletSnapClient(clientType);
 
   const onCreateAccount = useCallback(
-    async (suggestedName?: string) => {
+    async (_accountNameSuggestion?: string) => {
       try {
-        await snapClient.createAccount(
-          chainId,
+        await snapClient.createAccount({
+          scope: chainId,
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          selectedKeyringId,
-          suggestedName,
+          entropySource: selectedKeyringId,
+          accountNameSuggestion: _accountNameSuggestion,
           ///: END:ONLY_INCLUDE_IF(multi-srp)
-        );
+        });
         onActionComplete(true);
       } catch (error) {
         onActionComplete(false);
