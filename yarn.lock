@@ -5778,10 +5778,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-signing-snap@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/message-signing-snap@npm:0.6.0"
-  checksum: 10/c74b3d897ffdadb2c2772e715578d037430955e962ff25fc3e56edfc60f0b08e55dd1e04dcda104d02a4424af09fedf8e2bd0dab24a34d91c1b8c685849b510a
+"@metamask/message-signing-snap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/message-signing-snap@npm:1.0.0"
+  checksum: 10/24011783d5ede42bd15da94e6562233aed4742814edec215376681fa7b8d8d99e60c9d2c0f2d9e4960cefee0afc013bf34deb4f67b06940f986f89a1957a0e5a
   languageName: node
   linkType: hard
 
@@ -27347,7 +27347,7 @@ __metadata:
     "@metamask/logging-controller": "npm:^6.0.4"
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^12.0.1"
-    "@metamask/message-signing-snap": "npm:^0.6.0"
+    "@metamask/message-signing-snap": "npm:^1.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain": "npm:^3.0.0"
     "@metamask/multichain-network-controller": "npm:^0.1.0"
