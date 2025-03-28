@@ -6,7 +6,6 @@ export const checkbox: UIComponentFactory<CheckboxElement> = ({
   element,
   form,
 }) => ({
-  // comment
   element: 'SnapUICheckbox',
   props: {
     name: element.props.name,
