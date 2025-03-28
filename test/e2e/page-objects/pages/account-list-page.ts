@@ -777,6 +777,10 @@ class AccountListPage {
     }
     const srps = await this.driver.findElements('.select-srp__container');
     const selectedSrp = srps[srpIndex - 1];
+    const showAccountsButton = await this.driver.waitForSelector(
+      `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
+    );
+    await showAccountsButton.click();
 
     await this.driver.findNestedElement(selectedSrp, {
       text: accountName,
