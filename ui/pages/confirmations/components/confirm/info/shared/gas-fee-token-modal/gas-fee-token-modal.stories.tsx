@@ -18,9 +18,9 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567890',
   symbol: 'USDC',
-  tokenAddress: '0xabc',
+  tokenAddress: '0x1234567890123456789012345678901234567891',
 };
 
 const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
@@ -31,9 +31,9 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
-  recipient: '0x7',
+  recipient: '0x1234567890123456789012345678901234567892',
   symbol: 'WETH',
-  tokenAddress: '0xdef',
+  tokenAddress: '0x1234567890123456789012345678901234567893',
 };
 
 const store = configureStore(
