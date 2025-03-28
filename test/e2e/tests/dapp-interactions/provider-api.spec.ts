@@ -1,9 +1,11 @@
-const { strict: assert } = require('assert');
-const { errorCodes } = require('@metamask/rpc-errors');
-const { withFixtures, openDapp, unlockWallet } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+import { strict as assert } from 'assert';
+import { errorCodes } from '@metamask/rpc-errors';
+import { Suite } from 'mocha';
+import { withFixtures, openDapp } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('MetaMask', function () {
+describe('MetaMask', function (this: Suite) {
   it('should reject unsupported methods', async function () {
     await withFixtures(
       {
@@ -11,10 +13,10 @@ describe('MetaMask', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await openDapp(driver);
         for (const unsupportedMethod of ['eth_signTransaction']) {

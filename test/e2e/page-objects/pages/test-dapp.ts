@@ -76,6 +76,14 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
+  private readonly getAccountsButton = '#getAccounts';
+
+  private readonly getAccountsResult = '#getAccountsResult';
+
+  private readonly getPermissionsButton = '#getPermissions';
+
+  private readonly getPermissionsResult = '#permissionsResult';
+
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
   private readonly mmlogo = '#mm-logo';
@@ -278,6 +286,34 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4Result,
       text: expectedFailedMessage,
+    });
+  }
+
+  /**
+   * Verify get connected accounts result.
+   *
+   * @param expectedResult - The expected account address.
+   */
+  async check_getAccountsResult(expectedResult: string) {
+    console.log('Verify get connected accounts result');
+    await this.driver.clickElement(this.getAccountsButton);
+    await this.driver.waitForSelector({
+      css: this.getAccountsResult,
+      text: expectedResult,
+    });
+  }
+
+  /**
+   * Verify get permissions result.
+   *
+   * @param expectedPermission - The expected displayed permission.
+   */
+  async check_getPermissionsResult(expectedPermission: string) {
+    console.log('Verify get permissions result');
+    await this.driver.clickElement(this.getPermissionsButton);
+    await this.driver.waitForSelector({
+      css: this.getPermissionsResult,
+      text: expectedPermission,
     });
   }
 
