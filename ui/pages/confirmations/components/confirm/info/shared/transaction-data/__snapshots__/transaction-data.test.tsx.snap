@@ -55,7 +55,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-1"
+              aria-describedby="tippy-tooltip-39"
               class=""
               data-original-title="See {IERC1155-safeTransferFrom}."
               data-tooltipped=""
@@ -83,7 +83,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-2"
+      class="mm-box mm-box--padding-left-40"
       data-testid="advanced-details-safeTransferFrom-params"
     >
       <div
@@ -160,7 +160,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-3"
+                aria-describedby="tippy-tooltip-41"
                 class=""
                 data-original-title="address"
                 data-tooltipped=""
@@ -216,7 +216,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-4"
+                aria-describedby="tippy-tooltip-42"
                 class=""
                 data-original-title="uint256"
                 data-tooltipped=""
@@ -261,7 +261,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-5"
+                aria-describedby="tippy-tooltip-43"
                 class=""
                 data-original-title="uint256"
                 data-tooltipped=""
@@ -306,7 +306,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-6"
+                aria-describedby="tippy-tooltip-44"
                 class=""
                 data-original-title="bytes"
                 data-tooltipped=""
@@ -345,7 +345,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
