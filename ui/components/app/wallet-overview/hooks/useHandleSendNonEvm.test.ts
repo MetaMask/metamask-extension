@@ -85,12 +85,10 @@ describe('useHandleSendNonEvm', () => {
         },
       },
     };
-
     const { result } = renderHookWithProvider(
       () => useHandleSendNonEvm(),
       mockStateWithoutSnapMetadata,
     );
-
     const handleSendNonEvm = result.current;
 
     await expect(handleSendNonEvm()).rejects.toThrow(
@@ -119,12 +117,10 @@ describe('useHandleSendNonEvm', () => {
         },
       },
     };
-
     const { result } = renderHookWithProvider(
       () => useHandleSendNonEvm(),
       mockStateWithoutSnapMetadata,
     );
-
     const handleSendNonEvm = result.current;
 
     await expect(handleSendNonEvm()).rejects.toThrow(
@@ -136,20 +132,19 @@ describe('useHandleSendNonEvm', () => {
     (sendMultichainTransaction as jest.Mock).mockRejectedValue(
       new Error('Error'),
     );
-
     const { result } = renderHookWithProvider(
       () => useHandleSendNonEvm(),
       mockState,
     );
-
     const handleSendNonEvm = result.current;
+
     await handleSendNonEvm();
 
     expect(setDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
   });
 
   describe('when a caipAssetType is provided', () => {
-    it('should return the caipAssetType and push the confirmation page in history', async () => {
+    it('returns the caipAssetType', async () => {
       const { result } = renderHookWithProvider(
         () =>
           useHandleSendNonEvm(
@@ -157,8 +152,8 @@ describe('useHandleSendNonEvm', () => {
           ),
         mockState,
       );
-
       const handleSendNonEvm = result.current;
+
       await handleSendNonEvm();
 
       expect(sendMultichainTransaction).toHaveBeenCalledWith(
@@ -170,6 +165,19 @@ describe('useHandleSendNonEvm', () => {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         },
       );
+    });
+
+    it('pushes the confirmation page in history', async () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useHandleSendNonEvm(
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          ),
+        mockState,
+      );
+      const handleSendNonEvm = result.current;
+
+      await handleSendNonEvm();
 
       expect(mockHistory.push).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${mockState.metamask.pendingApprovals[0].id}`,
@@ -179,13 +187,13 @@ describe('useHandleSendNonEvm', () => {
 
   describe('when a caipAssetType is not provided', () => {
     describe('and the selected account has a native asset', () => {
-      it("returns the chain's native asset and pushes the confirmation page in history", async () => {
+      it("returns the chain's native asset", async () => {
         const { result } = renderHookWithProvider(
           () => useHandleSendNonEvm(),
           mockState,
         );
-
         const handleSendNonEvm = result.current;
+
         await handleSendNonEvm();
 
         expect(sendMultichainTransaction).toHaveBeenCalledWith(
@@ -196,6 +204,16 @@ describe('useHandleSendNonEvm', () => {
             assetType: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
           },
         );
+      });
+
+      it('pushes the confirmation page in history', async () => {
+        const { result } = renderHookWithProvider(
+          () => useHandleSendNonEvm(),
+          mockState,
+        );
+        const handleSendNonEvm = result.current;
+
+        await handleSendNonEvm();
 
         expect(mockHistory.push).toHaveBeenCalledWith(
           `${CONFIRMATION_V_NEXT_ROUTE}/${mockState.metamask.pendingApprovals[0].id}`,
@@ -216,13 +234,12 @@ describe('useHandleSendNonEvm', () => {
             },
           },
         };
-
         const { result } = renderHookWithProvider(
           () => useHandleSendNonEvm(),
           mockStateWithoutNativeAsset,
         );
-
         const handleSendNonEvm = result.current;
+
         await expect(handleSendNonEvm()).rejects.toThrow(
           'No CAIP asset type provided, and could not find a fallback native asset for the selected account',
         );
