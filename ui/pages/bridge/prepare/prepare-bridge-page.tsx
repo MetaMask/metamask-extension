@@ -765,7 +765,7 @@ const PrepareBridgePage = () => {
             </Footer>
           </Column>
         </Row>
-        {isNoQuotesAvailable && (
+        {isNoQuotesAvailable && !isQuoteExpired && (
           <BannerAlert
             marginInline={4}
             marginBottom={10}
