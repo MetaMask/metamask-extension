@@ -91,11 +91,9 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            bridgeState: {
-              bridgeFeatureFlags: {
-                extensionConfig: {
-                  support: false,
-                },
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: false,
               },
             },
             internalAccounts: {
@@ -163,12 +161,10 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            bridgeState: {
-              isBridgeEnabled: true,
-              bridgeFeatureFlags: {
-                extensionConfig: {
-                  support: true,
-                },
+            isBridgeEnabled: true,
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: true,
               },
             },
             internalAccounts: {
