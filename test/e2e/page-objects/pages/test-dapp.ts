@@ -295,7 +295,7 @@ class TestDapp {
    * @param expectedResult - The expected account address.
    */
   async check_getAccountsResult(expectedResult: string) {
-    console.log('Verify get connected accounts result');
+    console.log('Verify get connected accounts result contains:', expectedResult);
     await this.driver.clickElement(this.getAccountsButton);
     await this.driver.waitForSelector({
       css: this.getAccountsResult,
@@ -309,7 +309,8 @@ class TestDapp {
    * @param expectedPermission - The expected displayed permission.
    */
   async check_getPermissionsResult(expectedPermission: string) {
-    console.log('Verify get permissions result');
+    console.log('Verify get permissions result contains:', expectedPermission);
+    await this.driver.waitForElementToStopMoving(this.getPermissionsButton);
     await this.driver.clickElement(this.getPermissionsButton);
     await this.driver.waitForSelector({
       css: this.getPermissionsResult,
