@@ -526,11 +526,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       return (
         <>
           <Box className="multichain-network-list-menu">
-            <NetworkListSearch
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              setFocusSearch={setFocusSearch}
-            />
+            {process.env.REMOVE_GNS ? null : (
+              <NetworkListSearch
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                setFocusSearch={setFocusSearch}
+              />
+            )}
             {completedOnboarding &&
               !onboardedInThisUISession &&
               showNetworkBanner &&
