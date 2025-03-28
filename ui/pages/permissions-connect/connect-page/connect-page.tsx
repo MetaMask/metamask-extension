@@ -255,12 +255,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       selectedCaip10AccountAddresses.includes(caipAccountId),
   );
 
-  console.log({
-    nonTestNetworkConfigurations,
-    testNetworkConfigurations,
-    selectedChainIds,
-  });
-
   const onConfirm = () => {
     const _request = {
       ...request,
