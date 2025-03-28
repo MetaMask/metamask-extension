@@ -105,7 +105,9 @@ export const TransactionControllerInit: ControllerInitFunction<
         [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
       },
       includeTokenTransfers: false,
-      isEnabled: () => onboardingController().state.completedOnboarding,
+      isEnabled: () =>
+        preferencesController().state.useExternalServices &&
+        onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
     },

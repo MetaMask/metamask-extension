@@ -115,12 +115,13 @@ describe('Transaction Controller Init', () => {
   });
 
   describe('determines incoming transactions is enabled', () => {
-    it('when onboarding complete', () => {
+    it('when useExternalServices is enabled in preferences and onboarding complete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
         {
           state: {
             completedOnboarding: true,
+            useExternalServices: true,
           },
         },
       )?.isEnabled;
@@ -128,12 +129,27 @@ describe('Transaction Controller Init', () => {
       expect(incomingTransactionsIsEnabled?.()).toBe(true);
     });
 
-    it('when onboarding incomplete', () => {
+    it('unless enabled in preferences but onboarding incomplete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
         {
           state: {
             completedOnboarding: false,
+            useExternalServices: true,
+          },
+        },
+      )?.isEnabled;
+
+      expect(incomingTransactionsIsEnabled?.()).toBe(false);
+    });
+
+    it('unless disabled in preferences and onboarding complete', () => {
+      const incomingTransactionsIsEnabled = testConstructorOption(
+        'incomingTransactions',
+        {
+          state: {
+            completedOnboarding: true,
+            useExternalServices: false,
           },
         },
       )?.isEnabled;

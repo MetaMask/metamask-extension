@@ -717,7 +717,6 @@ const state = {
         sortCallback: 'stringNumeric',
       },
       tokenNetworkFilter: {},
-      incomingTransactionsEnabled: true,
     },
     firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
