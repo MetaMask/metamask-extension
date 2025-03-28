@@ -1,0 +1,54 @@
+name: 'Debugging with tmate'
+description: 'Debug your GitHub Actions Environment interactively by using SSH or a Web shell'
+branding:
+  icon: terminal
+author: 'Max Schmitt'
+runs:
+  using: 'node20'
+  main: './index.js'
+  post: './index.js'
+  post-if: '!cancelled()'
+inputs:
+  sudo:
+    description: 'If apt should be executed with sudo or without'
+    required: false
+    default: 'auto'
+  install-dependencies:
+    description: 'Whether or not to install dependencies for tmate on linux (openssh-client, xz-utils)'
+    required: false
+    default: 'true'
+  limit-access-to-actor:
+    description: 'Whether to authorize only the public SSH keys of the user triggering the workflow (defaults to true if the GitHub profile of the user has a public SSH key)'
+    required: false
+    default: 'auto'
+  detached:
+    description: 'In detached mode, the workflow job will continue while the tmate session is active'
+    required: false
+    default: 'false'
+  connect-timeout-seconds:
+    description: 'How long in seconds to wait for a connection to be established'
+    required: false
+    default: '600'
+  tmate-server-host:
+    description: 'The hostname for your tmate server (e.g. ssh.example.org)'
+    required: false
+    default: ''
+  tmate-server-port:
+    description: 'The port for your tmate server (e.g. 2222)'
+    required: false
+    default: ''
+  tmate-server-rsa-fingerprint:
+    description: 'The RSA fingerprint for your tmate server'
+    required: false
+    default: ''
+  tmate-server-ed25519-fingerprint:
+    description: 'The ed25519 fingerprint for your tmate server'
+    required: false
+    default: ''
+  github-token:
+    description: >
+      Personal access token (PAT) used to call into GitHub's REST API.
+      We recommend using a service account with the least permissions necessary.
+      Also when generating a new PAT, select the least scopes necessary.
+      [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
+    default: ${{ github.token }}

@@ -100,6 +100,13 @@ jobs:
           name: prep-build-dist-browserify-chrome
           path: ./dist/
 
+      - run: echo "set -g mouse on" >> ~/.tmux.conf
+
+      - name: Debugging with tmate
+        uses: ./.github/actions/actions-tmate
+        with:
+          limit-access-to-actor: true
+
       - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
         if: ${{ steps.download-build-artifact.outcome == 'failure' }}
         env:
