@@ -3583,9 +3583,7 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: true,
-          },
+          useExternalServices: true,
         });
 
         expect(
@@ -3599,9 +3597,7 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: false,
-          },
+          useExternalServices: false,
         });
 
         expect(

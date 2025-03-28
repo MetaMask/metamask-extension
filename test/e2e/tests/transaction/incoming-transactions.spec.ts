@@ -89,7 +89,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -111,7 +111,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -133,7 +133,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -152,7 +152,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(false)
+          .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -169,7 +169,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .withTransactions([
             {
               hash: RESPONSE_STANDARD_MOCK.hash,

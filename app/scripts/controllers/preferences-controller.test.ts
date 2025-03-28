@@ -6,7 +6,6 @@ import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
-import { Hex } from '@metamask/utils';
 import {
   SnapKeyringAccountAssetListUpdatedEvent,
   SnapKeyringAccountBalancesUpdatedEvent,
@@ -496,45 +495,6 @@ describe('preferences controller', () => {
     it('should set the useCurrencyRateCheck property in state', () => {
       controller.setUseCurrencyRateCheck(false);
       expect(controller.state.useCurrencyRateCheck).toStrictEqual(false);
-    });
-  });
-
-  describe('setIncomingTransactionsPreferences', () => {
-    const { controller } = setupController({});
-    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
-
-    it('should have default value combined', () => {
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-
-    it('should update incomingTransactionsPreferences with given value set', () => {
-      controller.setIncomingTransactionsPreferences(
-        CHAIN_IDS.LINEA_MAINNET,
-        false,
-      );
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
     });
   });
 

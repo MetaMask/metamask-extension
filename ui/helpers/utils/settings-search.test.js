@@ -74,8 +74,6 @@ const t = (key) => {
       return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
-    case 'showIncomingTransactions':
-      return 'Show incoming transactions';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -177,7 +175,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(22);
+      ).toStrictEqual(21);
     });
 
     it('returns "Network" section count', () => {

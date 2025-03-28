@@ -1080,13 +1080,6 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex data sa screen ng pagpapadala"
   },
-  "showIncomingTransactions": {
-    "message": "Ipakita ang Mga Papasok na Transaksyon"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
   },
