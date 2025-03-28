@@ -6532,9 +6532,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^52.1.0":
-  version: 52.1.0
-  resolution: "@metamask/transaction-controller@npm:52.1.0"
+"@metamask/transaction-controller@npm:52.2.0":
+  version: 52.2.0
+  resolution: "@metamask/transaction-controller@npm:52.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6564,7 +6564,43 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/934d90160ec2094a5f0f9f1c8a9a38580522744b921c94ec4c2b59d3459fb7ecfcde18c21ba0d3b113b428ac3d812c9d123c78868e679d03bda6c3c971ca9415
+  checksum: 10/2a2b08c5d19410a69cf3fd29819d7928e91c3d9fe59b1b29a12ff62ddebacadcb3dc4710e54860571230f95ed17c57fc6876d85fcfbc6d6b21e22d868a47cb92
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.2.0-dc455eb067.patch":
+  version: 52.2.0
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.2.0-dc455eb067.patch::version=52.2.0&hash=8ac323"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.2.0"
+    async-mutex: "npm:^0.5.0"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/db3f2db8ec20e3756f68c04ae7475ac2e95edcff0f3d22895a573a50dc54ac9ac96f5fddfb2ebc9d300fec58d5d05adc1e0973f6657f48e125a49f41af47fc13
   languageName: node
   linkType: hard
 
@@ -27350,7 +27386,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^52.1.0"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A52.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.2.0-dc455eb067.patch"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
