@@ -4,12 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
-import {
-  multipleGanacheOptionsForType2Transactions,
-  PRIVATE_KEY_TWO,
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { PRIVATE_KEY_TWO, withFixtures, WINDOW_TITLES } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -28,7 +23,9 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),
-        localNodeOptions: multipleGanacheOptionsForType2Transactions,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         smartContract,
         title: this.test?.fullTitle(),
       },

@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CHAINID_COMMON_TOKEN_PAIR,
-  SwapsTokenObject,
+  type SwapsTokenObject,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '../../../shared/constants/swaps';
 import { getFromToken } from '../../ducks/swaps/swaps';
 
