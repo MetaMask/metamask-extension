@@ -2,10 +2,11 @@ import log from 'loglevel';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import {
-  type MetaMaskStateType,
+import type {
+  MetaMaskStateType,
   MetaMaskStorageStructure,
   BaseStore,
+  MetaData,
 } from './base-store';
 
 const STATE_LOCK = 'state-lock';
@@ -62,7 +63,7 @@ export class PersistenceManager {
    * includes a single key which is 'version' and contains the current version
    * number of the state tree.
    */
-  #metadata?: { version: number };
+  #metadata?: MetaData;
 
   #isExtensionInitialized: boolean = false;
 
@@ -74,7 +75,7 @@ export class PersistenceManager {
     this.#localStore = localStore;
   }
 
-  setMetadata(metadata: { version: number }) {
+  setMetadata(metadata: MetaData) {
     this.#metadata = metadata;
   }
 
@@ -82,22 +83,22 @@ export class PersistenceManager {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    const metadata = this.#metadata;
-    if (!metadata) {
+    const meta = this.#metadata;
+    if (!meta) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
     const keyringController = state.KeyringController as KeyringControllerState;
     const newVaultReference = keyringController?.vault ?? null;
 
     const vaultHasNotYetBeenCreated = !(
-      newVaultReference && this.#vaultReference === null
+      newVaultReference !== null && this.#vaultReference === null
     );
     await navigator.locks.request(STATE_LOCK, async () => {
       try {
         // atomically set all the keys
         await this.#localStore.set({
           data: state,
-          meta: metadata,
+          meta,
           vaultHasNotYetBeenCreated,
         });
         this.#vaultReference = newVaultReference;
@@ -116,7 +117,7 @@ export class PersistenceManager {
     });
   }
 
-  async get(): Promise<MetaMaskStorageStructure | MetaMaskStateType | null> {
+  async get(): Promise<MetaMaskStorageStructure | null> {
     return await navigator.locks.request(STATE_LOCK, async () => {
       const result = await this.#localStore.get();
 

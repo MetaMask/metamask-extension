@@ -86,12 +86,6 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const migrator = new Migrator({
-  migrations,
-  defaultVersion: process.env.WITH_STATE
-    ? FIXTURE_STATE_METADATA_VERSION
-    : null,
-});
 
 const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
@@ -148,6 +142,7 @@ function onStartup() {
 }
 if (isFirefox) {
   browser.runtime.onInstalled.addListener(async function (details) {
+    // if we got an `onInstalled`, we don't need to listen to onStartup any more
     browser.runtime.onStartup.removeListener(onStartup);
     if (details.reason === 'install') {
       await browser.storage.session.set({ isFirstTimeInstall: true });
@@ -159,6 +154,7 @@ if (isFirefox) {
   });
 } else if (!isManifestV3) {
   browser.runtime.onInstalled.addListener(async function (details) {
+    // if we got an `onInstalled`, we don't need to listen to onStartup any more
     browser.runtime.onStartup.removeListener(onStartup);
     if (details.reason === 'install') {
       global.sessionStorage.setItem('isFirstTimeInstall', true);
@@ -171,9 +167,10 @@ if (isFirefox) {
 }
 // `onStartup` doesn't fire in private browsing modes
 if (browser.extension.inIncognitoContext) {
-  browser.runtime.onStartup.addListener(onStartup);
-} else {
+  // so lets make sure we do eventually start up
   setTimeout(() => onInstallProm.resolve(), 5000);
+} else {
+  browser.runtime.onStartup.addListener(onStartup);
 }
 
 /**
@@ -482,9 +479,8 @@ async function initialize() {
   try {
     const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initData = await loadStateFromPersistence();
+    const initState = await loadStateFromPersistence();
 
-    const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
     let isFirstMetaMaskControllerSetup;
@@ -628,15 +624,16 @@ async function loadPhishingWarningPage() {
  * Migrates that data schema in case it was last loaded on an older version.
  *
  * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @throws {Error} If the vault is missing or if the migration fails.
  */
 export async function loadStateFromPersistence() {
-  // migrations
-  migrator.on('error', console.warn);
-
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
+
+  // make sure we have updated the `vaultHasNotYetBeenCreated` flag if needed
+  await onInstallProm.promise;
 
   // read from disk
   // first from preferred, async API:
@@ -659,15 +656,19 @@ export async function loadStateFromPersistence() {
   }
 
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
-    const initialState = migrator.generateInitialState(firstTimeState);
-    preMigrationVersionedData = {
-      ...preMigrationVersionedData,
-      ...initialState,
-    };
+    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
+
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.WITH_STATE
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
+    console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
@@ -698,10 +699,10 @@ export async function loadStateFromPersistence() {
   persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  persistenceManager.set(versionedData.data);
+  await persistenceManager.set(versionedData.data);
 
   // return just the data
-  return versionedData;
+  return versionedData.data;
 }
 
 /**
@@ -860,7 +861,6 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
