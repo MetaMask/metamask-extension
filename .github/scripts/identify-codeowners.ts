@@ -4,7 +4,19 @@ import { GitHub } from '@actions/github/lib/utils';
 import { retrievePullRequestFiles } from './shared/pull-request';
 import micromatch from 'micromatch';
 
-type TeamFiles = Record<string, string[]>;
+type FileChange = {
+  filename: string;
+  additions: number;
+  deletions: number;
+}
+
+type TeamFiles = Record<string, FileChange[]>;
+
+type TeamChanges = {
+  files: number;
+  additions: number;
+  deletions: number;
+}
 
 type TeamEmojis = {
   [team: string]: string;
@@ -49,7 +61,6 @@ async function main(): Promise<void> {
   // Initialise octokit, required to call Github API
   const octokit: InstanceType<typeof GitHub> = getOctokit(PR_COMMENT_TOKEN);
 
-
   const owner = context.repo.owner;
   const repo = context.repo.repo;
   const prNumber = context.payload.pull_request?.number;
@@ -59,17 +70,35 @@ async function main(): Promise<void> {
   }
 
   // Get the changed files in the PR
-  const changedFiles = await retrievePullRequestFiles(octokit, owner, repo, prNumber);
+  const filenames = await retrievePullRequestFiles(octokit, owner, repo, prNumber);
+
+  // Get detailed file change information
+  const fileChanges: FileChange[] = [];
+
+  const { data: detailedFiles } = await octokit.rest.pulls.listFiles({
+    owner,
+    repo,
+    pull_number: prNumber,
+  });
+
+  // Create array of FileChange objects
+  for (const file of detailedFiles) {
+    fileChanges.push({
+      filename: file.filename,
+      additions: file.additions || 0,
+      deletions: file.deletions || 0
+    });
+  }
 
   // Read and parse the CODEOWNERS file
   const codeownersContent = await getCodeownersContent(octokit, owner, repo);
   const codeowners = parseCodeowners(codeownersContent);
 
   // Match files to codeowners
-  const fileOwners = matchFilesToCodeowners(changedFiles, codeowners);
+  const fileOwners = matchFilesToCodeowners(fileChanges, codeowners);
 
   // Group files by team
-  const teamFiles = groupFilesByTeam(fileOwners);
+  const teamFiles = groupFilesByTeam(fileOwners, fileChanges);
 
   // If no teams need to review, don't create or update comments
   if (Object.keys(teamFiles).length === 0) {
@@ -123,18 +152,16 @@ function parseCodeowners(content: string): CodeOwnerRule[] {
     });
 }
 
-function matchFilesToCodeowners(files: string[], codeowners: CodeOwnerRule[]): Map<string, Set<string>> {
+function matchFilesToCodeowners(files: FileChange[], codeowners: CodeOwnerRule[]): Map<string, Set<string>> {
   const fileOwners: Map<string, Set<string>> = new Map();
 
   files.forEach(file => {
     for (const { pattern, owners } of codeowners) {
-      if (isFileMatchingPattern(file, pattern)) {
+      if (isFileMatchingPattern(file.filename, pattern)) {
         // Not breaking here to allow for multiple patterns to match the same file
-        // i.e. if a directory is owned by one team, but specific files within that directory
-        // are also owned by another team, the file will be added to both teams
-        const ownerSet = fileOwners.get(file);
+        const ownerSet = fileOwners.get(file.filename);
         if (!ownerSet) {
-          fileOwners.set(file, new Set(owners));
+          fileOwners.set(file.filename, new Set(owners));
         } else {
           owners.forEach((owner) => ownerSet.add(owner));
         }
@@ -161,22 +188,44 @@ function isFileMatchingPattern(file: string, pattern: string): boolean {
   return micromatch.isMatch(file, pattern);
 }
 
-function groupFilesByTeam(fileOwners: Map<string, Set<string>>): TeamFiles {
+function groupFilesByTeam(fileOwners: Map<string, Set<string>>, fileChanges: FileChange[]): TeamFiles {
   const teamFiles: TeamFiles = {};
 
-  fileOwners.forEach((owners, file) => {
+  // Create a map for faster lookups
+  const changeMap = new Map<string, FileChange>();
+  fileChanges.forEach(file => {
+    changeMap.set(file.filename, file);
+  });
+
+  fileOwners.forEach((owners, filename) => {
     owners.forEach(owner => {
       if (!teamFiles[owner]) {
         teamFiles[owner] = [];
       }
-      teamFiles[owner].push(file);
+
+      const change = changeMap.get(filename);
+      if (change) {
+        teamFiles[owner].push(change);
+      }
     });
   });
 
   // Sort files within each team for consistent ordering
-  Object.values(teamFiles).forEach(files => files.sort());
+  Object.values(teamFiles).forEach(files =>
+    files.sort((a, b) => a.filename.localeCompare(b.filename))
+  );
 
   return teamFiles;
+}
+
+// Calculate total changes for a team
+function calculateTeamChanges(files: FileChange[]): TeamChanges {
+  return files.reduce((acc, file) => {
+    acc.files += 1;
+    acc.additions += file.additions;
+    acc.deletions += file.deletions;
+    return acc;
+  }, { files: 0, additions: 0, deletions: 0 });
 }
 
 function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string {
@@ -196,9 +245,10 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   sortedOwners.forEach((team, index) => {
     const emoji = teamEmojis[team] || '👨‍🔧';
     const files = teamFiles[team];
+    const changes = calculateTeamChanges(files);
 
-    // Add collapsible section using details/summary HTML tags
-    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${files.length} files)</summary>\n\n`;
+    // Add collapsible section with italic change statistics
+    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${changes.files} files) *+${changes.additions} -${changes.deletions}*</summary>\n\n`;
 
     // List files in a simplified, but properly-indented format
     const dirTree = buildSimpleDirectoryTree(files);
@@ -216,12 +266,11 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   return commentBody;
 }
 
-// Build a simplified directory tree
-function buildSimpleDirectoryTree(files: string[]): { [key: string]: string[] | { [key: string]: any } } {
-  const tree: { [key: string]: string[] | { [key: string]: any } } = {};
+function buildSimpleDirectoryTree(files: FileChange[]): { [key: string]: FileChange[] | { [key: string]: any } } {
+  const tree: { [key: string]: FileChange[] | { [key: string]: any } } = {};
 
   files.forEach(file => {
-    const parts = file.split('/');
+    const parts = file.filename.split('/');
     let currentPath = '';
     let currentObj = tree;
 
@@ -234,7 +283,11 @@ function buildSimpleDirectoryTree(files: string[]): { [key: string]: string[] | 
         if (!currentObj['__files__']) {
           currentObj['__files__'] = [];
         }
-        (currentObj['__files__'] as string[]).push(part);
+        (currentObj['__files__'] as FileChange[]).push({
+          filename: part,
+          additions: file.additions,
+          deletions: file.deletions
+        });
       } else {
         // This is a directory
         if (!currentObj[part]) {
@@ -268,12 +321,17 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
 
   // Process files if any
   if (node['__files__']) {
-    const files = node['__files__'] as string[];
-    files.sort(); // Sort files alphabetically
+    const files = node['__files__'] as FileChange[];
+    files.sort((a, b) => a.filename.localeCompare(b.filename)); // Sort files alphabetically
 
     files.forEach(file => {
-      // Add files with proper Markdown list indentation (using -)
-      result += `${prefix}  - 📄 \`${file}\`\n`;
+      let changes = '';
+      if (file.additions > 0 || file.deletions > 0) {
+        changes = ` *+${file.additions} -${file.deletions}*`;
+      }
+
+      // Add files with code formatting and change statistics
+      result += `${prefix}  - 📄 \`${file.filename}\`${changes}\n`;
     });
   }
 
