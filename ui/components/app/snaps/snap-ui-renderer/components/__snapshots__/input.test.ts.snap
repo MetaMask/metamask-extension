@@ -1,48 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SnapUIInput prefills interactive inputs with existing state 1`] = `
+exports[`SnapUIInput re-focuses after re-render 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
-          >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              type="text"
-              value="bar"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIInput re-focuses input after re-render 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -86,44 +48,6 @@ exports[`SnapUIInput re-focuses input after re-render 1`] = `
     </div>
     <span
       data-renders="2"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIInput supports interactive inputs 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
-          >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              type="text"
-              value="a"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
       data-testid="performance"
     />
   </div>
