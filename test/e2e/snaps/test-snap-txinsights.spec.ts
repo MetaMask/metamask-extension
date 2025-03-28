@@ -75,7 +75,7 @@ describe('Test Snap TxInsights', function () {
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
         await testDapp.clickERC721TransferFromButton();
-        await driver.delayFirefox(1000); // this is needed for the transaction to be processed in firefox browser
+        await driver.delayFirefox(3000); // this is needed for the transaction to be processed in firefox browser
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
         await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
