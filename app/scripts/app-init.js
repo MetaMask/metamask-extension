@@ -6,6 +6,8 @@ let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
+globalThis.stateHooks = globalThis.stateHooks || {};
+
 const loadTimeLogs = [];
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
@@ -198,14 +200,14 @@ function onInstalledListener(details) {
   if (details.reason === 'install') {
     // This condition is for when `background.js` was loaded before the `onInstalled` listener was
     // called.
-    if (globalThis.__metamaskTriggerOnInstall) {
-      globalThis.__metamaskTriggerOnInstall();
+    if (globalThis.stateHooks.metamaskTriggerOnInstall) {
+      globalThis.stateHooks.metamaskTriggerOnInstall();
       // Delete just to clean up global namespace
-      delete globalThis.__metamaskTriggerOnInstall;
+      delete globalThis.stateHooks.metamaskTriggerOnInstall;
       // This condition is for when the `onInstalled` listener in `app-init` was called before
       // `background.js` was loaded.
     } else {
-      globalThis.__metamaskWasJustInstalled = true;
+      globalThis.stateHooks.metamaskWasJustInstalled = true;
     }
     chrome.runtime.onInstalled.removeListener(onInstalledListener);
   }

@@ -163,14 +163,14 @@ if (!isManifestV3) {
 
   // This condition is for when the `onInstalled` listener in `app-init` was called before
   // `background.js` was loaded.
-} else if (globalThis.__metamaskWasJustInstalled) {
+} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
   onInstall();
   // Delete just to clean up global namespace
-  delete globalThis.__metamaskWasJustInstalled;
+  delete globalThis.stateHooks.metamaskWasJustInstalled;
   // This condition is for when `background.js` was loaded before the `onInstalled` listener was
   // called.
 } else {
-  globalThis.__metamaskTriggerOnInstall = () => onInstall();
+  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
 /**

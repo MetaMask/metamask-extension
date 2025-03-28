@@ -250,6 +250,16 @@ type StateHooks = {
   metamaskGetState?: () => Promise<any>;
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
+  /**
+   * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in
+   * `background.js`.
+   */
+  metamaskWasJustInstalled?: boolean;
+  /**
+   * This is set in `background.js` so that `app-init.js` can trigger "on install" actions when
+   * the `onInstalled` listener is called.
+   */
+  metamaskTriggerOnInstall?: () => void;
 };
 
 export declare global {
@@ -262,17 +272,6 @@ export declare global {
   var ethereumProvider: Provider;
 
   var stateHooks: StateHooks;
-
-  /**
-   * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in
-   * `background.js`.
-   */
-  var __metamaskWasJustInstalled: boolean | undefined;
-  /**
-   * This is set in `background.js` so that `app-init.js` can trigger "on install" actions when
-   * the `onInstalled` listener is called.
-   */
-  var __metamaskTriggerOnInstall: (() => void) | undefined;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
