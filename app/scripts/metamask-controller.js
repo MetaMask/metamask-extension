@@ -14,6 +14,7 @@ import {
   fetchMultiExchangeRate,
   TokenBalancesController,
 } from '@metamask/assets-controllers';
+import { EarnController } from '@metamask/earn-controller';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
@@ -668,6 +669,21 @@ export default class MetamaskController extends EventEmitter {
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
     this.deprecatedNetworkVersions = {};
+
+    this.earnController = new EarnController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'EarnController',
+        allowedEvents: [
+          'AccountsController:selectedAccountChange',
+          'NetworkController:stateChange',
+        ],
+        allowedActions: [
+          'AccountsController:getSelectedAccount',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+        ],
+      }),
+    });
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'AccountsController',
@@ -2193,6 +2209,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      EarnController: this.earnController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -2255,6 +2272,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
+        EarnController: this.earnController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -3240,6 +3258,7 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
+    console.log('this.memStore.getState(): ', this.memStore.getState());
     const flatState = this.memStore.getFlatState();
 
     return {
@@ -3290,6 +3309,7 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       notificationServicesController,
       notificationServicesPushController,
+      earnController,
     } = this;
 
     return {
@@ -3761,6 +3781,10 @@ export default class MetamaskController extends EventEmitter {
         permissionController,
         approvalController,
       }),
+
+      // Earn Controller
+      refreshStakingEligibility:
+        this.earnController.refreshStakingEligibility.bind(earnController),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(

@@ -21,6 +21,8 @@ import {
   getMultichainNetwork,
 } from '../../../../selectors/multichain';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import { getPooledStakingEligibility } from '../../../../ducks/earn/selectors';
+import { refreshPooledStakingEligibility } from '../../../../store/actions/earn-controller';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -41,6 +43,18 @@ function TokenList({ onTokenClick }: TokenListProps) {
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
   });
+
+  const pooledStakingEligibility = useSelector(getPooledStakingEligibility);
+
+  console.log(
+    '[EARN-TEST] - pooledStakingEligibility',
+    pooledStakingEligibility,
+  );
+
+  // TEMP: Sanity testing calling EarnController methods
+  useEffect(() => {
+    refreshPooledStakingEligibility();
+  }, []);
 
   const multichainAssets = useMultiChainAssets();
 
