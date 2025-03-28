@@ -2633,6 +2633,30 @@ export function setActiveNetworkWithError(
   };
 }
 
+export function getNetworksWithActivityByAccounts(
+  addresses: InternalAccount[],
+): ThunkAction<
+  Promise<NetworkConfiguration[]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    log.debug('background.getNetworksWithActivityByAccounts');
+    try {
+      return await submitRequestToBackground(
+        'getNetworksWithActivityByAccounts',
+        [addresses],
+      );
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw new Error(
+        'Had a problem getting networks with activity by accounts!',
+      );
+    }
+  };
+}
+
 export function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
