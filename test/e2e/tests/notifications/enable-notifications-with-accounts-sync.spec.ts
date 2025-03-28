@@ -11,17 +11,13 @@ import {
   getAccountsSyncMockResponse,
   accountsToMockForAccountsSync as unencryptedMockAccounts,
 } from '../identity/account-syncing/mock-data';
-import { IS_ACCOUNT_SYNCING_ENABLED } from '../identity/account-syncing/helpers';
 import NotificationsListPage from '../../page-objects/pages/notifications-list-page';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { mockNotificationServices } from './mocks';
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
-  // Accounts Syncing only works on MV3
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+  this.timeout(120000); // Multiple Syncing features can cause this test to take some time
 
   describe('from inside MetaMask', function () {
     /**
@@ -44,7 +40,6 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * → Second account: disabled (persisted from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
-      this.timeout(60000); // Multiple Syncing features can cause this test to take some time
       const userStorageMockttpController = new UserStorageMockttpController();
       const mockedAccountsResponse = await getAccountsSyncMockResponse();
 
