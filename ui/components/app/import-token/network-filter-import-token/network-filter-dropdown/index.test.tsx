@@ -13,7 +13,7 @@ describe('NetworkFilterDropdown', () => {
         currentNetworkImageUrl="mockCurrentNetworkImageUrl"
         allOpts={{}}
         isDropdownOpen={true}
-        setIsDropdownOpen={() => {}}
+        setIsDropdownOpen={() => null}
         dropdownRef={React.createRef()}
       />,
     );
