@@ -681,6 +681,7 @@ export default class MetamaskController extends EventEmitter {
         'MultichainNetworkController:networkDidChange',
       ],
       allowedActions: [
+        'KeyringController:getState',
         'KeyringController:getAccounts',
         'KeyringController:getKeyringsByType',
         'KeyringController:getKeyringForAccount',
