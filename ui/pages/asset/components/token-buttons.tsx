@@ -63,8 +63,8 @@ import { getMultichainNetwork } from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
-import type { Asset } from './asset-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import type { Asset } from './asset-page';
 
 const TokenButtons = ({
   token,
