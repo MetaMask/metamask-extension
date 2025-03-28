@@ -257,8 +257,10 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
   dirs.sort(); // Sort directories alphabetically
 
   dirs.forEach(dir => {
-    // Add this directory with proper Markdown list indentation (using -)
-    result += `${prefix}- 📁 ${dir}/\n`;
+    // Escape underscores in directory names to prevent unwanted formatting
+    const escapedDir = dir.replace(/_/g, '\\_');
+    // Add directory with trailing slash
+    result += `${prefix}- 📁 ${escapedDir}/\n`;
 
     // Recursively process subdirectories with increased indentation
     result += renderSimpleDirectoryTree(node[dir], `${prefix}  `);
