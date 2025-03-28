@@ -8,7 +8,6 @@ import * as backgroundConnection from '../../../ui/store/background-connection';
 import { integrationTestRender } from '../../lib/render-helpers';
 import mockMetaMaskState from '../data/integration-init-state.json';
 import { clickElementById, createMockImplementation, waitForElementById, waitForElementByText, waitForElementByTextToNotBePresent } from '../helpers';
-import preview from 'jest-preview';
 
 jest.setTimeout(20_000);
 
@@ -171,7 +170,6 @@ describe('NFTs list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__nfts-tab');
-    preview.debug();
 
     await waitFor(() => {
       expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
