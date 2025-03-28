@@ -80,7 +80,6 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -792,11 +791,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           paddingTop: 0,
           paddingBottom: 0,
         }}
-        height={
-          actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT
-            ? BlockSize.TwoFifths
-            : BlockSize.Screen
-        }
       >
         <ModalHeader
           paddingTop={4}

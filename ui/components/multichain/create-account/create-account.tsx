@@ -104,6 +104,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         getMetaMaskAccountsOrdered,
       );
 
+      const [loading, setLoading] = useState(false);
       const [defaultAccountName, setDefaultAccountName] = useState('');
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
@@ -137,8 +138,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
+          setLoading(true);
           event.preventDefault();
-
           try {
             await onCreateAccount(trimmedAccountName || defaultAccountName);
             trackEvent({
@@ -216,7 +217,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             <ButtonPrimary
               data-testid="submit-add-account-with-name"
               type="submit"
-              disabled={!isValidAccountName}
+              disabled={!isValidAccountName || loading}
+              loading={loading}
               block
             >
               {t('addAccount')}

@@ -51,8 +51,8 @@ export const CreateSnapAccount = ({
           chainId,
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
           selectedKeyringId,
-          suggestedName,
           ///: END:ONLY_INCLUDE_IF(multi-srp)
+          suggestedName,
         );
         onActionComplete(true);
       } catch (error) {
