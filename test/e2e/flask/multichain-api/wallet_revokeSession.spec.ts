@@ -109,7 +109,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
 
           /**
            * We call `executeScript` to attempt JSON rpc call directly through the injected provider object since when session is revoked,
-           * webapp does not provide UI to make call.
+           * webapp does not provide UI to make `wallet_invokeMethod` calls when no session is active.
            */
           const result = await sendMultichainApiRequest({
             driver,
