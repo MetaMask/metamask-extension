@@ -250,6 +250,16 @@ type StateHooks = {
   metamaskGetState?: () => Promise<any>;
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
+  /**
+   * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in
+   * `background.js`.
+   */
+  metamaskWasJustInstalled?: boolean;
+  /**
+   * This is set in `background.js` so that `app-init.js` can trigger "on install" actions when
+   * the `onInstalled` listener is called.
+   */
+  metamaskTriggerOnInstall?: () => void;
 };
 
 export declare global {
