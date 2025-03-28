@@ -2,11 +2,11 @@ import type {
   ContractExchangeRates,
   Token,
 } from '@metamask/assets-controllers';
-import { AnyAction, Action } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { Action, AnyAction } from 'redux';
 import {
-  WebHIDConnectedStatuses,
   HardwareTransportStates,
+  WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 

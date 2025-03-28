@@ -1,11 +1,12 @@
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
-import { useMultichainWalletSnapClient } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
+import { useMultichainWalletSnapClient } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { hasCreatedSolanaAccount } from '../../../selectors/accounts';
+import configureStore from '../../../store/store';
 import WhatsNewModal from './whats-new-modal';
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
@@ -13,6 +14,11 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   WalletClientType: {
     Solana: 'solana',
   },
+}));
+
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  hasSolanaAccounts: jest.fn(),
 }));
 
 describe('WhatsNewModal', () => {
@@ -73,15 +79,41 @@ describe('WhatsNewModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('calls createAccount when clicking the create account button', async () => {
-      const createButton = screen.getByTestId('create-solana-account-button');
-      fireEvent.click(createButton);
+    describe('when user does not have a Solana account', () => {
+      beforeEach(() => {
+        (hasCreatedSolanaAccount as jest.Mock).mockReturnValue(false);
+      });
 
-      expect(mockCreateAccount).toHaveBeenCalledWith(
-        MultichainNetworks.SOLANA,
-        KEYRING_ID,
-      );
-      expect(mockOnClose).toHaveBeenCalled();
+      it('shows "Create Solana account" button and creates account when clicked', async () => {
+        const createButton = screen.getByTestId('create-solana-account-button');
+        expect(createButton).toBeInTheDocument();
+        expect(createButton).toHaveTextContent(/create solana account/iu);
+
+        fireEvent.click(createButton);
+
+        expect(mockCreateAccount).toHaveBeenCalledWith(
+          MultichainNetworks.SOLANA,
+          KEYRING_ID,
+        );
+        expect(mockOnClose).toHaveBeenCalled();
+      });
+    });
+
+    describe('when user has a Solana account', () => {
+      beforeEach(() => {
+        (hasCreatedSolanaAccount as jest.Mock).mockReturnValue(true);
+      });
+
+      it('shows "Got it" button and closes modal when clicked', () => {
+        const gotItButton = screen.getByTestId('got-it-button');
+        expect(gotItButton).toBeInTheDocument();
+        expect(gotItButton).toHaveTextContent(/got it/iu);
+
+        fireEvent.click(gotItButton);
+
+        expect(mockCreateAccount).not.toHaveBeenCalled();
+        expect(mockOnClose).toHaveBeenCalled();
+      });
     });
 
     it('closes the modal when clicking "Not Now"', () => {
