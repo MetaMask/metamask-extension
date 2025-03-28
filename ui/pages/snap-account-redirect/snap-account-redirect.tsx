@@ -42,8 +42,7 @@ const SnapAccountRedirect = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         height={BlockSize.Full}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
       >
         <SnapAccountRedirectContent
           url={url}
