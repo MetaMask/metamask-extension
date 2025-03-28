@@ -22,6 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getHDEntropyIndex,
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
@@ -66,6 +67,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
@@ -228,6 +230,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             event: MetaMetricsEventName.KeyExportCanceled,
             properties: {
               key_type: MetaMetricsEventKeyType.Pkey,
+              hd_entropy_index: hdEntropyIndex,
             },
           });
           setPrivateKey('');

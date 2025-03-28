@@ -6,6 +6,8 @@
   $width-screen-lg-min: 62vw;
 
   &__container {
+    height: 100%;
+
     & > *:first-child {
       gap: 16px;
       margin: 16px;
@@ -40,6 +42,10 @@
       min-height: 24px;
       max-height: 36px;
     }
+  }
+
+  &__address-input > .mm-text-field {
+    border-color: var(--color-border-muted);
   }
 
   &__panel {
@@ -81,10 +87,19 @@
     }
   }
 
-  &__form {
-    .snap-ui-renderer__panel {
-      .snap-ui-renderer__field {
-        flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+
+  &__panel.box--flex-direction-row {
+    .snap-ui-renderer__field {
+      flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+
+      // Asset Selector small state
+      .snap-ui-renderer__asset-selector {
+        padding-left: 8px;
+        padding-right: 8px;
+
+        .snap-ui-renderer__asset-selector-option__balance {
+          display: none; // Hide the balance in the asset selector selected value
+        }
       }
     }
   }
