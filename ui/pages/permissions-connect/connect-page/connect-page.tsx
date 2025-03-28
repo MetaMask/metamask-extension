@@ -39,6 +39,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -261,7 +262,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <Text variant={TextVariant.headingLg} marginTop={2} marginBottom={2}>
           {title}
         </Text>
-        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          flexWrap={FlexWrap.Wrap}
+        >
           <Text>{t('connectionDescription')}</Text>
           <ButtonLink
             paddingLeft={1}
