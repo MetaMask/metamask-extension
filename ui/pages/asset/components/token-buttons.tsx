@@ -64,6 +64,7 @@ import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 import type { Asset } from './asset-page';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const TokenButtons = ({
   token,
@@ -201,7 +202,33 @@ const TokenButtons = ({
     handleSendNonEvm,
   ]);
 
+  const handleBridgeOnClick = useCallback(
+    async (isSwap: boolean) => {
+      await setCorrectChain();
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.TokenView,
+        {
+          ...token,
+          iconUrl: token.image,
+          balance: token?.balance?.value,
+          string: token?.balance?.display,
+          name: token.name ?? '',
+        },
+        undefined,
+        isSwap,
+      );
+    },
+    [token, setCorrectChain, openBridgeExperience],
+  );
+
   const handleSwapOnClick = useCallback(async () => {
+    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+    if (multichainChainId === MultichainNetworks.SOLANA) {
+      handleBridgeOnClick(true);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
     await setCorrectChain();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -243,17 +270,6 @@ const TokenButtons = ({
     usingHardwareWallet,
     setCorrectChain,
   ]);
-
-  const handleBridgeOnClick = useCallback(async () => {
-    await setCorrectChain();
-    openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
-      ...token,
-      iconUrl: token.image,
-      balance: token?.balance?.value,
-      string: token?.balance?.display,
-      name: token.name ?? '',
-    });
-  }, [token, setCorrectChain, openBridgeExperience]);
 
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
