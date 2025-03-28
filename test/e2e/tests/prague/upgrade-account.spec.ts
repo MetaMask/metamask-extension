@@ -19,7 +19,7 @@ async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           statusCode: 200,
           json: [
             {
-              'confirmations_eip_7702': {
+              confirmations_eip_7702: {
                 contracts: {
                   '0xaa36a7': [
                     {
@@ -79,7 +79,9 @@ describe('Upgrade Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.confirmUpgradeCheckbox();
         await upgradeAndBatchTxConfirmation.confirmUpgradeAndBatchTx();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
