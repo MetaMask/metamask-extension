@@ -1,5 +1,6 @@
 import React from 'react';
 import { Reducer } from 'redux';
+import { RenderResult } from '@testing-library/react';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -11,12 +12,40 @@ export const MOCK_INTERFACE_ID = 'interfaceId';
 
 type RenderInterfaceOptions = {
   useFooter?: boolean;
-  useDelineator?: boolean;
   onCancel?: () => void;
   contentBackgroundColor?: string;
   state?: Record<string, unknown>;
 };
 
+// The return type from renderWithProvider includes RenderResult plus a history property
+type RenderWithProviderResult = RenderResult & {
+  history: {
+    location: {
+      pathname: string;
+    };
+  };
+};
+
+// Combine the renderWithProvider result with our custom properties
+type RenderInterfaceResult = RenderWithProviderResult & {
+  updateInterface: (
+    newContent: JSXElement,
+    newState: Record<string, unknown> | null,
+  ) => void;
+  getRenderCount: () => number;
+};
+
+/**
+ * Renders a Snap UI interface for testing purposes.
+ *
+ * @param content - The JSXElement to render.
+ * @param options - The options for rendering the interface.
+ * @param options.useFooter - Whether to render the footer.
+ * @param options.onCancel - The function to call when the interface is cancelled.
+ * @param options.contentBackgroundColor - The background color of the content.
+ * @param options.state - The state of the interface.
+ * @returns Testing utilities with render result, plus updateInterface and getRenderCount functions.
+ */
 export function renderInterface(
   content: JSXElement,
   {
@@ -25,7 +54,7 @@ export function renderInterface(
     contentBackgroundColor,
     state = {},
   }: RenderInterfaceOptions = {},
-) {
+): RenderInterfaceResult {
   const store = configureStore({
     ...mockState,
     metamask: {
