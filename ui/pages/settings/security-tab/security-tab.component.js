@@ -103,9 +103,10 @@ export default class SecurityTab extends PureComponent {
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
-    toggleExternalServices: PropTypes.func.isRequired,
+    toggleExternalServices: PropTypes.func,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hdEntropyIndex: PropTypes.number,
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     hasMultipleHdKeyrings: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IF
@@ -194,6 +195,7 @@ export default class SecurityTab extends PureComponent {
                 properties: {
                   key_type: MetaMetricsEventKeyType.Srp,
                   location: 'Settings',
+                  hd_entropy_index: this.props.hdEntropyIndex,
                 },
               });
               this.context.trackEvent({

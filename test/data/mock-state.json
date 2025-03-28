@@ -431,6 +431,7 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
+    "remoteFeatureFlags": {},
     "networkConfigurationsByChainId": {
       "0x1": {
         "chainId": "0x1",
