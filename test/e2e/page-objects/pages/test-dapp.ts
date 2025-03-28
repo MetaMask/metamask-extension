@@ -295,7 +295,10 @@ class TestDapp {
    * @param expectedResult - The expected account address.
    */
   async check_getAccountsResult(expectedResult: string) {
-    console.log('Verify get connected accounts result contains:', expectedResult);
+    console.log(
+      'Verify get connected accounts result contains:',
+      expectedResult,
+    );
     await this.driver.clickElement(this.getAccountsButton);
     await this.driver.waitForSelector({
       css: this.getAccountsResult,
