@@ -128,22 +128,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <div
-                  class=""
+                  class="name name__clickable name__missing"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
                   />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  >
+                    0x00000...00002
+                  </p>
                 </div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                  data-testid="confirm-info-row-display-name"
-                >
-                  0x00000...00002
-                </p>
               </div>
             </div>
           </div>
@@ -289,22 +288,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <div
-                  class=""
+                  class="name name__clickable name__missing"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
                   />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  >
+                    0x00000...00002
+                  </p>
                 </div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                  data-testid="confirm-info-row-display-name"
-                >
-                  0x00000...00002
-                </p>
               </div>
             </div>
           </div>
@@ -439,22 +437,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
-                    class=""
+                    class="name name__clickable name__missing"
                   >
-                    <div
-                      class="identicon"
-                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
                     />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0xC02aa...56Cc2
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0xC02aa...56Cc2
-                  </p>
                 </div>
               </div>
               <div
@@ -471,22 +468,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
-                    class=""
+                    class="name name__clickable name__missing"
                   >
-                    <div
-                      class="identicon"
-                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
                     />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0xA0b86...6eB48
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0xA0b86...6eB48
-                  </p>
                 </div>
               </div>
               <div
@@ -503,22 +499,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
-                    class=""
+                    class="name name__clickable name__missing"
                   >
-                    <div
-                      class="identicon"
-                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
                     />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0xd02Aa...56cc3
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0xd02Aa...56cc3
-                  </p>
                 </div>
               </div>
             </div>
@@ -665,22 +660,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <div
-                  class=""
+                  class="name name__clickable name__missing"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
                   />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  >
+                    0xA0b86...6eB48
+                  </p>
                 </div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                  data-testid="confirm-info-row-display-name"
-                >
-                  0xA0b86...6eB48
-                </p>
               </div>
             </div>
           </div>
@@ -722,22 +716,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <div
-                  class=""
+                  class="name name__clickable name__missing"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
                   />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  >
+                    0x27213...71c47
+                  </p>
                 </div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                  data-testid="confirm-info-row-display-name"
-                >
-                  0x27213...71c47
-                </p>
               </div>
             </div>
           </div>
@@ -883,22 +876,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <div
-                  class=""
+                  class="name name__clickable name__missing"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
                   />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  >
+                    0xA0b86...6eB48
+                  </p>
                 </div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                  data-testid="confirm-info-row-display-name"
-                >
-                  0xA0b86...6eB48
-                </p>
               </div>
             </div>
           </div>
@@ -940,22 +932,21 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <div
-                  class=""
+                  class="name name__clickable name__missing"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  <span
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/question.svg');"
                   />
+                  <p
+                    class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                  >
+                    0x00000...00001
+                  </p>
                 </div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                  data-testid="confirm-info-row-display-name"
-                >
-                  0x00000...00001
-                </p>
               </div>
             </div>
           </div>
@@ -1164,22 +1155,21 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            class="mm-box mm-box--display-flex"
           >
             <div
-              class=""
+              class="name name__clickable name__missing"
             >
-              <div
-                class="identicon"
-                style="height: 16px; width: 16px; border-radius: 8px;"
+              <span
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/question.svg');"
               />
+              <p
+                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              >
+                0x12345...67890
+              </p>
             </div>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-              data-testid="confirm-info-row-display-name"
-            >
-              0x12345...67890
-            </p>
           </div>
         </div>
       </div>
@@ -1357,22 +1347,21 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            class="mm-box mm-box--display-flex"
           >
             <div
-              class=""
+              class="name name__clickable name__missing"
             >
-              <div
-                class="identicon"
-                style="height: 16px; width: 16px; border-radius: 8px;"
+              <span
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/question.svg');"
               />
+              <p
+                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              >
+                0xBe3be...06AFe
+              </p>
             </div>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-              data-testid="confirm-info-row-display-name"
-            >
-              0xBe3be...06AFe
-            </p>
           </div>
         </div>
       </div>
@@ -1528,22 +1517,21 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
-                    class=""
+                    class="name name__clickable name__missing"
                   >
-                    <div
-                      class="identicon"
-                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
                     />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0x0305f...2Cc0B
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0x0305f...2Cc0B
-                  </p>
                 </div>
               </div>
             </div>
@@ -1759,22 +1747,21 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
-                    class=""
+                    class="name name__clickable name__missing"
                   >
-                    <div
-                      class="identicon"
-                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
                     />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0x43853...83449
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0x43853...83449
-                  </p>
                 </div>
               </div>
             </div>
@@ -1990,22 +1977,21 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
-                    class=""
+                    class="name name__clickable name__missing"
                   >
-                    <div
-                      class="identicon"
-                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    <span
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/question.svg');"
                     />
+                    <p
+                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                    >
+                      0xdAC17...31ec7
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0xdAC17...31ec7
-                  </p>
                 </div>
               </div>
             </div>
@@ -2184,22 +2170,21 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              class="mm-box mm-box--display-flex"
             >
               <div
-                class=""
+                class="name name__clickable name__missing"
               >
-                <div
-                  class="identicon"
-                  style="height: 16px; width: 16px; border-radius: 8px;"
+                <span
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/question.svg');"
                 />
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                >
+                  0xCC97F...6ee0a
+                </p>
               </div>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                data-testid="confirm-info-row-display-name"
-              >
-                0xCC97F...6ee0a
-              </p>
             </div>
           </div>
         </div>

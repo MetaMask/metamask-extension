@@ -44,7 +44,7 @@ DefaultStory.decorators = [
 export const WithDestinationAddress = () => {
   return (
     <Container>
-      <MultichainBridgeQuoteCard destinationAddress="0x1234567890123456789012345678901234567890" />
+      <MultichainBridgeQuoteCard />
     </Container>
   );
 };
@@ -70,7 +70,7 @@ WithDestinationAddress.decorators = [
 export const WithLowEstimatedReturn = () => {
   return (
     <Container>
-      <MultichainBridgeQuoteCard destinationAddress="0x1234567890123456789012345678901234567890" />
+      <MultichainBridgeQuoteCard />
     </Container>
   );
 };

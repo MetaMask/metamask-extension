@@ -793,6 +793,9 @@
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
+  "bridgeCreateSolanaAccount": {
+    "message": "Create Solana account"
+  },
   "bridgeCreateSolanaAccountDescription": {
     "message": "To swap to the Solana network, you need an account and receiving address."
   },
@@ -1070,6 +1073,24 @@
   },
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
+  },
+  "confirmGasFeeTokenBalance": {
+    "message": "Bal:"
+  },
+  "confirmGasFeeTokenInsufficientBalance": {
+    "message": "Insufficient funds"
+  },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "Includes $1 fee"
+  },
+  "confirmGasFeeTokenModalTitle": {
+    "message": "Select a token"
+  },
+  "confirmGasFeeTokenToast": {
+    "message": "You're paying this network fee with $1"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -1616,8 +1637,14 @@
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
   },
-  "destinationAccountPickerSearchPlaceholder": {
-    "message": "Receiving address or SNS"
+  "destinationAccountPickerReceiveAt": {
+    "message": "Receive at"
+  },
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "Receiving address or ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "Receiving address"
   },
   "details": {
     "message": "Details"
@@ -1663,6 +1690,9 @@
   "disconnectedSingleAccountToast": {
     "message": "$1 disconnected from $2",
     "description": "$1 is name of the name and $2 represents the dapp name`"
+  },
+  "discover": {
+    "message": "Discover"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -4102,12 +4132,6 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
-  "petnamesEnabledToggle": {
-    "message": "Allow nicknames"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
-  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -4725,7 +4749,9 @@
   "selectRpcUrl": {
     "message": "Select RPC URL"
   },
-  "selectSecretRecoveryPhrase": { "message": "Select Secret Recovery Phrase" },
+  "selectSecretRecoveryPhrase": {
+    "message": "Select Secret Recovery Phrase"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -5001,6 +5027,12 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideSweepStakeDescription": {
+    "message": "Mint an NFT now for a chance to win"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Enter the $5000 USDC Giveaway!"
+  },
   "smartContracts": {
     "message": "Smart contracts"
   },
@@ -5147,6 +5179,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUIAssetSelectorTitle": {
+    "message": "Select an asset"
+  },
   "snapUpdateAlertDescription": {
     "message": "Get the latest version of $1",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
@@ -5216,7 +5251,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5335,7 +5370,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
