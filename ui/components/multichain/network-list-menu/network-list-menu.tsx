@@ -321,7 +321,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
 
     if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, hexChainId));
+      dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
       }

@@ -70,7 +70,6 @@ import {
   setShowNewSrpAddedToast,
   ///: END:ONLY_INCLUDE_IF
 } from './utils';
-import { parseCaipChainId } from '@metamask/utils';
 
 export function ToastMaster() {
   const location = useLocation();
@@ -121,7 +120,6 @@ function ConnectAccountToast() {
 
   // If the account has changed, allow the connect account toast again
   const prevAccountAddress = usePrevious(account?.address);
-  // This logic comparing addresses isn't exactly right
   if (account?.address !== prevAccountAddress && hideConnectAccountToast) {
     setHideConnectAccountToast(false);
   }
@@ -131,9 +129,6 @@ function ConnectAccountToast() {
   );
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
-  const { namespace, reference } = parseCaipChainId(account.scopes[0]);
-  const caipAccountId = account ? `${namespace}:${reference}:${account.address}` : ''
 
   return (
     Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
@@ -154,7 +149,7 @@ function ConnectAccountToast() {
         actionText={t('connectAccount')}
         onActionClick={() => {
           // Connect this account
-          dispatch(addPermittedAccount(activeTabOrigin, caipAccountId));
+          dispatch(addPermittedAccount(activeTabOrigin, account.address));
           // Use setTimeout to prevent React re-render from
           // hiding the tooltip
           setTimeout(() => {

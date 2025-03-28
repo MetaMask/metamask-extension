@@ -15,11 +15,12 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
-import { KnownCaipNamespace, parseCaipAccountId } from '@metamask/utils';
+import { KnownCaipNamespace, parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
+  accountsController
 }) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (origin) => {
@@ -42,13 +43,22 @@ export function getPermissionBackgroundApiMethods({
   };
 
   // To add more than one account when already connected to the dapp
-  const addMoreAccounts = (origin, accounts) => {
+  const addMoreAccounts = (origin, addresses) => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
         `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
       );
     }
+
+    const internalAccounts = addresses.map(address => {
+      return accountsController.getAccountByAddress(address)
+    })
+
+    const accounts = internalAccounts.map(internalAccount => {
+      const { namespace, reference } = parseCaipChainId(internalAccount.scopes[0]);
+      return `${namespace}:${reference}:${internalAccount.address}`
+    })
 
     // TODO dry this into core
     const permittedAccounts = new Set()
@@ -182,7 +192,7 @@ export function getPermissionBackgroundApiMethods({
     addPermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
 
-    removePermittedAccount: (origin, account) => {
+    removePermittedAccount: (origin, address) => {
       const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
@@ -204,10 +214,7 @@ export function getPermissionBackgroundApiMethods({
 
       const existingAccounts = Array.from(permittedAccounts)
 
-      const {
-        address,
-        chain: { namespace, reference },
-      } = parseCaipAccountId(account);
+      const internalAccount = accountsController.getAccountByAddress(address)
 
       const remainingAccounts = existingAccounts.filter(
         (existingAccount) => {
@@ -216,11 +223,17 @@ export function getPermissionBackgroundApiMethods({
             chain: { namespace: existingNamespace, reference: existingReference},
           } = parseCaipAccountId(existingAccount);
 
-          if (namespace !== existingNamespace || address !== existingAddress) {
-            return true;
-          }
-          // hacky way to handle eoa :/
-          return reference !== '0' && reference !== existingReference
+          const matchesExistingAccount = internalAccount.scopes.some((scope) => {
+            const { namespace, reference } = parseCaipChainId(scope);
+
+            if (namespace !== existingNamespace || internalAccount.address !== existingAddress) {
+              return false;
+            }
+
+            return reference === '0' || reference === existingReference
+          })
+
+          return !matchesExistingAccount;
         },
       );
 

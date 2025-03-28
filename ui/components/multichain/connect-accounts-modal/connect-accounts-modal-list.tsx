@@ -28,6 +28,7 @@ import { getURLHost } from '../../../helpers/utils/util';
 import { addPermittedAccounts } from '../../../store/actions';
 import { ConnectAccountsListProps } from './connect-account-modal.types';
 
+// check usage of this component
 export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   onClose,
   allAreSelected,

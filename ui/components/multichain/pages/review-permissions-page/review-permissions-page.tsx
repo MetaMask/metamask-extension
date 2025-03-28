@@ -197,21 +197,26 @@ export const ReviewPermissions = () => {
     },
   ));
 
-  const handleSelectAccountAddresses = (addresses: string[]) => {
-    if (addresses.length === 0) {
+  const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
+    if (caipAccountIds.length === 0) {
       setShowDisconnectAllModal(true);
       return;
     }
 
-    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
+    // Temporarily pass only the address part of the caipAccountId until
+    // the rest of the UI has been refactored to work with CaipAccountIds
+    const addresses = caipAccountIds.map(caipAccountId => {
+      const { address } = parseCaipAccountId(caipAccountId)
+      return address;
+    })
 
+    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
     connectedAccountAddresses.forEach((connectedAddress: string) => {
       const parsedConnectedAddress = parseCaipAccountId(connectedAddress as CaipAccountId);
 
-      // this needs a rewrite or an minimum better var names T_T
-      const includesAddress = addresses.some((address) => {
-        const parsedAddress = parseCaipAccountId(address as CaipAccountId);
+      const includesCaipAccountId = caipAccountIds.some((caipAccountId) => {
+        const parsedAddress = parseCaipAccountId(caipAccountId);
 
         if (parsedConnectedAddress.chain.namespace !== parsedAddress.chain.namespace
           || parsedConnectedAddress.address !== parsedAddress.address) {
@@ -222,8 +227,10 @@ export const ReviewPermissions = () => {
       })
 
 
-      if (!includesAddress) {
-        dispatch(removePermittedAccount(activeTabOrigin, connectedAddress));
+      if (!includesCaipAccountId) {
+        // Temporarily pass only the address part of the caipAccountId until
+        // the rest of the UI has been refactored to work with CaipAccountIds
+        dispatch(removePermittedAccount(activeTabOrigin, parsedConnectedAddress.address));
       }
     });
 

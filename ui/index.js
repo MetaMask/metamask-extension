@@ -138,20 +138,19 @@ export async function setupInitialStore(
 
     let currentTabIsConnectedToSelectedAddress;
     if (selectedAccount) {
-      const parsedSelectedAccountScope = parseCaipChainId(selectedAccount.scopes[0]);
       currentTabIsConnectedToSelectedAddress = permittedAccountsForCurrentTab.some(
         (account) => {
           const parsedPermittedAccount = parseCaipAccountId(account);
-          if(parsedPermittedAccount.chain.namespace !== parsedSelectedAccountScope.namespace) {
-            return false;
-          }
-          if(parsedPermittedAccount.address !== selectedAccount.address) {
-            return false;
-          }
-          if (parsedSelectedAccountScope.reference !== '0' && parsedPermittedAccount.chain.reference !== parsedSelectedAccountScope.reference) {
-            return false;
-          }
-          return true;
+
+          return selectedAccount.scopes.some((scope) => {
+            const { namespace, reference } = parseCaipChainId(scope);
+
+            if (namespace !== parsedPermittedAccount.chain.namespace || selectedAccount.address !== parsedPermittedAccount.address) {
+              return false;
+            }
+
+            return reference === '0' || reference === parsedPermittedAccount.chain.reference
+          })
       });
     }
 

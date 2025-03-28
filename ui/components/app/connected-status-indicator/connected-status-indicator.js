@@ -26,9 +26,6 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
-  // I hope we can reliably use the first scope to determine the namespace
-  const parsedSelectedAccountScope = parseCaipChainId(selectedAccount.scopes[0]);
-
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
   const activeWalletSnap = permissionsForActiveTab
@@ -36,22 +33,21 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+
   const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
     (account) => {
       const parsedPermittedAccount = parseCaipAccountId(account);
-      if(parsedPermittedAccount.chain.namespace !== parsedSelectedAccountScope.namespace) {
-        return false;
-      }
-      if(parsedPermittedAccount.address !== selectedAccount.address) {
-        return false;
-      }
-      if (parsedSelectedAccountScope.reference !== '0' && parsedPermittedAccount.chain.reference !== parsedSelectedAccountScope.reference) {
-        return false;
-      }
-      return true;
-  });
 
-  console.log({permittedAccounts, parsedSelectedAccountScope, currentTabIsConnectedToSelectedAddress})
+      return selectedAccount.scopes.some((scope) => {
+        const { namespace, reference } = parseCaipChainId(scope);
+
+        if (namespace !== parsedPermittedAccount.chain.namespace || selectedAccount.address !== parsedPermittedAccount.address) {
+          return false;
+        }
+
+        return reference === '0' || reference === parsedPermittedAccount.chain.reference
+      })
+  });
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {
