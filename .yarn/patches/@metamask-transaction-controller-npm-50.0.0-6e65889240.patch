@@ -361,12 +361,14 @@ index c1a98754a78717ae716043c68bef3af10a5d5fc3..ae130ff924e6cc60a9aebf3450d08b8f
      });
      // Wait for the transaction to be published.
 diff --git a/dist/utils/feature-flags.cjs b/dist/utils/feature-flags.cjs
-index f5997a25468c27acb6f82f131906d87be0233b44..af10348ec8c726f99b64e67b8c78948e990a0a0b 100644
+index f5997a25468c27acb6f82f131906d87be0233b44..ea385efd1d146d16939049f99b990ec318c8ffd7 100644
 --- a/dist/utils/feature-flags.cjs
 +++ b/dist/utils/feature-flags.cjs
-@@ -4,8 +4,8 @@ exports.getBatchSizeLimit = exports.getEIP7702UpgradeContractAddress = exports.g
+@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getBatchSizeLimit = exports.getEIP7702UpgradeContractAddress = exports.getEIP7702ContractAddresses = exports.getEIP7702SupportedChains = exports.FEATURE_FLAG_EIP_7702 = exports.FEATURE_FLAG_TRANSACTIONS = void 0;
  const utils_1 = require("@metamask/utils");
  const signature_1 = require("./signature.cjs");
++const utils_2 = require("./utils.cjs");
  const logger_1 = require("../logger.cjs");
 -exports.FEATURE_FLAG_TRANSACTIONS = 'confirmations-transactions';
 -exports.FEATURE_FLAG_EIP_7702 = 'confirmations-eip-7702';
@@ -375,6 +377,15 @@ index f5997a25468c27acb6f82f131906d87be0233b44..af10348ec8c726f99b64e67b8c78948e
  const DEFAULT_BATCH_SIZE_LIMIT = 10;
  const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'feature-flags');
  /**
+@@ -31,7 +32,7 @@ function getEIP7702ContractAddresses(chainId, messenger, publicKey) {
+     const featureFlags = getFeatureFlags(messenger);
+     const contracts = featureFlags?.[exports.FEATURE_FLAG_EIP_7702]?.contracts?.[chainId.toLowerCase()] ?? [];
+     return contracts
+-        .filter((contract) => (0, signature_1.isValidSignature)([contract.address, chainId], contract.signature, publicKey))
++        .filter((contract) => (0, signature_1.isValidSignature)([contract.address, (0, utils_2.padHexToEvenLength)(chainId)], contract.signature, publicKey))
+         .map((contract) => contract.address);
+ }
+ exports.getEIP7702ContractAddresses = getEIP7702ContractAddresses;
 diff --git a/dist/utils/feature-flags.d.cts b/dist/utils/feature-flags.d.cts
 index 871e9c1a1c624d2470a45cca679de5c4ac297447..e1fc8678e698c6e38a3a55c8a4e59d1c58f532c0 100644
 --- a/dist/utils/feature-flags.d.cts
@@ -404,12 +415,13 @@ index 0acbb160fc9777f1b1a844c696fb2b91fd880174..d0211f6203b4503863a5b613877e8656
      [FEATURE_FLAG_EIP_7702]?: {
          /**
 diff --git a/dist/utils/feature-flags.mjs b/dist/utils/feature-flags.mjs
-index d8a67aefe1b969517ed88ecfb3dfadbf1fc05b81..70bb226edbbe6343cbfa0e83df8340fa8bd08d20 100644
+index d8a67aefe1b969517ed88ecfb3dfadbf1fc05b81..3d1ffb228930baf1befa2ab06b8f788ce3492526 100644
 --- a/dist/utils/feature-flags.mjs
 +++ b/dist/utils/feature-flags.mjs
-@@ -1,8 +1,8 @@
+@@ -1,8 +1,9 @@
  import { createModuleLogger } from "@metamask/utils";
  import { isValidSignature } from "./signature.mjs";
++import { padHexToEvenLength } from "./utils.mjs";
  import { projectLogger } from "../logger.mjs";
 -export const FEATURE_FLAG_TRANSACTIONS = 'confirmations-transactions';
 -export const FEATURE_FLAG_EIP_7702 = 'confirmations-eip-7702';
@@ -417,6 +429,15 @@ index d8a67aefe1b969517ed88ecfb3dfadbf1fc05b81..70bb226edbbe6343cbfa0e83df8340fa
 +export const FEATURE_FLAG_EIP_7702 = 'confirmations_eip_7702';
  const DEFAULT_BATCH_SIZE_LIMIT = 10;
  const log = createModuleLogger(projectLogger, 'feature-flags');
+ /**
+@@ -27,7 +28,7 @@ export function getEIP7702ContractAddresses(chainId, messenger, publicKey) {
+     const featureFlags = getFeatureFlags(messenger);
+     const contracts = featureFlags?.[FEATURE_FLAG_EIP_7702]?.contracts?.[chainId.toLowerCase()] ?? [];
+     return contracts
+-        .filter((contract) => isValidSignature([contract.address, chainId], contract.signature, publicKey))
++        .filter((contract) => isValidSignature([contract.address, padHexToEvenLength(chainId)], contract.signature, publicKey))
+         .map((contract) => contract.address);
+ }
  /**
 diff --git a/dist/utils/gas.cjs b/dist/utils/gas.cjs
 index d3d81b493622c25181ead8dcf27f0d73efe61682..e82988fe0ce7168f9d36de61bef798f34f2f82b7 100644
