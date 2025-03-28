@@ -8117,7 +8117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^8.33.1":
+"@sentry/browser@npm:8.33.1":
   version: 8.33.1
   resolution: "@sentry/browser@npm:8.33.1"
   dependencies:
@@ -8129,6 +8129,21 @@ __metadata:
     "@sentry/types": "npm:8.33.1"
     "@sentry/utils": "npm:8.33.1"
   checksum: 10/085717b19c89184fad0c9e17dee679401ff87616678f952d91afff574ebcc56114845c216bbbd7b81c93d54c2a42b3db4232af1c707843424cdd6800a99030a5
+  languageName: node
+  linkType: hard
+
+"@sentry/browser@patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch":
+  version: 8.33.1
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch::version=8.33.1&hash=ee8496"
+  dependencies:
+    "@sentry-internal/browser-utils": "npm:8.33.1"
+    "@sentry-internal/feedback": "npm:8.33.1"
+    "@sentry-internal/replay": "npm:8.33.1"
+    "@sentry-internal/replay-canvas": "npm:8.33.1"
+    "@sentry/core": "npm:8.33.1"
+    "@sentry/types": "npm:8.33.1"
+    "@sentry/utils": "npm:8.33.1"
+  checksum: 10/58b130febb3dd8c533334e027f387b6aabdbab8d625244aee4ccbeb86fa43bd7631c67e5dd8debba807002d0ecc7e2363e4aa6124b4fd0e9ff5820ae1b2b99d4
   languageName: node
   linkType: hard
 
@@ -27401,7 +27416,7 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@sentry/browser": "npm:^8.33.1"
+    "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
