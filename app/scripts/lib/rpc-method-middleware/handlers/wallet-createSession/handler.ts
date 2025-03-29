@@ -153,6 +153,13 @@ async function walletCreateSessionHandler(
       },
     );
 
+    if (
+      Object.keys(supportedOptionalScopes).length === 0 &&
+      Object.keys(supportedRequiredScopes).length === 0
+    ) {
+      return end(new JsonRpcError(5100, 'Requested scopes are not supported'));
+    }
+
     // Fetch EVM accounts from native wallet keyring
     // These addresses are lowercased already
     const existingEvmAddresses = hooks

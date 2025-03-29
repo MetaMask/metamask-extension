@@ -136,7 +136,13 @@ describe('wallet_createSession', () => {
       normalizedOptionalScopes: {},
     });
     MockMultichain.bucketScopes.mockReturnValue({
-      supportedScopes: {},
+      supportedScopes: {
+        'eip155:1': {
+          methods: [],
+          notifications: [],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
       supportableScopes: {},
       unsupportableScopes: {},
     });
@@ -331,8 +337,28 @@ describe('wallet_createSession', () => {
     expect(isEvmChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
   });
 
+  it('throws an error when no scopes are supported', async () => {
+    const { handler, end } = createMockedHandler();
+    MockMultichain.bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportableScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportableScopes: {},
+      });
+    await handler(baseRequest);
+    expect(end).toHaveBeenCalledWith(
+      new JsonRpcError(5100, 'Requested scopes are not supported'),
+    );
+  });
+
   it('gets a list of evm accounts in the wallet', async () => {
     const { handler, listAccounts } = createMockedHandler();
+
     await handler(baseRequest);
 
     expect(listAccounts).toHaveBeenCalled();
@@ -410,12 +436,6 @@ describe('wallet_createSession', () => {
   it('emits the dapp viewed metrics event', async () => {
     MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
     const { handler, sendMetrics } = createMockedHandler();
-
-    MockMultichain.bucketScopes.mockReturnValue({
-      supportedScopes: {},
-      supportableScopes: {},
-      unsupportableScopes: {},
-    });
     await handler(baseRequest);
 
     expect(sendMetrics).toHaveBeenCalledWith({
