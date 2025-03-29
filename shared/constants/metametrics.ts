@@ -685,7 +685,7 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
-  ErrorOccured = 'Error occured',
+  ErrorOccurred = 'Error Occurred',
   ExternalLinkClicked = 'External Link Clicked',
   ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
   KeyExportSelected = 'Key Export Selected',
