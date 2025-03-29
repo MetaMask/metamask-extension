@@ -110,7 +110,7 @@ const AssetListControlBar = ({
     } else {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
-  }, []);
+  }, [tokenNetworkFilter]);
 
   // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
   // We only want to do this if the "Current Network" filter is selected
