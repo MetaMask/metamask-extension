@@ -316,6 +316,7 @@ export function generateTransactionParams(sendState) {
       // amount.
       txParams.to = draftTransaction.sendAsset.details.address;
       txParams.value = '0x0';
+      // TODO: Adapt for non-evm assets
       txParams.data = generateERC20TransferData({
         toAddress: draftTransaction.recipient.address,
         amount: draftTransaction.amount.value,
