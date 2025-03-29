@@ -26,4 +26,4 @@ class Eip7702AndSendCalls {
   }
 }
 
-export default Eip7704AndSendCalls;
+export default Eip7702AndSendCalls;
