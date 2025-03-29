@@ -61,7 +61,7 @@ export const getMetamaskNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
   (notifications: Notification[]) => {
     return notifications
-      ? notifications.filter((notification) => !notification.isRead).length
+      ? notifications.filter((notification) => !notification.isRead).length + 1 // hacky way for us to include the revoke notification
       : 0;
   },
 );

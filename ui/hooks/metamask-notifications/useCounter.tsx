@@ -69,7 +69,8 @@ export function useUnreadNotificationsCounter() {
   const notificationsUnreadCount =
     unreadSnapNotificationsCount +
     featureAnnouncementsUnreadCount +
-    onChainMetamaskNotificationsUnreadCount;
+    onChainMetamaskNotificationsUnreadCount +
+    1;
 
   return {
     notificationsUnreadCount,
