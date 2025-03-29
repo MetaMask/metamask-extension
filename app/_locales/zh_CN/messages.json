@@ -2927,7 +2927,7 @@
     "message": "Testnet"
   },
   "networkNameZkSyncEra": {
-    "message": "zkSync Era"
+    "message": "ZKsync Era"
   },
   "networkOptions": {
     "message": "网络选项"
