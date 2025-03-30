@@ -108,8 +108,17 @@ export default function useSolanaBridgeTransactionMapping(
               destChainName: getNetworkName(
                 matchingBridgeTx.quote?.destChainId,
               ),
-              destAsset: matchingBridgeTx.quote?.destAsset,
+              destAsset: {
+                ...matchingBridgeTx.quote?.destAsset,
+                // Ensure decimals is always available for the destination asset
+                decimals: matchingBridgeTx.quote?.destAsset?.decimals || 18,
+              },
               destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
+              // Add status information for UI display
+              status: matchingBridgeTx.status?.status,
+              destTxHash: matchingBridgeTx.status?.destChain?.txHash,
+              srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
+              provider: matchingBridgeTx.quote?.provider,
             }
           : undefined,
       };

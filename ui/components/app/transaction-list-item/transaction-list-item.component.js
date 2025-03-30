@@ -71,6 +71,7 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
 
+// TODO: This component is used for both bridge and non-bridge transactions.
 function TransactionListItemInner({
   transactionGroup,
   setEditGasMode,

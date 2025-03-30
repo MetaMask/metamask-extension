@@ -32,6 +32,8 @@ import {
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
+import SolanaBridgeTransactionListItem from '../solana-bridge-transaction-list-item';
+import SolanaBridgeTransactionDetailsModal from '../solana-bridge-transaction-details-modal';
 ///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
@@ -63,6 +65,7 @@ import {
   IconName,
   BadgeWrapper,
   AvatarNetwork,
+  Icon,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -77,6 +80,13 @@ import {
   ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
+  FlexDirection,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  IconColor,
+  AlignItems,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -477,13 +487,20 @@ export default function TransactionList({
     const metricsLocation = 'Activity Tab';
     return (
       <>
-        {selectedTransaction && (
-          <MultichainTransactionDetailsModal
-            transaction={selectedTransaction}
-            onClose={() => toggleShowDetails(null)}
-            userAddress={selectedAccount.address}
-          />
-        )}
+        {selectedTransaction &&
+          (selectedTransaction.isBridgeTx && selectedTransaction.bridgeInfo ? (
+            <SolanaBridgeTransactionDetailsModal
+              transaction={selectedTransaction}
+              onClose={() => toggleShowDetails(null)}
+              userAddress={selectedAccount.address}
+            />
+          ) : (
+            <MultichainTransactionDetailsModal
+              transaction={selectedTransaction}
+              onClose={() => toggleShowDetails(null)}
+              userAddress={selectedAccount.address}
+            />
+          ))}
 
         <Box className="transaction-list" {...boxProps}>
           {/* TODO: Non-EVM transactions are not paginated for now. */}
@@ -502,15 +519,31 @@ export default function TransactionList({
                     >
                       {dateGroup.date}
                     </Text>
-                    {dateGroup.transactionGroups.map((transaction, index) => (
-                      <MultichainTransactionListItem
-                        key={`${transaction.account}:${index}`}
-                        transaction={transaction}
-                        userAddress={selectedAccount.address}
-                        index={index}
-                        toggleShowDetails={toggleShowDetails}
-                      />
-                    ))}
+                    {dateGroup.transactionGroups.map((transaction, index) => {
+                      // Use a separate component for bridge transactions
+                      if (transaction.isBridgeTx && transaction.bridgeInfo) {
+                        return (
+                          <SolanaBridgeTransactionListItem
+                            key={`bridge-${transaction.account}:${index}`}
+                            transaction={transaction}
+                            userAddress={selectedAccount.address}
+                            index={index}
+                            toggleShowDetails={toggleShowDetails}
+                          />
+                        );
+                      }
+
+                      // Use regular transaction component for non-bridge transactions
+                      return (
+                        <MultichainTransactionListItem
+                          key={`${transaction.account}:${index}`}
+                          transaction={transaction}
+                          userAddress={selectedAccount.address}
+                          index={index}
+                          toggleShowDetails={toggleShowDetails}
+                        />
+                      );
+                    })}
                   </Fragment>
                 ))}
                 <Box className="transaction-list__view-on-block-explorer">
@@ -657,6 +690,8 @@ export default function TransactionList({
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+
+// Regular transaction list item for non-bridge transactions
 const MultichainTransactionListItem = ({
   transaction,
   userAddress,
@@ -674,7 +709,7 @@ const MultichainTransactionListItem = ({
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
   if (type === TransactionType.swap) {
-    title = `${t('swap')} ${from.asset.unit} ${'to'} ${to.asset.unit}`;
+    title = `${t('swap')} ${from.asset.unit} ${t('to')} ${to.asset.unit}`;
   }
 
   return (
@@ -728,46 +763,24 @@ const MultichainTransactionListItem = ({
           </Text>
         </>
       }
-      title={transaction.isBridgeTx ? t('bridge') : title}
-      // eslint-disable-next-line react/jsx-no-duplicate-props
+      title={title}
       subtitle={
-        transaction.isBridgeTx && transaction.bridgeInfo ? (
-          <>
-            <TransactionStatusLabel
-              date={formatTimestamp(transaction.timestamp)}
-              error={{}}
-              status={statusKey}
-              statusOnly
-            />
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {`${t('to')} ${transaction.bridgeInfo.destAsset?.symbol} ${t(
-                'on',
-              )} ${
-                // Use the pre-computed chain name from our hook, or fall back to chain ID
-                transaction.bridgeInfo.destChainName ||
-                transaction.bridgeInfo.destChainId
-              }`}
-            </Text>
-          </>
-        ) : (
-          <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
-            error={{}}
-            status={statusKey}
-            statusOnly
-          />
-        )
+        <TransactionStatusLabel
+          date={formatTimestamp(transaction.timestamp)}
+          error={{}}
+          status={statusKey}
+          statusOnly
+        />
       }
-    ></ActivityListItem>
+    />
   );
 };
+
 MultichainTransactionListItem.propTypes = {
   transaction: PropTypes.object.isRequired,
   userAddress: PropTypes.string.isRequired,
   toggleShowDetails: PropTypes.func.isRequired,
+  // index: PropTypes.number,
 };
 
 ///: END:ONLY_INCLUDE_IF
