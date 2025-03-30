@@ -5806,7 +5806,7 @@ __metadata:
 
 "@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.3.0
-  resolution: "@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller#../core/packages/multichain-network-controller::hash=3a7394&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller#../core/packages/multichain-network-controller::hash=95d551&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
@@ -5815,7 +5815,7 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/network-controller": ^23.0.0
-  checksum: 10/9407b75b2ba7e5143f736389846001d1a1e470481a2e5df54bf3a2df85904fcc46cec6bb8d482c76e6eec1b22b722b583a22fd4603b3de71ccdcc507110078ae
+  checksum: 10/de9e203ef7204aa72f3a2d474c0cb8887cdaca0c10b9fd7ca3b8941e4da2ecc43fd31eaf2e471da3f09d6ed9c02fdae2d36d6d0d07f66f5cf50363c48a09860b
   languageName: node
   linkType: hard
 
