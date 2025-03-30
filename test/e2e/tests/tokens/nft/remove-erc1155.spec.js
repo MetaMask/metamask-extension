@@ -43,7 +43,6 @@ describe('Remove ERC1155 NFT', function () {
 
         // Check the imported ERC1155 NFT disappeared in the NFT tab
         const noNftInfo = await driver.waitForSelector({
-          css: 'h4',
           text: 'No NFTs yet',
         });
         assert.equal(await noNftInfo.isDisplayed(), true);

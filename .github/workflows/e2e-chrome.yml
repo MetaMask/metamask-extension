@@ -4,25 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  prep-build-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-
-      - run: yarn build:test
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: prep-build-test
-          path: ./dist/
-
   test-e2e-chrome:
-    needs:
-      - prep-build-test
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: false
@@ -31,11 +13,27 @@ jobs:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
       test-suite-name: test-e2e-chrome
-      build-artifact: prep-build-test
+      build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-multiple-providers:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-multiple-providers
+      build-artifact: prep-build-test-browserify-chrome
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:multi-provider
+
+  test-e2e-chrome-rpc:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-rpc
+      build-artifact: prep-build-test-browserify-chrome
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:rpc
 
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -50,37 +48,16 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-chrome-multiple-providers:
-    needs:
-      - prep-build-test
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-multiple-providers
-      build-artifact: prep-build-test
-      build-command: yarn build:test
-      test-command: yarn test:e2e:chrome:multi-provider
-
-  test-e2e-chrome-rpc:
-    needs:
-      - prep-build-test
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-rpc
-      build-artifact: prep-build-test
-      build-command: yarn build:test
-      test-command: yarn test:e2e:chrome:rpc
-
-  test-report:
+  test-e2e-chrome-report:
     needs:
       - test-e2e-chrome
-      - test-e2e-chrome-flask
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
+      - test-e2e-chrome-flask
     runs-on: ubuntu-latest
     if: always()
     continue-on-error: true # soft launch
     steps:
-      # We don't have to setup node or run yarn in this job
       - uses: actions/checkout@v4
 
       - name: Download test results

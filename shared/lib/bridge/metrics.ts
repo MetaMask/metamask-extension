@@ -1,5 +1,8 @@
 import { BigNumber } from 'bignumber.js';
-import { QuoteMetadata, QuoteResponse } from '../../types/bridge';
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
 
 export const getConvertedUsdAmounts = ({
   activeQuote,
