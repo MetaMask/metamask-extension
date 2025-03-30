@@ -116,14 +116,14 @@ export const NftItem = ({
             'nft-item__badge-wrapper__clickable': Boolean(clickable),
           })}
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-          positionObj={{ top: -4, right: -4 }}
+          positionObj={{ bottom: 4, right: 4 }}
           display={Display.Block}
           badge={
             <AvatarNetwork
               className="nft-item__network-badge"
               backgroundColor={testNetworkBackgroundColor}
               data-testid="nft-network-badge"
-              size={AvatarNetworkSize.Sm}
+              size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkSrc}
               borderWidth={2}

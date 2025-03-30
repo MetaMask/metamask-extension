@@ -993,6 +993,14 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.JOC_TESTNET]: JOC_TESTNET_TOKEN_IMAGE_URL,
 } as const;
 
+/**
+ * A mapping for networks with enabled profolio landing page to their URLs.
+ */
+export const CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP: Record<Hex, string> = {
+  [CHAIN_IDS.LINEA_MAINNET]:
+    'https://portfolio.metamask.io/explore/networks/linea',
+} as const;
+
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';

@@ -24,10 +24,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-// eslint-disable-next-line import/no-restricted-paths
-import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
-import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import { DestinationAccount } from '../types';
+import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -47,41 +45,11 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
-  // Check if search query is a valid address
-  const isValidAddress = useMemo(() => {
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) {
-      return false;
-    }
-
-    return isDestinationSolana
-      ? isSolanaAddress(trimmedQuery)
-      : isEthAddress(trimmedQuery);
-  }, [searchQuery, isDestinationSolana]);
-
-  // Create an external account object if valid address is not in internal accounts
-  const externalAccount = useMemo(() => {
-    if (!isValidAddress) {
-      return null;
-    }
-
-    const trimmedQuery = searchQuery.trim();
-    const addressExists = accounts.some(
-      (account) => account.address.toLowerCase() === trimmedQuery.toLowerCase(),
-    );
-
-    if (addressExists) {
-      return null;
-    }
-
-    return {
-      address: trimmedQuery,
-      metadata: {
-        name: `${trimmedQuery.slice(0, 6)}...${trimmedQuery.slice(-4)}`,
-      },
-      isExternal: true,
-    };
-  }, [accounts, isValidAddress, searchQuery]);
+  const { externalAccount } = useExternalAccountResolution({
+    searchQuery,
+    isDestinationSolana,
+    accounts,
+  });
 
   const filteredAccounts = useMemo(
     () =>
@@ -183,7 +151,11 @@ export const DestinationAccountPicker = ({
       >
         <TextField
           // @ts-expect-error: TextField component expects different props than provided - works but needs type update
-          placeholder={t('destinationAccountPickerSearchPlaceholder')}
+          placeholder={
+            isDestinationSolana
+              ? t('destinationAccountPickerSearchPlaceholderToSolana')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
