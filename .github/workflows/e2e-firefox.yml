@@ -61,13 +61,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies for custom reporter
-        run: |
-          yarn add xml2js glob
-
       - name: Custom Test Report
         id: custom-report
         continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn tsx .github/scripts/parse-test-results.ts
 
       - name: Test Report (Fallback)
