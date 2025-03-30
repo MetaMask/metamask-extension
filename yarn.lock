@@ -5804,24 +5804,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^0.1.0":
-  version: 0.1.2
-  resolution: "@metamask/multichain-network-controller@npm:0.1.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@solana/addresses": "npm:^2.0.0"
-  peerDependencies:
-    "@metamask/accounts-controller": ^24.0.0
-    "@metamask/network-controller": ^22.0.0
-  checksum: 10/4f5423a6de319db540a13e5dc5d637b5e55cf7af901cbe040353912c4aaba640a9454abcecb93fa53ca397f5c40d097835b001f40963f8624c02961dbf29931a
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-network-controller@npm:^0.3.0":
+"@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.3.0
-  resolution: "@metamask/multichain-network-controller@npm:0.3.0"
+  resolution: "@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller#../core/packages/multichain-network-controller::hash=3a7394&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
@@ -5830,7 +5815,7 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/network-controller": ^23.0.0
-  checksum: 10/eed3a230271bfe610027b6739d383151a573fe10db66f407ec8c673cceaab3c2b50a5fcc3fb2cc0dcfa4fbb9748d63f615799bd27bb5b4303260321ec9d07757
+  checksum: 10/9407b75b2ba7e5143f736389846001d1a1e470481a2e5df54bf3a2df85904fcc46cec6bb8d482c76e6eec1b22b722b583a22fd4603b3de71ccdcc507110078ae
   languageName: node
   linkType: hard
 
@@ -5890,7 +5875,7 @@ __metadata:
 
 "@metamask/network-controller@file:../core/packages/network-controller::locator=metamask-crx%40workspace%3A.":
   version: 23.1.0
-  resolution: "@metamask/network-controller@file:../core/packages/network-controller#../core/packages/network-controller::hash=f88464&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/network-controller@file:../core/packages/network-controller#../core/packages/network-controller::hash=7f4a7c&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.6.0"
@@ -5910,7 +5895,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/3524224205aa8e41985552c6335fef975d5c147d9d48c7564e8e37580e80e8615004ef1da55d3a1c095b612134ae18a5cff6095ab2f569e1497efc38db07c582
+  checksum: 10/ac476b7e8a76ce9a89afc325f78256866805bcb381e5b617a2658dace82d1790254a84cc0336d1a2f6a8cf544fddfde10b5facfc6bf6f21abf463dfcc0d13357
   languageName: node
   linkType: hard
 
