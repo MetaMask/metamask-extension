@@ -32,9 +32,9 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
 
   test-e2e-firefox-report:
-    #needs:
-    #  - test-e2e-firefox
-    #  - test-e2e-firefox-flask
+    needs:
+      - test-e2e-firefox
+      - test-e2e-firefox-flask
     runs-on: ubuntu-latest
     if: always()
     continue-on-error: true # soft launch
@@ -55,11 +55,6 @@ jobs:
           path: .
           pattern: test-e2e-firefox*
           merge-multiple: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
 
       - name: Custom Test Report
         id: custom-report

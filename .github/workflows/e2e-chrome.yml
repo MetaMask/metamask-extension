@@ -71,11 +71,11 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
 
   test-e2e-chrome-report:
-    #needs:
-    #  - test-e2e-chrome
-    #  - test-e2e-chrome-multiple-providers
-    #  - test-e2e-chrome-rpc
-    #  - test-e2e-chrome-flask
+    needs:
+      - test-e2e-chrome
+      - test-e2e-chrome-multiple-providers
+      - test-e2e-chrome-rpc
+      - test-e2e-chrome-flask
     runs-on: ubuntu-latest
     if: always()
     continue-on-error: true # soft launch
@@ -88,7 +88,6 @@ jobs:
       - name: Install dependencies for custom reporter
         run: |
           yarn add xml2js glob
-
 
       - name: Download test results
         uses: actions/download-artifact@v4
