@@ -269,7 +269,7 @@ async function findXmlFiles(): Promise<string[]> {
 
 // Process a single XML file
 async function processXmlFile(file: string): Promise<TestResult[]> {
-  const fullPath = path.resolve(__dirname, file);
+  const fullPath = path.resolve(process.cwd(), file);
 
   try {
     const parsedXml = await parseXmlFile(fullPath);
