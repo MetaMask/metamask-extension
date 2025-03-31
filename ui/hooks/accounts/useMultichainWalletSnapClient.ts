@@ -70,7 +70,6 @@ export class MultichainWalletSnapClient {
       scope,
       ...(entropySource ? { entropySource } : {}),
       ...(accountNameSuggestion ? { accountNameSuggestion } : {}),
-      synchronize: true,
     });
 
     // NOTE: The account's balance is going to be tracked automatically on when the new account
