@@ -34,6 +34,7 @@ import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getBuildTypes, getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
+import { PREINSTALLED_SNAPS } from '../../app/scripts/snaps/preinstalled-snaps';
 
 const buildTypes = getBuildTypes();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -170,6 +171,16 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: Filter out Snaps not meant to be included in this build type.
+      ...PREINSTALLED_SNAPS.map((snap) => ({
+        from: join(
+          context,
+          '../node_modules',
+          snap,
+          'dist/preinstalled-snap.json',
+        ),
+        to: `preinstalled-snaps/${snap}/preinstalled-snap.json`,
+      })),
     ],
   }),
 ];

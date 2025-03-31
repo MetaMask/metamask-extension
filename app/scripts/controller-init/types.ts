@@ -186,7 +186,7 @@ export type ControllerInitRequest<
   /**
    * A list of preinstalled Snaps loaded from disk during boot.
    */
-  preinstalledSnaps: PreinstalledSnap[]
+  preinstalledSnaps: PreinstalledSnap[];
 
   /**
    * Required initialization messenger instance.
