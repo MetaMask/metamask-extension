@@ -95,7 +95,7 @@ export function PendingApproval({ children, requestData, state, type }) {
         >
           <Box
             style={{
-              flex: '1 0 auto',
+              flex: '1 1 auto',
               display: 'flex',
             }}
           >
