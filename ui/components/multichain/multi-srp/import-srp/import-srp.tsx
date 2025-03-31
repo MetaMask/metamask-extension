@@ -280,7 +280,7 @@ export const ImportSrp = ({
         <BannerAlert
           severity={BannerAlertSeverity.Danger}
           description={srpError}
-          actionButtonLabel={'Clear'}
+          actionButtonLabel={t('clear')}
           actionButtonOnClick={() => {
             onSrpChange(Array(defaultNumberOfWords).fill(''));
             setSrpError('');

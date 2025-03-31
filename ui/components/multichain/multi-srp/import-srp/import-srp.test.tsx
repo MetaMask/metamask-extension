@@ -229,9 +229,9 @@ describe('ImportSrp', () => {
 
     // Verify all input fields are cleared
     for (let i = 0; i < 12; i++) {
-      const input = getByTestId(`import-srp__srp-word-${i}`).querySelector(
-        'input',
-      );
+      const input = getByTestId(
+        `import-multi-srp__srp-word-${i}`,
+      ).querySelector('input');
       expect(input).toHaveValue('');
     }
 
