@@ -59,8 +59,8 @@ import {
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
-import { SiteCell } from './site-cell/site-cell';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -143,9 +143,15 @@ export const ReviewPermissions = () => {
   );
 
   // TODO: Fix this typing upstream?
-  const connectedChainIds = useSelector((state) =>
+  const _connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
+
+  const connectedChainIds = _connectedChainIds.filter(chainId => {
+    // plain "wallet" value will break this
+    const { namespace } = parseCaipChainId(chainId)
+    return namespace !== KnownCaipNamespace.Wallet;
+  })
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -223,7 +229,10 @@ export const ReviewPermissions = () => {
         if (
           parsedConnectedAddress.chain.namespace !==
             parsedAddress.chain.namespace ||
-          !isEqualCaseInsensitive(parsedConnectedAddress.address, parsedAddress.address)
+          !isEqualCaseInsensitive(
+            parsedConnectedAddress.address,
+            parsedAddress.address,
+          )
         ) {
           return false;
         }
