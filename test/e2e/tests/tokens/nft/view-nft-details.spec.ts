@@ -33,7 +33,7 @@ describe('View NFT details', function () {
         await nftDetailsPage.check_nftDescriptionIsDisplayed(
           'Test Dapp NFTs for testing.',
         );
-        await nftDetailsPage.check_nftImageIsDisplayed();
+        await nftDetailsPage.check_nftImageContainerIsDisplayed();
         await nftDetailsPage.check_nftDetailsAddressIsDisplayed(
           '0x581c3...45947',
         );

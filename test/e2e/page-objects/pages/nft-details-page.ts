@@ -12,7 +12,7 @@ class NFTDetailsPage {
 
   private readonly nftDetailsName = '[data-testid="nft-details__name"]';
 
-  private readonly nftImage = '.nft-item__container';
+  private readonly nftImageContainer = '.nft-item__container';
 
   private readonly nftOptionsButton = '[data-testid="nft-options__button"]';
 
@@ -70,9 +70,11 @@ class NFTDetailsPage {
     });
   }
 
-  async check_nftImageIsDisplayed() {
-    console.log('Check if NFT image is displayed on NFT details page');
-    await this.driver.waitForSelector(this.nftImage);
+  async check_nftImageContainerIsDisplayed() {
+    console.log(
+      'Check if NFT image container is displayed on NFT details page',
+    );
+    await this.driver.waitForSelector(this.nftImageContainer);
   }
 
   async check_nftNameIsDisplayed(name: string) {

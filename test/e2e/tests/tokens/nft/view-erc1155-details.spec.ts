@@ -44,7 +44,7 @@ describe('View ERC1155 NFT details', function () {
         await nftDetailsPage.check_nftDescriptionIsDisplayed(
           'This is a collection of Rock NFTs.',
         );
-        await nftDetailsPage.check_nftImageIsDisplayed();
+        await nftDetailsPage.check_nftImageContainerIsDisplayed();
         await nftDetailsPage.check_nftDetailsAddressIsDisplayed(
           '0x581c3...45947',
         );
