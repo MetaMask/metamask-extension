@@ -69,10 +69,12 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
                 <div
                   class="network-account-balance-header__network-account__ident-icon-ethereum"
+                  style="height: 16px; width: 16px;"
                 >
                   <img
                     alt="Ethereum Mainnet"
                     src="./images/eth_logo.svg"
+                    style="height: 16px; width: 16px;"
                   />
                 </div>
               </div>
@@ -282,10 +284,12 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               </div>
               <div
                 class="network-account-balance-header__network-account__ident-icon-ethereum"
+                style="height: 16px; width: 16px;"
               >
                 <img
                   alt="Ethereum Mainnet"
                   src="./images/eth_logo.svg"
+                  style="height: 16px; width: 16px;"
                 />
               </div>
             </div>

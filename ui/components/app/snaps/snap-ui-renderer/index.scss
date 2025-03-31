@@ -104,7 +104,7 @@
   // we need to adjust the max-width to account for the content border.
   &__content {
     .snap-ui-renderer__footer {
-       @include design-system.screen-sm-min {
+      @include design-system.screen-sm-min {
         max-width: calc($width-screen-sm-min - 2px);
       }
 
