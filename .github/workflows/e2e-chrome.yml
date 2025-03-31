@@ -68,55 +68,10 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: prep-build-dist-browserify-chrome
-      # For a `pull_request` event, the branch is `github.head_ref``.
-      # For a `push` event, the branch is `github.ref_name`.
-      # GHA does not allow the : ? ternary operator, you must write && ||
-      build-command: INFURA_PROJECT_ID='FAKE' ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
 
   test-e2e-swap-playwright:
-    runs-on: ubuntu-latest
-    container:
-      image: cimg/node:22.14-browsers
-    continue-on-error: true # soft launch
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install zstd
-          sudo corepack enable
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-
-      # not installed by checkout-and-setup when cache is restored
-      - name: Install anvil
-        run: yarn foundryup
-
-      - name: Install Chromium
-        run: yarn playwright install chromium
-
-      - name: Download build artifact
-        id: download-build-artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: prep-build-dist-browserify-chrome
-          path: ./dist/
-
-      - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
-        if: ${{ steps.download-build-artifact.outcome == 'failure' }}
-        env:
-          BRANCH: ${{ github.head_ref || github.ref_name }}
-          INFURA_PROJECT_ID: 'FAKE'
-
-      - name: Run Swap E2E tests
-        run: xvfb-run yarn test:e2e:swap
-
-      - name: Upload test reports
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-e2e-swap-playwright
-          path: public/playwright/playwright-reports
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-swap-playwright
+      test-command: yarn test:e2e:swap
