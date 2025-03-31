@@ -7,7 +7,7 @@ const useFetchNftDetailsFromTokenURI = (
   const [name, setName] = useState<string>('');
 
   useEffect(() => {
-    const useFetchImage = async () => {
+    const useFetchDetails = async () => {
       if (!tokenURI) {
         return;
       }
@@ -18,15 +18,12 @@ const useFetchNftDetailsFromTokenURI = (
       }
       try {
         let rawData = await response.text();
-        console.log('Raw Response:', rawData);
         // Remove trailing commas before parsing
         // eslint-disable-next-line require-unicode-regexp
         rawData = rawData.replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
 
         // Try parsing JSON
         const data = JSON.parse(rawData);
-        console.log('Parsed JSON:', data);
-        console.log('🚀 ~ useFetchImage ~ data::::::::::::', data);
         setImage(data.image);
         setName(data.name);
       } catch {
@@ -34,7 +31,7 @@ const useFetchNftDetailsFromTokenURI = (
       }
     };
 
-    useFetchImage();
+    useFetchDetails();
   }, [tokenURI]);
 
   return { image, name };
