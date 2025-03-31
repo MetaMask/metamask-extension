@@ -5140,10 +5140,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@metamask/design-tokens@npm:5.1.0"
-  checksum: 10/84eaf9d7fd94df8bf853ab32bf1bcdfe8ef325c02ec1c2469e50a4e8818e5af34ff12ee5794a5dbc0a897711c80de2254e33df004c8f0d4772ce2d757f272896
+"@metamask/design-tokens@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/design-tokens@npm:6.0.1"
+  checksum: 10/29761650074744845551e04a701924733a4584c5c1f6099ca3c7ac5302d0ff19df697a3167034b8a70e3e5c59cb62a95c28323244583cfb3b75577e329215b7c
   languageName: node
   linkType: hard
 
@@ -6344,9 +6344,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.2.0":
-  version: 16.2.0
-  resolution: "@metamask/smart-transactions-controller@npm:16.2.0"
+"@metamask/smart-transactions-controller@npm:^16.3.0":
+  version: 16.3.0
+  resolution: "@metamask/smart-transactions-controller@npm:16.3.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6368,7 +6368,7 @@ __metadata:
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/3cf74a5ab01ce62e32d0c006d1519bdaccf3252636d83be9537c915caba049e151d981b74a58e4a1122defcf6a1d13d689d53b8f3cbbc31870d2896fa43a5b31
+  checksum: 10/0dc4fc7ce58c45af6598b8209646e8ce1eff7f31fc3fd7abe6ceae5d3ead9e4eafa7445eff6ecdc2b606fea9af30658adf5e2e15fce3bdbfdcee41bceb31795e
   languageName: node
   linkType: hard
 
@@ -6630,17 +6630,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^24.0.1":
-  version: 24.0.1
-  resolution: "@metamask/user-operation-controller@npm:24.0.1"
+"@metamask/user-operation-controller@npm:^31.0.0":
+  version: 31.0.0
+  resolution: "@metamask/user-operation-controller@npm:31.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/polling-controller": "npm:^12.0.3"
+    "@metamask/polling-controller": "npm:^13.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
@@ -6648,11 +6648,11 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/keyring-controller": ^19.0.0
-    "@metamask/network-controller": ^22.0.0
-    "@metamask/transaction-controller": ^45.0.0
-  checksum: 10/68ed675c959c44ea4316f193c8a7cbf515125dee1be60320e86b0dd042bc87212bb24c215291da20ca633171d7f820c7791aec4f160bbdd945075fa80032905f
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/transaction-controller": ^52.0.0
+  checksum: 10/a6ec2eb62c308b6e40f9e27105896c2e9ce938e1d6b4929b9a0b998d2b6a9c90b81f8cb3de1889632d591761738c8e5942975e59fbc09bb24889b7d2029987af
   languageName: node
   linkType: hard
 
@@ -8117,7 +8117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^8.33.1":
+"@sentry/browser@npm:8.33.1":
   version: 8.33.1
   resolution: "@sentry/browser@npm:8.33.1"
   dependencies:
@@ -8129,6 +8129,21 @@ __metadata:
     "@sentry/types": "npm:8.33.1"
     "@sentry/utils": "npm:8.33.1"
   checksum: 10/085717b19c89184fad0c9e17dee679401ff87616678f952d91afff574ebcc56114845c216bbbd7b81c93d54c2a42b3db4232af1c707843424cdd6800a99030a5
+  languageName: node
+  linkType: hard
+
+"@sentry/browser@patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch":
+  version: 8.33.1
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch::version=8.33.1&hash=ee8496"
+  dependencies:
+    "@sentry-internal/browser-utils": "npm:8.33.1"
+    "@sentry-internal/feedback": "npm:8.33.1"
+    "@sentry-internal/replay": "npm:8.33.1"
+    "@sentry-internal/replay-canvas": "npm:8.33.1"
+    "@sentry/core": "npm:8.33.1"
+    "@sentry/types": "npm:8.33.1"
+    "@sentry/utils": "npm:8.33.1"
+  checksum: 10/58b130febb3dd8c533334e027f387b6aabdbab8d625244aee4ccbeb86fa43bd7631c67e5dd8debba807002d0ecc7e2363e4aa6124b4fd0e9ff5820ae1b2b99d4
   languageName: node
   linkType: hard
 
@@ -27317,7 +27332,7 @@ __metadata:
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
-    "@metamask/design-tokens": "npm:^5.1.0"
+    "@metamask/design-tokens": "npm:^6.0.1"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
@@ -27376,7 +27391,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^26.0.0"
-    "@metamask/smart-transactions-controller": "npm:^16.2.0"
+    "@metamask/smart-transactions-controller": "npm:^16.3.0"
     "@metamask/snaps-controllers": "npm:^11.1.0"
     "@metamask/snaps-execution-environments": "npm:^7.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
@@ -27387,7 +27402,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
     "@metamask/transaction-controller": "npm:^52.2.0"
-    "@metamask/user-operation-controller": "npm:^24.0.1"
+    "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
     "@noble/hashes": "npm:^1.3.3"
@@ -27401,7 +27416,7 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@sentry/browser": "npm:^8.33.1"
+    "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
