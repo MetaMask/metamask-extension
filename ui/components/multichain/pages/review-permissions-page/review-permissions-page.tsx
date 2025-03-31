@@ -147,11 +147,11 @@ export const ReviewPermissions = () => {
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
 
-  const connectedChainIds = _connectedChainIds.filter(chainId => {
+  const connectedChainIds = _connectedChainIds.filter((chainId) => {
     // plain "wallet" value will break this
-    const { namespace } = parseCaipChainId(chainId)
+    const { namespace } = parseCaipChainId(chainId);
     return namespace !== KnownCaipNamespace.Wallet;
-  })
+  });
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {

@@ -4,7 +4,6 @@ import {
   type NetworkState as InternalNetworkState,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkStatus } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
