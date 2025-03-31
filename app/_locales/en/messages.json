@@ -871,6 +871,12 @@
   "bridgeToChain": {
     "message": "Bridge to $1"
   },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "We can't verify this token."
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
+  },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
   },
