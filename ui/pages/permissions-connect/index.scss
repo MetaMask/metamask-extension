@@ -8,42 +8,18 @@
 @import 'snaps/snaps-connect/index';
 
 .permissions-connect {
-  $height-screen-sm-min: 720px;
-
-  $width-screen-sm-min: 85vw;
-  $width-screen-md-min: 80vw;
-  $width-screen-lg-min: 62vw;
-
-  // prevent overflow-x
-  max-width: 100%;
+  width: 100%;
+  height: 100%;
   position: relative;
   background: var(--color-background-default);
   display: flex;
   flex-direction: column;
-  height: auto;
-  width: 100%;
-  transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
-
-  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-    margin-top: 32px;
-    margin-bottom: 32px;
-  }
 
   @include design-system.screen-sm-min {
-    width: $width-screen-sm-min;
-
     .page-container {
       max-height: none;
       min-height: auto;
     }
-  }
-
-  @include design-system.screen-md-min {
-    width: $width-screen-md-min;
-  }
-
-  @include design-system.screen-lg-min {
-    width: $width-screen-lg-min;
   }
 
   &__top-bar {
@@ -72,11 +48,5 @@
 
   .connect-page {
     background-color: var(--color-background-alternative); // main-container adds the width but overrides the boxProps. So, we need extra class to apply css
-  }
-}
-
-.permission-approval-container {
-  .page-container__footer {
-    border-top: 0;
   }
 }
