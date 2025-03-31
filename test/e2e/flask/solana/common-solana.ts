@@ -1696,8 +1696,8 @@ export async function withSolanaAccountSnap(
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithoutBalanceValidation(driver);
-      const headerComponen = new HeaderNavbar(driver);
-      await headerComponen.openAccountMenu();
+      const headerComponent = new HeaderNavbar(driver);
+      await headerComponent.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       if (!importAccount) {
         await accountListPage.addAccount({
@@ -1705,6 +1705,7 @@ export async function withSolanaAccountSnap(
           accountName: 'Solana 1',
         });
       }
+      await headerComponent.check_accountLabel('Solana 1');
       await test(driver, mockServer);
     },
   );
