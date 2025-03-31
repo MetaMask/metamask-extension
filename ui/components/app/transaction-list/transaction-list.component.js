@@ -684,7 +684,10 @@ const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
               />
             }
           >
-            <TransactionIcon category={TransactionGroupCategory.redeposit} status={statusKey} />
+            <TransactionIcon
+              category={TransactionGroupCategory.redeposit}
+              status={statusKey}
+            />
           </BadgeWrapper>
         }
         title={t('redeposit')}
