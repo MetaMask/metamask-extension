@@ -15,6 +15,7 @@ import {
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
+  TokenRatesController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
@@ -75,7 +76,8 @@ export type Controller =
       state: Record<string, unknown>;
     })
   | SamplePetnamesController
-  | UserStorageController;
+  | UserStorageController
+  | TokenRatesController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -106,4 +108,5 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapInterfaceController['state'] &
   TransactionController['state'] &
   SwapsController['state'] &
-  UserStorageController['state'];
+  UserStorageController['state'] &
+  TokenRatesController['state'];

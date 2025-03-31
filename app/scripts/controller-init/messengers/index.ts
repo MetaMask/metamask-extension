@@ -30,6 +30,7 @@ import {
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
 } from './identity';
+import { getTokenRatesControllerMessenger } from './assets';
 import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
@@ -110,6 +111,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
+    getInitMessenger: noop,
+  },
+  TokenRatesController: {
+    getMessenger: getTokenRatesControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;
