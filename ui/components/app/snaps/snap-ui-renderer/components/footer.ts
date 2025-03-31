@@ -25,6 +25,8 @@ export const DEFAULT_FOOTER = {
     style: {
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       height: '80px',
+      position: 'fixed',
+      bottom: 0,
     },
   },
 };

@@ -71,7 +71,7 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
             { ...buttonAddressValue }
           ) : (
             <Text
-              color={valueColor || TextColor.textAlternative}
+              color={valueColor || TextColor.textDefault}
               variant={TextVariant.bodyMdMedium}
             >
               {value}
@@ -81,7 +81,7 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
         </Box>
       ) : (
         <Text
-          color={valueColor || TextColor.textAlternative}
+          color={valueColor || TextColor.textDefault}
           variant={TextVariant.bodyMdMedium}
         >
           {withPopover && fullValue ? (
