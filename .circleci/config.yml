@@ -175,11 +175,6 @@ workflows:
           requires:
             - prep-build
       - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - main
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
       - validate-source-maps:
