@@ -367,11 +367,11 @@ export function NftDetailsComponent({
     if (text.length <= MAX_TOKEN_ID_LENGTH) {
       return text;
     }
-
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
+
   return (
     <Page>
       <Content className="nft-details__content">
