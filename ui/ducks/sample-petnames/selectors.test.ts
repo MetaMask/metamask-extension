@@ -4,7 +4,6 @@ import {
   getSamplePetnamesByChainIdAndAddress,
   getPetnamesForCurrentChain,
 } from './selectors';
-import { SamplePetnamesControllerState } from '@metamask/sample-controllers';
 
 const mockAddress1 = '0xabc' as Hex;
 const mockAddress2 = '0xdef' as Hex;
