@@ -162,7 +162,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
   const currentlySelectedNetworkChainId =
-    currentlySelectedNetwork.network.chainId;
+    currentlySelectedNetwork.chainId;
   // If globally selected network is a test network, include that in the default selected networks for connection request
   const selectedTestNetwork = testNetworkConfigurations.find(
     (network: { caipChainId: CaipChainId }) =>
@@ -179,6 +179,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     supportedRequestedCaipChainIds.length > 0
       ? supportedRequestedCaipChainIds
       : defaultSelectedNetworkList;
+
+  console.log({currentlySelectedNetworkChainId, selectedTestNetwork, defaultSelectedNetworkList, defaultSelectedChainIds})
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
     defaultSelectedChainIds as CaipChainId[],
