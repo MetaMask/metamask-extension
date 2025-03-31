@@ -95,8 +95,8 @@ describe('Upgrade Account', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check the batch transaction has been successfully perform
-        // which included x2 simple sends of 0.001ETH
+        // Check the batch transaction has been successfully performed
+        // which included x2 simple sends of 0.001ETH, so the ETH balance should also be updated
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
