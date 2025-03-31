@@ -1,5 +1,8 @@
 import { Messenger } from '@metamask/base-controller';
-import { GetSnap } from '@metamask/snaps-controllers';
+import {
+  AccountsControllerListMultichainAccountsAction,
+  GetSnap,
+} from '@metamask/snaps-controllers';
 import {
   AcceptRequest,
   HasApprovalRequest,
@@ -20,7 +23,8 @@ type Actions =
   | GetSnap
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
-  | AccountsControllerGetAccountByAddressAction;
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerListMultichainAccountsAction;
 
 type Events = NotificationListUpdatedEvent;
 
@@ -50,6 +54,7 @@ export function getSnapInterfaceControllerMessenger(
       'MultichainAssetsController:getState',
       `AccountsController:getSelectedMultichainAccount`,
       `AccountsController:getAccountByAddress`,
+      `AccountsController:listMultichainAccounts`,
     ],
     allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
   });

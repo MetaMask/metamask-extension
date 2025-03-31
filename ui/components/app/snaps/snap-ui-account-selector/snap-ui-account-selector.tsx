@@ -11,7 +11,6 @@ import { EthScope } from '@metamask/keyring-api';
 import { createAccountList } from '@metamask/snaps-utils';
 import { SnapUISelector } from '../snap-ui-selector';
 import {
-  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   InternalAccountWithBalance,
 } from '../../../../selectors';
@@ -92,12 +91,7 @@ export const SnapUIAccountSelector: FunctionComponent<
   }));
 
   const optionComponents = filteredAccounts.map((account, index) => (
-    <AccountListItem
-      account={account}
-      selected={false}
-      key={index}
-      menuType="none"
-    />
+    <AccountListItem account={account} selected={false} key={index} />
   ));
 
   const handleSelect = (value: State) => {
@@ -110,6 +104,7 @@ export const SnapUIAccountSelector: FunctionComponent<
 
   return (
     <SnapUISelector
+      className="snap-ui-renderer__account-selector"
       title={'Select account'}
       options={options}
       {...props}
