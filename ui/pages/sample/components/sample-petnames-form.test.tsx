@@ -82,7 +82,7 @@ describe('SamplePetnamesForm', () => {
       }));
 
     return {
-      handleSubmit: jest.fn(),
+      handleSubmit: mockFunctions.handleSubmit,
       touched: { address: false, petname: false },
       getFieldProps: mockGetFieldProps,
       ...resultPartial,
