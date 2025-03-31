@@ -301,6 +301,8 @@ describe('Swap', function () {
           await swapPage.check_pageIsLoaded();
           await swapPage.enterSwapAmount(testCase.sourceAmount);
           await swapPage.selectDestinationToken(testCase.destinationToken);
+
+          // https://github.com/MetaMask/metamask-extension/issues/31426
           if (testCase.dismissWarning) {
             await swapPage.dismissManualTokenWarning();
           }
@@ -311,6 +313,12 @@ describe('Swap', function () {
             testCase.expectedWethBalance,
             'WETH',
           );
+
+          // https://github.com/MetaMask/metamask-extension/issues/31427
+          // await homePage.check_expectedTokenBalanceIsDisplayed(
+          //   testCase.expectedEthBalance,
+          //   'ETH',
+          // );
         },
       );
     });
