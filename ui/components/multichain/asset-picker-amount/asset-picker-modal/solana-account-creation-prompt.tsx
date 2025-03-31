@@ -35,14 +35,20 @@ export const SolanaAccountCreationPrompt = ({
   );
   const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
   const [isCreating, setIsCreating] = React.useState(false);
-
   const handleCreateAccount = useCallback(async () => {
     try {
       setIsCreating(true);
-      await solanaWalletSnapClient.createAccount({
-        scope: MultichainNetworks.SOLANA,
-        entropySource: primaryKeyring.metadata.id,
-      });
+      await solanaWalletSnapClient.createAccount(
+        {
+          scope: MultichainNetworks.SOLANA,
+          entropySource: primaryKeyring?.metadata?.id,
+        },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        },
+      );
       onSuccess();
     } catch (error) {
       console.error('Error creating Solana account:', error);
