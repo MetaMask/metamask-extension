@@ -69,8 +69,8 @@ import { MultichainTransactionDetailsModal } from '../multichain-transaction-det
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
 import {
-  BackgroundColor,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  BackgroundColor,
   Display,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
@@ -95,6 +95,7 @@ import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -106,7 +107,6 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 
 const PAGE_INCREMENT = 10;
 
@@ -711,6 +711,7 @@ const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
 
     return (
       <ActivityListItem
+        key={index}
         className="custom-class"
         data-testid="activity-list-item"
         onClick={() => toggleShowDetails(transaction)}
@@ -789,7 +790,6 @@ const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
 
 MultichainTransactionListItem.propTypes = {
   transaction: PropTypes.object.isRequired,
-  userAddress: PropTypes.string.isRequired,
   toggleShowDetails: PropTypes.func.isRequired,
 };
 

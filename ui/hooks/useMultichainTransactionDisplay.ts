@@ -90,8 +90,8 @@ function aggregateAmount(
   }
 
   // Convert to a proper display array.
-  return Object.entries(amountByAsset).map(([_, movement]) =>
-    parseAsset(chainId, movement, locale, isNegative),
+  return Object.entries(amountByAsset).map(([_, mv]) =>
+    parseAsset(chainId, mv, locale, isNegative),
   );
 }
 
