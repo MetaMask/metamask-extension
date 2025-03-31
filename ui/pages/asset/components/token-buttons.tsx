@@ -70,6 +70,7 @@ import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hoo
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import type { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -92,8 +93,7 @@ const TokenButtons = ({
   const { chainId: multichainChainId } =
     useMultichainSelector(getMultichainNetwork);
 
-  const network = useSelector(getMultichainNetwork);
-  const currentChainId = network.chainId;
+  const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
