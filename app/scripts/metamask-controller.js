@@ -2702,6 +2702,7 @@ export default class MetamaskController extends EventEmitter {
    * becomes unlocked are handled in MetaMaskController._onUnlock.
    */
   setupControllerEventSubscriptions() {
+    console.log('setupControllerEventSubscriptions .......');
     let lastSelectedAddress;
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -2815,6 +2816,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
+        console.log('currentValue .......', currentValue);
         const changedChains = diffMap(currentValue, previousValue);
 
         // This operates under the assumption that there will be at maximum
@@ -2822,16 +2824,22 @@ export default class MetamaskController extends EventEmitter {
         for (const [origin, chains] of changedChains.entries()) {
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-          const { chainId: currentChainIdForOrigin } =
+
+          const networkConfig =
             this.networkController.getNetworkConfigurationByNetworkClientId(
               currentNetworkClientIdForOrigin,
             );
-          // if(chains.length === 0) {
-          // TODO: This particular case should also occur at the same time
-          // that eth_accounts is revoked. When eth_accounts is revoked,
-          // the networkClientId for that origin should be reset to track
-          // the globally selected network.
-          // }
+
+          // Guard clause: skip this iteration or handle the case if networkConfig is undefined.
+          if (!networkConfig) {
+            log.warn(
+              `No network configuration found for clientId: ${currentNetworkClientIdForOrigin}`,
+            );
+            continue;
+          }
+
+          const { chainId: currentChainIdForOrigin } = networkConfig;
+
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
