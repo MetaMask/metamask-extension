@@ -77,7 +77,7 @@ jobs:
   test-e2e-swap-playwright:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.50.0-noble
+      image: cimg/node:22.14-browsers
     continue-on-error: true # soft launch
     steps:
       - name: Checkout and setup environment
