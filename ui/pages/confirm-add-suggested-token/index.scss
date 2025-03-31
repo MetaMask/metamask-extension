@@ -74,8 +74,14 @@
       padding: 16px;
     }
 
+    &__header {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
     &__title {
       text-align: center;
+      margin: 0;
     }
   }
 }
