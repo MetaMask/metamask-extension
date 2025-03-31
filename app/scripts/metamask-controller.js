@@ -2702,7 +2702,6 @@ export default class MetamaskController extends EventEmitter {
    * becomes unlocked are handled in MetaMaskController._onUnlock.
    */
   setupControllerEventSubscriptions() {
-    console.log('setupControllerEventSubscriptions .......');
     let lastSelectedAddress;
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -2816,7 +2815,6 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
-        console.log('currentValue .......', currentValue);
         const changedChains = diffMap(currentValue, previousValue);
 
         // This operates under the assumption that there will be at maximum
