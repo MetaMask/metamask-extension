@@ -47,7 +47,6 @@ type ExperimentalTabProps = {
   setAddSnapAccountEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
   petnamesEnabled: boolean;
-  setPetnamesEnabled: (value: boolean) => void;
   featureNotificationsEnabled: boolean;
   setFeatureNotificationsEnabled: (value: boolean) => void;
 };
@@ -124,21 +123,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </div>
       </Box>
     );
-  }
-
-  renderTogglePetnames() {
-    const { t } = this.context;
-    const { petnamesEnabled, setPetnamesEnabled } = this.props;
-
-    return this.renderToggleSection({
-      title: t('petnamesEnabledToggle'),
-      description: t('petnamesEnabledToggleDescription'),
-      toggleValue: petnamesEnabled,
-      toggleCallback: (value) => setPetnamesEnabled(!value),
-      toggleDataTestId: 'toggle-petnames',
-      toggleOffLabel: t('off'),
-      toggleOnLabel: t('on'),
-    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -322,7 +306,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderTogglePetnames()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {/* Section: Account Management Snaps */}
         {

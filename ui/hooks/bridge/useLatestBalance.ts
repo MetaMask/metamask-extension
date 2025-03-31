@@ -1,8 +1,15 @@
-import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
+import {
+  isSolanaChainId,
+  calcLatestSrcBalance,
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  ChainId,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
 import { getSelectedInternalAccount } from '../../selectors';
-import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { useMultichainSelector } from '../useMultichainSelector';
@@ -10,13 +17,12 @@ import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
  *
  * @param token - The token object for which the balance is to be fetched. Can be null.
- * @param chainId - The chain ID to be used for fetching the balance. Optional.
  * @returns An object containing the balanceAmount as a string.
  */
 const useLatestBalance = (
@@ -25,8 +31,9 @@ const useLatestBalance = (
     decimals: number;
     symbol: string;
     string?: string;
+    chainId?: Hex | CaipChainId | ChainId;
+    assetId?: string;
   } | null,
-  chainId?: Hex | CaipChainId,
 ) => {
   const { address: selectedAddress, id } = useMultichainSelector(
     getSelectedInternalAccount,
@@ -39,44 +46,43 @@ const useLatestBalance = (
 
   const nonEvmBalances = nonEvmBalancesByAccountId?.[id];
 
-  const value = useAsyncResult<Numeric | undefined>(async () => {
-    if (
-      token?.address &&
-      // TODO check whether chainId is EVM when MultichainNetworkController is integrated
-      !isCaipChainId(chainId) &&
-      chainId &&
-      currentChainId === chainId
-    ) {
-      return await calcLatestSrcBalance(
-        global.ethereumProvider,
-        selectedAddress,
-        token.address,
-        chainId,
-      );
+  const value = useAsyncResult<string | undefined>(async () => {
+    if (!token?.chainId || !token) {
+      return undefined;
     }
+
+    const { chainId } = token;
 
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
     // multichain balances controller
-    if (
-      isCaipChainId(chainId) &&
-      chainId === MultichainNetworks.SOLANA &&
-      token?.decimals
-    ) {
+    if (isSolanaChainId(chainId) && token.decimals) {
+      const caipAssetType = isNativeAddress(token.address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : token.assetId ?? token.address;
       return Numeric.from(
-        nonEvmBalances?.[token.address]?.amount ?? token?.string,
+        nonEvmBalances?.[caipAssetType]?.amount ?? token?.string,
         10,
-      ).shiftedBy(-1 * token.decimals);
+      )
+        .shiftedBy(-1 * token.decimals)
+        .toString();
+    }
+
+    if (
+      token.address &&
+      formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId)
+    ) {
+      return (
+        await calcLatestSrcBalance(
+          global.ethereumProvider,
+          selectedAddress,
+          token.address,
+          formatChainIdToHex(chainId),
+        )
+      )?.toString();
     }
 
     return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-    nonEvmBalances,
-  ]);
+  }, [currentChainId, token, selectedAddress, nonEvmBalances]);
 
   if (token && !token.decimals) {
     throw new Error(
@@ -86,10 +92,8 @@ const useLatestBalance = (
 
   return useMemo(
     () =>
-      value?.value
-        ? calcTokenAmount(value.value.toString(), token?.decimals)
-        : undefined,
-    [value.value, token?.decimals],
+      value?.value ? calcTokenAmount(value.value, token?.decimals) : undefined,
+    [value?.value, token?.decimals],
   );
 };
 

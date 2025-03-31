@@ -17,7 +17,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },

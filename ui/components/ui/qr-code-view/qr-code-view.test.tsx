@@ -42,7 +42,6 @@ describe('QRCodeView', () => {
     expect(qrCodeImage).toBeInTheDocument();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     {
       test: 'lowercased ETH address to checksummed',

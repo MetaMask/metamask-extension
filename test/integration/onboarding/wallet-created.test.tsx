@@ -1,5 +1,6 @@
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
+import { BridgeBackgroundAction } from '@metamask/bridge-controller';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import { integrationTestRender } from '../../lib/render-helpers';
 import * as backgroundConnection from '../../../ui/store/background-connection';
@@ -13,7 +14,6 @@ import {
   waitForElementById,
   waitForElementByText,
 } from '../helpers';
-import { BridgeBackgroundAction } from '../../../shared/types/bridge';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -101,6 +101,7 @@ describe('Wallet Created Events', () => {
           event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
             method: mockMetaMaskState.firstTimeFlowType,
+            hd_entropy_index: 0,
           },
         }),
       ]),

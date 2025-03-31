@@ -465,14 +465,6 @@ const SETTINGS_CONSTANTS = [
   // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('petnamesEnabledToggle'),
-    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[1]
-  {
-    tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('notificationsFeatureToggle'),
     descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
@@ -528,6 +520,24 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('bitcoinSupportToggleTitle'),
+    descriptionMessage: (t) => t('bitcoinSupportToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#bitcoin-support`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('watchEthereumAccountsToggle'),
+    descriptionMessage: (t) => t('watchEthereumAccountsDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#watch-only`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;

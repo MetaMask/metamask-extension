@@ -19,7 +19,7 @@ describe('Request Queueing chainId proxy sync', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         localNodeOptions: [

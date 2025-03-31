@@ -86,6 +86,10 @@ describe('EIP-5792', () => {
 
   let getDisabledAccountUpgradeChainsMock: jest.MockedFn<() => Hex[]>;
 
+  let validateSecurityMock: jest.MockedFunction<
+    Parameters<typeof processSendCalls>[0]['validateSecurity']
+  >;
+
   let messenger: EIP5792Messenger;
 
   beforeEach(() => {
@@ -95,6 +99,7 @@ describe('EIP-5792', () => {
     getTransactionControllerStateMock = jest.fn();
     getNetworkClientByIdMock = jest.fn();
     getDisabledAccountUpgradeChainsMock = jest.fn();
+    validateSecurityMock = jest.fn();
 
     messenger = new Messenger();
 
@@ -117,6 +122,7 @@ describe('EIP-5792', () => {
     addTransactionBatchMock.mockResolvedValue({
       batchId: BATCH_ID_MOCK,
     });
+
     getDisabledAccountUpgradeChainsMock.mockReturnValue([]);
   });
 
@@ -126,6 +132,7 @@ describe('EIP-5792', () => {
         {
           addTransactionBatch: addTransactionBatchMock,
           getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          validateSecurity: validateSecurityMock,
         },
         messenger,
         SEND_CALLS_MOCK,
@@ -136,7 +143,9 @@ describe('EIP-5792', () => {
         from: SEND_CALLS_MOCK.from,
         networkClientId: NETWORK_CLIENT_ID_MOCK,
         origin: ORIGIN_MOCK,
+        securityAlertId: expect.any(String),
         transactions: [{ params: SEND_CALLS_MOCK.calls[0] }],
+        validateSecurity: expect.any(Function),
       });
     });
 
@@ -147,6 +156,7 @@ describe('EIP-5792', () => {
             addTransactionBatch: addTransactionBatchMock,
             getDisabledAccountUpgradeChains:
               getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
           },
           messenger,
           SEND_CALLS_MOCK,
@@ -162,6 +172,7 @@ describe('EIP-5792', () => {
             addTransactionBatch: addTransactionBatchMock,
             getDisabledAccountUpgradeChains:
               getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
           },
           messenger,
           { ...SEND_CALLS_MOCK, version: '2.0' },
@@ -177,6 +188,7 @@ describe('EIP-5792', () => {
             addTransactionBatch: addTransactionBatchMock,
             getDisabledAccountUpgradeChains:
               getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
           },
           messenger,
           { ...SEND_CALLS_MOCK, chainId: CHAIN_ID_2_MOCK },
@@ -196,6 +208,7 @@ describe('EIP-5792', () => {
             addTransactionBatch: addTransactionBatchMock,
             getDisabledAccountUpgradeChains:
               getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
           },
           messenger,
           SEND_CALLS_MOCK,
@@ -213,6 +226,7 @@ describe('EIP-5792', () => {
             addTransactionBatch: addTransactionBatchMock,
             getDisabledAccountUpgradeChains:
               getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
           },
           messenger,
           {
@@ -235,6 +249,7 @@ describe('EIP-5792', () => {
             addTransactionBatch: addTransactionBatchMock,
             getDisabledAccountUpgradeChains:
               getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
           },
           messenger,
           {
@@ -371,7 +386,6 @@ describe('EIP-5792', () => {
       );
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       TransactionStatus.approved,
       TransactionStatus.signed,

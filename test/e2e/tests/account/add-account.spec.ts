@@ -13,10 +13,14 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
 describe('Add account', function () {
+  const localNodeOptions = {
+    accounts: 1,
+  };
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -86,6 +90,7 @@ describe('Add account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

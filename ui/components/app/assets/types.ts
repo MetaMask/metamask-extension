@@ -35,6 +35,7 @@ export type NonEvmBaseToken = {
 // Token type with optional aggregators
 export type Token = (BaseToken | NonEvmBaseToken) & {
   aggregators?: string[];
+  name?: string;
 };
 
 // Token with balance and optional display values

@@ -16,7 +16,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [

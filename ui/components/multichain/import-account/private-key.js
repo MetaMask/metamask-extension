@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   FormTextField,
   TextFieldSize,
@@ -8,6 +8,7 @@ import {
 } from '../../component-library';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import * as actions from '../../../store/actions';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
@@ -16,10 +17,17 @@ export default function PrivateKeyImportView({
   onActionComplete,
 }) {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const [privateKey, setPrivateKey] = useState('');
   const [showPrivateKey, setShowPrivateKey] = useState(false);
 
   const warning = useSelector((state) => state.appState.warning);
+
+  useEffect(() => {
+    return () => {
+      dispatch(actions.hideWarning());
+    };
+  }, [dispatch]);
 
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {

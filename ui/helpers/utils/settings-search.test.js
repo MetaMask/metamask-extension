@@ -138,6 +138,10 @@ const t = (key) => {
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
       return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
+    case 'watch-only':
+      return 'Watch Ethereum Accounts (Beta)';
+    case 'bitcoin-support':
+      return 'Enable "Add a new Bitcoin account (Beta)"';
     default:
       return '';
   }
@@ -182,7 +186,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        3,
+        4,
       );
     });
 

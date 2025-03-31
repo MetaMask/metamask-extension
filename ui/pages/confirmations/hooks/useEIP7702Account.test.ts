@@ -73,11 +73,10 @@ describe('useEIP7702Account', () => {
       expect(result).toBe(true);
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
-      async (code: string) => {
-        getCodeMock.mockResolvedValue(code);
+      async (code) => {
+        getCodeMock.mockResolvedValue(code as string);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);
       },

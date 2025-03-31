@@ -32,9 +32,7 @@ export default class TransactionListItemDetails extends PureComponent {
     trackEvent: PropTypes.func,
   };
 
-  static defaultProps = {
-    recipientEns: null,
-  };
+  static defaultProps = {};
 
   static propTypes = {
     onCancel: PropTypes.func,
@@ -47,14 +45,11 @@ export default class TransactionListItemDetails extends PureComponent {
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
-    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientName: PropTypes.string,
-    recipientMetadataName: PropTypes.string,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
-    recipientNickname: PropTypes.string,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
     showErrorBanner: PropTypes.bool,
@@ -160,16 +155,13 @@ export default class TransactionListItemDetails extends PureComponent {
       primaryCurrency,
       showSpeedUp,
       showRetry,
-      recipientEns,
       recipientAddress,
       recipientName,
-      recipientMetadataName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
       title,
       onClose,
-      recipientNickname,
       showCancel,
       showErrorBanner,
       transactionStatus: TransactionStatus,
@@ -273,11 +265,8 @@ export default class TransactionListItemDetails extends PureComponent {
                 warnUserOnAccountMismatch={false}
                 variant={DEFAULT_VARIANT}
                 addressOnly
-                recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
-                recipientNickname={recipientNickname}
                 recipientName={recipientName}
-                recipientMetadataName={recipientMetadataName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 chainId={chainId}

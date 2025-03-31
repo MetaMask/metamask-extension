@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -18,12 +19,28 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import TransactionList from './transaction-list.component';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: '0xefga64466f257793eaa52fcfff5066894b76a149',
+  id: 'id-account',
+});
 
 const defaultState = {
   metamask: {
     ...mockState.metamask,
-    transactions: [],
+    transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
+    incomingTransactionsPreferences: {
+      [CHAIN_IDS.POLYGON]: {
+        enabled: true,
+      },
+    },
+    internalAccounts: {
+      accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+      selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+    },
   },
 };
 
@@ -219,6 +236,24 @@ describe('TransactionList', () => {
     const { container } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList hideNetworkFilter />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders TransactionList component with props hideTokenTransactions correctly', () => {
+    const defaultState2 = {
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.swap]],
+      },
+    };
+    const store = configureStore(defaultState2);
+    const { container } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideTokenTransactions />
       </MetaMetricsContext.Provider>,
       store,
     );

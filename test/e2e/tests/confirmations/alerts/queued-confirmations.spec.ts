@@ -36,7 +36,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -84,7 +84,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
 
             .withSelectedNetworkControllerPerDomain()
             .build(),
@@ -140,7 +140,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withPermissionControllerConnectedToTestDapp()
             .withSelectedNetworkControllerPerDomain()
             .build(),
@@ -195,7 +195,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
 
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
@@ -284,7 +284,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withPermissionControllerConnectedToTestDapp()
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({

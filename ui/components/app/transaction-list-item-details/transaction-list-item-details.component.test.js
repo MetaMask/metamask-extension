@@ -57,7 +57,7 @@ const render = (overrideProps) => {
   const props = {
     onClose: jest.fn(),
     title: 'Test Transaction Details',
-    recipientAddress: '0xAddress',
+    recipientAddress: '0x0000000000000000000000000000000000000000',
     senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tryReverseResolveAddress: jest.fn(),
     transactionGroup,

@@ -1,0 +1,232 @@
+diff --git a/build/npm/cjs/utils/lazyLoadIntegration.js b/build/npm/cjs/utils/lazyLoadIntegration.js
+index 86f79fac68b4510bc0a0058c25d0b34774ef44ed..d610f3c39104fd2243af9bdac6bde1f30120741f 100644
+--- a/build/npm/cjs/utils/lazyLoadIntegration.js
++++ b/build/npm/cjs/utils/lazyLoadIntegration.js
+@@ -1,32 +1,3 @@
+-Object.defineProperty(exports, '__esModule', { value: true });
+-
+-const core = require('@sentry/core');
+-const helpers = require('../helpers.js');
+-
+-// This is a map of integration function method to bundle file name.
+-const LazyLoadableIntegrations = {
+-  replayIntegration: 'replay',
+-  replayCanvasIntegration: 'replay-canvas',
+-  feedbackIntegration: 'feedback',
+-  feedbackModalIntegration: 'feedback-modal',
+-  feedbackScreenshotIntegration: 'feedback-screenshot',
+-  captureConsoleIntegration: 'captureconsole',
+-  contextLinesIntegration: 'contextlines',
+-  linkedErrorsIntegration: 'linkederrors',
+-  debugIntegration: 'debug',
+-  dedupeIntegration: 'dedupe',
+-  extraErrorDataIntegration: 'extraerrordata',
+-  httpClientIntegration: 'httpclient',
+-  reportingObserverIntegration: 'reportingobserver',
+-  rewriteFramesIntegration: 'rewriteframes',
+-  sessionTimingIntegration: 'sessiontiming',
+-  browserProfilingIntegration: 'browserprofiling',
+-} ;
+-
+-const WindowWithMaybeIntegration = helpers.WINDOW
+-
+-;
+-
+ /**
+  * Lazy load an integration from the CDN.
+  * Rejects if the integration cannot be loaded.
+@@ -35,70 +6,7 @@ async function lazyLoadIntegration(
+   name,
+   scriptNonce,
+ ) {
+-  const bundle = LazyLoadableIntegrations[name];
+-
+-  // `window.Sentry` is only set when using a CDN bundle, but this method can also be used via the NPM package
+-  const sentryOnWindow = (WindowWithMaybeIntegration.Sentry = WindowWithMaybeIntegration.Sentry || {});
+-
+-  if (!bundle) {
+-    throw new Error(`Cannot lazy load integration: ${name}`);
+-  }
+-
+-  // Bail if the integration already exists
+-  const existing = sentryOnWindow[name];
+-  // The `feedbackIntegration` is loaded by default in the CDN bundles,
+-  // so we need to differentiate between the real integration and the shim.
+-  // if only the shim exists, we still want to lazy load the real integration.
+-  if (typeof existing === 'function' && !('_isShim' in existing)) {
+-    return existing;
+-  }
+-
+-  const url = getScriptURL(bundle);
+-  const script = helpers.WINDOW.document.createElement('script');
+-  script.src = url;
+-  script.crossOrigin = 'anonymous';
+-  script.referrerPolicy = 'origin';
+-
+-  if (scriptNonce) {
+-    script.setAttribute('nonce', scriptNonce);
+-  }
+-
+-  const waitForLoad = new Promise((resolve, reject) => {
+-    script.addEventListener('load', () => resolve());
+-    script.addEventListener('error', reject);
+-  });
+-
+-  const currentScript = helpers.WINDOW.document.currentScript;
+-  const parent = helpers.WINDOW.document.body || helpers.WINDOW.document.head || (currentScript && currentScript.parentElement);
+-
+-  if (parent) {
+-    parent.appendChild(script);
+-  } else {
+-    throw new Error(`Could not find parent element to insert lazy-loaded ${name} script`);
+-  }
+-
+-  try {
+-    await waitForLoad;
+-  } catch (e) {
+-    throw new Error(`Error when loading integration: ${name}`);
+-  }
+-
+-  const integrationFn = sentryOnWindow[name];
+-
+-  if (typeof integrationFn !== 'function') {
+-    throw new Error(`Could not load integration: ${name}`);
+-  }
+-
+-  return integrationFn;
+-}
+-
+-function getScriptURL(bundle) {
+-  const client = core.getClient();
+-  const options = client && client.getOptions();
+-  const baseURL = (options && options.cdnBaseUrl) || 'https://browser.sentry-cdn.com';
+-
+-  return new URL(`/${core.SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
++  throw new Error(`Use of @sentry/browser's lazyLoadIntegration function is not supported by MetaMask Extension`);
+ }
+ 
+ exports.lazyLoadIntegration = lazyLoadIntegration;
+-//# sourceMappingURL=lazyLoadIntegration.js.map
+diff --git a/build/npm/cjs/utils/lazyLoadIntegration.js.map b/build/npm/cjs/utils/lazyLoadIntegration.js.map
+deleted file mode 100644
+index a986182d53d09364e855b7037b0e9fb6e790df8d..0000000000000000000000000000000000000000
+--- a/build/npm/cjs/utils/lazyLoadIntegration.js.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"lazyLoadIntegration.js","sources":["../../../../src/utils/lazyLoadIntegration.ts"],"sourcesContent":["import { SDK_VERSION, getClient } from '@sentry/core';\nimport type { IntegrationFn } from '@sentry/types';\nimport type { BrowserClient } from '../client';\nimport { WINDOW } from '../helpers';\n\n// This is a map of integration function method to bundle file name.\nconst LazyLoadableIntegrations = {\n  replayIntegration: 'replay',\n  replayCanvasIntegration: 'replay-canvas',\n  feedbackIntegration: 'feedback',\n  feedbackModalIntegration: 'feedback-modal',\n  feedbackScreenshotIntegration: 'feedback-screenshot',\n  captureConsoleIntegration: 'captureconsole',\n  contextLinesIntegration: 'contextlines',\n  linkedErrorsIntegration: 'linkederrors',\n  debugIntegration: 'debug',\n  dedupeIntegration: 'dedupe',\n  extraErrorDataIntegration: 'extraerrordata',\n  httpClientIntegration: 'httpclient',\n  reportingObserverIntegration: 'reportingobserver',\n  rewriteFramesIntegration: 'rewriteframes',\n  sessionTimingIntegration: 'sessiontiming',\n  browserProfilingIntegration: 'browserprofiling',\n} as const;\n\nconst WindowWithMaybeIntegration = WINDOW as {\n  Sentry?: Partial<Record<keyof typeof LazyLoadableIntegrations, IntegrationFn>>;\n};\n\n/**\n * Lazy load an integration from the CDN.\n * Rejects if the integration cannot be loaded.\n */\nexport async function lazyLoadIntegration(\n  name: keyof typeof LazyLoadableIntegrations,\n  scriptNonce?: string,\n): Promise<IntegrationFn> {\n  const bundle = LazyLoadableIntegrations[name];\n\n  // `window.Sentry` is only set when using a CDN bundle, but this method can also be used via the NPM package\n  const sentryOnWindow = (WindowWithMaybeIntegration.Sentry = WindowWithMaybeIntegration.Sentry || {});\n\n  if (!bundle) {\n    throw new Error(`Cannot lazy load integration: ${name}`);\n  }\n\n  // Bail if the integration already exists\n  const existing = sentryOnWindow[name];\n  // The `feedbackIntegration` is loaded by default in the CDN bundles,\n  // so we need to differentiate between the real integration and the shim.\n  // if only the shim exists, we still want to lazy load the real integration.\n  if (typeof existing === 'function' && !('_isShim' in existing)) {\n    return existing;\n  }\n\n  const url = getScriptURL(bundle);\n  const script = WINDOW.document.createElement('script');\n  script.src = url;\n  script.crossOrigin = 'anonymous';\n  script.referrerPolicy = 'origin';\n\n  if (scriptNonce) {\n    script.setAttribute('nonce', scriptNonce);\n  }\n\n  const waitForLoad = new Promise<void>((resolve, reject) => {\n    script.addEventListener('load', () => resolve());\n    script.addEventListener('error', reject);\n  });\n\n  const currentScript = WINDOW.document.currentScript;\n  const parent = WINDOW.document.body || WINDOW.document.head || (currentScript && currentScript.parentElement);\n\n  if (parent) {\n    parent.appendChild(script);\n  } else {\n    throw new Error(`Could not find parent element to insert lazy-loaded ${name} script`);\n  }\n\n  try {\n    await waitForLoad;\n  } catch {\n    throw new Error(`Error when loading integration: ${name}`);\n  }\n\n  const integrationFn = sentryOnWindow[name];\n\n  if (typeof integrationFn !== 'function') {\n    throw new Error(`Could not load integration: ${name}`);\n  }\n\n  return integrationFn;\n}\n\nfunction getScriptURL(bundle: string): string {\n  const client = getClient<BrowserClient>();\n  const options = client && client.getOptions();\n  const baseURL = (options && options.cdnBaseUrl) || 'https://browser.sentry-cdn.com';\n\n  return new URL(`/${SDK_VERSION}/${bundle}.min.js`, baseURL).toString();\n}\n"],"names":["WINDOW","getClient","SDK_VERSION"],"mappings":"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"}
+\ No newline at end of file
+diff --git a/build/npm/esm/utils/lazyLoadIntegration.js b/build/npm/esm/utils/lazyLoadIntegration.js
+index d945bcc68c00a67d7356d5fea4ca275ee3994c5e..742e572f1f5d4fe63679238efcb397f2dd920904 100644
+--- a/build/npm/esm/utils/lazyLoadIntegration.js
++++ b/build/npm/esm/utils/lazyLoadIntegration.js
+@@ -1,30 +1,3 @@
+-import { getClient, SDK_VERSION } from '@sentry/core';
+-import { WINDOW } from '../helpers.js';
+-
+-// This is a map of integration function method to bundle file name.
+-const LazyLoadableIntegrations = {
+-  replayIntegration: 'replay',
+-  replayCanvasIntegration: 'replay-canvas',
+-  feedbackIntegration: 'feedback',
+-  feedbackModalIntegration: 'feedback-modal',
+-  feedbackScreenshotIntegration: 'feedback-screenshot',
+-  captureConsoleIntegration: 'captureconsole',
+-  contextLinesIntegration: 'contextlines',
+-  linkedErrorsIntegration: 'linkederrors',
+-  debugIntegration: 'debug',
+-  dedupeIntegration: 'dedupe',
+-  extraErrorDataIntegration: 'extraerrordata',
+-  httpClientIntegration: 'httpclient',
+-  reportingObserverIntegration: 'reportingobserver',
+-  rewriteFramesIntegration: 'rewriteframes',
+-  sessionTimingIntegration: 'sessiontiming',
+-  browserProfilingIntegration: 'browserprofiling',
+-} ;
+-
+-const WindowWithMaybeIntegration = WINDOW
+-
+-;
+-
+ /**
+  * Lazy load an integration from the CDN.
+  * Rejects if the integration cannot be loaded.
+@@ -33,70 +6,7 @@ async function lazyLoadIntegration(
+   name,
+   scriptNonce,
+ ) {
+-  const bundle = LazyLoadableIntegrations[name];
+-
+-  // `window.Sentry` is only set when using a CDN bundle, but this method can also be used via the NPM package
+-  const sentryOnWindow = (WindowWithMaybeIntegration.Sentry = WindowWithMaybeIntegration.Sentry || {});
+-
+-  if (!bundle) {
+-    throw new Error(`Cannot lazy load integration: ${name}`);
+-  }
+-
+-  // Bail if the integration already exists
+-  const existing = sentryOnWindow[name];
+-  // The `feedbackIntegration` is loaded by default in the CDN bundles,
+-  // so we need to differentiate between the real integration and the shim.
+-  // if only the shim exists, we still want to lazy load the real integration.
+-  if (typeof existing === 'function' && !('_isShim' in existing)) {
+-    return existing;
+-  }
+-
+-  const url = getScriptURL(bundle);
+-  const script = WINDOW.document.createElement('script');
+-  script.src = url;
+-  script.crossOrigin = 'anonymous';
+-  script.referrerPolicy = 'origin';
+-
+-  if (scriptNonce) {
+-    script.setAttribute('nonce', scriptNonce);
+-  }
+-
+-  const waitForLoad = new Promise((resolve, reject) => {
+-    script.addEventListener('load', () => resolve());
+-    script.addEventListener('error', reject);
+-  });
+-
+-  const currentScript = WINDOW.document.currentScript;
+-  const parent = WINDOW.document.body || WINDOW.document.head || (currentScript && currentScript.parentElement);
+-
+-  if (parent) {
+-    parent.appendChild(script);
+-  } else {
+-    throw new Error(`Could not find parent element to insert lazy-loaded ${name} script`);
+-  }
+-
+-  try {
+-    await waitForLoad;
+-  } catch (e) {
+-    throw new Error(`Error when loading integration: ${name}`);
+-  }
+-
+-  const integrationFn = sentryOnWindow[name];
+-
+-  if (typeof integrationFn !== 'function') {
+-    throw new Error(`Could not load integration: ${name}`);
+-  }
+-
+-  return integrationFn;
+-}
+-
+-function getScriptURL(bundle) {
+-  const client = getClient();
+-  const options = client && client.getOptions();
+-  const baseURL = (options && options.cdnBaseUrl) || 'https://browser.sentry-cdn.com';
+-
+-  return new URL(`/${SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
++  throw new Error(`Use of @sentry/browser's lazyLoadIntegration function is not supported by MetaMask Extension`);
+ }
+ 
+ export { lazyLoadIntegration };
+-//# sourceMappingURL=lazyLoadIntegration.js.map
+diff --git a/build/npm/esm/utils/lazyLoadIntegration.js.map b/build/npm/esm/utils/lazyLoadIntegration.js.map
+deleted file mode 100644
+index b6408a989a40f6d534f032233a23dcd4f9b8950a..0000000000000000000000000000000000000000
+--- a/build/npm/esm/utils/lazyLoadIntegration.js.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"lazyLoadIntegration.js","sources":["../../../../src/utils/lazyLoadIntegration.ts"],"sourcesContent":["import { SDK_VERSION, getClient } from '@sentry/core';\nimport type { IntegrationFn } from '@sentry/types';\nimport type { BrowserClient } from '../client';\nimport { WINDOW } from '../helpers';\n\n// This is a map of integration function method to bundle file name.\nconst LazyLoadableIntegrations = {\n  replayIntegration: 'replay',\n  replayCanvasIntegration: 'replay-canvas',\n  feedbackIntegration: 'feedback',\n  feedbackModalIntegration: 'feedback-modal',\n  feedbackScreenshotIntegration: 'feedback-screenshot',\n  captureConsoleIntegration: 'captureconsole',\n  contextLinesIntegration: 'contextlines',\n  linkedErrorsIntegration: 'linkederrors',\n  debugIntegration: 'debug',\n  dedupeIntegration: 'dedupe',\n  extraErrorDataIntegration: 'extraerrordata',\n  httpClientIntegration: 'httpclient',\n  reportingObserverIntegration: 'reportingobserver',\n  rewriteFramesIntegration: 'rewriteframes',\n  sessionTimingIntegration: 'sessiontiming',\n  browserProfilingIntegration: 'browserprofiling',\n} as const;\n\nconst WindowWithMaybeIntegration = WINDOW as {\n  Sentry?: Partial<Record<keyof typeof LazyLoadableIntegrations, IntegrationFn>>;\n};\n\n/**\n * Lazy load an integration from the CDN.\n * Rejects if the integration cannot be loaded.\n */\nexport async function lazyLoadIntegration(\n  name: keyof typeof LazyLoadableIntegrations,\n  scriptNonce?: string,\n): Promise<IntegrationFn> {\n  const bundle = LazyLoadableIntegrations[name];\n\n  // `window.Sentry` is only set when using a CDN bundle, but this method can also be used via the NPM package\n  const sentryOnWindow = (WindowWithMaybeIntegration.Sentry = WindowWithMaybeIntegration.Sentry || {});\n\n  if (!bundle) {\n    throw new Error(`Cannot lazy load integration: ${name}`);\n  }\n\n  // Bail if the integration already exists\n  const existing = sentryOnWindow[name];\n  // The `feedbackIntegration` is loaded by default in the CDN bundles,\n  // so we need to differentiate between the real integration and the shim.\n  // if only the shim exists, we still want to lazy load the real integration.\n  if (typeof existing === 'function' && !('_isShim' in existing)) {\n    return existing;\n  }\n\n  const url = getScriptURL(bundle);\n  const script = WINDOW.document.createElement('script');\n  script.src = url;\n  script.crossOrigin = 'anonymous';\n  script.referrerPolicy = 'origin';\n\n  if (scriptNonce) {\n    script.setAttribute('nonce', scriptNonce);\n  }\n\n  const waitForLoad = new Promise<void>((resolve, reject) => {\n    script.addEventListener('load', () => resolve());\n    script.addEventListener('error', reject);\n  });\n\n  const currentScript = WINDOW.document.currentScript;\n  const parent = WINDOW.document.body || WINDOW.document.head || (currentScript && currentScript.parentElement);\n\n  if (parent) {\n    parent.appendChild(script);\n  } else {\n    throw new Error(`Could not find parent element to insert lazy-loaded ${name} script`);\n  }\n\n  try {\n    await waitForLoad;\n  } catch {\n    throw new Error(`Error when loading integration: ${name}`);\n  }\n\n  const integrationFn = sentryOnWindow[name];\n\n  if (typeof integrationFn !== 'function') {\n    throw new Error(`Could not load integration: ${name}`);\n  }\n\n  return integrationFn;\n}\n\nfunction getScriptURL(bundle: string): string {\n  const client = getClient<BrowserClient>();\n  const options = client && client.getOptions();\n  const baseURL = (options && options.cdnBaseUrl) || 'https://browser.sentry-cdn.com';\n\n  return new URL(`/${SDK_VERSION}/${bundle}.min.js`, baseURL).toString();\n}\n"],"names":[],"mappings":"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"}
+\ No newline at end of file

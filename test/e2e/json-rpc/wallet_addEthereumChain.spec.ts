@@ -103,7 +103,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
             {
@@ -166,7 +166,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
             {
@@ -281,7 +281,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -336,7 +336,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',
@@ -408,7 +408,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',

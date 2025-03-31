@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Вы получаете"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Лимит расходов"
-  },
   "permitSimulationChange_transfer": {
     "message": "Вы отправляете"
   },
@@ -3859,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Разрешить псевдонимы"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Эта функция позволяет вам присвоить псевдоним любому адресу. По возможности мы будем предлагать имена адресов, с которыми вы взаимодействуете."
   },
   "pinToTop": {
     "message": "Закрепить вверху"

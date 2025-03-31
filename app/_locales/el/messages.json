@@ -3845,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Θα λάβετε"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ανώτατο όριο δαπανών"
-  },
   "permitSimulationChange_transfer": {
     "message": "Θα στείλετε"
   },
@@ -3859,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Επιτρέψτε τα ψευδώνυμα"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Αυτό σας επιτρέπει να εκχωρήσετε ένα ψευδώνυμο σε οποιαδήποτε διεύθυνση. Θα σας προτείνουμε ονόματα για διευθύνσεις με τις οποίες αλληλεπιδράτε, όπου είναι δυνατόν."
   },
   "pinToTop": {
     "message": "Καρφίτσωμα στην κορυφή"

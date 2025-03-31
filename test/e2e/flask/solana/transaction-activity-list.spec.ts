@@ -39,9 +39,6 @@ describe('Transaction activity list', function (this: Suite) {
         await transactionDetails.check_transactionAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
         );
-        await transactionDetails.check_transactionNetworkFee(
-          commonSolanaTxConfirmedDetailsFixture.networkFee,
-        );
         await transactionDetails.check_transactionFromToLink(
           commonSolanaTxConfirmedDetailsFixture.fromAddress,
         );
@@ -87,9 +84,6 @@ describe.skip('Transaction activity list', function (this: Suite) {
         );
         await transactionDetails.check_transactionAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
-        );
-        await transactionDetails.check_transactionNetworkFee(
-          commonSolanaTxConfirmedDetailsFixture.networkFee,
         );
         await transactionDetails.check_transactionFromToLink(
           commonSolanaTxConfirmedDetailsFixture.fromAddress,

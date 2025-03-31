@@ -68,7 +68,7 @@ describe('Import NFT', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel('Account 2');
-        await homepage.check_expectedBalanceIsDisplayed('0');
+        await homepage.check_expectedBalanceIsDisplayed();
 
         // Switch back to Account 1 and check that the NFT is still displayed
         await headerNavbar.openAccountMenu();

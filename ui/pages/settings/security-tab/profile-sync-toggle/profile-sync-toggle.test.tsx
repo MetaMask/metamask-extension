@@ -3,7 +3,7 @@ import * as Redux from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications';
-import * as ProfileSyncingHook from '../../../../hooks/identity/useProfileSyncing/profileSyncing';
+import * as ProfileSyncingHook from '../../../../hooks/identity/useProfileSyncing/useProfileSyncing';
 import ProfileSyncToggle from './profile-sync-toggle';
 
 const mockStore = configureMockStore();

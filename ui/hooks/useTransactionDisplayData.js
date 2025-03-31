@@ -332,9 +332,13 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
+    const isRevoke = !tokenData?.args?.[1];
+
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    title = isRevoke
+      ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
+      : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodIncreaseAllowance) {

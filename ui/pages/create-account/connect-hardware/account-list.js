@@ -50,7 +50,7 @@ class AccountList extends Component {
         <div className="hw-connect__hdPath">
           <Dropdown
             className="hw-connect__hdPath__select"
-            options={hdPaths[device.toLowerCase()]}
+            options={hdPaths[device]}
             selectedOption={pathValue || selectedPath}
             onChange={(value) => {
               this.setPath(value);
@@ -73,7 +73,7 @@ class AccountList extends Component {
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
-    ].includes(device.toLowerCase());
+    ].includes(device);
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">

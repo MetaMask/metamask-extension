@@ -34,6 +34,9 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   SNAP_SETTINGS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  REVEAL_SRP_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -55,6 +58,9 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
+  ///: END:ONLY_INCLUDE_IF
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 
@@ -73,6 +79,9 @@ const mapStateToProps = (state, ownProps) => {
   const isAddressEntryPage = pathNameTail.includes('0x');
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
+  ///: END:ONLY_INCLUDE_IF
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
@@ -95,6 +104,11 @@ const mapStateToProps = (state, ownProps) => {
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
   }
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  else if (isRevealSrpListPage) {
+    backRoute = SECURITY_ROUTE;
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   let initialBreadCrumbRoute;
   let initialBreadCrumbKey;

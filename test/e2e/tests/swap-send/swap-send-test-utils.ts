@@ -25,6 +25,23 @@ export class SwapSendPage {
     );
   };
 
+  async clickOnAsset(
+    assetName: string,
+    location: 'src' | 'dest' = 'src',
+  ): Promise<void> {
+    const isDest = location === 'dest';
+    const buttons = await this.driver.findElements(
+      '[data-testid="asset-picker-button"]',
+    );
+    const indexOfButtonToClick = isDest ? 1 : 0;
+    await buttons[indexOfButtonToClick].click();
+
+    await this.driver.clickElement({
+      css: '[data-testid="multichain-token-list-item"]',
+      text: assetName,
+    });
+  }
+
   searchAndSelectToken = async (
     symbol: string,
     location: 'src' | 'dest' = 'src',
@@ -56,6 +73,11 @@ export class SwapSendPage {
       );
       await f.press(i);
     }
+    // Search input is debounced, so we need to wait for the token list to update
+    await this.driver.elementCountBecomesN(
+      '[data-testid="multichain-token-list-item"]',
+      1,
+    );
     // Verify that only matching tokens are listed
     assert.equal(
       (
@@ -295,7 +317,14 @@ export const getSwapSendFixtures = (
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     testSpecificMock: mockSwapsApi(swapsQuotes, swapsQuery),
-    localNodeOptions: { hardfork: 'london' },
+    localNodeOptions: [
+      {
+        type: 'ganache',
+        options: {
+          hardfork: 'london',
+        },
+      },
+    ],
     title,
   };
 };

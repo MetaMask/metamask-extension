@@ -57,6 +57,7 @@ describe('Wallet Created Events - Imported Account', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
+          hd_entropy_index: 0,
         });
       },
     );

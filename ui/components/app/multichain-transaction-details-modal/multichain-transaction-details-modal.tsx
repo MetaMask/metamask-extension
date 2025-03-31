@@ -38,7 +38,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
-import { useMultichainTransactionDisplay } from '../../../hooks/useMultichainTransactionDisplay';
+import {
+  KEYRING_TRANSACTION_STATUS_KEY,
+  useMultichainTransactionDisplay,
+} from '../../../hooks/useMultichainTransactionDisplay';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -85,6 +88,7 @@ export function MultichainTransactionDetailsModal({
         return TextColor.textDefault;
     }
   };
+  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
   return (
     <Modal
@@ -133,7 +137,7 @@ export function MultichainTransactionDetailsModal({
                 {t('status')}
               </Text>
               <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
-                {capitalize(status)}
+                {capitalize(t(statusKey))}
               </Text>
             </Box>
 
