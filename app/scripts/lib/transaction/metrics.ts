@@ -329,6 +329,7 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
  * @param transactionMetricsRequest.getHDEntropyIndex - Returns Index of the currently selected HD Keyring
+ * @param transactionMetricsRequest.getRemoteFeatureFlags - Returns the remote feature flags object
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
@@ -338,6 +339,7 @@ export const handlePostTransactionBalanceUpdate = async (
     getParticipateInMetrics,
     trackEvent,
     getHDEntropyIndex,
+    getRemoteFeatureFlags,
   }: TransactionMetricsRequest,
   {
     transactionMeta,
@@ -348,6 +350,16 @@ export const handlePostTransactionBalanceUpdate = async (
   },
 ) => {
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
+    // Prepare the transaction hash addition if feature flag is enabled
+    const shouldAddTransactionHash =
+      getRemoteFeatureFlags &&
+      getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
+      transactionMeta.hash;
+
+    const transactionHashProperty = shouldAddTransactionHash
+      ? { transaction_hash: transactionMeta.hash }
+      : {};
+
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
         event: MetaMetricsEventName.SwapFailed,
@@ -408,6 +420,7 @@ export const handlePostTransactionBalanceUpdate = async (
           // browsers.
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
+          ...transactionHashProperty, // Add transaction hash to sensitive properties
         },
         properties: {
           hd_entropy_index: getHDEntropyIndex(),
@@ -1082,6 +1095,17 @@ async function buildEventFragmentProperties({
     properties,
     sensitiveProperties,
   );
+
+  if (
+    transactionMetricsRequest.getRemoteFeatureFlags?.()?.[
+      'transactions-tx-hash-in-analytics'
+    ] &&
+    transactionMetricsRequest.getParticipateInMetrics() &&
+    transactionMeta?.hash
+  ) {
+    // Add transaction hash to regular properties
+    properties.transaction_hash = transactionMeta.hash;
+  }
 
   return { properties, sensitiveProperties };
 }
