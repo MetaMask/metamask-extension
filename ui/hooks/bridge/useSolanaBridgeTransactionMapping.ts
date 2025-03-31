@@ -51,10 +51,19 @@ export default function useSolanaBridgeTransactionMapping(
   const bridgeTxSignatures = {};
   if (bridgeHistory) {
     Object.values(bridgeHistory).forEach((bridgeTx) => {
-      if (bridgeTx.status?.srcChain?.txHash) {
-        // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
-        bridgeTxSignatures[bridgeTx.status.srcChain.txHash] = bridgeTx;
-      }
+      // For Solana transactions, we need to check both options for where the source tx hash might be
+      const possibleTxHashes = [
+        bridgeTx.srcTxHash, // Direct property
+        bridgeTx.status?.srcChain?.txHash, // Nested in status object
+      ].filter(Boolean); // Filter out undefined/null values
+
+      // Add entries for each possible tx hash
+      possibleTxHashes.forEach((txHash) => {
+        if (txHash) {
+          // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
+          bridgeTxSignatures[txHash] = bridgeTx;
+        }
+      });
     });
   }
 
@@ -63,10 +72,92 @@ export default function useSolanaBridgeTransactionMapping(
     return nonEvmTransactions;
   }
 
+  // Create synthetic transactions for bridge transactions that might not be in the non-EVM transactions list
+  // These are transactions from the bridge history that we want to make sure are displayed
+  const syntheticBridgeTxs: Transaction[] = [];
+
+  if (bridgeHistory) {
+    // Loop through all bridge history entries
+    Object.entries(bridgeHistory).forEach(([id, bridgeTx]) => {
+      // Check if this is a recent transaction (last 24 hours)
+      const isRecent =
+        bridgeTx.startTime &&
+        Date.now() - bridgeTx.startTime < 24 * 60 * 60 * 1000;
+
+      if (isRecent) {
+        // Get the source transaction hash
+        const srcTxHash =
+          bridgeTx.srcTxHash || bridgeTx.status?.srcChain?.txHash;
+
+        // Check if this transaction is already in the nonEvmTransactions list
+        const existsInTxList = nonEvmTransactions?.transactions?.some(
+          (tx) => tx.id === srcTxHash || tx.hash === srcTxHash,
+        );
+
+        // If it's not already in the list, create a synthetic transaction
+        if (!existsInTxList && srcTxHash) {
+          // Create a minimal synthetic transaction object with the necessary fields
+          const syntheticTx: Transaction = {
+            id: srcTxHash,
+            account: bridgeTx.account,
+            // Use completionTime for completed transactions, otherwise use startTime
+            // This ensures completed transactions sort correctly
+            timestamp:
+              bridgeTx.status === 'COMPLETE' ||
+              bridgeTx.status?.status === 'COMPLETE'
+                ? (bridgeTx.completionTime || bridgeTx.startTime) / 1000
+                : bridgeTx.startTime / 1000, // Convert to seconds for consistency
+            hash: srcTxHash,
+            type: 'bridge',
+            // Add minimal required fields
+            to: [],
+            from: [
+              {
+                address: bridgeTx.account,
+                asset: {
+                  amount: (
+                    Number(bridgeTx.quote?.srcTokenAmount) /
+                    10 ** (bridgeTx.quote?.srcAsset?.decimals || 9)
+                  ).toString(),
+                  unit: bridgeTx.quote?.srcAsset?.symbol || 'SOL',
+                  fungible: true,
+                },
+              },
+            ],
+            // Adding synthetic flag to identify these transactions
+            synthetic: true,
+            // Adding status information directly on the transaction
+            bridgeStatus: bridgeTx.status || bridgeTx.status?.status,
+          };
+
+          syntheticBridgeTxs.push(syntheticTx);
+        }
+      }
+    });
+  }
+
+  // If we have synthetic transactions, add them to the transactions list
+  if (syntheticBridgeTxs.length > 0) {
+    if (!nonEvmTransactions) {
+      // Create a new transactions object if none exists
+      nonEvmTransactions = {
+        transactions: [],
+        next: null,
+        lastUpdated: Date.now(),
+      };
+    }
+    nonEvmTransactions = {
+      ...nonEvmTransactions,
+      transactions: [...nonEvmTransactions.transactions, ...syntheticBridgeTxs],
+    };
+  }
+
   // Create a modified copy with bridge info added
   const modifiedTransactions = nonEvmTransactions.transactions.map((tx) => {
     // The signature is in the id field for non-EVM transactions
     const txSignature = tx.id;
+    // Also check tx.hash which might contain the signature in some cases
+    const txHash = tx.hash;
 
     // If the transaction type is explicitly 'swap', never mark it as a bridge
     if (tx.type === 'swap') {
@@ -77,18 +168,85 @@ export default function useSolanaBridgeTransactionMapping(
       };
     }
 
-    // Check if this transaction signature matches a bridge transaction
-    if (
-      txSignature &&
-      // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
-      bridgeTxSignatures[txSignature]
-    ) {
-      // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
-      const matchingBridgeTx = bridgeTxSignatures[txSignature];
+    // If the transaction type is already 'bridge' (from a synthetic transaction),
+    // try to find its matching bridge history entry
+    if (tx.type === 'bridge') {
+      // Find the matching bridge history entry by txMetaId
+      const matchingBridgeTxEntry = Object.entries(bridgeHistory).find(
+        ([_, entry]) =>
+          entry.srcTxHash === txSignature ||
+          entry.status?.srcChain?.txHash === txSignature,
+      );
 
-      // Get source and destination chain IDs
-      const srcChainId = matchingBridgeTx.quote?.srcChainId;
-      const destChainId = matchingBridgeTx.quote?.destChainId;
+      if (matchingBridgeTxEntry) {
+        const [_, matchingBridgeTx] = matchingBridgeTxEntry;
+
+        // Get source and destination chain IDs, handle both possible data structures
+        const srcChainId =
+          matchingBridgeTx.srcChainId || matchingBridgeTx.quote?.srcChainId;
+        const destChainId =
+          matchingBridgeTx.destChainId || matchingBridgeTx.quote?.destChainId;
+
+        return {
+          ...tx,
+          isBridgeTx: true,
+          bridgeInfo: {
+            destChainId,
+            destChainName: getNetworkName(destChainId),
+            destAsset: {
+              ...(matchingBridgeTx.destAsset ||
+                matchingBridgeTx.quote?.destAsset ||
+                {}),
+              decimals:
+                matchingBridgeTx.destAsset?.decimals ||
+                matchingBridgeTx.quote?.destAsset?.decimals ||
+                18,
+            },
+            destTokenAmount:
+              matchingBridgeTx.destTokenAmount ||
+              matchingBridgeTx.quote?.destTokenAmount,
+            status:
+              // Direct status property (string) takes precedence
+              typeof matchingBridgeTx.status === 'string'
+                ? matchingBridgeTx.status
+                : // Then status.status if it exists
+                  matchingBridgeTx.status?.status ||
+                  // Default to 'PENDING' if no status found
+                  'PENDING',
+            destTxHash:
+              matchingBridgeTx.destTxHash ||
+              matchingBridgeTx.status?.destChain?.txHash,
+            srcTxHash:
+              matchingBridgeTx.srcTxHash ||
+              matchingBridgeTx.status?.srcChain?.txHash,
+            provider:
+              matchingBridgeTx.provider || matchingBridgeTx.quote?.provider,
+            destBlockExplorerUrl:
+              matchingBridgeTx.destBlockExplorerUrl ||
+              matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
+          },
+        };
+      }
+    }
+
+    // Check if this transaction signature matches a bridge transaction
+    // First check txSignature (tx.id), then fall back to txHash (tx.hash)
+    const matchingSignature =
+      txSignature && bridgeTxSignatures[txSignature]
+        ? txSignature
+        : txHash && bridgeTxSignatures[txHash]
+        ? txHash
+        : null;
+
+    if (matchingSignature) {
+      // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
+      const matchingBridgeTx = bridgeTxSignatures[matchingSignature];
+
+      // Get source and destination chain IDs, handle both possible data structures
+      const srcChainId =
+        matchingBridgeTx.srcChainId || matchingBridgeTx.quote?.srcChainId;
+      const destChainId =
+        matchingBridgeTx.destChainId || matchingBridgeTx.quote?.destChainId;
 
       // Only consider it a bridge if source and destination chains are different
       const isBridgeTx =
@@ -101,26 +259,44 @@ export default function useSolanaBridgeTransactionMapping(
         type: isBridgeTx ? 'bridge' : tx.type,
         // Add bridge-specific flag based on chain comparison
         isBridgeTx,
-        // Include destination chain details
+        // Include destination chain details - handle both possible data structures
         bridgeInfo: isBridgeTx
           ? {
-              destChainId: matchingBridgeTx.quote?.destChainId,
-              destChainName: getNetworkName(
-                matchingBridgeTx.quote?.destChainId,
-              ),
+              destChainId,
+              destChainName: getNetworkName(destChainId),
               destAsset: {
-                ...matchingBridgeTx.quote?.destAsset,
+                ...(matchingBridgeTx.destAsset ||
+                  matchingBridgeTx.quote?.destAsset ||
+                  {}),
                 // Ensure decimals is always available for the destination asset
-                decimals: matchingBridgeTx.quote?.destAsset?.decimals || 18,
+                decimals:
+                  matchingBridgeTx.destAsset?.decimals ||
+                  matchingBridgeTx.quote?.destAsset?.decimals ||
+                  18,
               },
-              destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
+              destTokenAmount:
+                matchingBridgeTx.destTokenAmount ||
+                matchingBridgeTx.quote?.destTokenAmount,
               // Add status information for UI display
-              status: matchingBridgeTx.status?.status,
-              destTxHash: matchingBridgeTx.status?.destChain?.txHash,
-              srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
-              provider: matchingBridgeTx.quote?.provider,
+              status:
+                // Direct status property (string) takes precedence
+                typeof matchingBridgeTx.status === 'string'
+                  ? matchingBridgeTx.status
+                  : // Then status.status if it exists
+                    matchingBridgeTx.status?.status ||
+                    // Default to 'PENDING' if no status found
+                    'PENDING',
+              destTxHash:
+                matchingBridgeTx.destTxHash ||
+                matchingBridgeTx.status?.destChain?.txHash,
+              srcTxHash:
+                matchingBridgeTx.srcTxHash ||
+                matchingBridgeTx.status?.srcChain?.txHash,
+              provider:
+                matchingBridgeTx.provider || matchingBridgeTx.quote?.provider,
               // Add block explorer URL for destination chain based on chainId if available
               destBlockExplorerUrl:
+                matchingBridgeTx.destBlockExplorerUrl ||
                 matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
             }
           : undefined,
@@ -130,6 +306,8 @@ export default function useSolanaBridgeTransactionMapping(
     // Return the original transaction unchanged if not a bridge transaction
     return tx;
   });
+
+  // Return the modified transactions with bridge info added
 
   // Return a modified copy of the original transactions with bridge info
   return {

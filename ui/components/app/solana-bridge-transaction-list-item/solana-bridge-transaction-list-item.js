@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
-import { TransactionType } from '@metamask/transaction-controller';
+import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
@@ -99,7 +99,12 @@ const SolanaBridgeTransactionListItem = ({
   });
 
   let title = capitalize(type);
-  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
+  // For bridge transactions with a completed status, use 'confirmed' status to get the green label
+  const statusKey = transaction.isBridgeTx && 
+    (transaction.bridgeInfo?.status === StatusTypes.COMPLETE || 
+     transaction.bridgeInfo?.status === 'COMPLETE')
+    ? TransactionStatus.confirmed
+    : KEYRING_TRANSACTION_STATUS_KEY[status];
 
   if (type === TransactionType.swap) {
     title = `${t('swap')} ${from.asset.unit} ${t('to')} ${to.asset.unit}`;
@@ -125,7 +130,8 @@ const SolanaBridgeTransactionListItem = ({
   const isBridgeComplete =
     transaction.isBridgeTx &&
     transaction.bridgeInfo &&
-    transaction.bridgeInfo.status === StatusTypes.COMPLETE;
+    (transaction.bridgeInfo.status === StatusTypes.COMPLETE || 
+     transaction.bridgeInfo.status === 'COMPLETE');
 
   return (
     <ActivityListItem
@@ -197,6 +203,9 @@ const SolanaBridgeTransactionListItem = ({
             error={{}}
             status={statusKey}
             statusOnly
+            className={
+              isBridgeComplete ? 'transaction-status-label--confirmed' : undefined
+            }
           />
           {/* Bridge Steps with progress bars */}
           <Box

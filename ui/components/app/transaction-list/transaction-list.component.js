@@ -222,6 +222,12 @@ const groupTransactionsByDate = (
 
     if (existingGroup) {
       existingGroup.transactionGroups.push(transactionGroup);
+      // Sort transactions within the group by timestamp (newest first)
+      existingGroup.transactionGroups.sort((a, b) => {
+        const aTime = getTransactionTimestamp(a);
+        const bTime = getTransactionTimestamp(b);
+        return bTime - aTime; // Descending order (newest first)
+      });
     } else {
       groupedTransactions.push({
         date,
@@ -229,6 +235,7 @@ const groupTransactionsByDate = (
         transactionGroups: [transactionGroup],
       });
     }
+    // Sort date groups by timestamp (newest first)
     groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
   });
 
@@ -507,45 +514,49 @@ export default function TransactionList({
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {groupNonEvmTransactionsByDate(
-                  modifiedNonEvmTransactions || nonEvmTransactions,
-                ).map((dateGroup) => (
-                  <Fragment key={dateGroup.date}>
-                    <Text
-                      paddingTop={4}
-                      paddingInline={4}
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
-                    >
-                      {dateGroup.date}
-                    </Text>
-                    {dateGroup.transactionGroups.map((transaction, index) => {
-                      // Use a separate component for bridge transactions
-                      if (transaction.isBridgeTx && transaction.bridgeInfo) {
+                {(() => {
+                  
+                  const dateGroups = groupNonEvmTransactionsByDate(
+                    modifiedNonEvmTransactions || nonEvmTransactions,
+                  );
+                  return dateGroups.map((dateGroup) => (
+                    <Fragment key={dateGroup.date}>
+                      <Text
+                        paddingTop={4}
+                        paddingInline={4}
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {dateGroup.date}
+                      </Text>
+                      {dateGroup.transactionGroups.map((transaction, index) => {
+                        // Use a separate component for bridge transactions
+                        if (transaction.isBridgeTx && transaction.bridgeInfo) {
+                          return (
+                            <SolanaBridgeTransactionListItem
+                              key={`bridge-${transaction.account}:${index}`}
+                              transaction={transaction}
+                              userAddress={selectedAccount.address}
+                              index={index}
+                              toggleShowDetails={toggleShowDetails}
+                            />
+                          );
+                        }
+
+                        // Use regular transaction component for non-bridge transactions
                         return (
-                          <SolanaBridgeTransactionListItem
-                            key={`bridge-${transaction.account}:${index}`}
+                          <MultichainTransactionListItem
+                            key={`${transaction.account}:${index}`}
                             transaction={transaction}
                             userAddress={selectedAccount.address}
                             index={index}
                             toggleShowDetails={toggleShowDetails}
                           />
                         );
-                      }
-
-                      // Use regular transaction component for non-bridge transactions
-                      return (
-                        <MultichainTransactionListItem
-                          key={`${transaction.account}:${index}`}
-                          transaction={transaction}
-                          userAddress={selectedAccount.address}
-                          index={index}
-                          toggleShowDetails={toggleShowDetails}
-                        />
-                      );
-                    })}
-                  </Fragment>
-                ))}
+                      })}
+                    </Fragment>
+                  ));
+                })()}
                 <Box className="transaction-list__view-on-block-explorer">
                   <Button
                     display={Display.Flex}
