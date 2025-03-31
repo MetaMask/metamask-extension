@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../confirm/info/shared/constants';
 import { AmountPill } from './amount-pill';
 import {
   AssetIdentifier,
@@ -55,8 +56,26 @@ const renderAndExpect = (
   asset: AssetIdentifier,
   amount: BigNumber,
   expected: { text: string; tooltip: string },
+  {
+    isApproval,
+    isAllApproval,
+    isUnlimitedApproval,
+  }: {
+    isApproval?: boolean;
+    isAllApproval?: boolean;
+    isUnlimitedApproval?: boolean;
+  } = {},
 ): void => {
-  const { getByText } = render(<AmountPill asset={asset} amount={amount} />);
+  const { getByText } = render(
+    <AmountPill
+      asset={asset}
+      amount={amount}
+      isApproval={isApproval}
+      isAllApproval={isAllApproval}
+      isUnlimitedApproval={isUnlimitedApproval}
+    />,
+  );
+
   expect(getByText(expected.text)).toBeInTheDocument();
   expect(Tooltip).toHaveBeenCalledWith(
     expect.objectContaining({ title: expected.tooltip }),
@@ -115,7 +134,6 @@ describe('AmountPill', () => {
   ];
 
   describe('Native', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(nativeAndErc20Cases)(
       'renders the correct sign and amount for $amount',
       ({
@@ -131,7 +149,6 @@ describe('AmountPill', () => {
   });
 
   describe('ERC20', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(nativeAndErc20Cases)(
       'renders the correct sign and amount for $amount',
       ({
@@ -164,7 +181,6 @@ describe('AmountPill', () => {
       },
     ];
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
       'renders the token ID with just a plus or minus for $expected.text',
       ({
@@ -204,7 +220,6 @@ describe('AmountPill', () => {
       },
     ];
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
       'renders the correct sign, amount, and token ID for $expected.text',
       ({
@@ -233,5 +248,67 @@ describe('AmountPill', () => {
         tooltip: `#${longTokenIdInDecimal}`,
       },
     );
+  });
+
+  describe('Approval', () => {
+    it('renders ERC-20 approval', () => {
+      renderAndExpect(
+        ERC20_ASSET_MOCK,
+        new BigNumber(123.45),
+        {
+          text: '123.5',
+          tooltip: '123.45',
+        },
+        { isApproval: true },
+      );
+    });
+
+    it('renders ERC-721 approval', () => {
+      renderAndExpect(
+        ERC721_ASSET_MOCK,
+        new BigNumber(1),
+        {
+          text: '#2748',
+          tooltip: '#2748',
+        },
+        { isApproval: true },
+      );
+    });
+
+    it('renders unlimited ERC-20 approval', () => {
+      renderAndExpect(
+        ERC20_ASSET_MOCK,
+        new BigNumber(TOKEN_VALUE_UNLIMITED_THRESHOLD),
+        {
+          text: '[unlimited]',
+          tooltip: '1,000,000,000,000,000',
+        },
+        { isApproval: true, isUnlimitedApproval: true },
+      );
+    });
+
+    it('renders all ERC-721 approval', () => {
+      renderAndExpect(
+        { ...ERC721_ASSET_MOCK, tokenId: undefined },
+        new BigNumber(1),
+        {
+          text: '[all]',
+          tooltip: '[all]',
+        },
+        { isApproval: true, isAllApproval: true },
+      );
+    });
+
+    it('renders all ERC-1155 approval', () => {
+      renderAndExpect(
+        { ...ERC1155_ASSET_MOCK, tokenId: undefined },
+        new BigNumber(1),
+        {
+          text: '[all]',
+          tooltip: '[all]',
+        },
+        { isApproval: true, isAllApproval: true },
+      );
+    });
   });
 });

@@ -10,7 +10,7 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { debounce } = require('lodash');
+const lodash = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -671,7 +671,7 @@ class Driver {
    * @param {string} testTitle - The title of the test
    */
   #getArtifactDir(testTitle) {
-    return `./test-artifacts/${this.browser}/${testTitle}`;
+    return `./test-artifacts/${this.browser}/${lodash.escape(testTitle)}`;
   }
 
   /**
@@ -803,6 +803,26 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
+  }
+
+  /**
+   * Finds the element, scrolls the page until the element is in view, and clicks it.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} Promise resolving after scrolling and clicking
+   */
+  async findScrollToAndClickElement(rawLocator) {
+    try {
+      const element = await this.findElement(rawLocator);
+      await this.scrollToElement(element);
+      await this.clickElement(rawLocator);
+    } catch (error) {
+      console.error(
+        `Error finding, scrolling to, or clicking element with selector: ${rawLocator}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
@@ -1206,7 +1226,28 @@ class Driver {
     await this.driver.close();
   }
 
-  // Close Alert Popup
+  /**
+   * Get the text of the alert popup that is currently open in the browser
+   * session.
+   *
+   * @param text - The text of the alert popup.
+   * @param options - Options for the function.
+   * @param options.timeout - The maximum time to wait for the alert to be
+   * present.
+   * @returns {Promise<string>} The text of the alert popup.
+   */
+  async waitForAlert(text, { timeout = this.timeout } = {}) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const alertText = await alert.getText();
+
+    if (text && alertText !== text) {
+      throw new Error(
+        `Expected alert text to be "${text}", but got "${alertText}".`,
+      );
+    }
+  }
+
   /**
    * Close the alert popup that is currently open in the browser session.
    *
@@ -1348,7 +1389,7 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     // Flush the event processing stack 50ms after the last event is added
-    const debounceEventProcessingStack = debounce(
+    const debounceEventProcessingStack = lodash.debounce(
       this.#flushEventProcessingStack.bind(this),
       50,
     );

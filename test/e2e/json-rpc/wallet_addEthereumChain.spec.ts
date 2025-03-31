@@ -7,7 +7,6 @@ import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -104,7 +103,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
             {
@@ -167,7 +166,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
             {
@@ -282,7 +281,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -337,7 +336,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',
@@ -409,7 +408,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',
@@ -479,7 +478,6 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
-          localNodeOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
