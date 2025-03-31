@@ -153,7 +153,6 @@ export function AssetPickerModal({
   const [showSolanaAccountCreatedToast, setShowSolanaAccountCreatedToast] =
     useState(false);
 
-  // Track previous needsSolanaAccount value
   const prevNeedsSolanaAccountRef = useRef(false);
 
   const [searchQuery, setSearchQuery] = useState('');
