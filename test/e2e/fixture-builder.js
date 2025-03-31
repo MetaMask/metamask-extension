@@ -301,10 +301,6 @@ class FixtureBuilder {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
-  withNetworkControllerOnSepolia() {
-    return this.withNetworkController({ selectedNetworkClientId: 'sepolia' });
-  }
-
   withNetworkControllerOnOptimism() {
     return this.withNetworkController({
       networkConfigurations: {

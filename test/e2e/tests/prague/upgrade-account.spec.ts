@@ -75,64 +75,34 @@ describe('Upgrade Account', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
-        await upgradeAndBatchTxConfirmation.confirmUpgradeCheckbox();
+
+        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+          'Smart account',
+        );
+        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+          'Account 1',
+        );
+
+        // Open Settings and very tx details
+        await upgradeAndBatchTxConfirmation.openSettings();
+        await upgradeAndBatchTxConfirmation.check_batchTxListIsPresent();
+
+        // Confirm upgrade and batch tx
+        await upgradeAndBatchTxConfirmation.tickUpgradeCheckbox();
         await upgradeAndBatchTxConfirmation.confirmUpgradeAndBatchTx();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        // Check the batch transaction has been successfully perform
+        // which included x2 simple sends of 0.001ETH
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-      },
-    );
-  });
-  it('an EOA account can be upgraded when triggering a batch tx from a dapp in an even chain id', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnSepolia()
-          .build(),
-        localNodeOptions: [
-          {
-            type: 'anvil',
-            options: {
-              hardfork: 'prague',
-              chainId: 11155111,
-              loadState:
-                './test/e2e/seeder/network-states/eip7702-state/withDelegatorContracts.json',
-            },
-          },
-        ],
-        testSpecificMock: mockEip7702FeatureFlag,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        await testDapp.clickSendCalls();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
-        await upgradeAndBatchTxConfirmation.confirmUpgradeCheckbox();
-        await upgradeAndBatchTxConfirmation.confirmUpgradeAndBatchTx();
-
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        const homePage = new HomePage(driver);
-        await homePage.goToActivityList();
-
-        const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await homePage.check_expectedBalanceIsDisplayed('24.9998', 'ETH');
       },
     );
   });

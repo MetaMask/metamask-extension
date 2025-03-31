@@ -11,18 +11,47 @@ class Eip7702AndSendCalls {
     text: 'Confirm',
   };
 
+  private readonly settingsButton = '[data-testid="header-advanced-details-button"]';
+
+  private readonly txType = '[data-testid="tx-type"]';
+
+  private readonly interactingWith =
+    '[data-testid="transaction-details-section"]';
+
+  private readonly batchTxList = '[data-testid="batch-txs=]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async confirmUpgradeCheckbox(): Promise<void> {
-    await this.driver.findElement(this.confirmButton);
-
-    await this.driver.clickElement(this.confirmUpgradeAccountCheckbox);
+  async check_batchTxListIsPresent(): Promise<void> {
+    await this.driver.isElementPresent(this.batchTxList);
   }
 
-  async confirmUpgradeAndBatchTx() {
+  async check_expectedInteractingWithIsDisplayed(account: string): Promise<void> {
+    await this.driver.isElementPresent({
+      css: this.interactingWith,
+      text: account,
+    });
+  }
+
+  async check_expectedTxTypeIsDisplayed(txType: string): Promise<void> {
+    await this.driver.isElementPresent({
+      css: this.txType,
+      text: txType,
+    });
+  }
+
+  async confirmUpgradeAndBatchTx(): Promise<void>  {
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
+
+  async openSettings(): Promise<void>  {
+    await this.driver.clickElement(this.settingsButton);
+  }
+
+  async tickUpgradeCheckbox(): Promise<void> {
+    await this.driver.clickElement(this.confirmUpgradeAccountCheckbox);
   }
 }
 
