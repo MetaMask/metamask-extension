@@ -249,6 +249,13 @@
     "ui/components/multichain/index.js"
   ],
   [
+    "ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx",
+    "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
+    "ui/components/multichain/asset-picker-amount/asset-picker/asset-picker.tsx",
+    "ui/components/multichain/asset-picker-amount/index.ts",
+    "ui/components/multichain/index.js"
+  ],
+  [
     "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.tsx",
     "ui/components/multichain/edit-accounts-modal/index.ts",
     "ui/components/multichain/index.js"
