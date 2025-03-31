@@ -60,6 +60,7 @@ import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
 import { SiteCell } from './site-cell/site-cell';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -222,7 +223,7 @@ export const ReviewPermissions = () => {
         if (
           parsedConnectedAddress.chain.namespace !==
             parsedAddress.chain.namespace ||
-          parsedConnectedAddress.address !== parsedAddress.address
+          !isEqualCaseInsensitive(parsedConnectedAddress.address, parsedAddress.address)
         ) {
           return false;
         }

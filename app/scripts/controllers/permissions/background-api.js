@@ -11,6 +11,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -223,7 +224,7 @@ export function getPermissionBackgroundApiMethods({
 
           if (
             namespace !== existingNamespace ||
-            internalAccount.address !== existingAddress
+            !isEqualCaseInsensitive(internalAccount.address, existingAddress)
           ) {
             return false;
           }

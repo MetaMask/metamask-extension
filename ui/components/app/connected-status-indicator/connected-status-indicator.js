@@ -20,6 +20,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
@@ -34,6 +35,8 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
+  console.log({permittedAccounts, selectedAccount})
+
   const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
     (account) => {
       const parsedPermittedAccount = parseCaipAccountId(account);
@@ -43,7 +46,7 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
         if (
           namespace !== parsedPermittedAccount.chain.namespace ||
-          selectedAccount.address !== parsedPermittedAccount.address
+          !isEqualCaseInsensitive(selectedAccount.address, parsedPermittedAccount.address)
         ) {
           return false;
         }

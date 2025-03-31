@@ -40,6 +40,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+import { isEqualCaseInsensitive } from '../shared/modules/string-utils';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -148,7 +149,7 @@ export async function setupInitialStore(
 
             if (
               namespace !== parsedPermittedAccount.chain.namespace ||
-              selectedAccount.address !== parsedPermittedAccount.address
+              !isEqualCaseInsensitive(selectedAccount.address, parsedPermittedAccount.address)
             ) {
               return false;
             }
