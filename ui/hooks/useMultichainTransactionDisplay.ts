@@ -2,15 +2,14 @@ import {
   Transaction,
   TransactionStatus as KeyringTransactionStatus,
   TransactionType,
+  CaipChainId,
 } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-
-type Fee = Transaction['fees'][0]['asset'];
-type Token = Transaction['from'][0]['asset'];
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/networks';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
@@ -19,112 +18,111 @@ export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Submitted]: TransactionStatus.submitted,
 };
 
-export function useMultichainTransactionDisplay({
-  transaction,
-  userAddress,
-}: {
-  transaction: Transaction;
-  userAddress: string;
-}) {
+type Asset = {
+  unit: string;
+  type: `${string}:${string}/${string}:${string}`;
+  amount: string;
+  fungible: true;
+};
+
+type Movement = {
+  asset: Asset;
+  address?: string;
+};
+
+export function useMultichainTransactionDisplay(transaction: Transaction) {
   const locale = useSelector(getIntlLocale);
 
-  const transactionFromEntry = transaction.from?.find(
-    (entry) => entry?.address === userAddress,
-  );
-  const transactionToEntry = transaction.to?.find(
-    (entry) => entry?.address === userAddress,
+  const baseFeeAssets = transaction.fees.filter((fee) => fee.type === 'base');
+  const priorityFeeAssets = transaction.fees.filter(
+    (fee) => fee.type === 'priority',
   );
 
-  const baseFee = transaction?.fees?.find((fee) => fee.type === 'base') ?? null;
-  const priorityFee =
-    transaction?.fees?.find((fee) => fee.type === 'priority') ?? null;
-
-  let from = null;
-  let to = null;
-
-  switch (transaction.type) {
-    case TransactionType.Swap:
-      from = transactionFromEntry ?? null;
-      to = transactionToEntry ?? null;
-      break;
-    case TransactionType.Send:
-      from = transactionFromEntry ?? transaction.from?.[0] ?? null;
-      to = transaction.to?.[0] ?? null;
-      break;
-    case TransactionType.Receive:
-      from = transaction.from?.[0] ?? null;
-      to = transactionToEntry ?? transaction.to?.[0] ?? null;
-      break;
-    default:
-      from = transaction.from?.[0] ?? null;
-      to = transaction.to?.[0] ?? null;
-  }
-
-  const asset = {
-    [TransactionType.Send]: parseAssetWithThreshold(
-      from?.asset ?? null,
-      '0.00001',
-      { locale, isNegative: true },
-    ),
-    [TransactionType.Receive]: parseAssetWithThreshold(
-      to?.asset ?? null,
-      '0.00001',
-      { locale, isNegative: false },
-    ),
-    [TransactionType.Swap]: parseAssetWithThreshold(
-      from?.asset ?? null,
-      '0.00001',
-      { locale, isNegative: true },
-    ),
-  }[transaction.type];
+  const assetInputs = aggregateAmount(
+    transaction.chain,
+    transaction.from as Movement[],
+    transaction.type === TransactionType.Send,
+    locale,
+  );
+  const assetOutputs = aggregateAmount(
+    transaction.chain,
+    transaction.to as Movement[],
+    transaction.type === TransactionType.Send,
+    locale,
+  );
+  const baseFee = aggregateAmount(
+    transaction.chain,
+    baseFeeAssets as Movement[],
+    false,
+    locale,
+  );
+  const priorityFee = aggregateAmount(
+    transaction.chain,
+    priorityFeeAssets as Movement[],
+    false,
+    locale,
+  );
 
   return {
-    ...transaction,
-    from,
-    to,
-    asset,
-    baseFee: parseAssetWithThreshold(baseFee?.asset ?? null, '0.0000001', {
-      locale,
-      isNegative: false,
-    }),
-    priorityFee: parseAssetWithThreshold(
-      priorityFee?.asset ?? null,
-      '0.0000001',
-      { locale, isNegative: false },
-    ),
+    assetInputs,
+    assetOutputs,
+    baseFee,
+    priorityFee,
   };
 }
 
-function parseAssetWithThreshold(
-  asset: Token | Fee | null,
-  threshold: string,
-  { locale, isNegative }: { locale: string; isNegative: boolean },
+function aggregateAmount(
+  chainId: CaipChainId,
+  movement: Movement[],
+  isNegative: boolean,
+  locale: string,
 ) {
-  if (asset?.fungible) {
-    const numberOfDecimals = threshold.split('.')?.[1]?.length ?? 0;
+  const amountByAsset: Record<string, Movement> = {};
 
-    const amount = formatWithThreshold(
-      Number(asset?.amount),
-      Number(threshold),
-      locale,
-      {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: numberOfDecimals,
-      },
-    );
-
-    if (isNegative && !amount.startsWith('<')) {
-      return {
-        ...asset,
-        amount: `-${amount}`,
-      };
+  for (const mv of movement) {
+    if (!mv?.asset.fungible) {
+      continue;
+    }
+    const assetId = mv.asset.type;
+    if (!amountByAsset[assetId]) {
+      amountByAsset[assetId] = mv;
+      continue;
     }
 
-    return {
-      ...asset,
-      amount,
-    };
+    amountByAsset[assetId].asset.amount += Number(mv.asset.amount || 0);
   }
 
-  return null;
+  // Convert to a proper display array.
+  return Object.entries(amountByAsset).map(([_, movement]) =>
+    parseAsset(chainId, movement, locale, isNegative),
+  );
+}
+
+function parseAsset(
+  chainId: CaipChainId,
+  movement: Movement,
+  locale: string,
+  isNegative: boolean,
+) {
+  const displayAmount = formatWithThreshold(
+    Number(movement.asset.amount),
+    0.00000001,
+    locale,
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: MULTICHAIN_PROVIDER_CONFIGS[chainId].decimals || 8,
+    },
+  );
+
+  let finalAmount = displayAmount;
+  if (isNegative && !displayAmount.startsWith('<')) {
+    finalAmount = `-${displayAmount}`;
+  }
+
+  return {
+    amount: finalAmount,
+    unit: movement.asset.unit,
+    // It is not strictly correct to use the address here but we do not support sending multiple assets to multiple addresses
+    address: movement.address,
+  };
 }

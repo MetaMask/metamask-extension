@@ -42,9 +42,6 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getSelectedInternalAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  isSelectedInternalAccountSolana,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/accounts';
 import {
   getMultichainNetwork,
@@ -63,6 +60,7 @@ import {
   IconName,
   BadgeWrapper,
   AvatarNetwork,
+  AvatarNetworkSize,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -94,9 +92,6 @@ import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
-  MultichainNetworks,
-  SOLANA_TOKEN_IMAGE_URL,
-  BITCOIN_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/multichain/networks';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
@@ -251,6 +246,7 @@ export default function TransactionList({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const selectedAccount = useSelector(getSelectedAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -305,7 +301,6 @@ export default function TransactionList({
   ]);
 
   const chainId = useSelector(getCurrentChainId);
-  const selectedAccount = useSelector(getSelectedAccount);
   const account = useSelector(getSelectedInternalAccount);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
@@ -659,111 +654,94 @@ export default function TransactionList({
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 const MultichainTransactionListItem = ({
   transaction,
-  userAddress,
   toggleShowDetails,
 }) => {
   const t = useI18nContext();
-  const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
-
-  const { type, status, to, from, asset } = useMultichainTransactionDisplay({
+  const { assetInputs, assetOutputs } = useMultichainTransactionDisplay(
     transaction,
-    userAddress,
-  });
+  );
+  let title = capitalize(transaction.type);
+  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
-  let title = capitalize(type);
-  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
-  if (type === TransactionType.swap) {
-    title = `${t('swap')} ${from.asset.unit} ${'to'} ${to.asset.unit}`;
-  }
+  return assetOutputs.map((output, index) => {
+    if (transaction.type === TransactionType.swap) {
+      title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
+    }
 
-  return (
-    <ActivityListItem
-      className="custom-class"
-      data-testid="activity-list-item"
-      onClick={() => toggleShowDetails(transaction)}
-      icon={
-        <BadgeWrapper
-          anchorElementShape="circular"
-          badge={
-            <AvatarNetwork
-              borderColor="background-default"
-              borderWidth={1}
-              className="activity-tx__network-badge"
-              data-testid="activity-tx-network-badge"
-              name={
-                isSolanaAccount
-                  ? MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                      .nickname
-                  : MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
-                      .nickname
-              }
-              size="xs"
-              src={
-                isSolanaAccount
-                  ? SOLANA_TOKEN_IMAGE_URL
-                  : BITCOIN_TOKEN_IMAGE_URL
-              }
-            />
-          }
-          display="block"
-          positionObj={{ right: -4, top: -4 }}
+   return (<ActivityListItem
+    className="custom-class"
+    data-testid="activity-list-item"
+    onClick={() => toggleShowDetails(transaction)}
+    icon={
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            size={AvatarNetworkSize.Xs}
+            className="activity-tx__network-badge"
+            data-testid="activity-tx-network-badge"
+            name={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].id}
+            src={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].rpcPrefs?.imageUrl}
+          />
+        }
+        display={Display.Block}
+      >
+        <TransactionIcon category={transaction.type} status={statusKey} />
+      </BadgeWrapper>
+    }
+    rightContent={
+      <>
+        <Text
+          className="activity-list-item__primary-currency"
+          color="text-default"
+          data-testid="transaction-list-item-primary-currency"
+          ellipsis
+          fontWeight="medium"
+          textAlign="right"
+          title="Primary Currency"
+          variant="body-lg-medium"
         >
-          <TransactionIcon category={type} status={statusKey} />
-        </BadgeWrapper>
-      }
-      rightContent={
+          {output.amount} {output.unit}
+        </Text>
+      </>
+    }
+    title={transaction.isBridgeTx ? t('bridge') : title}
+    // eslint-disable-next-line react/jsx-no-duplicate-props
+    subtitle={
+      transaction.isBridgeTx && transaction.bridgeInfo ? (
         <>
-          <Text
-            className="activity-list-item__primary-currency"
-            color="text-default"
-            data-testid="transaction-list-item-primary-currency"
-            ellipsis
-            fontWeight="medium"
-            textAlign="right"
-            title="Primary Currency"
-            variant="body-lg-medium"
-          >
-            {asset?.amount} {asset?.unit}
-          </Text>
-        </>
-      }
-      title={transaction.isBridgeTx ? t('bridge') : title}
-      // eslint-disable-next-line react/jsx-no-duplicate-props
-      subtitle={
-        transaction.isBridgeTx && transaction.bridgeInfo ? (
-          <>
-            <TransactionStatusLabel
-              date={formatTimestamp(transaction.timestamp)}
-              error={{}}
-              status={statusKey}
-              statusOnly
-            />
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {`${t('to')} ${transaction.bridgeInfo.destAsset?.symbol} ${t(
-                'on',
-              )} ${
-                // Use the pre-computed chain name from our hook, or fall back to chain ID
-                transaction.bridgeInfo.destChainName ||
-                transaction.bridgeInfo.destChainId
-              }`}
-            </Text>
-          </>
-        ) : (
           <TransactionStatusLabel
             date={formatTimestamp(transaction.timestamp)}
             error={{}}
             status={statusKey}
             statusOnly
           />
-        )
-      }
-    ></ActivityListItem>
-  );
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+          >
+            {`${t('to')} ${transaction.bridgeInfo.destAsset?.symbol} ${t(
+              'on',
+            )} ${
+              // Use the pre-computed chain name from our hook, or fall back to chain ID
+              transaction.bridgeInfo.destChainName ||
+              transaction.bridgeInfo.destChainId
+            }`}
+          </Text>
+        </>
+      ) : (
+        <TransactionStatusLabel
+          date={formatTimestamp(transaction.timestamp)}
+          error={{}}
+          status={statusKey}
+          statusOnly
+        />
+      )
+    }
+  />)
+  });
 };
+
 MultichainTransactionListItem.propTypes = {
   transaction: PropTypes.object.isRequired,
   userAddress: PropTypes.string.isRequired,

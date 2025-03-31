@@ -63,18 +63,8 @@ export function MultichainTransactionDetailsModal({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const {
-    id,
-    type,
-    timestamp,
-    chain,
-    status,
-    from,
-    to,
-    baseFee,
-    priorityFee,
-    asset,
-  } = useMultichainTransactionDisplay({ transaction, userAddress });
+  const { assetInputs, assetOutputs, baseFee, priorityFee } =
+    useMultichainTransactionDisplay(transaction);
 
   const getStatusColor = (txStatus: string) => {
     switch (txStatus.toLowerCase()) {
@@ -88,7 +78,74 @@ export function MultichainTransactionDetailsModal({
         return TextColor.textDefault;
     }
   };
-  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
+  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
+
+  const accountComponent = (title: string, address?: string) => (
+    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+        {title}
+      </Text>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+        {address ? (
+          <ButtonLink
+            size={ButtonLinkSize.Inherit}
+            textProps={{
+              variant: TextVariant.bodyMd,
+              alignItems: AlignItems.flexStart,
+            }}
+            as="a"
+            externalLink
+            href={getAddressUrl(address, transaction.chain)}
+          >
+            {shortenAddress(address)}
+            <Icon
+              marginLeft={2}
+              name={IconName.Export}
+              size={IconSize.Sm}
+              color={IconColor.primaryDefault}
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  getAddressUrl(address as string, transaction.chain),
+                )
+              }
+            />
+          </ButtonLink>
+        ) : (
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Medium}
+          ></Text>
+        )}
+      </Box>
+    </Box>
+  );
+
+  const amountComponent = (
+    {
+      amount,
+      unit,
+    }: {
+      amount: string;
+      unit: string;
+    },
+    title: string,
+    dataTestId: string,
+  ) => (
+    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+        {title}
+      </Text>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexEnd}
+      >
+        <Text variant={TextVariant.bodyMd} data-testid={dataTestId}>
+          {amount} {unit}
+        </Text>
+      </Box>
+    </Box>
+  );
 
   return (
     <Modal
@@ -108,14 +165,14 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(type)}
+            {capitalize(transaction.type)}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             textAlign={TextAlign.Center}
           >
-            {formatTimestamp(timestamp)}
+            {formatTimestamp(transaction.timestamp)}
           </Text>
         </ModalHeader>
 
@@ -136,7 +193,10 @@ export function MultichainTransactionDetailsModal({
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
                 {t('status')}
               </Text>
-              <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={getStatusColor(transaction.status)}
+              >
                 {capitalize(t(statusKey))}
               </Text>
             </Box>
@@ -162,9 +222,9 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(id, chain)}
+                  href={getTransactionUrl(transaction.id, transaction.chain)}
                 >
-                  {shortenTransactionId(id)}
+                  {shortenTransactionId(transaction.id)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
@@ -172,7 +232,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getTransactionUrl(id, chain),
+                        getTransactionUrl(transaction.id, transaction.chain),
                       )
                     }
                   />
@@ -191,172 +251,33 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* From */}
-            {from?.address && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('from')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  gap={1}
-                >
-                  <ButtonLink
-                    size={ButtonLinkSize.Inherit}
-                    textProps={{
-                      variant: TextVariant.bodyMd,
-                      alignItems: AlignItems.flexStart,
-                    }}
-                    as="a"
-                    externalLink
-                    href={getAddressUrl(from.address, chain)}
-                  >
-                    {shortenAddress(from.address)}
-                    <Icon
-                      marginLeft={2}
-                      name={IconName.Export}
-                      size={IconSize.Sm}
-                      color={IconColor.primaryDefault}
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          getAddressUrl(from.address as string, chain),
-                        )
-                      }
-                    />
-                  </ButtonLink>
-                </Box>
-              </Box>
+            {transaction.type === 'send'
+              ? accountComponent(t('from'), userAddress)
+              : assetInputs.map((input) =>
+                  accountComponent(t('from'), input.address),
+                )}
+
+            {/* Amounts per token */}
+            {assetOutputs.map((output) => (
+              <>
+                {accountComponent(t('to'), output.address)}
+                {amountComponent(output, t('amount'), 'transaction-amount')}
+              </>
+            ))}
+
+            {/* Base Fees */}
+            {baseFee.map((fee) =>
+              amountComponent(fee, t('networkFee'), 'transaction-base-fee'),
             )}
 
-            {/* To */}
-            {to?.address && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('to')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  gap={1}
-                >
-                  <ButtonLink
-                    size={ButtonLinkSize.Inherit}
-                    textProps={{
-                      variant: TextVariant.bodyMd,
-                      alignItems: AlignItems.flexStart,
-                    }}
-                    as="a"
-                    externalLink
-                    href={getAddressUrl(to.address, chain)}
-                  >
-                    {shortenAddress(to.address)}
-                    <Icon
-                      marginLeft={2}
-                      name={IconName.Export}
-                      size={IconSize.Sm}
-                      color={IconColor.primaryDefault}
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          getAddressUrl(to.address as string, chain),
-                        )
-                      }
-                    />
-                  </ButtonLink>
-                </Box>
-              </Box>
+            {/* Priority Fees */}
+            {priorityFee.map((fee) =>
+              amountComponent(
+                fee,
+                t('priorityFee'),
+                'transaction-priority-fee',
+              ),
             )}
-
-            {/* Amount */}
-            {asset && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('amount')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    data-testid="transaction-amount"
-                  >
-                    {asset?.amount} {asset?.unit}
-                  </Text>
-                </Box>
-              </Box>
-            )}
-
-            {/* Network Fees */}
-            {baseFee ? (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('networkFee')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    data-testid="transaction-base-fee"
-                  >
-                    {baseFee.amount} {baseFee.unit}
-                  </Text>
-                </Box>
-              </Box>
-            ) : null}
-
-            {priorityFee ? (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('priorityFee')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    data-testid="transaction-priority-fee"
-                  >
-                    {priorityFee.amount} {priorityFee.unit}
-                  </Text>
-                </Box>
-              </Box>
-            ) : null}
           </Box>
         </Box>
 
@@ -371,7 +292,7 @@ export function MultichainTransactionDetailsModal({
             variant={ButtonVariant.Link}
             onClick={() => {
               global.platform.openTab({
-                url: getTransactionUrl(id, chain),
+                url: getTransactionUrl(transaction.id, transaction.chain),
               });
 
               trackEvent({
@@ -380,7 +301,9 @@ export function MultichainTransactionDetailsModal({
                 properties: {
                   link_type: MetaMetricsEventLinkType.AccountTracker,
                   location: 'Transaction Details',
-                  url_domain: getURLHostName(getTransactionUrl(id, chain)),
+                  url_domain: getURLHostName(
+                    getTransactionUrl(transaction.id, transaction.chain),
+                  ),
                 },
               });
             }}
