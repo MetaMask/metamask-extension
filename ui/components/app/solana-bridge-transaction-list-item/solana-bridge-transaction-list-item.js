@@ -79,6 +79,11 @@ const formatDestTokenAmount = (amount, decimals = 18) => {
 
 /**
  * Component for Solana Bridge Transactions with EVM-style segment rendering
+ *
+ * @param options0
+ * @param options0.transaction
+ * @param options0.userAddress
+ * @param options0.toggleShowDetails
  */
 const SolanaBridgeTransactionListItem = ({
   transaction,
@@ -102,20 +107,17 @@ const SolanaBridgeTransactionListItem = ({
 
   // For bridge transactions, create a more descriptive title
   if (transaction.isBridgeTx && transaction.bridgeInfo) {
-    const {
-      destChainName,
-      provider,
-      destChainId,
-    } = transaction.bridgeInfo;
-    
-    // Create a detailed title that includes destination chain
-    title = `${t('bridge')} ${t('to')} ${destChainName || destChainId}`;
+    const { destChainName, provider, destChainId } = transaction.bridgeInfo;
 
-    // If we have provider info, include it in the title
+    // Chain name fallback
+    const displayChainName = destChainName || destChainId;
+
+    // Create a detailed title with destination chain
+    title = `${t('bridge')} ${t('to')} ${displayChainName}`;
+
+    // Add provider info if available
     if (provider) {
-      title = `${t('bridge')} ${t('to')} ${destChainName || destChainId} ${t(
-        'via',
-      )} ${provider}`;
+      title = `${title} ${t('via')} ${provider}`;
     }
   }
 
@@ -172,23 +174,15 @@ const SolanaBridgeTransactionListItem = ({
             title="Primary Currency"
             variant="body-lg-medium"
           >
-            {asset?.amount} {asset?.unit}
+            {(() => {
+              if (asset?.amount) {
+                return `${asset.amount} ${asset.unit}`;
+              } else if (transaction.from?.[0]?.asset?.amount) {
+                return `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`;
+              }
+              return '';
+            })()}
           </Text>
-          {transaction.bridgeInfo &&
-            transaction.bridgeInfo.destTokenAmount && (
-              <Text
-                className="solana-bridge-transaction-list-item__dest-amount"
-                data-testid="transaction-list-item-secondary-currency"
-                ellipsis
-                textAlign="right"
-                variant="body-md"
-              >
-                {`→ ${formatDestTokenAmount(
-                  transaction.bridgeInfo.destTokenAmount,
-                  transaction.bridgeInfo.destAsset?.decimals,
-                )} ${transaction.bridgeInfo.destAsset?.symbol}`}
-              </Text>
-            )}
         </>
       }
       title={title}
@@ -218,9 +212,7 @@ const SolanaBridgeTransactionListItem = ({
                 className="solana-bridge-transaction-list-item__segment-container"
                 width={BlockSize.Full}
               >
-                <Box
-                  className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--complete"
-                />
+                <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--complete" />
               </Box>
 
               {/* Destination Chain Segment - Dynamic based on status */}
@@ -248,7 +240,6 @@ SolanaBridgeTransactionListItem.propTypes = {
   transaction: PropTypes.object.isRequired,
   userAddress: PropTypes.string.isRequired,
   toggleShowDetails: PropTypes.func.isRequired,
-  index: PropTypes.number,
 };
 
 export default SolanaBridgeTransactionListItem;

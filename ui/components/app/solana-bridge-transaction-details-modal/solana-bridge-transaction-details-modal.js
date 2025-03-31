@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Transaction, TransactionStatus } from '@metamask/keyring-api';
+import { getAccountLink } from '@metamask/etherscan-link';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
   Display,
@@ -13,8 +14,6 @@ import {
   TextColor,
   TextAlign,
   BackgroundColor,
-  BorderRadius,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -43,7 +42,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { getURLHostName } from '../../../helpers/utils/util';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -51,18 +50,17 @@ import {
 import {
   formatTimestamp,
   getTransactionUrl,
-  getAddressUrl,
   shortenTransactionId,
 } from '../multichain-transaction-details-modal/helpers';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../shared/constants/network';
+import { formatBlockExplorerTransactionUrl } from '../../../../shared/lib/multichain/networks';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
   SOLANA_TOKEN_IMAGE_URL,
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
 } from '../../../../shared/constants/multichain/networks';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import './index.scss';
 
 /**
@@ -97,6 +95,72 @@ function SolanaBridgeTransactionDetailsModal({
   const bridgeInfo = transaction.bridgeInfo || {};
   const isBridgeComplete = bridgeInfo.status === StatusTypes.COMPLETE;
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
+
+  /**
+   * Gets the correct block explorer URL for a transaction hash based on chain type
+   *
+   * @param {string} txHash - Transaction hash/ID
+   * @param {string} chainId - Chain ID (can be EVM or Solana format)
+   * @param {object} networkProps - Network properties for EVM chains
+   * @returns {string} Block explorer URL for the transaction
+   */
+  const getChainExplorerUrl = (txHash, chainId, networkProps) => {
+    if (!txHash || !chainId) {
+      return '';
+    }
+
+    try {
+      // Check if it's a Solana chain
+      const caipChainId = formatChainIdToCaip(chainId);
+      const isSolana = caipChainId === MultichainNetworks.SOLANA;
+
+      let blockExplorerUrl = '';
+
+      if (isSolana) {
+        // Handle Solana chains
+        const blockExplorerUrls =
+          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
+        if (blockExplorerUrls) {
+          blockExplorerUrl = formatBlockExplorerTransactionUrl(
+            blockExplorerUrls,
+            txHash.split(':').at(-1) ?? txHash,
+          );
+        }
+      } else {
+        // Handle EVM chains using MetaMask's predefined block explorer URLs
+        // Make sure chainId is in the correct format (0x-prefixed hex string)
+        const formattedChainId = chainId.startsWith('0x')
+          ? chainId
+          : `0x${Number(chainId).toString(16)}`;
+
+        // Use common mapping of chain IDs to block explorer URLs
+        const explorerBaseUrl =
+          CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[formattedChainId];
+
+        if (explorerBaseUrl) {
+          blockExplorerUrl = `${explorerBaseUrl}tx/${txHash}`;
+        } else if (networkProps?.blockExplorerUrl) {
+          // Use provided explorer URL if available
+          blockExplorerUrl = getAccountLink(
+            txHash,
+            chainId,
+            {
+              blockExplorerUrl: networkProps.blockExplorerUrl,
+            },
+            undefined,
+          );
+        } else {
+          // Fallback to Etherscan as a last resort
+          blockExplorerUrl = `https://etherscan.io/tx/${txHash}`;
+        }
+      }
+
+      return blockExplorerUrl;
+    } catch (error) {
+      console.error('Error generating block explorer URL:', error);
+      return '';
+    }
+  };
 
   /**
    * Format destination token amount based on decimals
@@ -259,10 +323,10 @@ function SolanaBridgeTransactionDetailsModal({
                       }}
                       as="a"
                       externalLink
-                      // TODO: Fix destination chain explorer URL generation to properly handle EVM chains
-                      href={getTransactionUrl(
+                      href={getChainExplorerUrl(
                         bridgeInfo.destTxHash,
                         bridgeInfo.destChainId,
+                        { blockExplorerUrl: bridgeInfo.destBlockExplorerUrl },
                       )}
                     >
                       {shortenTransactionId(bridgeInfo.destTxHash)}
@@ -278,7 +342,7 @@ function SolanaBridgeTransactionDetailsModal({
               )}
 
               {/* Timestamp */}
-              <Box
+              {/* <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
@@ -294,7 +358,7 @@ function SolanaBridgeTransactionDetailsModal({
                 >
                   {formatTimestamp(timestamp)}
                 </Text>
-              </Box>
+              </Box> */}
             </Box>
 
             <Box paddingTop={4} paddingBottom={4}>
@@ -389,55 +453,63 @@ function SolanaBridgeTransactionDetailsModal({
               gap={4}
             >
               {/* Source Amount */}
-              {from?.address && asset && (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  You sent
+                </Text>
                 <Box
                   display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.flexEnd}
                 >
                   <Text
                     variant={TextVariant.bodyMd}
-                    fontWeight={FontWeight.Medium}
+                    data-testid="transaction-source-amount"
                   >
-                    You sent
+                    {(() => {
+                      if (asset?.amount) {
+                        return `${asset.amount.replace('-', '')} ${asset.unit}`;
+                      } else if (transaction.from?.[0]?.asset?.amount) {
+                        return `${transaction.from[0].asset.amount.replace(
+                          '-',
+                          '',
+                        )} ${transaction.from[0].asset.unit}`;
+                      }
+                      return '';
+                    })()}
                   </Text>
-                  <Box
+                  {/* <Box
                     display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    alignItems={AlignItems.flexEnd}
+                    gap={1}
+                    alignItems={AlignItems.center}
                   >
+                    <AvatarNetwork
+                      size={AvatarNetworkSize.Xs}
+                      name={
+                        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
+                          .nickname
+                      }
+                      src={SOLANA_TOKEN_IMAGE_URL}
+                      borderColor={BackgroundColor.backgroundDefault}
+                    />
                     <Text
-                      variant={TextVariant.bodyMd}
-                      data-testid="transaction-source-amount"
+                      variant={TextVariant.bodySm}
+                      color={TextColor.textAlternative}
                     >
-                      {asset?.amount.replace('-', '')} {asset?.unit}
+                      {
+                        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
+                          .nickname
+                      }
                     </Text>
-                    <Box
-                      display={Display.Flex}
-                      gap={1}
-                      alignItems={AlignItems.center}
-                    >
-                      <AvatarNetwork
-                        size={AvatarNetworkSize.Xs}
-                        name={
-                          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                            .nickname
-                        }
-                        src={SOLANA_TOKEN_IMAGE_URL}
-                        borderColor={BackgroundColor.backgroundDefault}
-                      />
-                      <Text
-                        variant={TextVariant.bodySm}
-                        color={TextColor.textAlternative}
-                      >
-                        {
-                          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                            .nickname
-                        }
-                      </Text>
-                    </Box>
-                  </Box>
+                  </Box> */}
                 </Box>
-              )}
+              </Box>
 
               {/* Destination Amount */}
               {bridgeInfo?.destAsset && bridgeInfo?.destTokenAmount && (
@@ -466,7 +538,7 @@ function SolanaBridgeTransactionDetailsModal({
                       )}{' '}
                       {bridgeInfo.destAsset.symbol}
                     </Text>
-                    <Box
+                    {/* <Box
                       display={Display.Flex}
                       gap={1}
                       alignItems={AlignItems.center}
@@ -487,7 +559,7 @@ function SolanaBridgeTransactionDetailsModal({
                       >
                         {bridgeInfo?.destChainName || ''}
                       </Text>
-                    </Box>
+                    </Box> */}
                   </Box>
                 </Box>
               )}

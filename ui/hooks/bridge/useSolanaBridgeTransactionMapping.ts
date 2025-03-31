@@ -119,6 +119,9 @@ export default function useSolanaBridgeTransactionMapping(
               destTxHash: matchingBridgeTx.status?.destChain?.txHash,
               srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
               provider: matchingBridgeTx.quote?.provider,
+              // Add block explorer URL for destination chain based on chainId if available
+              destBlockExplorerUrl:
+                matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
             }
           : undefined,
       };
