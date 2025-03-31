@@ -6,18 +6,18 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
-  Button,
-  ButtonSize,
   ButtonVariant,
   Modal,
   ModalOverlay,
   Text,
   TextField,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
+
 import {
-  BlockSize,
   Display,
   FlexDirection,
   FontWeight,
@@ -91,106 +91,105 @@ export default function KeyringRemovalSnapWarning({
           >
             {t('removeSnap')}
           </ModalHeader>
-          {showConfirmation === false ? (
-            <>
-              <BannerAlert severity={BannerAlertSeverity.Warning} className="">
-                {t('backupKeyringSnapReminder')}
-              </BannerAlert>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>{t('removeKeyringSnap')}</Text>
-                <InfoTooltip
-                  contentText={t('removeKeyringSnapToolTip')}
-                  position="top"
-                />
-              </Box>
-              {keyringAccounts.map((account, index) => {
-                return (
-                  <KeyringAccountListItem
-                    key={index}
-                    account={account}
-                    snapUrl={getAccountLink(account.address, chainId)}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                marginTop={6}
-              >
+          <ModalBody>
+            {showConfirmation === false ? (
+              <>
                 <BannerAlert
                   severity={BannerAlertSeverity.Warning}
                   className=""
-                  marginBottom={4}
                 >
                   {t('backupKeyringSnapReminder')}
                 </BannerAlert>
-                <Text marginBottom={4}>
-                  {t('keyringSnapRemoveConfirmation', [
-                    <Text
-                      key="keyringSnapRemoveConfirmation2"
-                      fontWeight={FontWeight.Bold}
-                      as="span"
-                    >
-                      {snap.manifest.proposedName}
-                    </Text>,
-                  ])}
-                </Text>
-                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                {/* @ts-ignore TODO: fix TextField props */}
-                <TextField
-                  marginBottom={4}
-                  value={confirmationInput}
-                  onChange={(e: { target: { value: string } }) => {
-                    setConfirmationInput(e.target.value);
-                    setConfirmedRemoval(
-                      validateConfirmationInput(e.target.value),
-                    );
-                  }}
-                  onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-                    e.preventDefault();
-                  }}
-                  error={error}
-                  inputProps={{
-                    'data-testid': 'remove-snap-confirmation-input',
-                  }}
-                />
-              </Box>
-            </>
-          )}
-          <Box width={BlockSize.Full} display={Display.Flex} gap={4}>
-            <Button
-              block
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              onClick={onCancel}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              block
-              size={ButtonSize.Lg}
-              id="popoverRemoveSnapButton"
-              danger={showConfirmation}
-              disabled={showConfirmation && !confirmedRemoval}
-              onClick={async () => {
-                if (!showConfirmation) {
-                  setShowConfirmation(true);
-                  return;
-                }
-                if (confirmedRemoval) {
-                  onSubmit();
-                }
-              }}
-            >
-              {showConfirmation ? t('removeSnap') : t('continue')}
-            </Button>
-          </Box>
+                <Box
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text>{t('removeKeyringSnap')}</Text>
+                  <InfoTooltip
+                    contentText={t('removeKeyringSnapToolTip')}
+                    position="top"
+                  />
+                </Box>
+                {keyringAccounts.map((account, index) => {
+                  return (
+                    <KeyringAccountListItem
+                      key={index}
+                      account={account}
+                      snapUrl={getAccountLink(account.address, chainId)}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  marginTop={6}
+                >
+                  <BannerAlert
+                    severity={BannerAlertSeverity.Warning}
+                    className=""
+                    marginBottom={4}
+                  >
+                    {t('backupKeyringSnapReminder')}
+                  </BannerAlert>
+                  <Text marginBottom={4}>
+                    {t('keyringSnapRemoveConfirmation', [
+                      <Text
+                        key="keyringSnapRemoveConfirmation2"
+                        fontWeight={FontWeight.Bold}
+                        as="span"
+                      >
+                        {snap.manifest.proposedName}
+                      </Text>,
+                    ])}
+                  </Text>
+                  {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/* @ts-ignore TODO: fix TextField props */}
+                  <TextField
+                    marginBottom={4}
+                    value={confirmationInput}
+                    onChange={(e: { target: { value: string } }) => {
+                      setConfirmationInput(e.target.value);
+                      setConfirmedRemoval(
+                        validateConfirmationInput(e.target.value),
+                      );
+                    }}
+                    onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                      e.preventDefault();
+                    }}
+                    error={error}
+                    inputProps={{
+                      'data-testid': 'remove-snap-confirmation-input',
+                    }}
+                  />
+                </Box>
+              </>
+            )}
+          </ModalBody>
+          <ModalFooter
+            onCancel={onCancel}
+            onSubmit={async () => {
+              if (!showConfirmation) {
+                setShowConfirmation(true);
+                return;
+              }
+              if (confirmedRemoval) {
+                onSubmit();
+              }
+            }}
+            submitButtonProps={{
+              id: 'popoverRemoveSnapButton',
+              danger: showConfirmation,
+              disabled: showConfirmation && !confirmedRemoval,
+              children: showConfirmation ? t('removeSnap') : t('continue'),
+            }}
+            cancelButtonProps={{
+              variant: ButtonVariant.Secondary,
+              children: t('cancel'),
+            }}
+          />
         </ModalContent>
       </Modal>
     </>
