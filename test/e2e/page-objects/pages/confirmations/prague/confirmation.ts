@@ -3,22 +3,22 @@ import { Driver } from '../../../../webdriver/driver';
 class Eip7702AndSendCalls {
   protected driver: Driver;
 
-  private readonly confirmUpgradeAccountCheckbox: string =
-    '[data-testid="confirm-upgrade-acknowledge"] span input';
+  private readonly batchTxList = '[data-testid="batch-txs=]';
 
   private readonly confirmButton = {
     css: '[data-testid="confirm-footer-button"]',
     text: 'Confirm',
   };
 
-  private readonly settingsButton = '[data-testid="header-advanced-details-button"]';
-
-  private readonly txType = '[data-testid="tx-type"]';
+  private readonly confirmUpgradeAccountCheckbox: string =
+    '[data-testid="confirm-upgrade-acknowledge"] span input';
 
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
 
-  private readonly batchTxList = '[data-testid="batch-txs=]';
+  private readonly settingsButton = '[data-testid="header-advanced-details-button"]';
+
+  private readonly txType = '[data-testid="tx-type"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
