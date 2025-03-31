@@ -268,3 +268,6 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
+
+export const DELEGATION_ROUTE = '/delegation';
+PATH_NAME_MAP[DELEGATION_ROUTE] = 'Delegation Page';

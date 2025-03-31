@@ -33,6 +33,7 @@ import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
+import { getDelegationControllerMessenger } from './delegation/delegation-controller-messager';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -41,6 +42,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+    getInitMessenger: noop,
+  },
+  DelegationController: {
+    getMessenger: getDelegationControllerMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {

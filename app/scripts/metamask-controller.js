@@ -393,6 +393,7 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1909,6 +1910,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
+      DelegationController: DelegationControllerInit,
     };
 
     const {
@@ -3539,6 +3541,10 @@ export default class MetamaskController extends EventEmitter {
         }
         this.accountsController.setAccountName(account.id, label);
       },
+
+      updateAccountMetadata: this.accountsController.updateAccountMetadata.bind(
+        this.accountsController,
+      ),
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),

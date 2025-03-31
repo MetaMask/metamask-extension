@@ -937,6 +937,8 @@ function setupBundlerDefaults(
             './**/node_modules/marked',
             './**/node_modules/@solana',
             './**/node_modules/axios',
+            './**/node_modules/viem',
+            './**/node_modules/isows',
           ],
           global: true,
         },

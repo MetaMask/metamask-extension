@@ -42,10 +42,14 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { Delegation } from '@metamask/delegation-controller';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -6115,3 +6119,24 @@ export function setTransactionActive(
     ]);
   };
 }
+
+export const updateRemoteData = async ({
+  accountId,
+  data,
+}: {
+  accountId: string;
+  data: Partial<InternalAccount['metadata']['remoteMode']>;
+}) => {
+  return await submitRequestToBackground('updateAccountMetadata', [
+    accountId,
+    { remoteData: data },
+  ]);
+};
+
+export const storeDelegation = async (delegation: Delegation) => {
+  return await submitRequestToBackground('storeDelegation', [delegation]);
+};
+
+export const signDelegation = async (delegation: Delegation) => {
+  return await submitRequestToBackground('signDelegation', [delegation]);
+};
