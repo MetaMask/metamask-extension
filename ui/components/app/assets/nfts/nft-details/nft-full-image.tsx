@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
 import {
@@ -35,8 +35,9 @@ export default function NftFullImage() {
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
-  const { image, imageOriginal, name, tokenId, tokenURI } = nft;
+  const { image: _image, imageOriginal, tokenURI, name, tokenId } = nft;
   const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
+  const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentChain = useSelector(getCurrentNetwork);

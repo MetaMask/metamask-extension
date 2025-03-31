@@ -19,7 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
@@ -97,7 +97,7 @@ export function NftDetailsComponent({
   nftChainId: string;
 }) {
   const {
-    image,
+    image: _image,
     imageOriginal,
     name,
     description,
@@ -133,12 +133,11 @@ export function NftDetailsComponent({
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
-  const nftImageAlt = getNftImageAlt(nft);
-
-  // Attempt to fetch the data from the tokenURI url and get the image, name if present
   const { image: imageFromTokenURI, name: nameFromTokenURI } =
     useFetchNftDetailsFromTokenURI(tokenURI);
 
+  const nftImageAlt = getNftImageAlt(nft);
+  const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
 
