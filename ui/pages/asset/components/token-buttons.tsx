@@ -60,7 +60,10 @@ import {
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
@@ -87,6 +90,7 @@ const TokenButtons = ({
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   ///: END:ONLY_INCLUDE_IF
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 
@@ -98,7 +102,9 @@ const TokenButtons = ({
     string,
     string
   >;
-  const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSwapsChain = useSelector((state) =>
+    getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
+  );
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
