@@ -37,7 +37,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
-        const publicAddress = addresses?.[0] as string;
+        const publicAddress = addresses?.[0].toLowerCase() as string;
         await initializePages(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
