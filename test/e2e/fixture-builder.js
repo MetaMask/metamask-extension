@@ -333,21 +333,21 @@ class FixtureBuilder {
     });
   }
 
-  withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkStateOld({
+  withNetworkControllerDoubleNode() {
+    const secondNode = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
       rpcUrl: 'http://localhost:8546',
       chainId: '0x53a',
       ticker: 'ETH',
       nickname: 'Localhost 8546',
     });
-    delete ganacheNetworks.selectedNetworkClientId;
-    return this.withNetworkController(ganacheNetworks);
+    delete secondNode.selectedNetworkClientId;
+    return this.withNetworkController(secondNode);
   }
 
-  withNetworkControllerTripleGanache() {
-    this.withNetworkControllerDoubleGanache();
-    const thirdGanache = mockNetworkStateOld({
+  withNetworkControllerTripleNode() {
+    this.withNetworkControllerDoubleNode();
+    const thirdNode = mockNetworkStateOld({
       rpcUrl: 'http://localhost:7777',
       chainId: '0x3e8',
       ticker: 'ETH',
@@ -355,8 +355,8 @@ class FixtureBuilder {
       blockExplorerUrl: undefined,
     });
 
-    delete thirdGanache.selectedNetworkClientId;
-    merge(this.fixture.data.NetworkController, thirdGanache);
+    delete thirdNode.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdNode);
     return this;
   }
 
@@ -394,6 +394,7 @@ class FixtureBuilder {
               image:
                 'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
               standard: 'ERC1155',
+              chainId: 1337,
             },
           ],
         },
@@ -428,6 +429,7 @@ class FixtureBuilder {
               name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
+              chainId: 1337,
             },
           ],
         },
@@ -462,12 +464,10 @@ class FixtureBuilder {
 
   withBridgeControllerDefaultState() {
     this.fixture.data.BridgeController = {
-      bridgeState: {
-        bridgeFeatureFlags: {
-          extensionConfig: {
-            support: false,
-            chains: {},
-          },
+      bridgeFeatureFlags: {
+        extensionConfig: {
+          support: false,
+          chains: {},
         },
       },
     };
