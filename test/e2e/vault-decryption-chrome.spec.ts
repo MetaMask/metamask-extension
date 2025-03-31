@@ -157,8 +157,6 @@ async function closePopoverIfPresent(driver: Driver) {
 
 async function switchToMetaMaskWindowWithoutSocket(driver) {
   const windowHandles = await driver.driver.getAllWindowHandles();
-
-  // switch to MetaMask window and create a new vault through onboarding flow
   let metaMaskWindowFound = false;
 
   // Iterate through each window handle
@@ -171,15 +169,15 @@ async function switchToMetaMaskWindowWithoutSocket(driver) {
       console.log(`Window Handle: ${handle}, Title: ${title}`);
 
       // Check if the title matches "MetaMask"
-      if (title === "MetaMask") {
+      if (title === 'MetaMask') {
         metaMaskWindowFound = true;
-        console.log("Switched to MetaMask window");
+        console.log('Switched to MetaMask window');
         break;
       }
   }
   // If MetaMask window is not found, throw an error
   if (!metaMaskWindowFound) {
-    throw new Error("MetaMask window not found");
+    throw new Error('MetaMask window not found');
   }
 }
 
