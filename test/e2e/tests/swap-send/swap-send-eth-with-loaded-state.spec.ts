@@ -283,10 +283,11 @@ describe('Swap-Send ETH', function () {
 
           await homePage.goToTokensTab();
           await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed(
-            '14.99994',
-            'ETH',
-          );
+          // https://github.com/MetaMask/metamask-extension/issues/31427
+          // await homePage.check_expectedTokenBalanceIsDisplayed(
+          //   '14.99994',
+          //   'ETH',
+          // );
 
           driver.summarizeErrorsAndExceptions();
         },
