@@ -120,8 +120,7 @@ export const handleBridgeTransactionComplete = async (
     getParticipateInMetrics() &&
     bridgeHistoryItem.status.srcChain.txHash
   ) {
-    (properties as any).transaction_hash = // add transaction_hash to CrossChainSwapsEventProperties after testing
-      bridgeHistoryItem.status.srcChain.txHash;
+    properties.transaction_hash = bridgeHistoryItem.status.srcChain.txHash;
   }
 
   trackEvent({
