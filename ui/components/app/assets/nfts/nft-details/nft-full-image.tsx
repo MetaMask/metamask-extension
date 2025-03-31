@@ -23,6 +23,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 
 export default function NftFullImage() {
   const t = useI18nContext();
@@ -34,8 +35,9 @@ export default function NftFullImage() {
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
-  const { imageOriginal, name, tokenId } = nft;
-  const image = getNftImage(nft?.image);
+  const { image: _image, imageOriginal, tokenURI, name, tokenId } = nft;
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
+  const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentChain = useSelector(getCurrentNetwork);
@@ -44,7 +46,11 @@ export default function NftFullImage() {
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
-  const isImageHosted = image?.startsWith('https:');
+  const isImageHosted =
+    image?.startsWith('https:') ||
+    image?.startsWith('http:') ||
+    imageFromTokenURI?.startsWith('https:') ||
+    imageFromTokenURI?.startsWith('http:');
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);
@@ -80,7 +86,7 @@ export default function NftFullImage() {
           >
             <Box>
               <NftItem
-                src={isImageHosted ? image : nftImageURL}
+                src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
                 name={name}
                 tokenId={tokenId}

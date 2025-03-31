@@ -24,6 +24,7 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { ellipsify } from '../../../../../send/send.utils';
+import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
 
 export const generateTokenIdDisplay = (tokenId: string) => {
   if (tokenId.length >= 10) {
@@ -45,7 +46,11 @@ const NFTSendHeading = () => {
     assetName,
     tokenImage,
     tokenId: assetTokenId,
+    tokenURI,
   } = useAssetDetails(tokenAddress, userAddress, data, chainId);
+  // Attempt to fetch image and name from tokenURI
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
   const nfts: Nft[] = useSelector((state) =>
     getNFTsByChainId(state, chainId),
   ) as Nft[];
@@ -60,7 +65,7 @@ const NFTSendHeading = () => {
   const imageOriginal = (nft as Nft | undefined)?.imageOriginal;
   const image = getNftImage((nft as Nft | undefined)?.image);
   const nftImageAlt = nft ? getNftImageAlt(nft) : '';
-  const nftSrcUrl = imageOriginal ?? (image || '');
+  const nftSrcUrl = imageOriginal ?? (image || imageFromTokenURI || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const currentChain = networkConfigurations[chainId];
   const tokenIdDisplay =
@@ -69,9 +74,9 @@ const NFTSendHeading = () => {
   const TokenImage = (
     <Box style={{ width: '48px' }}>
       <NftItem
-        src={tokenImage}
+        src={tokenImage || imageFromTokenURI}
         alt={nftImageAlt}
-        name={assetName}
+        name={assetName || nameFromTokenURI}
         tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={

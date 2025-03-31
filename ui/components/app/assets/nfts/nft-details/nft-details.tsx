@@ -82,6 +82,7 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -109,6 +110,7 @@ export function NftDetailsComponent({
     rarityRank,
     topBid,
     attributes,
+    tokenURI,
   } = nft;
 
   const t = useI18nContext();
@@ -131,12 +133,20 @@ export function NftDetailsComponent({
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
+
   const nftImageAlt = getNftImageAlt(nft);
   const image = getNftImage(_image);
-  const nftSrcUrl = imageOriginal ?? image;
+  const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
+    image?.startsWith('https:') ||
+    image?.startsWith('http:') ||
+    imageFromTokenURI?.startsWith('https:') ||
+    imageFromTokenURI?.startsWith('http:');
+
   const nftImageURL = useGetAssetImageUrl(
     imageOriginal ?? image ?? undefined,
     ipfsGateway,
@@ -294,7 +304,8 @@ export function NftDetailsComponent({
         details: {
           ...nft,
           tokenId: Number(nft.tokenId),
-          image: image ?? undefined,
+          image: nft.image ?? imageFromTokenURI ?? undefined,
+          name: nft.name ?? nameFromTokenURI ?? undefined,
         },
       }),
     );
@@ -359,7 +370,7 @@ export function NftDetailsComponent({
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   return (
     <Page>
