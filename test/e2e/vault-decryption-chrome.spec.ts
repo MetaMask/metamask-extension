@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import level from 'level';
 import { Driver } from './webdriver/driver';
-import { withFixtures, WALLET_PASSWORD } from './helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from './helpers';
 import HeaderNavbar from './page-objects/pages/header-navbar';
 import HomePage from './page-objects/pages/home/homepage';
 import PrivacySettings from './page-objects/pages/settings/privacy-settings';
@@ -155,32 +155,6 @@ async function closePopoverIfPresent(driver: Driver) {
   await driver.clickElementSafe(nftAutodetection);
 }
 
-async function switchToMetaMaskWindowWithoutSocket(driver) {
-  const windowHandles = await driver.driver.getAllWindowHandles();
-  let metaMaskWindowFound = false;
-
-  // Iterate through each window handle
-  for (let handle of windowHandles) {
-      // Switch to the window
-      await driver.driver.switchTo().window(handle);
-
-      // Get the window title
-      let title = await driver.driver.getTitle();
-      console.log(`Window Handle: ${handle}, Title: ${title}`);
-
-      // Check if the title matches "MetaMask"
-      if (title === 'MetaMask') {
-        metaMaskWindowFound = true;
-        console.log('Switched to MetaMask window');
-        break;
-      }
-  }
-  // If MetaMask window is not found, throw an error
-  if (!metaMaskWindowFound) {
-    throw new Error('MetaMask window not found');
-  }
-}
-
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     await withFixtures(
@@ -192,7 +166,7 @@ describe('Vault Decryptor Page', function () {
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await switchToMetaMaskWindowWithoutSocket(driver);
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.ExtensionInFullScreenView);
 
         await completeCreateNewWalletOnboardingFlowWithCustomSettings({
           driver,
@@ -248,7 +222,7 @@ describe('Vault Decryptor Page', function () {
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await switchToMetaMaskWindowWithoutSocket(driver);
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.ExtensionInFullScreenView);
 
         await completeCreateNewWalletOnboardingFlowWithCustomSettings({
           driver,
