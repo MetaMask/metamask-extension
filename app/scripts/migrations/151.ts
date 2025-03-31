@@ -33,9 +33,5 @@ function transformState(state: Record<string, unknown>) {
     | Record<string, unknown>
     | undefined;
 
-  const preferences = preferencesControllerState?.preferences as
-    | Record<string, unknown>
-    | undefined;
-
-  delete preferences?.incomingTransactionsPreferences;
+  delete preferencesControllerState?.incomingTransactionsPreferences;
 }

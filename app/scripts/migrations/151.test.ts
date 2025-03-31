@@ -13,28 +13,24 @@ describe(`migration #${version}`, () => {
   });
 
   describe(`migration #${version}`, () => {
-    it('removes the incomingTransactionsPreferences preference', async () => {
+    it('removes the incomingTransactionsPreferences from PreferencesController state', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
           PreferencesController: {
-            preferences: {
-              incomingTransactionsPreferences: { 0x1: true },
-            },
+            incomingTransactionsPreferences: { 0x1: true },
           },
         },
       };
       const expectedData = {
-        PreferencesController: {
-          preferences: {},
-        },
+        PreferencesController: {},
       };
       const newStorage = await migrate(oldStorage);
 
       expect(newStorage.data).toStrictEqual(expectedData);
     });
 
-    it('does nothing to other PreferencesController state if incomingTransactionsPreferences preference is not set', async () => {
+    it('does nothing to other PreferencesController state if incomingTransactionsPreferences is not set', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {

@@ -268,8 +268,7 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
-    "incomingTransactionsPreferences": "object"
+    "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
