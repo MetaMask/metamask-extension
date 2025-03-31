@@ -64,6 +64,7 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { getPricePrecision, localizeLargeNumber } from '../util';
+import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -263,7 +264,7 @@ const AssetPage = ({
         primary: balance ? balance.toString() : '',
         secondary: balance ? Number(balance) : 0,
       }
-    : mutichainTokenWithFiatAmount;
+    : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
   if (!tokenWithFiatAmount) {
     throw new Error('Token with fiat amount not found');
