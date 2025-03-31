@@ -6,6 +6,11 @@ let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
+/**
+ * @type {globalThis.stateHooks}
+ */
+globalThis.stateHooks = globalThis.stateHooks || {};
+
 const loadTimeLogs = [];
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
@@ -184,29 +189,51 @@ const registerInPageContentScript = async () => {
   }
 };
 
-const onInstallProm = Promise.withResolvers();
-function onStartup() {
-  chrome.runtime.onStartup.removeListener(onStartup);
-  onInstallProm.resolve();
+globalThis.stateHooks.onReadyListener = Promise.withResolvers();
+
+  // lets make sure we do eventually start up no matter what
+  // TODO(David M): this is so awful.
+  const timer = setTimeout(() => {
+    uninstallListeners();
+    globalThis.stateHooks.onReadyListener.resolve("startup");
+  }, 5000);
+
+function uninstallListeners(){
+  clearTimeout(timer);
+  chrome.runtime.onStartup.removeListener(onStartupListener);
+  chrome.runtime.onInstalled.removeListener(onInstalledListener);
 }
-globalThis.stateHooks.onInstallProm = onInstallProm;
-chrome.runtime.onInstalled.addListener(async function (details) {
-  if (details.reason === 'install') {
-    chrome.runtime.onStartup.removeListener(onStartup);
-    await chrome.storage.session.set({ isFirstTimeInstall: true });
-    await chrome.storage.local.set({ vaultHasNotYetBeenCreated: true });
-    onInstallProm.resolve();
-  } else if (details.reason === 'update') {
-    await chrome.storage.session.set({ isFirstTimeInstall: false });
+
+function onStartupListener() {
+  uninstallListeners();
+  globalThis.stateHooks.onReadyListener.resolve("startup");
+}
+
+/**
+ * `onInstalled` event handler.
+ *
+ * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+ * is never called.
+ * For MV2 builds, the listener is added in `background.js` instead.
+ *
+ * @param {chrome.runtime.InstalledDetails} details - Event details.
+ */
+function onInstalledListener({ reason }) {
+  uninstallListeners();
+  if (reason === "install") {
+    globalThis.stateHooks.onReadyListener.resolve("install");
+  } else {
+    globalThis.stateHooks.onReadyListener.resolve("startup");
   }
-});
+}
+chrome.runtime.onInstalled.addListener(onInstalledListener);
 
 // `onStartup` doesn't fire in private browsing modes
 if (chrome.extension.inIncognitoContext) {
-  // so lets make sure we do eventually start up
-  setTimeout(() => onInstallProm.resolve(), 5000);
+  // so lets make sure we do eventually start up no matter what
+  setTimeout(() => globalThis.stateHooks.onReadyListener.resolve("startup"), 5000);
 } else {
-  chrome.runtime.onStartup.addListener(onStartup);
+  chrome.runtime.onStartup.addListener(onStartupListener);
 }
 
 registerInPageContentScript();

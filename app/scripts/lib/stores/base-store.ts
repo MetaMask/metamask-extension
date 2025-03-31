@@ -33,10 +33,6 @@ export type MetaMaskStorageStructure = {
    * The metadata object
    */
   meta?: MetaData;
-  /**
-   * A flag that indicates the vault has not yet been created
-   */
-  vaultHasNotYetBeenCreated?: boolean;
 };
 
 /**

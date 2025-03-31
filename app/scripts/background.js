@@ -134,47 +134,55 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
-
-let onInstallProm;
-if (!isManifestV3) {
-  onInstallProm = globalThis.stateHooks.onInstallProm;
+if (isManifestV3) {
+  globalThis.stateHooks.onReadyListener.promise.then((reason) => {
+    if (reason === 'install') {
+      onInstall();
+    }
+  });
 } else {
-  onInstallProm = Promise.withResolvers();
-  function onStartup() {
-    browser.runtime.onStartup.removeListener(onStartup);
-    onInstallProm.resolve();
+  globalThis.stateHooks.onReadyListener = Promise.withResolvers();
+
+  // lets make sure we do eventually start up no matter what
+  // TODO(David M): this is so awful.
+  const timer = setTimeout(() => {
+    uninstallListeners();
+    globalThis.stateHooks.onReadyListener.resolve("startup");
+  }, 5000);
+
+  function uninstallListeners(){
+    clearTimeout(timer);
+    chrome.runtime.onStartup.removeListener(onStartupListener);
+    chrome.runtime.onInstalled.removeListener(onInstalledListener);
   }
-  if (isFirefox) {
-    browser.runtime.onInstalled.addListener(async function (details) {
-      // if we got an `onInstalled`, we don't need to listen to onStartup any more
-      browser.runtime.onStartup.removeListener(onStartup);
-      if (details.reason === 'install') {
-        await browser.storage.session.set({ isFirstTimeInstall: true });
-        await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
-      } else if (details.reason === 'update') {
-        await browser.storage.session.set({ isFirstTimeInstall: false });
-      }
-      onInstallProm.resolve();
-    });
-  } else if (!isManifestV3) {
-    browser.runtime.onInstalled.addListener(async function (details) {
-      // if we got an `onInstalled`, we don't need to listen to onStartup any more
-      browser.runtime.onStartup.removeListener(onStartup);
-      if (details.reason === 'install') {
-        global.sessionStorage.setItem('isFirstTimeInstall', true);
-        await browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
-      } else if (details.reason === 'update') {
-        global.sessionStorage.setItem('isFirstTimeInstall', false);
-      }
-      onInstallProm.resolve();
-    });
+
+  function onStartupListener() {
+    uninstallListeners();
+    globalThis.stateHooks.onReadyListener.resolve("startup");
   }
+
+  /**
+   * `onInstalled` event handler.
+   *
+   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+   * is never called.
+   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
+   *
+   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
+   */
+  function onInstalledListener({ reason }) {
+    uninstallListeners();
+    if (reason === "install") {
+      globalThis.stateHooks.onReadyListener.resolve("install");
+    } else {
+      globalThis.stateHooks.onReadyListener.resolve("startup");
+    }
+  }
+  browser.runtime.onInstalled.addListener(onInstalledListener);
+
   // `onStartup` doesn't fire in private browsing modes
-  if (browser.extension.inIncognitoContext) {
-    // so lets make sure we do eventually start up
-    setTimeout(() => onInstallProm.resolve(), 5000);
-  } else {
-    browser.runtime.onStartup.addListener(onStartup);
+  if (!chrome.extension.inIncognitoContext) {
+    chrome.runtime.onStartup.addListener(onStartupListener);
   }
 }
 
@@ -544,12 +552,6 @@ async function initialize() {
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
 
-    if (isManifestV3 || isFirefox) {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    } else {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
@@ -637,9 +639,6 @@ export async function loadStateFromPersistence() {
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
-  // make sure we have updated the `vaultHasNotYetBeenCreated` flag if needed
-  await onInstallProm.promise;
-
   // read from disk
   // first from preferred, async API:
   let preMigrationVersionedData = await persistenceManager.get();
@@ -651,17 +650,13 @@ export async function loadStateFromPersistence() {
   if (vaultDataPresent === false) {
     // so we don't have a vault... don't panic yet! there is a chance we aren't
     // supposed to have one at this point.
-    // `vaultHasNotYetBeenCreated` can be `true`, `false`, or `undefined`. If it
-    // is `!== true`, we *should* have a vault... and now we can panic.
-    const weShouldHaveAVault =
-      preMigrationVersionedData.vaultHasNotYetBeenCreated !== true;
-    if (weShouldHaveAVault) {
-      throw new Error(MISSING_VAULT_ERROR);
+    const reason = await globalThis.stateHooks.onReadyListener.promise;
+    // the only reason we should NOT have a vault is if we were just installed
+    // for the very first time
+    const weShouldHaveAVault = reason !== "install";
+    if(weShouldHaveAVault) {
+        throw new Error(MISSING_VAULT_ERROR);
     }
-  }
-
-  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
-    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
   const migrator = new Migrator({
@@ -681,6 +676,10 @@ export async function loadStateFromPersistence() {
       extra: { vaultStructure },
     });
   });
+
+  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
+  }
 
   // migrate data
   const versionedData = await migrator.migrateData(preMigrationVersionedData);
@@ -1351,24 +1350,15 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-// On first install, open a new tab with MetaMask
-async function onInstall() {
-  const sessionData =
-    isManifestV3 || isFirefox
-      ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.sessionStorage.getItem('isFirstTimeInstall');
-
-  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
-
-  if (process.env.IN_TEST) {
-    addAppInstalledEvent();
-  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
-    // If storeAlreadyExisted is true then this is a fresh installation
-    // and an app installed event should be tracked.
-    addAppInstalledEvent();
+/**
+ * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
+ */
+function onInstall() {
+  log.debug('First install detected');
+  addAppInstalledEvent();
+  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  onNavigateToTab();
 }
 
 function onNavigateToTab() {
@@ -1399,8 +1389,8 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
+  onNavigateToTab();
   try {
-    await onInstall();
     await initialize();
     if (process.env.IN_TEST) {
       // Send message to offscreen document
