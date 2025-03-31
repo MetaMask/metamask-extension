@@ -9,7 +9,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
     />
     <div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       >
         <div
           class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -69,12 +69,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
                 <div
                   class="network-account-balance-header__network-account__ident-icon-ethereum"
-                  style="height: 16px; width: 16px;"
                 >
                   <img
                     alt="Ethereum Mainnet"
                     src="./images/eth_logo.svg"
-                    style="height: 16px; width: 16px;"
                   />
                 </div>
               </div>
@@ -159,7 +157,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box confirm-add-suggested-nft__content"
+          class="mm-box page-container__content confirm-add-suggested-nft__content"
         >
           <div
             class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
@@ -224,7 +222,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
   </body>,
   "container": <div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
     >
       <div
         class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -284,12 +282,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               </div>
               <div
                 class="network-account-balance-header__network-account__ident-icon-ethereum"
-                style="height: 16px; width: 16px;"
               >
                 <img
                   alt="Ethereum Mainnet"
                   src="./images/eth_logo.svg"
-                  style="height: 16px; width: 16px;"
                 />
               </div>
             </div>
@@ -374,7 +370,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         </p>
       </div>
       <div
-        class="mm-box confirm-add-suggested-nft__content"
+        class="mm-box page-container__content confirm-add-suggested-nft__content"
       >
         <div
           class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
