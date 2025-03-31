@@ -2,12 +2,7 @@ import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 import { useSamplePetnames } from '../../../ducks/sample-petnames';
 import { useForm } from '../../../hooks/useForm';
-import { addPetname } from '../../../ducks/sample-petnames';
-import {
-  validateAddress,
-  validatePetname,
-  normalizeAddress,
-} from '../utils/petnames-utils';
+import { validateAddress, validatePetname } from '../utils/petnames-utils';
 import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
 

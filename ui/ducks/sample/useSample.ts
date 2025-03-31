@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   increment,
+  setCounter,
   selectCounterValue,
   selectCounterError,
-  setCounter,
-} from '.';
+} from './slice';
 
 export function useSample() {
   const value = useSelector(selectCounterValue);
