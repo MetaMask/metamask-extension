@@ -24,17 +24,14 @@ import {
   useMultichainWalletSnapClient,
 } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 
-export const SolanaAccountCreationPrompt = ({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) => {
+export const SolanaAccountCreationPrompt = () => {
   const t = useI18nContext();
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
   const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
   const [isCreating, setIsCreating] = React.useState(false);
+
   const handleCreateAccount = useCallback(async () => {
     try {
       setIsCreating(true);
@@ -49,13 +46,12 @@ export const SolanaAccountCreationPrompt = ({
           setSelectedAccount: false,
         },
       );
-      onSuccess();
     } catch (error) {
       console.error('Error creating Solana account:', error);
     } finally {
       setIsCreating(false);
     }
-  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id, onSuccess]);
+  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id]);
 
   return (
     <Box
