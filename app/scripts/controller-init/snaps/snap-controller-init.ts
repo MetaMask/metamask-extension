@@ -25,6 +25,7 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
+ * @param request.preinstalledSnaps - The list of preinstalled Snaps.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -106,9 +107,6 @@ export const SnapControllerInit: ControllerInitFunction<
 
     getMnemonicSeed,
 
-    // @ts-expect-error: `PREINSTALLED_SNAPS` is readonly, but the controller
-    // expects a mutable array.
-    // TODO: Update the controller to accept a readonly array.
     preinstalledSnaps,
     getFeatureFlags,
   });

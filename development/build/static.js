@@ -215,7 +215,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           },
         ]
       : []),
-    // TODO: Filter out not Snaps not meant to be included in this build type.
+    // TODO: Filter out Snaps not meant to be included in this build type.
     ...PREINSTALLED_SNAPS.map((snap) => ({
       src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
       dest: `preinstalled-snaps/${snap}/preinstalled-snap.json`,
