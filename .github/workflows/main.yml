@@ -243,8 +243,8 @@ jobs:
   e2e-chrome:
     needs:
       - needs-e2e
-      - prep-build-test-browserify
-      - prep-build-dist-browserify
+      # - prep-build-test-browserify
+      # - prep-build-dist-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
 

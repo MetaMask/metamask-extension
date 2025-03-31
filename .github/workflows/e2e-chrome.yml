@@ -92,23 +92,23 @@ jobs:
       - name: Install Chromium
         run: yarn playwright install chromium
 
-      - name: Download build artifact
-        id: download-build-artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: prep-build-dist-browserify-chrome
-          path: ./dist/
+      # - name: Download build artifact
+      #   id: download-build-artifact
+      #   continue-on-error: true
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: prep-build-dist-browserify-chrome
+      #     path: ./dist/
 
-      - run: echo "set -g mouse on" >> ~/.tmux.conf
+      # - run: echo "set -g mouse on" >> ~/.tmux.conf
 
-      - name: Debugging with tmate
-        uses: ./.github/actions/actions-tmate
-        with:
-          limit-access-to-actor: true
+      # - name: Debugging with tmate
+      #   uses: ./.github/actions/actions-tmate
+      #   with:
+      #     limit-access-to-actor: true
 
       - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
-        if: ${{ steps.download-build-artifact.outcome == 'failure' }}
+        # if: ${{ steps.download-build-artifact.outcome == 'failure' }}
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
           INFURA_PROJECT_ID: 'FAKE'
