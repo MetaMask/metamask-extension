@@ -7,7 +7,13 @@ import {
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import { integrationTestRender } from '../../lib/render-helpers';
 import mockMetaMaskState from '../data/integration-init-state.json';
-import { clickElementById, createMockImplementation, waitForElementById, waitForElementByText, waitForElementByTextToNotBePresent } from '../helpers';
+import {
+  clickElementById,
+  createMockImplementation,
+  waitForElementById,
+  waitForElementByText,
+  waitForElementByTextToNotBePresent,
+} from '../helpers';
 
 jest.setTimeout(20_000);
 
@@ -33,9 +39,9 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-
 describe('NFTs list', () => {
   beforeEach(() => {
+    process.env.PORTFOLIO_VIEW = 'true';
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
   });
@@ -45,7 +51,6 @@ describe('NFTs list', () => {
   });
 
   it('displays the nfts list for popular networks and tracks the event', async () => {
-    process.env.PORTFOLIO_VIEW = true;
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -56,8 +61,8 @@ describe('NFTs list', () => {
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
-      "selectedNetworkClientId": "testNetworkConfigurationId",
-    }
+      selectedNetworkClientId: 'testNetworkConfigurationId',
+    };
 
     await act(async () => {
       await integrationTestRender({
@@ -79,7 +84,6 @@ describe('NFTs list', () => {
     await waitForElementByText('MUNK #1 Chain 137');
     await waitForElementByText('MUNK #1 Chain 5');
 
-
     let nftScreenOpenedMetricsEvent;
 
     await waitFor(() => {
@@ -90,9 +94,7 @@ describe('NFTs list', () => {
             call[1]?.[0].category === MetaMetricsEventCategory.Home,
         );
 
-      expect(nftScreenOpenedMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
-      );
+      expect(nftScreenOpenedMetricsEvent?.[0]).toBe('trackMetaMetricsEvent');
 
       expect(nftScreenOpenedMetricsEvent?.[1]).toEqual(
         expect.arrayContaining([
@@ -106,23 +108,22 @@ describe('NFTs list', () => {
   });
 
   it('filters the nfts list for the current network', async () => {
-    process.env.PORTFOLIO_VIEW = true;
     const account =
       mockMetaMaskState.internalAccounts.accounts[
-      mockMetaMaskState.internalAccounts
-        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
-      "selectedNetworkClientId": "testNetworkConfigurationId",
-      "preferences": {
+      selectedNetworkClientId: 'testNetworkConfigurationId',
+      preferences: {
         ...mockMetaMaskState.preferences,
         tokenNetworkFilter: {
-          "0x1": true
-        }
-      }
-    }
+          '0x1': true,
+        },
+      },
+    };
 
     const accountName = account.metadata.name;
 
@@ -151,11 +152,10 @@ describe('NFTs list', () => {
   });
 
   it('disables the filter list for the test networks', async () => {
-    process.env.PORTFOLIO_VIEW = true;
     const account =
       mockMetaMaskState.internalAccounts.accounts[
-      mockMetaMaskState.internalAccounts
-        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
     const accountName = account.metadata.name;
