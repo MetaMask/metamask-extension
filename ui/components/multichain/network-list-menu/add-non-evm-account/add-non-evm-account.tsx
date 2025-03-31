@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -55,6 +55,31 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
     primaryKeyring.metadata.id,
   );
 
+  const handleActionComplete = useCallback(
+    async (confirmed: boolean) => {
+      if (confirmed) {
+        dispatch(toggleNetworkMenu());
+      } else {
+        setShowCreateAccount(false);
+      }
+    },
+    [dispatch],
+  );
+
+  const handleSelectSrp = useCallback(() => {
+    setShowSrpSelection(true);
+    setShowCreateAccount(false);
+  }, []);
+
+  const handleSrpActionComplete = useCallback((keyringId: string) => {
+    setSelectedKeyringId(keyringId);
+    setShowCreateAccount(true);
+  }, []);
+
+  const handleAddAccount = useCallback(() => {
+    setShowCreateAccount(true);
+  }, []);
+
   const { clientType, chainId: mappedChainId } = SNAP_CLIENT_CONFIG_MAP[
     chainId
   ] || {
@@ -72,18 +97,9 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
       >
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <CreateSnapAccount
-            onActionComplete={async (confirmed: boolean) => {
-              if (confirmed) {
-                dispatch(toggleNetworkMenu());
-              } else {
-                setShowCreateAccount(false);
-              }
-            }}
+            onActionComplete={handleActionComplete}
             selectedKeyringId={selectedKeyringId}
-            onSelectSrp={() => {
-              setShowSrpSelection(true);
-              setShowCreateAccount(false);
-            }}
+            onSelectSrp={handleSelectSrp}
             clientType={clientType}
             chainId={mappedChainId}
           />
@@ -100,12 +116,7 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.spaceBetween}
       >
-        <SrpList
-          onActionComplete={(keyringId: string) => {
-            setSelectedKeyringId(keyringId);
-            setShowCreateAccount(true);
-          }}
-        />
+        <SrpList onActionComplete={handleSrpActionComplete} />
       </Box>
     );
   }
@@ -132,9 +143,7 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
         <ButtonPrimary
           width={BlockSize.Full}
           size={ButtonPrimarySize.Lg}
-          onClick={() => {
-            setShowCreateAccount(true);
-          }}
+          onClick={handleAddAccount}
         >
           {t('addAccount')}
         </ButtonPrimary>
