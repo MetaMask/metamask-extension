@@ -1,27 +1,20 @@
-import { MockttpServer, CompletedRequest } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import { Suite } from 'mocha';
+import { MockttpServer } from 'mockttp';
+import {
+  logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  withFixtures,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
-import HomePage from '../../page-objects/pages/home/homepage';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
-import {
-  mockEmptyHistoricalPrices,
-  mockEmptyPrices,
-} from '../tokens/utils/mocks';
+import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
-  const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
-  const ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
-
   return [
-    await mockEmptyHistoricalPrices(mockServer, ETH_ADDRESS, '0x1'),
-    await mockEmptyPrices(mockServer, '1'),
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
@@ -47,7 +40,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           occurrences: 13,
           iconUrl:
             'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/weth.svg',
-          address: WETH_ADDRESS,
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
           name: 'Wrapped Ether',
           decimals: 18,
         },
@@ -83,69 +76,42 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           ],
         },
       })),
+
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
-      .thenCallback((request: CompletedRequest) => {
-        const url = new URL(request.url);
-        const sourceToken = url.searchParams.get('sourceToken')?.toLowerCase();
-        const destinationToken = url.searchParams
-          .get('destinationToken')
-          ?.toLowerCase();
-        const walletAddress =
-          url.searchParams.get('walletAddress') || DEFAULT_FIXTURE_ACCOUNT;
-        const sourceAmount = url.searchParams.get('sourceAmount');
-
-        const isEthToWeth =
-          sourceToken === ETH_ADDRESS && destinationToken === WETH_ADDRESS;
-
-        const data = isEthToWeth
-          ? '0xd0e30db0'
-          : '0x2e1a7d4d0000000000000000000000000000000000000000000000008ac7230489e80000';
-        const response = {
-          statusCode: 200,
-          json: [
-            {
-              trade: {
-                data,
-                to: WETH_ADDRESS,
-                value: isEthToWeth ? sourceAmount : '0',
-                from: walletAddress,
-              },
-              hasRoute: false,
-              sourceAmount,
-              destinationAmount: sourceAmount,
-              error: null,
-              sourceToken: sourceToken || ETH_ADDRESS,
-              destinationToken: destinationToken || WETH_ADDRESS,
-              maxGas: 300000,
-              averageGas: 280000,
-              estimatedRefund: 0,
-              isGasIncludedTrade: false,
-              approvalNeeded: null,
-              fetchTime: 27,
-              aggregator: 'wrappedNative',
-              aggType: 'CONTRACT',
-              fee: 0,
-              quoteRefreshSeconds: 30,
-              gasMultiplier: 1.1,
-              sourceTokenRate: 1,
-              destinationTokenRate: 1.001552079142939,
-              priceSlippage: {
-                ratio: 1.0005795645538318,
-                calculationError: '',
-                bucket: 'low',
-                sourceAmountInUSD: 20705.2,
-                destinationAmountInUSD: 20693.2,
-                sourceAmountInNativeCurrency: 10,
-                destinationAmountInNativeCurrency: 10.01552079142939,
-                sourceAmountInETH: 10,
-                destinationAmountInETH: 10.01552079142939,
-              },
+      .forGet('https://swap.api.cx.metamask.io/v2/networks/1/quotes')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            aggregator: 'WETH',
+            aggregatorType: 'CONTRACT',
+            destinationToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            sourceToken: '0x0000000000000000000000000000000000000000',
+            sourceAmount: '10000000000000000000',
+            destinationAmount: '10000000000000000000',
+            trade: {
+              data: '0xd0e30db0',
+              from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              value: '10000000000000000000',
             },
-          ],
-        };
-        return response;
-      }),
+            sender: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+            recipient: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+            error: null,
+            gasParams: {
+              maxGas: 500000,
+              averageGas: 300000,
+              estimatedRefund: 0,
+              gasMultiplier: 1,
+            },
+            fee: 0,
+            approvalNeeded: null,
+            priceSlippage: null,
+            sourceTokenRate: 1,
+            destinationTokenRate: 0.9999285710414016,
+          },
+        ],
+      })),
 
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1')
@@ -160,7 +126,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
             name: 'Ether',
             symbol: 'ETH',
             decimals: 18,
-            address: ETH_ADDRESS,
+            address: '0x0000000000000000000000000000000000000000',
           },
           iconUrl: 'https://s3.amazonaws.com/airswap-token-images/ETH.png',
           blockExplorerUrl: 'https://etherscan.io',
@@ -203,41 +169,13 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
   ];
 }
 
-describe('Swap', function () {
-  const swapTestCases = [
-    {
-      name: 'should swap WETH to ETH',
-      sourceToken: 'WETH',
-      destinationToken: 'Ether',
-      sourceAmount: '10',
-      expectedWethBalance: '40',
-      expectedEthBalance: '34.99991',
-      dismissWarning: false,
-    },
-    {
-      name: 'should swap ETH to WETH',
-      sourceToken: 'Ethereum',
-      destinationToken: 'WETH',
-      sourceAmount: '10',
-      expectedWethBalance: '60',
-      expectedEthBalance: '14.99992',
-      dismissWarning: true,
-    },
-  ];
-
-  swapTestCases.forEach((testCase) => {
-    it(testCase.name, async function () {
+describe('Swap-Send ETH', function () {
+  describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
+    it('submits a transaction successfully with max amount', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
-            .withPreferencesController({
-              preferences: {
-                tokenNetworkFilter: {
-                  '0x1': true,
-                },
-              },
-            })
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -268,8 +206,9 @@ describe('Swap', function () {
             },
           ],
         },
-        async ({ driver, localNodes }) => {
-          await loginWithBalanceValidation(driver, localNodes[0]);
+        async ({ driver }) => {
+          const swapSendPage = new SwapSendPage(driver);
+          await logInWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
@@ -289,36 +228,68 @@ describe('Swap', function () {
           await advancedSettingsPage.toggleSmartTransactions();
           await settingsPage.closeSettingsPage();
 
-          // Swap tokens
-          const assetListPage = new AssetListPage(driver);
-          await assetListPage.clickOnAsset(testCase.sourceToken);
+          // START SWAP AND SEND FLOW
+          await openActionMenuAndStartSendFlow(driver);
 
-          const tokenOverviewPage = new TokenOverviewPage(driver);
-          await tokenOverviewPage.check_pageIsLoaded();
-          await tokenOverviewPage.clickSwap();
+          await swapSendPage.fillRecipientAddressInput(DEFAULT_FIXTURE_ACCOUNT);
+          await swapSendPage.fillAmountInput('1');
 
-          const swapPage = new SwapPage(driver);
-          await swapPage.check_pageIsLoaded();
-          await swapPage.enterSwapAmount(testCase.sourceAmount);
-          await swapPage.selectDestinationToken(testCase.destinationToken);
-
-          // https://github.com/MetaMask/metamask-extension/issues/31426
-          if (testCase.dismissWarning) {
-            await swapPage.dismissManualTokenWarning();
-          }
-          await driver.delay(1500);
-          await swapPage.submitSwap();
-
-          await homePage.check_expectedTokenBalanceIsDisplayed(
-            testCase.expectedWethBalance,
-            'WETH',
+          await swapSendPage.verifyMaxButtonClick(
+            ['ETH', 'ETH'],
+            ['24.99945808355143', '24.99945808355143'],
           );
 
+          await swapSendPage.fillAmountInput('10');
+          await swapSendPage.verifyAssetSymbolsAndAmounts(
+            [NATIVE_TOKEN_SYMBOL, NATIVE_TOKEN_SYMBOL],
+            ['10', '10'],
+          );
+
+          await swapSendPage.fillAmountInput('10');
+
+          const ETH_WETH_TOKEN_INPUTS = [
+            [NATIVE_TOKEN_SYMBOL, 'WETH'],
+            ['10', '10'],
+          ];
+          const ETH_WETH_FIAT_INPUTS = [
+            ['USD', 'USD'],
+            ['1,700.00', '1,701.09'],
+          ];
+
+          await swapSendPage.clickOnAsset('WETH', 'dest');
+          await swapSendPage.verifyAssetSymbolsAndAmounts(
+            ETH_WETH_TOKEN_INPUTS[0],
+            ETH_WETH_TOKEN_INPUTS[1],
+          );
+
+          await swapSendPage.verifySwitchPrimaryCurrency(
+            ETH_WETH_TOKEN_INPUTS,
+            ETH_WETH_FIAT_INPUTS,
+          );
+
+          await swapSendPage.verifyQuoteDisplay(
+            '1 ETH = 1 WETH',
+            '0.0129028 ETH',
+            '≈ $21.93',
+          );
+
+          await swapSendPage.submitSwap();
+          await swapSendPage.verifyHistoryEntry(
+            'Send ETH as WETH',
+            'Confirmed',
+            '-10 ETH',
+            '',
+          );
+
+          await homePage.goToTokensTab();
+          await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
           // https://github.com/MetaMask/metamask-extension/issues/31427
           // await homePage.check_expectedTokenBalanceIsDisplayed(
-          //   testCase.expectedEthBalance,
+          //   '14.99994',
           //   'ETH',
           // );
+
+          driver.summarizeErrorsAndExceptions();
         },
       );
     });
