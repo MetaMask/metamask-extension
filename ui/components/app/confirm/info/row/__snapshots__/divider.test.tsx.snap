@@ -3,7 +3,11 @@
 exports[`ConfirmInfoRowDivider should match snapshot 1`] = `
 <div>
   <div
-    style="height: 1px; margin-left: -8px; margin-right: -8px;"
-  />
+    style="padding-top: 8px; padding-bottom: 8px;"
+  >
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+  </div>
 </div>
 `;
