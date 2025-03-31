@@ -2878,6 +2878,7 @@ export function resetSendState() {
 export function signTransaction(history) {
   return async (dispatch, getState) => {
     const state = getState();
+    const globalNetworkClientId = getSelectedNetworkClientId(state);
     const { stage, eip1559support, amountMode } = state[name];
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
@@ -3053,6 +3054,7 @@ export function signTransaction(history) {
           const { id } = await addTransactionAndWaitForPublish(
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
+              networkClientId: globalNetworkClientId,
               requireApproval: false,
               // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
@@ -3071,6 +3073,7 @@ export function signTransaction(history) {
         const { id: swapAndSendTxId } = await addTransactionAndWaitForPublish(
           txParams,
           {
+            networkClientId: globalNetworkClientId,
             requireApproval: false,
             sendFlowHistory: draftTransaction.history,
             type: TransactionType.swapAndSend,
@@ -3088,6 +3091,7 @@ export function signTransaction(history) {
         // basic send
         const { id: basicSendTxId } = await dispatch(
           addTransactionAndRouteToConfirmationPage(txParams, {
+            networkClientId: globalNetworkClientId,
             sendFlowHistory: draftTransaction.history,
             type: transactionType,
           }),
