@@ -21,6 +21,7 @@ import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../shared/modules/string-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -40,7 +41,6 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
-import { isEqualCaseInsensitive } from '../shared/modules/string-utils';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -149,7 +149,10 @@ export async function setupInitialStore(
 
             if (
               namespace !== parsedPermittedAccount.chain.namespace ||
-              !isEqualCaseInsensitive(selectedAccount.address, parsedPermittedAccount.address)
+              !isEqualCaseInsensitive(
+                selectedAccount.address,
+                parsedPermittedAccount.address,
+              )
             ) {
               return false;
             }

@@ -161,8 +161,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
-  const currentlySelectedNetworkChainId =
-    currentlySelectedNetwork.chainId;
+  const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
   // If globally selected network is a test network, include that in the default selected networks for connection request
   const selectedTestNetwork = testNetworkConfigurations.find(
     (network: { caipChainId: CaipChainId }) =>
@@ -180,7 +179,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ? supportedRequestedCaipChainIds
       : defaultSelectedNetworkList;
 
-  console.log({currentlySelectedNetworkChainId, selectedTestNetwork, defaultSelectedNetworkList, defaultSelectedChainIds})
+  console.log({
+    currentlySelectedNetworkChainId,
+    selectedTestNetwork,
+    defaultSelectedNetworkList,
+    defaultSelectedChainIds,
+  });
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
     defaultSelectedChainIds as CaipChainId[],
@@ -201,12 +205,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   });
 
   const requestedNamespaces = getUniqueArrayItems(
-    [...Object.keys(requestedCaip25CaveatValue.requiredScopes),
-    ...Object.keys(requestedCaip25CaveatValue.optionalScopes)
+    [
+      ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
+      ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
     ].map((scope) => {
       const scopeString = scope as `${CaipNamespace}:${CaipReference}`;
       // This will break if 'wallet' is passed in
-      const { namespace, reference } = parseCaipChainId(scopeString)
+      const { namespace, reference } = parseCaipChainId(scopeString);
       return namespace === KnownCaipNamespace.Wallet ? reference : namespace;
     }),
   );

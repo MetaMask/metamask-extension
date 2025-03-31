@@ -35,7 +35,7 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
-  console.log({permittedAccounts, selectedAccount})
+  console.log({ permittedAccounts, selectedAccount });
 
   const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
     (account) => {
@@ -46,7 +46,10 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
         if (
           namespace !== parsedPermittedAccount.chain.namespace ||
-          !isEqualCaseInsensitive(selectedAccount.address, parsedPermittedAccount.address)
+          !isEqualCaseInsensitive(
+            selectedAccount.address,
+            parsedPermittedAccount.address,
+          )
         ) {
           return false;
         }

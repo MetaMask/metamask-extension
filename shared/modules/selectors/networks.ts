@@ -4,11 +4,11 @@ import {
   type NetworkState as InternalNetworkState,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkStatus } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { createDeepEqualSelector } from './util';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -78,8 +78,9 @@ export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
     state.metamask.networkConfigurationsByChainId,
   (state: ConsolidatedNetworkConfigurationsState) =>
     state.metamask.multichainNetworkConfigurationsByChainId,
-  (state: { metamask: { internalAccounts: AccountsControllerState['internalAccounts']}}) =>
-    state.metamask.internalAccounts,
+  (state: {
+    metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
+  }) => state.metamask.internalAccounts,
   (
     networkConfigurationsByChainId,
     multichainNetworkConfigurationsByChainId,
@@ -97,21 +98,25 @@ export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
       },
     );
 
-    Object.entries(multichainNetworkConfigurationsByChainId).forEach(([caipChainId, networkConfig]) => {
-      const matchesAccount = Object.values(internalAccounts.accounts).some(account => {
-        const matchesScope = account.scopes.some(scope => {
-          return scope === caipChainId
-        })
+    Object.entries(multichainNetworkConfigurationsByChainId).forEach(
+      ([caipChainId, networkConfig]) => {
+        const matchesAccount = Object.values(internalAccounts.accounts).some(
+          (account) => {
+            const matchesScope = account.scopes.some((scope) => {
+              return scope === caipChainId;
+            });
 
-        const isSnapEnabled = account.metadata.snap?.enabled;
+            const isSnapEnabled = account.metadata.snap?.enabled;
 
-        return matchesScope && isSnapEnabled;
-      })
+            return matchesScope && isSnapEnabled;
+          },
+        );
 
-      if (matchesAccount) {
-        caipFormattedEvmNetworkConfigurations[caipChainId] = networkConfig
-      }
-    })
+        if (matchesAccount) {
+          caipFormattedEvmNetworkConfigurations[caipChainId] = networkConfig;
+        }
+      },
+    );
 
     return caipFormattedEvmNetworkConfigurations;
   },

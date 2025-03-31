@@ -7,11 +7,6 @@ import {
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { overrideAccountsFromMockState } from '../../../../test/jest/mocks';
-import {
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_EOA,
-} from '../../../../test/data/mock-accounts';
 import { ConnectPage, ConnectPageProps } from './connect-page';
 
 const mockTestDappUrl = 'https://test.dapp';
@@ -52,8 +47,8 @@ const render = (
                 },
               },
             ],
-          }
-        }
+          },
+        },
       },
       permissionsRequestId: '1',
       rejectPermissionsRequest: jest.fn(),
