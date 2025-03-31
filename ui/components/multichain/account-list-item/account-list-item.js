@@ -228,7 +228,7 @@ const AccountListItem = ({
       (!isTestnet && shouldShowFiat) || !isEvmNetwork;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    isAggregatedFiatOverviewBalance = !isTestnet && shouldShowFiat;
+    isAggregatedFiatOverviewBalance = !isTestnet && undefined && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
     return isAggregatedFiatOverviewBalance;
   };
