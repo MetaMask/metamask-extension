@@ -259,11 +259,9 @@ describe('EthOverview', () => {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: '0xa86a' }),
           useExternalServices: true,
-          bridgeState: {
-            bridgeFeatureFlags: {
-              extensionConfig: {
-                support: false,
-              },
+          bridgeFeatureFlags: {
+            extensionConfig: {
+              support: false,
             },
           },
         },
