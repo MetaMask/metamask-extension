@@ -4371,6 +4371,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
   },
+  "redeposit": {
+    "message": "Redeposit"
+  },
   "refreshList": {
     "message": "Refresh list"
   },

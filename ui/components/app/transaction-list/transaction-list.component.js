@@ -40,9 +40,7 @@ import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getSelectedInternalAccount,
-} from '../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getMultichainNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -61,6 +59,7 @@ import {
   BadgeWrapper,
   AvatarNetwork,
   AvatarNetworkSize,
+  BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -70,6 +69,7 @@ import { MultichainTransactionDetailsModal } from '../multichain-transaction-det
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
 import {
+  BackgroundColor,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   Display,
   ///: END:ONLY_INCLUDE_IF
@@ -90,9 +90,7 @@ import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-men
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MULTICHAIN_PROVIDER_CONFIGS,
-} from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../../shared/constants/multichain/networks';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -108,6 +106,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 
 const PAGE_INCREMENT = 10;
 
@@ -652,93 +651,136 @@ export default function TransactionList({
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-const MultichainTransactionListItem = ({
-  transaction,
-  toggleShowDetails,
-}) => {
+const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
   const t = useI18nContext();
-  const { assetInputs, assetOutputs } = useMultichainTransactionDisplay(
-    transaction,
-  );
+  const { assetInputs, assetOutputs, isRedeposit } =
+    useMultichainTransactionDisplay(transaction);
   let title = capitalize(transaction.type);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
-
-  return assetOutputs.map((output, index) => {
-    if (transaction.type === TransactionType.swap) {
-      title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
-    }
-
-   return (<ActivityListItem
-    className="custom-class"
-    data-testid="activity-list-item"
-    onClick={() => toggleShowDetails(transaction)}
-    icon={
-      <BadgeWrapper
-        badge={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Xs}
-            className="activity-tx__network-badge"
-            data-testid="activity-tx-network-badge"
-            name={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].id}
-            src={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].rpcPrefs?.imageUrl}
-          />
+  // A redeposit transaction is a special case where the outputs list is emtpy because we are sending to ourselves and only pay the fees
+  // Mainly used for consolidation transactions
+  if (isRedeposit) {
+    return (
+      <ActivityListItem
+        className="custom-class"
+        data-testid="activity-list-item"
+        onClick={() => toggleShowDetails(transaction)}
+        icon={
+          <BadgeWrapper
+            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+            display={Display.Block}
+            badge={
+              <AvatarNetwork
+                className="activity-tx__network-badge"
+                data-testid="activity-tx-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].id}
+                src={
+                  MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].rpcPrefs
+                    ?.imageUrl
+                }
+                borderColor={BackgroundColor.backgroundDefault}
+              />
+            }
+          >
+            <TransactionIcon category={TransactionGroupCategory.redeposit} status={statusKey} />
+          </BadgeWrapper>
         }
-        display={Display.Block}
-      >
-        <TransactionIcon category={transaction.type} status={statusKey} />
-      </BadgeWrapper>
-    }
-    rightContent={
-      <>
-        <Text
-          className="activity-list-item__primary-currency"
-          color="text-default"
-          data-testid="transaction-list-item-primary-currency"
-          ellipsis
-          fontWeight="medium"
-          textAlign="right"
-          title="Primary Currency"
-          variant="body-lg-medium"
-        >
-          {output.amount} {output.unit}
-        </Text>
-      </>
-    }
-    title={transaction.isBridgeTx ? t('bridge') : title}
-    // eslint-disable-next-line react/jsx-no-duplicate-props
-    subtitle={
-      transaction.isBridgeTx && transaction.bridgeInfo ? (
-        <>
+        title={t('redeposit')}
+        // eslint-disable-next-line react/jsx-no-duplicate-props
+        subtitle={
           <TransactionStatusLabel
             date={formatTimestamp(transaction.timestamp)}
             error={{}}
             status={statusKey}
             statusOnly
           />
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-          >
-            {`${t('to')} ${transaction.bridgeInfo.destAsset?.symbol} ${t(
-              'on',
-            )} ${
-              // Use the pre-computed chain name from our hook, or fall back to chain ID
-              transaction.bridgeInfo.destChainName ||
-              transaction.bridgeInfo.destChainId
-            }`}
-          </Text>
-        </>
-      ) : (
-        <TransactionStatusLabel
-          date={formatTimestamp(transaction.timestamp)}
-          error={{}}
-          status={statusKey}
-          statusOnly
-        />
-      )
+        }
+      />
+    );
+  }
+
+  return assetOutputs.map((output, index) => {
+    if (transaction.type === TransactionType.swap) {
+      title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
     }
-  />)
+
+    return (
+      <ActivityListItem
+        className="custom-class"
+        data-testid="activity-list-item"
+        onClick={() => toggleShowDetails(transaction)}
+        icon={
+          <BadgeWrapper
+            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+            display={Display.Block}
+            badge={
+              <AvatarNetwork
+                className="activity-tx__network-badge"
+                data-testid="activity-tx-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].id}
+                src={
+                  MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].rpcPrefs
+                    ?.imageUrl
+                }
+                borderColor={BackgroundColor.backgroundDefault}
+              />
+            }
+          >
+            <TransactionIcon category={transaction.type} status={statusKey} />
+          </BadgeWrapper>
+        }
+        rightContent={
+          <Text
+            className="activity-list-item__primary-currency"
+            color="text-default"
+            data-testid="transaction-list-item-primary-currency"
+            ellipsis
+            fontWeight="medium"
+            textAlign="right"
+            title="Primary Currency"
+            variant="body-lg-medium"
+          >
+            {output.amount} {output.unit}
+          </Text>
+        }
+        title={transaction.isBridgeTx ? t('bridge') : title}
+        // eslint-disable-next-line react/jsx-no-duplicate-props
+        subtitle={
+          transaction.isBridgeTx && transaction.bridgeInfo ? (
+            <>
+              <TransactionStatusLabel
+                date={formatTimestamp(transaction.timestamp)}
+                error={{}}
+                status={statusKey}
+                statusOnly
+              />
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                {`${t('to')} ${transaction.bridgeInfo.destAsset?.symbol} ${t(
+                  'on',
+                )} ${
+                  // Use the pre-computed chain name from our hook, or fall back to chain ID
+                  transaction.bridgeInfo.destChainName ||
+                  transaction.bridgeInfo.destChainId
+                }`}
+              </Text>
+            </>
+          ) : (
+            <TransactionStatusLabel
+              date={formatTimestamp(transaction.timestamp)}
+              error={{}}
+              status={statusKey}
+              statusOnly
+            />
+          )
+        }
+      />
+    );
   });
 };
 

@@ -63,7 +63,7 @@ export function MultichainTransactionDetailsModal({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { assetInputs, assetOutputs, baseFee, priorityFee } =
+  const { assetInputs, assetOutputs, isRedeposit, baseFee, priorityFee } =
     useMultichainTransactionDisplay(transaction);
 
   const getStatusColor = (txStatus: string) => {
@@ -80,13 +80,13 @@ export function MultichainTransactionDetailsModal({
   };
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
-  const accountComponent = (title: string, address?: string) => (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-      <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-        {title}
-      </Text>
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-        {address ? (
+  const accountComponent = (title: string, address?: string) =>
+    address ? (
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          {title}
+        </Text>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <ButtonLink
             size={ButtonLinkSize.Inherit}
             textProps={{
@@ -110,15 +110,9 @@ export function MultichainTransactionDetailsModal({
               }
             />
           </ButtonLink>
-        ) : (
-          <Text
-            variant={TextVariant.bodyMd}
-            fontWeight={FontWeight.Medium}
-          ></Text>
-        )}
+        </Box>
       </Box>
-    </Box>
-  );
+    ) : null;
 
   const amountComponent = (
     {
@@ -165,7 +159,7 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(transaction.type)}
+            {capitalize(isRedeposit ? t('redeposit') : transaction.type)}
           </Text>
           <Text
             variant={TextVariant.bodyMd}

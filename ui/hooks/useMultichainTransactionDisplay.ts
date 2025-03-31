@@ -32,34 +32,30 @@ type Movement = {
 
 export function useMultichainTransactionDisplay(transaction: Transaction) {
   const locale = useSelector(getIntlLocale);
-
-  const baseFeeAssets = transaction.fees.filter((fee) => fee.type === 'base');
-  const priorityFeeAssets = transaction.fees.filter(
-    (fee) => fee.type === 'priority',
-  );
+  const isNegative = transaction.type === TransactionType.Send;
 
   const assetInputs = aggregateAmount(
     transaction.chain,
     transaction.from as Movement[],
-    transaction.type === TransactionType.Send,
+    isNegative,
     locale,
   );
   const assetOutputs = aggregateAmount(
     transaction.chain,
     transaction.to as Movement[],
-    transaction.type === TransactionType.Send,
+    isNegative,
     locale,
   );
   const baseFee = aggregateAmount(
     transaction.chain,
-    baseFeeAssets as Movement[],
-    false,
+    transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
+    isNegative,
     locale,
   );
   const priorityFee = aggregateAmount(
     transaction.chain,
-    priorityFeeAssets as Movement[],
-    false,
+    transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
+    isNegative,
     locale,
   );
 
@@ -68,6 +64,7 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
     assetOutputs,
     baseFee,
     priorityFee,
+    isRedeposit: assetOutputs.length === 0,
   };
 }
 
