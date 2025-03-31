@@ -1,6 +1,8 @@
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
+const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -133,10 +135,17 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  await driver.clickElementAndWaitForWindowToClose({
-    tag: 'button',
-    text: 'Cancel',
-  });
+  if (isManifestV3) {
+    await driver.clickElement({
+      tag: 'button',
+      text: 'Cancel',
+    });
+  } else {
+    await driver.clickElementAndWaitForWindowToClose({
+      tag: 'button',
+      text: 'Cancel',
+    });
+  }
 }
 
 async function confirmTransaction(driver) {
@@ -193,7 +202,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -256,7 +265,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .build(),
         localNodeOptions: [
           {
@@ -325,7 +334,10 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
@@ -379,7 +391,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
@@ -427,7 +439,9 @@ describe('Request-queue UI changes', function () {
 
         const networkMenu = await driver.findNestedElement(
           networkRow,
-          `[data-testid="network-list-item-options-button-${CHAIN_IDS.LOCALHOST}"]`,
+          `[data-testid="network-list-item-options-button-${toEvmCaipChainId(
+            CHAIN_IDS.LOCALHOST,
+          )}"]`,
         );
 
         await networkMenu.click();
@@ -496,7 +510,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -549,7 +563,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -619,7 +633,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -686,7 +700,7 @@ describe('Request-queue UI changes', function () {
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
 
           .build(),
         localNodeOptions: [

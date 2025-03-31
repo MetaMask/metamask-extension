@@ -28,7 +28,7 @@ export class WalletPage {
     this.swapButton = this.page.getByTestId('token-overview-button-swap');
     this.importTokensButton = this.page.getByText('Import tokens').first();
     this.accountMenu = this.page.getByTestId('account-menu-icon');
-    this.importAccountButton = this.page.getByText('Import account');
+    this.importAccountButton = this.page.getByText('Private Key');
     this.importButton = this.page.getByText('Import (');
     this.tokenTab = this.page.getByTestId('account-overview__asset-tab');
     this.tokenBalance = this.page.getByTestId(

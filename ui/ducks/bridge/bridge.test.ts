@@ -1,16 +1,16 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-} from '../../../shared/types/bridge';
+  BRIDGE_DEFAULT_SLIPPAGE,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
+import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { setBackgroundConnection } from '../../store/background-connection';
 import * as util from '../../helpers/utils/util';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
-import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import bridgeReducer from './bridge';
 import {
@@ -101,7 +101,12 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.toToken).toStrictEqual(
-        expect.objectContaining({ ...actionPayload, chainId: 'eip155:10' }),
+        expect.objectContaining({
+          ...actionPayload,
+          balance: '0',
+          chainId: '0xa',
+          string: '0',
+        }),
       );
     });
   });

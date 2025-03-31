@@ -42,6 +42,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getSmartTransactionByMinedTxHash: jest.fn(),
     getMethodData: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
+    getHDEntropyIndex: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, BoxProps, BannerBase } from '../../component-library';
@@ -9,6 +9,12 @@ import {
   FontWeight,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getSweepstakesCampaignActive } from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -31,16 +37,31 @@ export const Carousel = React.forwardRef(
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
+    const trackEvent = useContext(MetaMetricsContext);
 
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
       .sort((a, b) => {
+        const isSweepstakesActive = getSweepstakesCampaignActive(
+          new Date(new Date().toISOString()),
+        );
+
+        if (isSweepstakesActive) {
+          if (a.id === 'sweepStake') {
+            return -1;
+          }
+          if (b.id === 'sweepStake') {
+            return 1;
+          }
+        }
+
         if (a.undismissable && !b.undismissable) {
           return -1;
         }
         if (!a.undismissable && b.undismissable) {
           return 1;
         }
+
         return 0;
       })
       .slice(0, MAX_SLIDES);
@@ -82,6 +103,25 @@ export const Carousel = React.forwardRef(
     };
 
     const handleChange = (index: number) => {
+      const previousSlide = visibleSlides[selectedIndex];
+      const nextSlide = visibleSlides[index];
+
+      // Only track navigation when there's an actual change
+      if (selectedIndex !== index) {
+        trackEvent({
+          event: MetaMetricsEventName.BannerNavigated,
+          category: MetaMetricsEventCategory.Banner,
+          properties: {
+            from_banner: previousSlide.id,
+            to_banner: nextSlide.id,
+            from_banner_title: previousSlide.title,
+            to_banner_title: nextSlide.title,
+            navigation_method:
+              Math.abs(selectedIndex - index) === 1 ? 'swipe' : 'dot',
+          },
+        });
+      }
+
       setSelectedIndex(index);
     };
 

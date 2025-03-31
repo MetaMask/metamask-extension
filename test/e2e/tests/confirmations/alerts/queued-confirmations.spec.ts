@@ -11,6 +11,7 @@ import {
   TestSuiteArguments,
 } from '../transactions/shared';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { MOCK_META_METRICS_ID } from '../../../constants';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -35,7 +36,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -83,7 +84,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
 
             .withSelectedNetworkControllerPerDomain()
             .build(),
@@ -139,7 +140,7 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withPermissionControllerConnectedToTestDapp()
             .withSelectedNetworkControllerPerDomain()
             .build(),
@@ -194,11 +195,11 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
 
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -283,11 +284,11 @@ describe('Queued Confirmations', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withPermissionControllerConnectedToTestDapp()
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),

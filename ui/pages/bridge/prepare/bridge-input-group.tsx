@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { isNativeAddress } from '@metamask/bridge-controller';
+import type { BridgeToken } from '@metamask/bridge-controller';
 import {
   Text,
   TextField,
@@ -14,7 +16,6 @@ import { TabName } from '../../../components/multichain/asset-picker-amount/asse
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
-import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -30,13 +31,10 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -62,10 +60,12 @@ export const BridgeInputGroup = ({
   amountInFiat,
   onMaxButtonClick,
   isMultiselectEnabled,
+  buttonProps,
 }: {
   amountInFiat?: BigNumber;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
+  buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -88,9 +88,8 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const selectedChainId = networkProps?.network?.chainId;
+  const balanceAmount = useLatestBalance(token);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -145,7 +144,7 @@ export const BridgeInputGroup = ({
           inputRef={inputRef}
           type={TextFieldType.Text}
           className="amount-input"
-          placeholder={'0'}
+          placeholder="0"
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
             if (e) {
               // Only allow numbers and at most one decimal point
@@ -187,6 +186,7 @@ export const BridgeInputGroup = ({
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
               <Button
+                data-testid={buttonProps.testId}
                 onClick={onClickHandler}
                 size={ButtonSize.Lg}
                 paddingLeft={6}
@@ -202,6 +202,7 @@ export const BridgeInputGroup = ({
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
+                data-testid={buttonProps.testId}
               />
             )
           }
@@ -248,7 +249,7 @@ export const BridgeInputGroup = ({
             selectedChainId &&
             (isNativeAddress(token.address)
               ? undefined
-              : shortenString(token.address, {
+              : shortenString(token.address.split(':').at(-1), {
                   truncatedCharLimit: 11,
                   truncatedStartChars: 4,
                   truncatedEndChars: 4,

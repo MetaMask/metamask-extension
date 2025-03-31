@@ -876,18 +876,64 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+  describe('getDisabledAccountUpgradeChains', () => {
+    it('returns empty array if disabledAccountUpgrades is empty', () => {
+      const { controller } = setupController({});
+      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([]);
     });
 
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
+    it('returns disabledAccountUpgrades state', () => {
+      const { controller } = setupController({
+        state: {
+          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+        },
+      });
 
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.GOERLI,
+      ]);
+    });
+  });
+
+  describe('disableAccountUpgradeForChain', () => {
+    it('adds chain ID to disabledAccountUpgrades if empty', () => {
+      const { controller } = setupController({});
+
+      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
+
+      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+        CHAIN_IDS.GOERLI,
+      ]);
+    });
+
+    it('adds chain ID to disabledAccountUpgrades if not empty', () => {
+      const { controller } = setupController({
+        state: {
+          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
+        },
+      });
+
+      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
+
+      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.GOERLI,
+      ]);
+    });
+
+    it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
+      const { controller } = setupController({
+        state: {
+          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
+        },
+      });
+
+      controller.disableAccountUpgradeForChain(CHAIN_IDS.MAINNET);
+
+      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+      ]);
     });
   });
 });

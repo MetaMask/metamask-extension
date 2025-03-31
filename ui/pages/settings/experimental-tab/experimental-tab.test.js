@@ -30,18 +30,16 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(6);
+    expect(toggle).toHaveLength(4);
   });
 
   it('enables add account snap', async () => {
     const setAddSnapAccountEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
       {},
       {
         setAddSnapAccountEnabled,
         petnamesEnabled: true,
-        setPetnamesEnabled,
       },
     );
 
@@ -50,26 +48,6 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setAddSnapAccountEnabled).toHaveBeenCalledWith(true);
-    });
-  });
-
-  it('disables petnames', async () => {
-    const setAddSnapAccountEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setAddSnapAccountEnabled,
-        petnamesEnabled: true,
-        setPetnamesEnabled,
-      },
-    );
-
-    const toggle = getByTestId('toggle-petnames');
-    fireEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(setPetnamesEnabled).toHaveBeenCalledWith(false);
     });
   });
 
@@ -88,23 +66,6 @@ describe('ExperimentalTab', () => {
     fireEvent.click(toggle);
     await waitFor(() => {
       expect(setBitcoinSupportEnabled).toHaveBeenNthCalledWith(1, true);
-    });
-  });
-
-  it('enables the experimental solana account feature', async () => {
-    const setSolanaSupportEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setSolanaSupportEnabled,
-        solanaSupportEnabled: false,
-      },
-    );
-    const toggle = getByTestId('solana-support-toggle');
-
-    fireEvent.click(toggle);
-    await waitFor(() => {
-      expect(setSolanaSupportEnabled).toHaveBeenNthCalledWith(1, true);
     });
   });
 });

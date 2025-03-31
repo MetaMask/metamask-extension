@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
   Display,
@@ -12,25 +12,20 @@ import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
-  getCurrentNetwork,
   getIpfsGateway,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
   nft: NFT;
   onClick: () => void;
   privacyMode?: boolean;
-  currentChain: {
-    chainId: Hex;
-    nickname: string;
-    rpcPrefs?: {
-      imageUrl: string;
-    };
-  };
 }) => {
-  const { nft, onClick, privacyMode, currentChain } = props;
+  const { nft, onClick, privacyMode } = props;
 
   const { image: _image, imageOriginal } = nft;
   const image = getNftImage(_image);
@@ -40,6 +35,7 @@ const NFTGridItem = (props: {
     imageOriginal ?? image ?? undefined,
     ipfsGateway,
   );
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
@@ -55,8 +51,8 @@ const NFTGridItem = (props: {
       nft={nft}
       alt={nftImageAlt}
       src={nftItemSrc}
-      networkName={currentChain.nickname}
-      networkSrc={currentChain.rpcPrefs?.imageUrl}
+      networkName={allNetworks?.[toHex(nft.chainId)]?.name}
+      networkSrc={getImageForChainId(toHex(nft.chainId)) || undefined}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}
@@ -74,11 +70,6 @@ export default function NftGrid({
   handleNftClick: (nft: NFT) => void;
   privacyMode?: boolean;
 }) {
-  const currentChain = useSelector(getCurrentNetwork) as {
-    chainId: Hex;
-    nickname: string;
-    rpcPrefs?: { imageUrl: string };
-  };
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
@@ -90,18 +81,18 @@ export default function NftGrid({
           const { tokenURI } = nft;
 
           return (
-            <Box
-              data-testid="nft-wrapper"
-              key={tokenURI}
-              className="nft-items__image-wrapper"
-            >
-              <NFTGridItem
-                currentChain={currentChain}
-                nft={nft}
-                onClick={() => handleNftClick(nft)}
-                privacyMode={privacyMode}
-              />
-            </Box>
+            <NFTGridItemErrorBoundary key={tokenURI} fallback={() => null}>
+              <Box
+                data-testid="nft-wrapper"
+                className="nft-items__image-wrapper"
+              >
+                <NFTGridItem
+                  nft={nft}
+                  onClick={() => handleNftClick(nft)}
+                  privacyMode={privacyMode}
+                />
+              </Box>
+            </NFTGridItemErrorBoundary>
           );
         })}
       </Box>

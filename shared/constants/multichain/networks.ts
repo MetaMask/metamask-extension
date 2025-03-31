@@ -46,42 +46,53 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
   [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
 } as const;
 
+export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
+  [MultichainNetworks.BITCOIN]: 'Bitcoin',
+  [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin (testnet)',
+  [MultichainNetworks.SOLANA]: 'Solana',
+  [MultichainNetworks.SOLANA_DEVNET]: 'Solana (devnet)',
+  [MultichainNetworks.SOLANA_TESTNET]: 'Solana (testnet)',
+};
+
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
+
+export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
+export const SOLANA_BLOCK_EXPLORER_URL = 'https://solscan.io';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   CaipChainId,
   MultichainBlockExplorerFormatUrls
 > = {
   [MultichainNetworks.BITCOIN]: {
-    url: 'https://blockstream.info',
-    address: 'https://blockstream.info/address/{address}',
-    transaction: 'https://blockstream.info/tx/{txId}',
+    url: BITCOIN_BLOCK_EXPLORER_URL,
+    address: `${BITCOIN_BLOCK_EXPLORER_URL}/address/{address}`,
+    transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
-    url: 'https://blockstream.info',
-    address: 'https://blockstream.info/testnet/address/{address}',
-    transaction: 'https://blockstream.info/testnet/tx/{txId}',
+    url: BITCOIN_BLOCK_EXPLORER_URL,
+    address: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/address/{address}`,
+    transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/{txId}`,
   },
 
   [MultichainNetworks.SOLANA]: {
-    url: 'https://explorer.solana.com',
-    address: 'https://explorer.solana.com/address/{address}',
-    transaction: 'https://explorer.solana.com/tx/{txId}',
+    url: SOLANA_BLOCK_EXPLORER_URL,
+    address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}`,
+    transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
-    url: 'https://explorer.solana.com',
-    address: 'https://explorer.solana.com/address/{address}?cluster=devnet',
-    transaction: 'https://explorer.solana.com/tx/{txId}?cluster=devnet',
+    url: SOLANA_BLOCK_EXPLORER_URL,
+    address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=devnet`,
+    transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=devnet`,
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
-    url: 'https://explorer.solana.com',
-    address: 'https://explorer.solana.com/address/{address}?cluster=testnet',
-    transaction: 'https://explorer.solana.com/tx/{txId}?cluster=testnet',
+    url: SOLANA_BLOCK_EXPLORER_URL,
+    address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=testnet`,
+    transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=testnet`,
   },
 } as const;
 
-export const MULTICHAIN_TOKEN_IMAGE_MAP = {
+export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
 } as const;

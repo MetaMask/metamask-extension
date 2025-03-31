@@ -16,7 +16,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         localNodeOptions: [
@@ -33,8 +33,8 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         ],
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Open Dapp One and check the chainId
         const testDapp = new TestDapp(driver);
@@ -55,7 +55,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
+        await homePage.check_localNodeBalanceIsDisplayed();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
           await driver.executeScript(
