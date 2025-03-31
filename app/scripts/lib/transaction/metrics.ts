@@ -399,20 +399,27 @@ export const handlePostTransactionBalanceUpdate = async (
           transactionMeta.swapMetaData.token_to_amount.toString(10),
       };
 
-      // Add transaction hash if remote feature flag is enabled
+      // Debug:transactions-tx-hash-in-analytics
       console.log('DEBUG TX HASH ANALYTICS:', {
         remoteFeatureFlags: getRemoteFeatureFlags?.(),
-        flagExists: 'transactionsTxHashInAnalytics' in (getRemoteFeatureFlags?.() || {}),
+        flagExists:
+          'transactionsTxHashInAnalytics' in (getRemoteFeatureFlags?.() || {}),
         flagValue: getRemoteFeatureFlags?.().transactionsTxHashInAnalytics,
         hasHash: Boolean(transactionMeta.hash),
         txHash: transactionMeta.hash,
       });
+      // Debug:transactions-tx-hash-in-analytics
 
+      // Add transaction hash if remote feature flag is enabled
       if (
-        getRemoteFeatureFlags()?.transactionsTxHashInAnalytics &&
-        transactionMeta.hash
+        // Debug:transactions-tx-hash-in-analytics
+        // eslint-disable-next-line no-constant-condition
+        true ||
+        // Debug:transactions-tx-hash-in-analytics
+        (getRemoteFeatureFlags()?.transactionsTxHashInAnalytics &&
+          transactionMeta.hash)
       ) {
-        sensitiveProperties.transaction_hash = transactionMeta.hash;
+        sensitiveProperties.transaction_hash = transactionMeta.hash ?? null;
 
         // Debug:transactions-tx-hash-in-analytics
         if (!globalThis.debugEvents) {
@@ -1106,7 +1113,36 @@ async function buildEventFragmentProperties({
     }
   }
 
-  return { properties, sensitiveProperties };
+  // Check the feature flag and include hash if appropriate
+  if (
+    // Debug:transactions-tx-hash-in-analytics
+    // eslint-disable-next-line no-constant-condition
+    (true ||
+      // Debug:transactions-tx-hash-in-analytics
+      transactionMetricsRequest.getRemoteFeatureFlags?.()
+        ?.transactionsTxHashInAnalytics) &&
+    transactionMeta?.hash
+  ) {
+    // Add transaction hash to properties (not sensitiveProperties)
+    properties.transaction_hash = transactionMeta.hash;
+
+    // Debug:transactions-tx-hash-in-analytics
+    if (!globalThis.debugEvents) {
+      globalThis.debugEvents = [];
+    }
+    globalThis.debugEvents.push({
+      time: Date.now(),
+      type: 'Transaction Finalized',
+      hash: transactionMeta.hash,
+      flagSource: 'remote',
+    });
+    // Debug:transactions-tx-hash-in-analytics
+  }
+
+  return {
+    properties,
+    sensitiveProperties,
+  };
 }
 
 // TODO: Replace `any` with type
