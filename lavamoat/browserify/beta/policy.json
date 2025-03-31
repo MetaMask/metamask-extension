@@ -2200,6 +2200,12 @@
         "webpack>events": true
       }
     },
+    "@metamask/sample-controllers": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/scure-bip39": {
       "globals": {
         "TextEncoder": true
