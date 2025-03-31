@@ -20,10 +20,10 @@ import { useConfirmContext } from '../../../context/confirm';
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const { id: transactionId } = currentConfirmation ?? {};
+  const { id: transactionId, chainId } = currentConfirmation ?? {};
 
   const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId),
+    selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
   const value = useSelector((state) =>
@@ -65,5 +65,5 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         severity: Severity.Danger,
       },
     ];
-  }, [insufficientBalance]);
+  }, [insufficientBalance, nativeCurrency, t]);
 }

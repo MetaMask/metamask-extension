@@ -62,6 +62,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -175,6 +176,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -336,8 +338,21 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
+  updateAccountBalanceForTransactionNetwork: (
+    transactionMeta: TransactionMeta,
+  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
+
+  initMessenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    updateAccountBalanceForTransactionNetwork,
+  );
+
+  initMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    updateAccountBalanceForTransactionNetwork,
+  );
 
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
