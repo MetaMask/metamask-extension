@@ -91,7 +91,11 @@ export default function KeyringRemovalSnapWarning({
           >
             {t('removeSnap')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+          >
             {showConfirmation === false ? (
               <>
                 <BannerAlert
@@ -122,49 +126,41 @@ export default function KeyringRemovalSnapWarning({
               </>
             ) : (
               <>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  marginTop={6}
+                <BannerAlert
+                  severity={BannerAlertSeverity.Warning}
+                  className=""
                 >
-                  <BannerAlert
-                    severity={BannerAlertSeverity.Warning}
-                    className=""
-                    marginBottom={4}
-                  >
-                    {t('backupKeyringSnapReminder')}
-                  </BannerAlert>
-                  <Text marginBottom={4}>
-                    {t('keyringSnapRemoveConfirmation', [
-                      <Text
-                        key="keyringSnapRemoveConfirmation2"
-                        fontWeight={FontWeight.Bold}
-                        as="span"
-                      >
-                        {snap.manifest.proposedName}
-                      </Text>,
-                    ])}
-                  </Text>
-                  {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                  {/* @ts-ignore TODO: fix TextField props */}
-                  <TextField
-                    marginBottom={4}
-                    value={confirmationInput}
-                    onChange={(e: { target: { value: string } }) => {
-                      setConfirmationInput(e.target.value);
-                      setConfirmedRemoval(
-                        validateConfirmationInput(e.target.value),
-                      );
-                    }}
-                    onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-                      e.preventDefault();
-                    }}
-                    error={error}
-                    inputProps={{
-                      'data-testid': 'remove-snap-confirmation-input',
-                    }}
-                  />
-                </Box>
+                  {t('backupKeyringSnapReminder')}
+                </BannerAlert>
+                <Text>
+                  {t('keyringSnapRemoveConfirmation', [
+                    <Text
+                      key="keyringSnapRemoveConfirmation2"
+                      fontWeight={FontWeight.Bold}
+                      as="span"
+                    >
+                      {snap.manifest.proposedName}
+                    </Text>,
+                  ])}
+                </Text>
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore TODO: fix TextField props */}
+                <TextField
+                  value={confirmationInput}
+                  onChange={(e: { target: { value: string } }) => {
+                    setConfirmationInput(e.target.value);
+                    setConfirmedRemoval(
+                      validateConfirmationInput(e.target.value),
+                    );
+                  }}
+                  onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                    e.preventDefault();
+                  }}
+                  error={error}
+                  inputProps={{
+                    'data-testid': 'remove-snap-confirmation-input',
+                  }}
+                />
               </>
             )}
           </ModalBody>
