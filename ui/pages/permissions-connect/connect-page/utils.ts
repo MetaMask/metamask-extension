@@ -226,8 +226,6 @@ export function getDefaultAccounts(
     return 0;
   });
 
-  console.log({ allAccountsSortedByLastSelected });
-
   requestedNamespaces.forEach((namespace) => {
     if (
       !defaultAccounts.find((account) => {

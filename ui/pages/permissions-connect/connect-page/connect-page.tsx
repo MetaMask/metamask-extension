@@ -11,6 +11,7 @@ import {
   CaipChainId,
   CaipNamespace,
   CaipReference,
+  KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -197,16 +198,16 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     };
   });
 
-  const requestedNamespaces = getUniqueArrayItems([
-    ...Object.keys(requestedCaip25CaveatValue.requiredScopes).map((scope) => {
+  const requestedNamespaces = getUniqueArrayItems(
+    [...Object.keys(requestedCaip25CaveatValue.requiredScopes),
+    ...Object.keys(requestedCaip25CaveatValue.optionalScopes)
+    ].map((scope) => {
       const scopeString = scope as `${CaipNamespace}:${CaipReference}`;
-      return parseCaipChainId(scopeString).namespace;
+      // This will break if 'wallet' is passed in
+      const { namespace, reference } = parseCaipChainId(scopeString)
+      return namespace === KnownCaipNamespace.Wallet ? reference : namespace;
     }),
-    ...Object.keys(requestedCaip25CaveatValue.optionalScopes).map((scope) => {
-      const scopeString = scope as `${CaipNamespace}:${CaipReference}`;
-      return parseCaipChainId(scopeString).namespace;
-    }),
-  ]);
+  );
 
   // all accounts that match the requested namespaces
   const supportedAccountsForRequestedNamespaces =
