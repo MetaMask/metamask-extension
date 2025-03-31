@@ -328,12 +328,18 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionMetricsRequest.getHDEntropyIndex - Returns Index of the currently selected HD Keyring
  * @param transactionMetricsRequest.getRemoteFeatureFlags - Returns the remote feature flags object
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
+  {
+    getParticipateInMetrics,
+    trackEvent,
+    getHDEntropyIndex,
+  }: TransactionMetricsRequest,
   {
     getParticipateInMetrics,
     trackEvent,
@@ -350,9 +356,12 @@ export const handlePostTransactionBalanceUpdate = async (
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
-        event: 'Swap Failed',
-        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        event: MetaMetricsEventName.SwapFailed,
         category: MetaMetricsEventCategory.Swaps,
+        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        properties: {
+          hd_entropy_index: getHDEntropyIndex(),
+        },
       });
     } else {
       const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -386,6 +395,29 @@ export const handlePostTransactionBalanceUpdate = async (
         approvalTransactionMeta,
       );
 
+      trackEvent({
+        event: MetaMetricsEventName.SwapCompleted,
+        category: MetaMetricsEventCategory.Swaps,
+        sensitiveProperties: {
+          ...transactionMeta.swapMetaData,
+          token_to_amount_received: tokensReceived,
+          quote_vs_executionRatio: quoteVsExecutionRatio,
+          estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+          approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+          trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+          trade_and_approval_gas_cost_in_eth:
+            transactionsCost.tradeAndApprovalGasCostInEth,
+          // Firefox and Chrome have different implementations of the APIs
+          // that we rely on for communication accross the app. On Chrome big
+          // numbers are converted into number strings, on firefox they remain
+          // Big Number objects. As such, we convert them here for both
+          // browsers.
+          token_to_amount:
+            transactionMeta.swapMetaData.token_to_amount.toString(10),
+        },
+        properties: {
+          hd_entropy_index: getHDEntropyIndex(),
+        },
       const sensitiveProperties: Record<string, string | number | null> = {
         ...transactionMeta.swapMetaData,
         token_to_amount_received: tokensReceived,
@@ -1018,6 +1050,11 @@ async function buildEventFragmentProperties({
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
 
+  // Add Entropy Properties
+  const hdEntropyProperties = {
+    hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
+  };
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -1050,6 +1087,7 @@ async function buildEventFragmentProperties({
       : [],
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
+    ...hdEntropyProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
