@@ -10,7 +10,13 @@ export class ChromeExtensionPage {
       args: [`--disable-extensions-except=${extensionPath}`],
     };
     if (process.env.HEADLESS === 'true') {
-      launchOptions.args.push('--headless=new');
+      launchOptions.args.push(
+        '--headless=new',
+        '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--use-gl=swiftshader',
+        '--no-sandbox',
+      );
     }
     const context = await chromium.launchPersistentContext('', launchOptions);
     await context.newPage();
