@@ -1,7 +1,9 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -63,7 +65,11 @@ import { getMultichainNetwork } from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
+
 import type { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -199,7 +205,9 @@ const TokenButtons = ({
     token,
     setCorrectChain,
     account,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   const handleBridgeOnClick = useCallback(
@@ -269,6 +277,8 @@ const TokenButtons = ({
     token,
     usingHardwareWallet,
     setCorrectChain,
+    handleBridgeOnClick,
+    multichainChainId,
   ]);
 
   return (
@@ -338,7 +348,7 @@ const TokenButtons = ({
               />
             }
             label={t('bridge')}
-            onClick={handleBridgeOnClick}
+            onClick={() => handleBridgeOnClick(false)}
             tooltipRender={null}
           />
         )

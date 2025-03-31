@@ -273,7 +273,14 @@ const CoinButtons = ({
     await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
-  }, [chainId, account, setCorrectChain, handleSendNonEvm]);
+  }, [
+    chainId,
+    account,
+    setCorrectChain,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    handleSendNonEvm,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {

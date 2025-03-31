@@ -23,7 +23,7 @@ import { getMultichainNetwork } from '../../../../selectors/multichain';
  * On non-EVM, the send flow is delegated to a Snap that displays the UI,
  * builds the transaction, and sends it to the blockchain.
  *
- * @param caipAssetType - The CAIP asset type to use for the send flow.
+ * @param caipAssetType - The optional CAIP asset type to use for the send flow. Defaults to the chain's native asset if not provided.
  * @returns A function that triggers the send flow for non-EVM accounts.
  */
 export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
