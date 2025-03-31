@@ -1,8 +1,9 @@
 import { strict as assert } from 'assert';
 import { errorCodes } from '@metamask/rpc-errors';
 import { Suite } from 'mocha';
-import { withFixtures, openDapp } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('MetaMask', function (this: Suite) {
@@ -18,7 +19,10 @@ describe('MetaMask', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+
         for (const unsupportedMethod of ['eth_signTransaction']) {
           assert.equal(
             await driver.executeAsyncScript(`
