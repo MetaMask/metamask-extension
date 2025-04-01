@@ -35,12 +35,12 @@ jobs:
 
       - run: ls -laR dist
 
-      - run: echo "set -g mouse on" >> ~/.tmux.conf
+      # - run: echo "set -g mouse on" >> ~/.tmux.conf
 
-      - name: Debugging with tmate
-        uses: ./.github/actions/actions-tmate
-        with:
-          limit-access-to-actor: true
+      # - name: Debugging with tmate
+      #   uses: ./.github/actions/actions-tmate
+      #   with:
+      #     limit-access-to-actor: true
 
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
@@ -161,12 +161,12 @@ jobs:
       # - name: Configure Xvfb
       #   run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      - run: echo "set -g mouse on" >> ~/.tmux.conf
+      # - run: echo "set -g mouse on" >> ~/.tmux.conf
 
-      - name: Debugging with tmate
-        uses: ./.github/actions/actions-tmate
-        with:
-          limit-access-to-actor: true
+      # - name: Debugging with tmate
+      #   uses: ./.github/actions/actions-tmate
+      #   with:
+      #     limit-access-to-actor: true
 
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
