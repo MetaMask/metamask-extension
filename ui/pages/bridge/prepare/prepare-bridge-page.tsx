@@ -119,6 +119,7 @@ import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.uti
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
+import { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -134,7 +135,7 @@ const PrepareBridgePage = () => {
     [fromTokens],
   );
 
-  const toToken = useSelector(getToToken);
+  const toToken = useSelector(getToToken) as TmpBridgeToken;
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
