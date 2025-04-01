@@ -21140,7 +21140,7 @@ authors: undefined
 ******************************
 
 @metamask/transaction-controller
-52.2.0 <https://github.com/MetaMask/core>
+52.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
