@@ -2489,7 +2489,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "viem>webauthn-p256>@noble/curves>@noble/hashes": true
+        "@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2499,12 +2499,6 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>webauthn-p256>@noble/curves>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
