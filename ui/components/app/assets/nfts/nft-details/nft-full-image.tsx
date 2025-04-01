@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
 import {
@@ -34,7 +34,8 @@ export default function NftFullImage() {
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
-  const { image, imageOriginal, name, tokenId } = nft;
+  const { imageOriginal, name, tokenId } = nft;
+  const image = getNftImage(nft?.image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentChain = useSelector(getCurrentNetwork);
@@ -75,7 +76,7 @@ export default function NftFullImage() {
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.center}
-            paddingTop={4}
+            paddingBottom={12}
           >
             <Box>
               <NftItem
@@ -86,7 +87,6 @@ export default function NftFullImage() {
                 networkName={currentChain.nickname ?? ''}
                 networkSrc={currentChain.rpcPrefs?.imageUrl}
                 isIpfsURL={isIpfsURL}
-                badgeWrapperClassname="badge-wrapper"
               />
             </Box>
           </Box>

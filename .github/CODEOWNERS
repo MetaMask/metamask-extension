@@ -135,3 +135,7 @@ ui/components/app/nfts-items                          @MetaMask/metamask-assets
 ui/components/app/nfts-tab                            @MetaMask/metamask-assets
 ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
+
+# Extension Platform
+yarnrc.yml                                            @MetaMask/extension-platform
+test/e2e/mock-e2e-allowlist.js                        @MetaMask/extension-platform

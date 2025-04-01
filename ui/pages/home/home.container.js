@@ -18,7 +18,6 @@ import {
   getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
-  getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
@@ -33,7 +32,7 @@ import {
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
-  closeNotificationPopup,
+  attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -73,6 +72,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -82,13 +82,14 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
-    bridgeState,
+    quotes,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAccount = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = selectedAccount;
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const queuedRequestCount = getQueuedRequestCount(state);
@@ -134,12 +135,15 @@ const mapStateToProps = (state) => {
     ? false
     : getShowWhatsNewPopup(state);
 
+  const shouldShowSeedPhraseReminder =
+    selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
+
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     swapsEnabled,
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    shouldShowSeedPhraseReminder,
     isPopup,
     isNotification,
     dataCollectionForMarketing,
@@ -155,7 +159,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    haveBridgeQuotes: Boolean(Object.values(bridgeState?.quotes || {}).length),
+    haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
@@ -186,7 +190,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
-    closeNotificationPopup: () => closeNotificationPopup(),
+    attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
     onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

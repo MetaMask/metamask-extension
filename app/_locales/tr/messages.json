@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Bu taleple ilerlemenizi önermiyoruz."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Varlıklarınızı korumak için talebi reddetmenizi öneririz."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Bu talep şüphelidir"
   },
   "confirmed": {
     "message": "Onaylandı"
@@ -3851,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Aldığınız:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Harcama üst limiti"
-  },
   "permitSimulationChange_transfer": {
     "message": "Gönderdiğiniz:"
   },
@@ -3865,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Takma adlara izin ver"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Bu, dilediğiniz adrese takma ad atamanıza olanak sağlar. Mümkün olduğunda etkileşimde bulunduğunuz adresler için ad önerilerinde bulunacağız."
   },
   "pinToTop": {
     "message": "Yukarıya sabitle"
@@ -5961,9 +5946,6 @@
   },
   "twelveHrTitle": {
     "message": "12 sa.:"
-  },
-  "typeYourSRP": {
-    "message": "Gizli Kurtarma İfadenizi girin"
   },
   "u2f": {
     "message": "U2F",
