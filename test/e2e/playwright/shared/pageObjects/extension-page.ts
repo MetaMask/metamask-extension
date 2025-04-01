@@ -6,18 +6,18 @@ const extensionPath = path.join(__dirname, '../../../../../dist/chrome');
 export class ChromeExtensionPage {
   async initExtension() {
     const launchOptions = {
-      headless: false,
+      // headless: false,
       args: [`--disable-extensions-except=${extensionPath}`],
     };
-    if (process.env.HEADLESS === 'true') {
-      launchOptions.args.push(
-        '--headless=new',
-        '--disable-gpu',
-        '--disable-software-rasterizer',
-        '--use-gl=swiftshader',
-        '--no-sandbox',
-      );
-    }
+    // if (process.env.HEADLESS === 'true') {
+    launchOptions.args.push(
+      '--headless=new',
+      '--disable-gpu',
+      '--disable-software-rasterizer',
+      '--use-gl=swiftshader',
+      '--no-sandbox',
+    );
+    // }
     const context = await chromium.launchPersistentContext('', launchOptions);
     await context.newPage();
     await context.waitForEvent('page');

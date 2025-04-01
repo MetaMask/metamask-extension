@@ -122,43 +122,43 @@ jobs:
   #         name: test-e2e-swap-playwright-cimg-xvfb
   #         path: public/playwright/playwright-reports
 
-  # cimg-no-container:
-  #   runs-on: ubuntu-22.04
-  #   continue-on-error: true # soft launch
-  #   steps:
-  #     - name: Checkout and setup environment
-  #       uses: MetaMask/action-checkout-and-setup@v1
-  #       with:
-  #         is-high-risk-environment: false
+  cimg-no-container:
+    runs-on: ubuntu-22.04
+    continue-on-error: true # soft launch
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
 
-  #     - name: Install Chromium
-  #       run: yarn playwright install chromium
+      - name: Install Chromium
+        run: yarn playwright install chromium
 
-  #     # - run: |
-  #     #     wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
-  #     #     sudo apt-get install unzip || apt-get install unzip
-  #     #     rm -rf dist && mkdir -p dist
-  #     #     unzip metamask-chrome-12.14.2.zip -d dist/chrome
+      # - run: |
+      #     wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
+      #     sudo apt-get install unzip || apt-get install unzip
+      #     rm -rf dist && mkdir -p dist
+      #     unzip metamask-chrome-12.14.2.zip -d dist/chrome
 
-  #     - uses: actions/download-artifact@v4
-  #       with:
-  #         github-token: ${{ github.token }}
-  #         run-id: 14179069785
-  #         name: prep-build-dist-browserify-chrome
-  #         path: ./dist/
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 14179069785
+          name: prep-build-dist-browserify-chrome
+          path: ./dist/
 
-  #     # - name: Configure Xvfb
-  #     #   run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+      # - name: Configure Xvfb
+      #   run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-  #     - name: Run Swap E2E tests
-  #       run: yarn test:e2e:swap
+      - name: Run Swap E2E tests
+        run: yarn test:e2e:swap
 
-  #     - name: Upload test reports
-  #       if: ${{ !cancelled() }}
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: test-e2e-swap-playwright-cimg-no-container
-  #         path: public/playwright/playwright-reports
+      - name: Upload test reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-e2e-swap-playwright-cimg-no-container
+          path: public/playwright/playwright-reports
 
   # mcr:
   #   runs-on: ubuntu-latest
