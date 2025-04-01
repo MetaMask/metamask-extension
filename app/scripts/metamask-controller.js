@@ -30,6 +30,7 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
+import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
@@ -146,7 +147,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, SolAccountType, SolScope } from '@metamask/keyring-api';
 import {
   hasProperty,
   hexToBigInt,
@@ -264,6 +265,7 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4710,6 +4712,38 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.setSelectedAccount(account.id);
 
       await this._addAccountsWithBalance(id);
+
+      const client = new KeyringInternalSnapClient({
+        messenger: this.controllerMessenger,
+        snapId: SOLANA_WALLET_SNAP_ID,
+      });
+      const keyring = await this.getSnapKeyring();
+      for (let index = 0; ; index++) {
+        const discovered = await client.discoverAccounts(
+          [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+          id,
+          index,
+        );
+
+        if (discovered.length === 0) {
+          break;
+        }
+
+        await Promise.all(
+          discovered.map(async (discoveredAccount) => {
+            const options = {
+              scope: discoveredAccount.scopes[0],
+              entropySource: id,
+            };
+
+            await keyring.createAccount(SOLANA_WALLET_SNAP_ID, options, {
+              displayConfirmation: false,
+              displayAccountNameSuggestion: false,
+              setSelectedAccount: true,
+            });
+          }),
+        );
+      }
 
       return newAccountAddress;
     } finally {
