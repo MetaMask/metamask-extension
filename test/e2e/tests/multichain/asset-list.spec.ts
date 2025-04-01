@@ -13,7 +13,7 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
 const POLYGON_NAME_MAINNET = 'Polygon';
-const BALANCE_AMOUNT = '24.9956';
+const BALANCE_AMOUNT = '25';
 
 function buildFixtures(title: string, chainId: number = 1337) {
   return {
