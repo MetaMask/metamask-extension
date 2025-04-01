@@ -710,23 +710,23 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "You’re sending your assets to a scammer. If you continue, you’ll lose those assets."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "If you confirm this request, you’re allowing a scammer to withdraw and spend your assets. You won’t get them back."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "If you continue, all the assets you’ve listed on OpenSea could be at risk."
-  },
   "blockaidAlertDescriptionBlur": {
     "message": "If you continue, all the assets you’ve listed on Blur could be at risk."
   },
   "blockaidAlertDescriptionMalicious": {
     "message": "You’re interacting with a malicious site. If you continue, you will lose your assets."
   },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "If you continue, all the assets you’ve listed on OpenSea could be at risk."
+  },
   "blockaidAlertDescriptionOthers": {
     "message": "If you confirm this request, you could lose your assets. We recommend that you cancel this request."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "You’re sending your assets to a scammer. If you continue, you’ll lose those assets."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "If you confirm this request, you’re allowing a scammer to withdraw and spend your assets. You won’t get them back."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
