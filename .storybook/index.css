@@ -9,8 +9,8 @@
   margin-top: auto !important;
 }
 
-.snap-ui-renderer__content {
-  margin-bottom: 0 !important;
+.snap-ui-renderer__container {
+  padding-bottom: 0 !important;
 }
 
 .snap-ui-renderer__panel {
