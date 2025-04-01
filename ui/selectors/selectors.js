@@ -403,7 +403,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      if (chainId && currentChainId === chainId) {
+      if (chainId === undefined || currentChainId === chainId) {
         // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
         // We should consolidate the format to either hex or number
         if (isEvmAccountType(internalAccount.type)) {
