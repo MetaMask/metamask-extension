@@ -3,6 +3,8 @@ name: Playwright
 on:
   push:
 
+# chmod +x dist/chrome/*
+
 jobs:
   cimg:
     runs-on: ubuntu-latest
@@ -141,21 +143,30 @@ jobs:
       - name: Install Chromium
         run: yarn playwright install chromium
 
-      - run: |
-          wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
-          sudo apt-get install unzip || apt-get install unzip
-          rm -rf dist && mkdir -p dist
-          unzip metamask-chrome-12.14.2.zip -d dist/chrome
+      # - run: |
+      #     wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
+      #     sudo apt-get install unzip || apt-get install unzip
+      #     rm -rf dist && mkdir -p dist
+      #     unzip metamask-chrome-12.14.2.zip -d dist/chrome
 
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     github-token: ${{ github.token }}
-      #     run-id: 14179069785
-      #     name: prep-build-dist-browserify-chrome
-      #     path: ./dist/
+      # https://productionresultssa14.blob.core.windows.net/actions-results/6fd0d15b-2778-407c-a226-01737228dee5/workflow-job-run-04a81645-70da-593d-c8a6-f3b4e79b3c4b/artifacts/9d7c750ad0b250b558a7311670a80ae222376d1e61ea6befd0da0e433dc356f5.zip
+
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 14179069785
+          name: prep-build-dist-browserify-chrome
+          path: ./dist/
 
       # - name: Configure Xvfb
       #   run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - run: echo "set -g mouse on" >> ~/.tmux.conf
+
+      - name: Debugging with tmate
+        uses: ./.github/actions/actions-tmate
+        with:
+          limit-access-to-actor: true
 
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
