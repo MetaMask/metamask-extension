@@ -5182,16 +5182,18 @@ __metadata:
 
 "@metamask/delegation-controller@file:../core/packages/delegation-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.1.0
-  resolution: "@metamask/delegation-controller@file:../core/packages/delegation-controller#../core/packages/delegation-controller::hash=b27dd1&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/delegation-controller@file:../core/packages/delegation-controller#../core/packages/delegation-controller::hash=e4c6b9&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask-private/delegator-core-viem": "npm:^0.7.1"
     "@metamask/accounts-controller": "npm:^27.0.0"
     "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/keyring-controller": "npm:^21.0.1"
+    "@metamask/network-controller": "npm:^22.2.1"
     "@metamask/utils": "npm:^11.3.0"
     viem: "npm:^2.24.1"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/a82379f7786a1c342c78252314dffe65061a92f99bebf3671f5a85f441b0c29dc3b054eb9c0a1ac3389902f15442448da970cc95818aaca8791be51dee9cb5a9
+  checksum: 10/e4ab77ee4fb266ffb3d36845737fd7e06054bab2ec11ad725dad5ab848871a754ce8380b02f8934eb6ca33f74d230d5340c611c796c5112381793ef4156a81af
   languageName: node
   linkType: hard
 

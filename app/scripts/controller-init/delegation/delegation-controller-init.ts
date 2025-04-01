@@ -1,9 +1,9 @@
-import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messager';
-import { ControllerInitFunction, ControllerInitResult } from '../types';
 import {
   DelegationController,
   DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
+import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messager';
+import { ControllerInitFunction, ControllerInitResult } from '../types';
 
 export const DelegationControllerInit: ControllerInitFunction<
   DelegationController,

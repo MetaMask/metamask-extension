@@ -1481,7 +1481,8 @@
       "packages": {
         "@metamask/delegation-controller>@metamask-private/delegator-core-viem": true,
         "@metamask/base-controller": true,
-        "@metamask/keyring-controller": true
+        "@metamask/keyring-controller": true,
+        "@metamask/delegation-controller>@metamask/utils": true
       }
     },
     "@metamask/ens-controller": {
@@ -2654,6 +2655,21 @@
       }
     },
     "@metamask/browser-passworder>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/delegation-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true

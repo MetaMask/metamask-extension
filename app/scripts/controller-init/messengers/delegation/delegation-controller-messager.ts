@@ -20,6 +20,7 @@ export function getDelegationControllerMessenger(
     allowedActions: [
       'AccountsController:getSelectedAccount',
       'KeyringController:signTypedMessage',
+      'NetworkController:getSelectedChainId',
     ],
     allowedEvents: [],
   });
