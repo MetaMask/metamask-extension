@@ -300,10 +300,7 @@ export default function TransactionList({
 
   const chainId = useSelector(getCurrentChainId);
   const account = useSelector(getSelectedInternalAccount);
-  const { isEvmNetwork } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
