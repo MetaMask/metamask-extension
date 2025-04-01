@@ -189,25 +189,7 @@ const registerInPageContentScript = async () => {
   }
 };
 
-globalThis.stateHooks.onReadyListener = Promise.withResolvers();
-
-// lets make sure we do eventually start up no matter what
-// TODO(David M): this is so awful.
-const timer = setTimeout(() => {
-  uninstallListeners();
-  globalThis.stateHooks.onReadyListener.resolve('startup');
-}, 5000);
-
-function uninstallListeners() {
-  clearTimeout(timer);
-  chrome.runtime.onStartup.removeListener(onStartupListener);
-  chrome.runtime.onInstalled.removeListener(onInstalledListener);
-}
-
-function onStartupListener() {
-  uninstallListeners();
-  globalThis.stateHooks.onReadyListener.resolve('startup');
-}
+globalThis.stateHooks.onInstalledListener = Promise.withResolvers();
 
 /**
  * `onInstalled` event handler.
@@ -219,24 +201,11 @@ function onStartupListener() {
  * @param {chrome.runtime.InstalledDetails} details - Event details.
  */
 function onInstalledListener({ reason }) {
-  uninstallListeners();
+  chrome.runtime.onInstalled.removeListener(onInstalledListener);
   if (reason === 'install') {
-    globalThis.stateHooks.onReadyListener.resolve('install');
-  } else {
-    globalThis.stateHooks.onReadyListener.resolve('startup');
+    globalThis.stateHooks.onInstalledListener.resolve('install');
   }
 }
 chrome.runtime.onInstalled.addListener(onInstalledListener);
-
-// `onStartup` doesn't fire in private browsing modes
-if (chrome.extension.inIncognitoContext) {
-  // so lets make sure we do eventually start up no matter what
-  setTimeout(
-    () => globalThis.stateHooks.onReadyListener.resolve('startup'),
-    5000,
-  );
-} else {
-  chrome.runtime.onStartup.addListener(onStartupListener);
-}
 
 registerInPageContentScript();

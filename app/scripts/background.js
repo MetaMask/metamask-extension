@@ -73,7 +73,6 @@ import {
 import { createOffscreen } from './offscreen';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
-import { ExtensionReady } from './lib/extension-ready';
 
 /* eslint-enable import/first */
 
@@ -135,8 +134,17 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
-const readyListener = new ExtensionReady(globalThis.stateHooks.onReadyListener);
-readyListener.installed.then(onInstall);
+if (globalThis.stateHooks.onInstalledListener) {
+  globalThis.stateHooks.onInstalledListener.then(onInstall);
+} else {
+  const onInstalledListener = function ({ reason }) {
+    browser.runtime.onInstalled.removeListener(onInstalledListener);
+    if (reason === 'install') {
+      onInstall();
+    }
+  };
+  browser.runtime.onInstalled.addListener(onInstalledListener);
+}
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -602,36 +610,27 @@ export async function loadStateFromPersistence() {
 
   if (vaultDataPresent === false) {
     // so we don't have a vault... don't panic yet! there is a chance we aren't
-    // supposed to have one at this point.
-    const startupReason = await readyListener.ready;
-    // the only reason we should NOT have a vault is if we were just installed
-    // for the very first time
-    const vaultNotYetCreated = startupReason === 'install';
-    if (!vaultNotYetCreated) {
-      // ok, we might want to panic pretty soon here. the user didn't just
-      // install MM, and we don't have a vault. this could be bad. But there are
-      // valid reasons for this:
-      // 1. they installed but didn't onboard, so the vault wasn't created
-      // 2. there was an error writing to the initial data to the store for some reason
-      // 3. a developer is just testing things in weird ways.
+    // supposed to have one at this point. There are valid reasons for this:
+    // 1. they installed but didn't onboard, so the vault wasn't created
+    // 2. there was an error writing to the initial data to the store for some reason
+    // 3. a developer is just testing things in weird ways.
 
-      // Luckily, we have other signals to use to determine if they should have
-      // a vault:
-      // 1. check in IndexedDB if the vault exists
-      // 2. check if the vault is in window.localStorage
-      // 3. check if the vault is in a cookie.
-      // lets check these locations before we panic.
-      // const vaultInIndexedDB = await localStore.get();
-      const vaultSignalInLocalStorage = window.localStorage.getItem([
-        'vaultCreated',
-      ]);
-      if (vaultSignalInLocalStorage !== '1') {
-        const vaultSignalInCookie = document.cookie
-          .split('; ')
-          .includes('vaultCreated=1');
-        if (vaultSignalInCookie) {
-          throw new Error(MISSING_VAULT_ERROR);
-        }
+    // Luckily, we have other signals to use to determine if they should have
+    // a vault:
+    // 1. check in IndexedDB if the vault exists (TODO)
+    // 2. check if the vault is in window.localStorage
+    // 3. check if the vault is in a cookie.
+    // lets check these locations before we panic.
+    // const vaultInIndexedDB = await localStore.get();
+    const vaultSignalInLocalStorage = globalThis.localStorage.getItem([
+      'vaultCreated',
+    ]);
+    if (vaultSignalInLocalStorage !== '1') {
+      const vaultSignalInCookie = globalThis.document.cookie
+        .split('; ')
+        .includes('vaultCreated=1');
+      if (vaultSignalInCookie) {
+        throw new Error(MISSING_VAULT_ERROR);
       }
     }
   }
