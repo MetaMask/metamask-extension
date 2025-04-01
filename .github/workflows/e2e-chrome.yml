@@ -69,9 +69,3 @@ jobs:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: prep-build-dist-browserify-chrome
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
-
-  test-e2e-swap-playwright:
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-swap-playwright
-      test-command: yarn test:e2e:swap

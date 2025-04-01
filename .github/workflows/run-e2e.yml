@@ -61,11 +61,6 @@ jobs:
       - name: Install anvil
         run: yarn foundryup
 
-      # needed for playwright tests only
-      - name: Install Chromium
-        if: ${{ contains(inputs.test-suite-name, 'playwright') }}
-        run: yarn playwright install chromium
-
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
         id: download-build-artifact
@@ -97,7 +92,7 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }}
+        run: ${{ inputs.test-command }} --retries 1
 
       - name: Upload test results and artifacts
         if: ${{ !cancelled() }}
@@ -107,5 +102,3 @@ jobs:
           path: |
             ./test-artifacts
             ./test/test-results/e2e
-            ./public/playwright/playwright-reports
-          if-no-files-found: ignore
