@@ -39,10 +39,10 @@ export const SolanaAccountCreationPrompt = ({
   const handleCreateAccount = useCallback(async () => {
     try {
       setIsCreating(true);
-      await solanaWalletSnapClient.createAccount(
-        MultichainNetworks.SOLANA,
-        primaryKeyring.metadata.id,
-      );
+      await solanaWalletSnapClient.createAccount({
+        scope: MultichainNetworks.SOLANA,
+        entropySource: primaryKeyring.metadata.id,
+      });
       onSuccess();
     } catch (error) {
       console.error('Error creating Solana account:', error);
@@ -59,9 +59,8 @@ export const SolanaAccountCreationPrompt = ({
       justifyContent={JustifyContent.flexStart}
       gap={1}
       padding={4}
-      className="solana-account-creation-prompt"
       data-testid="solana-account-creation-prompt"
-      style={{ height: '100vh', paddingTop: '72px' }}
+      style={{ height: '100%', minHeight: '400px', paddingTop: '72px' }}
     >
       <img
         src="/images/solana-logo.svg"
@@ -99,7 +98,7 @@ export const SolanaAccountCreationPrompt = ({
         data-testid="create-solana-account-button"
         style={{ width: '75%', marginTop: '10px' }}
       >
-        {t('createSolanaAccount')}
+        {t('bridgeCreateSolanaAccount')}
       </Button>
     </Box>
   );

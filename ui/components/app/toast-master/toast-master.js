@@ -25,12 +25,16 @@ import {
   SEND_ROUTE,
   SWAPS_ROUTE,
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getMetaMaskHdKeyrings,
+  ///: END:ONLY_INCLUDE_IF
   getOriginOfCurrentTab,
   getSelectedAccount,
   getSwitchedNetworkDetails,
@@ -79,6 +83,8 @@ export function ToastMaster() {
   const onSwapsScreen =
     location.pathname === SWAPS_ROUTE ||
     location.pathname === PREPARE_SWAP_ROUTE;
+  const onBridgeScreen =
+    location.pathname === `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
   if (onHomeScreen) {
     return (
@@ -99,7 +105,7 @@ export function ToastMaster() {
     );
   }
 
-  if (onSendScreen || onSwapsScreen) {
+  if (onSendScreen || onSwapsScreen || onBridgeScreen) {
     return (
       <ToastContainer>
         <SwitchedNetworkToast />
@@ -349,6 +355,9 @@ function NewSrpAddedToast() {
   const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
   const autoHideDelay = 5 * SECOND;
 
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
+  const latestHdKeyringNumber = hdKeyrings.length;
+
   // This will close the toast if the user clicks the account menu.
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -370,7 +379,7 @@ function NewSrpAddedToast() {
     showNewSrpAddedToast && (
       <Toast
         key="new-srp-added-toast"
-        text={t('importWalletSuccess')}
+        text={t('importWalletSuccess', [latestHdKeyringNumber])}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }

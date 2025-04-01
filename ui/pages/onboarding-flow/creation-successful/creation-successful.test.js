@@ -32,6 +32,20 @@ describe('Creation Successful Onboarding View', () => {
         type: 'test',
       },
       firstTimeFlowType: FirstTimeFlowType.import,
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+          },
+        },
+        selectedAccount: 'accountId',
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
     },
   };
   const store = configureMockStore([thunk])(mockStore);
