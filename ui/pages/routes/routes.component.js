@@ -48,6 +48,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  DELEGATION_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -133,6 +134,8 @@ const ReviewPermissions = mmLazy(() =>
   ),
 );
 const Home = mmLazy(() => import('../home'));
+
+const RemoteModeIntroducing = mmLazy(() => import('../remote-mode/walkthrough/remote-mode-walkthrough.container'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -364,6 +367,7 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated path={DELEGATION_ROUTE} component={RemoteModeIntroducing} exact />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

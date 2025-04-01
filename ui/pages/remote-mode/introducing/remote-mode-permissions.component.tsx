@@ -26,7 +26,7 @@ export default function RemoteModePermissions({ setStartEnableRemoteSwap }: { se
   }
 
   return (
-    <>
+    <Box>
       <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
         Permissions
       </Text>
@@ -48,7 +48,7 @@ export default function RemoteModePermissions({ setStartEnableRemoteSwap }: { se
           <Text>
             Swap
           </Text>
-          <Text color={TextColor.infoDefault} onClick={handleEnableRemoteSwap}>
+          <Text color={TextColor.infoDefault} style={{ cursor: 'pointer' }} onClick={handleEnableRemoteSwap}>
             Enable
           </Text>
         </Box>
@@ -81,6 +81,6 @@ export default function RemoteModePermissions({ setStartEnableRemoteSwap }: { se
         </Text>
       </Card>
       </Box>
-    </>
+    </Box>
   );
 }

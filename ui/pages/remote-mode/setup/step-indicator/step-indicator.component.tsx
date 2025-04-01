@@ -1,0 +1,44 @@
+import React from 'react';
+import { Box, Text } from '../../../../components/component-library';
+import {
+  TextVariant,
+  FontWeight,
+  TextAlign,
+  TextColor,
+  BackgroundColor,
+  Display,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+
+interface StepIndicatorProps {
+  currentStep: number;
+  totalSteps: number;
+}
+
+export default function StepIndicator({
+  currentStep,
+  totalSteps,
+}: StepIndicatorProps) {
+  return (
+    <Box
+      marginBottom={2}
+      display={Display.Flex}
+      justifyContent={JustifyContent.center}
+    >
+      <Text
+        textAlign={TextAlign.Center}
+        variant={TextVariant.bodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.infoDefault}
+        backgroundColor={BackgroundColor.primaryMuted}
+        style={{
+          padding: '4px 8px',
+          borderRadius: '16px',
+          display: 'inline-block',
+        }}
+      >
+        Step {currentStep} of {totalSteps}
+      </Text>
+    </Box>
+  );
+};
