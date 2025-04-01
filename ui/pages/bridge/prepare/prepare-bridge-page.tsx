@@ -348,12 +348,12 @@ const PrepareBridgePage = () => {
   const debouncedUpdateQuoteRequestInController = useCallback(
     debounce((p: Partial<GenericQuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
-      dispatch(setSelectedQuote(null));
     }, 300),
     [],
   );
 
   useEffect(() => {
+    dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
 
@@ -765,7 +765,7 @@ const PrepareBridgePage = () => {
             </Footer>
           </Column>
         </Row>
-        {isNoQuotesAvailable && (
+        {isNoQuotesAvailable && !isQuoteExpired && (
           <BannerAlert
             marginInline={4}
             marginBottom={10}
