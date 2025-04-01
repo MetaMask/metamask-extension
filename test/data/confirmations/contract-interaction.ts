@@ -1,4 +1,6 @@
 import {
+  AuthorizationList,
+  BatchTransactionParams,
   CHAIN_IDS,
   SimulationData,
   TransactionMeta,
@@ -23,13 +25,17 @@ export const CHAIN_ID = CHAIN_IDS.GOERLI;
 
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
+  authorizationList = undefined,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
+  nestedTransactions,
   simulationData,
 }: {
   address?: Hex;
+  authorizationList?: AuthorizationList;
   txData?: Hex;
   chainId?: string;
+  nestedTransactions?: BatchTransactionParams[];
   simulationData?: SimulationData;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
@@ -68,6 +74,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
         status: TransactionStatus.unapproved,
         time: 1713534772044,
         txParams: {
+          authorizationList,
           data: txData,
           from: address,
           gas: '0xab77',
@@ -134,6 +141,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       ],
     ],
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
+    nestedTransactions,
     origin: 'https://metamask.github.io',
     securityAlertResponse: {
       features: [],
@@ -153,6 +161,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     status: TransactionStatus.unapproved,
     time: 1713534772044,
     txParams: {
+      authorizationList,
       data: txData,
       from: address,
       gas: '0xab77',

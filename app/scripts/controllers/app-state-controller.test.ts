@@ -371,6 +371,7 @@ describe('AppStateController', () => {
           id: '123',
           chainId: '0x1',
           timestamp: new Date().getTime(),
+          origin: 'https://example.com',
         };
 
         controller.setLastInteractedConfirmationInfo(

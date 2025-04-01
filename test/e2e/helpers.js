@@ -148,9 +148,6 @@ async function withFixtures(options, testSuite) {
   let extensionId;
   let failed = false;
 
-  // ganacheServer variable to be deleted once all specs are migrated to anvil
-  // and use localNode and localNodes solely
-  let ganacheServer;
   let localNode;
   const localNodes = [];
 
@@ -168,9 +165,9 @@ async function withFixtures(options, testSuite) {
           break;
 
         case 'ganache':
-          ganacheServer = new Ganache();
-          await ganacheServer.start(nodeOptions);
-          localNodes.push(ganacheServer);
+          localNode = new Ganache();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
           break;
 
         case 'none':
@@ -215,8 +212,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (ganacheServer && useBundler) {
-      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+    if (localNode && useBundler) {
+      await initBundler(bundlerServer, localNodes[0], usePaymaster);
     }
 
     await phishingPageServer.start();
@@ -266,9 +263,10 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    driver = (await buildWebDriver(driverOptions)).driver;
+    const wd = await buildWebDriver(driverOptions);
+    driver = wd.driver;
+    extensionId = wd.extensionId;
     webDriver = driver.driver;
-    extensionId = driver.extensionId;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
@@ -301,7 +299,6 @@ async function withFixtures(options, testSuite) {
       bundlerServer,
       contractRegistry,
       driver: driverProxy ?? driver,
-      ganacheServer,
       localNodes,
       mockedEndpoint,
       mockServer,
@@ -435,6 +432,7 @@ const WINDOW_TITLES = Object.freeze({
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
+  MultichainTestDApp: 'Multichain Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });
@@ -535,17 +533,7 @@ const PRIVATE_KEY_TWO =
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
-const defaultGanacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-    },
-  ],
-};
-
 const defaultGanacheOptionsForType2Transactions = {
-  ...defaultGanacheOptions,
   // EVM version that supports type 2 transactions (EIP1559)
   hardfork: 'london',
 };
@@ -567,24 +555,6 @@ const multipleGanacheOptionsForType2Transactions = {
   ...multipleGanacheOptions,
   // EVM version that supports type 2 transactions (EIP1559)
   hardfork: 'london',
-};
-
-const generateGanacheOptions = ({
-  secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-  ...otherProps
-}) => {
-  const accounts = [
-    {
-      secretKey,
-      balance,
-    },
-  ];
-
-  return {
-    accounts,
-    ...otherProps, // eg: hardfork
-  };
 };
 
 // Edit priority gas fee form
@@ -960,7 +930,6 @@ module.exports = {
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   multipleGanacheOptionsForType2Transactions,
   sendTransaction,
@@ -968,7 +937,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
   convertETHToHexGwei,
