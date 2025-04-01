@@ -538,7 +538,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
           localNodeOptions: [

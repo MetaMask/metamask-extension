@@ -359,7 +359,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -437,7 +437,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',
