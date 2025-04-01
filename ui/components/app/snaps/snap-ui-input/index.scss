@@ -1,4 +1,10 @@
 .snap-ui-renderer__input {
+  & > .mm-text-field {
+    // Allow the input to take all the height if another component is bigger next to it
+    height: 100%;
+    max-height: 58px;
+  }
+
   & .mm-text-field > .snap-ui-renderer__panel {
     gap: 8px;
   }
