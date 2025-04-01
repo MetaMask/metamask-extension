@@ -26,8 +26,6 @@ import { trace } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   afterTransactionSign as afterTransactionSignMMI,
-  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
-  beforeTransactionPublish as beforeTransactionPublishMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from '../../lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
