@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/networks';
+import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
@@ -29,22 +29,24 @@ type Movement = {
   address?: string;
 };
 
-export function useMultichainTransactionDisplay(transaction: Transaction) {
+export function useMultichainTransactionDisplay(
+  transaction: Transaction,
+  networkConfig: MultichainProviderConfig,
+) {
   const locale = useSelector(getIntlLocale);
   const isNegative = transaction.type === TransactionType.Send;
-  const { decimals } = MULTICHAIN_PROVIDER_CONFIGS[transaction.chain];
 
   const assetInputs = aggregateAmount(
     transaction.from as Movement[],
     isNegative,
     locale,
-    decimals,
+    networkConfig.decimals,
   );
   const assetOutputs = aggregateAmount(
     transaction.to as Movement[],
     isNegative,
     locale,
-    decimals,
+    networkConfig.decimals,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],

@@ -42,6 +42,7 @@ import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
+import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -53,18 +54,20 @@ export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
   userAddress: string;
+  networkConfig: MultichainProviderConfig;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
   userAddress,
+  networkConfig,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
   const { assetInputs, assetOutputs, isRedeposit, baseFee, priorityFee } =
-    useMultichainTransactionDisplay(transaction);
+    useMultichainTransactionDisplay(transaction, networkConfig);
 
   const getStatusColor = (txStatus: string) => {
     switch (txStatus.toLowerCase()) {

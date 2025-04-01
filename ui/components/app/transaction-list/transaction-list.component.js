@@ -476,6 +476,9 @@ export default function TransactionList({
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
             userAddress={selectedAccount.address}
+            networkConfig={
+              MULTICHAIN_PROVIDER_CONFIGS[selectedTransaction.chain]
+            }
           />
         )}
 
@@ -653,8 +656,9 @@ export default function TransactionList({
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
   const t = useI18nContext();
+  const networkConfig = MULTICHAIN_PROVIDER_CONFIGS[transaction.chain];
   const { assetInputs, assetOutputs, isRedeposit } =
-    useMultichainTransactionDisplay(transaction);
+    useMultichainTransactionDisplay(transaction, networkConfig);
   let title = capitalize(transaction.type);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
@@ -675,11 +679,8 @@ const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].id}
-                src={
-                  MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].rpcPrefs
-                    ?.imageUrl
-                }
+                name={networkConfig.id}
+                src={networkConfig.rpcPrefs?.imageUrl}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }
@@ -724,11 +725,8 @@ const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].id}
-                src={
-                  MULTICHAIN_PROVIDER_CONFIGS[transaction.chain].rpcPrefs
-                    ?.imageUrl
-                }
+                name={networkConfig.id}
+                src={networkConfig.rpcPrefs?.imageUrl}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }
