@@ -41,6 +41,7 @@ export const Default = {
       nickname: 'Bitcoin',
       isEvmNetwork: false,
       chainId: 'bip122:000000000019d6689c085ae165831e93',
+      decimals: 8,
       network: {
         chainId: 'bip122:000000000019d6689c085ae165831e93',
         ticker: 'BTC',
