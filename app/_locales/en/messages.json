@@ -842,6 +842,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana account created"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
