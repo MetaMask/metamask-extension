@@ -70,9 +70,6 @@ export const AccountOverviewLayout = ({
   };
 
   const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
-    if (id === 'fund' && hasZeroBalance) {
-      return;
-    }
     if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
