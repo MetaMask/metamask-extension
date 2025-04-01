@@ -79,7 +79,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getHDEntropyIndex,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  setSelectedAccount,
+  getNetworksWithActivityByAccounts,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -314,6 +317,7 @@ export const AccountListMenu = ({
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
+
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -542,6 +546,20 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF
+
+  const fetchAccountsWithActivity = useCallback(async () => {
+    try {
+      await dispatch(getNetworksWithActivityByAccounts());
+    } catch (error) {
+      console.error('Failed to fetch accounts with activity:', error);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (filteredAccounts.length > 0) {
+      fetchAccountsWithActivity();
+    }
+  }, [fetchAccountsWithActivity, filteredAccounts]);
 
   return (
     <Modal isOpen onClose={onClose}>
