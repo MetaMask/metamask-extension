@@ -10,8 +10,6 @@ import {
 import {
   CaipAccountId,
   CaipChainId,
-  CaipNamespace,
-  CaipReference,
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
