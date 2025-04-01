@@ -542,7 +542,7 @@ export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm-testnet.svg';
-export const XRP_TOKEN_IMAGE_URL = './images/xrp-logo.png';
+export const XRP_TOKEN_IMAGE_URL = './images/xrp-logo.svg';
 
 
 export const INFURA_PROVIDER_TYPES = [
