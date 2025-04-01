@@ -11,7 +11,9 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
+  MultichainProviderConfig,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
@@ -117,6 +119,7 @@ const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
   userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -136,6 +139,7 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: Transaction;
       onClose: jest.Mock;
       userAddress: string;
+      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
     const store = configureStore(mockState.metamask);
@@ -300,13 +304,14 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
       userAddress,
+      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
 
     expect(screen.getByText('Swap')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '2.5 SOL',
+      '100 USDC',
     );
 
     const addressStart = userAddress.substring(0, 6);
