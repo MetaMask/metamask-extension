@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '../../../components/component-library';
+import { Button, Box } from '../../../components/component-library';
 
 import RemoteModeOverview from '../introducing/remote-mode-overview.component';
 import RemoteModePermissions from '../introducing/remote-mode-permissions.component';
@@ -18,7 +18,7 @@ export default function RemoteModeIntroducing() {
     switch (currentScreen) {
       case RemoteScreen.OVERVIEW:
         return (
-          <>
+          <Box padding={6}>
             <RemoteModeOverview />
             <Button
               style={{ width: '100%' }}
@@ -26,18 +26,24 @@ export default function RemoteModeIntroducing() {
             >
               Continue
             </Button>
-          </>
+          </Box>
         );
 
       case RemoteScreen.PERMISSIONS:
         return (
-          <RemoteModePermissions
-            setStartEnableRemoteSwap={() => setCurrentScreen(RemoteScreen.SETUP)}
-          />
+          <Box padding={6}>
+            <RemoteModePermissions
+              setStartEnableRemoteSwap={() => setCurrentScreen(RemoteScreen.SETUP)}
+            />
+          </Box>
         );
 
       case RemoteScreen.SETUP:
-        return <RemoteModeSetup accounts={[]} />;
+        return (
+          <Box padding={2}>
+            <RemoteModeSetup accounts={[]} />
+          </Box>
+        );
 
       default:
         return null;

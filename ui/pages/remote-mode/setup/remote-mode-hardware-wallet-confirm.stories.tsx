@@ -20,5 +20,10 @@ export default {
 };
 
 export const Default = () => (
-  <RemoteModeHardwareWalletConfirm visible={true} onConfirm={() => {}} />
+  <RemoteModeHardwareWalletConfirm
+    visible={true}
+    onConfirm={() => {}}
+    onBack={() => {}}
+    onClose={() => {}}
+  />
 );

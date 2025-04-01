@@ -1,23 +1,34 @@
 import React from 'react';
 import {
+  AvatarIcon,
+  AvatarIconSize,
   Box,
   Text,
   Icon,
   IconName,
+  IconSize,
 } from '../../../components/component-library';
 import {
+  BackgroundColor,
   FontWeight,
   TextVariant,
   Display,
   JustifyContent,
   TextColor,
   IconColor,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 
 export default function RemoteModeOverview() {
-
   return (
-    <>
+    <Box>
+      <AvatarIcon
+        marginBottom={4}
+        backgroundColor={BackgroundColor.primaryMuted}
+        iconName={IconName.Hardware}
+        color={IconColor.infoDefault}
+        size={AvatarIconSize.Xl}
+      />
       <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
         Introducing Remote Mode
       </Text>
@@ -32,8 +43,11 @@ export default function RemoteModeOverview() {
           paddingTop={2}
           paddingBottom={2}
         >
-          <Icon name={IconName.CheckBold} color={IconColor.successDefault} />
-          <Text>Easier yet safe to trade with cold funds. Never miss a market opportunity.</Text>
+          <Icon name={IconName.SwapHorizontal} color={IconColor.infoDefault} />
+          <Text>
+            Easier yet safe to trade with cold funds. Never miss a market
+            opportunity.
+          </Text>
         </Box>
         <Box
           display={Display.Flex}
@@ -42,8 +56,11 @@ export default function RemoteModeOverview() {
           paddingTop={2}
           paddingBottom={2}
         >
-          <Icon name={IconName.CheckBold} color={IconColor.successDefault} />
-          <Text>Use allowances for transactions, limiting exposure of cold funds & keys.</Text>
+          <Icon name={IconName.WalletCard} color={IconColor.infoDefault} />
+          <Text>
+            Use allowances for transactions, limiting exposure of cold funds &
+            keys.
+          </Text>
         </Box>
         <Box
           display={Display.Flex}
@@ -52,8 +69,11 @@ export default function RemoteModeOverview() {
           paddingTop={2}
           paddingBottom={2}
         >
-          <Icon name={IconName.CheckBold} color={IconColor.successDefault} />
-          <Text>Set your terms with spending caps & other smart contract enforced rules.</Text>
+          <Icon name={IconName.SecurityTick} color={IconColor.infoDefault} />
+          <Text>
+            Set your terms with spending caps & other smart contract enforced
+            rules.
+          </Text>
         </Box>
         <Box
           display={Display.Flex}
@@ -62,10 +82,12 @@ export default function RemoteModeOverview() {
           paddingTop={2}
           paddingBottom={2}
         >
-          <Icon name={IconName.CheckBold} color={IconColor.successDefault} />
-          <Text>Get all the benefits of a smart account, and switch back anytime.</Text>
+          <Icon name={IconName.Star} color={IconColor.infoDefault} />
+          <Text>
+            Get all the benefits of a smart account, and switch back anytime.
+          </Text>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }
