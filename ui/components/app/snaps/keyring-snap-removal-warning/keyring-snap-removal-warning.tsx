@@ -96,14 +96,11 @@ export default function KeyringRemovalSnapWarning({
             flexDirection={FlexDirection.Column}
             gap={4}
           >
+            <BannerAlert severity={BannerAlertSeverity.Warning}>
+              {t('backupKeyringSnapReminder')}
+            </BannerAlert>
             {showConfirmation === false ? (
               <>
-                <BannerAlert
-                  severity={BannerAlertSeverity.Warning}
-                  className=""
-                >
-                  {t('backupKeyringSnapReminder')}
-                </BannerAlert>
                 <Box
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
@@ -126,12 +123,6 @@ export default function KeyringRemovalSnapWarning({
               </>
             ) : (
               <>
-                <BannerAlert
-                  severity={BannerAlertSeverity.Warning}
-                  className=""
-                >
-                  {t('backupKeyringSnapReminder')}
-                </BannerAlert>
                 <Text>
                   {t('keyringSnapRemoveConfirmation', [
                     <Text
