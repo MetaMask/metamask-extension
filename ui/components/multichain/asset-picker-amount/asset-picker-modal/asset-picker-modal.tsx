@@ -196,10 +196,11 @@ export function AssetPickerModal({
 
   // Default to false before the code fence is enabled (will not render the prompt)
   let needsSolanaAccount = false;
+  let hasSolanaAccount = false;
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   // Check if we need to show the Solana account creation UI when Solana is selected
-  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
+  hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   needsSolanaAccount =
     !hasSolanaAccount && selectedNetwork.chainId === MultichainNetworks.SOLANA;
   ///: END:ONLY_INCLUDE_IF
@@ -209,12 +210,13 @@ export function AssetPickerModal({
     if (
       prevNeedsSolanaAccountRef.current === true &&
       !needsSolanaAccount &&
+      hasSolanaAccount &&
       showSolanaAccountCreatedToast === false
     ) {
       setShowSolanaAccountCreatedToast(true);
     }
     prevNeedsSolanaAccountRef.current = needsSolanaAccount;
-  }, [needsSolanaAccount, showSolanaAccountCreatedToast]);
+  }, [needsSolanaAccount, hasSolanaAccount, showSolanaAccountCreatedToast]);
 
   const { address: selectedEvmAddress } = useSelector(
     getSelectedEvmInternalAccount,
