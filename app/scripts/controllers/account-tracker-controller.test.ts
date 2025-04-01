@@ -767,6 +767,55 @@ describe('AccountTrackerController', () => {
     });
   });
 
+  describe('updateAccountByAddress', () => {
+    it('does not update account by address if completedOnboarding is false', async () => {
+      await withController(
+        {
+          completedOnboarding: false,
+        },
+        async ({ controller }) => {
+          const VALID_ADDRESS_TO_UPDATE = '0x1234';
+          await controller.updateAccountByAddress({
+            address: VALID_ADDRESS_TO_UPDATE,
+          });
+
+          expect(controller.state).toStrictEqual({
+            accounts: {},
+            currentBlockGasLimit: '',
+            accountsByChainId: {},
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
+    });
+
+    it('updates an account by address if completedOnboarding is true', async () => {
+      await withController(
+        {
+          completedOnboarding: true,
+        },
+        async ({ controller }) => {
+          const VALID_ADDRESS_TO_UPDATE = '0x1234';
+          await controller.updateAccountByAddress({
+            address: VALID_ADDRESS_TO_UPDATE,
+          });
+
+          expect(controller.state).toStrictEqual({
+            accounts: {
+              [VALID_ADDRESS_TO_UPDATE]: {
+                address: VALID_ADDRESS_TO_UPDATE,
+                balance: null,
+              },
+            },
+            currentBlockGasLimit: '',
+            accountsByChainId: {},
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
+    });
+  });
+
   describe('onAccountRemoved', () => {
     it('should remove an account from state', async () => {
       await withController(
