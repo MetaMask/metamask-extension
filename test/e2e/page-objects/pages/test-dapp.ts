@@ -76,6 +76,8 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
+  private readonly ethSubscribeResponse = '[data-testid="eth-subscribe-response"]';
+
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
   private readonly mmlogo = '#mm-logo';
@@ -208,6 +210,28 @@ class TestDapp {
         css: this.connectedAccount,
         text: connectedAccounts.toLowerCase(),
       });
+    }
+  }
+
+  /**
+   * Verifies the eth_subscribe response.
+   *
+   * @param shouldBePresent - Whether the eth_subscribe response should be present, defaults to true.
+   * @param guardTime - Time to wait to check if the eth_subscribe response is present, defaults to 1000ms.
+   */
+  async check_ethSubscribeResponse(
+    shouldBePresent: boolean = true,
+    guardTime: number = 1000,
+  ) {
+    if (shouldBePresent) {
+      console.log('Verify eth_subscribe response is displayed');
+      await this.driver.waitForSelector(this.ethSubscribeResponse);
+    } else {
+      console.log('Verify eth_subscribe response is not displayed');
+      await this.driver.assertElementNotPresent(
+        this.ethSubscribeResponse,
+        { waitAtLeastGuard: guardTime },
+      );
     }
   }
 
