@@ -83,7 +83,7 @@ jobs:
 
       - run: |
           wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
-          sudo apt-get install unzip || apt-get install unzip
+          apt-get update && apt-get install unzip
           rm -rf dist && mkdir -p dist
           unzip metamask-chrome-12.14.2.zip -d dist/chrome
 
