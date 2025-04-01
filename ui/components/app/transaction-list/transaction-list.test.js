@@ -67,7 +67,7 @@ const btcState = {
                   amount: '0.000000723',
                 },
               },
-          ],
+            ],
             fees: [],
             events: [],
           },
