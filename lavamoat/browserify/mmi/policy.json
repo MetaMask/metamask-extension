@@ -1414,6 +1414,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
+        "@metamask/utils>@metamask/superstruct": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/utils": true,
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -1751,14 +1752,6 @@
         "@metamask/keyring-api>bech32": true
       }
     },
-    "@metamask/multichain-network-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/multichain-network-controller>@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/keyring-api>bech32": true
-      }
-    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true,
@@ -1785,32 +1778,12 @@
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/multichain-network-controller>@metamask/keyring-api>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/keyring-snap-client>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
@@ -1883,7 +1856,7 @@
     "@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-network-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
         "@metamask/utils": true,
         "@metamask/multichain-network-controller>@solana/addresses": true
@@ -2333,7 +2306,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/snaps-rpc-methods>@noble/hashes": true,
+        "@noble/hashes": true,
         "luxon": true
       }
     },
@@ -2371,7 +2344,7 @@
         "@metamask/snaps-sdk": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/snaps-utils>@noble/hashes": true,
+        "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
         "@metamask/snaps-utils>cron-parser": true,
@@ -2501,6 +2474,7 @@
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
+        "@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -2730,7 +2704,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "viem>webauthn-p256>@noble/curves>@noble/hashes": true
+        "@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2740,24 +2714,6 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/snaps-utils>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>webauthn-p256>@noble/curves>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4143,7 +4099,7 @@
         "ethereumjs-util>create-hash": true,
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "ethereumjs-util>rlp": true
+        "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -4331,7 +4287,7 @@
         "ethers>@ethersproject/sha2>hash.js": true,
         "eth-ens-namehash>js-sha3": true,
         "lodash": true,
-        "eth-lattice-keyring>gridplus-sdk>rlp": true,
+        "eth-lattice-keyring>rlp": true,
         "ganache>secp256k1": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true
       }
@@ -5581,9 +5537,10 @@
         "browserify>buffer": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>rlp": {
-      "globals": {
-        "TextEncoder": true
+    "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true
       }
     },
     "wait-on>rxjs": {
