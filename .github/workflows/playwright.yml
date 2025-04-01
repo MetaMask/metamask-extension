@@ -151,12 +151,14 @@ jobs:
 
       # https://productionresultssa14.blob.core.windows.net/actions-results/6fd0d15b-2778-407c-a226-01737228dee5/workflow-job-run-04a81645-70da-593d-c8a6-f3b4e79b3c4b/artifacts/9d7c750ad0b250b558a7311670a80ae222376d1e61ea6befd0da0e433dc356f5.zip
 
-      - uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: 14179069785
-          name: prep-build-dist-browserify-chrome
-          path: ./dist/
+      - run: INFURA_PROJECT_ID='FAKE' yarn build dist
+
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     github-token: ${{ github.token }}
+      #     run-id: 14179069785
+      #     name: prep-build-dist-browserify-chrome
+      #     path: ./dist/
 
       # - name: Configure Xvfb
       #   run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -170,6 +172,10 @@ jobs:
 
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
+
+      - name: Run Swap E2E tests
+        if: ${{ !cancelled() }}
+        run: yarn test:e2e:swap
 
       - name: Upload test reports
         if: ${{ !cancelled() }}
