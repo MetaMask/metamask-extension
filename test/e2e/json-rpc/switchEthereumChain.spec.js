@@ -16,7 +16,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -91,7 +91,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -220,7 +220,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
