@@ -72,7 +72,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { useMultiAccountChainBalances } from '../../../hooks/useMultiAccountChainBalances';
+import { getMultiAccountChainBalances } from '../../../selectors/multichain/networks';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -162,10 +162,9 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
-  const accountListBalancesByChainId = useMultiAccountChainBalances();
-  // console.log('START============================================');
-  // console.log('aggregated network balances', accountListBalancesByChainId);
-  // console.log('============================================END');
+  const accountListBalancesByChainId = useSelector(
+    getMultiAccountChainBalances,
+  );
   const userAggregatedNetworkBalances = useMemo(() => {
     const balances = accountListBalancesByChainId?.[account.address] ?? [];
     return balances
@@ -175,10 +174,6 @@ const AccountListItem = ({
         avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[item.chainId],
       }));
   }, [accountListBalancesByChainId, account.address]);
-  console.log('START============================================');
-  console.log('account address', account.address);
-  console.log('aggregated network balances', userAggregatedNetworkBalances);
-  console.log('============================================END');
 
   let balanceToTranslate;
   if (isEvmNetwork) {
