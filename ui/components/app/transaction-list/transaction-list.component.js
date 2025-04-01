@@ -300,7 +300,7 @@ export default function TransactionList({
 
   const chainId = useSelector(getCurrentChainId);
   const account = useSelector(getSelectedInternalAccount);
-  const { isEvmNetwork, network: nonEvmNetworkConfig } = useMultichainSelector(
+  const { isEvmNetwork } = useMultichainSelector(
     getMultichainNetwork,
     account,
   );
@@ -478,7 +478,7 @@ export default function TransactionList({
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
             userAddress={selectedAccount.address}
-            networkConfig={nonEvmNetworkConfig}
+            networkConfig={multichainNetwork.network}
           />
         )}
 
@@ -504,7 +504,7 @@ export default function TransactionList({
                         key={`${transaction.id}`}
                         transaction={transaction}
                         toggleShowDetails={toggleShowDetails}
-                        networkConfig={nonEvmNetworkConfig}
+                        networkConfig={multichainNetwork.network}
                       />
                     ))}
                   </Fragment>
