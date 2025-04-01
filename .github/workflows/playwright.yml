@@ -42,6 +42,9 @@ jobs:
       #   with:
       #     limit-access-to-actor: true
 
+      - name: build:debug
+        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
+
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
 
