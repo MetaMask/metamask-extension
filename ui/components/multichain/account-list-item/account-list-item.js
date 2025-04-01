@@ -258,6 +258,7 @@ const AccountListItem = ({
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
         'multichain-account-list-item--clickable': Boolean(onClick),
       })}
+      data-testid="account-item"
       ref={itemRef}
       onClick={() => {
         // Without this check, the account will be selected after
