@@ -175,7 +175,6 @@ const ALLOWLISTED_HOSTS = [
   'firefox.settings.services.mozilla.com',
   'fonts.googleapis.com',
   'fonts.gstatic.com',
-  'metamask.io',
   'metamask.github.io',
   'gvt1.com',
   'portfolio.metamask.io',

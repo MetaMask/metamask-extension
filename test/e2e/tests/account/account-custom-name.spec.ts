@@ -37,7 +37,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         // Add new account with custom label and verify new added account label
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage({
+        await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
           accountName: anotherAccountLabel,
         });

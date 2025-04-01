@@ -829,6 +829,17 @@ async function setupMocking(
       };
     });
 
+  // metamask.io
+  await server
+    .forGet(
+      'https://metamask.io',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
