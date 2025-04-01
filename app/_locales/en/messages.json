@@ -2504,7 +2504,8 @@
     "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
-    "message": "Wallet successfully imported"
+    "message": "Secret Recovery Phrase $1 imported",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Import $1",
