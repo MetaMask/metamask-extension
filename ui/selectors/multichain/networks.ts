@@ -241,7 +241,6 @@ export const getMultiAccountChainBalances = createDeepEqualSelector(
     currencyRates,
     currentCurrency,
   ): ChainFiatBalances => {
-    console.log('re-render');
     const result: ChainFiatBalances = {};
     for (const [accountAddress, networkMetadata] of Object.entries(
       networksWithActivity,
