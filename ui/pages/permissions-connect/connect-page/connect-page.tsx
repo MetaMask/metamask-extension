@@ -5,6 +5,7 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
   generateCaip25Caveat,
   getUniqueArrayItems,
+  InternalScopeString,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -209,8 +210,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
       ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
     ].map((scope) => {
-      const scopeString = scope as `${CaipNamespace}:${CaipReference}`;
+      const scopeString = scope as InternalScopeString;
       // This will break if 'wallet' is passed in
+      if (scopeString === KnownCaipNamespace.Wallet) {
+        return scopeString;
+      }
       const { namespace, reference } = parseCaipChainId(scopeString);
       return namespace === KnownCaipNamespace.Wallet ? reference : namespace;
     }),
