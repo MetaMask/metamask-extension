@@ -1,13 +1,13 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
 } from './base-store';
-import { KeyringControllerState } from '@metamask/keyring-controller';
 
 const STATE_LOCK = 'state-lock';
 

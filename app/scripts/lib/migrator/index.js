@@ -95,7 +95,7 @@ export default class Migrator extends EventEmitter {
       data,
       meta: {
         version: this.defaultVersion,
-      }
+      },
     };
   }
 }

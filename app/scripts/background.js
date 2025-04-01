@@ -73,6 +73,7 @@ import {
 import { createOffscreen } from './offscreen';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
+import { ExtensionReady } from './lib/extension-ready';
 
 /* eslint-enable import/first */
 
@@ -134,57 +135,8 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
-if (isManifestV3) {
-  globalThis.stateHooks.onReadyListener.promise.then((reason) => {
-    if (reason === 'install') {
-      onInstall();
-    }
-  });
-} else {
-  globalThis.stateHooks.onReadyListener = Promise.withResolvers();
-
-  // lets make sure we do eventually start up no matter what
-  // TODO(David M): this is so awful.
-  const timer = setTimeout(() => {
-    uninstallListeners();
-    globalThis.stateHooks.onReadyListener.resolve("startup");
-  }, 5000);
-
-  function uninstallListeners(){
-    clearTimeout(timer);
-    chrome.runtime.onStartup.removeListener(onStartupListener);
-    chrome.runtime.onInstalled.removeListener(onInstalledListener);
-  }
-
-  function onStartupListener() {
-    uninstallListeners();
-    globalThis.stateHooks.onReadyListener.resolve("startup");
-  }
-
-  /**
-   * `onInstalled` event handler.
-   *
-   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
-   * is never called.
-   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
-   *
-   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
-   */
-  function onInstalledListener({ reason }) {
-    uninstallListeners();
-    if (reason === "install") {
-      globalThis.stateHooks.onReadyListener.resolve("install");
-    } else {
-      globalThis.stateHooks.onReadyListener.resolve("startup");
-    }
-  }
-  browser.runtime.onInstalled.addListener(onInstalledListener);
-
-  // `onStartup` doesn't fire in private browsing modes
-  if (!chrome.extension.inIncognitoContext) {
-    chrome.runtime.onStartup.addListener(onStartupListener);
-  }
-}
+const readyListener = new ExtensionReady(globalThis.stateHooks.onReadyListener);
+readyListener.installed.then(onInstall);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -651,11 +603,11 @@ export async function loadStateFromPersistence() {
   if (vaultDataPresent === false) {
     // so we don't have a vault... don't panic yet! there is a chance we aren't
     // supposed to have one at this point.
-    const startupReason = await globalThis.stateHooks.onReadyListener.promise;
+    const startupReason = await readyListener.ready;
     // the only reason we should NOT have a vault is if we were just installed
     // for the very first time
-    const vaultNotYetCreated = startupReason === "install";
-    if(!vaultNotYetCreated) {
+    const vaultNotYetCreated = startupReason === 'install';
+    if (!vaultNotYetCreated) {
       // ok, we might want to panic pretty soon here. the user didn't just
       // install MM, and we don't have a vault. this could be bad. But there are
       // valid reasons for this:
@@ -669,10 +621,14 @@ export async function loadStateFromPersistence() {
       // 2. check if the vault is in window.localStorage
       // 3. check if the vault is in a cookie.
       // lets check these locations before we panic.
-      //const vaultInIndexedDB = await localStore.get();
-      const vaultSignalInLocalStorage = window.localStorage.getItem(["vaultCreated"]);
-      if (vaultSignalInLocalStorage !== "1") {
-        const vaultSignalInCookie = document.cookie.split('; ').includes("vaultCreated=1");
+      // const vaultInIndexedDB = await localStore.get();
+      const vaultSignalInLocalStorage = window.localStorage.getItem([
+        'vaultCreated',
+      ]);
+      if (vaultSignalInLocalStorage !== '1') {
+        const vaultSignalInCookie = document.cookie
+          .split('; ')
+          .includes('vaultCreated=1');
         if (vaultSignalInCookie) {
           throw new Error(MISSING_VAULT_ERROR);
         }
