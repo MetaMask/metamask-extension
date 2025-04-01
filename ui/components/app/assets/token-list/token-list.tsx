@@ -69,6 +69,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
 
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets([...filteredAssets], tokenSortConfig);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
     evmBalances,
@@ -76,6 +77,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     networkFilter,
     currentNetwork.chainId,
     tokenSortConfig,
+    // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
   ]);
 

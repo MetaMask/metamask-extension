@@ -6,7 +6,10 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
-import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import {
+  BITCOIN_BLOCK_EXPLORER_URL,
+  MultichainNetworks,
+} from '../../../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmRemoveAccount from '.';
 
@@ -46,7 +49,7 @@ const mockNonEvmNetwork = {
   network: {
     chainId: MultichainNetworks.BITCOIN,
     rpcPrefs: {
-      blockExplorerUrl: 'https://mempool.space/',
+      blockExplorerUrl: BITCOIN_BLOCK_EXPLORER_URL,
     },
   },
 };
