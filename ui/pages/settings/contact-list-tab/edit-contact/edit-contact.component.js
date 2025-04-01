@@ -22,6 +22,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
+import Dropdown from '../../../../components/ui/dropdown';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -31,6 +32,7 @@ export default class EditContact extends PureComponent {
   static propTypes = {
     addressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
+    networks: PropTypes.array,
     addToAddressBook: PropTypes.func,
     removeFromAddressBook: PropTypes.func,
     history: PropTypes.object,
@@ -53,6 +55,7 @@ export default class EditContact extends PureComponent {
     newMemo: this.props.memo,
     nameError: '',
     addressError: '',
+    selectedNetwork: this.props.chainId,
   };
 
   validateName = (newName) => {
@@ -79,6 +82,7 @@ export default class EditContact extends PureComponent {
 
   render() {
     const { t } = this.context;
+    const { selectedNetwork } = this.state;
     const {
       address,
       addToAddressBook,
@@ -89,6 +93,7 @@ export default class EditContact extends PureComponent {
       name,
       removeFromAddressBook,
       viewRoute,
+      networks,
     } = this.props;
 
     if (!address) {
@@ -192,6 +197,26 @@ export default class EditContact extends PureComponent {
                 inputRoot: 'address-book__view-contact__text-area-wrapper',
               }}
             />
+          </div>
+
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label--capitalized">
+              {t('network')}
+            </div>
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-item-col">
+                <Dropdown
+                  data-testid="currency-select"
+                  id="select-currency"
+                  options={networks}
+                  selectedOption={selectedNetwork}
+                  onChange={(network) => {
+                    console.log(network.name);
+                  }}
+                  className="settings-page__content-item__dropdown"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <PageContainerFooter

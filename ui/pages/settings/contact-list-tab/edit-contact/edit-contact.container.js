@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import {
   getAddressBook,
   getAddressBookEntry,
+  getAllEnabledNetworks,
   getInternalAccountByAddress,
   getInternalAccounts,
 } from '../../../../selectors';
@@ -28,6 +29,7 @@ const mapStateToProps = (state, ownProps) => {
     : ownProps.match.params.id;
 
   const contact = getAddressBookEntry(state, address);
+  const networks = getAllEnabledNetworks(state);
   const { memo } = contact || {};
   const name =
     contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
@@ -41,6 +43,7 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     name,
     memo,
+    networks,
     viewRoute: CONTACT_VIEW_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,
   };
