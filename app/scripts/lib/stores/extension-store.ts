@@ -29,7 +29,7 @@ export default class ExtensionStore implements BaseStore {
     const { local } = browser.storage;
     // don't fetch more than we need, its faster to read known keys than
     // to iterate over all keys (in the case where the DB has been initialized).
-    return await local.get(['data', 'meta', 'vaultHasNotYetBeenCreated']);
+    return await local.get(['data', 'meta']);
   }
 
   /**
@@ -38,19 +38,14 @@ export default class ExtensionStore implements BaseStore {
    * @param data - The data to set
    * @param data.data
    * @param data.meta
-   * @param data.vaultHasNotYetBeenCreated
    */
-  async set({
-    data,
-    meta,
-    vaultHasNotYetBeenCreated,
-  }: Required<MetaMaskStorageStructure>): Promise<void> {
+  async set({ data, meta }: Required<MetaMaskStorageStructure>): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
         'Metamask- cannot persist state to local store as this browser does not support this action',
       );
     }
     const { local } = browser.storage;
-    return await local.set({ data, meta, vaultHasNotYetBeenCreated });
+    return await local.set({ data, meta });
   }
 }
