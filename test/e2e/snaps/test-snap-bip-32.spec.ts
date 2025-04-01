@@ -2,7 +2,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
+import { WINDOW_TITLES, withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
@@ -65,6 +65,13 @@ describe('Test Snap bip-32', function () {
         // Enter secp256k1 signature message, click sign button, approve and validate the result
         await testSnaps.fillMessage('messageSecp256k1Input', 'foo bar');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.compareScreenshot(
+          __dirname,
+          'bip-32-sign-secp256k1',
+        );
+
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',

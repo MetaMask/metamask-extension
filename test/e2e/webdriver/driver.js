@@ -1,5 +1,7 @@
 const { promises: fs } = require('fs');
+const { dirname, join } = require('path');
 const { strict: assert } = require('assert');
+const { imageSize } = require('image-size');
 const {
   By,
   Condition,
@@ -11,6 +13,8 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
+const { default: pixelmatch } = require('pixelmatch');
+const { PNG } = require('pngjs');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -675,6 +679,20 @@ class Driver {
   }
 
   /**
+   * Check if a file exists at the given path.
+   *
+   * @param path - The path to the file
+   * @returns {Promise<boolean>} Promise that resolves to a boolean indicating
+   * if the file exists.
+   */
+  async #fileExists(path) {
+    return await fs
+      .stat(path)
+      .then((stat) => stat.isFile())
+      .catch(() => false);
+  }
+
+  /**
    * @param {string} testTitle - The title of the test
    * @param {string} screenshotTitle - The title of the screenshot
    * @returns {Promise<void>} Promise that resolves when the screenshot is taken
@@ -687,6 +705,66 @@ class Driver {
     await fs.writeFile(`${artifactDir}/${screenshotTitle}.png`, screenshot, {
       encoding: 'base64',
     });
+  }
+
+  /**
+   * Compare the current screenshot with the saved screenshot for the given
+   * test and screenshot titles.
+   *
+   * @param rootPath - The root path of the test file.
+   * @param screenshotTitle - The title of the screenshot
+   * @returns {Promise<void>}
+   * @throws {Error} If the screenshots do not match.
+   */
+  async compareScreenshot(rootPath, screenshotTitle) {
+    const path = join(rootPath, 'screenshots', `${screenshotTitle}.png`);
+
+    if (
+      process.env.UPDATE_SNAPSHOTS === 'true' ||
+      !(await this.#fileExists(path))
+    ) {
+      console.log(`Saving new screenshot "${screenshotTitle}".`);
+      const screenshot = await this.driver.takeScreenshot();
+
+      await fs.mkdir(dirname(path), { recursive: true });
+      await fs.writeFile(path, screenshot, { encoding: 'base64' });
+      return;
+    }
+
+    const screenshot = await fs.readFile(path);
+    const size = imageSize(screenshot);
+    const newScreenshot = Buffer.from(
+      await this.driver.takeScreenshot(),
+      'base64',
+    );
+
+    // Compare the screenshots
+    const diff = new PNG({ width: size.width, height: size.height });
+
+    const pixels = pixelmatch(
+      PNG.sync.read(screenshot).data,
+      PNG.sync.read(newScreenshot).data,
+      diff.data,
+      size.width,
+      size.height,
+      {
+        threshold: 0.1,
+      },
+    );
+
+    if (pixels > 0) {
+      const diffPath = join(
+        rootPath,
+        'screenshots',
+        `${screenshotTitle}-diff.png`,
+      );
+
+      await fs.writeFile(diffPath, PNG.sync.write(diff));
+
+      throw new Error(
+        `Screenshot "${screenshotTitle}" does not match by ${pixels} pixels. Comparison saved to "${diffPath}".`,
+      );
+    }
   }
 
   /**
