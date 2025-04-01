@@ -2,7 +2,6 @@ import {
   Transaction,
   TransactionStatus as KeyringTransactionStatus,
   TransactionType,
-  CaipChainId,
 } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
@@ -33,27 +32,26 @@ type Movement = {
 export function useMultichainTransactionDisplay(transaction: Transaction) {
   const locale = useSelector(getIntlLocale);
   const isNegative = transaction.type === TransactionType.Send;
+  const { decimals } = MULTICHAIN_PROVIDER_CONFIGS[transaction.chain];
 
   const assetInputs = aggregateAmount(
-    transaction.chain,
     transaction.from as Movement[],
     isNegative,
     locale,
+    decimals,
   );
   const assetOutputs = aggregateAmount(
-    transaction.chain,
     transaction.to as Movement[],
     isNegative,
     locale,
+    decimals,
   );
   const baseFee = aggregateAmount(
-    transaction.chain,
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
     isNegative,
     locale,
   );
   const priorityFee = aggregateAmount(
-    transaction.chain,
     transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
     isNegative,
     locale,
@@ -69,10 +67,10 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
 }
 
 function aggregateAmount(
-  chainId: CaipChainId,
   movement: Movement[],
   isNegative: boolean,
   locale: string,
+  decimals?: number,
 ) {
   const amountByAsset: Record<string, Movement> = {};
 
@@ -91,15 +89,15 @@ function aggregateAmount(
 
   // Convert to a proper display array.
   return Object.entries(amountByAsset).map(([_, mv]) =>
-    parseAsset(chainId, mv, locale, isNegative),
+    parseAsset(mv, locale, isNegative, decimals),
   );
 }
 
 function parseAsset(
-  chainId: CaipChainId,
   movement: Movement,
   locale: string,
   isNegative: boolean,
+  decimals?: number,
 ) {
   const displayAmount = formatWithThreshold(
     Number(movement.asset.amount),
@@ -107,7 +105,7 @@ function parseAsset(
     locale,
     {
       minimumFractionDigits: 0,
-      maximumFractionDigits: MULTICHAIN_PROVIDER_CONFIGS[chainId].decimals || 8,
+      maximumFractionDigits: decimals || 8,
     },
   );
 

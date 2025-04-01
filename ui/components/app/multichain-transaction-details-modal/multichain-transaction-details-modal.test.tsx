@@ -305,7 +305,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
     expect(screen.getByText('Swap')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '2.5 SOL',
+      '100 USDC',
     );
 
     const addressStart = userAddress.substring(0, 6);
