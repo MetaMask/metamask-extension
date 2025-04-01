@@ -57,7 +57,17 @@ const btcState = {
             type: 'send',
             account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
             from: [],
-            to: [],
+            to: [
+              {
+                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                asset: {
+                  fungible: true,
+                  type: '',
+                  unit: 'BTC',
+                  amount: '0.000000723',
+                },
+              },
+          ],
             fees: [],
             events: [],
           },
@@ -94,15 +104,6 @@ const solanaSwapState = {
             type: 'swap',
             from: [
               {
-                address: '8kR2HTHzPtTJuzpFZ8jtGCQ9TpahPaWbZfTNRs2GJdxq',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000073111',
-                },
-              },
-              {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
@@ -111,44 +112,8 @@ const solanaSwapState = {
                   amount: '0.01',
                 },
               },
-              {
-                address: 'HUCjBnmd4FoUjCCMYQ9xFz1ce1r8vWAd8uMhUQakE2FR',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BONK',
-                  amount: '2583.728601',
-                },
-              },
-              {
-                address: '3msVd34R5KxonDzyNSV5nT19UtUeJ2RF1NaQhvVPNLxL',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000073111',
-                },
-              },
             ],
             to: [
-              {
-                address: 'CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000000723',
-                },
-              },
-              {
-                address: 'HUCjBnmd4FoUjCCMYQ9xFz1ce1r8vWAd8uMhUQakE2FR',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.00007238',
-                },
-              },
               {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
@@ -156,15 +121,6 @@ const solanaSwapState = {
                   type: '',
                   unit: 'BONK',
                   amount: '2583.72',
-                },
-              },
-              {
-                address: '3msVd34R5KxonDzyNSV5nT19UtUeJ2RF1NaQhvVPNLxL',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.01',
                 },
               },
             ],
@@ -374,7 +330,7 @@ describe('TransactionList', () => {
 
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
-    expect(getByText('-0.01 SOL')).toBeInTheDocument();
+    expect(getByText('2,583.72 BONK')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',
