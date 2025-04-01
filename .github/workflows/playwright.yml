@@ -18,11 +18,18 @@ jobs:
       - name: Install Chromium
         run: yarn playwright install chromium
 
-      - run: |
-          wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
-          sudo apt-get install unzip || apt-get install unzip
-          rm -rf dist && mkdir -p dist
-          unzip metamask-chrome-12.14.2.zip -d dist/chrome
+      # - run: |
+      #     wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
+      #     sudo apt-get install unzip || apt-get install unzip
+      #     rm -rf dist && mkdir -p dist
+      #     unzip metamask-chrome-12.14.2.zip -d dist/chrome
+
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 14179069785
+          name: prep-build-dist-browserify-chrome
+          path: ./dist/
 
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
@@ -31,7 +38,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-e2e-swap-playwright
+          name: test-e2e-swap-playwright-cimg
           path: public/playwright/playwright-reports
 
   cimg-xvfb:
@@ -48,11 +55,18 @@ jobs:
       - name: Install Chromium
         run: yarn playwright install chromium
 
-      - run: |
-          wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
-          sudo apt-get install unzip || apt-get install unzip
-          rm -rf dist && mkdir -p dist
-          unzip metamask-chrome-12.14.2.zip -d dist/chrome
+      # - run: |
+      #     wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
+      #     sudo apt-get install unzip || apt-get install unzip
+      #     rm -rf dist && mkdir -p dist
+      #     unzip metamask-chrome-12.14.2.zip -d dist/chrome
+
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 14179069785
+          name: prep-build-dist-browserify-chrome
+          path: ./dist/
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -64,7 +78,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-e2e-swap-playwright
+          name: test-e2e-swap-playwright-cimg-xvfb
           path: public/playwright/playwright-reports
 
   mcr:
@@ -81,11 +95,18 @@ jobs:
       - name: Install Chromium
         run: yarn playwright install chromium
 
-      - run: |
-          wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
-          apt-get update && apt-get install unzip
-          rm -rf dist && mkdir -p dist
-          unzip metamask-chrome-12.14.2.zip -d dist/chrome
+      # - run: |
+      #     wget https://output.circle-artifacts.com/output/job/46eb99df-192d-4fa0-81d5-b7203bf47dd9/artifacts/0/builds/metamask-chrome-12.14.2.zip
+      #     apt-get update && apt-get install unzip
+      #     rm -rf dist && mkdir -p dist
+      #     unzip metamask-chrome-12.14.2.zip -d dist/chrome
+
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 14179069785
+          name: prep-build-dist-browserify-chrome
+          path: ./dist/
 
       - name: Run Swap E2E tests
         run: xvfb-run yarn test:e2e:swap
@@ -94,5 +115,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-e2e-swap-playwright
+          name: test-e2e-swap-playwright-mcr
           path: public/playwright/playwright-reports
