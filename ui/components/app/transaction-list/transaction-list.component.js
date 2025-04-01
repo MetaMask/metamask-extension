@@ -90,7 +90,6 @@ import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-men
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../../shared/constants/multichain/networks';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -301,7 +300,10 @@ export default function TransactionList({
 
   const chainId = useSelector(getCurrentChainId);
   const account = useSelector(getSelectedInternalAccount);
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+  const { isEvmNetwork, network: nonEvmNetworkConfig } = useMultichainSelector(
+    getMultichainNetwork,
+    account,
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
@@ -476,9 +478,7 @@ export default function TransactionList({
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
             userAddress={selectedAccount.address}
-            networkConfig={
-              MULTICHAIN_PROVIDER_CONFIGS[selectedTransaction.chain]
-            }
+            networkConfig={nonEvmNetworkConfig}
           />
         )}
 
@@ -499,13 +499,12 @@ export default function TransactionList({
                     >
                       {dateGroup.date}
                     </Text>
-                    {dateGroup.transactionGroups.map((transaction, index) => (
+                    {dateGroup.transactionGroups.map((transaction) => (
                       <MultichainTransactionListItem
-                        key={`${transaction.account}:${index}`}
+                        key={`${transaction.id}`}
                         transaction={transaction}
-                        userAddress={selectedAccount.address}
-                        index={index}
                         toggleShowDetails={toggleShowDetails}
+                        networkConfig={nonEvmNetworkConfig}
                       />
                     ))}
                   </Fragment>
@@ -654,9 +653,12 @@ export default function TransactionList({
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
+const MultichainTransactionListItem = ({
+  transaction,
+  networkConfig,
+  toggleShowDetails,
+}) => {
   const t = useI18nContext();
-  const networkConfig = MULTICHAIN_PROVIDER_CONFIGS[transaction.chain];
   const { assetInputs, assetOutputs, isRedeposit } =
     useMultichainTransactionDisplay(transaction, networkConfig);
   let title = capitalize(transaction.type);
@@ -788,6 +790,7 @@ const MultichainTransactionListItem = ({ transaction, toggleShowDetails }) => {
 
 MultichainTransactionListItem.propTypes = {
   transaction: PropTypes.object.isRequired,
+  networkConfig: PropTypes.object.isRequired,
   toggleShowDetails: PropTypes.func.isRequired,
 };
 

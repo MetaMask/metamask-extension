@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
-import { Transaction, TransactionStatus } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/keyring-api';
 import {
   Display,
   FlexDirection,
@@ -248,7 +252,7 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* From */}
-            {transaction.type === 'send'
+            {transaction.type === TransactionType.Send
               ? accountComponent(t('from'), userAddress)
               : assetInputs.map((input) =>
                   accountComponent(t('from'), input.address),
