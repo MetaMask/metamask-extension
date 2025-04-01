@@ -69,7 +69,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   );
 
   const totalDetectedTokens = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork
+    return process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain).flat().length
       : detectedTokens.length;
   }, [
@@ -82,7 +83,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
   useEffect(() => {
     const newTokensList = () => {
-      if (!isTokenNetworkFilterEqualCurrentNetwork) {
+      if (
+        process.env.PORTFOLIO_VIEW &&
+        !isTokenNetworkFilterEqualCurrentNetwork
+      ) {
         return Object.entries(detectedTokensMultichain).reduce(
           (acc, [chainId, tokens]) => {
             if (Array.isArray(tokens)) {
@@ -115,7 +119,6 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     detectedTokensMultichain,
     detectedTokens,
     currentChainId,
-    tokensListDetected,
   ]);
 
   const [showDetectedTokenIgnoredPopover, setShowDetectedTokenIgnoredPopover] =
@@ -141,11 +144,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       });
     });
 
-    if (isTokenNetworkFilterEqualCurrentNetwork) {
-      await dispatch(addImportedTokens(selectedTokens, networkClientId));
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
-    } else {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       const tokensByChainId = selectedTokens.reduce((acc, token) => {
         const { chainId } = token;
 
@@ -172,6 +174,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       );
 
       await Promise.all(importPromises);
+    } else {
+      await dispatch(addImportedTokens(selectedTokens, networkClientId));
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
     }
   };
 
@@ -197,21 +203,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       },
     });
 
-    if (isTokenNetworkFilterEqualCurrentNetwork) {
-      const deSelectedTokensAddresses = deSelectedTokens.map(
-        ({ address }) => address,
-      );
-
-      await dispatch(
-        ignoreTokens({
-          tokensToIgnore: deSelectedTokensAddresses,
-          dontShowLoadingIndicator: true,
-        }),
-      );
-
-      setShowDetectedTokens(false);
-      setPartiallyIgnoreDetectedTokens(false);
-    } else {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       // group deselected tokens by chainId
       const groupedByChainId = deSelectedTokens.reduce((acc, token) => {
         const { chainId } = token;
@@ -242,6 +237,20 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       );
 
       await Promise.all(promises);
+      setShowDetectedTokens(false);
+      setPartiallyIgnoreDetectedTokens(false);
+    } else {
+      const deSelectedTokensAddresses = deSelectedTokens.map(
+        ({ address }) => address,
+      );
+
+      await dispatch(
+        ignoreTokens({
+          tokensToIgnore: deSelectedTokensAddresses,
+          dontShowLoadingIndicator: true,
+        }),
+      );
+
       setShowDetectedTokens(false);
       setPartiallyIgnoreDetectedTokens(false);
     }
@@ -297,7 +306,11 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       )}
       {totalDetectedTokens > 0 && (
         <DetectedTokenSelectionPopover
-          detectedTokens={detectedTokensMultichain}
+          detectedTokens={
+            process.env.PORTFOLIO_VIEW
+              ? detectedTokensMultichain
+              : detectedTokens
+          }
           tokensListDetected={tokensListDetected}
           handleTokenSelection={handleTokenSelection}
           onImport={onImport}
