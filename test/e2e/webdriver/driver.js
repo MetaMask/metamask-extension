@@ -1258,6 +1258,46 @@ class Driver {
     }
   }
 
+  /**
+   * Switches to a window by its title without using the background socket.
+   * To be used in specs that run against production builds.
+   *
+   * @param {string} title - The target window title to switch to
+   * @returns {Promise<void>}
+   * @throws {Error} Will throw an error if the target window is not found
+   */
+  async switchToWindowByTitleWithoutSocket(title) {
+    const windowHandles = await this.driver.getAllWindowHandles();
+    let targetWindowFound = false;
+
+    // Iterate through each window handle
+    for (const handle of windowHandles) {
+      await this.driver.switchTo().window(handle);
+      let currentTitle = await this.driver.getTitle();
+
+      // Wait 25 x 200ms = 5 seconds for the title to match the target title
+      for (let i = 0; i < 25; i++) {
+        if (currentTitle === title) {
+          targetWindowFound = true;
+          console.log(`Switched to ${title} window`);
+          break;
+        }
+        await this.driver.sleep(200);
+        currentTitle = await this.driver.getTitle();
+      }
+
+      // If the target window is found, break out of the outer loop
+      if (targetWindowFound) {
+        break;
+      }
+    }
+
+    // If target window is not found, throw an error
+    if (!targetWindowFound) {
+      throw new Error(`${title} window not found`);
+    }
+  }
+
   // Error handling
 
   async verboseReportOnFailure(testTitle, error) {
