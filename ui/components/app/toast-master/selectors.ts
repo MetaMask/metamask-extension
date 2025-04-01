@@ -1,7 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
-import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
@@ -26,6 +25,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
     showNftDetectionEnablementToast?: boolean;
     surveyLinkLastClickedOrClosed?: number;
     switchedNetworkNeverShowMessage?: boolean;
+    remoteFeatureFlags?: Record<string, unknown>;
   };
 };
 
@@ -47,12 +47,19 @@ export function selectShowSurveyToast(state: State): boolean {
   return now > startTime && now < endTime;
 }
 
+type NameValueFeatureFlag = {
+  name: string;
+  value: string | boolean | number;
+};
+
 /**
- * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ * Determines if the privacy policy toast should be shown based on the remote feature flag and whether the toast was clicked or closed.
  *
  * @param state - The application state containing the privacy policy data.
  * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
  */
+// First, define a type for the feature flag format
+// Define a type for the feature flag with name and value
 export function selectShowPrivacyPolicyToast(state: State): {
   showPrivacyPolicyToast: boolean;
   newPrivacyPolicyToastShownDate?: number;
@@ -62,23 +69,77 @@ export function selectShowPrivacyPolicyToast(state: State): {
     newPrivacyPolicyToastShownDate,
     onboardingDate,
   } = state.metamask || {};
-  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
+
+  const remoteFeatureFlags = state.metamask?.remoteFeatureFlags || {};
+
+  // Safer type checking
+  let policyUpdateDate: string | undefined;
+
+  // Search through the remote feature flags for the privacy policy flag
+  for (const key in remoteFeatureFlags) {
+    if (Object.prototype.hasOwnProperty.call(remoteFeatureFlags, key)) {
+      const flag = remoteFeatureFlags[key];
+
+      // Check if the key itself is the flag we want (camelCase version)
+      if (
+        key === 'transactionsPrivacyPolicyUpdate' &&
+        typeof flag === 'string'
+      ) {
+        policyUpdateDate = flag;
+        break;
+      }
+
+      // Check for object format with name/value
+      if (
+        typeof flag === 'object' &&
+        flag !== null &&
+        'name' in flag &&
+        'value' in flag &&
+        ((flag as NameValueFeatureFlag).name ===
+          'transactions-privacy-policy-update' ||
+          (flag as NameValueFeatureFlag).name ===
+            'transactionsPrivacyPolicyUpdate')
+      ) {
+        const typedFlag = flag as NameValueFeatureFlag;
+        policyUpdateDate = String(typedFlag.value);
+        break;
+      }
+    }
+  }
+
+  console.log('Privacy Policy Toast - Feature flag check:', {
+    remoteFeatureFlags,
+    policyUpdateDate,
+    newPrivacyPolicyToastClickedOrClosed,
+    newPrivacyPolicyToastShownDate,
+    onboardingDate,
+  });
+
+  // If the feature flag isn't set or is empty, don't show the toast
+  if (!policyUpdateDate) {
+    return { showPrivacyPolicyToast: false, newPrivacyPolicyToastShownDate };
+  }
+
+  const newPrivacyPolicyDate = new Date(policyUpdateDate);
   const currentDate = new Date(Date.now());
 
   const showPrivacyPolicyToast =
     !newPrivacyPolicyToastClickedOrClosed &&
     currentDate >= newPrivacyPolicyDate &&
     getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) &&
-    // users who onboarded before the privacy policy date should see the notice
-    // and
-    // old users who don't have onboardingDate set should see the notice
     (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
-  return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
-}
+  console.log('Privacy Policy Toast - Result:', {
+    showPrivacyPolicyToast,
+    currentDate,
+    newPrivacyPolicyDate,
+    isDateValid: currentDate >= newPrivacyPolicyDate,
+    isToastRecent: getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate),
+    onboardingCheck:
+      !onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf(),
+  });
 
-export function selectNftDetectionEnablementToast(state: State): boolean {
-  return Boolean(state.appState?.showNftDetectionEnablementToast);
+  return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
 }
 
 // If there is more than one connected account to activeTabOrigin,

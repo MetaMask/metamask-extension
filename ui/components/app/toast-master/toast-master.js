@@ -91,7 +91,7 @@ export function ToastMaster() {
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <SwitchedNetworkToast />
-        <NftEnablementToast />
+        {/* <NftEnablementToast /> */}
         <PermittedNetworkToast />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
@@ -201,13 +201,52 @@ function SurveyToastMayDelete() {
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
+  console.log('Privacy Policy Toast - Component rendering');
+
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
     useSelector(selectShowPrivacyPolicyToast);
+
+  console.log('Privacy Policy Toast - Selector result:', {
+    showPrivacyPolicyToast,
+    newPrivacyPolicyToastShownDate,
+  });
 
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
     setNewPrivacyPolicyToastShownDate(Date.now());
   }
+
+  const handleReadMore = () => {
+    global.platform.openTab({
+      url: PRIVACY_POLICY_LINK,
+    });
+
+    // Track the "read more" action
+    global.platform.trackEvent({
+      event: 'ToastSelect',
+      category: 'Toast',
+      properties: {
+        'toast name': 'privacy',
+        action: 'read more',
+      },
+    });
+
+    setNewPrivacyPolicyToastClickedOrClosed();
+  };
+
+  const handleClose = () => {
+    // Track the "close" action
+    global.platform.trackEvent({
+      event: 'ToastSelect',
+      category: 'Toast',
+      properties: {
+        'toast name': 'privacy',
+        action: 'close',
+      },
+    });
+
+    setNewPrivacyPolicyToastClickedOrClosed();
+  };
 
   return (
     showPrivacyPolicyToast && (
@@ -218,13 +257,8 @@ function PrivacyPolicyToast() {
         }
         text={t('newPrivacyPolicyTitle')}
         actionText={t('newPrivacyPolicyActionButton')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: PRIVACY_POLICY_LINK,
-          });
-          setNewPrivacyPolicyToastClickedOrClosed();
-        }}
-        onClose={setNewPrivacyPolicyToastClickedOrClosed}
+        onActionClick={handleReadMore}
+        onClose={handleClose}
       />
     )
   );
