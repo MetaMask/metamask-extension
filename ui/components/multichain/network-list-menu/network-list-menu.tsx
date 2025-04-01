@@ -333,6 +333,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
 
     if (permittedAccountAddresses.length > 0) {
+      // TODO: verify this chainId is caip shaped
       dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
