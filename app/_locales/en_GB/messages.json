@@ -790,6 +790,9 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Block explorer link copied!"
+  },
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
