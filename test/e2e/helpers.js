@@ -19,7 +19,7 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
-  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
