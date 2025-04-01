@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import level from 'level';
 import { Driver } from './webdriver/driver';
-import { withFixtures, WALLET_PASSWORD } from './helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from './helpers';
 import HeaderNavbar from './page-objects/pages/header-navbar';
 import HomePage from './page-objects/pages/home/homepage';
 import PrivacySettings from './page-objects/pages/settings/privacy-settings';
@@ -160,16 +160,16 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        const windowHandles = await driver.driver.getAllWindowHandles();
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.ExtensionInFullScreenView);
 
         // switch to MetaMask window and create a new vault through onboarding flow
-        await driver.driver.switchTo().window(windowHandles[2]);
         await completeCreateNewWalletOnboardingFlowWithCustomSettings({
           driver,
           password: WALLET_PASSWORD,
@@ -218,16 +218,16 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        const windowHandles = await driver.driver.getAllWindowHandles();
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.ExtensionInFullScreenView);
 
         // switch to MetaMask window and create a new vault through onboarding flow
-        await driver.driver.switchTo().window(windowHandles[2]);
         await completeCreateNewWalletOnboardingFlowWithCustomSettings({
           driver,
           password: WALLET_PASSWORD,
