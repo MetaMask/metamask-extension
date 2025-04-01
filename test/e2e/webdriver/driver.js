@@ -738,7 +738,7 @@ class Driver {
       'base64',
     );
 
-    console.log(size);
+    console.log(size, imageSize(newScreenshot));
 
     // Compare the screenshots
     const diff = new PNG({ width: size.width, height: size.height });
