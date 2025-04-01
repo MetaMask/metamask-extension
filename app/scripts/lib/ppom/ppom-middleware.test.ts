@@ -83,6 +83,8 @@ const createMiddleware = (
     listAccounts: () => [{ address: INTERNAL_ACCOUNT_ADDRESS }],
   };
 
+  const selectedNetworkController = {};
+
   return createPPOMMiddleware(
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,6 +98,8 @@ const createMiddleware = (
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selectedNetworkController as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,
