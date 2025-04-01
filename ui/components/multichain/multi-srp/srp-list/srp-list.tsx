@@ -99,6 +99,7 @@ export const SrpList = ({
                   variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
                   className="srp-list__show-accounts"
+                  data-testid={`srp-list-show-accounts-${index}`}
                   onClick={(event: React.MouseEvent) => {
                     event.stopPropagation();
                     trackEvent({
