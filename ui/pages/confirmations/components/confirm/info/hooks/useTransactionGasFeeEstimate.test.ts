@@ -1,4 +1,3 @@
-import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -14,7 +13,7 @@ jest.mock('../../../../../../hooks/useGasFeeEstimates', () => ({
 }));
 
 describe('useTransactionGasFeeEstimate', () => {
-  let mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
+  const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 
   beforeEach(() => {
     jest.clearAllMocks();
