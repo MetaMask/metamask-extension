@@ -7,7 +7,7 @@ on:
       - master
       - Version-v*
       - trigger-ci*
-      - feat/gha-webpack-e2e-2
+      # - feat/gha-webpack-e2e-2
   pull_request:
     types:
       - opened
