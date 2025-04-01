@@ -387,7 +387,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
   getMetaMaskCachedBalances,
   getMultichainBalances,
   getMultichainNetworkProviders,
-  (state, _) => state,
+  getCurrentChainId,
   (_, chainId) => chainId,
   (
     internalAccounts,
@@ -395,17 +395,15 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
     cachedBalances,
     multichainBalances,
     multichainNetworkProviders,
-    state,
+    currentChainId,
     chainId,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
-      const currentChainId = getCurrentChainId(state);
-
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      if (currentChainId === chainId) {
+      if (chainId && currentChainId === chainId) {
         // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
         // We should consolidate the format to either hex or number
         if (isEvmAccountType(internalAccount.type)) {
