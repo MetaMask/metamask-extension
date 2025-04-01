@@ -1,5 +1,13 @@
-import nock from "nock";
-import { TOKENS_API_MOCK_RESULT, TOP_ASSETS_API_MOCK_RESULT, GAS_PRICE_API_MOCK_RESULT, TRADES_API_MOCK_RESULT, NETWORKS_2_API_MOCK_RESULT, AGGREGATOR_METADATA_API_MOCK_RESULT, FEATURE_FLAGS_API_MOCK_RESULT } from "../../data/mock-data";
+import nock from 'nock';
+import {
+  TOKENS_API_MOCK_RESULT,
+  TOP_ASSETS_API_MOCK_RESULT,
+  GAS_PRICE_API_MOCK_RESULT,
+  TRADES_API_MOCK_RESULT,
+  NETWORKS_2_API_MOCK_RESULT,
+  AGGREGATOR_METADATA_API_MOCK_RESULT,
+  FEATURE_FLAGS_API_MOCK_RESULT,
+} from '../../data/mock-data';
 
 export function mockSwapsTokens() {
   const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {

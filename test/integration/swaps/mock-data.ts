@@ -1,4 +1,3 @@
-
 export const TOKENS_API_MOCK_RESULT = [
   {
     name: 'Ethereum',
@@ -428,7 +427,6 @@ export const TRADES_API_MOCK_RESULT = [
     },
   },
 ];
-
 
 export const NETWORKS_2_API_MOCK_RESULT = {
   active: true,
