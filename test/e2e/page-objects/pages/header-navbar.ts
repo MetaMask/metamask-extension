@@ -72,6 +72,12 @@ class HeaderNavbar {
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.waitForMultipleSelectors([
+      this.accountSnapButton,
+      this.allPermissionsButton,
+      this.settingsButton,
+      this.lockMetaMaskButton,
+    ])
   }
 
   async openPermissionsPage(): Promise<void> {

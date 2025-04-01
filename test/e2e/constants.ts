@@ -15,6 +15,9 @@ export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 /* Address of the generated ERC-4337 account. */
 export const ERC_4337_ACCOUNT = '0x8FCd29A7887f82463E0eA7332CB1ce431A4430F7';
 
+/* Default wallet password. */
+export const WALLET_PASSWORD = 'correct horse battery staple';
+
 /* URL of the local bundler server. */
 export const BUNDLER_URL = 'http://localhost:3000/rpc';
 
