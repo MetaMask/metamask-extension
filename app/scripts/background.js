@@ -492,7 +492,8 @@ async function initialize() {
   try {
     const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initState = await loadStateFromPersistence();
+    const initData = await loadStateFromPersistence();
+    const initState = initData.data;
 
     const initLangCode = await getFirstPreferredLangCode();
 
@@ -630,7 +631,7 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
- * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  * @throws {Error} If the vault is missing or if the migration fails.
  */
 export async function loadStateFromPersistence() {
@@ -650,12 +651,32 @@ export async function loadStateFromPersistence() {
   if (vaultDataPresent === false) {
     // so we don't have a vault... don't panic yet! there is a chance we aren't
     // supposed to have one at this point.
-    const reason = await globalThis.stateHooks.onReadyListener.promise;
+    const startupReason = await globalThis.stateHooks.onReadyListener.promise;
     // the only reason we should NOT have a vault is if we were just installed
     // for the very first time
-    const weShouldHaveAVault = reason !== "install";
-    if(weShouldHaveAVault) {
-        throw new Error(MISSING_VAULT_ERROR);
+    const vaultNotYetCreated = startupReason === "install";
+    if(!vaultNotYetCreated) {
+      // ok, we might want to panic pretty soon here. the user didn't just
+      // install MM, and we don't have a vault. this could be bad. But there are
+      // valid reasons for this:
+      // 1. they installed but didn't onboard, so the vault wasn't created
+      // 2. there was an error writing to the initial data to the store for some reason
+      // 3. a developer is just testing things in weird ways.
+
+      // Luckily, we have other signals to use to determine if they should have
+      // a vault:
+      // 1. check in IndexedDB if the vault exists
+      // 2. check if the vault is in window.localStorage
+      // 3. check if the vault is in a cookie.
+      // lets check these locations before we panic.
+      //const vaultInIndexedDB = await localStore.get();
+      const vaultSignalInLocalStorage = window.localStorage.getItem(["vaultCreated"]);
+      if (vaultSignalInLocalStorage !== "1") {
+        const vaultSignalInCookie = document.cookie.split('; ').includes("vaultCreated=1");
+        if (vaultSignalInCookie) {
+          throw new Error(MISSING_VAULT_ERROR);
+        }
+      }
     }
   }
 
@@ -706,7 +727,7 @@ export async function loadStateFromPersistence() {
   await persistenceManager.set(versionedData.data);
 
   // return just the data
-  return versionedData.data;
+  return versionedData;
 }
 
 /**

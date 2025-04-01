@@ -7,6 +7,7 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 
 const STATE_LOCK = 'state-lock';
 
@@ -92,6 +93,15 @@ export class PersistenceManager {
           data: state,
           meta,
         });
+        // write to cookie and to localStorage
+        // this is used to determine if the vault was created
+        const keyringController =
+          state.KeyringController as KeyringControllerState;
+        const vaultCreated = keyringController?.vault ?? null;
+        if (vaultCreated) {
+          document.cookie = `vaultCreated=1; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
+          window.localStorage.setItem('vaultCreated', '1');
+        }
         if (this.#dataPersistenceFailing) {
           this.#dataPersistenceFailing = false;
         }
