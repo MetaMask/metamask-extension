@@ -62,5 +62,8 @@ export function useNonContractAddressAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [isSendingHexDataWhileInteractingWithNonContractAddress]);
+  }, [
+    isSendingHexDataWhileInteractingWithNonContractAddress,
+    isUpgradeTransaction,
+  ]);
 }
