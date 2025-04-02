@@ -220,6 +220,8 @@ export const ReviewPermissions = () => {
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
     connectedAccountAddresses.forEach((connectedAddress: string) => {
+      // TODO: seems like similar logic to selector logic in ui/index.js
+      // See if we can DRY this
       const parsedConnectedAddress = parseCaipAccountId(
         connectedAddress as CaipAccountId,
       );
