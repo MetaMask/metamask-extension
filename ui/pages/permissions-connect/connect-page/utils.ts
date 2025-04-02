@@ -90,7 +90,9 @@ export function getAllRequestedAccounts(
     requestedCaip25CaveatValue.optionalScopes,
   ).flatMap((scope) => scope.accounts);
 
-  return new Set([...requiredAccounts, ...optionalAccounts]);
+  const allAccounts = [...requiredAccounts, ...optionalAccounts];
+
+  return [...new Set(allAccounts)];
 }
 
 /**

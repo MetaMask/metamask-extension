@@ -211,7 +211,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   // all requested accounts that are found in the wallet
-  const supportedRequestedAccounts = Array.from(requestedCaipAccountIds).reduce(
+  const supportedRequestedAccounts = requestedCaipAccountIds.reduce(
     (acc, account) => {
       const supportedRequestedAccount =
         supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) =>
