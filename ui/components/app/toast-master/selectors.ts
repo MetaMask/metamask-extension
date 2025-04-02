@@ -67,21 +67,13 @@ export function selectShowPrivacyPolicyToast(state: State): {
 
   const remoteFeatureFlags = state.metamask?.remoteFeatureFlags || {};
 
-  // Add debug logging
-  console.log('Privacy Policy Toast - State update:', {
-    newPrivacyPolicyToastClickedOrClosed,
-    newPrivacyPolicyToastShownDate,
-    onboardingDate,
-    remoteFeatureFlags
-  });
-
   const policyUpdateDate = String(
     remoteFeatureFlags.transactionsPrivacyPolicyUpdate || '',
   );
 
   // If the feature flag isn't set or is empty, don't show the toast
   if (!policyUpdateDate) {
-    console.log('No policy update date found');
+    // No policy update date found
     return { showPrivacyPolicyToast: false, newPrivacyPolicyToastShownDate };
   }
 
@@ -96,19 +88,6 @@ export function selectShowPrivacyPolicyToast(state: State): {
   const beforePolicyUpdate =
     !onboardingDate || onboardingDate <= policyTimestamp;
   const afterPolicyDate = currentTimestamp >= policyTimestamp;
-
-  console.log('Full debug:', {
-    policyUpdateDate,
-    currentDate: currentDate.toISOString(),
-    newPrivacyPolicyDate: newPrivacyPolicyDate.toISOString(),
-    notClickedOrClosed: !newPrivacyPolicyToastClickedOrClosed,
-    isRecent,
-    beforePolicyUpdate,
-    afterPolicyDate,
-    onboardingDate: onboardingDate
-      ? new Date(onboardingDate).toISOString()
-      : null,
-  });
 
   const showPrivacyPolicyToast =
     !newPrivacyPolicyToastClickedOrClosed &&
