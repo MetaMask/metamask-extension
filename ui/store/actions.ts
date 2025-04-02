@@ -1952,7 +1952,7 @@ export function removePermittedAccount(
 
 export function addPermittedChain(
   origin: string,
-  chainId: string,
+  chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {

@@ -131,8 +131,6 @@ export async function setupInitialStore(
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-
-    // Not entirely sure if these changes are correct. The original logic kind of confuses me.
     const permittedAccountsForCurrentTab =
       getAllPermittedAccountsForCurrentTab(draftInitialState);
 
@@ -141,6 +139,7 @@ export async function setupInitialStore(
     let currentTabIsConnectedToSelectedAddress;
     if (selectedAccount) {
       currentTabIsConnectedToSelectedAddress =
+        // TODO: dry and move to @metamask/chain-agnostic-permission package
         permittedAccountsForCurrentTab.some((account) => {
           const parsedPermittedAccount = parseCaipAccountId(account);
 
