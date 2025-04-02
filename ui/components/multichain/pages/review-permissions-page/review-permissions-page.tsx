@@ -188,7 +188,8 @@ export const ReviewPermissions = () => {
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
   ) as CaipAccountId[];
 
-  // should this be at the selector level? :|
+  // TODO move this into the selector where we map back to the internal accounts
+  // This will be necessary to add support for non EOA accounts
   const connectedAccountAddresses = uniq(
     _connectedAccountAddresses.map((caipAccountId) => {
       const {
