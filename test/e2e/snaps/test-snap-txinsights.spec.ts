@@ -14,6 +14,7 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
+import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
 
 describe('Test Snap TxInsights', function () {
   it(' validate the insights section appears for ERC20 transaction', async function () {
@@ -80,8 +81,16 @@ describe('Test Snap TxInsights', function () {
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+        await testDapp.clickERC721MintButton();
+
+        await driver.delay(veryLargeDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const mintConfirmation = new TransactionConfirmation(driver);
+        await mintConfirmation.clickFooterConfirmButton();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickERC721TransferFromButton();
-        await driver.delay(veryLargeDelayMs); // this is needed for the transaction to be processed in firefox browser
+        await driver.delay(veryLargeDelayMs); // this is needed for the transaction to be processed
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
         await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
@@ -122,7 +131,6 @@ describe('Test Snap TxInsights', function () {
         await testDapp.clickERC1155SetApprovalForAllButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.check_transactionInsightsTitle();
-        // await snapInstall.check_transactionInsightsType('ERC-1155');
         await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
         await snapInstall.check_transactionAddress('0x581c3...45947');
       },
