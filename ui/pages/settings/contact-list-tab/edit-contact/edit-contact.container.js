@@ -16,6 +16,7 @@ import {
 import {
   addToAddressBook,
   removeFromAddressBook,
+  toggleNetworkMenu,
 } from '../../../../store/actions';
 import EditContact from './edit-contact.component';
 
@@ -55,6 +56,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addToAddressBook(recipient, nickname, memo)),
     removeFromAddressBook: (chainId, addressToRemove) =>
       dispatch(removeFromAddressBook(chainId, addressToRemove)),
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 };
 

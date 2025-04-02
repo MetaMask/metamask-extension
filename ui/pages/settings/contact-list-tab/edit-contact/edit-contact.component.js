@@ -11,18 +11,28 @@ import {
 import {
   AvatarAccount,
   AvatarAccountSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
+  BorderColor,
+  BorderRadius,
   Display,
+  IconColor,
+  JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
-import Dropdown from '../../../../components/ui/dropdown';
+import { getImageForChainId } from '../../../../selectors/multichain';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -35,6 +45,7 @@ export default class EditContact extends PureComponent {
     networks: PropTypes.array,
     addToAddressBook: PropTypes.func,
     removeFromAddressBook: PropTypes.func,
+    toggleNetworkMenu: PropTypes.func,
     history: PropTypes.object,
     name: PropTypes.string,
     address: PropTypes.string,
@@ -83,6 +94,7 @@ export default class EditContact extends PureComponent {
   render() {
     const { t } = this.context;
     const { selectedNetwork } = this.state;
+    console.log(this.props.networks, 'networks');
     const {
       address,
       addToAddressBook,
@@ -205,16 +217,33 @@ export default class EditContact extends PureComponent {
             </div>
             <div className="settings-page__content-item">
               <div className="settings-page__content-item-col">
-                <Dropdown
-                  data-testid="currency-select"
-                  id="select-currency"
-                  options={networks}
-                  selectedOption={selectedNetwork}
-                  onChange={(network) => {
-                    console.log(network.name);
-                  }}
-                  className="settings-page__content-item__dropdown"
-                />
+                <Box
+                  padding={4}
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  as="button"
+                  backgroundColor={BackgroundColor.transparent}
+                  borderColor={BorderColor.borderDefault}
+                  justifyContent={JustifyContent.spaceBetween}
+                  borderRadius={BorderRadius.XL}
+                  onClick={() => this.props.toggleNetworkMenu()}
+                >
+                  <Box display={Display.Flex} gap={2}>
+                    <AvatarNetwork
+                      size={AvatarNetworkSize.Sm}
+                      name={networks?.[selectedNetwork]?.name}
+                      src={getImageForChainId(chainId) || undefined}
+                      backgroundColor={BackgroundColor.backgroundDefault}
+                      borderWidth={2}
+                    />
+                    <Text>{networks?.[selectedNetwork]?.name}</Text>
+                  </Box>
+                  <Icon
+                    name={IconName.ArrowDown}
+                    color={IconColor.iconDefault}
+                    size={IconSize.Sm}
+                  />
+                </Box>
               </div>
             </div>
           </div>
