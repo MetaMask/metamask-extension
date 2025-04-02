@@ -2899,19 +2899,19 @@ export default class MetamaskController extends EventEmitter {
               }
             });
 
-            const solanaScope =
+            const addedSolanaScope =
               sessionScopes[MultichainNetworks.SOLANA] ||
               sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
               sessionScopes[MultichainNetworks.SOLANA_TESTNET];
 
-            if (solanaScope) {
+            if (addedSolanaScope) {
               const solanaAccountChangedNotifications =
                 currentValue.get(origin)?.sessionProperties?.[
                   KnownSessionProperties.SolanaAccountChangedNotifications
                 ];
 
               if (solanaAccountChangedNotifications) {
-                const { accounts } = solanaScope;
+                const { accounts } = addedSolanaScope;
                 const solanaFormattedAccounts = accounts.map(
                   (caipAccountId) => {
                     const { address } = parseCaipAccountId(caipAccountId);
