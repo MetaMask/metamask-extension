@@ -15,4 +15,4 @@ jobs:
       version: ${{ inputs.version }}
     secrets:
       RUNWAY_APP_ID: ${{ secrets.RUNWAY_APP_ID }}
-      RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY}}
+      RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY }}
