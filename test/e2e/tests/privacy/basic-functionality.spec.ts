@@ -31,25 +31,6 @@ async function mockApis(mockServer: Mockttp) {
         };
       }),
     await mockServer
-      .forGet('https://chainid.network/chains.json')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            count:0,
-            balances:[],
-            unprocessedNetworks:[],
-          },
-        };
-      }),
-    await mockServer
       .forGet('https://min-api.cryptocompare.com/data/pricemulti')
       .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
       .thenCallback(() => {
