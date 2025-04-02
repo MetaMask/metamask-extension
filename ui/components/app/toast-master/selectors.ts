@@ -139,3 +139,7 @@ export function selectNewSrpAdded(state: State): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
 }
 ///: END:ONLY_INCLUDE_IF
+
+export function selectNftDetectionEnablementToast(state: State): boolean {
+  return Boolean(state.appState.showNftDetectionEnablementToast);
+}
