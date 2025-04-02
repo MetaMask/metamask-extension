@@ -10,7 +10,7 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -39,7 +39,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       type: 'ganache',
       options: {
         secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
         accounts: multipleGanacheOptions.accounts,
       },
     },
