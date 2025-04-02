@@ -643,7 +643,7 @@ export default class MetamaskController extends EventEmitter {
         network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
     }
 
-    // Temporary workaround to fix the network controller state if it is invalid
+    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
     if (
       initialNetworkControllerState.networkConfigurationsByChainId &&
       !Object.values(
