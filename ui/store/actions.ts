@@ -68,6 +68,7 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
+  getAllPermittedAccountsForCurrentTab,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -1853,7 +1854,7 @@ export function setSelectedAccount(
     const prevAccount = getSelectedInternalAccount(state);
     const nextAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
+      getAllPermittedAccountsForCurrentTab(state);
 
     // TODO: DRY this
     const currentTabIsConnectedToPreviousAddress =
@@ -1910,7 +1911,7 @@ export function setSelectedAccount(
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedInternalAccount(internalAccount.id);
+      await _setSelectedInternalAccount(nextAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
