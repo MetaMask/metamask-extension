@@ -8,11 +8,13 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
 
-jest.mock('../../../store/actions/transaction-controller');
+jest.mock('../../../store/controller-actions/transaction-controller');
 jest.mock('./alerts/transactions/useInsufficientBalanceAlerts');
+jest.mock('../../../../shared/modules/selectors');
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -59,6 +61,7 @@ function runHook({
 describe('useAutomaticGasFeeTokenSelect', () => {
   const updateSelectedGasFeeTokenMock = jest.mocked(updateSelectedGasFeeToken);
   const forceUpdateMetamaskStateMock = jest.mocked(forceUpdateMetamaskState);
+  const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
 
   const useInsufficientBalanceAlertsMock = jest.mocked(
     useInsufficientBalanceAlerts,
@@ -69,6 +72,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     useInsufficientBalanceAlertsMock.mockReturnValue([{} as Alert]);
     updateSelectedGasFeeTokenMock.mockResolvedValue();
     forceUpdateMetamaskStateMock.mockResolvedValue();
+    getIsSmartTransactionMock.mockReturnValue(true);
   });
 
   it('selects first gas fee token', () => {
@@ -104,6 +108,14 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     });
 
     rerender();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not select first gas fee token if not smart transaction', () => {
+    getIsSmartTransactionMock.mockReturnValue(false);
+
+    runHook();
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
   });
