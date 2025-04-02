@@ -1850,18 +1850,62 @@ export function setSelectedAccount(
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const internalAccount = getInternalAccountByAddress(state, address);
-    // TODO: fix this
-    // const permittedAccountsForCurrentTab =
-    //   getPermittedAccountsForCurrentTab(state);
-    const permittedAccountsForCurrentTab = [];
+    const prevAccount = getSelectedInternalAccount(state);
+    const nextAccount = getInternalAccountByAddress(state, address);
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(state);
+
+    // TODO: DRY this
     const currentTabIsConnectedToPreviousAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(internalAccount.address);
+      permittedAccountsForCurrentTab.some((account) => {
+        const parsedPermittedAccount = parseCaipAccountId(account);
+
+        return prevAccount.scopes.some((scope) => {
+          const { namespace, reference } = parseCaipChainId(scope);
+
+          if (
+            namespace !== parsedPermittedAccount.chain.namespace ||
+            !isEqualCaseInsensitive(
+              prevAccount.address,
+              parsedPermittedAccount.address,
+            )
+          ) {
+            return false;
+          }
+
+          return (
+            reference === '0' ||
+            reference === parsedPermittedAccount.chain.reference
+          );
+        });
+      });
+
     const currentTabIsConnectedToNextAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(address);
+      permittedAccountsForCurrentTab.some((account) => {
+        const parsedPermittedAccount = parseCaipAccountId(account);
+
+        return nextAccount.scopes.some((scope) => {
+          const { namespace, reference } = parseCaipChainId(scope);
+
+          if (
+            namespace !== parsedPermittedAccount.chain.namespace ||
+            !isEqualCaseInsensitive(
+              nextAccount.address,
+              parsedPermittedAccount.address,
+            )
+          ) {
+            return false;
+          }
+
+          return (
+            reference === '0' ||
+            reference === parsedPermittedAccount.chain.reference
+          );
+        });
+      });
+
     const switchingToUnconnectedAddress =
+      Boolean(activeTabOrigin) &&
       currentTabIsConnectedToPreviousAddress &&
       !currentTabIsConnectedToNextAddress;
 
