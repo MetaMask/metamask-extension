@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "aggregatedBalancePopover": {
-    "message": "이는 특정 네트워크에서 소유한 모든 토큰의 가치를 반영합니다. 이 가치를 ETH 또는 다른 통화로 보고 싶다면 $1(으)로 이동하세요.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "MetaMask의 $1에 동의합니다",
     "description": "$1 is the `terms` link"
