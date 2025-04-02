@@ -8,6 +8,7 @@ import {
 } from '../../../helpers/constants/survey';
 import { getPermittedAccountsForCurrentTab } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
+import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 import { getIsPrivacyToastRecent } from './utils';
 
 // TODO: get this into one of the larger definitions of state type
@@ -25,6 +26,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
     showNftDetectionEnablementToast?: boolean;
     surveyLinkLastClickedOrClosed?: number;
     switchedNetworkNeverShowMessage?: boolean;
+    // Keep the remoteFeatureFlags property as is
     remoteFeatureFlags?: Record<string, unknown>;
   };
 };
@@ -47,19 +49,12 @@ export function selectShowSurveyToast(state: State): boolean {
   return now > startTime && now < endTime;
 }
 
-type NameValueFeatureFlag = {
-  name: string;
-  value: string | boolean | number;
-};
-
 /**
  * Determines if the privacy policy toast should be shown based on the remote feature flag and whether the toast was clicked or closed.
  *
  * @param state - The application state containing the privacy policy data.
  * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
  */
-// First, define a type for the feature flag format
-// Define a type for the feature flag with name and value
 export function selectShowPrivacyPolicyToast(state: State): {
   showPrivacyPolicyToast: boolean;
   newPrivacyPolicyToastShownDate?: number;
@@ -70,43 +65,20 @@ export function selectShowPrivacyPolicyToast(state: State): {
     onboardingDate,
   } = state.metamask || {};
 
+  // Instead of using getRemoteFeatureFlags, try this approach:
+  // Get the feature flags directly from the state
   const remoteFeatureFlags = state.metamask?.remoteFeatureFlags || {};
 
-  // Safer type checking
-  let policyUpdateDate: string | undefined;
+  // Safeguard for accessing the property
+  const flags =
+    typeof remoteFeatureFlags === 'object' && remoteFeatureFlags !== null
+      ? remoteFeatureFlags
+      : {};
 
-  // Search through the remote feature flags for the privacy policy flag
-  for (const key in remoteFeatureFlags) {
-    if (Object.prototype.hasOwnProperty.call(remoteFeatureFlags, key)) {
-      const flag = remoteFeatureFlags[key];
+  // Get the specific flag we need
+  const policyUpdateDate = String(flags.transactionsPrivacyPolicyUpdate || '');
 
-      // Check if the key itself is the flag we want (camelCase version)
-      if (
-        key === 'transactionsPrivacyPolicyUpdate' &&
-        typeof flag === 'string'
-      ) {
-        policyUpdateDate = flag;
-        break;
-      }
-
-      // Check for object format with name/value
-      if (
-        typeof flag === 'object' &&
-        flag !== null &&
-        'name' in flag &&
-        'value' in flag &&
-        ((flag as NameValueFeatureFlag).name ===
-          'transactions-privacy-policy-update' ||
-          (flag as NameValueFeatureFlag).name ===
-            'transactionsPrivacyPolicyUpdate')
-      ) {
-        const typedFlag = flag as NameValueFeatureFlag;
-        policyUpdateDate = String(typedFlag.value);
-        break;
-      }
-    }
-  }
-
+  // Log the values for debugging
   console.log('Privacy Policy Toast - Feature flag check:', {
     remoteFeatureFlags,
     policyUpdateDate,
@@ -120,23 +92,36 @@ export function selectShowPrivacyPolicyToast(state: State): {
     return { showPrivacyPolicyToast: false, newPrivacyPolicyToastShownDate };
   }
 
+  // Create dates and ensure consistent timezone handling
   const newPrivacyPolicyDate = new Date(policyUpdateDate);
-  const currentDate = new Date(Date.now());
+  const currentDate = new Date();
+  const onboardingDateObj = onboardingDate ? new Date(onboardingDate) : null;
 
+  // Log the exact date values for debugging
+  console.log('Date values:', {
+    policyUpdateDate,
+    newPrivacyPolicyDate: newPrivacyPolicyDate.toISOString(),
+    currentDate: currentDate.toISOString(),
+    onboardingDate,
+    onboardingDateObj: onboardingDateObj?.toISOString(),
+  });
+
+  // Compare dates using the timestamp values
   const showPrivacyPolicyToast =
     !newPrivacyPolicyToastClickedOrClosed &&
-    currentDate >= newPrivacyPolicyDate &&
+    currentDate.getTime() >= newPrivacyPolicyDate.getTime() &&
     getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) &&
-    (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
+    (!onboardingDate || onboardingDate <= newPrivacyPolicyDate.getTime());
 
+  // Log the result for debugging
   console.log('Privacy Policy Toast - Result:', {
     showPrivacyPolicyToast,
     currentDate,
     newPrivacyPolicyDate,
-    isDateValid: currentDate >= newPrivacyPolicyDate,
+    isDateValid: currentDate.getTime() >= newPrivacyPolicyDate.getTime(),
     isToastRecent: getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate),
     onboardingCheck:
-      !onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf(),
+      !onboardingDate || onboardingDate <= newPrivacyPolicyDate.getTime(),
   });
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
