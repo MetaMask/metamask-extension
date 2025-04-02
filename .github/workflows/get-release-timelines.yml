@@ -6,13 +6,13 @@ on:
       version:
         required: true
         type: string
-        description: 'The version of the release'
+        description: The version of the release
 
 jobs:
   get-release-timelines:
     uses: metamask/github-tools/.github/workflows/get-release-timelines.yml@3e0b0204e41b576263b9060945de3b3b9b8c5448
     with:
-      version: ${{ github.event.inputs.version }}
+      version: ${{ inputs.version }}
     secrets:
-      RUNWAY_APP_ID: ''
-      RUNWAY_API_KEY: ''
+      RUNWAY_APP_ID: ${{ secrets.RUNWAY_APP_ID }}
+      RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY}}
