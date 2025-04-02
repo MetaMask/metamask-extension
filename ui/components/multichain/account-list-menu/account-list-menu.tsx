@@ -81,7 +81,7 @@ import {
 } from '../../../selectors';
 import {
   setSelectedAccount,
-  getNetworksWithActivityByAccounts,
+  getNetworksWithTransactionActivityByAccounts,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -548,7 +548,7 @@ export const AccountListMenu = ({
 
   const fetchAccountsWithActivity = useCallback(async () => {
     try {
-      await dispatch(getNetworksWithActivityByAccounts());
+      await dispatch(getNetworksWithTransactionActivityByAccounts());
     } catch (error) {
       console.error('Failed to fetch accounts with activity:', error);
     }
