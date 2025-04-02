@@ -26,8 +26,8 @@ import { trace } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   afterTransactionSign as afterTransactionSignMMI,
-  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
-  beforeTransactionPublish as beforeTransactionPublishMMI,
+  // beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
+  // beforeTransactionPublish as beforeTransactionPublishMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from '../../lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
@@ -142,9 +142,9 @@ export const TransactionControllerInit: ControllerInitFunction<
             transactionUpdateController(),
           ),
         ),
-      beforeCheckPendingTransaction:
-        beforeCheckPendingTransactionMMI.bind(this),
-      beforePublish: beforeTransactionPublishMMI.bind(this),
+      // beforeCheckPendingTransaction:
+      //   beforeCheckPendingTransactionMMI.bind(this),
+      // beforePublish: beforeTransactionPublishMMI.bind(this),
       getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // @ts-expect-error Controller type does not support undefined return value
