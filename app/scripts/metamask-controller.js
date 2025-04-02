@@ -394,9 +394,7 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
-
-
-import { DeFiPositionsController } from '@metamask/assets-controllers';
+import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -774,23 +772,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
 
-
-
-    this.defiPositionsController = new DeFiPositionsController({
-      state: initState.DeFiPositionsController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'DeFiPositionsController',
-        allowedActions: [
-          'AccountsController:getSelectedAccount',
-          'AccountsController:getAccount',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedAccountChange',
-          'NetworkController:stateChange',
-        ],
-      }),
-      chainId: this.#getGlobalChainId(),
-    });
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -1918,6 +1899,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
+        DeFiPositionsControllerInit: DeFiPositionsControllerInit
     };
 
     const {
@@ -1964,6 +1946,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
+    this.deFiPositionsController = controllersByName.DeFiPositionsController;
 
     this.notificationServicesController.init();
 
@@ -2169,7 +2152,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
-      DefiPositionsController: this.defiPositionsController,
+      DeFiPositionsController: this.deFiPositionsController,
       TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
@@ -2230,7 +2213,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
-        DefiPositionsController: this.defiPositionsController,
+        DefiPositionsController: this.deFiPositionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,

@@ -4929,15 +4929,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@metamask/assets-controllers@npm:55.0.1":
-  version: 55.0.1
-  resolution: "@metamask/assets-controllers@npm:55.0.1"
-=======
 "@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@53.1.0-preview-9b02be34":
   version: 53.1.0-preview-9b02be34
   resolution: "@metamask-previews/assets-controllers@npm:53.1.0-preview-9b02be34"
->>>>>>> 0726215977 (feat: latest)
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4952,7 +4946,7 @@ __metadata:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/polling-controller": "npm:^12.0.3"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
@@ -4967,65 +4961,16 @@ __metadata:
     single-call-balance-checker-abi: "npm:^1.0.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/accounts-controller": ^26.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^21.0.0
-    "@metamask/network-controller": ^23.0.0
+    "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
     "@metamask/preferences-controller": ^17.0.0
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-<<<<<<< HEAD
-  checksum: 10/bbef227379c314415eb615e691f2f9b936ab1c71a0ce35553879c946c4d724a244437b88bf2a14b9bdde4c148377840c6125976602c8c2bf50f64dcd55abd226
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A55.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-55.0.1-c79349f4b7.patch":
-  version: 55.0.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A55.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-55.0.1-c79349f4b7.patch::version=55.0.1&hash=af1126"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/address": "npm:^5.7.0"
-    "@ethersproject/bignumber": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/contract-metadata": "npm:^2.4.0"
-    "@metamask/controller-utils": "npm:^11.6.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/snaps-utils": "npm:^8.10.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@types/bn.js": "npm:^5.1.5"
-    "@types/uuid": "npm:^8.3.0"
-    async-mutex: "npm:^0.5.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-    bn.js: "npm:^5.2.1"
-    immer: "npm:^9.0.6"
-    lodash: "npm:^4.17.21"
-    multiformats: "npm:^13.1.0"
-    single-call-balance-checker-abi: "npm:^1.0.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
-    "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^21.0.0
-    "@metamask/network-controller": ^23.0.0
-    "@metamask/permission-controller": ^11.0.0
-    "@metamask/preferences-controller": ^17.0.0
-    "@metamask/providers": ^18.1.0
-    "@metamask/snaps-controllers": ^9.19.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/8030b61d9d304cd83433652a43147693f6035110ca324819b138283621693caad8ea9a77aeba956a4c97f1fd9fd2134fa72a1cb668a9dd22d7c8b51e38b8dc05
-=======
   checksum: 10/d933c0d8e9d763ce4e5b98185e14fd428f68c32738bef58243e86e6d94863e198362c5c330a17f20e907343cca7c9988c6dcf2e9d187ac67c229abc4c831aefa
->>>>>>> 0726215977 (feat: latest)
   languageName: node
   linkType: hard
 
@@ -27333,11 +27278,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.11.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-<<<<<<< HEAD
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A55.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-55.0.1-c79349f4b7.patch"
-=======
     "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@53.1.0-preview-9b02be34"
->>>>>>> 0726215977 (feat: latest)
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
@@ -27697,15 +27638,6 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tslib: "npm:~2.6.0"
     tsx: "npm:^4.19.2"
-<<<<<<< HEAD
-=======
-    ttest: "npm:^2.1.1"
-<<<<<<< HEAD
-    typedoc: "npm:^0.24.8"
-    typedoc-plugin-missing-exports: "npm:^2.0.0"
->>>>>>> 01fab7f7f2 (feat: tidy)
-=======
->>>>>>> 29a4eef3c4 (feat: fix packagejson)
     typescript: "npm:~5.4.5"
     unicode-confusables: "npm:^0.1.1"
     unzipper: "npm:^0.12.3"
