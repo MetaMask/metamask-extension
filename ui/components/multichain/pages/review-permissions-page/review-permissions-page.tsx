@@ -61,6 +61,7 @@ import { MergedInternalAccountWithCaipAccountId } from '../../../../selectors/se
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
+import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -148,8 +149,11 @@ export const ReviewPermissions = () => {
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
 
-  const connectedChainIds = _connectedChainIds.filter((chainId) => {
+  const connectedChainIds = _connectedChainIds.filter((chainId: InternalScopeString) => {
     // plain "wallet" value will break this
+    if (chainId === KnownCaipNamespace.Wallet) {
+      return false;
+    }
     const { namespace } = parseCaipChainId(chainId);
     return namespace !== KnownCaipNamespace.Wallet;
   });
