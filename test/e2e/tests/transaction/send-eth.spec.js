@@ -258,7 +258,9 @@ describe('Send ETH', function () {
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
-            localNodeOptions: 'anvil',
+            localNodeOptions: {
+              hardfork: 'muirGlacier',
+            },
           },
           async ({ driver }) => {
             await unlockWallet(driver);

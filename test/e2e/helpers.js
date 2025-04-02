@@ -542,11 +542,6 @@ const PRIVATE_KEY_TWO =
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
-const defaultGanacheOptionsForType2Transactions = {
-  // EVM version that supports type 2 transactions (EIP1559)
-  hardfork: 'london',
-};
-
 const multipleGanacheOptions = {
   accounts: [
     {
@@ -938,7 +933,6 @@ module.exports = {
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   unlockWallet,
