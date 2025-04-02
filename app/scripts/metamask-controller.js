@@ -2835,6 +2835,35 @@ export default class MetamaskController extends EventEmitter {
                 });
               }
             });
+
+            const removedSolanaScope =
+              sessionScopes[MultichainNetworks.SOLANA] ||
+              sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+              sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+
+            const currentValueHasNoSolanaScope =
+              !currentValue.get(origin)?.sessionScopes?.[
+                MultichainNetworks.SOLANA
+              ] &&
+              !currentValue.get(origin)?.sessionScopes?.[
+                MultichainNetworks.SOLANA_DEVNET
+              ] &&
+              !currentValue.get(origin)?.sessionScopes?.[
+                MultichainNetworks.SOLANA_TESTNET
+              ];
+
+            const solanaAccountChangedNotifications =
+              previousValue.get(origin)?.sessionProperties?.[
+                KnownSessionProperties.SolanaAccountChangedNotifications
+              ];
+
+            if (
+              removedSolanaScope &&
+              currentValueHasNoSolanaScope &&
+              solanaAccountChangedNotifications
+            ) {
+              this._notifySolanaAccountChange(origin, []);
+            }
           }
 
           // add new notification subscriptions for added/changed authorizations
@@ -2870,14 +2899,32 @@ export default class MetamaskController extends EventEmitter {
               }
             });
 
-            // if changedAuthorizations contains solana account(s) and sessionProperties contains solanaAccountChangedNotifications
-            // we need to notify the solana account change
-            const solanaScope = sessionScopes[MultichainNetworks.SOLANA];
+            const solanaScope =
+              sessionScopes[MultichainNetworks.SOLANA] ||
+              sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+              sessionScopes[MultichainNetworks.SOLANA_TESTNET];
 
             if (solanaScope) {
-              const {accounts} = solanaScope;
+              const solanaAccountChangedNotifications =
+                currentValue.get(origin)?.sessionProperties?.[
+                  KnownSessionProperties.SolanaAccountChangedNotifications
+                ];
 
-              const solanaAccountChangedNotifications = solanaScope.notifications.includes(KnownSessionProperties.SolanaAccountChangedNotifications);
+              if (solanaAccountChangedNotifications) {
+                const { accounts } = solanaScope;
+                const solanaFormattedAccounts = accounts.map(
+                  (caipAccountId) => {
+                    const { address } = parseCaipAccountId(caipAccountId);
+                    return address;
+                  },
+                );
+                const accountAddressToEmit = solanaFormattedAccounts.includes(
+                  lastSelectedSolanaAccountAddress,
+                )
+                  ? lastSelectedSolanaAccountAddress
+                  : solanaFormattedAccounts[0];
+                this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
+              }
             }
 
             this._notifyAuthorizationChange(origin, authorization);
@@ -2919,7 +2966,7 @@ export default class MetamaskController extends EventEmitter {
                 originsWithSolanaAccountChangedNotifications[origin]
               ) {
                 lastSelectedSolanaAccountAddress = account.address;
-                this._notifySolanaAccountChange(origin, account.address);
+                this._notifySolanaAccountChange(origin, [account.address]);
               }
             }
           }
@@ -7828,7 +7875,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  async _notifySolanaAccountChange(origin, accountAddress) {
+  async _notifySolanaAccountChange(origin, accountAddressArray) {
     this.notifyConnections(
       origin,
       {
@@ -7837,7 +7884,7 @@ export default class MetamaskController extends EventEmitter {
           scope: MultichainNetworks.SOLANA,
           notification: {
             method: NOTIFICATION_NAMES.accountsChanged,
-            params: [accountAddress],
+            params: accountAddressArray,
           },
         },
       },
