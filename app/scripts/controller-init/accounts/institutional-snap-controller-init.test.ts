@@ -1,12 +1,14 @@
-import { InstitutionalSnapController } from '../../lib/transaction/institutional-snap/InstitutionalSnapController';
 import { Messenger } from '@metamask/base-controller';
+import {
+  InstitutionalSnapController,
+  InstitutionalSnapControllerMessenger,
+} from '../../lib/transaction/institutional-snap/InstitutionalSnapController';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
-import { InstitutionalSnapControllerInit } from './institutional-snap-controller-init';
-import { InstitutionalSnapControllerMessenger } from '../../lib/transaction/institutional-snap/InstitutionalSnapController';
 import { getInstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
+import { InstitutionalSnapControllerInit } from './institutional-snap-controller-init';
 
-jest.mock('@metamask/institutional-snap-controllers');
+jest.mock('../../lib/transaction/institutional-snap/InstitutionalSnapController');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<InstitutionalSnapControllerMessenger>
@@ -23,7 +25,9 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('InstitutionalSnapControllerInit', () => {
-  const institutionalSnapControllerClassMock = jest.mocked(InstitutionalSnapController);
+  const institutionalSnapControllerClassMock = jest.mocked(
+    InstitutionalSnapController,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -31,9 +35,9 @@ describe('InstitutionalSnapControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(InstitutionalSnapControllerInit(requestMock).controller).toBeInstanceOf(
-      InstitutionalSnapController,
-    );
+    expect(
+      InstitutionalSnapControllerInit(requestMock).controller,
+    ).toBeInstanceOf(InstitutionalSnapController);
   });
 
   it('initializes with correct messenger and state', () => {

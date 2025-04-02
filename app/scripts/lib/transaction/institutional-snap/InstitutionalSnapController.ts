@@ -149,7 +149,7 @@ export class InstitutionalSnapController extends BaseController<
   async beforeCheckPendingTransactionHook(
     transactionMeta: TransactionMeta,
   ): Promise<boolean> {
-    return !this.#shouldDeferPublication(transactionMeta);
+    return !(await this.#shouldDeferPublication(transactionMeta));
   }
 
   #registerMessageHandlers() {

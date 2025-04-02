@@ -1,15 +1,22 @@
 import { Messenger } from '@metamask/base-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { HandlerType } from '@metamask/snaps-utils';
-import { TransactionStatus, TransactionEnvelopeType, TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionEnvelopeType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
-import { InstitutionalSnapController, InstitutionalSnapControllerMessenger } from './InstitutionalSnapController';
+import {
+  InstitutionalSnapController,
+  InstitutionalSnapControllerMessenger,
+} from './InstitutionalSnapController';
 
 describe('InstitutionalSnapController', () => {
   let controller: InstitutionalSnapController;
   let messenger: InstitutionalSnapControllerMessenger;
 
-  const mockTransactionMeta : TransactionMeta = {
+  const mockTransactionMeta: TransactionMeta = {
     id: '123',
     chainId: '0x1',
     txParams: {
@@ -25,24 +32,26 @@ describe('InstitutionalSnapController', () => {
 
   const mockSnapResponse = {
     keyringRequest: {
-          id: '123',
-          scope: 'scope',
+      id: '123',
+      scope: 'scope',
       account: '0x123',
       request: {
         method: 'method',
-        params: [{
-          chainId: '1',
-          nonce: '0x1',
-          maxPriorityFeePerGas: '0x1',
-          maxFeePerGas: '0x1',
-          gasLimit: '0x1',
-          to: '0x456',
-          value: '0x1',
-          data: '0x',
-          accessList: [],
-          from: '0x123',
-          type: '0x2',
-        }],
+        params: [
+          {
+            chainId: '1',
+            nonce: '0x1',
+            maxPriorityFeePerGas: '0x1',
+            maxFeePerGas: '0x1',
+            gasLimit: '0x1',
+            to: '0x456',
+            value: '0x1',
+            data: '0x',
+            accessList: [],
+            from: '0x123',
+            type: '0x2',
+          },
+        ],
       },
     },
     type: 'type',
@@ -91,7 +100,7 @@ describe('InstitutionalSnapController', () => {
 
     // Mock messenger calls
     messenger.registerActionHandler = jest.fn();
-    messenger.call = jest.fn().mockImplementation((method, ...args) => {
+    messenger.call = jest.fn().mockImplementation((method, ..._args) => {
       switch (method) {
         case 'SnapController:handleRequest':
           return mockSnapResponse;
@@ -115,11 +124,16 @@ describe('InstitutionalSnapController', () => {
 
   describe('constructor', () => {
     it('should initialize correctly', () => {
-      expect(messenger.registerActionHandler).toHaveBeenCalledTimes(2);
+      expect(messenger.registerActionHandler).toHaveBeenCalledTimes(3);
+      expect(messenger.registerActionHandler).toHaveBeenCalledWith(
+        'InstitutionalSnapController:getState',
+        expect.any(Function),
+      );
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:publishHook',
         expect.any(Function),
       );
+
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:beforeCheckPendingTransactionHook',
         expect.any(Function),
@@ -154,7 +168,8 @@ describe('InstitutionalSnapController', () => {
           nonce: mockSnapResponse.transaction.nonce,
           gasLimit: mockSnapResponse.transaction.gasLimit,
           maxFeePerGas: mockSnapResponse.transaction.maxFeePerGas,
-          maxPriorityFeePerGas: mockSnapResponse.transaction.maxPriorityFeePerGas,
+          maxPriorityFeePerGas:
+            mockSnapResponse.transaction.maxPriorityFeePerGas,
           type: mockSnapResponse.transaction.type as TransactionEnvelopeType,
         }),
       );
@@ -181,7 +196,9 @@ describe('InstitutionalSnapController', () => {
 
   describe('beforeCheckPendingTransactionHook', () => {
     it('should return false for deferred transactions', async () => {
-      const result = await controller.beforeCheckPendingTransactionHook(mockTransactionMeta);
+      const result = await controller.beforeCheckPendingTransactionHook(
+        mockTransactionMeta,
+      );
       expect(result).toBe(false);
     });
 
@@ -199,7 +216,9 @@ describe('InstitutionalSnapController', () => {
         return {};
       });
 
-      const result = await controller.beforeCheckPendingTransactionHook(mockTransactionMeta);
+      const result = await controller.beforeCheckPendingTransactionHook(
+        mockTransactionMeta,
+      );
       expect(result).toBe(true);
     });
   });
