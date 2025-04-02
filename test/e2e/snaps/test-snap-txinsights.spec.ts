@@ -52,7 +52,7 @@ describe('Test Snap TxInsights', function () {
     );
   });
 
-  it(' validate the insights for ERC721 transactions', async function () {
+  it('shows insights for ERC721 transactions', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
