@@ -29,6 +29,12 @@ type Movement = {
   address?: string;
 };
 
+type AggregatedMovement = {
+  address?: string;
+  unit: string;
+  amount: number;
+};
+
 export function useMultichainTransactionDisplay(
   transaction: Transaction,
   networkConfig: MultichainProviderConfig,
@@ -74,7 +80,7 @@ function aggregateAmount(
   locale: string,
   decimals?: number,
 ) {
-  const amountByAsset: Record<string, Movement> = {};
+  const amountByAsset: Record<string, AggregatedMovement> = {};
 
   for (const mv of movement) {
     if (!mv?.asset.fungible) {
@@ -82,11 +88,15 @@ function aggregateAmount(
     }
     const assetId = mv.asset.type;
     if (!amountByAsset[assetId]) {
-      amountByAsset[assetId] = mv;
+      amountByAsset[assetId] = {
+        amount: parseFloat(mv.asset.amount),
+        address: mv.address,
+        unit: mv.asset.unit,
+      };
       continue;
     }
 
-    amountByAsset[assetId].asset.amount += Number(mv.asset.amount || 0);
+    amountByAsset[assetId].amount += parseFloat(mv.asset.amount);
   }
 
   // Convert to a proper display array.
@@ -96,13 +106,13 @@ function aggregateAmount(
 }
 
 function parseAsset(
-  movement: Movement,
+  movement: AggregatedMovement,
   locale: string,
   isNegative: boolean,
   decimals?: number,
 ) {
   const displayAmount = formatWithThreshold(
-    Number(movement.asset.amount),
+    Number(movement.amount),
     0.00000001,
     locale,
     {
@@ -112,13 +122,13 @@ function parseAsset(
   );
 
   let finalAmount = displayAmount;
-  if (isNegative && !displayAmount.startsWith('<')) {
+  if (isNegative) {
     finalAmount = `-${displayAmount}`;
   }
 
   return {
     amount: finalAmount,
-    unit: movement.asset.unit,
+    unit: movement.unit,
     // It is not strictly correct to use the address here but we do not support sending multiple assets to multiple addresses
     address: movement.address,
   };

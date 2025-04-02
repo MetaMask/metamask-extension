@@ -4,7 +4,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json';
 
 export const BITCOIN_WALLET_SNAP_ID: SnapId =
-  BitcoinWalletSnap.snapId as SnapId;
+  'local:http://localhost:8080' as SnapId;
 
 export const BITCOIN_WALLET_NAME: string =
   BitcoinWalletSnap.manifest.proposedName;
