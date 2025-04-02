@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -30,9 +31,16 @@ import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const permittedChains = useSelector((state) =>
+  const _permittedChains = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
+  const permittedChains = _permittedChains.filter((caipChainId) => {
+    if (caipChainId === KnownCaipNamespace.Wallet) {
+      return false;
+    }
+    const { namespace } = parseCaipChainId(caipChainId);
+    return namespace !== KnownCaipNamespace.Wallet;
+  });
 
   return (
     <Box
