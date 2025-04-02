@@ -30,7 +30,7 @@ import {
   AlignItems,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -39,10 +39,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
-  accounts: {
-    internalAccount: MergedInternalAccount;
-    caipAccountId: CaipAccountId;
-  }[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
   defaultSelectedAccountAddresses: CaipAccountId[];
   onClose: () => void;
   onSubmit: (addresses: CaipAccountId[]) => void;
@@ -148,9 +145,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
               {accounts.map((account) => (
                 <AccountListItem
                   onClick={() => handleAccountClick(account.caipAccountId)}
-                  account={account.internalAccount}
+                  account={account}
                   key={account.caipAccountId}
-                  isPinned={Boolean(account.internalAccount.pinned)}
+                  isPinned={Boolean(account.pinned)}
                   startAccessory={
                     <Checkbox
                       isChecked={selectedAccountAddresses.some(

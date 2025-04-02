@@ -1,5 +1,6 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SubjectMetadata } from '@metamask/permission-controller';
+import { CaipAccountId } from '@metamask/utils';
 
 type KeyringType = {
   type: string;
@@ -22,6 +23,10 @@ export type MergedInternalAccount =
     keyring: KeyringType;
     label: string | null;
   };
+
+export type MergedInternalAccountWithCaipAccountId = MergedInternalAccount & {
+  caipAccountId: CaipAccountId;
+};
 
 export type AccountConnections = {
   [address: string]: {

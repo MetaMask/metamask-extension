@@ -13,7 +13,7 @@ import {
   IconName,
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
-import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -33,10 +33,7 @@ type Network = {
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
-  accounts: {
-    internalAccount: MergedInternalAccount;
-    caipAccountId: CaipAccountId;
-  }[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
   onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
   onSelectChainIds: (chainIds: CaipChainId[]) => void;
   selectedAccountAddresses: CaipAccountId[];
@@ -80,15 +77,13 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const accountMessageConnectedState =
     selectedAccounts.length === 1
       ? t('connectedWithAccountName', [
-          selectedAccounts[0].internalAccount.metadata.name ||
-            selectedAccounts[0].internalAccount.label,
+          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
         ])
       : t('connectedWithAccount', [selectedAccounts.length]);
   const accountMessageNotConnectedState =
     selectedAccounts.length === 1
       ? t('requestingForAccount', [
-          selectedAccounts[0].internalAccount.metadata.name ||
-            selectedAccounts[0].internalAccount.label,
+          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
         ])
       : t('requestingFor');
 
@@ -148,7 +143,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             // Why this difference?
             selectedAccounts.length === 1 ? (
               <AvatarAccount
-                address={selectedAccounts[0].internalAccount.address}
+                address={selectedAccounts[0].address}
                 size={AvatarAccountSize.Xs}
                 borderColor={BorderColor.transparent}
               />
