@@ -10,6 +10,9 @@ import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/pr
 import {
   InstitutionalSnapController,
   InstitutionalSnapControllerMessenger,
+  AllowedActions,
+  InstitutionalSnapControllerPublishHookAction,
+  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
 } from './InstitutionalSnapController';
 
 describe('InstitutionalSnapController', () => {
@@ -86,7 +89,12 @@ describe('InstitutionalSnapController', () => {
   };
 
   beforeEach(() => {
-    const baseMessenger = new Messenger<never, never>();
+    const baseMessenger = new Messenger<
+      | AllowedActions
+      | InstitutionalSnapControllerPublishHookAction
+      | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
+      never
+    >();
 
     messenger = baseMessenger.getRestricted({
       name: 'InstitutionalSnapController',

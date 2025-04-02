@@ -11,6 +11,10 @@ import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
 import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import {
+  InstitutionalSnapRequestSearchParameters,
+  InstitutionalSnapResponse,
+} from './institutional-snap-controller.types';
 
 const SNAP_ID = InstitutionalWalletSnap.snapId as SnapId;
 
@@ -18,80 +22,31 @@ const controllerName = 'InstitutionalSnapController';
 
 type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
 
-// Todo: obtain this type from the snap package
-export type InstitutionalSnapResponse = {
-  keyringRequest: {
-    id: string;
-    scope: string;
-    account: string;
-    request: {
-      method: string;
-      params: [
-        {
-          chainId: string;
-          nonce: string;
-          maxPriorityFeePerGas: string;
-          maxFeePerGas: string;
-          gasLimit: string;
-          to: string;
-          value: string;
-          data: string;
-          accessList: string[];
-          from: string;
-          type: string;
-        },
-      ];
-    };
-  };
-  type: string;
-  fulfilled: boolean;
-  rejected: boolean;
-  lastUpdated: number;
-  transaction: {
-    custodianTransactionId: string;
-    transactionStatus: {
-      finished: boolean;
-      success: boolean;
-      displayText: string;
-      submitted: boolean;
-      reason: string;
-      signed: boolean;
-    };
-    from: string;
-    custodianPublishesTransaction: boolean;
-    maxFeePerGas: string;
-    maxPriorityFeePerGas: string;
-    gasLimit: string;
-    nonce: string;
-    to: string;
-    transactionHash: string;
-    type: string;
-  };
-  result: {
-    v: string;
-    r: string;
-    s: string;
-  };
-};
-
-export type InstitutionalSnapRequestSearchParameters = {
-  from: string;
-  to: string;
-  value: string;
-  data: string;
-  chainId: string;
-};
-
-type AllowedActions =
+export type AllowedActions =
   | HandleSnapRequest
   | AccountsControllerGetAccountByAddressAction
   | TransactionControllerUpdateCustodialTransactionAction;
 
+export type InstitutionalSnapControllerPublishHookAction = {
+  type: `${typeof controllerName}:publishHook`;
+  handler: InstitutionalSnapController['deferPublicationHook'];
+};
+
+type InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction = {
+  type: `${typeof controllerName}:beforeCheckPendingTransactionHook`;
+  handler: InstitutionalSnapController['beforeCheckPendingTransactionHook'];
+};
+
+type Actions =
+  | AllowedActions
+  | InstitutionalSnapControllerPublishHookAction
+  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction;
+
 export type InstitutionalSnapControllerMessenger = RestrictedMessenger<
-  'InstitutionalSnapControllerMessenger',
-  AllowedActions,
+  typeof controllerName,
+  Actions,
   never,
-  AllowedActions['type'],
+  Actions['type'],
   never
 >;
 
