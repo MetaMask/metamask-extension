@@ -4717,6 +4717,7 @@ export default class MetamaskController extends EventEmitter {
         messenger: this.controllerMessenger,
         snapId: SOLANA_WALLET_SNAP_ID,
       });
+      // TODO: Use `withKeyring` instead.
       const keyring = await this.getSnapKeyring();
       for (let index = 0; ; index++) {
         const discovered = await client.discoverAccounts(
