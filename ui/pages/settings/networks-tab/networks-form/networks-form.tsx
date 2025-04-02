@@ -46,6 +46,7 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
+  Tag,
   Text,
 } from '../../../../components/component-library';
 import {
@@ -412,25 +413,20 @@ export const NetworksForm = ({
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
-              <Box
+              <Text
+                ellipsis
+                variant={TextVariant.bodyMd}
                 paddingTop={3}
                 paddingBottom={3}
-                style={{ overflow: 'auto' }}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={1}
               >
-                <Text ellipsis variant={TextVariant.bodyMd}>
-                  {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                </Text>
-                {item.failoverUrls.length > 0 && (
-                  <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodyXs}
-                    fontStyle={FontStyle.Italic}
-                    ellipsis
-                  >
-                    ({onlyKeepHost(item.failoverUrls[0])})
-                  </Text>
-                )}
-              </Box>
+                {stripProtocol(stripKeyFromInfuraUrl(item.url))}
+                {item.failoverUrls.length > 0 ? (
+                  <Tag label="Failover" display={Display.Inline} />
+                ) : null}
+              </Text>
             )
           }
           renderTooltip={(item, isList) => {
@@ -467,6 +463,31 @@ export const NetworksForm = ({
             </HelpText>
           </Box>
         )}
+
+        {rpcUrls.defaultRpcEndpointIndex !== undefined &&
+        rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex] !== undefined &&
+        rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex].failoverUrls
+          .length > 0 ? (
+          <FormTextField
+            id="failoverRpcUrl"
+            size={FormTextFieldSize.Lg}
+            paddingTop={4}
+            label={t('failoverRpcUrl')}
+            labelProps={{
+              children: undefined,
+              variant: TextVariant.bodyMdMedium,
+            }}
+            textFieldProps={{
+              borderRadius: BorderRadius.LG,
+            }}
+            value={onlyKeepHost(
+              rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex]
+                .failoverUrls[0],
+            )}
+            disabled={true}
+          />
+        ) : null}
+
         <FormTextField
           id="chainId"
           size={FormTextFieldSize.Lg}
