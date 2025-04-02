@@ -25,8 +25,8 @@ describe('Bridge tests', function (this: Suite) {
         },
         false,
       ),
-      async ({ driver }) => {
-        await await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await unlockWallet(driver);
 
         await bridgeTransaction(
           driver,
@@ -38,6 +38,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           1,
+          localNodes,
         );
       },
     );
@@ -47,10 +48,11 @@ describe('Bridge tests', function (this: Suite) {
     driver: Driver,
     quote: BridgeQuote,
     transactionsCount: number,
+    localNodes: Anvil,
   ) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
-    await homePage.check_expectedBalanceIsDisplayed();
+    await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
     await homePage.startBridgeFlow();
 
     const bridgePage = new BridgeQuotePage(driver);
