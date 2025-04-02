@@ -6269,6 +6269,55 @@ export default class MetamaskController extends EventEmitter {
       origin = new URL(sender.url).origin;
     }
 
+    // solana account changed notifications
+    const caip25Caveat = this.permissionController.getCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
+    const solanaAccountsChangedNotifications =
+      caip25Caveat.value.sessionProperties[
+        KnownSessionProperties.SolanaAccountChangedNotifications
+      ];
+
+    const sessionScopes = getSessionScopes(caip25Caveat.value, {
+      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+    });
+
+    const solanaScope =
+      sessionScopes[MultichainNetworks.SOLANA] ||
+      sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+      sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+
+    if (solanaAccountsChangedNotifications && solanaScope) {
+      let lastSelectedSolanaAccountAddress;
+      try {
+        lastSelectedSolanaAccountAddress =
+          this.accountsController.getSelectedMultichainAccount(
+            MultichainNetworks.SOLANA,
+          )?.address;
+      } catch {
+        // noop
+      }
+
+      const { accounts } = solanaScope;
+      const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
+      });
+
+      const accountAddressToEmit =
+        lastSelectedSolanaAccountAddress ?? parsedPermittedSolanaAddresses[0];
+
+      if (accountAddressToEmit) {
+        // delay emit so that the event is not emitted
+        // before the wallet standard script is ready to receive it
+        setTimeout(() => {
+          this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
+        }, 500);
+      }
+    }
+
     if (sender.id && sender.id !== this.extension.runtime.id) {
       this.subjectMetadataController.addSubjectMetadata({
         origin,
