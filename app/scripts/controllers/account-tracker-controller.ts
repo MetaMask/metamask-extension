@@ -709,7 +709,7 @@ export default class AccountTrackerController extends BaseController<
   }: {
     address?: string;
     networkClientId?: NetworkClientId;
-  }): Promise<void> {
+  } = {}): Promise<void> {
     const { completedOnboarding } = this.messagingSystem.call(
       'OnboardingController:getState',
     );
@@ -717,18 +717,19 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
 
-    let addressToUpdate = address;
-    if (!addressToUpdate) {
-      const selectedAddress = this.messagingSystem.call(
-        'AccountsController:getSelectedAccount',
-      ).address;
-      addressToUpdate = selectedAddress;
+    const selectedAddress =
+      address ||
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
+
+    if (!selectedAddress) {
+      return;
     }
 
     const { chainId, provider } =
       this.#getCorrectNetworkClient(networkClientId);
 
-    await this.#updateAccount(addressToUpdate, provider, chainId);
+    await this.#updateAccount(selectedAddress, provider, chainId);
   }
 
   /**

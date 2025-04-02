@@ -790,12 +790,20 @@ describe('AccountTrackerController', () => {
     });
 
     it('updates an account by address if completedOnboarding is true', async () => {
+      const VALID_ADDRESS_TO_UPDATE = '0x1234';
       await withController(
         {
           completedOnboarding: true,
+          state: {
+            accounts: {
+              [VALID_ADDRESS_TO_UPDATE]: {
+                address: VALID_ADDRESS_TO_UPDATE,
+                balance: null,
+              },
+            },
+          },
         },
         async ({ controller }) => {
-          const VALID_ADDRESS_TO_UPDATE = '0x1234';
           await controller.updateAccountByAddress({
             address: VALID_ADDRESS_TO_UPDATE,
           });
@@ -804,11 +812,62 @@ describe('AccountTrackerController', () => {
             accounts: {
               [VALID_ADDRESS_TO_UPDATE]: {
                 address: VALID_ADDRESS_TO_UPDATE,
-                balance: null,
+                balance: '0xabc',
               },
             },
             currentBlockGasLimit: '',
-            accountsByChainId: {},
+            accountsByChainId: {
+              [currentChainId]: {
+                [VALID_ADDRESS_TO_UPDATE]: {
+                  address: VALID_ADDRESS_TO_UPDATE,
+                  balance: '0xabc',
+                },
+              },
+            },
+            currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
+    });
+
+    it('updates an account for selected address if no address is provided', async () => {
+      await withController(
+        {
+          completedOnboarding: true,
+          state: {
+            accounts: {
+              [VALID_ADDRESS]: {
+                address: VALID_ADDRESS,
+                balance: null,
+              },
+            },
+            accountsByChainId: {
+              [currentChainId]: {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: null,
+                },
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          expect(controller.state).toStrictEqual({
+            accounts: {
+              [VALID_ADDRESS]: {
+                address: VALID_ADDRESS,
+                balance: null,
+              },
+            },
+            accountsByChainId: {
+              [currentChainId]: {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: null,
+                },
+              },
+            },
+            currentBlockGasLimit: '',
             currentBlockGasLimitByChainId: {},
           });
         },
