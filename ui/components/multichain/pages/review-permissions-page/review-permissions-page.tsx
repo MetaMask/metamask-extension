@@ -150,7 +150,6 @@ export const ReviewPermissions = () => {
   ) as CaipChainId[];
 
   const connectedChainIds = _connectedChainIds.filter((chainId: InternalScopeString) => {
-    // plain "wallet" value will break this
     if (chainId === KnownCaipNamespace.Wallet) {
       return false;
     }
