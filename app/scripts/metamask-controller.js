@@ -7,9 +7,7 @@ import {
   NftDetectionController,
   TokenDetectionController,
   TokenListController,
-  TokenRatesController,
   TokensController,
-  CodefiTokenPricesServiceV2,
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
@@ -42,7 +40,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@metamask/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -388,6 +386,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
+import { TokenRatesControllerInit } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -1049,31 +1048,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: multichainRatesControllerMessenger,
       includeUsdRate: true,
       fetchMultiExchangeRate,
-    });
-
-    const tokenRatesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenRatesController',
-      allowedActions: [
-        'TokensController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-        'AccountsController:getAccount',
-        'AccountsController:getSelectedAccount',
-      ],
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'AccountsController:selectedEvmAccountChange',
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-      ],
-    });
-
-    // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController({
-      state: initState.TokenRatesController,
-      messenger: tokenRatesMessenger,
-      tokenPricesService: new CodefiTokenPricesServiceV2(),
-      disabled: !this.preferencesController.state.useCurrencyRateCheck,
     });
 
     this.controllerMessenger.subscribe(
@@ -1961,6 +1935,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
+      TokenRatesController: TokenRatesControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -2003,6 +1978,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
+    this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
@@ -2253,6 +2229,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainTransactionsController: this.multichainTransactionsController,
         MultichainAssetsRatesController: this.multichainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
+        TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
@@ -4330,6 +4307,17 @@ export default class MetamaskController extends EventEmitter {
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
+
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      // SnapKeyring
+      createSnapAccount: async (snapId, options, internalOptions) => {
+        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
+        // in this case.
+        const keyring = await this.getSnapKeyring();
+
+        return await keyring.createAccount(snapId, options, internalOptions);
+      },
+      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // MultichainBalancesController
