@@ -554,7 +554,7 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.MEGAETH_TESTNET,
 ];
 
-export const CAIP_FORMATTED_TEST_CHAINS = TEST_CHAINS.map(
+export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
   (chainId) => `eip155:${hexToNumber(chainId)}`,
 );
 
