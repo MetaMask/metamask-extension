@@ -20,7 +20,7 @@ import { Box } from '../box';
 
 import README from './README.mdx';
 import { Text } from './text';
-import { TextDirection } from './text.types';
+import { TextDirection, FontFamily } from './text.types';
 
 export default {
   title: 'Components/ComponentLibrary/Text',
@@ -286,3 +286,23 @@ export const Strong: StoryFn<typeof Text> = (args) => (
     </Text>
   </>
 );
+
+export const FontFamilyStory: StoryFn<typeof Text> = (args) => (
+  <Box
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
+    gap={4}
+  >
+    <Text {...args} fontFamily={FontFamily.Default}>
+      Default Font (CentraNo1) - The quick brown fox jumps over the lazy dog
+    </Text>
+    <Text {...args} fontFamily={FontFamily.Accent}>
+      Accent Font (MM Sans) - The quick brown fox jumps over the lazy dog
+    </Text>
+    <Text {...args} fontFamily={FontFamily.Hero}>
+      Hero Font (MMPoly) - The quick brown fox jumps over the lazy dog
+    </Text>
+  </Box>
+);
+
+FontFamilyStory.storyName = 'Font Family';

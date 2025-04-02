@@ -18,6 +18,12 @@ export enum TextDirection {
   Auto = 'auto',
 }
 
+export enum FontFamily {
+  Default = 'CentraNo1',
+  Accent = 'MM Sans',
+  Hero = 'MMPoly',
+}
+
 /**
  * The InvisibleCharacter is a very useful tool if you want to make sure a line of text
  * takes up vertical space even if it's empty.
@@ -115,6 +121,10 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * ./ui/helpers/constants/design-system.js
    */
   fontStyle?: FontStyle;
+  /**
+   * The font family of the Text component. Should use the FontFamily enum
+   */
+  fontFamily?: FontFamily;
   /**
    * The textTransform of the Text component. Should use the TextTransform enum from
    * ./ui/helpers/constants/design-system.js
