@@ -39,8 +39,12 @@ const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
+const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
+  'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
 const CHAIN_ID_NETWORKS_PATH =
   'test/e2e/mock-response-data/chain-id-network-chains.json';
+const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
+  'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
@@ -879,6 +883,34 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(ACCOUNTS_API_TOKENS),
+      };
+    });
+
+  // Bridge Feature Flags
+  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
+    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
+  );
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS),
+      };
+    });
+
+  // Client Side Detecition: Request Blocklist
+  const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
+    CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
+  );
+  await server
+    .forGet(
+      'https://client-side-detection.api.cx.metamask.io/v1/request-blocklist',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
       };
     });
 

@@ -12,7 +12,6 @@ const ALLOWLISTED_URLS = [
   'https://authentication.api.cx.metamask.io/siwe/verify',
   'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link/',
   'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
-  'https://bridge.api.cx.metamask.io/getAllFeatureFlags',
   'https://bridge.api.cx.metamask.io/getTokens?chainId=1',
   'https://cdn.contentful.com/spaces/jdkgyfmyd9sw/environments/master/entries?content_type=productAnnouncement&order=-sys.createdAt&fields.clients=portfolio',
   'https://cdn.segment.com/analytics-next/bundles/ajs-destination.bundle.ed53a26b6edc80c65d73.js',
@@ -24,7 +23,6 @@ const ALLOWLISTED_URLS = [
   'https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css',
   'https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=flask&environment=dev',
-  'https://client-side-detection.api.cx.metamask.io/v1/request-blocklist',
   'https://d6tizftlrpuof.cloudfront.net/themes/production/consensys-button-8ad6c4bb549247e0276dd160e2d8e00d.png',
   'https://doesntexist.test/customRPC',
   'https://etherscan.io/favicon.ico',
@@ -119,15 +117,6 @@ const ALLOWLISTED_URLS = [
   'https://verify.walletconnect.com/e6360eaee594162688065f1c70c863b7',
   'https://w.usabilla.com/ade130c1096e.js?lv=1',
   'https://websites.cdn.getfeedback.com/embed/aaeNy60jTL/gf.js',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x048226a0',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x095ea7b3',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x23b872dd',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x2e1a7d4d',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x39509351',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x5f575529',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0x60806040',
-  'https://www.4byte.directory/api/v1/signatures/?hex_signature=0xd0e30db0',
 ];
 
 const ALLOWLISTED_HOSTS = [
