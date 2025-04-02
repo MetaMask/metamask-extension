@@ -25,7 +25,7 @@ import {
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
-  getPetnamesEnabled,
+  getHDEntropyIndex,
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -36,8 +36,6 @@ import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
-
-  const petnamesEnabled = getPetnamesEnabled(state);
 
   const {
     incomingTransactionsPreferences,
@@ -80,10 +78,10 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalNameSources,
     useExternalServices,
-    petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
+    hdEntropyIndex: getHDEntropyIndex(state),
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     hasMultipleHdKeyrings,
     ///: END:ONLY_INCLUDE_IF

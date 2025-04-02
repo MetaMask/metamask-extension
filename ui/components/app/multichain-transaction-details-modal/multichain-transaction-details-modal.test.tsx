@@ -10,7 +10,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
+  MultichainProviderConfig,
+  SOLANA_BLOCK_EXPLORER_URL,
+} from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
@@ -114,6 +119,7 @@ const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
   userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -133,6 +139,7 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: Transaction;
       onClose: jest.Mock;
       userAddress: string;
+      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
     const store = configureStore(mockState.metamask);
@@ -194,7 +201,6 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(mockTrackEvent).toHaveBeenCalled();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [TransactionStatus.Confirmed, 'Confirmed'],
     [TransactionStatus.Unconfirmed, 'Pending'],
@@ -241,7 +247,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}`,
     );
   });
 
@@ -251,7 +257,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}?cluster=devnet`,
     );
   });
 
@@ -260,7 +266,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}`,
     );
   });
 
@@ -269,7 +275,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}?cluster=devnet`,
     );
   });
 
@@ -297,13 +303,14 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
       userAddress,
+      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
 
     expect(screen.getByText('Swap')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '2.5 SOL',
+      '100 USDC',
     );
 
     const addressStart = userAddress.substring(0, 6);

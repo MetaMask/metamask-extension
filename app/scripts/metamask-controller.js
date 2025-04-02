@@ -7,9 +7,7 @@ import {
   NftDetectionController,
   TokenDetectionController,
   TokenListController,
-  TokenRatesController,
   TokensController,
-  CodefiTokenPricesServiceV2,
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
@@ -42,7 +40,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@metamask/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -125,6 +123,13 @@ import {
 } from '@metamask/queued-request-controller';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
+import {
+  BridgeController,
+  BRIDGE_CONTROLLER_NAME,
+  BridgeUserAction,
+  BridgeBackgroundAction,
+  BridgeClientId,
+} from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -236,13 +241,10 @@ import {
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
-import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import {
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '../../shared/types/bridge';
+import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
+import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -337,13 +339,14 @@ import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
-import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
+import {
+  updateSecurityAlertResponse,
+  validateRequestWithPPOM,
+} from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import BridgeController from './controllers/bridge/bridge-controller';
-import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
@@ -369,6 +372,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
+import { TokenRatesControllerInit } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -1031,31 +1035,6 @@ export default class MetamaskController extends EventEmitter {
       fetchMultiExchangeRate,
     });
 
-    const tokenRatesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenRatesController',
-      allowedActions: [
-        'TokensController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-        'AccountsController:getAccount',
-        'AccountsController:getSelectedAccount',
-      ],
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'AccountsController:selectedEvmAccountChange',
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-      ],
-    });
-
-    // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController({
-      state: initState.TokenRatesController,
-      messenger: tokenRatesMessenger,
-      tokenPricesService: new CodefiTokenPricesServiceV2(),
-      disabled: !this.preferencesController.state.useCurrencyRateCheck,
-    });
-
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
       previousValueComparator((prevState, currState) => {
@@ -1662,18 +1641,28 @@ export default class MetamaskController extends EventEmitter {
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
       allowedActions: [
-        // 'AccountsController:getSelectedAccount',
         'AccountsController:getSelectedMultichainAccount',
         'SnapController:handleRequest',
-        'NetworkController:getSelectedNetworkClient',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
         'NetworkController:findNetworkClientIdByChainId',
       ],
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({
       messenger: bridgeControllerMessenger,
+      clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+        }),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
     });
 
     const bridgeStatusControllerMessenger =
@@ -1901,6 +1890,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
+      TokenRatesController: TokenRatesControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -1943,6 +1933,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
+    this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
@@ -2089,6 +2080,15 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledAccountUpgradeChains.bind(
               this.preferencesController,
             ),
+          validateSecurity: (securityAlertId, request, chainId) =>
+            validateRequestWithPPOM({
+              chainId,
+              ppomController: this.ppomController,
+              request,
+              securityAlertId,
+              updateSecurityAlertResponse:
+                this.updateSecurityAlertResponse.bind(this),
+            }),
         },
         this.controllerMessenger,
       ),
@@ -2184,6 +2184,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainTransactionsController: this.multichainTransactionsController,
         MultichainAssetsRatesController: this.multichainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
+        TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
@@ -2871,13 +2872,11 @@ export default class MetamaskController extends EventEmitter {
         );
 
         if (filteredChainIds.length > 0) {
-          await this.txController.stopIncomingTransactionPolling();
+          this.txController.stopIncomingTransactionPolling();
 
-          await this.txController.updateIncomingTransactions(filteredChainIds);
+          await this.txController.updateIncomingTransactions();
 
-          await this.txController.startIncomingTransactionPolling(
-            filteredChainIds,
-          );
+          this.txController.startIncomingTransactionPolling();
         }
       },
     );
@@ -3402,7 +3401,8 @@ export default class MetamaskController extends EventEmitter {
       getNextAvailableAccountName:
         accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
+      getAccountsBySnapId: (snapId) =>
+        getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
       ///: END:ONLY_INCLUDE_IF
 
       // hardware wallets
@@ -4201,6 +4201,17 @@ export default class MetamaskController extends EventEmitter {
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
+
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      // SnapKeyring
+      createSnapAccount: async (snapId, options, internalOptions) => {
+        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
+        // in this case.
+        const keyring = await this.getSnapKeyring();
+
+        return await keyring.createAccount(snapId, options, internalOptions);
+      },
+      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // MultichainBalancesController
@@ -5643,6 +5654,23 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * Returns the index of the HD keyring containing the selected account.
+   *
+   * @returns {number | undefined} The index of the HD keyring containing the selected account.
+   */
+  getHDEntropyIndex() {
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const hdKeyrings = this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    const index = hdKeyrings.findIndex((keyring) =>
+      keyring.accounts.includes(selectedAccount.address),
+    );
+
+    return index === -1 ? undefined : index;
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -6220,6 +6248,7 @@ export default class MetamaskController extends EventEmitter {
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
+        getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
@@ -7320,6 +7349,7 @@ export default class MetamaskController extends EventEmitter {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
       },
+      getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
     };
     return {
       ...controllerActions,
@@ -7620,9 +7650,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions([
-      this.#getGlobalChainId(),
-    ]);
+    await this.txController.updateIncomingTransactions();
   }
 
   _notifyAccountsChange(origin, newAccounts) {

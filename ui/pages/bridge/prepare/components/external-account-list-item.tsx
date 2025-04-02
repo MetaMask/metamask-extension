@@ -9,6 +9,7 @@ import {
   AvatarAccountVariant,
   Box,
   Text,
+  Tag,
 } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -16,6 +17,7 @@ import {
   BorderColor,
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -35,6 +37,7 @@ export const ExternalAccountListItem: React.FC<
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
+  const isEnsName = account.metadata.name.endsWith('.eth');
 
   return (
     <Box
@@ -46,31 +49,60 @@ export const ExternalAccountListItem: React.FC<
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
     >
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Md}
-        address={account.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
+        <AvatarAccount
+          borderColor={BorderColor.transparent}
+          size={AvatarAccountSize.Md}
+          address={account.address}
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          marginInlineEnd={2}
+        />
 
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {t('externalAccount')}
-        </Text>
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          data-testid="account-list-address"
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          style={{ maxWidth: '140px', overflow: 'hidden' }}
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
-        </Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            marginBottom={1}
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {isEnsName ? account.metadata.name : t('externalAccount')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            data-testid="account-list-address"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {shortenAddress(normalizeSafeAddress(account.address))}
+          </Text>
+        </Box>
       </Box>
+
+      {isEnsName && (
+        <Tag
+          label={t('externalAccount')}
+          paddingLeft={2}
+          paddingRight={2}
+          labelProps={{ variant: TextVariant.bodyXs }}
+        />
+      )}
     </Box>
   );
 };

@@ -128,6 +128,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
@@ -276,6 +280,14 @@ class HomePage {
       expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
   }
 }
 
