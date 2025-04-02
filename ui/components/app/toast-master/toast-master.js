@@ -201,15 +201,8 @@ function SurveyToastMayDelete() {
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
-  console.log('Privacy Policy Toast - Component rendering');
-
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
     useSelector(selectShowPrivacyPolicyToast);
-
-  console.log('Privacy Policy Toast - Selector result:', {
-    showPrivacyPolicyToast,
-    newPrivacyPolicyToastShownDate,
-  });
 
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
@@ -221,29 +214,33 @@ function PrivacyPolicyToast() {
       url: PRIVACY_POLICY_LINK,
     });
 
-    // Track the "read more" action
-    global.platform.trackEvent({
-      event: 'ToastSelect',
-      category: 'Toast',
-      properties: {
-        'toast name': 'privacy',
-        action: 'read more',
-      },
-    });
+    // Only track if platform.trackEvent exists
+    if (global.platform?.trackEvent) {
+      global.platform.trackEvent({
+        event: 'ToastSelect',
+        category: 'Toast',
+        properties: {
+          'toast name': 'privacy',
+          action: 'read more',
+        },
+      });
+    }
 
     setNewPrivacyPolicyToastClickedOrClosed();
   };
 
   const handleClose = () => {
-    // Track the "close" action
-    global.platform.trackEvent({
-      event: 'ToastSelect',
-      category: 'Toast',
-      properties: {
-        'toast name': 'privacy',
-        action: 'close',
-      },
-    });
+    // Only track if platform.trackEvent exists
+    if (global.platform?.trackEvent) {
+      global.platform.trackEvent({
+        event: 'ToastSelect',
+        category: 'Toast',
+        properties: {
+          'toast name': 'privacy',
+          action: 'close',
+        },
+      });
+    }
 
     setNewPrivacyPolicyToastClickedOrClosed();
   };

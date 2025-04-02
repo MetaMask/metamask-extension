@@ -28,7 +28,10 @@ import {
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
 } from '../../store/actions';
-import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
+import {
+  getFirstTimeFlowType,
+  getFirstTimeFlowTypeRouteAfterUnlock,
+} from '../../selectors/first-time-flow';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
@@ -62,16 +65,22 @@ export default function OnboardingFlow() {
   const { pathname, search } = useLocation();
   const history = useHistory();
   const t = useI18nContext();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
+
+  // Add checks to ensure selectors are defined
+  const hdEntropyIndex = useSelector((state) => getHDEntropyIndex(state));
+  const completedOnboarding = useSelector((state) => getCompletedOnboarding(state));
+  const firstTimeFlowType = useSelector((state) => getFirstTimeFlowType(state));
+  const nextRoute = useSelector((state) => getFirstTimeFlowTypeRouteAfterUnlock(state));
+  const isUnlocked = useSelector((state) => getIsUnlocked(state));
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
-  const isUnlocked = useSelector(getIsUnlocked);
 
   useEffect(() => {
-    setOnboardingDate();
-  }, []);
+    // Only set onboarding date for new wallets
+    if (!completedOnboarding && firstTimeFlowType === 'create') {
+      setOnboardingDate();
+    }
+  }, [completedOnboarding, firstTimeFlowType]);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
