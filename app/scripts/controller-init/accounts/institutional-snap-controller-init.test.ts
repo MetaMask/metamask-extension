@@ -8,7 +8,9 @@ import { ControllerInitRequest } from '../types';
 import { getInstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
 import { InstitutionalSnapControllerInit } from './institutional-snap-controller-init';
 
-jest.mock('../../lib/transaction/institutional-snap/InstitutionalSnapController');
+jest.mock(
+  '../../lib/transaction/institutional-snap/InstitutionalSnapController',
+);
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<InstitutionalSnapControllerMessenger>
