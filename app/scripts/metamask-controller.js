@@ -4464,6 +4464,7 @@ export default class MetamaskController extends EventEmitter {
         await Promise.all(
           discovered.map(async (discoveredAccount) => {
             const options = {
+              // FIXME: We should pass all scopes here.
               scope: discoveredAccount.scopes[0],
               entropySource: id,
             };
