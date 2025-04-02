@@ -1,16 +1,15 @@
 import { toHex } from '@metamask/controller-utils';
+import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { updateSelectedGasFeeToken } from '../../../store/actions/transaction-controller';
-import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { act } from '@testing-library/react';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { forceUpdateMetamaskState } from '../../../store/actions';
+import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
 
 jest.mock('../../../store/actions/transaction-controller');
 jest.mock('./alerts/transactions/useInsufficientBalanceAlerts');
@@ -34,10 +33,8 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
 };
 
 function runHook({
-  maxFeePerGas,
   noGasFeeTokens,
   selectedGasFeeToken,
-  value,
 }: {
   maxFeePerGas?: Hex;
   noGasFeeTokens?: boolean;
@@ -47,9 +44,7 @@ function runHook({
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       gasFeeTokens: noGasFeeTokens ? undefined : [GAS_FEE_TOKEN_MOCK],
-      maxFeePerGas,
-      selectedGasFeeToken: selectedGasFeeToken,
-      value,
+      selectedGasFeeToken,
     }),
   );
 
