@@ -12,18 +12,22 @@ import {
   NormalizedScopesObject,
   getSupportedScopeObjects,
   Caip25CaveatValue,
+  setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
   RequestedPermissions,
 } from '@metamask/permission-controller';
 import {
+  CaipAccountId,
   CaipChainId,
   Hex,
   isPlainObject,
   Json,
   JsonRpcRequest,
   JsonRpcSuccess,
+  KnownCaipNamespace,
+  parseCaipAccountId,
 } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import {
@@ -40,6 +44,8 @@ import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
 import { isKnownSessionPropertyValue } from './constants';
+import { uniq } from 'lodash';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -63,6 +69,7 @@ import { isKnownSessionPropertyValue } from './constants';
  * @param hooks.sendMetrics - The hook that tracks an analytics event.
  * @param hooks.getNonEvmSupportedMethods - The hook that returns the supported methods for a non EVM scope.
  * @param hooks.isNonEvmScopeSupported - The hook that returns true if a non EVM scope is supported.
+ * @param hooks.getNonEvmAccountAddresses - The hook that returns a list of CaipAccountIds that are supported for a CaipChainId.
  * @param hooks.metamaskState - The wallet state.
  * @param hooks.metamaskState.metaMetricsId - The analytics id.
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
@@ -93,6 +100,7 @@ async function walletCreateSessionHandler(
       permissionHistory: Record<string, unknown>;
       accounts: Record<string, unknown>;
     };
+    getNonEvmAccountAddresses: (scope: CaipChainId) => CaipAccountId[];
   },
 ) {
   const { origin } = req;
@@ -154,16 +162,34 @@ async function walletCreateSessionHandler(
     );
 
     // Fetch EVM accounts from native wallet keyring
-    // These addresses are lowercased already
     const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
-    const supportedEthAccounts = getEthAccounts({
-      requiredScopes: supportedRequiredScopes,
-      optionalScopes: supportedOptionalScopes,
+      // do case insensitive compare!
+
+    // TODO dry and or move to @metamask/chain-agnostic-permission
+    const requiredAccounts = Object.values(
+      supportedRequiredScopes,
+    ).flatMap((scope) => scope.accounts);
+    const optionalAccounts = Object.values(
+      supportedOptionalScopes,
+    ).flatMap((scope) => scope.accounts);
+
+    const allAccountAddresses = uniq([...requiredAccounts, ...optionalAccounts]);
+
+    const supportedAccountAddresses = allAccountAddresses.filter(accountAddress => {
+      const { address, chain: {namespace}, chainId } = parseCaipAccountId(accountAddress)
+      if (namespace === KnownCaipNamespace.Eip155) {
+        return existingEvmAddresses.some(existingEvmAddress => {
+          return isEqualCaseInsensitive(address, existingEvmAddress)
+        })
+      }
+
+      const getNonEvmAccountAddressesForChainId = hooks.getNonEvmAccountAddresses(chainId)
+      return getNonEvmAccountAddressesForChainId.some(existingCaipAddress => {
+          return isEqualCaseInsensitive(accountAddress, existingCaipAddress)
+      })
     })
-      .map((address) => address.toLowerCase() as Hex)
-      .filter((address) => existingEvmAddresses.includes(address));
 
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
@@ -172,9 +198,9 @@ async function walletCreateSessionHandler(
       sessionProperties: filteredSessionProperties,
     };
 
-    const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
+    const requestedCaip25CaveatValueWithSupportedAccounts = setPermittedAccounts(
       requestedCaip25CaveatValue,
-      supportedEthAccounts,
+      supportedAccountAddresses,
     );
 
     // Note that we do not verify non-evm accounts here. Instead we rely on
@@ -189,7 +215,7 @@ async function walletCreateSessionHandler(
         caveats: [
           {
             type: Caip25CaveatType,
-            value: requestedCaip25CaveatValueWithSupportedEthAccounts,
+            value: requestedCaip25CaveatValueWithSupportedAccounts,
           },
         ],
       },
@@ -257,5 +283,6 @@ export const walletCreateSession = {
     metamaskState: true,
     getNonEvmSupportedMethods: true,
     isNonEvmScopeSupported: true,
+    getNonEvmAccountAddresses: true,
   },
 };
