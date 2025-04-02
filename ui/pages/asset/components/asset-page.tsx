@@ -1,6 +1,6 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
 import React, { ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -167,16 +167,16 @@ const AssetPage = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  let address: string;
-  if (type === AssetType.token) {
-    if (isEvm) {
-      address = toChecksumHexAddress(asset.address);
-    } else {
-      address = asset.address;
+  const address = (() => {
+    if (type === AssetType.token) {
+      return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
     }
-  } else {
-    address = getNativeTokenAddress(chainId);
-  }
+    return getNativeTokenAddress(chainId);
+  })();
+
+  const contractAddress = isEvm
+    ? address
+    : parseCaipAssetType(address as CaipAssetType).assetReference;
 
   const tokenHexBalance =
     selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
@@ -378,7 +378,7 @@ const AssetPage = ({
                   <Box>
                     {renderRow(
                       t('contractAddress'),
-                      <AddressCopyButton address={address} shorten />,
+                      <AddressCopyButton address={contractAddress} shorten />,
                     )}
                     <Box
                       display={Display.Flex}
