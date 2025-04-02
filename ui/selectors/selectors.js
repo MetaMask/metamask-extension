@@ -26,6 +26,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -134,7 +135,6 @@ import {
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
-import { parseCaipChainId } from '@metamask/utils';
 
 /** `appState` slice selectors */
 

@@ -247,10 +247,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
     useState(defaultCaip10AccountAddresses);
 
-  const selectedAccounts = allAccounts.filter(({ caipAccountId }) =>
-    // Does this need to be a case insensitive compare?
-    selectedCaip10AccountAddresses.includes(caipAccountId),
-  );
+  const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
+    return selectedCaip10AccountAddresses.some((selectedCaipAccountId) => {
+      return isEqualCaseInsensitive(selectedCaipAccountId, caipAccountId);
+    });
+  });
 
   const onConfirm = () => {
     const _request = {

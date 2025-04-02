@@ -78,17 +78,18 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   };
 
   const handleAccountClick = (caipAccountId: CaipAccountId) => {
-    console.log('caipAccountId', caipAccountId);
-    if (selectedAccountAddresses.includes(caipAccountId)) {
-      console.log('removing caipAccountId', caipAccountId);
-      setSelectedAccountAddresses(
-        selectedAccountAddresses.filter(
-          (_caipAccountId) => _caipAccountId !== caipAccountId,
-        ),
-      );
-    } else {
-      console.log('adding caipAccountId', caipAccountId);
+    const updatedSelectedAccountAddresses = selectedAccountAddresses.filter(
+      (selectedAccountId) => {
+        return !isEqualCaseInsensitive(selectedAccountId, caipAccountId);
+      },
+    );
+
+    if (
+      updatedSelectedAccountAddresses.length === selectedAccountAddresses.length
+    ) {
       setSelectedAccountAddresses([...selectedAccountAddresses, caipAccountId]);
+    } else {
+      setSelectedAccountAddresses(updatedSelectedAccountAddresses);
     }
   };
 
