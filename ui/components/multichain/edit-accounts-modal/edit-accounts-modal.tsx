@@ -30,7 +30,7 @@ import {
   AlignItems,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -39,10 +39,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
-  accounts: {
-    internalAccount: MergedInternalAccount;
-    caipAccountId: CaipAccountId;
-  }[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
   defaultSelectedAccountAddresses: CaipAccountId[];
   onClose: () => void;
   onSubmit: (addresses: CaipAccountId[]) => void;
@@ -81,17 +78,18 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   };
 
   const handleAccountClick = (caipAccountId: CaipAccountId) => {
-    console.log('caipAccountId', caipAccountId);
-    if (selectedAccountAddresses.includes(caipAccountId)) {
-      console.log('removing caipAccountId', caipAccountId);
-      setSelectedAccountAddresses(
-        selectedAccountAddresses.filter(
-          (_caipAccountId) => _caipAccountId !== caipAccountId,
-        ),
-      );
-    } else {
-      console.log('adding caipAccountId', caipAccountId);
+    const updatedSelectedAccountAddresses = selectedAccountAddresses.filter(
+      (selectedAccountId) => {
+        return !isEqualCaseInsensitive(selectedAccountId, caipAccountId);
+      },
+    );
+
+    if (
+      updatedSelectedAccountAddresses.length === selectedAccountAddresses.length
+    ) {
       setSelectedAccountAddresses([...selectedAccountAddresses, caipAccountId]);
+    } else {
+      setSelectedAccountAddresses(updatedSelectedAccountAddresses);
     }
   };
 
@@ -148,9 +146,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
               {accounts.map((account) => (
                 <AccountListItem
                   onClick={() => handleAccountClick(account.caipAccountId)}
-                  account={account.internalAccount}
+                  account={account}
                   key={account.caipAccountId}
-                  isPinned={Boolean(account.internalAccount.pinned)}
+                  isPinned={Boolean(account.pinned)}
                   startAccessory={
                     <Checkbox
                       isChecked={selectedAccountAddresses.some(

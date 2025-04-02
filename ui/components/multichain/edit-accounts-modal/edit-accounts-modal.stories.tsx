@@ -26,31 +26,29 @@ export default {
     ],
     accounts: [
       {
-        internalAccount: {
-          id: '689821df-0e8f-4093-bbbb-b95cf0fa79cb',
-          address: '0x860092756917d3e069926ba130099375eeeb9440',
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
-          metadata: {
-            name: 'Account 1',
-            importTime: 1726046726882,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-            lastSelected: 1726046726882,
+        id: '689821df-0e8f-4093-bbbb-b95cf0fa79cb',
+        address: '0x860092756917d3e069926ba130099375eeeb9440',
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        metadata: {
+          name: 'Account 1',
+          importTime: 1726046726882,
+          keyring: {
+            type: 'HD Key Tree',
           },
-          balance: '0x00',
+          lastSelected: 1726046726882,
         },
+        balance: '0x00',
         caipAccountId: 'eip155:0:0x860092756917d3e069926ba130099375eeeb9440'
-      }
+      },
     ],
   },
 };

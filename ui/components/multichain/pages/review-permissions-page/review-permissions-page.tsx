@@ -25,7 +25,7 @@ import {
   getConnectedSitesList,
   getPermissionSubjects,
   getShowPermittedNetworkToastOpen,
-  getUpdatedAndSortedAccounts,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
   addPermittedAccounts,
@@ -57,10 +57,18 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
+<<<<<<< HEAD
+import { MergedInternalAccountWithCaipAccountId } from '../../../../selectors/selectors.types';
+||||||| fc1b07a053
+import { MergedInternalAccount } from '../../../../selectors/selectors.types';
+import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
+=======
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+>>>>>>> ad/chain-agnostic-permission-connection-ui-from-top
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -172,18 +180,8 @@ export const ReviewPermissions = () => {
   };
 
   const allAccounts = useSelector(
-    getUpdatedAndSortedAccounts,
-  ) as MergedInternalAccount[];
-
-  const allAccountsWithCaipAccountId = allAccounts.map((account) => {
-    // I hope we can reliably use the first scope to determine the namespace
-    const { namespace, reference } = parseCaipChainId(account.scopes[0]);
-    return {
-      internalAccount: account,
-      caipAccountId:
-        `${namespace}:${reference}:${account.address}` as CaipAccountId,
-    };
-  });
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  ) as MergedInternalAccountWithCaipAccountId[];
 
   const _connectedAccountAddresses = useSelector((state) =>
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
@@ -282,7 +280,7 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={allAccountsWithCaipAccountId}
+              accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}

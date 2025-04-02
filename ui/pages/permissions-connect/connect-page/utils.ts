@@ -1,9 +1,4 @@
-import {
-  CaipNamespace,
-  Hex,
-  CaipAccountId,
-  parseCaipAccountId,
-} from '@metamask/utils';
+import { CaipNamespace, Hex, parseCaipAccountId } from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
@@ -12,7 +7,7 @@ import {
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 
 export type PermissionsRequest = Record<
   string,
@@ -178,22 +173,10 @@ export function getFilteredNetworks(
  */
 export function getDefaultAccounts(
   requestedNamespaces: CaipNamespace[],
-  supportedRequestedAccounts: {
-    internalAccount: MergedInternalAccount;
-    caipAccountId: CaipAccountId;
-  }[],
-  allAccounts: {
-    internalAccount: MergedInternalAccount;
-    caipAccountId: CaipAccountId;
-  }[],
-): {
-  internalAccount: MergedInternalAccount;
-  caipAccountId: CaipAccountId;
-}[] {
-  const defaultAccounts: {
-    internalAccount: MergedInternalAccount;
-    caipAccountId: CaipAccountId;
-  }[] = [];
+  supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
+  allAccounts: MergedInternalAccountWithCaipAccountId[],
+): MergedInternalAccountWithCaipAccountId[] {
+  const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
 
   supportedRequestedAccounts.forEach((account) => {
     const {
@@ -206,8 +189,8 @@ export function getDefaultAccounts(
 
   // sort accounts by lastSelected descending
   const allAccountsSortedByLastSelected = allAccounts.sort((a, b) => {
-    const lastSelectedA = a.internalAccount.metadata.lastSelected;
-    const lastSelectedB = b.internalAccount.metadata.lastSelected;
+    const lastSelectedA = a.metadata.lastSelected;
+    const lastSelectedB = b.metadata.lastSelected;
     if (!lastSelectedA && !lastSelectedB) {
       return 0;
     }

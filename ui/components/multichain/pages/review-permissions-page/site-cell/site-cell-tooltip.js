@@ -37,7 +37,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
     : AvatarAccountVariant.Jazzicon;
 
   const avatarAccountsData = accounts?.map((account) => ({
-    avatarValue: account.internalAccount.address,
+    avatarValue: account.address,
   }));
 
   const avatarNetworksData = networks?.map((network) => ({
@@ -55,37 +55,35 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
           data-test-id="site-cell-tooltip"
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {accounts
-              ?.slice(0, TOOLTIP_LIMIT)
-              .map(({ internalAccount: acc }) => {
-                return (
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Row}
-                    alignItems={AlignItems.center}
-                    textAlign={TextAlign.Left}
-                    key={acc.address}
-                    padding={1}
-                    paddingInline={2}
-                    gap={2}
+            {accounts?.slice(0, TOOLTIP_LIMIT).map((acc) => {
+              return (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  textAlign={TextAlign.Left}
+                  key={acc.address}
+                  padding={1}
+                  paddingInline={2}
+                  gap={2}
+                >
+                  <AvatarAccount
+                    size={AvatarAccountSize.Xs}
+                    address={acc.address}
+                    variant={avatarAccountVariant}
+                    borderStyle={BorderStyle.none}
+                  />
+                  <Text
+                    color={TextColor.overlayInverse}
+                    variant={TextVariant.bodyMdMedium}
+                    data-testid="accounts-list-item-connected-account-name"
+                    ellipsis
                   >
-                    <AvatarAccount
-                      size={AvatarAccountSize.Xs}
-                      address={acc.address}
-                      variant={avatarAccountVariant}
-                      borderStyle={BorderStyle.none}
-                    />
-                    <Text
-                      color={TextColor.overlayInverse}
-                      variant={TextVariant.bodyMdMedium}
-                      data-testid="accounts-list-item-connected-account-name"
-                      ellipsis
-                    >
-                      {acc.metadata.name || acc.label}
-                    </Text>
-                  </Box>
-                );
-              })}
+                    {acc.metadata.name || acc.label}
+                  </Text>
+                </Box>
+              );
+            })}
             {networks?.slice(0, TOOLTIP_LIMIT).map((network) => {
               return (
                 <Box

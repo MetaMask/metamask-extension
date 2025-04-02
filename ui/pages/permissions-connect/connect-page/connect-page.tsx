@@ -8,7 +8,6 @@ import {
   InternalScopeString,
 } from '@metamask/chain-agnostic-permission';
 import {
-  CaipAccountId,
   CaipChainId,
   KnownCaipNamespace,
   parseCaipAccountId,
@@ -16,7 +15,7 @@ import {
 } from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUpdatedAndSortedAccounts } from '../../../selectors';
+import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
@@ -67,7 +66,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -185,18 +184,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const allAccounts = useSelector(
-    getUpdatedAndSortedAccounts,
-  ) as MergedInternalAccount[];
-
-  const allAccountsWithCaipAccountId = allAccounts.map((account) => {
-    // I hope we can reliably use the first scope to determine the namespace
-    const { namespace, reference } = parseCaipChainId(account.scopes[0]);
-    return {
-      internalAccount: account,
-      caipAccountId:
-        `${namespace}:${reference}:${account.address}` as CaipAccountId,
-    };
-  });
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  ) as MergedInternalAccountWithCaipAccountId[];
 
   const requestedNamespaces = getUniqueArrayItems(
     [
@@ -214,13 +203,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   // all accounts that match the requested namespaces
-  const supportedAccountsForRequestedNamespaces =
-    allAccountsWithCaipAccountId.filter((account) => {
+  const supportedAccountsForRequestedNamespaces = allAccounts.filter(
+    (account) => {
       const {
         chain: { namespace },
       } = parseCaipAccountId(account.caipAccountId);
       return requestedNamespaces.includes(namespace);
-    });
+    },
+  );
 
   // all requested accounts that are found in the wallet
   const supportedRequestedAccounts = Array.from(requestedCaipAccountIds).reduce(
@@ -234,10 +224,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       }
       return acc;
     },
-    [] as {
-      internalAccount: MergedInternalAccount;
-      caipAccountId: CaipAccountId;
-    }[],
+    [] as MergedInternalAccountWithCaipAccountId[],
   );
 
   // TODO use currentAccount as well to determine default accounts
@@ -255,10 +242,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
     useState(defaultCaip10AccountAddresses);
 
-  const selectedAccounts = allAccountsWithCaipAccountId.filter(
-    ({ caipAccountId }) =>
-      selectedCaip10AccountAddresses.includes(caipAccountId),
-  );
+  const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
+    return selectedCaip10AccountAddresses.some((selectedCaipAccountId) => {
+      return isEqualCaseInsensitive(selectedCaipAccountId, caipAccountId);
+    });
+  });
 
   const onConfirm = () => {
     const _request = {
@@ -390,7 +378,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               >
                 {selectedAccounts.map((account) => (
                   <AccountListItem
-                    account={account.internalAccount}
+                    account={account}
                     key={account.caipAccountId}
                     selected={false}
                   />
@@ -428,7 +416,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               )}
               {showEditAccountsModal && (
                 <EditAccountsModal
-                  accounts={allAccountsWithCaipAccountId}
+                  accounts={allAccounts}
                   defaultSelectedAccountAddresses={
                     selectedCaip10AccountAddresses
                   }
@@ -448,7 +436,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <SiteCell
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
-                accounts={allAccountsWithCaipAccountId}
+                accounts={allAccounts}
                 onSelectAccountAddresses={setSelectedCaip10AccountAddresses}
                 onSelectChainIds={setSelectedChainIds}
                 selectedAccountAddresses={selectedCaip10AccountAddresses}

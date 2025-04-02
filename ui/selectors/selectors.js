@@ -26,6 +26,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -3033,6 +3034,17 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
     return sortedSearchResults;
   },
 );
+
+export const getUpdatedAndSortedAccountsWithCaipAccountId =
+  createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
+    return accounts.map((account) => {
+      const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+      return {
+        ...account,
+        caipAccountId: `${namespace}:${reference}:${account.address}`,
+      };
+    });
+  });
 
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;

@@ -44,7 +44,7 @@ const render = (
   const accountsWithCaipAccountId = accounts.map((account) => {
     const { namespace, reference } = parseCaipChainId(account.scopes[0]);
     return {
-      internalAccount: account,
+      ...account,
       caipAccountId:
         `${namespace}:${reference}:${account.address}` as CaipAccountId,
     };
