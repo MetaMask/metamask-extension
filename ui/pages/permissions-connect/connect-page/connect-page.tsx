@@ -224,8 +224,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [] as MergedInternalAccountWithCaipAccountId[],
   );
 
-  // TODO use currentAccount as well to determine default accounts
-  // const currentAccount = useSelector(getSelectedInternalAccount);
   const defaultAccounts = getDefaultAccounts(
     requestedNamespaces,
     supportedRequestedAccounts,
