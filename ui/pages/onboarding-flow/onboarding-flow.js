@@ -68,9 +68,13 @@ export default function OnboardingFlow() {
 
   // Add checks to ensure selectors are defined
   const hdEntropyIndex = useSelector((state) => getHDEntropyIndex(state));
-  const completedOnboarding = useSelector((state) => getCompletedOnboarding(state));
+  const completedOnboarding = useSelector((state) =>
+    getCompletedOnboarding(state),
+  );
   const firstTimeFlowType = useSelector((state) => getFirstTimeFlowType(state));
-  const nextRoute = useSelector((state) => getFirstTimeFlowTypeRouteAfterUnlock(state));
+  const nextRoute = useSelector((state) =>
+    getFirstTimeFlowTypeRouteAfterUnlock(state),
+  );
   const isUnlocked = useSelector((state) => getIsUnlocked(state));
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
