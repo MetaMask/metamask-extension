@@ -58,9 +58,9 @@ import {
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { MergedInternalAccountWithCaipAccountId } from '../../../../selectors/selectors.types';
-import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -127,7 +127,7 @@ export const ReviewPermissions = () => {
       Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
-          const isTestNetwork = caipFormattedTestChains.includes(caipChainId);
+          const isTestNetwork = CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
