@@ -17,7 +17,7 @@ import TransactionConfirmation from '../page-objects/pages/confirmations/redesig
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
 
 describe('Test Snap TxInsights', function () {
-  it(' validate the insights section appears for ERC20 transaction', async function () {
+  it('shows insight for ERC20 transactions', async function () {
     await withFixtures(
       {
         dapp: true,
