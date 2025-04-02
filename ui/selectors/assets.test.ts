@@ -6,6 +6,7 @@ import {
   getAssetsMetadata,
   getAssetsRates,
   getMultiChainAssets,
+  getMultichainNativeAssetType,
   getSelectedAccountTokenByAddressAndChainId,
 } from './assets';
 
@@ -319,6 +320,59 @@ describe('getSelectedAccountTokenByAddressAndChainId', () => {
         title: 'Token 1',
         tokenFiatAmount: 0,
       });
+    });
+  });
+});
+
+describe('getMultichainNativeAssetType', () => {
+  const mockState = {
+    metamask: {
+      internalAccounts: {
+        accounts: {
+          '5132883f-598e-482c-a02b-84eeaa352f5b': {
+            id: '5132883f-598e-482c-a02b-84eeaa352f5b',
+            address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
+            type: 'solana:data-account',
+          },
+        },
+        selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
+      },
+      accountsAssets: {
+        '5132883f-598e-482c-a02b-84eeaa352f5b': [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        ],
+      },
+      networkConfigurationsByChainId: {},
+      completedOnboarding: true,
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
+
+  describe('when a native asset type is available', () => {
+    it('should return the native asset type', () => {
+      const result = getMultichainNativeAssetType(mockState);
+
+      expect(result).toEqual(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      );
+    });
+  });
+
+  describe('when a native asset type is not available', () => {
+    const mockStateWithoutNativeAssetType = cloneDeep(mockState);
+    mockStateWithoutNativeAssetType.metamask.accountsAssets[
+      '5132883f-598e-482c-a02b-84eeaa352f5b'
+    ] = [
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    ];
+
+    it('should return undefined', () => {
+      const result = getMultichainNativeAssetType(
+        mockStateWithoutNativeAssetType,
+      );
+
+      expect(result).toBeUndefined();
     });
   });
 });

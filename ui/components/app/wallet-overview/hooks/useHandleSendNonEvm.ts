@@ -14,8 +14,7 @@ import {
 import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getAccountAssets } from '../../../../selectors/assets';
-import { getMultichainNetwork } from '../../../../selectors/multichain';
+import { getMultichainNativeAssetType } from '../../../../selectors/assets';
 
 /**
  * Use this hook to trigger the send flow for non-EVM accounts.
@@ -27,9 +26,7 @@ import { getMultichainNetwork } from '../../../../selectors/multichain';
  * @returns A function that triggers the send flow for non-EVM accounts.
  */
 export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
-  const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
-  const currentNetwork = useMultichainSelector(getMultichainNetwork);
-  const accountAssets = useMultichainSelector(getAccountAssets);
+  const nativeAssetType = useMultichainSelector(getMultichainNativeAssetType);
 
   const account = useSelector(getSelectedInternalAccount);
   const history = useHistory();
@@ -79,14 +76,6 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
       if (caipAssetType) {
         return caipAssetType;
       }
-
-      const assetTypes = accountAssets?.[selectedAccount.id] || [];
-      const nativeAssetType = assetTypes.find((assetType) => {
-        const { chainId, assetNamespace } = parseCaipAssetType(assetType);
-        return (
-          chainId === currentNetwork.chainId && assetNamespace === 'slip44'
-        );
-      });
 
       if (!nativeAssetType) {
         throw new Error(

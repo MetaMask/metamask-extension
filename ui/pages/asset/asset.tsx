@@ -40,18 +40,24 @@ const Asset = () => {
     el?.scroll(0, 0);
   }, []);
 
-  let content;
-  if (nft) {
-    content = <NftDetails nft={nft} />;
-  } else if (token && chainId) {
-    if (token.isNative || !token.address) {
-      content = <NativeAsset chainId={chainId} token={token} />;
-    } else {
-      content = <TokenAsset chainId={chainId} token={token} />;
+  const content = (() => {
+    if (nft) {
+      return <NftDetails nft={nft} />;
     }
-  } else {
-    content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-  }
+
+    const isInvalid = !token || !chainId;
+    if (isInvalid) {
+      return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+    }
+
+    const shouldShowToken = !token.isNative && token.address;
+    if (shouldShowToken) {
+      return <TokenAsset chainId={chainId} token={token} />;
+    }
+
+    return <NativeAsset chainId={chainId} token={token} />;
+  })();
+
   return <div className="main-container asset__container">{content}</div>;
 };
 

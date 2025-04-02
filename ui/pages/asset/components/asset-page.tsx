@@ -174,9 +174,15 @@ const AssetPage = ({
     return getNativeTokenAddress(chainId);
   })();
 
-  const contractAddress = isEvm
-    ? address
-    : parseCaipAssetType(address as CaipAssetType).assetReference;
+  const shouldShowContractAddress = type === AssetType.token;
+  const contractAddress = (() => {
+    if (shouldShowContractAddress) {
+      return isEvm
+        ? toChecksumHexAddress(asset.address)
+        : parseCaipAssetType(address as CaipAssetType).assetReference;
+    }
+    return '';
+  })();
 
   const tokenHexBalance =
     selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
@@ -374,7 +380,7 @@ const AssetPage = ({
                     {networkName}
                   </Text>,
                 )}
-                {type === AssetType.token && (
+                {shouldShowContractAddress && (
                   <Box>
                     {renderRow(
                       t('contractAddress'),

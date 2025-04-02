@@ -305,30 +305,53 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
   },
 );
 
+/**
+ * Gets the CAIP asset type of the native token of the current network.
+ *
+ * @param state - Redux state object
+ * @param selectedAccount - Selected account
+ * @returns CAIP asset type of the native token, or undefined if no native token is found
+ */
+export const getMultichainNativeAssetType = createDeepEqualSelector(
+  getSelectedInternalAccount,
+  getAccountAssets,
+  getMultichainNetwork,
+  (
+    selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
+    accountAssets: ReturnType<typeof getAccountAssets>,
+    currentNetwork: ReturnType<typeof getMultichainNetwork>,
+  ) => {
+    const assetTypes = accountAssets?.[selectedAccount.id] || [];
+    const nativeAssetType = assetTypes.find((assetType) => {
+      const { chainId, assetNamespace } = parseCaipAssetType(assetType);
+      return chainId === currentNetwork.chainId && assetNamespace === 'slip44';
+    });
+
+    return nativeAssetType;
+  },
+);
+
+/**
+ * Gets the balance of the native token of the current network for the selected account.
+ *
+ * @param state - Redux state object
+ * @param selectedAccount - Selected account
+ * @returns Balance of the native token, or fallbacks to { amount: 0, unit: '' } if no native token is found
+ */
 export const getMultichainNativeTokenBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
   getMultichainBalances,
-  getAccountAssets,
+  getMultichainNativeAssetType,
   (
     selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
+    multichainBalances: ReturnType<typeof getMultichainBalances>,
+    nativeAssetType: ReturnType<typeof getMultichainNativeAssetType>,
   ) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
-    let nativeTokenBalance = zeroBalanceAssetFallback;
-
-    assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId && assetNamespace === 'slip44') {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-
-        nativeTokenBalance = balance;
-      }
-    });
+    const nativeTokenBalance = nativeAssetType
+      ? balances?.[nativeAssetType] || zeroBalanceAssetFallback
+      : zeroBalanceAssetFallback;
 
     return nativeTokenBalance;
   },
