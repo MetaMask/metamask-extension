@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
-import { CaipAssetType } from '@metamask/utils';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
