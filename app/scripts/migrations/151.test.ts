@@ -224,7 +224,7 @@ describe(`migration #${version}`, () => {
                 },
               ],
               date: 1723635247705,
-              id: expect.any(String),
+              id: 'izn0WGUO8cvq_jqvLQuQP',
               invoker: MOCK_SNAP_ID,
               parentCapability: Caip25EndowmentPermissionName,
             },

@@ -168,7 +168,7 @@ function transformState(state: Record<string, unknown>) {
   if (typeof currentChainId !== 'string') {
     global.sentry?.captureException?.(
       new Error(
-        'Skipping migration: The chain ID resolved from the `NetworkController.selectedNetworkClientId` value is not a string.',
+        'Skipping migration: No chain ID was found, or the chain ID resolved from the `NetworkController.selectedNetworkClientId` value is not a string.',
       ),
     );
 
@@ -203,8 +203,15 @@ function transformState(state: Record<string, unknown>) {
 
     const caveatValue = addPermittedEthChainId(
       getCaveat(subject),
-      currentChainId as `0x${string}`,
+      currentChainId,
     );
+
+    const {
+      date = Date.now(),
+      id = nanoid(),
+      invoker = key,
+      parentCapability = Caip25EndowmentPermissionName,
+    } = subject.permissions[Caip25EndowmentPermissionName] ?? {};
 
     const newSubject: GenericPermissionControllerSubject = {
       ...subject,
@@ -217,10 +224,10 @@ function transformState(state: Record<string, unknown>) {
               value: caveatValue,
             },
           ],
-          date: Date.now(),
-          id: nanoid(),
-          invoker: key,
-          parentCapability: Caip25EndowmentPermissionName,
+          date,
+          id,
+          invoker,
+          parentCapability,
         },
       },
     };
@@ -259,7 +266,7 @@ function getCaveat(
 ): Caip25CaveatValue {
   const existingCaveat = subject.permissions[
     Caip25EndowmentPermissionName
-    ]?.caveats?.find((caveat) => caveat.type === Caip25CaveatType);
+  ]?.caveats?.find((caveat) => caveat.type === Caip25CaveatType);
 
   if (!existingCaveat) {
     return {
