@@ -5542,6 +5542,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/institutional-wallet-snap@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/institutional-wallet-snap@npm:1.1.1"
+  checksum: 10/4cbebbb4ab2b40d2537925cad9b1ca02085afda704d9453b0cb7959df63a885c78accada205e52c5fe38f7b2641feffb9ec42a5a898f45562dcbcd64df4d8f75
+  languageName: node
+  linkType: hard
+
 "@metamask/jazzicon@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/jazzicon@npm:2.0.0"
@@ -27235,6 +27242,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"
+    "@metamask/institutional-wallet-snap": "npm:1.1.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
