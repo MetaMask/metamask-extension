@@ -94,7 +94,7 @@ export function ToastMaster() {
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <SwitchedNetworkToast />
-        {/* <NftEnablementToast /> */}
+        <NftEnablementToast />
         <PermittedNetworkToast />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
