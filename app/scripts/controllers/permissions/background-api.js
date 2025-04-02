@@ -193,7 +193,7 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-    // TODO dry this into core
+      // TODO dry this into core
       const permittedAccounts = new Set();
       Object.values(caip25Caveat.value.requiredScopes).forEach(
         ({ accounts }) => {

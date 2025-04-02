@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import {
@@ -11,6 +12,7 @@ import {
 } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { uniq } from 'lodash';
+import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import {
   AlignItems,
   BlockSize,
@@ -61,7 +63,6 @@ import { MergedInternalAccountWithCaipAccountId } from '../../../../selectors/se
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
-import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -137,8 +138,12 @@ export const ReviewPermissions = () => {
           return [nonTestNetworksList, testNetworksList];
         },
         [
-          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
-          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
+          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
+            caipChainId: CaipChainId;
+          })[],
+          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
+            caipChainId: CaipChainId;
+          })[],
         ],
       ),
     [networkConfigurationsByCaipChainId],
@@ -149,13 +154,15 @@ export const ReviewPermissions = () => {
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
 
-  const connectedChainIds = _connectedChainIds.filter((chainId: InternalScopeString) => {
-    if (chainId === KnownCaipNamespace.Wallet) {
-      return false;
-    }
-    const { namespace } = parseCaipChainId(chainId);
-    return namespace !== KnownCaipNamespace.Wallet;
-  });
+  const connectedChainIds = _connectedChainIds.filter(
+    (chainId: InternalScopeString) => {
+      if (chainId === KnownCaipNamespace.Wallet) {
+        return false;
+      }
+      const { namespace } = parseCaipChainId(chainId);
+      return namespace !== KnownCaipNamespace.Wallet;
+    },
+  );
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {

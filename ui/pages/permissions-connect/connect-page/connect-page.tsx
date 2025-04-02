@@ -1,5 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
@@ -134,8 +135,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           return [nonTestNetworksList, testNetworksList];
         },
         [
-          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
-          [] as (NetworkConfiguration & { caipChainId: CaipChainId })[],
+          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
+            caipChainId: CaipChainId;
+          })[],
+          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
+            caipChainId: CaipChainId;
+          })[],
         ],
       ),
     [networkConfigurationsByCaipChainId],
