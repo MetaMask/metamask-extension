@@ -6,15 +6,10 @@ import { privateKeyToAccount } from 'viem/accounts';
 import {
   createCaveatBuilder,
   createDelegation,
-  createRootDelegation,
   Delegation,
-  getDelegationHashOffchain,
-  toMetaMaskSmartAccount,
-  Implementation,
-  MetaMaskSmartAccount,
-  getDeleGatorEnvironment,
-  DelegationFramework,
-  SINGLE_DEFAULT_MODE,
+  encodeRedeemDelegations,
+  getDelegationHash,
+  sdk,
 } from '@metamask/delegation-controller';
 import { Box, Button, Text } from '../../components/component-library';
 import {
@@ -36,9 +31,6 @@ const TRANSFER_AMOUNT = parseEther('0.001');
 
 const INTERNAL_GATOR_PK = '';
 
-export const ROOT_AUTHORITY =
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
 const publicClient = createPublicClient({
   chain: sepolia,
   transport: http(SEPOLIA_RPC_URL),
@@ -51,9 +43,9 @@ export const DelegationContainer = () => {
 
   const loadMetaMaskAccount = async () => {
     const owner = privateKeyToAccount(INTERNAL_GATOR_PK as `0x${string}`);
-    const account = await toMetaMaskSmartAccount({
+    const account = await sdk.toMetaMaskSmartAccount({
       client: publicClient,
-      implementation: Implementation.Hybrid,
+      implementation: sdk.Implementation.Hybrid,
       deployParams: [owner.address, [], [], []],
       deploySalt: '0x',
       signatory: { account: owner },
@@ -68,33 +60,35 @@ export const DelegationContainer = () => {
     storeDelegation({
       delegate: selectedAccount.address,
       delegator: selectedAccount.address,
-      authority: ROOT_AUTHORITY,
+      authority: sdk.ROOT_AUTHORITY,
       caveats: [],
-      salt: BigInt(0).toString(),
+      salt: `0x0`,
       signature: '0x',
     });
   };
 
   const generateRootDelegation = async (
-    metaMaskSmartAccount: MetaMaskSmartAccount<Implementation.Hybrid>,
+    metaMaskSmartAccount: sdk.MetaMaskSmartAccount<sdk.Implementation.Hybrid>,
   ) => {
-    const gatorEnv = getDeleGatorEnvironment(sepolia.id, '1.2.0');
     try {
-      const caveateBuilder = createCaveatBuilder(gatorEnv);
+      const caveateBuilder = createCaveatBuilder(sepolia.id);
       const caveats = caveateBuilder.addCaveat(
         'nativeTokenTransferAmount',
         SWAP_LIMIT,
       );
 
-      const delegation = createRootDelegation(
-        selectedAccount.address as `0x${string}`,
-        metaMaskSmartAccount?.address as `0x${string}`,
+      const delegation = createDelegation({
+        delegate: selectedAccount.address as `0x${string}`,
+        delegator: metaMaskSmartAccount?.address as `0x${string}`,
         caveats,
-        BigInt(0),
-      );
+        salt: `0x0`,
+      });
 
       const signature = await metaMaskSmartAccount.signDelegation({
-        delegation,
+        delegation: {
+          ...delegation,
+          salt: BigInt(delegation.salt),
+        },
       });
 
       const rootDelegationWithSignature = {
@@ -124,13 +118,12 @@ export const DelegationContainer = () => {
     console.log('account2', account2);
 
     try {
-      const newRedelegation = createDelegation(
-        account2.address as `0x${string}`,
-        account1?.address as `0x${string}`,
-        getDelegationHashOffchain(rootDelegation),
-        [],
-        BigInt(0),
-      );
+      const newRedelegation = createDelegation({
+        delegate: account2.address as `0x${string}`,
+        delegator: account1?.address as `0x${string}`,
+        authority: getDelegationHash(rootDelegation),
+        caveats: [],
+      });
 
       return newRedelegation;
     } catch (error) {
@@ -153,10 +146,7 @@ export const DelegationContainer = () => {
       throw new Error('Failed to generate redelegation');
     }
     console.log('signing delegation');
-    const signature = await signDelegation({
-      ...redelegation,
-      salt: redelegation.salt.toString(),
-    });
+    const signature = (await signDelegation(redelegation)) as `0x${string}`;
     console.log(signature);
     redelegation.signature = signature;
 
@@ -165,17 +155,17 @@ export const DelegationContainer = () => {
 
   const redeem = async () => {
     const account2 = internalAccounts[1];
-    const gatorEnv = getDeleGatorEnvironment(sepolia.id, '1.2.0');
+    const gatorEnv = sdk.getDeleGatorEnvironment(sepolia.id);
     const delegationManagerAddress = gatorEnv.DelegationManager;
 
     console.log('delegations', delegations);
 
     console.log('encoding call data');
     // Create a transaction to the DelegationManager contract for the chain
-    const encodedCallData = DelegationFramework.encode.redeemDelegations(
-      [delegations],
-      [SINGLE_DEFAULT_MODE],
-      [
+    const encodedCallData = encodeRedeemDelegations({
+      delegations: [delegations],
+      modes: [sdk.SINGLE_DEFAULT_MODE],
+      executions: [
         [
           {
             target: account2.address as `0x${string}`,
@@ -184,7 +174,7 @@ export const DelegationContainer = () => {
           },
         ],
       ],
-    );
+    });
     console.log('encodedCallData', encodedCallData);
 
     console.log('adding transaction');

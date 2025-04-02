@@ -5175,17 +5175,16 @@ __metadata:
 
 "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.1.0
-  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=61586a&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=d8afae&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask-private/delegator-core-viem": "npm:^0.7.1"
     "@metamask/accounts-controller": "npm:^27.0.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-controller": "npm:^21.0.1"
-    "@metamask/network-controller": "npm:^22.1.1"
     "@metamask/utils": "npm:^11.3.0"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/08a03b1f81f3282df5691f6e0e08323057a4907e370e31460b072ef587c5477007dc4048f587bfa59cb2771861cef7f89f49b319eb7df959bda68a9c1a6f2c93
+  checksum: 10/d5d65dd0fbca06e2ea1dd2082074bd5fb937bde34bf1caae0e755d32005f35d6a300c496ccb63ac024ae1ab197e52f93a62ae46c640077a731871ab6b0095820
   languageName: node
   linkType: hard
 
@@ -5966,7 +5965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^22.1.1, @metamask/network-controller@npm:^22.2.1":
+"@metamask/network-controller@npm:^22.2.1":
   version: 22.2.1
   resolution: "@metamask/network-controller@npm:22.2.1"
   dependencies:
