@@ -32,10 +32,11 @@ export type InstitutionalSnapControllerPublishHookAction = {
   handler: InstitutionalSnapController['deferPublicationHook'];
 };
 
-type InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction = {
-  type: `${typeof controllerName}:beforeCheckPendingTransactionHook`;
-  handler: InstitutionalSnapController['beforeCheckPendingTransactionHook'];
-};
+export type InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction =
+  {
+    type: `${typeof controllerName}:beforeCheckPendingTransactionHook`;
+    handler: InstitutionalSnapController['beforeCheckPendingTransactionHook'];
+  };
 
 type Actions =
   | AllowedActions
