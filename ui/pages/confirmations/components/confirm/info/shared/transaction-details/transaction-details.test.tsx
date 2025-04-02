@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
@@ -174,5 +175,28 @@ describe('<TransactionDetails />', () => {
     );
     expect(getByText('Network')).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();
+  });
+
+  describe('RecipientRow', () => {
+    it('should not be displayed when the transaction is a batch transaction', () => {
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        type: TransactionType.batch,
+      });
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { queryByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        queryByTestId('transaction-details-recipient-row'),
+      ).not.toBeInTheDocument();
+    });
   });
 });

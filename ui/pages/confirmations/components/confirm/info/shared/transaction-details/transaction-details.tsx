@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -53,13 +56,16 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const to = recipient ?? currentConfirmation?.txParams?.to;
+  const isBatchTransaction =
+    TransactionType.batch === currentConfirmation?.type;
 
-  if (!to || !isValidAddress(to)) {
+  if (!to || !isValidAddress(to) || isBatchTransaction) {
     return null;
   }
 
   const { chainId } = currentConfirmation;
 
+  console.log('>>>>>> passing here', isBatchTransaction);
   return (
     <ConfirmInfoAlertRow
       ownerId={currentConfirmation.id}
