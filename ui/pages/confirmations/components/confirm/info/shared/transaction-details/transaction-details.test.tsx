@@ -3,7 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  NestedTransactionMetadata,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
@@ -179,8 +182,22 @@ describe('<TransactionDetails />', () => {
 
   describe('RecipientRow', () => {
     it('should not be displayed when the transaction is a batch transaction', () => {
+      const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
+      const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
-        type: TransactionType.batch,
+        address: ADDRESS_MOCK,
+        nestedTransactions: [
+          {
+            to: ADDRESS_MOCK,
+            data: '0x1',
+            type: TransactionType.contractInteraction,
+          },
+          {
+            to: ADDRESS_2_MOCK,
+            data: '0x2',
+            type: TransactionType.contractInteraction,
+          },
+        ] as NestedTransactionMetadata[],
       });
       const state = getMockConfirmStateForTransaction(contractInteraction, {
         metamask: {
