@@ -26,7 +26,7 @@ jest.mock('../../hooks/useBatchApproveBalanceChanges', () => ({
   useBatchApproveBalanceChanges: jest.fn(),
 }));
 
-jest.mock('../../../../../../../store/actions/transaction-controller', () => ({
+jest.mock('../../../../../../../store/controller-actions/transaction-controller', () => ({
   updateAtomicBatchData: jest.fn(),
 }));
 
