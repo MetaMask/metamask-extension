@@ -127,9 +127,7 @@ function parseAsset(
   }
 
   return {
+    ...movement,
     amount: finalAmount,
-    unit: movement.unit,
-    // It is not strictly correct to use the address here but we do not support sending multiple assets to multiple addresses
-    address: movement.address,
   };
 }
