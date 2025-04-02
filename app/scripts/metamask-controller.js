@@ -4458,6 +4458,7 @@ export default class MetamaskController extends EventEmitter {
           index,
         );
 
+        // We stop discovering accounts if none got discovered for that index.
         if (discovered.length === 0) {
           break;
         }
