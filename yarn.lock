@@ -5602,7 +5602,8 @@ __metadata:
   checksum: 10/29b2db7f2626414f6147e6a25aae16b1a012485aa394fb6ad2b3f26519455dae7e6e6fdd502f279e1924251b7058a853982297f37761372ed034db5f150fc720
   languageName: node
   linkType: hard
-"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.4.0":
+
+"@metamask/keyring-api@npm:^17.0.0, @metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.4.0":
   version: 17.4.0
   resolution: "@metamask/keyring-api@npm:17.4.0"
   dependencies:
