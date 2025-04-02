@@ -163,7 +163,7 @@
     "currentMigrationVersion": "number",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
-    "networksWithActivity": "object",
+    "networksWithTransactionActivity": "object",
     "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {

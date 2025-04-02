@@ -52,9 +52,9 @@ export type MultichainNetworkConfigurationsByChainIdState = {
   };
 };
 
-export type NetworksWithActivityByAccountsState = {
+export type NetworksWithTransactionActivityByAccountsState = {
   metamask: {
-    networksWithActivity: ActiveNetworksByAddress;
+    networksWithTransactionActivity: ActiveNetworksByAddress;
   };
 };
 
@@ -69,7 +69,7 @@ export type MultichainNetworkConfigState =
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
     ProviderConfigState &
-    NetworksWithActivityByAccountsState;
+    NetworksWithTransactionActivityByAccountsState;
 
 // Selectors
 
@@ -197,4 +197,4 @@ export const getSelectedMultichainNetworkConfiguration = (
 };
 
 export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
-  state.metamask.networksWithActivity;
+  state.metamask.networksWithTransactionActivity;

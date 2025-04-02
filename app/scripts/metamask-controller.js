@@ -3437,8 +3437,8 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // active networks by accounts
-      getNetworksWithActivityByAccounts:
-        this.multichainNetworkController.getNetworksWithActivityByAccounts.bind(
+      getNetworksWithTransactionActivityByAccounts:
+        this.multichainNetworkController.getNetworksWithTransactionActivityByAccounts.bind(
           this.multichainNetworkController,
         ),
       // Avoids returning the promise so that initial call to switch network

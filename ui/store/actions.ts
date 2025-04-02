@@ -2634,17 +2634,17 @@ export function setActiveNetworkWithError(
   };
 }
 
-export function getNetworksWithActivityByAccounts(): ThunkAction<
+export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
   Promise<NetworkConfiguration[]>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async () => {
-    log.debug('background.getNetworksWithActivityByAccounts');
+    log.debug('background.getNetworksWithTransactionActivityByAccounts');
     try {
       return await submitRequestToBackground(
-        'getNetworksWithActivityByAccounts',
+        'getNetworksWithTransactionActivityByAccounts',
       );
     } catch (error) {
       logErrorWithMessage(error);
