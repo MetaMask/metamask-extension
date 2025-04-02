@@ -172,13 +172,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ? supportedRequestedCaipChainIds
       : defaultSelectedNetworkList;
 
-  console.log({
-    currentlySelectedNetworkChainId,
-    selectedTestNetwork,
-    defaultSelectedNetworkList,
-    defaultSelectedChainIds,
-  });
-
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
     defaultSelectedChainIds as CaipChainId[],
   );

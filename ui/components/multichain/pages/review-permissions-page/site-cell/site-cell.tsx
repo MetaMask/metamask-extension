@@ -69,8 +69,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
     selectedChainIds.includes(caipChainId),
   );
 
-  console.log({ allNetworks, selectedNetworks, selectedChainIds });
-
   const selectedChainIdsLength = selectedChainIds.length;
 
   // Determine the messages for connected and not connected states
