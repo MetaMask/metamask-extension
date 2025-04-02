@@ -1096,27 +1096,12 @@ async function buildEventFragmentProperties({
     sensitiveProperties,
   );
 
-  console.log('Checking transaction hash flag condition');
-  console.log(
-    'Feature flags object:',
-    transactionMetricsRequest.getRemoteFeatureFlags?.(),
-  );
-  console.log(
-    'TX hash flag value:',
-    transactionMetricsRequest.getRemoteFeatureFlags?.()
-      ?.transactionsTxHashInAnalytics,
-  );
-
   if (
     transactionMetricsRequest.getRemoteFeatureFlags?.()
       ?.transactionsTxHashInAnalytics &&
     transactionMetricsRequest.getParticipateInMetrics() &&
     transactionMeta?.hash
   ) {
-    console.log(
-      'Adding transaction hash to metrics properties:',
-      transactionMeta.hash,
-    );
     // Add transaction hash to properties
     properties.transaction_hash = transactionMeta.hash;
   }
