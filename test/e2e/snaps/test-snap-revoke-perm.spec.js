@@ -47,7 +47,13 @@ describe('Test Snap revoke permission', function () {
           tag: 'button',
         });
 
-        // wait for and click connect
+        // wait and scroll if necessary
+        await driver.clickElementSafe(
+          '[data-testid="snap-install-scroll"]',
+          3000,
+        );
+
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
           text: 'Confirm',
