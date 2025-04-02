@@ -204,8 +204,7 @@ async function withFixtures(options, testSuite) {
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
 
-      const hardfork =
-        localNodeOptsNormalized[0].options.hardfork || 'prague';
+      const hardfork = localNodeOptsNormalized[0].options.hardfork || 'prague';
       for (const contract of contracts) {
         await seeder.deploySmartContract(contract, hardfork);
       }
