@@ -58,7 +58,6 @@ import {
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
-  getPermittedAccountsForCurrentTab,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
@@ -70,6 +69,7 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
+  getAllPermittedAccountsForCurrentTab,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -1852,21 +1852,67 @@ export function setSelectedAccount(
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const internalAccount = getInternalAccountByAddress(state, address);
+    const prevAccount = getSelectedInternalAccount(state);
+    const nextAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
+      getAllPermittedAccountsForCurrentTab(state);
+
+    // TODO: DRY this
     const currentTabIsConnectedToPreviousAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(internalAccount.address);
+      permittedAccountsForCurrentTab.some((account) => {
+        const parsedPermittedAccount = parseCaipAccountId(account);
+
+        return prevAccount.scopes.some((scope) => {
+          const { namespace, reference } = parseCaipChainId(scope);
+
+          if (
+            namespace !== parsedPermittedAccount.chain.namespace ||
+            !isEqualCaseInsensitive(
+              prevAccount.address,
+              parsedPermittedAccount.address,
+            )
+          ) {
+            return false;
+          }
+
+          return (
+            reference === '0' ||
+            reference === parsedPermittedAccount.chain.reference
+          );
+        });
+      });
+
     const currentTabIsConnectedToNextAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(address);
+      permittedAccountsForCurrentTab.some((account) => {
+        const parsedPermittedAccount = parseCaipAccountId(account);
+
+        return nextAccount.scopes.some((scope) => {
+          const { namespace, reference } = parseCaipChainId(scope);
+
+          if (
+            namespace !== parsedPermittedAccount.chain.namespace ||
+            !isEqualCaseInsensitive(
+              nextAccount.address,
+              parsedPermittedAccount.address,
+            )
+          ) {
+            return false;
+          }
+
+          return (
+            reference === '0' ||
+            reference === parsedPermittedAccount.chain.reference
+          );
+        });
+      });
+
     const switchingToUnconnectedAddress =
+      Boolean(activeTabOrigin) &&
       currentTabIsConnectedToPreviousAddress &&
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedInternalAccount(internalAccount.id);
+      await _setSelectedInternalAccount(nextAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -1952,7 +1998,7 @@ export function removePermittedAccount(
 
 export function addPermittedChain(
   origin: string,
-  chainId: string,
+  chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {

@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { CaipNamespace, Hex, parseCaipAccountId } from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
@@ -6,6 +6,8 @@ import {
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 
 export type PermissionsRequest = Record<
   string,
@@ -69,4 +71,145 @@ export function getCaip25PermissionsResponse(
       ],
     },
   };
+}
+
+/**
+ * Gets a list of unique accounts from the given CAIP-25 caveat value.
+ *
+ * @param requestedCaip25CaveatValue - CAIP-25 request values.
+ * @returns Accounts available for requesting.
+ */
+export function getAllRequestedAccounts(
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+) {
+  const requiredAccounts = Object.values(
+    requestedCaip25CaveatValue.requiredScopes,
+  ).flatMap((scope) => scope.accounts);
+
+  const optionalAccounts = Object.values(
+    requestedCaip25CaveatValue.optionalScopes,
+  ).flatMap((scope) => scope.accounts);
+
+  const allAccounts = [...requiredAccounts, ...optionalAccounts];
+
+  return [...new Set(allAccounts)];
+}
+
+export function getAllRequestedChainIds(
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+) {
+  const allScopes = [
+    ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
+    ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
+  ];
+
+  return [...new Set(allScopes)];
+}
+
+/**
+ * Filters networks based on the CAIP request scopes.
+ *
+ * @param networks - Network configurations.
+ * @param requestedCaip25CaveatValue - CAIP-25 caveat value.
+ * @returns Filtered network configurations matching the requested scopes.
+ */
+export function getFilteredNetworks(
+  networks: Record<string, NetworkConfiguration>,
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+): Record<string, NetworkConfiguration> {
+  const filteredNetworks: Record<string, NetworkConfiguration> = {};
+  const allScopes = {
+    ...(requestedCaip25CaveatValue.requiredScopes || {}),
+    ...(requestedCaip25CaveatValue.optionalScopes || {}),
+  };
+
+  const hasEipRequest = Object.keys(allScopes).some(
+    (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
+  );
+
+  Object.entries(networks).forEach(([chainId, network]) => {
+    if (chainId.startsWith('0x')) {
+      if (hasEipRequest) {
+        filteredNetworks[chainId] = network;
+      }
+    } else if (Object.keys(allScopes).includes(chainId)) {
+      filteredNetworks[chainId] = network;
+    }
+  });
+
+  return filteredNetworks;
+}
+
+/**
+ * Gets the default accounts for the requested namespaces.
+ * We need at least one default per requested namespace
+ * if there are more explicitly requested accounts, use those instead
+ * for that namespace
+ *
+ * @param requestedNamespaces - The namespaces requested.
+ * @param supportedRequestedAccounts - The supported requested accounts.
+ * @param allAccounts - All available accounts.
+ */
+export function getDefaultAccounts(
+  requestedNamespaces: CaipNamespace[],
+  supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
+  allAccounts: MergedInternalAccountWithCaipAccountId[],
+): MergedInternalAccountWithCaipAccountId[] {
+  const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
+
+  supportedRequestedAccounts.forEach((account) => {
+    const {
+      chain: { namespace },
+    } = parseCaipAccountId(account.caipAccountId);
+    if (requestedNamespaces.includes(namespace)) {
+      defaultAccounts.push(account);
+    }
+  });
+
+  // sort accounts by lastSelected descending
+  const allAccountsSortedByLastSelected = allAccounts.sort((a, b) => {
+    const lastSelectedA = a.metadata.lastSelected;
+    const lastSelectedB = b.metadata.lastSelected;
+    if (!lastSelectedA && !lastSelectedB) {
+      return 0;
+    }
+    if (!lastSelectedA) {
+      return 1;
+    }
+    if (!lastSelectedB) {
+      return -1;
+    }
+
+    if (lastSelectedA > lastSelectedB) {
+      return -1;
+    } else if (lastSelectedA < lastSelectedB) {
+      return 1;
+    }
+    return 0;
+  });
+
+  requestedNamespaces.forEach((namespace) => {
+    if (
+      !defaultAccounts.find((account) => {
+        const {
+          chain: { namespace: accountNamespace },
+        } = parseCaipAccountId(account.caipAccountId);
+        return accountNamespace === namespace;
+      })
+    ) {
+      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
+        (account) => {
+          const {
+            chain: { namespace: accountNamespace },
+          } = parseCaipAccountId(account.caipAccountId);
+          return accountNamespace === namespace;
+        },
+      );
+      if (defaultAccountForNamespace) {
+        defaultAccounts.push(defaultAccountForNamespace);
+      }
+    }
+  });
+
+  return defaultAccounts;
 }

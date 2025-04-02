@@ -5074,6 +5074,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/chain-agnostic-permission@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/chain-agnostic-permission@npm:0.3.0"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.10.12"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/network-controller": "npm:^23.1.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.2.0"
+    lodash: "npm:^4.17.21"
+  checksum: 10/872cd804ba64ee78b7f28fd78d864680672911b567b36be3b5046b8164aaf9088aed937ffc983ca1986ba16a3892c471de0870bc00f94f9d87c634a568fb5a78
+  languageName: node
+  linkType: hard
+
 "@metamask/contract-metadata@npm:^2.4.0, @metamask/contract-metadata@npm:^2.5.0":
   version: 2.5.0
   resolution: "@metamask/contract-metadata@npm:2.5.0"
@@ -27252,7 +27267,7 @@ __metadata:
     "@metamask/bridge-controller": "npm:^11.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:^0.2.0"
+    "@metamask/chain-agnostic-permission": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
     "@metamask/design-tokens": "npm:^6.0.1"

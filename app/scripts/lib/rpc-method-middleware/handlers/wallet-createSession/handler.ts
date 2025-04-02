@@ -172,6 +172,7 @@ async function walletCreateSessionHandler(
       sessionProperties: filteredSessionProperties,
     };
 
+    // TODO: we need to apply this same filtering generically to non-evm accounts as well!
     const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
       requestedCaip25CaveatValue,
       supportedEthAccounts,

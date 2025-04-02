@@ -3842,6 +3842,7 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
+        accountsController,
       }),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
