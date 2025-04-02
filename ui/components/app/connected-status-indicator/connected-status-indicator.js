@@ -35,7 +35,6 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
-  console.log({ permittedAccounts, selectedAccount });
 
   const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
     (account) => {
