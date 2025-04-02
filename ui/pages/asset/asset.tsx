@@ -20,17 +20,19 @@ const Asset = () => {
   }>();
 
   const { chainId, asset, id } = params;
+  const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
   const token = useSelector((state) =>
-    getSelectedAccountTokenByAddressAndChainId(state, asset, chainId),
+    getSelectedAccountTokenByAddressAndChainId(state, decodedAsset, chainId),
   );
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
       // @ts-expect-error TODO: Fix this type error by handling undefined parameters
-      isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
+      isEqualCaseInsensitive(address, decodedAsset) &&
+      id === tokenId.toString(),
   );
 
   useEffect(() => {

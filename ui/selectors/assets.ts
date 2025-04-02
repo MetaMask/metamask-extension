@@ -196,8 +196,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace, assetReference } =
-        parseCaipAssetType(assetId);
+      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
@@ -215,7 +214,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
       if (!hideZeroBalanceTokens || balance.amount !== '0' || isNative) {
         allAssets.push({
           title: metadata.name,
-          address: assetReference, // The EVM address represents the asset_reference portion of the CAIP-19 asset type
+          address: assetId,
           symbol: metadata.symbol,
           image: metadata.iconUrl,
           decimals,

@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
+import { CaipAssetType } from '@metamask/utils';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
@@ -113,9 +114,7 @@ const TokenButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  const handleSendNonEvm = useHandleSendNonEvm(
-    `${multichainChainId}/token:${token.address}`,
-  );
+  const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
