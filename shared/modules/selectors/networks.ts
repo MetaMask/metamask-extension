@@ -1,7 +1,8 @@
+import { type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   RpcEndpointType,
-  type NetworkConfiguration,
   type NetworkState as InternalNetworkState,
+  type NetworkConfiguration as InternalNetworkConfiguration,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -15,7 +16,7 @@ export type NetworkState = {
 
 export type NetworkConfigurationsState = {
   metamask: {
-    networkConfigurations: Record<string, NetworkConfiguration>;
+    networkConfigurations: Record<string, InternalNetworkConfiguration>;
   };
 };
 
@@ -34,6 +35,19 @@ export type NetworksMetadataState = {
 export type ProviderConfigState = NetworkConfigurationsByChainIdState &
   SelectedNetworkClientIdState;
 
+export type MultichainNetworkConfigurationsByChainIdState = {
+  metamask: {
+    multichainNetworkConfigurationsByChainId: Record<
+      string,
+      InternalMultichainNetworkConfiguration
+    >;
+    networkConfigurationsByChainId: Record<
+      string,
+      InternalNetworkConfiguration
+    >;
+  };
+};
+
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state: NetworkConfigurationsByChainIdState) =>
     state.metamask.networkConfigurationsByChainId,
@@ -45,26 +59,6 @@ export function getSelectedNetworkClientId(
 ) {
   return state.metamask.selectedNetworkClientId;
 }
-/**
- * Type to extend InternalNetworkState with multichain configurations.
- */
-type ExtendedInternalNetworkState = InternalNetworkState & {
-  multichainNetworkConfigurationsByChainId: Record<
-    string,
-    NetworkConfiguration
-  >;
-};
-
-/**
- * State type that includes both standard and multichain network configurations.
- */
-export type ConsolidatedNetworkConfigurationsState = {
-  metamask: Pick<
-    ExtendedInternalNetworkState,
-    | 'networkConfigurationsByChainId'
-    | 'multichainNetworkConfigurationsByChainId'
-  >;
-};
 
 /**
  * Combines and returns network configurations for all chains (EVM and not).
@@ -73,9 +67,9 @@ export type ConsolidatedNetworkConfigurationsState = {
  * @returns A consolidated object containing all available network configurations.
  */
 export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
-  (state: ConsolidatedNetworkConfigurationsState) =>
+  (state: MultichainNetworkConfigurationsByChainIdState) =>
     state.metamask.networkConfigurationsByChainId,
-  (state: ConsolidatedNetworkConfigurationsState) =>
+  (state: MultichainNetworkConfigurationsByChainIdState) =>
     state.metamask.multichainNetworkConfigurationsByChainId,
   (state: {
     metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
@@ -87,7 +81,7 @@ export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
   ) => {
     const caipFormattedEvmNetworkConfigurations: Record<
       string,
-      NetworkConfiguration
+      InternalNetworkConfiguration | InternalMultichainNetworkConfiguration
     > = {};
 
     Object.entries(networkConfigurationsByChainId).forEach(
@@ -164,7 +158,7 @@ export const getProviderConfig = createSelector(
 
 export function getNetworkConfigurations(
   state: NetworkConfigurationsState,
-): Record<string, NetworkConfiguration> {
+): Record<string, InternalNetworkConfiguration> {
   return state.metamask.networkConfigurations;
 }
 

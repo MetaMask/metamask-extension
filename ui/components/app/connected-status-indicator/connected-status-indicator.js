@@ -35,7 +35,6 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
-
   const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
     (account) => {
       const parsedPermittedAccount = parseCaipAccountId(account);
