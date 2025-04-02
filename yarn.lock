@@ -6515,9 +6515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^52.3.0":
-  version: 52.3.0
-  resolution: "@metamask/transaction-controller@npm:52.3.0"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@52.3.0-preview-888fa154":
+  version: 52.3.0-preview-888fa154
+  resolution: "@metamask-previews/transaction-controller@npm:52.3.0-preview-888fa154"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6547,7 +6547,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/0d73d0734a0ecdf8715e55639595b460bd98e3f719702356636a39ff4f5d1179050c236d412408ab799af2a202f14fcc934fd9bd6dbd9e747f3ea8b6ce51273b
+  checksum: 10/97659e592b9bdde48abed3a4bb0a6f001ddda1bbd8b8d5e941cbe04f521233315d8909d693f9662786c6a92b75999fac490c4e2e76571c35eefff87fef3f7047
   languageName: node
   linkType: hard
 
@@ -27275,7 +27275,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^52.3.0"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@52.3.0-preview-888fa154"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
