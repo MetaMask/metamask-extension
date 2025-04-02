@@ -47,6 +47,8 @@ describe('Test Snap ethereum_provider', function () {
           tag: 'button',
         });
 
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
