@@ -131,8 +131,6 @@ export async function setupInitialStore(
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-
-    // Not entirely sure if these changes are correct. The original logic kind of confuses me.
     const permittedAccountsForCurrentTab =
       getAllPermittedAccountsForCurrentTab(draftInitialState);
 
