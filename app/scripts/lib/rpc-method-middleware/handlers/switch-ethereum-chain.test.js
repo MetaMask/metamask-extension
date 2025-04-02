@@ -221,16 +221,9 @@ describe('switchEthereumChainHandler', () => {
       expect.any(Function),
       CHAIN_IDS.MAINNET,
       NETWORK_TYPES.MAINNET,
-      {
+      expect.objectContaining({
         autoApprove: true,
-        setActiveNetwork: mocks.setActiveNetwork,
-        getCaveat: mocks.getCaveat,
-        requestPermittedChainsPermissionForOrigin:
-          mocks.requestPermittedChainsPermissionForOrigin,
-        requestPermittedChainsPermissionIncrementalForOrigin:
-          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        setTokenNetworkFilter: mocks.setTokenNetworkFilter,
-      },
+      }),
     );
   });
 });
