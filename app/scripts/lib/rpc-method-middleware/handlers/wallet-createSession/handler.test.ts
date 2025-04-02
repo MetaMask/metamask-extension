@@ -342,11 +342,8 @@ describe('wallet_createSession', () => {
   });
 
   it('gets the account addresses for non evm scopes', async () => {
-    const {
-      handler,
-      listAccounts,
-      getNonEvmAccountAddresses,
-    } = createMockedHandler();
+    const { handler, listAccounts, getNonEvmAccountAddresses } =
+      createMockedHandler();
     listAccounts.mockReturnValue([
       { address: '0x1' },
       { address: '0x3' },
