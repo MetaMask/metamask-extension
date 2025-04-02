@@ -4,7 +4,7 @@ import type {
 } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -553,6 +553,10 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.LOCALHOST,
   CHAIN_IDS.MEGAETH_TESTNET,
 ];
+
+export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
+  (chainId) => `eip155:${hexToNumber(chainId)}`,
+);
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },

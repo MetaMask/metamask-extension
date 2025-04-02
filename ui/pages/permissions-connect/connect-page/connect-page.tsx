@@ -48,7 +48,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
@@ -65,7 +65,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
@@ -75,11 +74,6 @@ import {
   getAllRequestedAccounts,
   getAllRequestedChainIds,
 } from './utils';
-
-// put this here because of some circular dependency issue
-export const caipFormattedTestChains = TEST_CHAINS.map(
-  (chainId) => `eip155:${hexToDecimal(chainId)}`,
-);
 
 export type ConnectPageRequest = {
   id: string;
@@ -131,7 +125,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
-          const isTestNetwork = caipFormattedTestChains.includes(caipChainId);
+          const isTestNetwork =
+            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
