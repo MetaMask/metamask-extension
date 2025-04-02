@@ -120,7 +120,7 @@ describe('getMultiChainAssets', () => {
       expect.arrayContaining([
         expect.objectContaining({
           title: 'Token 1',
-          address: '501',
+          address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
           symbol: 'TKN1',
           image: 'https://example.com/token-1.png',
           decimals: 9,
@@ -131,7 +131,8 @@ describe('getMultiChainAssets', () => {
         }),
         expect.objectContaining({
           title: 'USDC',
-          address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          address:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
           symbol: 'USDC',
           image: undefined,
           decimals: 0,
@@ -163,7 +164,7 @@ describe('getMultiChainAssets', () => {
       expect.arrayContaining([
         expect.objectContaining({
           title: 'Token 1',
-          address: '501',
+          address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
           symbol: 'TKN1',
           image: 'https://example.com/token-1.png',
           decimals: 9,
@@ -302,12 +303,12 @@ describe('getSelectedAccountTokenByAddressAndChainId', () => {
     it('should return the token from the state', () => {
       const result = getSelectedAccountTokenByAddressAndChainId(
         mockStateNonEvm,
-        '501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
 
       expect(result).toEqual({
-        address: '501',
+        address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         image: 'https://example.com/token-1.png',

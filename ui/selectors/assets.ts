@@ -4,7 +4,6 @@ import {
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
-  CaipAssetReference,
   CaipAssetType,
   CaipChainId,
   Hex,
@@ -237,17 +236,17 @@ export const getMultiChainAssets = createDeepEqualSelector(
  * Gets a {@link Token} (EVM or Multichain) owned by the selected account by address and chainId.
  *
  * @param state - Redux state object
- * @param tokenAddress - Token address
- * @param chainId - Chain ID
+ * @param tokenAddress - Token address (Hex for EVM, or CaipAssetType for non-EVM)
+ * @param chainId - Chain ID (Hex for EVM, or CaipChainId for non-EVM)
  * @returns Token object
  */
 export const getSelectedAccountTokenByAddressAndChainId =
   createDeepEqualSelector(
     (state) => state,
-    (_state, tokenAddress?: Hex | CaipAssetReference) => tokenAddress,
+    (_state, tokenAddress?: Hex | CaipAssetType | string) => tokenAddress,
     (
       _state,
-      _tokenAddress?: Hex | CaipAssetReference,
+      _tokenAddress?: Hex | CaipAssetType | string,
       _chainId?: Hex | CaipChainId,
     ) => _chainId,
     (state) => getSelectedInternalAccount(state),
@@ -256,13 +255,13 @@ export const getSelectedAccountTokenByAddressAndChainId =
 
       const assetsToSearch = isEvm
         ? (getSelectedAccountTokensAcrossChains(state) as Record<
-            string,
+            Hex,
             TokenWithFiatAmount[]
           >)
-        : groupBy(
+        : (groupBy(
             getMultiChainAssets(state, selectedInternalAccount),
             'chainId',
-          );
+          ) as Record<CaipChainId, TokenWithFiatAmount[]>);
 
       const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
 
