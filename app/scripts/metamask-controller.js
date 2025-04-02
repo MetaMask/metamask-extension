@@ -2875,47 +2875,46 @@ export default class MetamaskController extends EventEmitter {
         },
         getAuthorizedScopesByOrigin,
       );
-      if (process.env.MULTICHAIN_API) {
-        this.controllerMessenger.subscribe(
-          `${this.accountsController.name}:selectedAccountChange`,
-          async (account) => {
-            if (
-              account.type === 'solana:data-account' &&
-              account.address !== lastSelectedSolanaAccountAddress
-            ) {
-              const originsWithSolanaAccountChangedNotifications =
-                getOriginsWithSessionProperty(
-                  this.permissionController.state,
-                  KnownSessionProperties.SolanaAccountChangedNotifications,
-                );
 
-              const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+      this.controllerMessenger.subscribe(
+        `${this.accountsController.name}:selectedAccountChange`,
+        async (account) => {
+          if (
+            account.type === 'solana:data-account' &&
+            account.address !== lastSelectedSolanaAccountAddress
+          ) {
+            const originsWithSolanaAccountChangedNotifications =
+              getOriginsWithSessionProperty(
                 this.permissionController.state,
-                [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ],
+                KnownSessionProperties.SolanaAccountChangedNotifications,
               );
 
-              for (const [origin, accounts] of solanaAccounts.entries()) {
-                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                  const { address } = parseCaipAccountId(caipAccountId);
-                  return address;
-                });
+            const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+              this.permissionController.state,
+              [
+                MultichainNetworks.SOLANA,
+                MultichainNetworks.SOLANA_DEVNET,
+                MultichainNetworks.SOLANA_TESTNET,
+              ],
+            );
 
-                if (
-                  parsedSolanaAddresses.includes(account.address) &&
-                  originsWithSolanaAccountChangedNotifications[origin]
-                ) {
-                  lastSelectedSolanaAccountAddress = account.address;
-                  this._notifySolanaAccountChange(origin, account.address);
-                }
+            for (const [origin, accounts] of solanaAccounts.entries()) {
+              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedSolanaAddresses.includes(account.address) &&
+                originsWithSolanaAccountChangedNotifications[origin]
+              ) {
+                lastSelectedSolanaAccountAddress = account.address;
+                this._notifySolanaAccountChange(origin, account.address);
               }
             }
-          },
-        );
-      }
+          }
+        },
+      );
     }
 
     this.controllerMessenger.subscribe(
