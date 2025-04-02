@@ -97,6 +97,8 @@ export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
       },
     );
 
+// For now we need to filter out networkConfigurations/scopes without accounts because
+// the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
     Object.entries(multichainNetworkConfigurationsByChainId).forEach(
       ([caipChainId, networkConfig]) => {
         const matchesAccount = Object.values(internalAccounts.accounts).some(
