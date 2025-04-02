@@ -2870,6 +2870,16 @@ export default class MetamaskController extends EventEmitter {
               }
             });
 
+            // if changedAuthorizations contains solana account(s) and sessionProperties contains solanaAccountChangedNotifications
+            // we need to notify the solana account change
+            const solanaScope = sessionScopes[MultichainNetworks.SOLANA];
+
+            if (solanaScope) {
+              const {accounts} = solanaScope;
+
+              const solanaAccountChangedNotifications = solanaScope.notifications.includes(KnownSessionProperties.SolanaAccountChangedNotifications);
+            }
+
             this._notifyAuthorizationChange(origin, authorization);
           }
         },
