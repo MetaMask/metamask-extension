@@ -16,7 +16,7 @@ import {
 type GenericPermissionControllerSubject =
   PermissionControllerSubjects<PermissionConstraint>[string];
 
-export const version = 144;
+export const version = 151;
 
 /**
  * A map of the networks built into the extension at the time of this migration
