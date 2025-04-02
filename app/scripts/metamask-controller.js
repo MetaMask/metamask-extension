@@ -7355,6 +7355,18 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      getRemoteFeatureFlags: () => {
+        console.log(
+          'getRemoteFeatureFlags called in transactionMetricsRequest',
+        );
+
+        // Get the remoteFeatureFlags property from state
+        const featureFlags = this.remoteFeatureFlagController?.state || {};
+        console.log('Remote feature flags:', featureFlags);
+
+        // Return just the remoteFeatureFlags object, not the whole state
+        return featureFlags.remoteFeatureFlags || {};
+      },
     };
     return {
       ...controllerActions,
