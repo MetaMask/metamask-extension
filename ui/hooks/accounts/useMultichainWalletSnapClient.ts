@@ -101,7 +101,7 @@ export class MultichainWalletSnapClient {
     // This will trigger the Snap account creation flow (+ account renaming)
     const account = await createSnapAccount(
       this.#snapId,
-      { ...options, synchronize: true },
+      options,
       internalOptions,
     );
 
