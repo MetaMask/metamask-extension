@@ -57,7 +57,15 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
+<<<<<<< HEAD
 import { MergedInternalAccountWithCaipAccountId } from '../../../../selectors/selectors.types';
+||||||| fc1b07a053
+import { MergedInternalAccount } from '../../../../selectors/selectors.types';
+import { caipFormattedTestChains } from '../../../../pages/permissions-connect/connect-page/connect-page';
+=======
+import { MergedInternalAccount } from '../../../../selectors/selectors.types';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+>>>>>>> ad/chain-agnostic-permission-connection-ui-from-top
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
@@ -127,7 +135,8 @@ export const ReviewPermissions = () => {
       Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
-          const isTestNetwork = CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+          const isTestNetwork =
+            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
