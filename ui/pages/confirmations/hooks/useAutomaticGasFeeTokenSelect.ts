@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useConfirmContext } from '../context/confirm';
 import { useAsyncResult } from '../../../hooks/useAsync';
-import { updateSelectedGasFeeToken } from '../../../store/actions/transaction-controller';
+import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 

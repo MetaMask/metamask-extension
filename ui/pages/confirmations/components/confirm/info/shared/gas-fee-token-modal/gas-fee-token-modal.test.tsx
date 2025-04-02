@@ -11,7 +11,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
-} from '../../../../../../../store/actions/transaction-controller';
+} from '../../../../../../../store/controller-actions/transaction-controller';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 jest.mock('../../../../../../../store/actions/transaction-controller');

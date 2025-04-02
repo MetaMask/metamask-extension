@@ -5,7 +5,7 @@ import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { updateSelectedGasFeeToken } from '../../../store/actions/transaction-controller';
+import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';

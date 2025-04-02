@@ -14,7 +14,7 @@ import { AlertMetricsProvider } from '../../../../../../../components/app/alert-
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
-import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
