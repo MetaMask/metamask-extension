@@ -11,7 +11,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  BITCOIN_BLOCK_EXPLORER_URL,
   MultichainNetworks,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
@@ -225,7 +224,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `${BITCOIN_BLOCK_EXPLORER_URL}/tx/${txId}`,
+      `https://mempool.space/tx/${txId}`,
     );
   });
 
@@ -235,7 +234,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/${txId}`,
+      `https://mempool.space/testnet/tx/${txId}`,
     );
   });
 
@@ -282,7 +281,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `${BITCOIN_BLOCK_EXPLORER_URL}/address/${address}`,
+      `https://mempool.space/address/${address}`,
     );
   });
 
@@ -291,7 +290,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/address/${address}`,
+      `https://mempool.space/testnet/address/${address}`,
     );
   });
 

@@ -58,15 +58,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
       },
     ]);
 
-    // TODO: consolidate name & title in token fields to avoid this switch
-    if (tokenSortConfig.sortCallback === 'alphaNumeric') {
-      return sortAssets([...filteredAssets], {
-        key: isEvm ? 'name' : 'title',
-        sortCallback: 'alphaNumeric',
-        order: 'asc',
-      });
-    }
-
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets([...filteredAssets], tokenSortConfig);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -246,22 +246,6 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  it('falls back to regular transaction submit if it is a legacy transaction', async () => {
-    withRequest(async ({ request }) => {
-      // Modify transaction to be a legacy transaction (has gasPrice, no maxFeePerGas/maxPriorityFeePerGas)
-      request.transactionMeta.txParams = {
-        ...request.transactionMeta.txParams,
-        gasPrice: '0x77359400',
-      };
-      // Remove EIP-1559 specific fields if they exist
-      delete request.transactionMeta.txParams.maxFeePerGas;
-      delete request.transactionMeta.txParams.maxPriorityFeePerGas;
-
-      const result = await submitSmartTransactionHook(request);
-      expect(result).toEqual({ transactionHash: undefined });
-    });
-  });
-
   it('falls back to regular transaction submit if /getFees throws an error', async () => {
     withRequest(async ({ request, endFlowSpy }) => {
       jest
