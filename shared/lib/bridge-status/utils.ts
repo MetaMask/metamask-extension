@@ -1,4 +1,5 @@
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   QuoteMetadataSerialized,
   StatusRequest,
@@ -72,6 +73,72 @@ export const serializeQuoteMetadata = (
     },
   };
 };
+
+/**
+ * Determines if a Solana bridge transaction is complete
+ *
+ * @param transaction - The transaction object to check
+ * @returns Whether the transaction is complete
+ */
+// TODO: type.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isBridgeComplete(transaction: any): boolean {
+  return (
+    transaction.isBridgeTx &&
+    transaction.bridgeInfo &&
+    (transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
+      transaction.bridgeInfo.status === 'COMPLETE')
+  );
+}
+
+/**
+ * Determines if a bridge transaction is failed
+ *
+ * @param transaction - The transaction object to check
+ * @param statusKey - The calculated status key
+ * @returns Whether the transaction is failed
+ */
+// TODO: type.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isBridgeFailed(transaction: any, statusKey: string): boolean {
+  return (
+    transaction.isBridgeTx &&
+    transaction.bridgeInfo &&
+    (transaction.bridgeInfo.status === StatusTypes.FAILED ||
+      transaction.bridgeInfo.status === 'FAILED' ||
+      statusKey === TransactionStatus.failed)
+  );
+}
+
+/**
+ * Gets the appropriate status key for a Solana bridge transaction
+ *
+ * @param transaction - The transaction object
+ * @param defaultStatusKey - The default status key from regular transaction handling
+ * @returns The appropriate status key
+ */
+export function getBridgeStatusKey(
+  // TODO: type.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transaction: any,
+  defaultStatusKey: string,
+): string {
+  if (transaction.isBridgeTx && transaction.bridgeInfo) {
+    if (
+      transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
+      transaction.bridgeInfo.status === 'COMPLETE'
+    ) {
+      return TransactionStatus.confirmed;
+    } else if (
+      transaction.bridgeInfo.status === StatusTypes.FAILED ||
+      transaction.bridgeInfo.status === 'FAILED'
+    ) {
+      return TransactionStatus.failed;
+    }
+  }
+
+  return defaultStatusKey;
+}
 
 export const getInitialHistoryItem = ({
   quoteResponse,

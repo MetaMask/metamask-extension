@@ -2,7 +2,11 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import {
+  getBridgeStatusKey,
+  isBridgeComplete,
+  isBridgeFailed,
+} from '../../../../shared/lib/bridge-status';
 import {
   Display,
   FlexDirection,
@@ -15,7 +19,7 @@ import {
   TextAlign,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+// import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ModalOverlay,
   ModalContent,
@@ -76,25 +80,36 @@ function SolanaBridgeTransactionDetailsModal({
   onClose,
   userAddress,
 }) {
-  const t = useI18nContext();
+  // TODO: add translations.
+  // const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const {
-    id,
-    type,
-    timestamp,
-    chain,
-    status,
-    from,
-    to,
-    baseFee,
-    priorityFee,
-    asset,
-  } = useMultichainTransactionDisplay({ transaction, userAddress });
+  const { id, timestamp, chain, status, baseFee, asset } =
+    useMultichainTransactionDisplay({ transaction, userAddress });
 
   const bridgeInfo = transaction.bridgeInfo || {};
-  const isBridgeComplete = bridgeInfo.status === StatusTypes.COMPLETE;
-  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
+
+  // Get the transaction status key using shared utility
+  const statusKey = getBridgeStatusKey(
+    transaction,
+    KEYRING_TRANSACTION_STATUS_KEY[status],
+  );
+
+  // Use shared utility functions to check transaction state
+  const txComplete = isBridgeComplete(transaction);
+  const txFailed = isBridgeFailed(transaction, statusKey);
+
+  // Set display status based on transaction state
+  let displayStatus = 'In Progress';
+  let statusColor = TextColor.primaryDefault;
+
+  if (txComplete) {
+    displayStatus = 'Complete';
+    statusColor = TextColor.successDefault;
+  } else if (txFailed) {
+    displayStatus = 'Failed';
+    statusColor = TextColor.errorDefault;
+  }
 
   /**
    * Gets the correct block explorer URL for a transaction hash based on chain type
@@ -249,15 +264,8 @@ function SolanaBridgeTransactionDetailsModal({
                 >
                   Status
                 </Text>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={
-                    isBridgeComplete
-                      ? TextColor.successDefault
-                      : TextColor.primaryDefault
-                  }
-                >
-                  {isBridgeComplete ? 'Complete' : 'In Progress'}
+                <Text variant={TextVariant.bodyMd} color={statusColor}>
+                  {displayStatus}
                 </Text>
               </Box>
 

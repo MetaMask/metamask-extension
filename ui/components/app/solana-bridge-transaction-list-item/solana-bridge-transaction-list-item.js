@@ -2,8 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
-import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import { TransactionType } from '@metamask/transaction-controller';
+import {
+  getBridgeStatusKey,
+  isBridgeComplete,
+  isBridgeFailed,
+} from '../../../../shared/lib/bridge-status';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import {
@@ -17,10 +21,7 @@ import { ActivityListItem } from '../../multichain';
 import {
   Display,
   FlexDirection,
-  TextColor,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -37,45 +38,45 @@ import {
 
 import './index.scss';
 
-/**
- * Helper function to format destination token amount based on decimals
- *
- * @param {string} amount - The raw token amount in base units
- * @param {number} decimals - The number of decimals for the token (defaults to 18)
- * @returns {string} Formatted token amount
- */
-const formatDestTokenAmount = (amount, decimals = 18) => {
-  if (!amount) {
-    return '0';
-  }
+// /**
+//  * Helper function to format destination token amount based on decimals
+//  *
+//  * @param {string} amount - The raw token amount in base units
+//  * @param {number} decimals - The number of decimals for the token (defaults to 18)
+//  * @returns {string} Formatted token amount
+//  */
+// const formatDestTokenAmount = (amount, decimals = 18) => {
+//   if (!amount) {
+//     return '0';
+//   }
 
-  // Convert from base units (like wei) to the display units (like ETH)
-  try {
-    const amountBN = BigInt(amount);
-    const divisor = BigInt(10) ** BigInt(decimals);
+//   // Convert from base units (like wei) to the display units (like ETH)
+//   try {
+//     const amountBN = BigInt(amount);
+//     const divisor = BigInt(10) ** BigInt(decimals);
 
-    // Integer part
-    const integerPart = amountBN / divisor;
+//     // Integer part
+//     const integerPart = amountBN / divisor;
 
-    // Decimal part with proper padding
-    const remainder = amountBN % divisor;
-    const remainderStr = remainder.toString().padStart(decimals, '0');
+//     // Decimal part with proper padding
+//     const remainder = amountBN % divisor;
+//     const remainderStr = remainder.toString().padStart(decimals, '0');
 
-    // Format with up to 4 decimal places, and trim trailing zeros
-    const decimalPlaces = 4;
-    const formattedDecimal = remainderStr
-      .substring(0, decimalPlaces)
-      .replace(/0+$/u, '');
+//     // Format with up to 4 decimal places, and trim trailing zeros
+//     const decimalPlaces = 4;
+//     const formattedDecimal = remainderStr
+//       .substring(0, decimalPlaces)
+//       .replace(/0+$/u, '');
 
-    // Combine integer and decimal parts
-    return formattedDecimal.length > 0
-      ? `${integerPart}.${formattedDecimal}`
-      : `${integerPart}`;
-  } catch (e) {
-    console.error('Error formatting destination token amount:', e);
-    return amount.toString();
-  }
-};
+//     // Combine integer and decimal parts
+//     return formattedDecimal.length > 0
+//       ? `${integerPart}.${formattedDecimal}`
+//       : `${integerPart}`;
+//   } catch (e) {
+//     console.error('Error formatting destination token amount:', e);
+//     return amount.toString();
+//   }
+// };
 
 /**
  * Component for Solana Bridge Transactions with EVM-style segment rendering
@@ -99,12 +100,12 @@ const SolanaBridgeTransactionListItem = ({
   });
 
   let title = capitalize(type);
-  // For bridge transactions with a completed status, use 'confirmed' status to get the green label
-  const statusKey = transaction.isBridgeTx && 
-    (transaction.bridgeInfo?.status === StatusTypes.COMPLETE || 
-     transaction.bridgeInfo?.status === 'COMPLETE')
-    ? TransactionStatus.confirmed
-    : KEYRING_TRANSACTION_STATUS_KEY[status];
+
+  // Get the appropriate status key using the shared utility function
+  const statusKey = getBridgeStatusKey(
+    transaction,
+    KEYRING_TRANSACTION_STATUS_KEY[status],
+  );
 
   if (type === TransactionType.swap) {
     title = `${t('swap')} ${from.asset.unit} ${t('to')} ${to.asset.unit}`;
@@ -126,12 +127,10 @@ const SolanaBridgeTransactionListItem = ({
     }
   }
 
-  // Determine if this transaction is in progress or completed
-  const isBridgeComplete =
-    transaction.isBridgeTx &&
-    transaction.bridgeInfo &&
-    (transaction.bridgeInfo.status === StatusTypes.COMPLETE || 
-     transaction.bridgeInfo.status === 'COMPLETE');
+  // Use shared utility functions to check transaction state
+  const txComplete = isBridgeComplete(transaction);
+  const txFailed = isBridgeFailed(transaction, statusKey);
+  const txTerminal = txComplete || txFailed;
 
   return (
     <ActivityListItem
@@ -204,41 +203,37 @@ const SolanaBridgeTransactionListItem = ({
             status={statusKey}
             statusOnly
             className={
-              isBridgeComplete ? 'transaction-status-label--confirmed' : undefined
+              txComplete ? 'transaction-status-label--confirmed' : undefined
             }
           />
-          {/* Bridge Steps with progress bars */}
-          <Box
-            marginTop={2}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={1}
-            width={BlockSize.Full}
-          >
-            <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-              {/* Source Chain Segment - Complete (100% filled) */}
-              <Box
-                className="solana-bridge-transaction-list-item__segment-container"
-                width={BlockSize.Full}
-              >
-                <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--complete" />
-              </Box>
-
-              {/* Destination Chain Segment - Dynamic based on status */}
-              <Box
-                className="solana-bridge-transaction-list-item__segment-container"
-                width={BlockSize.Full}
-              >
+          {/* Bridge Steps with progress bars - only show for pending transactions */}
+          {transaction.isBridgeTx && transaction.bridgeInfo && !txTerminal && (
+            <Box
+              marginTop={2}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={1}
+              width={BlockSize.Full}
+            >
+              <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+                {/* Source Chain Segment - Complete (100% filled) */}
                 <Box
-                  className={`solana-bridge-transaction-list-item__segment ${
-                    isBridgeComplete
-                      ? 'solana-bridge-transaction-list-item__segment--complete'
-                      : 'solana-bridge-transaction-list-item__segment--pending'
-                  }`}
-                />
+                  className="solana-bridge-transaction-list-item__segment-container"
+                  width={BlockSize.Full}
+                >
+                  <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--complete" />
+                </Box>
+
+                {/* Destination Chain Segment - Dynamic based on status */}
+                <Box
+                  className="solana-bridge-transaction-list-item__segment-container"
+                  width={BlockSize.Full}
+                >
+                  <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--pending" />
+                </Box>
               </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       }
     />
