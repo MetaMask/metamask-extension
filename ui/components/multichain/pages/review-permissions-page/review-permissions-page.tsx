@@ -149,7 +149,6 @@ export const ReviewPermissions = () => {
     [networkConfigurationsByCaipChainId],
   );
 
-  // TODO: Fix this typing upstream?
   const _connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
