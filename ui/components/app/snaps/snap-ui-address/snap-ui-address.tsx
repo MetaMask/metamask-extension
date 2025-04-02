@@ -63,6 +63,7 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   return (
     <Box
       className="snap-ui-renderer__address"
+      data-testid="snap-ui-address"
       display={Display.Flex}
       alignItems={AlignItems.center}
       gap={2}
