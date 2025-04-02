@@ -224,7 +224,7 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@keystonehq/metamask-airgapped-keyring": "npm:@metamask/metamask-airgapped-keyring@0.15.0",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@metamask/transaction-controller@52.3.0": "npm:metamask-previews/transaction-controller@52.3.0-preview-8ea9b81f"
+    "@metamask/transaction-controller@^52.3.0": "npm:@metamask-previews/transaction-controller@52.3.0-preview-8ea9b81f"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
