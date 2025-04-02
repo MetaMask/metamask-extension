@@ -1,5 +1,4 @@
 import { Driver } from '../webdriver/driver';
-import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -15,6 +14,7 @@ import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
 import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
 
 describe('Test Snap TxInsights', function () {
   it(' validate the insights section appears for ERC20 transaction', async function () {
@@ -28,9 +28,8 @@ describe('Test Snap TxInsights', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
-
         const testDapp = new TestDapp(driver);
-        const snapInstall = new SnapInstall(driver);
+        const snapTxInsights = new SnapTxInsights(driver);
 
         // Navigate to test snaps page and click to the transaction-insights test snap
         await openTestSnapClickButtonAndInstall(
@@ -41,14 +40,12 @@ describe('Test Snap TxInsights', function () {
         // open the test-dapp page
         await openDapp(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // click send tx
         await testDapp.clickMaliciousERC20TransferButton();
 
         // Switch back to MetaMask dialog and validate the transaction insights title and type
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionInsightsType('ERC-20');
+        await snapTxInsights.check_transactionInsightsTitle();
+        await snapTxInsights.check_transactionInsightsType('ERC-20');
       },
     );
   });
@@ -67,12 +64,10 @@ describe('Test Snap TxInsights', function () {
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
         await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
-
+        const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(SMART_CONTRACTS.NFTS);
-
-        const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page and click to the transaction-insights snap
         await openTestSnapClickButtonAndInstall(
@@ -82,20 +77,19 @@ describe('Test Snap TxInsights', function () {
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
         await testDapp.clickERC721MintButton();
-
         await driver.delay(veryLargeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintConfirmation = new TransactionConfirmation(driver);
         await mintConfirmation.clickFooterConfirmButton();
-
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickERC721TransferFromButton();
         await driver.delay(veryLargeDelayMs); // this is needed for the transaction to be processed
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
-        await snapInstall.check_transactionAddress('0x581c3...45947');
-        await snapInstall.check_transactionInsightsType('ERC-721');
+        await snapTxInsights.check_transactionInsightsTitle();
+        await snapTxInsights.check_transactionAddress('0x5CfE7...6a7e1');
+        await snapTxInsights.check_transactionAddress('0x581c3...45947');
+        await snapTxInsights.check_transactionInsightsType('ERC-721');
       },
     );
   });
@@ -114,12 +108,10 @@ describe('Test Snap TxInsights', function () {
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
         await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
-
+        const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(SMART_CONTRACTS.NFTS);
-
-        const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page and click to the transaction-insights snap
         await openTestSnapClickButtonAndInstall(
@@ -129,10 +121,11 @@ describe('Test Snap TxInsights', function () {
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
         await testDapp.clickERC1155SetApprovalForAllButton();
+        
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.check_transactionInsightsTitle();
-        await snapInstall.check_transactionAddress('0x5CfE7...6a7e1');
-        await snapInstall.check_transactionAddress('0x581c3...45947');
+        await snapTxInsights.check_transactionInsightsTitle();
+        await snapTxInsights.check_transactionAddress('0x5CfE7...6a7e1');
+        await snapTxInsights.check_transactionAddress('0x581c3...45947');
       },
     );
   });

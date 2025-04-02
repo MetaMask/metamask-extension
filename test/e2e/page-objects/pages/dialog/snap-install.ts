@@ -27,10 +27,6 @@ class SnapInstall {
     tag: 'span',
   };
 
-  private readonly transactionType = '.snap-ui-renderer__text';
-
-  private readonly transactionAddress = '[data-testid="snap-ui-address"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -108,27 +104,6 @@ class SnapInstall {
   async clickConnectButton() {
     console.log('Clicking the connect button');
     await this.driver.clickElement(this.connectButton);
-  }
-
-  async check_transactionInsightsTitle() {
-    console.log('Checking transaction insights title');
-    await this.driver.waitForSelector(this.insightTitle);
-  }
-
-  async check_transactionInsightsType(transactionType: string) {
-    console.log('Checking transaction insights type');
-    await this.driver.waitForSelector({
-      css: this.transactionType,
-      text: transactionType,
-    });
-  }
-
-  async check_transactionAddress(address: string) {
-    console.log('Checking transaction address');
-    await this.driver.waitForSelector({
-      css: this.transactionAddress,
-      text: address,
-    });
   }
 
   async check_messageResultSpan(
