@@ -112,7 +112,7 @@ function parseAsset(
   decimals?: number,
 ) {
   const displayAmount = formatWithThreshold(
-    Number(movement.amount),
+    movement.amount,
     0.00000001,
     locale,
     {
