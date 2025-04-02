@@ -44,9 +44,19 @@ class TestDapp {
 
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
+  private readonly decryptButton = '#decryptButton';
+
+  private readonly decryptedMessage = '#cleartextDisplay';
+
   private readonly depositPiggyBankContractButton = '#depositButton';
 
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
+
+  private readonly encryptButton = '#encryptButton';
+
+  private readonly encryptedMessage = '#ciphertextDisplay';
+
+  private readonly encryptMessageInput = '#encryptMessageInput';
 
   private readonly erc1155MintButton = '#batchMintButton';
 
@@ -77,6 +87,10 @@ class TestDapp {
   private readonly erc721TransferFromButton = '#transferFromButton';
 
   private readonly ethSubscribeResponse = '[data-testid="eth-subscribe-response"]';
+
+  private readonly getEncryptionKeyButton = '#getEncryptionKeyButton';
+
+  private readonly getEncryptionKeyResult = '#encryptionKeyDisplay';
 
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
@@ -214,6 +228,19 @@ class TestDapp {
   }
 
   /**
+   * Verify the decrypted message on test dapp.
+   *
+   * @param message - The decrypted message to verify.
+   */
+    async check_decryptedMessage(message: string) {
+      console.log('Verify decrypted message on test dapp');
+      await this.driver.waitForSelector({
+        css: this.decryptedMessage,
+        text: message,
+      });
+    }
+
+  /**
    * Verifies the eth_subscribe response.
    *
    * @param shouldBePresent - Whether the eth_subscribe response should be present, defaults to true.
@@ -302,6 +329,19 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4Result,
       text: expectedFailedMessage,
+    });
+  }
+
+  /**
+   * Verify the get encryption key result.
+   *
+   * @param encryptionKey - The encryption key to display.
+   */
+  async check_getEncryptionKeyResult(encryptionKey: string) {
+    console.log('Verify get encryption key result on test dapp');
+    await this.driver.waitForSelector({
+      css: this.getEncryptionKeyResult,
+      text: encryptionKey,
     });
   }
 
@@ -541,6 +581,10 @@ class TestDapp {
     await this.driver.clickElement(this.approveTokensButton);
   }
 
+  async clickDecryptButton() {
+    await this.driver.clickElement(this.decryptButton);
+  }
+
   async clickApproveTokensWithoutGas() {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
   }
@@ -587,6 +631,10 @@ class TestDapp {
 
   async clickERC721TransferFromButton() {
     await this.driver.clickElement(this.erc721TransferFromButton);
+  }
+
+  async clickGetEncryptionKeyButton() {
+    await this.driver.clickElement(this.getEncryptionKeyButton);
   }
 
   async clickPermit() {
@@ -709,6 +757,21 @@ class TestDapp {
     await this.driver.refresh();
     await this.check_pageIsLoaded();
     await this.check_connectedAccounts(publicAddress, false);
+  }
+
+  /**
+   * Encrypt a message on test dapp.
+   *
+   * @param message - The message to encrypt.
+   */
+  async encryptMessage(message: string) {
+    console.log(`Encrypt message ${message} in test dapp`);
+    await this.driver.fill(this.encryptMessageInput, message);
+    await this.driver.clickElement(this.encryptButton);
+    await this.driver.waitForSelector({
+      css: this.encryptedMessage,
+      text: '0x',
+    });
   }
 
   async fillERC1155TokenAmount(amount: string) {
