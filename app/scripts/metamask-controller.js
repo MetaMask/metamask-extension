@@ -7366,8 +7366,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   updateAccountBalanceForTransactionNetwork(transactionMeta) {
-    const { networkClientId } = transactionMeta;
-    this.accountTrackerController.updateAccounts(networkClientId);
+    const {
+      networkClientId,
+      txParams: { from },
+    } = transactionMeta;
+    this.accountTrackerController.updateAccountByAddress({
+      from,
+      networkClientId,
+    });
   }
 
   toggleExternalServices(useExternal) {
