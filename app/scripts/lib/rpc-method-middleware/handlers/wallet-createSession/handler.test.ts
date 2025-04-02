@@ -101,6 +101,7 @@ const createMockedHandler = () => {
     sessionScopes: NormalizedScopesObject;
     sessionProperties?: Record<string, Json>;
   }>;
+  const getNonEvmAccountAddresses = jest.fn().mockReturnValue([]);
   const handler = (
     request: JsonRpcRequest<Caip25Authorization> & { origin: string },
   ) =>
@@ -112,6 +113,7 @@ const createMockedHandler = () => {
       listAccounts,
       getNonEvmSupportedMethods,
       isNonEvmScopeSupported,
+      getNonEvmAccountAddresses,
     });
 
   return {
@@ -125,6 +127,7 @@ const createMockedHandler = () => {
     listAccounts,
     getNonEvmSupportedMethods,
     isNonEvmScopeSupported,
+    getNonEvmAccountAddresses,
     handler,
   };
 };
@@ -338,9 +341,61 @@ describe('wallet_createSession', () => {
     expect(listAccounts).toHaveBeenCalled();
   });
 
-  it('requests approval for account and permitted chains permission based on the supported eth accounts and eth chains from the supported scopes in the request', async () => {
-    const { handler, listAccounts, requestPermissionsForOrigin } =
-      createMockedHandler();
+  it('gets the account addresses for non evm scopes', async () => {
+    const {
+      handler,
+      listAccounts,
+      getNonEvmAccountAddresses,
+    } = createMockedHandler();
+    listAccounts.mockReturnValue([
+      { address: '0x1' },
+      { address: '0x3' },
+      { address: '0x4' },
+    ]);
+    MockMultichain.bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportableScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            methods: [],
+            notifications: [],
+            accounts: [
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+            ],
+          },
+          'solana:deadbeef': {
+            methods: [],
+            notifications: [],
+            accounts: [
+              'solana:deadbeef:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+            ],
+          },
+        },
+        supportableScopes: {},
+        unsupportableScopes: {},
+      });
+    getNonEvmAccountAddresses.mockReturnValue([]);
+
+    await handler(baseRequest);
+
+    expect(getNonEvmAccountAddresses).toHaveBeenCalledTimes(2);
+    expect(getNonEvmAccountAddresses).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
+    expect(getNonEvmAccountAddresses).toHaveBeenCalledWith('solana:deadbeef');
+  });
+
+  it('requests approval for account and permitted chains permission based on the supported accounts and scopes in the request', async () => {
+    const {
+      handler,
+      listAccounts,
+      requestPermissionsForOrigin,
+      getNonEvmAccountAddresses,
+    } = createMockedHandler();
     listAccounts.mockReturnValue([
       { address: '0x1' },
       { address: '0x3' },
@@ -365,10 +420,22 @@ describe('wallet_createSession', () => {
             notifications: [],
             accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
           },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            methods: [],
+            notifications: [],
+            accounts: [
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:notSupported',
+            ],
+          },
         },
         supportableScopes: {},
         unsupportableScopes: {},
       });
+    getNonEvmAccountAddresses.mockReturnValue([
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+    ]);
+
     await handler(baseRequest);
 
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
@@ -385,6 +452,11 @@ describe('wallet_createSession', () => {
               optionalScopes: {
                 'eip155:100': {
                   accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                },
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+                  accounts: [
+                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+                  ],
                 },
               },
               isMultichainOrigin: true,

@@ -3,7 +3,6 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
-  setEthAccounts,
   bucketScopes,
   validateAndNormalizeScopes,
   Caip25Authorization,
@@ -34,6 +33,7 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import { uniq } from 'lodash';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -43,9 +43,8 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
-import { isKnownSessionPropertyValue } from './constants';
-import { uniq } from 'lodash';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { isKnownSessionPropertyValue } from './constants';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -165,31 +164,43 @@ async function walletCreateSessionHandler(
     const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
-      // do case insensitive compare!
+    // do case insensitive compare!
 
     // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requiredAccounts = Object.values(
-      supportedRequiredScopes,
-    ).flatMap((scope) => scope.accounts);
-    const optionalAccounts = Object.values(
-      supportedOptionalScopes,
-    ).flatMap((scope) => scope.accounts);
+    const requiredAccounts = Object.values(supportedRequiredScopes).flatMap(
+      (scope) => scope.accounts,
+    );
+    const optionalAccounts = Object.values(supportedOptionalScopes).flatMap(
+      (scope) => scope.accounts,
+    );
 
-    const allAccountAddresses = uniq([...requiredAccounts, ...optionalAccounts]);
+    const allAccountAddresses = uniq([
+      ...requiredAccounts,
+      ...optionalAccounts,
+    ]);
 
-    const supportedAccountAddresses = allAccountAddresses.filter(accountAddress => {
-      const { address, chain: {namespace}, chainId } = parseCaipAccountId(accountAddress)
-      if (namespace === KnownCaipNamespace.Eip155) {
-        return existingEvmAddresses.some(existingEvmAddress => {
-          return isEqualCaseInsensitive(address, existingEvmAddress)
-        })
-      }
+    const supportedAccountAddresses = allAccountAddresses.filter(
+      (accountAddress) => {
+        const {
+          address,
+          chain: { namespace },
+          chainId,
+        } = parseCaipAccountId(accountAddress);
+        if (namespace === KnownCaipNamespace.Eip155) {
+          return existingEvmAddresses.some((existingEvmAddress) => {
+            return isEqualCaseInsensitive(address, existingEvmAddress);
+          });
+        }
 
-      const getNonEvmAccountAddressesForChainId = hooks.getNonEvmAccountAddresses(chainId)
-      return getNonEvmAccountAddressesForChainId.some(existingCaipAddress => {
-          return isEqualCaseInsensitive(accountAddress, existingCaipAddress)
-      })
-    })
+        const getNonEvmAccountAddressesForChainId =
+          hooks.getNonEvmAccountAddresses(chainId);
+        return getNonEvmAccountAddressesForChainId.some(
+          (existingCaipAddress) => {
+            return isEqualCaseInsensitive(accountAddress, existingCaipAddress);
+          },
+        );
+      },
+    );
 
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
@@ -198,10 +209,11 @@ async function walletCreateSessionHandler(
       sessionProperties: filteredSessionProperties,
     };
 
-    const requestedCaip25CaveatValueWithSupportedAccounts = setPermittedAccounts(
-      requestedCaip25CaveatValue,
-      supportedAccountAddresses,
-    );
+    const requestedCaip25CaveatValueWithSupportedAccounts =
+      setPermittedAccounts(
+        requestedCaip25CaveatValue,
+        supportedAccountAddresses,
+      );
 
     // Note that we do not verify non-evm accounts here. Instead we rely on
     // the CAIP-25 caveat validator to throw an error about the requested
