@@ -119,6 +119,7 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
+        await driver.delay(20000)
         await homePage.check_pageIsLoaded();
 
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
