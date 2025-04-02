@@ -76,9 +76,19 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
+  private readonly getAccountsButton = '#getAccounts';
+
+  private readonly getAccountsResult = '#getAccountsResult';
+
+  private readonly getPermissionsButton = '#getPermissions';
+
+  private readonly getPermissionsResult = '#permissionsResult';
+
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
   private readonly mmlogo = '#mm-logo';
+
+  private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
 
   private readonly personalSignButton = '#personalSign';
 
@@ -276,6 +286,38 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4Result,
       text: expectedFailedMessage,
+    });
+  }
+
+  /**
+   * Verify get connected accounts result.
+   *
+   * @param expectedResult - The expected account address.
+   */
+  async check_getAccountsResult(expectedResult: string) {
+    console.log(
+      'Verify get connected accounts result contains:',
+      expectedResult,
+    );
+    await this.driver.clickElement(this.getAccountsButton);
+    await this.driver.waitForSelector({
+      css: this.getAccountsResult,
+      text: expectedResult,
+    });
+  }
+
+  /**
+   * Verify get permissions result.
+   *
+   * @param expectedPermission - The expected displayed permission.
+   */
+  async check_getPermissionsResult(expectedPermission: string) {
+    console.log('Verify get permissions result contains:', expectedPermission);
+    await this.driver.waitForElementToStopMoving(this.getPermissionsButton);
+    await this.driver.clickElement(this.getPermissionsButton);
+    await this.driver.waitForSelector({
+      css: this.getPermissionsResult,
+      text: expectedPermission,
     });
   }
 
@@ -614,6 +656,14 @@ class TestDapp {
       this.confirmDialogButton,
     );
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  }
+
+  async clickMaliciousERC20TransferButton() {
+    const sendTransactionButton = await this.driver.findElement(
+      this.maliciousERC20TransferButton,
+    );
+    await this.driver.scrollToElement(sendTransactionButton);
+    await this.driver.clickElement(this.maliciousERC20TransferButton);
   }
 
   /**

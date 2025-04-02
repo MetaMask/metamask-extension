@@ -9,7 +9,7 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -33,7 +33,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       type: 'ganache',
       options: {
         secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
         accounts: multipleGanacheOptions.accounts,
       },
     },
@@ -151,3 +151,20 @@ export const passwordLockMetamaskExtension = async (
  */
 export const escapeColon = (selector: string): string =>
   selector.replace(':', '\\:');
+
+/**
+ * Wraps a describe call in a skip call if the SELENIUM_BROWSER environment variable is not the specified browser.
+ *
+ * @param browser - The browser environment of the current test, against which to conditionally run or skip the test.
+ * @param description - The description of the test suite.
+ * @param callback - The callback function to execute the test suite.
+ */
+export const describeBrowserOnly = (
+  browser: string,
+  description: string,
+  callback: () => void,
+) => {
+  return process.env.SELENIUM_BROWSER === browser
+    ? describe(description, callback)
+    : describe.skip(description, callback);
+};

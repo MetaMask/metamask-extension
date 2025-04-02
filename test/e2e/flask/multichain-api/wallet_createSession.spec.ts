@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
+import { Browser, By } from 'selenium-webdriver';
 import { isObject } from 'lodash';
 import {
   largeDelayMs,
@@ -17,9 +17,10 @@ import {
   addAccountInWalletAndAuthorize,
   updateNetworkCheckboxes,
   type FixtureCallbackArgs,
+  describeBrowserOnly,
 } from './testHelpers';
 
-describe('Multichain API', function () {
+describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
@@ -64,7 +65,7 @@ describe('Multichain API', function () {
         {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -178,7 +179,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -266,7 +267,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -354,7 +355,7 @@ describe('Multichain API', function () {
         {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts(
               {
                 scopes: OLD_SCOPES,

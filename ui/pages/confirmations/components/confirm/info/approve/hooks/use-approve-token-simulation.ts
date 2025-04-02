@@ -2,14 +2,15 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
-import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
-function isSpendingCapUnlimited(decodedSpendingCap: number) {
+export function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
 }
 
@@ -19,11 +20,10 @@ export const useApproveTokenSimulation = (
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
-  const { args: parsedArgs } = useTokenTransactionData() ?? {};
+  const transactionData = transactionMeta?.txParams?.data as Hex | undefined;
 
-  const parsedValue =
-    parsedArgs?._value ?? // ERC-20 - approve
-    parsedArgs?.increment; // Fiat Token V2 - increaseAllowance
+  const { amountOrTokenId: parsedValue } =
+    parseApprovalTransactionData(transactionData ?? '0x') ?? {};
 
   const value = parsedValue ?? new BigNumber(0);
 
