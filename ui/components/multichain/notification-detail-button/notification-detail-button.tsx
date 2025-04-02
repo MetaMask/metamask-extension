@@ -9,16 +9,6 @@ import { BlockSize } from '../../../helpers/constants/design-system';
 
 export type NotificationDetailButtonProps = {
   /**
-   * @deprecated - this is not needed anymore
-   */
-  id?: string;
-
-  /**
-   * @deprecated - this is not needed anymore
-   */
-  notification?: string;
-
-  /**
    * Button Variant (defaults to secondary)
    */
   variant: ButtonVariant;

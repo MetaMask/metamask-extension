@@ -17,10 +17,6 @@ import {
 type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailBlockExplorerButtonProps = {
-  /**
-   * @deprecated - this field is not used anymore
-   */
-  id?: string;
   notification: Notification;
   chainId: number;
   txHash: string;
