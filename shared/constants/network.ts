@@ -4,7 +4,8 @@ import type {
 } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, hexToNumber } from '@metamask/utils';
+import { MultichainNetworks } from './multichain/networks';
 
 /**
  * A type representing built-in network types, used as an identifier.
@@ -537,6 +538,7 @@ export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
 export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
+export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -551,6 +553,10 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.LOCALHOST,
   CHAIN_IDS.MEGAETH_TESTNET,
 ];
+
+export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
+  (chainId) => `eip155:${hexToNumber(chainId)}`,
+);
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
@@ -829,7 +835,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_RPC_URL,
 } as const;
 
-export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
+export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex | string, string> = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_SEPOLIA]: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
@@ -922,6 +928,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: SHAPE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
+  [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
