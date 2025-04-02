@@ -1,11 +1,9 @@
 import React from 'react';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   Icon,
   IconName,
@@ -25,17 +23,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import Identicon from '../../../../../../../components/ui/identicon';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   NATIVE_TOKEN_ADDRESS,
   useGasFeeToken,
 } from '../../hooks/useGasFeeToken';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
+import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
 export type GasFeeTokenListItemProps = {
   tokenAddress: Hex;
@@ -64,7 +59,12 @@ export function GasFeeTokenListItem({
 
   return (
     <ListItem
-      image={<TokenIcon tokenAddress={tokenAddress} />}
+      image={
+        <GasFeeTokenIcon
+          tokenAddress={tokenAddress}
+          size={GasFeeTokenIconSize.Md}
+        />
+      }
       isSelected={isSelected}
       leftPrimary={symbol}
       leftSecondary={`${t(
@@ -187,33 +187,6 @@ function SelectedIndicator() {
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.primaryDefault}
       className="gas-fee-token-list-item__selected-indicator"
-    />
-  );
-}
-
-function TokenIcon({ tokenAddress }: { tokenAddress: Hex }) {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId } = currentConfirmation;
-
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
-
-  if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
-    return <Identicon address={tokenAddress} diameter={32} />;
-  }
-
-  const { nativeCurrency } = networkConfiguration;
-
-  const source =
-    CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
-
-  return (
-    <AvatarToken
-      src={source}
-      name={nativeCurrency}
-      size={AvatarTokenSize.Md}
-      backgroundColor={BackgroundColor.backgroundDefault}
     />
   );
 }

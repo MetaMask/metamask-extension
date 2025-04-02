@@ -842,6 +842,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana account created"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -1080,8 +1083,17 @@
   "confirmGasFeeTokenInsufficientBalance": {
     "message": "Insufficient funds"
   },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "Includes $1 fee"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
+  },
+  "confirmGasFeeTokenToast": {
+    "message": "You're paying this network fee with $1"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -2492,7 +2504,8 @@
     "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
-    "message": "Wallet successfully imported"
+    "message": "Secret Recovery Phrase $1 imported",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Import $1",
@@ -4362,6 +4375,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
   },
+  "redeposit": {
+    "message": "Redeposit"
+  },
   "refreshList": {
     "message": "Refresh list"
   },
@@ -5018,6 +5034,12 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideSweepStakeDescription": {
+    "message": "Mint an NFT now for a chance to win"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Enter the $5000 USDC Giveaway!"
+  },
   "smartContracts": {
     "message": "Smart contracts"
   },
@@ -5163,6 +5185,9 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
+  },
+  "snapUIAssetSelectorTitle": {
+    "message": "Select an asset"
   },
   "snapUpdateAlertDescription": {
     "message": "Get the latest version of $1",
@@ -5352,6 +5377,7 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
+
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
