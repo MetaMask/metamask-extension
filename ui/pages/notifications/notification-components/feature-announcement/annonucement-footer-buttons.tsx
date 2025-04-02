@@ -1,12 +1,12 @@
-import { useCallback, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { FeatureAnnouncementNotification } from './types';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
+import { FeatureAnnouncementNotification } from './types';
 
 const useAnalyticEventCallback = (props: {
   id: string;
