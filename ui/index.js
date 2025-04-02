@@ -141,6 +141,7 @@ export async function setupInitialStore(
     let currentTabIsConnectedToSelectedAddress;
     if (selectedAccount) {
       currentTabIsConnectedToSelectedAddress =
+TODO: dry and move to @metamask/chain-agnostic-permission package
         permittedAccountsForCurrentTab.some((account) => {
           const parsedPermittedAccount = parseCaipAccountId(account);
 
