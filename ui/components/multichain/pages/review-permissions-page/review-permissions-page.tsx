@@ -149,7 +149,6 @@ export const ReviewPermissions = () => {
     [networkConfigurationsByCaipChainId],
   );
 
-  // TODO: Fix this typing upstream?
   const _connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
@@ -189,7 +188,8 @@ export const ReviewPermissions = () => {
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
   ) as CaipAccountId[];
 
-  // should this be at the selector level? :|
+  // TODO move this into the selector where we map back to the internal accounts
+  // This will be necessary to add support for non EOA accounts
   const connectedAccountAddresses = uniq(
     _connectedAccountAddresses.map((caipAccountId) => {
       const {
@@ -220,6 +220,8 @@ export const ReviewPermissions = () => {
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
     connectedAccountAddresses.forEach((connectedAddress: string) => {
+      // TODO: seems like similar logic to selector logic in ui/index.js
+      // See if we can DRY this
       const parsedConnectedAddress = parseCaipAccountId(
         connectedAddress as CaipAccountId,
       );
@@ -264,8 +266,6 @@ export const ReviewPermissions = () => {
     setShowAccountToast(false);
     setShowNetworkToast(false);
   };
-
-  console.log({ connectedAccountAddresses });
 
   return (
     <Page

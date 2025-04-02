@@ -191,7 +191,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
     ].map((scope) => {
       const scopeString = scope as InternalScopeString;
-      // This will break if 'wallet' is passed in
       if (scopeString === KnownCaipNamespace.Wallet) {
         return scopeString;
       }
