@@ -58,11 +58,7 @@ export const NetworkFilterDropdownItem = ({
             {currentNetwork?.nickname ?? t('currentNetwork')}
           </Text>
         </Box>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.flexStart}
-          onClick={openListNetwork}
-        >
+        <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
           <AvatarNetwork
             key={currentNetworkImageUrl}
             name={currentNetworkImageUrl ?? ''}
