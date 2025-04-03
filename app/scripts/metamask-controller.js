@@ -155,8 +155,6 @@ import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
-  parseCaipChainId,
-  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -180,6 +178,7 @@ import {
   getSessionScopes,
   setPermittedEthChainIds,
   setEthAccounts,
+  getPermittedAccountsForScopes,
 } from '@metamask/chain-agnostic-permission';
 
 import {
@@ -2882,82 +2881,81 @@ export default class MetamaskController extends EventEmitter {
             this._notifyAuthorizationChange(origin, authorization);
           }
 
-          // start solana
+          const origins = uniq([...previousValue.keys(), currentValue.keys()]);
+          origins.forEach((origin) => {
+            const previousCaveatValue = previousValue.get(origin);
+            const currentCaveatValue = currentValue.get(origin);
 
-          const previousCaveatValue = previousValue.get(origin);
-          const currentCaveatValue = currentValue.get(origin);
-
-          const previousSolanaAccountChangedNotificationsEnabled = Boolean(
-            previousCaveatValue?.sessionProperties?.[
-              KnownSessionProperties.SolanaAccountChangedNotifications
-            ],
-          );
-          const currentSolanaAccountChangedNotificationsEnabled = Boolean(
-            currentCaveatValue?.sessionProperties?.[
-              KnownSessionProperties.SolanaAccountChangedNotifications
-            ],
-          );
-
-          if (
-            !previousSolanaAccountChangedNotificationsEnabled &&
-            !currentSolanaAccountChangedNotificationsEnabled
-          ) {
-            return;
-          }
-
-          const previousSolanaCaipAccountIds = previousCaveatValue
-            ? getPermittedAccountsForScopes(previousCaveatValue, [
-                MultichainNetworks.SOLANA,
-                MultichainNetworks.SOLANA_DEVNET,
-                MultichainNetworks.SOLANA_TESTNET,
-              ])
-            : [];
-          const _previousSolanaHexAccountAddresses =
-            previousSolanaCaipAccountIds.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-          const previousSolanaHexAccountAddresses = uniq(
-            _previousSolanaHexAccountAddresses,
-          );
-          const previousSelectedSolanaAccountAddress =
-            this.sortAccountsByLastSelected(
-              previousSolanaHexAccountAddresses,
-            )[0];
-
-          const currentSolanaCaipAccountIds = currentCaveatValue
-            ? getPermittedAccountsForScopes(currentCaveatValue, [
-                MultichainNetworks.SOLANA,
-                MultichainNetworks.SOLANA_DEVNET,
-                MultichainNetworks.SOLANA_TESTNET,
-              ])
-            : [];
-          const _currentSolanaHexAccountAddresses =
-            currentSolanaCaipAccountIds.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-          const currentSolanaHexAccountAddresses = uniq(
-            _currentSolanaHexAccountAddresses,
-          );
-          const currentSelectedSolanaAccountAddress =
-            this.sortAccountsByLastSelected(
-              currentSolanaHexAccountAddresses,
-            )[0];
-
-          if (
-            previousSelectedSolanaAccountAddress !==
-            currentSelectedSolanaAccountAddress
-          ) {
-            this._notifySolanaAccountChange(
-              origin,
-              currentSelectedSolanaAccountAddress
-                ? [currentSelectedSolanaAccountAddress]
-                : [],
+            const previousSolanaAccountChangedNotificationsEnabled = Boolean(
+              previousCaveatValue?.sessionProperties?.[
+                KnownSessionProperties.SolanaAccountChangedNotifications
+              ],
             );
-          }
+            const currentSolanaAccountChangedNotificationsEnabled = Boolean(
+              currentCaveatValue?.sessionProperties?.[
+                KnownSessionProperties.SolanaAccountChangedNotifications
+              ],
+            );
 
-          /// end solana
+            if (
+              !previousSolanaAccountChangedNotificationsEnabled &&
+              !currentSolanaAccountChangedNotificationsEnabled
+            ) {
+              return;
+            }
+
+            const previousSolanaCaipAccountIds = previousCaveatValue
+              ? getPermittedAccountsForScopes(previousCaveatValue, [
+                  MultichainNetworks.SOLANA,
+                  MultichainNetworks.SOLANA_DEVNET,
+                  MultichainNetworks.SOLANA_TESTNET,
+                ])
+              : [];
+            const _previousSolanaHexAccountAddresses =
+              previousSolanaCaipAccountIds.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+            const previousSolanaHexAccountAddresses = uniq(
+              _previousSolanaHexAccountAddresses,
+            );
+            const previousSelectedSolanaAccountAddress =
+              this.sortAccountsByLastSelected(
+                previousSolanaHexAccountAddresses,
+              )[0];
+
+            const currentSolanaCaipAccountIds = currentCaveatValue
+              ? getPermittedAccountsForScopes(currentCaveatValue, [
+                  MultichainNetworks.SOLANA,
+                  MultichainNetworks.SOLANA_DEVNET,
+                  MultichainNetworks.SOLANA_TESTNET,
+                ])
+              : [];
+            const _currentSolanaHexAccountAddresses =
+              currentSolanaCaipAccountIds.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+            const currentSolanaHexAccountAddresses = uniq(
+              _currentSolanaHexAccountAddresses,
+            );
+            const currentSelectedSolanaAccountAddress =
+              this.sortAccountsByLastSelected(
+                currentSolanaHexAccountAddresses,
+              )[0];
+
+            if (
+              previousSelectedSolanaAccountAddress !==
+              currentSelectedSolanaAccountAddress
+            ) {
+              this._notifySolanaAccountChange(
+                origin,
+                currentSelectedSolanaAccountAddress
+                  ? [currentSelectedSolanaAccountAddress]
+                  : [],
+              );
+            }
+          });
         },
         getAuthorizedScopesByOrigin,
       );
