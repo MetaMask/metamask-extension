@@ -82,7 +82,7 @@ describe('WhatsNewModal', () => {
           });
         });
 
-        it('renders Solana notification when', () => {
+        it('renders Solana notification correctly', () => {
           expect(screen.getByTestId('solana-modal-body')).toBeInTheDocument();
           expect(
             screen.getByText(/Send, receive, and swap tokens/iu),
