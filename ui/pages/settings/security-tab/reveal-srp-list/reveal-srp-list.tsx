@@ -14,7 +14,7 @@ export const RevealSrpList = () => {
           setSelectedKeyringId(keyringId);
           setSrpQuizModalVisible(true);
         }}
-        hideShowAccounts={true}
+        hideShowAccounts={false}
       />
       {srpQuizModalVisible && selectedKeyringId && (
         <SRPQuizModal
