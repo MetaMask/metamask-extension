@@ -166,14 +166,14 @@ async function walletCreateSessionHandler(
       .map((account) => account.address);
 
     // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requiredAccounts = Object.values(supportedRequiredScopes).flatMap(
+    const requestedRequiredAccounts = Object.values(supportedRequiredScopes).flatMap(
       (scope) => scope.accounts,
     );
-    const optionalAccounts = Object.values(supportedOptionalScopes).flatMap(
+    const requestedOptionalAccounts = Object.values(supportedOptionalScopes).flatMap(
       (scope) => scope.accounts,
     );
 
-    const allAccountAddresses = uniq([
+    const allRequestedAccountAddresses = uniq([
       ...requiredAccounts,
       ...optionalAccounts,
     ]);
