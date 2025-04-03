@@ -108,7 +108,6 @@ export const TemplateStory = () => {
                 borderRadius: '10px',
                 boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
               },
-              key: 'snapAccountSuccessMessage',
             },
             children: [
               {
@@ -168,7 +167,7 @@ export const TemplateStory = () => {
         header: [
           {
             name: 'SnapAuthorshipHeader',
-            key: 'snapAccountSuccessMessage',
+            key: 'snapHeader',
             properties: { snapId: 'npm:@test/test-snap' },
           },
         ],
