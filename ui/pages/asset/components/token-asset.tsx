@@ -1,7 +1,7 @@
 import { Token } from '@metamask/assets-controllers';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -22,6 +22,12 @@ import {
   selectERC20TokensByChain,
 } from '../../../selectors';
 import { showModal } from '../../../store/actions';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -39,8 +45,16 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       ? null
       : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
 
-  const { address: walletAddress } = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { address: walletAddress } = selectedAccount;
+
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+
+  const multichainNetwork = useMultichainSelector(
+    getMultichainNetwork,
+    selectedAccount,
+  );
+  const isEvm = useSelector(getMultichainIsEvm);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -78,6 +92,13 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     walletAddress,
     { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
+
+  const blockExplorerLink = isEvm
+    ? tokenTrackerLink
+    : getMultichainAccountUrl(
+        parseCaipAssetType(address as CaipAssetType).assetReference,
+        multichainNetwork,
+      );
 
   return (
     <AssetPage
@@ -118,7 +139,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
                 block_explorer_domain: getURLHostName(tokenTrackerLink),
               },
             });
-            global.platform.openTab({ url: tokenTrackerLink });
+            global.platform.openTab({ url: blockExplorerLink });
           }}
           tokenSymbol={token.symbol}
         />
