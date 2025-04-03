@@ -9,14 +9,14 @@ import {
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
-  ENTRYPOINT,
-  ERC_4337_ACCOUNT_SNAP_URL,
   BUNDLER_URL,
-  SIMPLE_ACCOUNT_FACTORY,
-  GANACHE_PRIVATE_KEY,
-  ERC_4337_ACCOUNT_SALT,
+  ENTRYPOINT,
   ERC_4337_ACCOUNT,
-  GANACHE_ACCOUNT,
+  ERC_4337_ACCOUNT_SALT,
+  ERC_4337_ACCOUNT_SNAP_URL,
+  LOCAL_NODE_ACCOUNT,
+  LOCAL_NODE_PRIVATE_KEY,
+  SIMPLE_ACCOUNT_FACTORY,
   VERIFYING_PAYMASTER,
 } from '../constants';
 import { buildQuote, reviewQuote } from '../tests/swaps/shared';
@@ -240,7 +240,7 @@ async function withAccountSnap(
 
       await createSnapAccount(
         driver,
-        GANACHE_PRIVATE_KEY,
+        LOCAL_NODE_PRIVATE_KEY,
         ERC_4337_ACCOUNT_SALT,
       );
 
@@ -262,7 +262,7 @@ describe('User Operations', function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       await createDappTransaction(driver, {
         from: ERC_4337_ACCOUNT,
-        to: GANACHE_ACCOUNT,
+        to: LOCAL_NODE_ACCOUNT,
         value: convertETHToHexGwei(1),
         maxFeePerGas: '0x0',
         maxPriorityFeePerGas: '0x0',
@@ -276,7 +276,7 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(driver, GANACHE_ACCOUNT, 1, true);
+        await sendTransaction(driver, LOCAL_NODE_ACCOUNT, 1, true);
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
@@ -314,7 +314,7 @@ describe('User Operations', function () {
       async (driver, bundlerServer) => {
         await createDappTransaction(driver, {
           from: ERC_4337_ACCOUNT,
-          to: GANACHE_ACCOUNT,
+          to: LOCAL_NODE_ACCOUNT,
           value: convertETHToHexGwei(1),
           maxFeePerGas: '0x0',
           maxPriorityFeePerGas: '0x0',

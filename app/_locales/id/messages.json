@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
-  "aggregatedBalancePopover": {
-    "message": "Ini mencerminkan nilai semua token yang Anda miliki di jaringan tertentu. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Saya menyetujui $1 MetaMask",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Pilih ini untuk menampilkan bidang data hex di layar kirim"
-  },
-  "showIncomingTransactions": {
-    "message": "Tampilkan transaksi masuk"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ini bergantung pada API pihak ketiga yang berbeda untuk setiap jaringan, yang mengungkap alamat Ethereum dan alamat IP Anda."
   },
   "showLess": {
     "message": "Ciutkan"
