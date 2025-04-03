@@ -12,6 +12,10 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
 }
 
 export class DB {
+  #name: string;
+
+  #version: number;
+
   #db: IDBDatabase | null = null;
 
   /**
@@ -20,15 +24,18 @@ export class DB {
    * @param name - The name of the database.
    * @param version - The version of the database.
    */
-  constructor(private name: string, private version: number) {}
+  constructor(name: string, version: number) {
+    this.#name = name;
+    this.#version = version;
+  }
 
   /** Opens the database, running migrations if necessary. */
   async open(): Promise<void> {
     if (this.#db) {
       return;
     }
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.name, this.version);
+    await new Promise<void>((resolve, reject) => {
+      const request = indexedDB.open(this.#name, this.#version);
       request.onupgradeneeded = async () => {
         const db = request.result;
         // Default migration: create the 'store' object store if it doesn't exist
@@ -51,12 +58,12 @@ export class DB {
    *
    * @param values - An object containing key-value pairs to set.
    */
-  async set(values: Record<string, any>): Promise<void> {
+  async set(values: Record<string, unknown>): Promise<void> {
     if (!this.#db) {
       throw new Error('Database is not open');
     }
     const keys = Object.keys(values);
-    const tx = this.#db!.transaction('store', 'readwrite');
+    const tx = this.#db.transaction('store', 'readwrite');
     const store = tx.objectStore('store');
     for (const key of keys) {
       store.put(values[key], key);
@@ -70,7 +77,7 @@ export class DB {
    * @param keys - An array of keys to retrieve.
    * @returns An array of values in the same order as the input keys.
    */
-  async get<T extends any[]>(keys: string[]): Promise<T[]> {
+  async get<T extends unknown[]>(keys: string[]): Promise<T[]> {
     if (!this.#db) {
       throw new Error('Database is not open');
     }

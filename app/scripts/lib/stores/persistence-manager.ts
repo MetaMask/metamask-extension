@@ -117,7 +117,6 @@ export class PersistenceManager {
       { mode: 'exclusive' },
       async () => {
         try {
-          debugger;
           // atomically set all the keys
           await this.#localStore.set({
             data: state,
@@ -168,7 +167,6 @@ export class PersistenceManager {
       STATE_LOCK,
       { mode: 'shared' },
       async () => {
-        debugger;
         const result = await this.#localStore.get();
 
         const keyringController = result?.data?.KeyringController as
