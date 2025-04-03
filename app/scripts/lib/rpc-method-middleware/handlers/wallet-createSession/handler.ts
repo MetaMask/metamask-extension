@@ -143,7 +143,7 @@ async function walletCreateSessionHandler(
       }
     };
 
-    // if solana is a requested scope but not supported, we need to add a metadata field to the request
+    // if solana is a requested scope but not supported, we add a promptToCreateSolanaAccount flag to request
     const isSolanaRequested = Object.keys(
       requiredScopesWithSupportedMethodsAndNotifications,
     ).some((key) => {
