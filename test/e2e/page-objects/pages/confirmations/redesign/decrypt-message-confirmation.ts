@@ -53,6 +53,7 @@ class DecryptMessageConfirmation {
    * @param balanceValue - The balance value to check.
    */
   async check_accountBalance(balanceValue: string): Promise<void> {
+    console.log('Check account balance on decrypt message confirmation screen: ', balanceValue);
     await this.driver.waitForSelector({
       css: this.accountBalanceValue,
       text: balanceValue,
