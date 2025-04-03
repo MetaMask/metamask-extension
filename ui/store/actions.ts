@@ -130,6 +130,7 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import { isAccountConnectedToPermittedAccounts } from '../../shared/lib/multichain/chain-agnostic-permission';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
@@ -144,9 +145,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isAccountConnectedToPermittedAccounts } from '../../app/scripts/lib/multichain/utils';
 
 type CustomGasSettings = {
   gas?: string;
@@ -1867,15 +1865,17 @@ export function setSelectedAccount(
       getAllPermittedAccountsForCurrentTab(state);
 
     // Using our new utility function for both connected account checks
-    const currentTabIsConnectedToPreviousAddress = isAccountConnectedToPermittedAccounts(
-      permittedAccountsForCurrentTab,
-      prevAccount
-    );
+    const currentTabIsConnectedToPreviousAddress =
+      isAccountConnectedToPermittedAccounts(
+        permittedAccountsForCurrentTab,
+        prevAccount,
+      );
 
-    const currentTabIsConnectedToNextAddress = isAccountConnectedToPermittedAccounts(
-      permittedAccountsForCurrentTab,
-      nextAccount
-    );
+    const currentTabIsConnectedToNextAddress =
+      isAccountConnectedToPermittedAccounts(
+        permittedAccountsForCurrentTab,
+        nextAccount,
+      );
 
     const switchingToUnconnectedAddress =
       Boolean(activeTabOrigin) &&

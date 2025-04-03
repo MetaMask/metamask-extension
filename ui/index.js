@@ -6,7 +6,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
-import { parseCaipChainId, parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -21,10 +20,7 @@ import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../shared/modules/string-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isAccountConnectedToPermittedAccounts } from '../app/scripts/lib/multichain/utils';
+import { isAccountConnectedToPermittedAccounts } from '../shared/lib/multichain/chain-agnostic-permission';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -55,33 +51,19 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  if (reduxStore) {
-    setBackgroundConnection(backgroundConnection);
-    reduxStore.dispatch(actions.updateMetamaskState(backgroundConnection));
-  } else {
-    setBackgroundConnection(backgroundConnection);
-    backgroundConnection.onNotification((data) => {
-      if (data.method === 'sendUpdate') {
-        reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
-      } else {
-        throw new Error(
-          `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-            data,
-          )}`,
-        );
-      }
-    });
-  }
-};
-
-/**
- * Method to update backgroundConnection for debugging with Redux DevTools.
- *
- * @param {object} backgroundConnection - background connection object.
- */
-export function updateBackgroundConnectionForTest(backgroundConnection) {
   setBackgroundConnection(backgroundConnection);
-}
+  backgroundConnection.onNotification((data) => {
+    if (data.method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else {
+      throw new Error(
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
+  });
+};
 
 export default async function launchMetamaskUi(opts) {
   const { backgroundConnection, traceContext } = opts;
@@ -103,45 +85,47 @@ export default async function launchMetamaskUi(opts) {
 }
 
 /**
- * Setup the initial store with backgroundConnection and set initial state.
+ * Method to setup initial redux store for the ui application
  *
- * @param {object} metamaskState - Initial MetaMask state.
- * @param {object} backgroundConnection - background connection object.
- * @param {object} activeTab - State of the active tab
- * @returns {Promise<object>} The initial redux store.
+ * @param {*} metamaskState - flatten background state
+ * @param {*} backgroundConnection - rpc client connecting to the background process
+ * @param {*} activeTab - active browser tab
+ * @returns redux store
  */
 export async function setupInitialStore(
   metamaskState,
   backgroundConnection,
   activeTab,
 ) {
-  // create state object with initial metamask state
-  const draftInitialState = {
-    activeTab,
-    metamask: { ...metamaskState },
-  };
-
-  if (activeTab) {
-    draftInitialState.activeTab = activeTab;
+  // parse opts
+  if (!metamaskState.featureFlags) {
+    metamaskState.featureFlags = {};
   }
 
-  // initialize localization
-  await setupLocale(draftInitialState.metamask.currentLocale);
-  const directionality = switchDirection(
-    draftInitialState.metamask.currentLocale,
-  );
-  document.documentElement.setAttribute('dir', directionality);
-
-  // setup localization for the active tab
-  document.documentElement.setAttribute(
-    'lang',
-    draftInitialState.metamask.currentLocale,
+  const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
+    metamaskState.currentLocale,
   );
 
-  // update metamaskState with activeTab info
-  await actions.updateMetamaskStateFromBackground();
+  if (metamaskState.textDirection === 'rtl') {
+    switchDirection('rtl');
+  }
 
-  // add backgroundConnection to state
+  const draftInitialState = {
+    activeTab,
+
+    // metamaskState represents the cross-tab state
+    metamask: metamaskState,
+
+    // appState represents the current tab's popup state
+    appState: {},
+
+    localeMessages: {
+      currentLocale: metamaskState.currentLocale,
+      current: currentLocaleMessages,
+      en: enLocaleMessages,
+    },
+  };
+
   updateBackgroundConnection(backgroundConnection);
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -151,12 +135,39 @@ export async function setupInitialStore(
 
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
-    // Using our new utility function
     const currentTabIsConnectedToSelectedAddress =
       isAccountConnectedToPermittedAccounts(
         permittedAccountsForCurrentTab,
         selectedAccount,
       );
+
+    // let currentTabIsConnectedToSelectedAddress;
+    // if (selectedAccount) {
+    //   currentTabIsConnectedToSelectedAddress =
+    //     // TODO: dry and move to @metamask/chain-agnostic-permission package
+    //     permittedAccountsForCurrentTab.some((account) => {
+    //       const parsedPermittedAccount = parseCaipAccountId(account);
+
+    //       return selectedAccount.scopes.some((scope) => {
+    //         const { namespace, reference } = parseCaipChainId(scope);
+
+    //         if (
+    //           namespace !== parsedPermittedAccount.chain.namespace ||
+    //           !isEqualCaseInsensitive(
+    //             selectedAccount.address,
+    //             parsedPermittedAccount.address,
+    //           )
+    //         ) {
+    //           return false;
+    //         }
+
+    //         return (
+    //           reference === '0' ||
+    //           reference === parsedPermittedAccount.chain.reference
+    //         );
+    //       });
+    //     });
+    // }
 
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);

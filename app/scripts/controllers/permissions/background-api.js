@@ -15,7 +15,7 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import {
   getAllPermittedAccounts,
   getAllScopes,
-} from '../../lib/multichain/utils';
+} from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,

@@ -9,7 +9,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../modules/string-utils';
 
 // Type for an internal account with minimum required properties
 export interface InternalAccount {

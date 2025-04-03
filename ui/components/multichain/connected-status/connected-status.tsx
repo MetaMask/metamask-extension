@@ -8,8 +8,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isAccountConnectedToPermittedAccounts } from '../../../../app/scripts/lib/multichain/utils';
-import { getAllPermittedAccountsForCurrentTab, getInternalAccountByAddress } from '../../../selectors';
+import { isAccountConnectedToPermittedAccounts } from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  getInternalAccountByAddress,
+} from '../../../selectors';
 
 const STATUS_CONNECTED = 'connected';
 const STATUS_NOT_CONNECTED = 'not_connected';
@@ -34,16 +37,13 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
 
   // Get the permitted accounts and the internal account for the address
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const internalAccount = useSelector(state =>
-    getInternalAccountByAddress(state, address)
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
   );
 
   // Use our utility function to check if the account is connected
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    isAccountConnectedToPermittedAccounts(
-      permittedAccounts,
-      internalAccount
-    )
+    isAccountConnectedToPermittedAccounts(permittedAccounts, internalAccount),
   );
 
   let status = STATUS_NOT_CONNECTED;
