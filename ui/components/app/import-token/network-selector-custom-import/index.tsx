@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   TextVariant,
   TextColor,
@@ -18,7 +17,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../component-library';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkSelectorCustomImport = ({
