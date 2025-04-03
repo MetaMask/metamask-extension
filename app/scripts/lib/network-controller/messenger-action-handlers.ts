@@ -134,7 +134,7 @@ function getIsInfuraEndpointUrl(
   infuraProjectId: string,
 ): boolean {
   return new RegExp(
-    `^https://[^.]+\.infura\.io/v3/${escapeRegExp(infuraProjectId)}$`,
+    `^https://[^.]+.infura.io/v3/${escapeRegExp(infuraProjectId)}$`,
     'u',
   ).test(endpointUrl);
 }
