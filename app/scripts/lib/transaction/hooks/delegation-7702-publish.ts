@@ -20,7 +20,7 @@ import {
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { Interface } from '@ethersproject/abi';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
-import { submitRelayTransaction } from '../relay';
+import { RelaySubmitRequest, submitRelayTransaction } from '../transaction-relay';
 
 const ENFORCER_ADDRESS = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 const EMPTY_HEX = '0x';
@@ -70,7 +70,8 @@ export class Delegation7702PublishHook {
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
 
-    const { from, data, to, value } = txParams;
+    const { data, from, maxFeePerGas, maxPriorityFeePerGas, to, value } =
+      txParams;
 
     const isEIP7702Supported = await this.#isEIP7702Supported(
       from as Hex,
@@ -140,13 +141,11 @@ export class Delegation7702PublishHook {
       [[userExecution, transferExecution]],
     );
 
-    const transactionParams: TransactionParams = {
-      from,
-      to: ADDRESS_DELEGATION_MANAGER,
+    const transactionParams: RelaySubmitRequest = {
       data: transactionData,
-      value: '0x0',
-      maxFeePerGas: txParams.maxFeePerGas,
-      maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
+      maxFeePerGas: maxFeePerGas as Hex,
+      maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
+      to: ADDRESS_DELEGATION_MANAGER,
     };
 
     log('Transaction params', transactionParams);
