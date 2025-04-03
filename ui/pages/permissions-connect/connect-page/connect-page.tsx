@@ -75,6 +75,10 @@ import {
   getAllRequestedAccounts,
   getAllRequestedChainIds,
 } from './utils';
+import {
+  getAllPermittedAccounts,
+  getAllScopes,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export type ConnectPageRequest = {
   id: string;
@@ -113,10 +117,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedCaipAccountIds = getAllRequestedAccounts(
+
+  const requestedCaipAccountIds = getAllAccountsFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
-  const requestedCaipChainIds = getAllRequestedChainIds(
+  const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
 

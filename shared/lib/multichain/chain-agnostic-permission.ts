@@ -1,7 +1,6 @@
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
-  Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -46,19 +45,17 @@ export function getCaip25CaveatFromPermission(caip25Permission: {
  * @param caip25CaveatValue - The CAIP-25 caveat value to extract accounts from
  * @returns Array of unique account IDs
  */
-export function getAllPermittedAccounts(
+export function getAllAccountsFromCaip25CaveatValue(
   caip25CaveatValue: Caip25CaveatValue,
 ): CaipAccountId[] {
   const permittedAccounts = new Set<CaipAccountId>();
 
-  // Extract accounts from required scopes
   Object.values(caip25CaveatValue.requiredScopes).forEach(({ accounts }) => {
     accounts.forEach((account) => {
       permittedAccounts.add(account as CaipAccountId);
     });
   });
 
-  // Extract accounts from optional scopes
   Object.values(caip25CaveatValue.optionalScopes).forEach(({ accounts }) => {
     accounts.forEach((account) => {
       permittedAccounts.add(account as CaipAccountId);
@@ -88,7 +85,9 @@ export function getAllAccountsFromPermission(caip25Permission: {
     return [];
   }
 
-  return getAllPermittedAccounts(caip25Caveat.value as Caip25CaveatValue);
+  return getAllAccountsFromCaip25CaveatValue(
+    caip25Caveat.value as Caip25CaveatValue,
+  );
 }
 
 /**
@@ -99,14 +98,12 @@ export function getAllAccountsFromPermission(caip25Permission: {
  * @param caip25CaveatValue - The CAIP-25 caveat value to extract scopes from
  * @returns Array of unique scope strings (chain IDs)
  */
-export function getAllScopes(
+export function getAllScopesFromCaip25CaveatValue(
   caip25CaveatValue: Caip25CaveatValue,
 ): CaipChainId[] {
-  // Extract scopes from required and optional
   const requiredScopes = Object.keys(caip25CaveatValue.requiredScopes);
   const optionalScopes = Object.keys(caip25CaveatValue.optionalScopes);
 
-  // Combine and return unique scopes
   return Array.from(
     new Set([...requiredScopes, ...optionalScopes]),
   ) as CaipChainId[];
@@ -132,7 +129,9 @@ export function getAllScopesFromPermission(caip25Permission: {
     return [];
   }
 
-  return getAllScopes(caip25Caveat.value as Caip25CaveatValue);
+  return getAllScopesFromCaip25CaveatValue(
+    caip25Caveat.value as Caip25CaveatValue,
+  );
 }
 
 /**

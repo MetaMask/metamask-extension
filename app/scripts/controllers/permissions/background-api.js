@@ -13,8 +13,8 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
-  getAllPermittedAccounts,
-  getAllScopes,
+  getAllAccountsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export function getPermissionBackgroundApiMethods({
@@ -62,7 +62,7 @@ export function getPermissionBackgroundApiMethods({
       return `${namespace}:${reference}:${internalAccount.address}`;
     });
 
-    const existingPermittedAccounts = getAllPermittedAccounts(
+    const existingPermittedAccounts = getAllAccountsFromCaip25CaveatValue(
       caip25Caveat.value,
     );
 
@@ -92,7 +92,10 @@ export function getPermissionBackgroundApiMethods({
     }
 
     const updatedChainIds = Array.from(
-      new Set([...getAllScopes(caip25Caveat.value), ...chainIds]),
+      new Set([
+        ...getAllScopesFromCaip25CaveatValue(caip25Caveat.value),
+        ...chainIds,
+      ]),
     );
 
     const caveatValueWithChains = setPermittedChainIds(
@@ -100,7 +103,9 @@ export function getPermissionBackgroundApiMethods({
       updatedChainIds,
     );
 
-    const permittedAccounts = getAllPermittedAccounts(caip25Caveat.value);
+    const permittedAccounts = getAllAccountsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
 
     // ensure that the list of permitted accounts is set for the newly added scopes
     const caveatValueWithAccountsSynced = setPermittedAccounts(
@@ -172,8 +177,9 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      // Get all permitted accounts using our utility function
-      const existingAccounts = getAllPermittedAccounts(caip25Caveat.value);
+      const existingAccounts = getAllAccountsFromCaip25CaveatValue(
+        caip25Caveat.value,
+      );
 
       const internalAccount = accountsController.getAccountByAddress(address);
 
@@ -234,7 +240,9 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      const existingChainIds = getAllScopes(caip25Caveat.value);
+      const existingChainIds = getAllScopesFromCaip25CaveatValue(
+        caip25Caveat.value,
+      );
 
       const remainingChainIds = existingChainIds.filter(
         (existingChainId) => existingChainId !== chainId,
