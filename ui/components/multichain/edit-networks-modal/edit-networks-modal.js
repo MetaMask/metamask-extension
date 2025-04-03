@@ -248,7 +248,7 @@ EditNetworksModal.propTypes = {
    */
   testNetworks: PropTypes.arrayOf(
     PropTypes.shape({
-      caipChainId: PropTypes.string.isRequired, // The chain ID of the network
+      caipChainId: PropTypes.string.isRequired, // The caip chain ID of the network
       name: PropTypes.string.isRequired, // Display name of the network
     }),
   ).isRequired,
