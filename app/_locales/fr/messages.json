@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "aggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur un réseau donné. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "J’accepte les $1 de MetaMask",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
-  },
-  "showIncomingTransactions": {
-    "message": "Afficher les transactions entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ce processus fait appel à différentes API tierces pour chaque réseau et expose ainsi votre adresse Ethereum et votre adresse IP."
   },
   "showLess": {
     "message": "Afficher moins"

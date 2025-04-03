@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
-  "aggregatedBalancePopover": {
-    "message": "Αυτό αντικατοπτρίζει την αξία όλων των tokens που έχετε στην κατοχή σας σε ένα συγκεκριμένο δίκτυο. Εάν προτιμάτε να βλέπετε αυτή την αξία σε ETH ή άλλα νομίσματα, μεταβείτε στις $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Συμφωνώ με το $1 του MetaMask",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Επιλέξτε το για να εμφανιστεί το πεδίο δεκαεξαδικών δεδομένων στην οθόνη αποστολής"
-  },
-  "showIncomingTransactions": {
-    "message": "Εμφάνιση εισερχόμενων συναλλαγών"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Αυτό βασίζεται στο $1, το οποίο θα έχει πρόσβαση στη διεύθυνση Ethereum και τη διεύθυνση IP σας. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Αυτό βασίζεται σε διαφορετικά API τρίτων για κάθε δίκτυο, τα οποία εκθέτουν τη διεύθυνση Ethereum και τη διεύθυνση IP σας."
   },
   "showLess": {
     "message": "Εμφάνιση λιγότερων"

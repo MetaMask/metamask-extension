@@ -1,6 +1,7 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import {
+  selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
 } from './selectors';
@@ -202,5 +203,18 @@ describe('#getShowPrivacyPolicyToast', () => {
       });
       expect(result.showPrivacyPolicyToast).toBe(false);
     });
+  });
+});
+
+describe('#getShowNewSrpAddedToast', () => {
+  it('returns true if the user has not seen the toast', () => {
+    const result = selectNewSrpAdded({
+      // @ts-expect-error: intentionally passing incomplete input
+      metamask: {},
+      appState: {
+        showNewSrpAddedToast: true,
+      },
+    });
+    expect(result).toBe(true);
   });
 });

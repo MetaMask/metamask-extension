@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "aggregatedBalancePopover": {
-    "message": "Isso reflete o valor de todos os tokens que você possui em uma dada rede. Se você preferir ver esse valor em ETH ou outras moedas, acesse a $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Concordo com os $1 da MetaMask",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Selecione essa opção para exibir o campo de dados hexa na tela de envio"
-  },
-  "showIncomingTransactions": {
-    "message": "Exibir transações recebidas"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Isso depende de $1, que terá acesso ao seu endereço Ethereum e ao seu endereço IP. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Isso depende de diferentes APIs de terceiros para cada rede, o que expõe seu endereço Ethereum e seu endereço IP."
   },
   "showLess": {
     "message": "Mostrar menos"

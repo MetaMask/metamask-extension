@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { getNextAvailableAccountName } from '../../../store/actions';
@@ -43,20 +43,28 @@ export const CreateSnapAccount = ({
   chainId,
 }: CreateSnapAccountProps) => {
   const snapClient = useMultichainWalletSnapClient(clientType);
+  const isCreatingAccount = useRef(false);
 
   const onCreateAccount = useCallback(
-    async (suggestedName?: string) => {
+    async (_accountNameSuggestion?: string) => {
+      if (isCreatingAccount.current) {
+        return;
+      }
+
       try {
-        await snapClient.createAccount(
-          chainId,
+        isCreatingAccount.current = true;
+        await snapClient.createAccount({
+          scope: chainId,
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          selectedKeyringId,
-          suggestedName,
+          entropySource: selectedKeyringId,
+          accountNameSuggestion: _accountNameSuggestion,
           ///: END:ONLY_INCLUDE_IF(multi-srp)
-        );
+        });
         onActionComplete(true);
       } catch (error) {
         onActionComplete(false);
+      } finally {
+        isCreatingAccount.current = false;
       }
     },
     [snapClient, chainId, selectedKeyringId, onActionComplete],

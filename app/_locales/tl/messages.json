@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
-  "aggregatedBalancePopover": {
-    "message": "Ipinapakita nito ang halaga ng lahat ng token na pagmamay-ari mo sa ibinigay na network. Kung mas gusto mong makita ang halagang ito sa ETH o sa ibang currency, pumunta sa $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Sumasang-ayon ako sa $1 ng MetaMask",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex na data sa screen ng pagpapadala"
-  },
-  "showIncomingTransactions": {
-    "message": "Ipakita ang mga papasok na transaksyon"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Umaasa ito sa $1 na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ito ay umaasa sa ibang third party na API para sa bawat network, na naglalantad sa iyong address sa Ethereum at iyong IP address."
   },
   "showLess": {
     "message": "Magpakita ng mas kaunti"

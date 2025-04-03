@@ -78,6 +78,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
+    enableTxParamsGasFeeUpdates: true,
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -106,10 +107,8 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       includeTokenTransfers: false,
       isEnabled: () =>
-        preferencesController().state.incomingTransactionsPreferences?.[
-          // @ts-expect-error PreferencesController incorrectly expects number index
-          getGlobalChainId()
-        ] && onboardingController().state.completedOnboarding,
+        preferencesController().state.useExternalServices &&
+        onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
     },
