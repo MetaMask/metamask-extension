@@ -10,7 +10,7 @@ on:
 
 jobs:
   identify-codeowners:
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
