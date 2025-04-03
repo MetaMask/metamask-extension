@@ -18,18 +18,12 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import {
-  decimalToHex,
-  multiplyHexes,
-  sumHexes,
-} from '../../../../../../shared/modules/conversion.utils';
+import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { id: transactionId, selectedGasFeeToken } = currentConfirmation ?? {};
-  const batchTransactionCount =
-    currentConfirmation?.nestedTransactions?.length ?? 0;
 
   const batchTransactionValues =
     currentConfirmation?.nestedTransactions?.map(
@@ -54,10 +48,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
-    gasTotal: multiplyHexes(
-      hexMaximumTransactionFee as Hex,
-      decimalToHex(batchTransactionCount + 1) as Hex,
-    ),
+    gasTotal: hexMaximumTransactionFee,
     balance,
   });
 
