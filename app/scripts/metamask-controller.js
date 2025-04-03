@@ -4717,40 +4717,6 @@ export default class MetamaskController extends EventEmitter {
 
       await this._addAccountsWithBalance(id);
 
-      const client = new KeyringInternalSnapClient({
-        messenger: this.controllerMessenger,
-        snapId: SOLANA_WALLET_SNAP_ID,
-      });
-      // TODO: Use `withKeyring` instead.
-      const keyring = await this.getSnapKeyring();
-      for (let index = 0; ; index++) {
-        const discovered = await client.discoverAccounts(
-          [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
-          id,
-          index,
-        );
-
-        // We stop discovering accounts if none got discovered for that index.
-        if (discovered.length === 0) {
-          break;
-        }
-
-        await Promise.allSettled(
-          discovered.map(async (discoveredAccount) => {
-            const options = {
-              scope: discoveredAccount.scopes,
-              entropySource: id,
-            };
-
-            await keyring.createAccount(SOLANA_WALLET_SNAP_ID, options, {
-              displayConfirmation: false,
-              displayAccountNameSuggestion: false,
-              setSelectedAccount: false,
-            });
-          }),
-        );
-      }
-
       return newAccountAddress;
     } finally {
       releaseLock();
@@ -4851,7 +4817,11 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
+      let entropySource = keyringId;
 
+      if (!entropySource) {
+        entropySource = this.keyringController.state.keyringsMetadata[0].id;
+      }
       const keyringSelector = keyringId
         ? { id: keyringId }
         : { type: KeyringTypes.hd };
@@ -4900,6 +4870,42 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      const client = new KeyringInternalSnapClient({
+        messenger: this.controllerMessenger,
+        snapId: SOLANA_WALLET_SNAP_ID,
+      });
+      // TODO: Use `withKeyring` instead.
+      const keyring = await this.getSnapKeyring();
+      for (let index = 0; ; index++) {
+        const discovered = await client.discoverAccounts(
+          [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+          entropySource,
+          index,
+        );
+
+        // We stop discovering accounts if none got discovered for that index.
+        if (discovered.length === 0) {
+          break;
+        }
+
+        await Promise.allSettled(
+          discovered.map(async (discoveredAccount) => {
+            const options = {
+              derivationPath: discoveredAccount.derivationPath,
+              entropySource,
+            };
+
+            await keyring.createAccount(SOLANA_WALLET_SNAP_ID, options, {
+              displayConfirmation: false,
+              displayAccountNameSuggestion: false,
+              setSelectedAccount: false,
+            });
+          }),
+        );
+      }
+      ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
