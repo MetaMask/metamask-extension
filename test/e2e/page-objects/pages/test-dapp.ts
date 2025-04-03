@@ -363,7 +363,7 @@ class TestDapp {
    * @param encryptionKey - The encryption key to display.
    */
   async check_getEncryptionKeyResult(encryptionKey: string) {
-    console.log('Verify get encryption key result on test dapp');
+    console.log('Verify get encryption key result on test dapp: ', encryptionKey);
     await this.driver.waitForSelector({
       css: this.getEncryptionKeyResult,
       text: encryptionKey,
