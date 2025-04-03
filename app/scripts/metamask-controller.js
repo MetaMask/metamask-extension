@@ -17,7 +17,15 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
+import {
+  debounce,
+  throttle,
+  memoize,
+  wrap,
+  pick,
+  cloneDeep,
+  uniq,
+} from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -170,6 +178,7 @@ import {
   getSessionScopes,
   setPermittedEthChainIds,
   setEthAccounts,
+  getPermittedAccountsForScopes,
 } from '@metamask/chain-agnostic-permission';
 
 import {
@@ -2869,9 +2878,87 @@ export default class MetamaskController extends EventEmitter {
                 });
               }
             });
-
             this._notifyAuthorizationChange(origin, authorization);
           }
+
+          const origins = uniq([
+            ...previousValue.keys(),
+            ...currentValue.keys(),
+          ]);
+          origins.forEach((origin) => {
+            const previousCaveatValue = previousValue.get(origin);
+            const currentCaveatValue = currentValue.get(origin);
+
+            const previousSolanaAccountChangedNotificationsEnabled = Boolean(
+              previousCaveatValue?.sessionProperties?.[
+                KnownSessionProperties.SolanaAccountChangedNotifications
+              ],
+            );
+            const currentSolanaAccountChangedNotificationsEnabled = Boolean(
+              currentCaveatValue?.sessionProperties?.[
+                KnownSessionProperties.SolanaAccountChangedNotifications
+              ],
+            );
+
+            if (
+              !previousSolanaAccountChangedNotificationsEnabled &&
+              !currentSolanaAccountChangedNotificationsEnabled
+            ) {
+              return;
+            }
+
+            const previousSolanaCaipAccountIds = previousCaveatValue
+              ? getPermittedAccountsForScopes(previousCaveatValue, [
+                  MultichainNetworks.SOLANA,
+                  MultichainNetworks.SOLANA_DEVNET,
+                  MultichainNetworks.SOLANA_TESTNET,
+                ])
+              : [];
+            const _previousSolanaHexAccountAddresses =
+              previousSolanaCaipAccountIds.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+            const previousSolanaHexAccountAddresses = uniq(
+              _previousSolanaHexAccountAddresses,
+            );
+            const previousSelectedSolanaAccountAddress =
+              this.sortMultichainAccountsByLastSelected(
+                previousSolanaHexAccountAddresses,
+              )[0];
+
+            const currentSolanaCaipAccountIds = currentCaveatValue
+              ? getPermittedAccountsForScopes(currentCaveatValue, [
+                  MultichainNetworks.SOLANA,
+                  MultichainNetworks.SOLANA_DEVNET,
+                  MultichainNetworks.SOLANA_TESTNET,
+                ])
+              : [];
+            const _currentSolanaHexAccountAddresses =
+              currentSolanaCaipAccountIds.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+            const currentSolanaHexAccountAddresses = uniq(
+              _currentSolanaHexAccountAddresses,
+            );
+            const currentSelectedSolanaAccountAddress =
+              this.sortMultichainAccountsByLastSelected(
+                currentSolanaHexAccountAddresses,
+              )[0];
+
+            if (
+              previousSelectedSolanaAccountAddress !==
+              currentSelectedSolanaAccountAddress
+            ) {
+              this._notifySolanaAccountChange(
+                origin,
+                currentSelectedSolanaAccountAddress
+                  ? [currentSelectedSolanaAccountAddress]
+                  : [],
+              );
+            }
+          });
         },
         getAuthorizedScopesByOrigin,
       );
@@ -2883,6 +2970,8 @@ export default class MetamaskController extends EventEmitter {
             account.type === 'solana:data-account' &&
             account.address !== lastSelectedSolanaAccountAddress
           ) {
+            lastSelectedSolanaAccountAddress = account.address;
+
             const originsWithSolanaAccountChangedNotifications =
               getOriginsWithSessionProperty(
                 this.permissionController.state,
@@ -2908,8 +2997,7 @@ export default class MetamaskController extends EventEmitter {
                 parsedSolanaAddresses.includes(account.address) &&
                 originsWithSolanaAccountChangedNotifications[origin]
               ) {
-                lastSelectedSolanaAccountAddress = account.address;
-                this._notifySolanaAccountChange(origin, account.address);
+                this._notifySolanaAccountChange(origin, [account.address]);
               }
             }
           }
@@ -5462,6 +5550,56 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Sorts a list of multichain account addresses by most recently selected by using
+   * the lastSelected value for the matching InternalAccount object stored in state.
+   *
+   * @param {string[]} [accounts] - The list of accounts addresses to sort.
+   * @returns {string[]} The sorted accounts addresses.
+   */
+  sortMultichainAccountsByLastSelected(accounts) {
+    const internalAccounts = this.accountsController.listMultichainAccounts();
+
+    return accounts.sort((firstAddress, secondAddress) => {
+      const firstAccount = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
+      );
+
+      const secondAccount = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
+      );
+
+      if (!firstAccount) {
+        this.captureKeyringTypesWithMissingIdentities(
+          internalAccounts,
+          accounts,
+        );
+        throw new Error(`Missing identity for address: "${firstAddress}".`);
+      } else if (!secondAccount) {
+        this.captureKeyringTypesWithMissingIdentities(
+          internalAccounts,
+          accounts,
+        );
+        throw new Error(`Missing identity for address: "${secondAddress}".`);
+      } else if (
+        firstAccount.metadata.lastSelected ===
+        secondAccount.metadata.lastSelected
+      ) {
+        return 0;
+      } else if (firstAccount.metadata.lastSelected === undefined) {
+        return 1;
+      } else if (secondAccount.metadata.lastSelected === undefined) {
+        return -1;
+      }
+
+      return (
+        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
+      );
+    });
+  }
+
+  /**
    * Gets the sorted permitted accounts for the specified origin. Returns an empty
    * array if no accounts are permitted or the wallet is locked. Returns any permitted
    * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
@@ -6341,6 +6479,53 @@ export default class MetamaskController extends EventEmitter {
       origin = sender.snapId;
     } else {
       origin = new URL(sender.url).origin;
+    }
+
+    // solana account changed notifications
+    let caip25Caveat;
+    try {
+      caip25Caveat = this.permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch {
+      // noop
+    }
+    if (caip25Caveat) {
+      const solanaAccountsChangedNotifications =
+        caip25Caveat.value.sessionProperties[
+          KnownSessionProperties.SolanaAccountChangedNotifications
+        ];
+
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      });
+
+      const solanaScope =
+        sessionScopes[MultichainNetworks.SOLANA] ||
+        sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+        sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+
+      if (solanaAccountsChangedNotifications && solanaScope) {
+        const { accounts } = solanaScope;
+        const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
+          const { address } = parseCaipAccountId(caipAccountId);
+          return address;
+        });
+
+        const accountAddressToEmit = this.sortMultichainAccountsByLastSelected(
+          parsedPermittedSolanaAddresses,
+        )[0];
+
+        if (accountAddressToEmit) {
+          // delay emit so that the event is not emitted
+          // before the wallet standard script is ready to receive it
+          setTimeout(() => {
+            this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
+          }, 500);
+        }
+      }
     }
 
     if (sender.id && sender.id !== this.extension.runtime.id) {
@@ -7956,7 +8141,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  async _notifySolanaAccountChange(origin, accountAddress) {
+  async _notifySolanaAccountChange(origin, accountAddressArray) {
     this.notifyConnections(
       origin,
       {
@@ -7965,7 +8150,7 @@ export default class MetamaskController extends EventEmitter {
           scope: MultichainNetworks.SOLANA,
           notification: {
             method: NOTIFICATION_NAMES.accountsChanged,
-            params: [accountAddress],
+            params: accountAddressArray,
           },
         },
       },
