@@ -1858,7 +1858,6 @@ export function setSelectedAccount(
     const permittedAccountsForCurrentTab =
       getAllPermittedAccountsForCurrentTab(state);
 
-    // Using our new utility function for both connected account checks
     const currentTabIsConnectedToPreviousAddress =
       isAccountConnectedToPermittedAccounts(
         permittedAccountsForCurrentTab,

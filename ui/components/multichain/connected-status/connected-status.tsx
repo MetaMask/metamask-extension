@@ -4,6 +4,11 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import {
+  STATUS_CONNECTED,
+  STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+  STATUS_NOT_CONNECTED,
+} from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
 import { isAccountConnectedToPermittedAccounts } from '../../../../shared/lib/multichain/chain-agnostic-permission';
@@ -11,10 +16,6 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getInternalAccountByAddress,
 } from '../../../selectors';
-
-const STATUS_CONNECTED = 'connected';
-const STATUS_NOT_CONNECTED = 'not_connected';
-const STATUS_CONNECTED_TO_ANOTHER_ACCOUNT = 'connected_to_another_account';
 
 export type ConnectedStatusProps = {
   address: string;
@@ -41,11 +42,6 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
 
   const currentTabIsConnectedToSelectedAddress =
     isAccountConnectedToPermittedAccounts(permittedAccounts, internalAccount);
-  // // Use our utility function to check if the account is connected
-  // const currentTabIsConnectedToSelectedAddress = useSelector(
-  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   (_state) =>
-  // );
 
   let status = STATUS_NOT_CONNECTED;
   if (isActive) {

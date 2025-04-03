@@ -234,7 +234,6 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      // Use our utility function to get all existing chain IDs
       const existingChainIds = getAllScopes(caip25Caveat.value);
 
       const remainingChainIds = existingChainIds.filter(
