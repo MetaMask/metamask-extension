@@ -12,6 +12,8 @@ import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-s
 import SolanaWalletSnap from '@metamask/solana-wallet-snap/dist/preinstalled-snap.json';
 ///: END:ONLY_INCLUDE_IF
 
+// Hello world
+
 // The casts here are less than ideal but we expect the SnapController to validate the inputs.
 const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
   MessageSigningSnap as unknown as PreinstalledSnap,
