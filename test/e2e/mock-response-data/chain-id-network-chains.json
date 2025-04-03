@@ -56,5 +56,40 @@
         "standard": "EIP3091"
       }
     ]
+  },
+  {
+    "name": "Orderly Mainnet",
+    "chain": "ETH",
+    "rpc": ["https://rpc.orderly.network"],
+    "faucets": [],
+    "nativeCurrency": { "name": "Ether", "symbol": "ETH", "decimals": 18 },
+    "infoURL": "https://orderly.network/",
+    "shortName": "orderly",
+    "chainId": 291,
+    "networkId": 291,
+    "icon": "orderly",
+    "explorers": [
+      {
+        "name": "orderlyscout",
+        "url": "https://explorer.orderly.network",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "PrimusChain mainnet",
+    "chain": "PC",
+    "rpc": ["https://ethnode.primusmoney.com/mainnet"],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Primus Ether",
+      "symbol": "PETH",
+      "decimals": 18
+    },
+    "infoURL": "https://primusmoney.com",
+    "shortName": "primuschain",
+    "chainId": 78,
+    "networkId": 78
   }
 ]
