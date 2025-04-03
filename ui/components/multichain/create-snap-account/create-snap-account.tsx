@@ -7,10 +7,7 @@ import {
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import {
-  MULTICHAIN_NETWORK_TO_NICKNAME,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 type CreateSnapAccountProps = {
   /**
