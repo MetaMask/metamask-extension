@@ -6,8 +6,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { isAccountConnectedToPermittedAccounts } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 import {
   getAllPermittedAccountsForCurrentTab,
@@ -41,10 +39,13 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
     getInternalAccountByAddress(state, address),
   );
 
-  // Use our utility function to check if the account is connected
-  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    isAccountConnectedToPermittedAccounts(permittedAccounts, internalAccount),
-  );
+  const currentTabIsConnectedToSelectedAddress =
+    isAccountConnectedToPermittedAccounts(permittedAccounts, internalAccount);
+  // // Use our utility function to check if the account is connected
+  // const currentTabIsConnectedToSelectedAddress = useSelector(
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   (_state) =>
+  // );
 
   let status = STATUS_NOT_CONNECTED;
   if (isActive) {

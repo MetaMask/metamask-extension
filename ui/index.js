@@ -141,34 +141,6 @@ export async function setupInitialStore(
         selectedAccount,
       );
 
-    // let currentTabIsConnectedToSelectedAddress;
-    // if (selectedAccount) {
-    //   currentTabIsConnectedToSelectedAddress =
-    //     // TODO: dry and move to @metamask/chain-agnostic-permission package
-    //     permittedAccountsForCurrentTab.some((account) => {
-    //       const parsedPermittedAccount = parseCaipAccountId(account);
-
-    //       return selectedAccount.scopes.some((scope) => {
-    //         const { namespace, reference } = parseCaipChainId(scope);
-
-    //         if (
-    //           namespace !== parsedPermittedAccount.chain.namespace ||
-    //           !isEqualCaseInsensitive(
-    //             selectedAccount.address,
-    //             parsedPermittedAccount.address,
-    //           )
-    //         ) {
-    //           return false;
-    //         }
-
-    //         return (
-    //           reference === '0' ||
-    //           reference === parsedPermittedAccount.chain.reference
-    //         );
-    //       });
-    //     });
-    // }
-
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =

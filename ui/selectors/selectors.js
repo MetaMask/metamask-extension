@@ -23,6 +23,7 @@ import {
   getEthAccounts,
   getPermittedEthChainIds,
   getUniqueArrayItems,
+  getPermittedAccountsForScopes,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
@@ -120,6 +121,11 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import {
+  getCaveatFromPermission,
+  getAllAccountsFromPermission,
+  getAllScopesFromPermission,
+} from '../../shared/lib/multichain/chain-agnostic-permission';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
@@ -3475,47 +3481,6 @@ function getAccountsFromSubject(subject) {
 
 function getEVMChainsFromSubject(subject) {
   return getEVMChainsFromPermission(getCaip25PermissionFromSubject(subject));
-}
-
-function getCaveatFromPermission(caip25Permission = {}) {
-  return (
-    Array.isArray(caip25Permission.caveats) &&
-    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
-  );
-}
-
-function getAllAccountsFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
-  if (!caip25Caveat) {
-    return [];
-  }
-
-  // TODO dry and or move to @metamask/chain-agnostic-permission
-  const requiredAccounts = Object.values(
-    caip25Caveat.value.requiredScopes,
-  ).flatMap((scope) => scope.accounts);
-
-  const optionalAccounts = Object.values(
-    caip25Caveat.value.optionalScopes,
-  ).flatMap((scope) => scope.accounts);
-
-  return getUniqueArrayItems([...requiredAccounts, ...optionalAccounts]);
-}
-
-function getAllScopesFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
-  if (!caip25Caveat) {
-    return [];
-  }
-
-  // TODO dry and or move to @metamask/chain-agnostic-permission
-  const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
-
-  const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
-
-  // TODO: May need to filter out wallet scopes here?
-
-  return getUniqueArrayItems([...requiredScopes, ...optionalScopes]);
 }
 
 function getEVMAccountsFromPermission(caip25Permission) {

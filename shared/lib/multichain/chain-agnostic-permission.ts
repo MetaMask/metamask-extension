@@ -1,7 +1,7 @@
 import {
-  InternalScopeObject,
-  InternalScopesObject,
+  Caip25CaveatType,
   Caip25CaveatValue,
+  Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -11,6 +11,33 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../modules/string-utils';
+
+/**
+ * Helper to get the CAIP-25 caveat from a permission
+ *
+ * @param caip25Permission - The CAIP-25 permission object
+ * @param caip25Permission.caveats - The caveats of the CAIP-25 permission
+ * @returns The CAIP-25 caveat or undefined if not found
+ */
+export function getCaip25CaveatFromPermission(caip25Permission: {
+  caveats: {
+    type: string;
+    value: Caip25CaveatValue | unknown;
+  }[];
+}):
+  | {
+      type: string;
+      value: Caip25CaveatValue | unknown;
+    }
+  | undefined {
+  if (!Array.isArray(caip25Permission.caveats)) {
+    return undefined;
+  }
+  return caip25Permission.caveats.find(
+    (caveat) => caveat.type === Caip25CaveatType,
+  );
+}
+
 /**
  * Gets all permitted accounts from a CAIP-25 caveat
  * This extracts all account IDs from both required and optional scopes
@@ -42,6 +69,29 @@ export function getAllPermittedAccounts(
 }
 
 /**
+ * Gets all permitted accounts from a CAIP-25 permission
+ * This extracts all account IDs from both required and optional scopes
+ * and returns a unique set.
+ *
+ * @param caip25Permission - The CAIP-25 permission object
+ * @param caip25Permission.caveats - The caveats of the CAIP-25 permission
+ * @returns Array of unique account IDs
+ */
+export function getAllAccountsFromPermission(caip25Permission: {
+  caveats: {
+    type: string;
+    value: Caip25CaveatValue | unknown;
+  }[];
+}): CaipAccountId[] {
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
+  if (!caip25Caveat) {
+    return [];
+  }
+
+  return getAllPermittedAccounts(caip25Caveat.value as Caip25CaveatValue);
+}
+
+/**
  * Gets all scopes (chain IDs) from a CAIP-25 caveat
  * This extracts all scopes from both required and optional scopes
  * and returns a unique set.
@@ -63,179 +113,26 @@ export function getAllScopes(
 }
 
 /**
- * Updates the list of permitted accounts in a CAIP-25 caveat with the given accounts
+ * Gets all scopes (chain IDs) from a CAIP-25 permission
+ * This extracts all scopes from both required and optional scopes
+ * and returns a unique set.
  *
- * @param caip25CaveatValue - The original CAIP-25 caveat value
- * @param updatedAccounts - The array of accounts to set
- * @returns The updated CAIP-25 caveat value with new accounts
+ * @param caip25Permission - The CAIP-25 permission object
+ * @param caip25Permission.caveats - The caveats of the CAIP-25 permission
+ * @returns Array of unique scope strings (chain IDs)
  */
-export function updatePermittedAccounts(
-  caip25CaveatValue: Caip25CaveatValue,
-  updatedAccounts: CaipAccountId[],
-): Caip25CaveatValue {
-  // Create a new caveat value object to avoid modifying the original
-  const updatedCaveatValue: Caip25CaveatValue = {
-    ...caip25CaveatValue,
-    requiredScopes: { ...caip25CaveatValue.requiredScopes },
-    optionalScopes: { ...caip25CaveatValue.optionalScopes },
-  };
-
-  // Clear existing accounts in all scopes
-  Object.entries(updatedCaveatValue.requiredScopes).forEach(
-    ([scope, scopeObj]) => {
-      if (scopeObj) {
-        updatedCaveatValue.requiredScopes[scope as keyof InternalScopesObject] =
-          {
-            ...scopeObj,
-            accounts: [],
-          };
-      }
-    },
-  );
-
-  Object.entries(updatedCaveatValue.optionalScopes).forEach(
-    ([scope, scopeObj]) => {
-      if (scopeObj) {
-        updatedCaveatValue.optionalScopes[scope as keyof InternalScopesObject] =
-          {
-            ...scopeObj,
-            accounts: [],
-          };
-      }
-    },
-  );
-
-  // Add the updated accounts to the appropriate scopes
-  // For now, we'll add all accounts to all scopes
-  // This is a simplification and might need to be refined based on business logic
-  const allScopes = getAllScopes(caip25CaveatValue);
-
-  for (const scope of allScopes) {
-    const scopeKey = scope as string;
-
-    if (
-      Object.prototype.hasOwnProperty.call(
-        updatedCaveatValue.requiredScopes,
-        scopeKey,
-      )
-    ) {
-      const requiredScope =
-        updatedCaveatValue.requiredScopes[
-          scopeKey as keyof InternalScopesObject
-        ];
-      if (requiredScope) {
-        requiredScope.accounts = updatedAccounts;
-      }
-    } else if (
-      Object.prototype.hasOwnProperty.call(
-        updatedCaveatValue.optionalScopes,
-        scopeKey,
-      )
-    ) {
-      const optionalScope =
-        updatedCaveatValue.optionalScopes[
-          scopeKey as keyof InternalScopesObject
-        ];
-      if (optionalScope) {
-        optionalScope.accounts = updatedAccounts;
-      }
-    }
+export function getAllScopesFromPermission(caip25Permission: {
+  caveats: {
+    type: string;
+    value: Caip25CaveatValue | unknown;
+  }[];
+}): CaipChainId[] {
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
+  if (!caip25Caveat) {
+    return [];
   }
 
-  return updatedCaveatValue;
-}
-
-/**
- * Updates the list of permitted chain IDs in a CAIP-25 caveat with the given chain IDs
- *
- * @param caip25CaveatValue - The original CAIP-25 caveat value
- * @param updatedChainIds - The array of chain IDs to set
- * @returns The updated CAIP-25 caveat value with new chain IDs
- */
-export function updatePermittedChainIds(
-  caip25CaveatValue: Caip25CaveatValue,
-  updatedChainIds: CaipChainId[],
-): Caip25CaveatValue {
-  // Create a new base caveat value to avoid modifying the original
-  const updatedCaveatValue: Caip25CaveatValue = {
-    ...caip25CaveatValue,
-    requiredScopes: {} as InternalScopesObject,
-    optionalScopes: {} as InternalScopesObject,
-  };
-
-  // Create empty requiredScopes and optionalScopes objects
-  const newRequiredScopes: Record<string, InternalScopeObject> = {};
-  const newOptionalScopes: Record<string, InternalScopeObject> = {};
-
-  // Transfer all existing required scopes that are in the updated chain IDs list
-  // to the new caveat value
-  for (const chainId of updatedChainIds) {
-    const chainIdKey = chainId.toString();
-
-    // Check if the chainId exists in requiredScopes
-    if (
-      Object.prototype.hasOwnProperty.call(
-        caip25CaveatValue.requiredScopes,
-        chainIdKey,
-      )
-    ) {
-      const existingScope =
-        caip25CaveatValue.requiredScopes[
-          chainIdKey as keyof InternalScopesObject
-        ];
-      if (existingScope) {
-        newRequiredScopes[chainIdKey] = { ...existingScope };
-      }
-    }
-    // Check if the chainId exists in optionalScopes
-    else if (
-      Object.prototype.hasOwnProperty.call(
-        caip25CaveatValue.optionalScopes,
-        chainIdKey,
-      )
-    ) {
-      const existingScope =
-        caip25CaveatValue.optionalScopes[
-          chainIdKey as keyof InternalScopesObject
-        ];
-      if (existingScope) {
-        newOptionalScopes[chainIdKey] = { ...existingScope };
-      }
-    }
-    // If this is a new chain ID, add it as an optional scope with empty accounts
-    else {
-      newOptionalScopes[chainIdKey] = {
-        accounts: [],
-      };
-    }
-  }
-
-  // Assign the new scopes back to the updatedCaveatValue
-  updatedCaveatValue.requiredScopes =
-    newRequiredScopes as unknown as InternalScopesObject;
-  updatedCaveatValue.optionalScopes =
-    newOptionalScopes as unknown as InternalScopesObject;
-
-  return updatedCaveatValue;
-}
-
-/**
- * Merges the given chainIds with existing chainIds in a CAIP-25 caveat
- *
- * @param caip25CaveatValue - The original CAIP-25 caveat value
- * @param chainIds - The chain IDs to add
- * @returns The updated CAIP-25 caveat value with merged chain IDs
- */
-export function mergeChainIds(
-  caip25CaveatValue: Caip25CaveatValue,
-  chainIds: CaipChainId[],
-): Caip25CaveatValue {
-  const existingChainIds = getAllScopes(caip25CaveatValue);
-  const mergedChainIds = Array.from(
-    new Set([...existingChainIds, ...chainIds]),
-  );
-
-  return updatePermittedChainIds(caip25CaveatValue, mergedChainIds);
+  return getAllScopes(caip25Caveat.value as Caip25CaveatValue);
 }
 
 /**
