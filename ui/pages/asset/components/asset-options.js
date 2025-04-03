@@ -39,6 +39,7 @@ const AssetOptions = ({
   };
 
   const shouldShowHideTokenButton = isEvm && !isNativeAsset;
+  const souldShowViewInExplorerButton = isEvm; // Temporarily disabled for non-EVM chains
 
   return (
     <div ref={ref}>
@@ -56,22 +57,24 @@ const AssetOptions = ({
           anchorElement={ref.current}
           onHide={() => setAssetOptionsOpen(false)}
         >
-          <MenuItem
-            iconName={IconName.Export}
-            data-testid="asset-options__etherscan"
-            onClick={
-              blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                ? routeToAddBlockExplorerUrl
-                : openBlockExplorer
-            }
-          >
-            {t(
-              blockExplorerLinkText.firstPart,
-              blockExplorerLinkText.secondPart === ''
-                ? null
-                : [t('blockExplorerAssetAction')],
-            )}
-          </MenuItem>
+          {souldShowViewInExplorerButton && (
+            <MenuItem
+              iconName={IconName.Export}
+              data-testid="asset-options__etherscan"
+              onClick={
+                blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                  ? routeToAddBlockExplorerUrl
+                  : openBlockExplorer
+              }
+            >
+              {t(
+                blockExplorerLinkText.firstPart,
+                blockExplorerLinkText.secondPart === ''
+                  ? null
+                  : [t('blockExplorerAssetAction')],
+              )}
+            </MenuItem>
+          )}
           {shouldShowHideTokenButton && (
             <MenuItem
               iconName={IconName.Trash}
