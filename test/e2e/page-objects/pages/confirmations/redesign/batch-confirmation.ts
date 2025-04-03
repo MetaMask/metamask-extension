@@ -12,11 +12,6 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   private readonly batchTxList = '[data-testid="batch-txs=]';
 
-  private readonly confirmButton = {
-    css: '[data-testid="confirm-footer-button"]',
-    text: 'Confirm',
-  };
-
   private readonly confirmUpgradeAccountCheckbox: string =
     '[data-testid="confirm-upgrade-acknowledge"] span input';
 
@@ -41,10 +36,6 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
       css: this.txType,
       text: txType,
     });
-  }
-
-  async confirmUpgradeAndBatchTx(): Promise<void>  {
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 
   async tickUpgradeCheckbox(): Promise<void> {

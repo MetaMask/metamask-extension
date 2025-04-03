@@ -60,7 +60,7 @@ describe('Upgrade Account', function (this: Suite) {
 
         // Confirm upgrade and batch tx
         await upgradeAndBatchTxConfirmation.tickUpgradeCheckbox();
-        await upgradeAndBatchTxConfirmation.confirmUpgradeAndBatchTx();
+        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
