@@ -1,6 +1,3 @@
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
-import { KnownSessionProperties } from '../lib/rpc-method-middleware/handlers/wallet-createSession/constants';
-
 import { migrate, version } from './151';
 
 const oldVersion = 150;
@@ -15,279 +12,43 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if PermissionController is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        SomeOtherController: {},
-      },
-    };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('adds sessionProperties to CAIP-25 permissions that do not have it', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'example.com': {
-              origin: 'example.com',
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  id: '123',
-                  parentCapability: Caip25EndowmentPermissionName,
-                  invoker: 'example.com',
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
+  describe(`migration #${version}`, () => {
+    it('removes the incomingTransactionsPreferences from PreferencesController state', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            incomingTransactionsPreferences: { 0x1: true },
           },
         },
-      },
-    };
+      };
+      const expectedData = {
+        PreferencesController: {},
+      };
+      const newStorage = await migrate(oldStorage);
 
-    const expectedData = {
-      PermissionController: {
-        subjects: {
-          'example.com': {
-            origin: 'example.com',
-            permissions: {
-              [Caip25EndowmentPermissionName]: {
-                id: '123',
-                parentCapability: Caip25EndowmentPermissionName,
-                invoker: 'example.com',
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
+
+    it('does nothing to other PreferencesController state if incomingTransactionsPreferences is not set', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          PreferencesController: {
+            existingPreference: true,
           },
         },
-      },
-    };
+      };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
-  });
-
-  it('preserves existing sessionProperties in CAIP-25 permissions', async () => {
-    const existingSessionProperties = {
-      [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
-    };
-
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'example.com': {
-              origin: 'example.com',
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  id: '123',
-                  parentCapability: Caip25EndowmentPermissionName,
-                  invoker: 'example.com',
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                        sessionProperties: existingSessionProperties,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
+      const expectedData = {
+        PreferencesController: {
+          existingPreference: true,
         },
-      },
-    };
+      };
 
-    const expectedData = {
-      PermissionController: {
-        subjects: {
-          'example.com': {
-            origin: 'example.com',
-            permissions: {
-              [Caip25EndowmentPermissionName]: {
-                id: '123',
-                parentCapability: Caip25EndowmentPermissionName,
-                invoker: 'example.com',
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: existingSessionProperties,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    };
+      const newStorage = await migrate(oldStorage);
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
-  });
-
-  it('handles multiple subjects with CAIP-25 permissions', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'example.com': {
-              origin: 'example.com',
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {},
-                        isMultichainOrigin: false,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-            'other-site.com': {
-              origin: 'other-site.com',
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {},
-                        isMultichainOrigin: true,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const expectedData = {
-      PermissionController: {
-        subjects: {
-          'example.com': {
-            origin: 'example.com',
-            permissions: {
-              [Caip25EndowmentPermissionName]: {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {},
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          'other-site.com': {
-            origin: 'other-site.com',
-            permissions: {
-              [Caip25EndowmentPermissionName]: {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {},
-                      isMultichainOrigin: true,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
-  });
-
-  it('ignores subjects without CAIP-25 permissions', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'example.com': {
-              origin: 'example.com',
-              permissions: {
-                'other:permission': {
-                  id: '123',
-                  parentCapability: 'other:permission',
-                  invoker: 'example.com',
-                  caveats: [],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
   });
 });
