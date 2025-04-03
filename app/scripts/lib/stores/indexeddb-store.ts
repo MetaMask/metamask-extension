@@ -7,35 +7,24 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(new Error('Transaction aborted'));
   });
 }
 
 export class DB {
-  #name: string;
-
-  #version: number;
-
   #db: IDBDatabase | null = null;
 
   /**
-   * Creates a new DB instance.
+   * Opens the database, running migrations if necessary.
    *
    * @param name - The name of the database.
    * @param version - The version of the database.
    */
-  constructor(name: string, version: number) {
-    this.#name = name;
-    this.#version = version;
-  }
-
-  /** Opens the database, running migrations if necessary. */
-  async open(): Promise<void> {
+  async open(name: string, version: number): Promise<void> {
     if (this.#db) {
       return;
     }
     await new Promise<void>((resolve, reject) => {
-      const request = indexedDB.open(this.#name, this.#version);
+      const request = indexedDB.open(name, version);
       request.onupgradeneeded = async () => {
         const db = request.result;
         // Default migration: create the 'store' object store if it doesn't exist
@@ -77,7 +66,7 @@ export class DB {
    * @param keys - An array of keys to retrieve.
    * @returns An array of values in the same order as the input keys.
    */
-  async get<T extends unknown[]>(keys: string[]): Promise<T[]> {
+  async get(keys: string[]): Promise<unknown> {
     if (!this.#db) {
       throw new Error('Database is not open');
     }
@@ -98,7 +87,7 @@ export class DB {
     const resultMap = new Map(
       uniqueKeys.map((key, index) => [key, results[index]]),
     );
-    return keys.map((key) => resultMap.get(key)) as T;
+    return keys.map((key) => resultMap.get(key));
   }
 
   async remove(keys: string[]): Promise<void> {
@@ -111,5 +100,12 @@ export class DB {
       store.delete(key);
     }
     await transactionPromise(tx);
+  }
+
+  close() {
+    if (this.#db) {
+      this.#db.close();
+      this.#db = null;
+    }
   }
 }

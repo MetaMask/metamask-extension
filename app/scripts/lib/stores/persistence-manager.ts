@@ -73,16 +73,16 @@ export class PersistenceManager {
 
   #db: DB;
 
-  #open: true;
+  #open: boolean = false;
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
-    this.#db = new DB('metamask-vault', 1);
+    this.#db = new DB();
   }
 
   async open() {
     if (!this.#open) {
-      await this.#db.open();
+      await this.#db.open('metamask-vault', 1);
       this.#open = true;
     }
   }
@@ -179,9 +179,9 @@ export class PersistenceManager {
           // if we do, we need to throw an error so that the user can be
           // prompted to restore it
           // if we don't, carry on as if everything is fine (it might be)
-          const [backupVault] = await this.#db.get<[string | undefined]>([
-            'vault',
-          ]);
+          const [backupVault] = (await this.#db.get(['vault'])) as [
+            string | undefined,
+          ];
           if (backupVault) {
             throw new Error(MISSING_VAULT_ERROR);
           }
