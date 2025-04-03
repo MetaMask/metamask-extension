@@ -64,7 +64,7 @@ jobs:
         run: yarn validate-source-maps
 
       - name: Upload 'dist-beta' to S3
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && !github.event.repository.fork }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -73,7 +73,7 @@ jobs:
           path: dist
 
       - name: Upload 'builds-beta' to S3
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && !github.event.repository.fork }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}

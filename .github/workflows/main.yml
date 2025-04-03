@@ -197,10 +197,11 @@ jobs:
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
 
       - name: Record bundle size at commit
-        if: ${{ env.BRANCH == 'main' }}
+        if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
+        if: ${{ !github.event.repository.fork }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}

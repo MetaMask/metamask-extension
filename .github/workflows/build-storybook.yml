@@ -20,6 +20,7 @@ jobs:
         run: yarn storybook:build
 
       - name: Upload 'storybook-build' to S3
+        if: ${{ !github.event.repository.fork }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -30,7 +31,7 @@ jobs:
       - name: Deploy storybook
         # For a `pull_request` event, the branch is `github.head_ref``.
         # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ (github.head_ref || github.ref_name) == 'main' }}
+        if: ${{ (github.head_ref || github.ref_name) == 'main' && !github.event.repository.fork }}
         run: |
           git remote add storybook https://${{ secrets.STORYBOOK_TOKEN }}@github.com/MetaMask/metamask-storybook.git
           yarn storybook:deploy
