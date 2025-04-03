@@ -1,10 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import {
-  Box,
-  Text,
-} from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import Card from '../../../components/ui/card';
 import {
   FontWeight,
@@ -42,7 +39,8 @@ export default function RemoteModePermissions({
         Permissions
       </Text>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Safely access your hardware wallet funds without plugging it in. Revoke permissions anytime.
+        Safely access your hardware wallet funds without plugging it in. Revoke
+        permissions anytime.
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
         <Card backgroundColor={BackgroundColor.backgroundMuted}>
@@ -63,7 +61,8 @@ export default function RemoteModePermissions({
             </Text>
           </Box>
           <Text color={TextColor.textAlternativeSoft}>
-            Allow your MetaMask account to trade with hardware funds via MetaMask Swaps. Allowances can only be used to swap.
+            Allow your MetaMask account to trade with hardware funds via
+            MetaMask Swaps. Allowances can only be used to swap.
           </Text>
         </Card>
       </Box>
@@ -77,10 +76,16 @@ export default function RemoteModePermissions({
             paddingBottom={2}
           >
             <Text>Daily allowances</Text>
-            <Text color={TextColor.infoDefault} onClick={handleEnableDailyAllowance}>Enable</Text>
+            <Text
+              color={TextColor.infoDefault}
+              onClick={handleEnableDailyAllowance}
+            >
+              Enable
+            </Text>
           </Box>
           <Text color={TextColor.textAlternativeSoft}>
-            Allow your MetaMask account to withdraw from hardware funds up to the daily limit.
+            Allow your MetaMask account to withdraw from hardware funds up to
+            the daily limit.
           </Text>
         </Card>
       </Box>
