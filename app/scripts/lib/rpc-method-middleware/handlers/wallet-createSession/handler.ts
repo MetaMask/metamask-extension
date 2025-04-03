@@ -183,7 +183,7 @@ async function walletCreateSessionHandler(
         const {
           address,
           chain: { namespace },
-          chainId,
+          chainId: caipChainId,
         } = parseCaipAccountId(accountAddress);
         if (namespace === KnownCaipNamespace.Eip155) {
           return existingEvmAddresses.some((existingEvmAddress) => {
