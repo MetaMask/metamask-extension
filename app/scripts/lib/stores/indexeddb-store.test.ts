@@ -49,7 +49,7 @@ describe('IndexedDBStore', () => {
       db.close();
       db = new DB();
       await db.open(dbName, dbVersion + 1);
-      const [value] = await db.get(['key']);
+      const [value] = (await db.get(['key'])) as string[];
       expect(value).toBe('value');
     });
 
