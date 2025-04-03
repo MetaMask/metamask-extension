@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
-  "aggregatedBalancePopover": {
-    "message": "これには特定のネットワークで所有しているすべてのトークンの価値が反映されています。この値をETHまたはその他通貨で表示したい場合は、$1に移動します。",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "MetaMaskの$1に同意します",
     "description": "$1 is the `terms` link"
