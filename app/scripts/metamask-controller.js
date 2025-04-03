@@ -17,7 +17,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
+import { debounce, pick, cloneDeep } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
