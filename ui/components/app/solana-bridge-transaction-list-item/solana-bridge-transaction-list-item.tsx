@@ -1,8 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
-import { TransactionType } from '@metamask/transaction-controller';
 import {
   getBridgeStatusKey,
   isBridgeComplete,
@@ -22,12 +20,19 @@ import {
   Display,
   FlexDirection,
   BlockSize,
+  TextColor,
+  FontWeight,
+  TextAlign,
+  TextVariant,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
   Text,
   BadgeWrapper,
   AvatarNetwork,
+  BadgeWrapperAnchorElementShape,
+  AvatarNetworkSize,
 } from '../../component-library';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -35,48 +40,18 @@ import {
   SOLANA_TOKEN_IMAGE_URL,
   BITCOIN_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/multichain/networks';
+import {
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+} from '../../../../shared/constants/transaction';
 
 import './index.scss';
 
-// /**
-//  * Helper function to format destination token amount based on decimals
-//  *
-//  * @param {string} amount - The raw token amount in base units
-//  * @param {number} decimals - The number of decimals for the token (defaults to 18)
-//  * @returns {string} Formatted token amount
-//  */
-// const formatDestTokenAmount = (amount, decimals = 18) => {
-//   if (!amount) {
-//     return '0';
-//   }
-
-//   // Convert from base units (like wei) to the display units (like ETH)
-//   try {
-//     const amountBN = BigInt(amount);
-//     const divisor = BigInt(10) ** BigInt(decimals);
-
-//     // Integer part
-//     const integerPart = amountBN / divisor;
-
-//     // Decimal part with proper padding
-//     const remainder = amountBN % divisor;
-//     const remainderStr = remainder.toString().padStart(decimals, '0');
-
-//     // Format with up to 4 decimal places, and trim trailing zeros
-//     const decimalPlaces = 4;
-//     const formattedDecimal = remainderStr
-//       .substring(0, decimalPlaces)
-//       .replace(/0+$/u, '');
-
-//     // Combine integer and decimal parts
-//     return formattedDecimal.length > 0
-//       ? `${integerPart}.${formattedDecimal}`
-//       : `${integerPart}`;
-//   } catch (e) {
-//     console.error('Error formatting destination token amount:', e);
-//     return amount.toString();
-//   }
-// };
+interface SolanaBridgeTransactionListItemProps {
+  transaction: any; // Using any for now, should define specific transaction type
+  userAddress: string;
+  toggleShowDetails: (transaction: any) => void;
+}
 
 /**
  * Component for Solana Bridge Transactions with EVM-style segment rendering
@@ -86,11 +61,9 @@ import './index.scss';
  * @param options0.userAddress
  * @param options0.toggleShowDetails
  */
-const SolanaBridgeTransactionListItem = ({
-  transaction,
-  userAddress,
-  toggleShowDetails,
-}) => {
+const SolanaBridgeTransactionListItem: React.FC<
+  SolanaBridgeTransactionListItemProps
+> = ({ transaction, userAddress, toggleShowDetails }) => {
   const t = useI18nContext();
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
@@ -106,10 +79,6 @@ const SolanaBridgeTransactionListItem = ({
     transaction,
     KEYRING_TRANSACTION_STATUS_KEY[status],
   );
-
-  if (type === TransactionType.swap) {
-    title = `${t('swap')} ${from.asset.unit} ${t('to')} ${to.asset.unit}`;
-  }
 
   // For bridge transactions, create a more descriptive title
   if (transaction.isBridgeTx && transaction.bridgeInfo) {
@@ -139,10 +108,10 @@ const SolanaBridgeTransactionListItem = ({
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper
-          anchorElementShape="circular"
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
           badge={
             <AvatarNetwork
-              borderColor="background-default"
+              borderColor={BorderColor.backgroundDefault}
               borderWidth={1}
               className="activity-tx__network-badge"
               data-testid="activity-tx-network-badge"
@@ -153,7 +122,7 @@ const SolanaBridgeTransactionListItem = ({
                   : MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
                       .nickname
               }
-              size="xs"
+              size={AvatarNetworkSize.Xs}
               src={
                 isSolanaAccount
                   ? SOLANA_TOKEN_IMAGE_URL
@@ -161,23 +130,26 @@ const SolanaBridgeTransactionListItem = ({
               }
             />
           }
-          display="block"
+          display={Display.Block}
           positionObj={{ right: -4, top: -4 }}
         >
-          <TransactionIcon category="bridge" status={statusKey} />
+          <TransactionIcon
+            category={TransactionGroupCategory.bridge}
+            status={statusKey as TransactionGroupStatus}
+          />
         </BadgeWrapper>
       }
       rightContent={
         <>
           <Text
             className="activity-list-item__primary-currency"
-            color="text-default"
+            color={TextColor.textDefault}
             data-testid="transaction-list-item-primary-currency"
             ellipsis
-            fontWeight="medium"
-            textAlign="right"
+            fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Right}
             title="Primary Currency"
-            variant="body-lg-medium"
+            variant={TextVariant.bodyLgMedium}
           >
             {(() => {
               if (asset?.amount) {
@@ -238,12 +210,6 @@ const SolanaBridgeTransactionListItem = ({
       }
     />
   );
-};
-
-SolanaBridgeTransactionListItem.propTypes = {
-  transaction: PropTypes.object.isRequired,
-  userAddress: PropTypes.string.isRequired,
-  toggleShowDetails: PropTypes.func.isRequired,
 };
 
 export default SolanaBridgeTransactionListItem;

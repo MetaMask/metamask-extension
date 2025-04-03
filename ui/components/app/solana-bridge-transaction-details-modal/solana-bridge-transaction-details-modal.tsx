@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
@@ -18,6 +17,7 @@ import {
   TextColor,
   TextAlign,
   BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 // import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -67,6 +67,25 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import './index.scss';
 
+interface BridgeInfo {
+  destChainName?: string;
+  destChainId?: string;
+  provider?: string;
+  destTxHash?: string;
+  destBlockExplorerUrl?: string;
+  destAsset?: {
+    symbol: string;
+    decimals: number;
+  };
+  destTokenAmount?: string;
+}
+
+interface SolanaBridgeTransactionDetailsModalProps {
+  transaction: any; // Using any for now, should define specific transaction type
+  onClose: () => void;
+  userAddress: string;
+}
+
 /**
  * Modal component for displaying Solana bridge transaction details
  *
@@ -79,7 +98,7 @@ function SolanaBridgeTransactionDetailsModal({
   transaction,
   onClose,
   userAddress,
-}) {
+}: SolanaBridgeTransactionDetailsModalProps): JSX.Element {
   // TODO: add translations.
   // const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -87,7 +106,7 @@ function SolanaBridgeTransactionDetailsModal({
   const { id, timestamp, chain, status, baseFee, asset } =
     useMultichainTransactionDisplay({ transaction, userAddress });
 
-  const bridgeInfo = transaction.bridgeInfo || {};
+  const bridgeInfo: BridgeInfo = transaction.bridgeInfo || {};
 
   // Get the transaction status key using shared utility
   const statusKey = getBridgeStatusKey(
@@ -119,7 +138,11 @@ function SolanaBridgeTransactionDetailsModal({
    * @param {object} networkProps - Network properties for EVM chains
    * @returns {string} Block explorer URL for the transaction
    */
-  const getChainExplorerUrl = (txHash, chainId, networkProps) => {
+  const getChainExplorerUrl = (
+    txHash: string,
+    chainId: string,
+    networkProps?: { blockExplorerUrl?: string },
+  ): string => {
     if (!txHash || !chainId) {
       return '';
     }
@@ -184,7 +207,7 @@ function SolanaBridgeTransactionDetailsModal({
    * @param {number} decimals - Number of decimals
    * @returns {string} Formatted amount
    */
-  const formatDestTokenAmount = (amount, decimals = 18) => {
+  const formatDestTokenAmount = (amount: string, decimals = 18): string => {
     if (!amount) {
       return '0';
     }
@@ -244,8 +267,7 @@ function SolanaBridgeTransactionDetailsModal({
         {/* Scrollable Content Section */}
         <Box
           className="solana-bridge-transaction-details-modal__content"
-          overflow="auto"
-          flex="1"
+          style={{ overflow: 'auto', flex: '1' }}
         >
           {/* Status Section */}
           <Box>
@@ -333,7 +355,7 @@ function SolanaBridgeTransactionDetailsModal({
                       externalLink
                       href={getChainExplorerUrl(
                         bridgeInfo.destTxHash,
-                        bridgeInfo.destChainId,
+                        bridgeInfo.destChainId ?? '',
                         { blockExplorerUrl: bridgeInfo.destBlockExplorerUrl },
                       )}
                     >
@@ -409,7 +431,7 @@ function SolanaBridgeTransactionDetailsModal({
                         .nickname
                     }
                     src={SOLANA_TOKEN_IMAGE_URL}
-                    borderColor={BackgroundColor.backgroundDefault}
+                    borderColor={BorderColor.backgroundDefault}
                   />
                   <Text variant={TextVariant.bodyMd}>
                     {
@@ -443,10 +465,10 @@ function SolanaBridgeTransactionDetailsModal({
                     name={bridgeInfo?.destChainName || ''}
                     src={
                       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        bridgeInfo?.destChainId
+                        bridgeInfo?.destChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                       ] || ''
                     }
-                    borderColor={BackgroundColor.backgroundDefault}
+                    borderColor={BorderColor.backgroundDefault}
                   />
                   <Text variant={TextVariant.bodyMd}>
                     {bridgeInfo?.destChainName || ''}
@@ -635,11 +657,5 @@ function SolanaBridgeTransactionDetailsModal({
     </Modal>
   );
 }
-
-SolanaBridgeTransactionDetailsModal.propTypes = {
-  transaction: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
-  userAddress: PropTypes.string.isRequired,
-};
 
 export default SolanaBridgeTransactionDetailsModal;
