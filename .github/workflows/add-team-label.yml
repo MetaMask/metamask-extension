@@ -6,6 +6,14 @@ on:
       - opened
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      FORK: ${{ github.event.repository.fork }}
+    steps:
+      - run: |
+          echo "FORK: $FORK"
+
   add-team-label:
     if: ${{ !github.event.repository.fork }}
     uses: metamask/github-tools/.github/workflows/add-team-label.yml@18af6e4b56a18230d1792480e249ebc50b324927
