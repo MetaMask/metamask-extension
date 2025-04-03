@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
-  "aggregatedBalancePopover": {
-    "message": "Ini mencerminkan nilai semua token yang Anda miliki di jaringan tertentu. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Saya menyetujui $1 MetaMask",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "Sebaiknya jangan lanjutkan permintaan ini."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Permintaan ini mencurigakan"
   },
   "confirmed": {
     "message": "Dikonfirmasikan"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Anda menerima"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Batas penggunaan"
-  },
   "permitSimulationChange_transfer": {
     "message": "Anda mengirim"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Izinkan nama panggilan"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Ini memungkinkan Anda untuk menetapkan nama panggilan ke alamat mana pun. Kami akan menyarankan nama untuk alamat tempat Anda berinteraksi, jika memungkinkan."
   },
   "pinToTop": {
     "message": "Sematkan ke atas"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Pilih ini untuk menampilkan bidang data hex di layar kirim"
-  },
-  "showIncomingTransactions": {
-    "message": "Tampilkan transaksi masuk"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ini bergantung pada API pihak ketiga yang berbeda untuk setiap jaringan, yang mengungkap alamat Ethereum dan alamat IP Anda."
   },
   "showLess": {
     "message": "Ciutkan"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 j:"
-  },
-  "typeYourSRP": {
-    "message": "Ketik Frasa Pemulihan Rahasia"
   },
   "u2f": {
     "message": "U2F",

@@ -10,15 +10,17 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
 import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
 
 export function useNonContractAddressAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const isUpgradeTransaction = useIsUpgradeTransaction();
 
   const isSendingHexData =
     currentConfirmation?.txParams?.data !== undefined &&
@@ -43,7 +45,10 @@ export function useNonContractAddressAlerts(): Alert[] {
     !isContractDeploymentTx;
 
   return useMemo(() => {
-    if (!isSendingHexDataWhileInteractingWithNonContractAddress) {
+    if (
+      !isSendingHexDataWhileInteractingWithNonContractAddress ||
+      isUpgradeTransaction
+    ) {
       return [];
     }
 
@@ -57,5 +62,8 @@ export function useNonContractAddressAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [isSendingHexDataWhileInteractingWithNonContractAddress]);
+  }, [
+    isSendingHexDataWhileInteractingWithNonContractAddress,
+    isUpgradeTransaction,
+  ]);
 }

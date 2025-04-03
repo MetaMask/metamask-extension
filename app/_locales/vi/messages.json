@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"tiền thưởng cho thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
-  "aggregatedBalancePopover": {
-    "message": "Điều này phản ánh giá trị của tất cả các token mà bạn sở hữu trên một mạng nhất định. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Tôi đồng ý với $1 của MetaMask",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "Chúng tôi khuyên bạn không nên tiếp tục với yêu cầu này."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Yêu cầu này có dấu hiệu đáng ngờ"
   },
   "confirmed": {
     "message": "Đã xác nhận"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Bạn nhận được"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Hạn mức chi tiêu"
-  },
   "permitSimulationChange_transfer": {
     "message": "Bạn gửi"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Cho phép biệt danh"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Điều này cho phép bạn chỉ định biệt danh cho bất kỳ địa chỉ nào. Khi có thể, chúng tôi sẽ đề xuất biệt danh cho các địa chỉ mà bạn tương tác."
   },
   "pinToTop": {
     "message": "Ghim lên đầu"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Chọn tùy chọn này để hiển thị trường dữ liệu thập lục phân trên màn hình gửi"
-  },
-  "showIncomingTransactions": {
-    "message": "Hiển thị các giao dịch đến"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Chọn tùy chọn này nếu bạn muốn dùng Etherscan để hiển thị các giao dịch đến trong danh sách giao dịch",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Điều này dựa trên các API khác nhau của bên thứ ba cho mỗi mạng, có thể làm lộ địa chỉ Ethereum và địa chỉ IP của bạn."
   },
   "showLess": {
     "message": "Thu gọn"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 giờ:"
-  },
-  "typeYourSRP": {
-    "message": "Nhập Cụm từ khôi phục bí mật của bạn"
   },
   "u2f": {
     "message": "U2F",

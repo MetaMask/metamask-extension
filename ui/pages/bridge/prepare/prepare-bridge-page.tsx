@@ -13,6 +13,13 @@ import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
+  isSolanaChainId,
+  isValidQuoteRequest,
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  type GenericQuoteRequest,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
@@ -61,21 +68,17 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import {
   setActiveNetwork,
   setActiveNetworkWithError,
   setSelectedAccount,
 } from '../../../store/actions';
-import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
-import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -98,27 +101,25 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  SOLANA_USDC_ASSET,
-} from '../../../../shared/constants/bridge';
+import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
+import { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -134,7 +135,7 @@ const PrepareBridgePage = () => {
     [fromTokens],
   );
 
-  const toToken = useSelector(getToToken);
+  const toToken = useSelector(getToToken) as TmpBridgeToken;
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -144,7 +145,7 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const providerConfig = useSelector(getProviderConfig);
+  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -192,15 +193,15 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const nativeAssetBalance = useLatestBalance(
-    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-      fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-    ],
-    fromChain?.chainId,
+  const nativeAsset = useMemo(
+    () =>
+      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
+    [fromChain?.chainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const { tokenAlert } = useTokenAlerts();
-  const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
+  const srcTokenBalance = useLatestBalance(fromToken);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
 
@@ -223,6 +224,11 @@ const PrepareBridgePage = () => {
   // Resets the banner visibility when new alerts found
   const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
   useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
+
+  // Resets the banner visibility when toToken is changed
+  const [isCannotVerifyTokenBannerOpen, setIsCannotVerifyTokenBannerOpen] =
+    useState(true);
+  useEffect(() => setIsCannotVerifyTokenBannerOpen(true), [toToken?.address]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
@@ -254,7 +260,7 @@ const PrepareBridgePage = () => {
           setToToken({
             ...destAsset,
             chainId: destChainId,
-            image: destAsset.icon ?? '',
+            image: srcAsset.icon ?? destAsset.iconUrl ?? '',
             address: destAsset.address,
           }),
         );
@@ -262,7 +268,7 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
-            image: srcAsset.icon ?? '',
+            image: srcAsset.icon || srcAsset.iconUrl || '',
             address: srcAsset.address,
           }),
         );
@@ -302,7 +308,7 @@ const PrepareBridgePage = () => {
     if (!toChain?.chainId) {
       return false;
     }
-    return formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+    return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
   const quoteParams = useMemo(
@@ -322,10 +328,12 @@ const PrepareBridgePage = () => {
           : undefined,
       srcChainId: fromChain?.chainId,
       destChainId: toChain?.chainId,
-      // This override allows quotes to be returned when the rpcUrl is a tenderly fork
+      // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
+      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+        ? true
+        : undefined,
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
@@ -337,22 +345,22 @@ const PrepareBridgePage = () => {
       fromAmount,
       fromChain?.chainId,
       toChain?.chainId,
-      providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
+      providerConfig?.rpcUrl,
     ],
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
     debounce((p: Partial<GenericQuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
-      dispatch(setSelectedQuote(null));
     }, 300),
     [],
   );
 
   useEffect(() => {
+    dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
 
@@ -431,6 +439,11 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
+  const occurrences = Number(toToken?.occurrences ?? 0);
+  const toTokenIsNotDefault =
+    toToken?.address &&
+    !isSwapsDefaultTokenAddress(toToken?.address, toChain?.chainId as string);
+
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   return (
@@ -475,7 +488,7 @@ const PrepareBridgePage = () => {
               dispatch(setToToken(null));
             }
             if (
-              networkConfig.chainId === MultichainNetworks.SOLANA &&
+              isSolanaChainId(networkConfig.chainId) &&
               selectedSolanaAccount
             ) {
               dispatch(setSelectedAccount(selectedSolanaAccount.address));
@@ -505,6 +518,7 @@ const PrepareBridgePage = () => {
           value: fromAmount || undefined,
         }}
         isTokenListLoading={isFromTokensLoading}
+        buttonProps={{ testId: 'bridge-source-button' }}
       />
 
       <Column
@@ -573,8 +587,7 @@ const PrepareBridgePage = () => {
                     : undefined;
                 if (
                   toChain?.chainId &&
-                  formatChainIdToCaip(toChain.chainId) ===
-                    MultichainNetworks.SOLANA &&
+                  isSolanaChainId(toChain.chainId) &&
                   selectedSolanaAccount
                 ) {
                   // Switch accounts to switch to solana
@@ -645,6 +658,7 @@ const PrepareBridgePage = () => {
               : 'amount-input',
           }}
           isTokenListLoading={isToTokensLoading}
+          buttonProps={{ testId: 'bridge-destination-button' }}
         />
 
         {isSolanaBridgeEnabled && isToOrFromSolana && (
@@ -763,7 +777,7 @@ const PrepareBridgePage = () => {
             </Footer>
           </Column>
         </Row>
-        {isNoQuotesAvailable && (
+        {isNoQuotesAvailable && !isQuoteExpired && (
           <BannerAlert
             marginInline={4}
             marginBottom={10}
@@ -772,6 +786,21 @@ const PrepareBridgePage = () => {
             textAlign={TextAlign.Left}
           />
         )}
+        {isCannotVerifyTokenBannerOpen &&
+          isEvm &&
+          toToken &&
+          toTokenIsNotDefault &&
+          occurrences < 2 && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Warning}
+              title={t('bridgeTokenCannotVerifyTitle')}
+              description={t('bridgeTokenCannotVerifyDescription')}
+              marginInline={4}
+              marginBottom={3}
+              textAlign={TextAlign.Left}
+              onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
+            />
+          )}
         {isEstimatedReturnLow && isLowReturnBannerOpen && (
           <BannerAlert
             ref={insufficientBalanceBannerRef}

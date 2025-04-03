@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "aggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur un réseau donné. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "J’accepte les $1 de MetaMask",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "BlockAid"
-  },
-  "blockaidAlertInfo": {
-    "message": "Nous ne vous recommandons pas de donner suite à cette demande."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Pour protéger vos actifs, nous vous suggérons de rejeter la demande."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Cette demande est suspecte"
   },
   "confirmed": {
     "message": "Confirmé"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Vous recevez"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Plafond de dépenses"
-  },
   "permitSimulationChange_transfer": {
     "message": "Vous envoyez"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Autoriser les pseudonymes"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Cette option vous permet d’attribuer un pseudonyme à n’importe quelle adresse. Nous vous suggérerons, si possible, des pseudonymes que vous pourrez attribuer aux adresses avec lesquelles vous interagissez."
   },
   "pinToTop": {
     "message": "Épingler en haut de la page"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
-  },
-  "showIncomingTransactions": {
-    "message": "Afficher les transactions entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ce processus fait appel à différentes API tierces pour chaque réseau et expose ainsi votre adresse Ethereum et votre adresse IP."
   },
   "showLess": {
     "message": "Afficher moins"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 h :"
-  },
-  "typeYourSRP": {
-    "message": "Saisissez votre phrase secrète de récupération"
   },
   "u2f": {
     "message": "U2F",

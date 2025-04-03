@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
-  "aggregatedBalancePopover": {
-    "message": "Dies spiegelt den Wert aller Tokens wider, über die Sie in einem bestimmten Netzwerk verfügen. Sollten Sie diesen Wert lieber in ETH oder anderen Währungen angezeigt bekommen wollen, wechseln Sie zu $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Ich stimme MetaMasks $1 zu",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "Wir empfehlen nicht, mit dieser Anfrage fortzufahren."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, könnte eine dritte Partei, die für Betrügereien bekannt ist, Ihre gesamten Assets an sich reißen."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Um Ihre Assets zu schützen, empfehlen wir die Ablehnung der Anfrage."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Diese Anfrage scheint verdächtig"
   },
   "confirmed": {
     "message": "Bestätigt"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Sie empfangen"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ausgabenobergrenze"
-  },
   "permitSimulationChange_transfer": {
     "message": "Sie senden"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte füge die Token-Contract-Adresse ein."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Spitznamen erlauben"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Damit können Sie jeder Adresse einen Spitznamen zuweisen. Nach Möglichkeit werden wir Namen für Adressen vorschlagen, mit denen Sie interagieren."
   },
   "pinToTop": {
     "message": "Pin nach oben"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Wählen Sie dies aus, um das Hex-Datenfeld auf dem Sendebildschirm anzuzeigen."
-  },
-  "showIncomingTransactions": {
-    "message": "Eingehende Transaktionen anzeigen"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Das hängt von $1 ab, das Zugriff auf Ihre Ethereum-Adresse und Ihre IP-Adresse hat. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Dies hängt bei jedem Netzwerk von unterschiedlichen APIs Dritter ab, die Ihre Ethereum- und IP-Adresse offenlegen."
   },
   "showLess": {
     "message": "Weniger anzeigen"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 Std:"
-  },
-  "typeYourSRP": {
-    "message": "Geben Sie Ihre geheime Wiederherstellungsphrase ein."
   },
   "u2f": {
     "message": "U2F",

@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "aggregatedBalancePopover": {
-    "message": "이는 특정 네트워크에서 소유한 모든 토큰의 가치를 반영합니다. 이 가치를 ETH 또는 다른 통화로 보고 싶다면 $1(으)로 이동하세요.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "MetaMask의 $1에 동의합니다",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "이 요청은 진행하지 않는 것이 좋습니다."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "이 요청을 승인하면 스캠으로 알려진 타사가 회원님의 모든 자산을 가져갈 수 있습니다."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "의심스러운 요청입니다"
   },
   "confirmed": {
     "message": "컨펌됨"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "받음:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "지출 한도"
-  },
   "permitSimulationChange_transfer": {
     "message": "보냄:"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
-  },
-  "petnamesEnabledToggle": {
-    "message": "닉네임 허용"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "이 기능을 사용하면 모든 주소에 닉네임을 지정할 수 있습니다. 가능한 경우 상호 작용하는 주소에 닉네임을 추천합니다."
   },
   "pinToTop": {
     "message": "맨 위에 고정"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
-  },
-  "showIncomingTransactions": {
-    "message": "수신되는 트랜잭션 표시"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다.",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "이는 네트워크마다 다른 제삼자 API에 의존하며, 이더리움 주소와 IP 주소가 노출됩니다."
   },
   "showLess": {
     "message": "간략히 보기"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12시간:"
-  },
-  "typeYourSRP": {
-    "message": "비밀복구구문을 입력하세요"
   },
   "u2f": {
     "message": "U2F",

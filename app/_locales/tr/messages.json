@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "aggregatedBalancePopover": {
-    "message": "Bu, belirli bir ağda sahip olduğunuz tüm token'lerin değerini yansıtır. Bu değeri ETH olarak veya diğer para birimlerinde görmeyi tercih ediyorsanız $1 alanına gidin.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "MetaMask'in $1 bölümünü kabul ediyorum",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "Bu taleple ilerlemenizi önermiyoruz."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Varlıklarınızı korumak için talebi reddetmenizi öneririz."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Bu talep şüphelidir"
   },
   "confirmed": {
     "message": "Onaylandı"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Aldığınız:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Harcama üst limiti"
-  },
   "permitSimulationChange_transfer": {
     "message": "Gönderdiğiniz:"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Takma adlara izin ver"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Bu, dilediğiniz adrese takma ad atamanıza olanak sağlar. Mümkün olduğunda etkileşimde bulunduğunuz adresler için ad önerilerinde bulunacağız."
   },
   "pinToTop": {
     "message": "Yukarıya sabitle"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Gönder ekranında on altılı veri alanını göstermek için bunu seçin"
-  },
-  "showIncomingTransactions": {
-    "message": "Gelen işlemleri göster"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ethereum adresinizi ve IP adresinizi açığa çıkaran her ağ için farklı üçüncü taraf API'lerine güvenir."
   },
   "showLess": {
     "message": "Daha az göster"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 sa.:"
-  },
-  "typeYourSRP": {
-    "message": "Gizli Kurtarma İfadenizi girin"
   },
   "u2f": {
     "message": "U2F",

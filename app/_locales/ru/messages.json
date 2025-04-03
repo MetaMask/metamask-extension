@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
-  "aggregatedBalancePopover": {
-    "message": "Это значение отражает стоимость всех токенов, которыми вы владеете в данной сети. Если вы предпочитаете видеть это значение в ETH или других валютах, перейдите к $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Я соглашаюсь с $1 MetaMask",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "Мы не рекомендуем продолжать выполнение этого запроса."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, может похитить все ваши активы."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Этот запрос подозрительный"
   },
   "confirmed": {
     "message": "Подтвержден(-а/о)"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Вы получаете"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Лимит расходов"
-  },
   "permitSimulationChange_transfer": {
     "message": "Вы отправляете"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Разрешить псевдонимы"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Эта функция позволяет вам присвоить псевдоним любому адресу. По возможности мы будем предлагать имена адресов, с которыми вы взаимодействуете."
   },
   "pinToTop": {
     "message": "Закрепить вверху"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Выберите эту опцию, чтобы отобразить поле шестнадцатеричных данных на экране отправки"
-  },
-  "showIncomingTransactions": {
-    "message": "Показать входящие транзакции"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Это использует $1, который будет иметь доступ к вашему адресу Ethereum и вашему IP-адресу. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Это базируется на различных сторонних API для каждой сети, которые раскрывают ваш адрес Ethereum и ваш IP-адрес."
   },
   "showLess": {
     "message": "Показать меньше"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 ч:"
-  },
-  "typeYourSRP": {
-    "message": "Введите секретную фразу для восстановления"
   },
   "u2f": {
     "message": "U2F",

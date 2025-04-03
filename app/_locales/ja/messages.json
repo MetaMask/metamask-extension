@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
-  "aggregatedBalancePopover": {
-    "message": "これには特定のネットワークで所有しているすべてのトークンの価値が反映されています。この値をETHまたはその他通貨で表示したい場合は、$1に移動します。",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "MetaMaskの$1に同意します",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "この要求を承諾することはお勧めしません。"
   },
   "blockaidDescriptionApproveFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "この要求は不審です"
   },
   "confirmed": {
     "message": "確認されました"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "受取"
   },
-  "permitSimulationChange_revoke": {
-    "message": "使用上限"
-  },
   "permitSimulationChange_transfer": {
     "message": "送金"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
-  },
-  "petnamesEnabledToggle": {
-    "message": "ニックネームを許可する"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "これにより、すべてのアドレスにニックネームを割り当てられるようになります。可能な場合、やり取りがあるアドレスの名前が提案されます。"
   },
   "pinToTop": {
     "message": "最上部にピン留め"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "これを選択すると、送金画面に16進データフィールドが表示されます"
-  },
-  "showIncomingTransactions": {
-    "message": "受信トランザクションを表示"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする$1に依存します。$2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "これは、ネットワークごとに異なるサードパーティAPIに依存します。これにより、イーサリアムアドレスとIPアドレスが公開されます。"
   },
   "showLess": {
     "message": "表示量を減らす"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12時間:"
-  },
-  "typeYourSRP": {
-    "message": "シークレットリカバリーフレーズを入力してください"
   },
   "u2f": {
     "message": "U2F",

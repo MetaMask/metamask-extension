@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
-  "aggregatedBalancePopover": {
-    "message": "Esto refleja el valor de todos los tokens que posee en una red determinada. Si prefiere ver este valor en ETH u otras monedas, vaya a $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Acepto los $1 de MetaMask",
     "description": "$1 is the `terms` link"
@@ -663,9 +659,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "No le recomendamos que siga adelante con esta solicitud."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por realizar estafas podría tomar todos sus activos."
@@ -1027,9 +1020,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Esta solicitud es sospechosa"
   },
   "confirmed": {
     "message": "Confirmado"
@@ -3851,9 +3841,6 @@
   "permitSimulationChange_receive": {
     "message": "Usted recibe"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Límite de gasto"
-  },
   "permitSimulationChange_transfer": {
     "message": "Usted envía"
   },
@@ -3865,12 +3852,6 @@
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Permitir apodos"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Esto le permite asignar un apodo a cualquier dirección. Le sugeriremos nombres para las direcciones con las que interactúa cuando sea posible."
   },
   "pinToTop": {
     "message": "Anclar arriba"
@@ -4582,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Seleccione esta opción para mostrar el campo de datos hexadecimales en la pantalla de envío"
-  },
-  "showIncomingTransactions": {
-    "message": "Mostrar transacciones entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Esto se basa en diferentes API de terceros para cada red, que exponen su dirección Ethereum y su dirección IP."
   },
   "showLess": {
     "message": "Mostrar menos"
@@ -5961,9 +5932,6 @@
   },
   "twelveHrTitle": {
     "message": "12 horas:"
-  },
-  "typeYourSRP": {
-    "message": "Escriba la frase secreta de recuperación"
   },
   "u2f": {
     "message": "U2F",
