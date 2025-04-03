@@ -53,7 +53,7 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
-  getNotifySnaps,
+  getThirdPartyNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
 import {
@@ -96,9 +96,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  let hasNotifySnaps = false;
+  let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
-  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
+  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK;
@@ -132,7 +132,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const handleNotificationsClick = () => {
     const shouldShowEnableModal =
-      !hasNotifySnaps && !isMetamaskNotificationsEnabled;
+      !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
       trackEvent({
