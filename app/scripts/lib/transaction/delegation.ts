@@ -41,7 +41,7 @@ const PRIMARY_TYPE_DELEGATION = 'Delegation';
 const DOMAIN_NAME = 'DelegationManager';
 
 export const ADDRESS_DELEGATION_MANAGER = process.env
-  .DELEGATION_MANAGER_ADDRESS as string;
+  .DELEGATION_MANAGER_ADDRESS as Hex;
 
 const ABI_TYPES_CAVEAT = [
   { type: 'address', name: 'enforcer' },
