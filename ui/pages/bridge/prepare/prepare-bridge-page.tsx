@@ -253,7 +253,7 @@ const PrepareBridgePage = () => {
           setToToken({
             ...destAsset,
             chainId: destChainId,
-            image: destAsset.icon ?? '',
+            image: srcAsset.icon ?? destAsset.iconUrl ?? '',
             address: destAsset.address,
           }),
         );
@@ -261,7 +261,7 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
-            image: srcAsset.icon ?? '',
+            image: srcAsset.icon || srcAsset.iconUrl || '',
             address: srcAsset.address,
           }),
         );
@@ -324,7 +324,9 @@ const PrepareBridgePage = () => {
       // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('localhost')),
+      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+        ? true
+        : undefined,
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
@@ -346,12 +348,12 @@ const PrepareBridgePage = () => {
   const debouncedUpdateQuoteRequestInController = useCallback(
     debounce((p: Partial<GenericQuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
-      dispatch(setSelectedQuote(null));
     }, 300),
     [],
   );
 
   useEffect(() => {
+    dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
 
@@ -763,7 +765,7 @@ const PrepareBridgePage = () => {
             </Footer>
           </Column>
         </Row>
-        {isNoQuotesAvailable && (
+        {isNoQuotesAvailable && !isQuoteExpired && (
           <BannerAlert
             marginInline={4}
             marginBottom={10}
