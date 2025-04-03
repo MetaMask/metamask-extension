@@ -28,7 +28,7 @@ export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, gasFeeTokens } = currentConfirmation;
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
+  const isSmartTransaction = true;
   const hasGasFeeTokens = isSmartTransaction && Boolean(gasFeeTokens?.length);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
