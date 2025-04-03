@@ -11,7 +11,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Icon, IconName, IconSize, BannerBase, Box } from '../../../components/component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import Card from '../../../components/ui/card';
-import { DELEGATION_ROUTE } from '../../../helpers/constants/routes';
+import { REMOTE_ROUTE } from '../../../helpers/constants/routes';
 
 import { useHistory } from 'react-router-dom';
 
@@ -59,7 +59,7 @@ const FlaskHomeFooter = () => {
               startAccessory={<Icon name={IconName.Info} size={IconSize.Lg} />}
               actionButtonLabel="Get Started"
               actionButtonOnClick={() => {
-                history.push(DELEGATION_ROUTE);
+                history.push(REMOTE_ROUTE);
               }}
             >
               Access your hardware wallet without plugging it in

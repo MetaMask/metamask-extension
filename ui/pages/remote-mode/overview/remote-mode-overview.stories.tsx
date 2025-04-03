@@ -2,14 +2,14 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../store/store';
-import RemoteModeIntroducing from './remote-mode-walkthrough.container';
+import RemoteModeOverview from './remote-mode-overview.container';
 import testData from '../../../../.storybook/test-data';
 
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Vault/RemoteMode/Walkthrough',
-  component: RemoteModeIntroducing,
+  title: 'Pages/Vault/RemoteMode/Overview',
+  component: RemoteModeOverview,
   id: 'pages-remote-mode-walkthrough--docs',
   decorators: [
     (story) => (
@@ -21,5 +21,5 @@ export default {
 };
 
 export const Default = () => (
-  <RemoteModeIntroducing />
+  <RemoteModeOverview />
 );

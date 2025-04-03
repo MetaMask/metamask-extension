@@ -2,31 +2,34 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../store/store';
-import RemoteModeSetup from './remote-mode-setup.component';
+import RemoteModeSetupSwaps from './remote-mode-setup-swaps.component';
 import testData from '../../../../.storybook/test-data';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
 const store = configureStore(testData);
 
-const mockAccounts = [
+const mockAccounts: [InternalAccount] = [
   {
-    address: '0x1234567890123456789012345678901234567890',
+    address: '0x12C7e...q135f',
+    type: 'eip155:eoa',
+    id: '1',
+    options: {},
     metadata: {
-      name: 'Account 1',
+      name: 'Hardware Lockbox',
+      importTime: 1717334400,
+      keyring: {
+        type: 'eip155',
+      },
     },
-  },
-  {
-    address: '0x2345678901234567890123456789012345678901',
-    metadata: {
-      name: 'Account 2',
-    },
-  },
+    scopes: [],
+    methods: []
+  }
 ];
 
 export default {
   title: 'Pages/Vault/RemoteMode/Setup',
-  component: RemoteModeSetup,
+  component: RemoteModeSetupSwaps,
   id: 'pages-remote-mode-setup--docs',
   decorators: [
     (story) => (
@@ -38,5 +41,5 @@ export default {
 };
 
 export const Default = () => (
-  <RemoteModeSetup accounts={mockAccounts} />
+  <RemoteModeSetupSwaps accounts={mockAccounts} />
 );
