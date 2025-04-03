@@ -22,6 +22,9 @@ import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../shared/modules/string-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isAccountConnectedToPermittedAccounts } from '../app/scripts/lib/multichain/utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -52,19 +55,33 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  setBackgroundConnection(backgroundConnection);
-  backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else {
-      throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
-      );
-    }
-  });
+  if (reduxStore) {
+    setBackgroundConnection(backgroundConnection);
+    reduxStore.dispatch(actions.updateMetamaskState(backgroundConnection));
+  } else {
+    setBackgroundConnection(backgroundConnection);
+    backgroundConnection.onNotification((data) => {
+      if (data.method === 'sendUpdate') {
+        reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+      } else {
+        throw new Error(
+          `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+            data,
+          )}`,
+        );
+      }
+    });
+  }
 };
+
+/**
+ * Method to update backgroundConnection for debugging with Redux DevTools.
+ *
+ * @param {object} backgroundConnection - background connection object.
+ */
+export function updateBackgroundConnectionForTest(backgroundConnection) {
+  setBackgroundConnection(backgroundConnection);
+}
 
 export default async function launchMetamaskUi(opts) {
   const { backgroundConnection, traceContext } = opts;
@@ -86,47 +103,40 @@ export default async function launchMetamaskUi(opts) {
 }
 
 /**
- * Method to setup initial redux store for the ui application
+ * Setup the initial store with backgroundConnection and set initial state.
  *
- * @param {*} metamaskState - flatten background state
- * @param {*} backgroundConnection - rpc client connecting to the background process
- * @param {*} activeTab - active browser tab
- * @returns redux store
+ * @param {object} metamaskState - Initial MetaMask state.
+ * @param {object} backgroundConnection - background connection object.
+ * @param {object} activeTab - State of the active tab
+ * @returns {Promise<object>} The initial redux store.
  */
 export async function setupInitialStore(
   metamaskState,
   backgroundConnection,
   activeTab,
 ) {
-  // parse opts
-  if (!metamaskState.featureFlags) {
-    metamaskState.featureFlags = {};
-  }
-
-  const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
-    metamaskState.currentLocale,
-  );
-
-  if (metamaskState.textDirection === 'rtl') {
-    switchDirection('rtl');
-  }
-
+  // create state object with initial metamask state
   const draftInitialState = {
     activeTab,
-
-    // metamaskState represents the cross-tab state
-    metamask: metamaskState,
-
-    // appState represents the current tab's popup state
-    appState: {},
-
-    localeMessages: {
-      currentLocale: metamaskState.currentLocale,
-      current: currentLocaleMessages,
-      en: enLocaleMessages,
-    },
+    metamask: { ...metamaskState },
   };
 
+  if (activeTab) {
+    draftInitialState.activeTab = activeTab;
+  }
+
+  // initialize localization
+  await setupLocale(draftInitialState.metamask.currentLocale);
+  const directionality = switchDirection(draftInitialState.metamask.currentLocale);
+  document.documentElement.setAttribute('dir', directionality);
+
+  // setup localization for the active tab
+  document.documentElement.setAttribute('lang', draftInitialState.metamask.currentLocale);
+
+  // update metamaskState with activeTab info
+  await actions.updateMetamaskStateFromBackground();
+
+  // add backgroundConnection to state
   updateBackgroundConnection(backgroundConnection);
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -136,33 +146,11 @@ export async function setupInitialStore(
 
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
-    let currentTabIsConnectedToSelectedAddress;
-    if (selectedAccount) {
-      currentTabIsConnectedToSelectedAddress =
-        // TODO: dry and move to @metamask/chain-agnostic-permission package
-        permittedAccountsForCurrentTab.some((account) => {
-          const parsedPermittedAccount = parseCaipAccountId(account);
-
-          return selectedAccount.scopes.some((scope) => {
-            const { namespace, reference } = parseCaipChainId(scope);
-
-            if (
-              namespace !== parsedPermittedAccount.chain.namespace ||
-              !isEqualCaseInsensitive(
-                selectedAccount.address,
-                parsedPermittedAccount.address,
-              )
-            ) {
-              return false;
-            }
-
-            return (
-              reference === '0' ||
-              reference === parsedPermittedAccount.chain.reference
-            );
-          });
-        });
-    }
+    // Using our new utility function
+    const currentTabIsConnectedToSelectedAddress = isAccountConnectedToPermittedAccounts(
+      permittedAccountsForCurrentTab,
+      selectedAccount
+    );
 
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
@@ -320,54 +308,4 @@ function setupStateHooks(store) {
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     // we use the manifest.json version from getVersion and not
-    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
-    // for more info)
-    state.version = global.platform.getVersion();
-    state.browser = window.navigator.userAgent;
-    return state;
-  };
-  window.stateHooks.getSentryAppState = function () {
-    const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
-  };
-  window.stateHooks.getLogs = function () {
-    // These logs are logged by LoggingController
-    const reduxState = store.getState();
-    const { logs } = reduxState.metamask;
-
-    const logsArray = Object.values(logs).sort((a, b) => {
-      return a.timestamp - b.timestamp;
-    });
-
-    return logsArray;
-  };
-}
-
-window.logStateString = async function (cb) {
-  const state = await window.stateHooks.getCleanAppState();
-  const logs = window.stateHooks.getLogs();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      state.logs = logs;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
-};
-
-window.logState = function (toClipboard) {
-  return window.logStateString((err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
-      console.log('State log copied');
-    } else {
-      console.log(result);
-    }
-  });
-};
+    // `process.env.METAMASK_VERSION`

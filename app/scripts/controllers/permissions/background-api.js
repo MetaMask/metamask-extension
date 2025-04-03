@@ -12,6 +12,10 @@ import {
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  getAllPermittedAccounts,
+  getAllScopes,
+} from '../../lib/multichain/utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -58,24 +62,15 @@ export function getPermissionBackgroundApiMethods({
       return `${namespace}:${reference}:${internalAccount.address}`;
     });
 
-    // TODO dry this into core
-    const permittedAccounts = new Set();
-    Object.values(caip25Caveat.value.requiredScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
-    Object.values(caip25Caveat.value.optionalScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
+    // Get current permitted accounts using our utility function
+    const existingPermittedAccounts = getAllPermittedAccounts(
+      caip25Caveat.value,
+    );
 
-    caipAccountIds.forEach((account) => {
-      permittedAccounts.add(account);
-    });
-
-    const updatedAccounts = Array.from(permittedAccounts);
+    // Merge existing accounts with new accounts
+    const updatedAccounts = Array.from(
+      new Set([...existingPermittedAccounts, ...caipAccountIds]),
+    );
 
     const updatedCaveatValue = setPermittedAccounts(
       caip25Caveat.value,
@@ -98,11 +93,9 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
-    const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
+    // Use our utility function to get all existing chain IDs and merge them
     const updatedChainIds = Array.from(
-      new Set([...requiredScopes, ...optionalScopes, ...chainIds]),
+      new Set([...getAllScopes(caip25Caveat.value), ...chainIds]),
     );
 
     const caveatValueWithChains = setPermittedChainIds(
@@ -110,23 +103,13 @@ export function getPermissionBackgroundApiMethods({
       updatedChainIds,
     );
 
-    // TODO dry this into core
-    const permittedAccounts = new Set();
-    Object.values(caip25Caveat.value.requiredScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
-    Object.values(caip25Caveat.value.optionalScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
+    // Get all permitted accounts using our utility function
+    const permittedAccounts = getAllPermittedAccounts(caip25Caveat.value);
 
     // ensure that the list of permitted accounts is set for the newly added scopes
     const caveatValueWithAccountsSynced = setPermittedAccounts(
       caveatValueWithChains,
-      Array.from(permittedAccounts),
+      permittedAccounts,
     );
 
     permissionController.updateCaveat(
@@ -193,24 +176,8 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      // TODO dry this into core
-      const permittedAccounts = new Set();
-      Object.values(caip25Caveat.value.requiredScopes).forEach(
-        ({ accounts }) => {
-          accounts.forEach((account) => {
-            permittedAccounts.add(account);
-          });
-        },
-      );
-      Object.values(caip25Caveat.value.optionalScopes).forEach(
-        ({ accounts }) => {
-          accounts.forEach((account) => {
-            permittedAccounts.add(account);
-          });
-        },
-      );
-
-      const existingAccounts = Array.from(permittedAccounts);
+      // Get all permitted accounts using our utility function
+      const existingAccounts = getAllPermittedAccounts(caip25Caveat.value);
 
       const internalAccount = accountsController.getAccountByAddress(address);
 
@@ -271,13 +238,8 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      // TODO dry and or move to @metamask/chain-agnostic-permission
-      const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
-      const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
-
-      const existingChainIds = Array.from(
-        new Set([...requiredScopes, ...optionalScopes]),
-      );
+      // Use our utility function to get all existing chain IDs
+      const existingChainIds = getAllScopes(caip25Caveat.value);
 
       const remainingChainIds = existingChainIds.filter(
         (existingChainId) => existingChainId !== chainId,

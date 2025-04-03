@@ -4,19 +4,22 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import { isAccountConnectedToCurrentTab } from '../../../selectors';
-import {
-  STATUS_CONNECTED,
-  STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-  STATUS_NOT_CONNECTED,
-} from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isAccountConnectedToPermittedAccounts } from '../../../../app/scripts/lib/multichain/utils';
+import { getAllPermittedAccountsForCurrentTab, getInternalAccountByAddress } from '../../../selectors';
+
+const STATUS_CONNECTED = 'connected';
+const STATUS_NOT_CONNECTED = 'not_connected';
+const STATUS_CONNECTED_TO_ANOTHER_ACCOUNT = 'connected_to_another_account';
 
 export type ConnectedStatusProps = {
   address: string;
   isActive?: boolean;
 };
+
 export type AddressConnectedSubjectMap = {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,10 +32,18 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
 }): JSX.Element => {
   const t = useI18nContext();
 
+  // Get the permitted accounts and the internal account for the address
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const internalAccount = useSelector(state =>
+    getInternalAccountByAddress(state, address)
+  );
+
+  // Use our utility function to check if the account is connected
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (isAccountConnectedToCurrentTab as any)(state, address),
+    isAccountConnectedToPermittedAccounts(
+      permittedAccounts,
+      internalAccount
+    )
   );
 
   let status = STATUS_NOT_CONNECTED;
