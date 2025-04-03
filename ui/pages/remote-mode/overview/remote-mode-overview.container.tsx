@@ -3,14 +3,14 @@ import { useHistory } from 'react-router-dom';
 
 import { Button, Box, ButtonSize } from '../../../components/component-library';
 
-import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
-import RemoteModePermissions from './remote-mode-permissions.component';
-import RemoteModeSetup from '../setup/remote-mode-setup-swaps.component';
 import {
-  REMOTE_ROUTE,
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
 } from '../../../helpers/constants/routes';
+
+import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
+import RemoteModePermissions from './remote-mode-permissions.component';
+import RemoteModeSetup from '../setup/remote-mode-setup-swaps.component';
 
 enum RemoteScreen {
   OVERVIEW = 'OVERVIEW',
