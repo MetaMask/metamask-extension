@@ -32,13 +32,7 @@ export const NetworkSelectorCustomImport = ({
   chainId: string;
   onSelectNetwork: () => void;
 }) => {
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkImageUrl = getImageForChainId(chainId);
-
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
-  });
 
   return (
     <Box padding={4} onClick={onSelectNetwork} data-testid={buttonDataTestId}>

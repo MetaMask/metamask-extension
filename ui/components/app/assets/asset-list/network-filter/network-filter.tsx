@@ -11,6 +11,7 @@ import {
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
+  getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -102,10 +103,7 @@ const NetworkFilter = ({
     handleClose();
   };
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
-  });
+  const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
   const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
     (chain) => allOpts[chain],

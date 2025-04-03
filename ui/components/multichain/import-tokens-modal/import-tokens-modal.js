@@ -14,6 +14,7 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
 import {
@@ -184,11 +185,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const tokens = useSelector((state) => state.metamask.tokens);
   const contractExchangeRates = useSelector(getTokenExchangeRates);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-
-  const allOpts = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
-  });
+  const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -651,39 +648,32 @@ export const ImportTokensModal = ({ onClose }) => {
               width={BlockSize.Full}
             >
               {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
-                (chain) => {
-                  console.log(
-                    'chain ****************',
-                    chain,
-                    networkConfigurations,
-                  );
-                  return (
+                (chain) => (
+                  <Box
+                    key={chain}
+                    padding={4}
+                    gap={4}
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.spaceBetween}
+                    width={BlockSize.Full}
+                  >
+                    <AvatarNetwork
+                      name={getImageForChainId(chain)}
+                      src={getImageForChainId(chain)}
+                      size={AvatarNetworkSize.Sm}
+                    />
                     <Box
-                      key={chain}
-                      padding={4}
-                      gap={4}
+                      width={BlockSize.Full}
                       display={Display.Flex}
                       alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.spaceBetween}
-                      width={BlockSize.Full}
                     >
-                      <AvatarNetwork
-                        name={getImageForChainId(chain)}
-                        src={getImageForChainId(chain)}
-                        size={AvatarNetworkSize.Sm}
-                      />
-                      <Box
-                        width={BlockSize.Full}
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                      >
-                        <Text variant={TextVariant.bodyMdMedium}>
-                          {networkConfigurations[chain]?.name}
-                        </Text>
-                      </Box>
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {networkConfigurations[chain]?.name}
+                      </Text>
                     </Box>
-                  );
-                },
+                  </Box>
+                ),
               )}
             </Box>
           </ModalBody>

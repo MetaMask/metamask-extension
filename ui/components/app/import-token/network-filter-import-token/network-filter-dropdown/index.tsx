@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -37,6 +37,10 @@ export const NetworkFilterDropdown = ({
   setIsDropdownOpen,
   dropdownRef,
 }: NetworkFilterDropdownProps) => {
+  const setDropdownOpen = useCallback(() => {
+    setIsDropdownOpen(!isDropdownOpen);
+  }, [isDropdownOpen, setIsDropdownOpen]);
+
   return (
     <Box
       className="dropdown-editor__item-dropdown"
@@ -61,7 +65,7 @@ export const NetworkFilterDropdown = ({
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
         size={ButtonIconSize.Md}
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        onClick={setDropdownOpen}
         data-testid={buttonDataTestId}
       />
     </Box>
