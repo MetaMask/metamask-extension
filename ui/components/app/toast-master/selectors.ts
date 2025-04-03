@@ -8,7 +8,6 @@ import {
 } from '../../../helpers/constants/survey';
 import { getPermittedAccountsForCurrentTab } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
-// import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 import { getIsPrivacyToastRecent } from './utils';
 
 // TODO: get this into one of the larger definitions of state type
