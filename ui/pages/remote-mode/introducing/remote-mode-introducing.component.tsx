@@ -6,7 +6,6 @@ import {
   Text,
   Icon,
   IconName,
-  IconSize,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
@@ -16,10 +15,9 @@ import {
   JustifyContent,
   TextColor,
   IconColor,
-  BorderRadius,
 } from '../../../helpers/constants/design-system';
 
-export default function RemoteModeOverview() {
+export default function RemoteModeIntroducing() {
   return (
     <Box>
       <AvatarIcon

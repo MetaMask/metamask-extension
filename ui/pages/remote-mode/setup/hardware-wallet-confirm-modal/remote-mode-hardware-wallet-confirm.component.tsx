@@ -5,7 +5,7 @@ import {
   Text,
   Icon,
   IconName,
-} from '../../../components/component-library';
+} from '../../../../components/component-library';
 import {
   FontWeight,
   TextVariant,
@@ -13,8 +13,8 @@ import {
   JustifyContent,
   BlockSize,
   BackgroundColor,
-} from '../../../helpers/constants/design-system';
-import Card from '../../../components/ui/card';
+} from '../../../../helpers/constants/design-system';
+import Card from '../../../../components/ui/card';
 
 export default function RemoteModeHardwareWalletConfirm({
   visible,

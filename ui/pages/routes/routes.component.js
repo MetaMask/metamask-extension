@@ -48,7 +48,9 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-  DELEGATION_ROUTE,
+  REMOTE_ROUTE,
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -135,7 +137,9 @@ const ReviewPermissions = mmLazy(() =>
 );
 const Home = mmLazy(() => import('../home'));
 
-const RemoteModeIntroducing = mmLazy(() => import('../remote-mode/walkthrough/remote-mode-walkthrough.container'));
+const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview/remote-mode-overview.container'));
+const RemoteModeSetupSwaps = mmLazy(() => import('../remote-mode/setup/remote-mode-setup-swaps.component'));
+const RemoteModeSetupDailyAllowance = mmLazy(() => import('../remote-mode/setup/remote-mode-setup-daily-allowance.component'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -367,7 +371,10 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
-          <Authenticated path={DELEGATION_ROUTE} component={RemoteModeIntroducing} exact />
+          <Authenticated path={REMOTE_ROUTE} component={RemoteModeOverview} exact />
+          <Authenticated path={REMOTE_ROUTE_SETUP_SWAPS} component={RemoteModeSetupSwaps} exact />
+          <Authenticated path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE} component={RemoteModeSetupDailyAllowance} exact />
+
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

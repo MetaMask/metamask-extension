@@ -21,7 +21,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
 
-export default function RemoteModeSwapAllowance({
+export default function RemoteModeSwapAllowanceCard({
   swapAllowance,
   onRemove,
 }: {
@@ -39,13 +39,14 @@ export default function RemoteModeSwapAllowance({
   return (
     <Box
       width={BlockSize.Full}
+      marginTop={4}
     >
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={4}
         padding={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BackgroundColor.backgroundMuted}
         borderRadius={BorderRadius.LG}
         borderColor={BorderColor.borderDefault}
       >

@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
-import RemoteModeSwapAllowance from './remote-mode-swap-allowance.component';
+import RemoteModeSwapAllowanceCard from './remote-mode-swap-allowance-card.component';
 import testData from '../../../../../.storybook/test-data';
 import { TokenSymbol } from '../../remote.types';
 const store = configureStore(testData);
@@ -14,8 +14,8 @@ const mockSwapAllowance = {
 };
 
 export default {
-  title: 'Components/Vault/RemoteMode/RemoteModeSwapAllowance',
-  component: RemoteModeSwapAllowance,
+  title: 'Components/Vault/RemoteMode/RemoteModeSwapAllowanceCard',
+  component: RemoteModeSwapAllowanceCard,
   id: 'pages-remote-mode-swap-allowance--docs',
   decorators: [
     (story) => (
@@ -27,11 +27,11 @@ export default {
 };
 
 export const Default = () => (
-  <RemoteModeSwapAllowance swapAllowance={mockSwapAllowance} onRemove={() => {}} />
+  <RemoteModeSwapAllowanceCard swapAllowance={mockSwapAllowance} onRemove={() => {}} />
 );
 
 export const DifferentTokens = () => (
-  <RemoteModeSwapAllowance
+  <RemoteModeSwapAllowanceCard
     swapAllowance={{
       from: TokenSymbol.WETH,
       to: 'Low liquidity token',
@@ -42,7 +42,7 @@ export const DifferentTokens = () => (
 );
 
 export const LargeAmount = () => (
-  <RemoteModeSwapAllowance
+  <RemoteModeSwapAllowanceCard
     swapAllowance={{
       from: TokenSymbol.USDC,
       to: 'Medium liquidity token',
@@ -53,7 +53,7 @@ export const LargeAmount = () => (
 );
 
 export const WithRemoveHandler = () => (
-  <RemoteModeSwapAllowance
+  <RemoteModeSwapAllowanceCard
     swapAllowance={mockSwapAllowance}
     onRemove={() => alert('Remove clicked!')}
   />
