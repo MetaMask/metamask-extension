@@ -147,6 +147,8 @@ import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
+  parseCaipChainId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -2836,21 +2838,35 @@ export default class MetamaskController extends EventEmitter {
               }
             });
 
-            const removedSolanaScope =
-              sessionScopes[MultichainNetworks.SOLANA] ||
-              sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-              sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+            // const removedSolanaScope =
+            //   sessionScopes[MultichainNetworks.SOLANA] ||
+            //   sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+            //   sessionScopes[MultichainNetworks.SOLANA_TESTNET];
 
-            const currentValueHasNoSolanaScope =
-              !currentValue.get(origin)?.sessionScopes?.[
-                MultichainNetworks.SOLANA
-              ] &&
-              !currentValue.get(origin)?.sessionScopes?.[
-                MultichainNetworks.SOLANA_DEVNET
-              ] &&
-              !currentValue.get(origin)?.sessionScopes?.[
-                MultichainNetworks.SOLANA_TESTNET
-              ];
+            const removedSolanaScope = Object.keys(
+              previousValue.get(origin)?.sessionScopes ?? {},
+            ).some((scope) => {
+              const { namespace } = parseCaipChainId(scope);
+              return namespace === KnownCaipNamespace.Solana;
+            });
+
+            // const currentValueHasNoSolanaScope =
+            //   !currentValue.get(origin)?.sessionScopes?.[
+            //     MultichainNetworks.SOLANA
+            //   ] &&
+            //   !currentValue.get(origin)?.sessionScopes?.[
+            //     MultichainNetworks.SOLANA_DEVNET
+            //   ] &&
+            //   !currentValue.get(origin)?.sessionScopes?.[
+            //     MultichainNetworks.SOLANA_TESTNET
+            //   ];
+
+            const currentValueHasSolanaScope = Object.keys(
+              currentValue.get(origin)?.sessionScopes ?? {},
+            ).some((scope) => {
+              const { namespace } = parseCaipChainId(scope);
+              return namespace === KnownCaipNamespace.Solana;
+            });
 
             const solanaAccountChangedNotifications =
               previousValue.get(origin)?.sessionProperties?.[
@@ -2859,7 +2875,7 @@ export default class MetamaskController extends EventEmitter {
 
             if (
               removedSolanaScope &&
-              currentValueHasNoSolanaScope &&
+              !currentValueHasSolanaScope &&
               solanaAccountChangedNotifications
             ) {
               this._notifySolanaAccountChange(origin, []);
@@ -2899,10 +2915,17 @@ export default class MetamaskController extends EventEmitter {
               }
             });
 
-            const addedSolanaScope =
-              sessionScopes[MultichainNetworks.SOLANA] ||
-              sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-              sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+            // const addedSolanaScope =
+            //   sessionScopes[MultichainNetworks.SOLANA] ||
+            //   sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+            //   sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+
+            const addedSolanaScope = Object.keys(
+              currentValue.get(origin)?.sessionScopes ?? {},
+            ).some((scope) => {
+              const { namespace } = parseCaipChainId(scope);
+              return namespace === KnownCaipNamespace.Solana;
+            });
 
             if (addedSolanaScope) {
               const solanaAccountChangedNotifications =
