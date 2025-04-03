@@ -20,7 +20,7 @@ import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { isAccountConnectedToPermittedAccounts } from '../shared/lib/multichain/chain-agnostic-permission';
+import { isInternalAccountInPermittedAccounts } from '../shared/lib/multichain/chain-agnostic-permission';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -136,7 +136,7 @@ export async function setupInitialStore(
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
     const currentTabIsConnectedToSelectedAddress =
-      isAccountConnectedToPermittedAccounts(
+      isInternalAccountInPermittedAccounts(
         permittedAccountsForCurrentTab,
         selectedAccount,
       );
