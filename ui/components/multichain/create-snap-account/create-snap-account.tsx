@@ -80,7 +80,7 @@ export const CreateSnapAccount = ({
     );
 
     // FIXME: This is a temporary workaround to suggest a different account name for a first party snap.
-    const accountNumber = defaultSnapAccountName.split(' ').pop();
+    const accountNumber = defaultSnapAccountName.trim().split(' ').pop();
 
     switch (clientType) {
       case WalletClientType.Bitcoin: {
