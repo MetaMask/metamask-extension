@@ -189,24 +189,6 @@ const registerInPageContentScript = async () => {
   }
 };
 
-// this polyfill can be removed once we drop support for Firefox v121 (after
-// June 24 2025) Chrome v119 (after November 14, 2025). If you are removing
-// this,you should also remove the types polyfill for it in types/global.d.ts
-// and app/scripts/lib/promise.with-resolvers.ts
-if (typeof Promise.withResolvers === 'undefined') {
-  Promise.withResolvers = function withResolvers() {
-    let resolve;
-    let reject;
-    const promise = new this()((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
-    return { promise, resolve, reject };
-  };
-}
-
-globalThis.stateHooks.onInstalledListener = Promise.withResolvers();
-
 /**
  * `onInstalled` event handler.
  *
@@ -214,14 +196,25 @@ globalThis.stateHooks.onInstalledListener = Promise.withResolvers();
  * is never called.
  * For MV2 builds, the listener is added in `background.js` instead.
  *
- * @param {chrome.runtime.InstalledDetails} details - Event details.
+* @param {chrome.runtime.InstalledDetails} details - Event details.
  */
-function onInstalledListener({ reason }) {
-  chrome.runtime.onInstalled.removeListener(onInstalledListener);
-  if (reason === 'install') {
-    globalThis.stateHooks.onInstalledListener.resolve('install');
+function onInstalledListener(details) {
+  if (details.reason === 'install') {
+    // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+    // called.
+    if (globalThis.stateHooks.metamaskTriggerOnInstall) {
+      globalThis.stateHooks.metamaskTriggerOnInstall();
+      // Delete just to clean up global namespace
+      delete globalThis.stateHooks.metamaskTriggerOnInstall;
+      // This condition is for when the `onInstalled` listener in `app-init` was called before
+      // `background.js` was loaded.
+    } else {
+      globalThis.stateHooks.metamaskWasJustInstalled = true;
+    }
+    chrome.runtime.onInstalled.removeListener(onInstalledListener);
   }
 }
+
 chrome.runtime.onInstalled.addListener(onInstalledListener);
 
 registerInPageContentScript();

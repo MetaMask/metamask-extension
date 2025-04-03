@@ -251,15 +251,15 @@ type StateHooks = {
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
   /**
-   * This is set in `app-init.js` to communicate why MetaMask started up, and is
-   * read in `background.js`.
-   *
-   * Resolves with `install` if this was the first time the extension was
-   * installed, or `startup` if it was already installed but starting up for
-   * other reasons, like a browser opening, browser profile launching, or
-   * incognito mode.
+   * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in
+   * `background.js`.
    */
-  onReadyListener?: Promise<'install' | 'startup'>;
+  metamaskWasJustInstalled?: boolean;
+  /**
+   * This is set in `background.js` so that `app-init.js` can trigger "on install" actions when
+   * the `onInstalled` listener is called.
+   */
+  metamaskTriggerOnInstall?: () => void;
 };
 
 export declare global {
@@ -289,36 +289,3 @@ export declare global {
 
   function setPreference(key: keyof Preferences, value: boolean);
 }
-
-// #region Promise.withResolvers polyfill
-
-// this polyfill can be removed once our TS libs include withResolvers.
-// at time of writing we use TypeScript Version 5.4.5, which includes it in
-// esnext
-
-export declare global {
-  type PromiseWithResolvers<T> = {
-    promise: Promise<T>;
-    resolve: (value: T | PromiseLike<T>) => void;
-    reject: (reason?: any) => void;
-  };
-
-  // we're extending the PromiseConstructor interface, to we have to use
-  // `interface` (`type` won't work)
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface PromiseConstructor {
-    /**
-     * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
-     *
-     * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
-     *
-     * @returns An object with the properties `promise`, `resolve`, and `reject`.
-     *
-     * ```ts
-     * const { promise, resolve, reject } = Promise.withResolvers<T>();
-     * ```
-     */
-    withResolvers<T>(): PromiseWithResolvers<T>;
-  }
-}
-// #endregion

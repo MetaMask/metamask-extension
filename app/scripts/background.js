@@ -133,17 +133,36 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
-// In MV3 onInstalled must be installed in the entry file
-if (globalThis.stateHooks.onInstalledListener?.promise) {
-  globalThis.stateHooks.onInstalledListener.promise.then(onInstall);
-} else {
-  const onInstalledListener = function ({ reason }) {
-    browser.runtime.onInstalled.removeListener(onInstalledListener);
-    if (reason === 'install') {
+
+if (!isManifestV3) {
+  /**
+   * `onInstalled` event handler.
+   *
+   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+   * is never called.
+   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
+   *
+   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
+   */
+  const onInstalledListener = (details) => {
+    if (details.reason === 'install') {
       onInstall();
+      browser.runtime.onInstalled.removeListener(onInstalledListener);
     }
   };
+
   browser.runtime.onInstalled.addListener(onInstalledListener);
+
+  // This condition is for when the `onInstalled` listener in `app-init` was called before
+  // `background.js` was loaded.
+} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
+  onInstall();
+  // Delete just to clean up global namespace
+  delete globalThis.stateHooks.metamaskWasJustInstalled;
+  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+  // called.
+} else {
+  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
 /**
