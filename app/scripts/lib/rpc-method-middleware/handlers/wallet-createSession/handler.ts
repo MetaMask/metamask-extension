@@ -12,7 +12,6 @@ import {
   getSupportedScopeObjects,
   Caip25CaveatValue,
   setPermittedAccounts,
-  KnownWalletRpcMethods,
 } from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
