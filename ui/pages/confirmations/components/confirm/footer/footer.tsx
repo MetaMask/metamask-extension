@@ -239,9 +239,9 @@ const Footer = () => {
 
     const finalTransactionMeta: TransactionMeta = {
       ...transactionMeta,
-      batchTransactions: selectedGasFeeToken
-        ? [selectedGasFeeToken.transferTransaction]
-        : undefined,
+      // batchTransactions: selectedGasFeeToken
+      //   ? [selectedGasFeeToken.transferTransaction]
+      //   : undefined,
       customNonceValue,
       txParams: {
         ...transactionMeta.txParams,
