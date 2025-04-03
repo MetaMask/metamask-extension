@@ -244,7 +244,6 @@ import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import {

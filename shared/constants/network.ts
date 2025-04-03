@@ -1105,7 +1105,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
 };
 
-function getFailoverUrlsForInfuraNetwork(
+export function getFailoverUrlsForInfuraNetwork(
   infuraNetwork: keyof typeof QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
 ) {
   const url = QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME[infuraNetwork]();
