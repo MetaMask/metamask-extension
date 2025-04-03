@@ -158,7 +158,10 @@ describe('CreateSnapAccount', () => {
 
     await waitFor(() => {
       const nameSuggestion = getByPlaceholderText('Solana Account 2');
-      expect(nameSuggestion).toBeInTheDocument();})
+      expect(nameSuggestion).toBeInTheDocument();
+    });
+  });
+
   it('only calls createAccount once', async () => {
     const { getByTestId } = render();
 
