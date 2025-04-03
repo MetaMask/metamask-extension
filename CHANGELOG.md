@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.15.1]
+### Fixed
+- Re-fix state corruption resulting in inability to create/add accounts – previously fixed in 12.14.2 ([31274])(https://github.com/MetaMask/metamask-extension/pull/31274))
 
 ## [12.15.0]
 ### Added
