@@ -89,7 +89,7 @@ class SecureWalletPage {
    * @param needEnterPassword - Whether to enter the password
    */
   async revealAndConfirmSRP(
-    needEnterPassword: string,
+    needEnterPassword: string = '',
   ): Promise<void> {
     console.log(
       'Reveal and confirm SRP on secure wallet page during onboarding',
