@@ -1,6 +1,13 @@
 import { Driver } from '../../../../webdriver/driver';
+import TransactionConfirmation from './transaction-confirmation';
 
-class Eip7702AndSendCalls {
+export default class Eip7702AndSendCalls extends TransactionConfirmation {
+  constructor(driver: Driver) {
+    super(driver);
+
+    this.driver = driver;
+  }
+
   protected driver: Driver;
 
   private readonly batchTxList = '[data-testid="batch-txs=]';
@@ -16,13 +23,7 @@ class Eip7702AndSendCalls {
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
 
-  private readonly settingsButton = '[data-testid="header-advanced-details-button"]';
-
   private readonly txType = '[data-testid="tx-type"]';
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
 
   async check_batchTxListIsPresent(): Promise<void> {
     await this.driver.isElementPresent(this.batchTxList);
@@ -46,13 +47,7 @@ class Eip7702AndSendCalls {
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 
-  async openSettings(): Promise<void>  {
-    await this.driver.clickElement(this.settingsButton);
-  }
-
   async tickUpgradeCheckbox(): Promise<void> {
     await this.driver.clickElement(this.confirmUpgradeAccountCheckbox);
   }
 }
-
-export default Eip7702AndSendCalls;
