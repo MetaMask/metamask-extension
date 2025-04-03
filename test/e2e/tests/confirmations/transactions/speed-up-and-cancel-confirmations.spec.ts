@@ -26,10 +26,11 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           localNodeOptions: {
             hardfork: 'london',
             blockBaseFeePerGas: 0,
+            noMining: true,
           },
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, localNodes }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
@@ -60,6 +61,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          (await localNodes?.[0]?.mineBlock()) ??
+          console.error('localNodes is undefined or empty');
 
           await activityListPage.check_waitForTransactionStatus('confirmed');
         },
@@ -78,10 +81,11 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           localNodeOptions: {
             hardfork: 'london',
             blockBaseFeePerGas: 0,
+            noMining: true,
           },
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, localNodes }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
@@ -108,6 +112,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          (await localNodes?.[0]?.mineBlock()) ??
+            console.error('localNodes is undefined or empty');
           await activityListPage.check_waitForTransactionStatus('cancelled');
         },
       );
