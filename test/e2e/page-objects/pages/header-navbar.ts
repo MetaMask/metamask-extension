@@ -53,6 +53,10 @@ class HeaderNavbar {
     console.log('Header navbar is loaded');
   }
 
+  async clickAddressCopyButton(): Promise<void> {
+    await this.driver.clickElement(this.copyAddressButton);
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
