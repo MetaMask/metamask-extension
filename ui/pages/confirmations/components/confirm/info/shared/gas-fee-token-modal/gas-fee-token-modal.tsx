@@ -15,7 +15,7 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateSelectedGasFeeToken } from '../../../../../../../store/actions/transaction-controller';
+import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
