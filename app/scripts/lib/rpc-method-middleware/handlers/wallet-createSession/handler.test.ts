@@ -359,7 +359,7 @@ describe('wallet_createSession', () => {
       })
       .mockReturnValueOnce({
         supportedScopes: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          [MultichainNetwork.Solana]: {
             methods: [],
             notifications: [],
             accounts: [
@@ -383,7 +383,7 @@ describe('wallet_createSession', () => {
 
     expect(getNonEvmAccountAddresses).toHaveBeenCalledTimes(2);
     expect(getNonEvmAccountAddresses).toHaveBeenCalledWith(
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      MultichainNetwork.Solana,
     );
     expect(getNonEvmAccountAddresses).toHaveBeenCalledWith('solana:deadbeef');
   });
@@ -419,7 +419,7 @@ describe('wallet_createSession', () => {
             notifications: [],
             accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
           },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          [MultichainNetwork.Solana]: {
             methods: [],
             notifications: [],
             accounts: [
@@ -453,11 +453,11 @@ describe('wallet_createSession', () => {
                   'eip155:100': {
                     accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
                   },
-                },
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                  accounts: [
-                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
-                  ],
+                  [MultichainNetwork.Solana]: {
+                    accounts: [
+                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+                    ],
+                  },
                 },
                 isMultichainOrigin: true,
                 sessionProperties: {},
