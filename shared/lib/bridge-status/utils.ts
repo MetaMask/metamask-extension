@@ -75,52 +75,62 @@ export const serializeQuoteMetadata = (
 };
 
 /**
- * Determines if a Solana bridge transaction is complete
+ * Bridge transaction interface defining the expected shape of transactions
+ * processed by the bridge status utilities
+ */
+type BridgeTransaction = {
+  isBridgeTx: boolean;
+  bridgeInfo?: {
+    status?: string;
+  };
+};
+
+/**
+ * Determines if a bridge transaction is complete based on its status
  *
  * @param transaction - The transaction object to check
  * @returns Whether the transaction is complete
  */
-// TODO: type.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isBridgeComplete(transaction: any): boolean {
-  return (
+export function isBridgeComplete(transaction: BridgeTransaction): boolean {
+  return Boolean(
     transaction.isBridgeTx &&
-    transaction.bridgeInfo &&
-    (transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
-      transaction.bridgeInfo.status === 'COMPLETE')
+      transaction.bridgeInfo &&
+      (transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
+        transaction.bridgeInfo.status === 'COMPLETE'),
   );
 }
 
 /**
- * Determines if a bridge transaction is failed
+ * Determines if a bridge transaction has failed by checking its status
+ * or comparing it with the provided status key
  *
  * @param transaction - The transaction object to check
- * @param statusKey - The calculated status key
+ * @param statusKey - The calculated status key from transaction controller
  * @returns Whether the transaction is failed
  */
-// TODO: type.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isBridgeFailed(transaction: any, statusKey: string): boolean {
-  return (
+export function isBridgeFailed(
+  transaction: BridgeTransaction,
+  statusKey: string,
+): boolean {
+  return Boolean(
     transaction.isBridgeTx &&
-    transaction.bridgeInfo &&
-    (transaction.bridgeInfo.status === StatusTypes.FAILED ||
-      transaction.bridgeInfo.status === 'FAILED' ||
-      statusKey === TransactionStatus.failed)
+      transaction.bridgeInfo &&
+      (transaction.bridgeInfo.status === StatusTypes.FAILED ||
+        transaction.bridgeInfo.status === 'FAILED' ||
+        statusKey === TransactionStatus.failed),
   );
 }
 
 /**
- * Gets the appropriate status key for a Solana bridge transaction
+ * Determines the appropriate status key for a bridge transaction
+ * by examining its status and returning the corresponding transaction status
  *
  * @param transaction - The transaction object
  * @param defaultStatusKey - The default status key from regular transaction handling
  * @returns The appropriate status key
  */
 export function getBridgeStatusKey(
-  // TODO: type.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transaction: any,
+  transaction: BridgeTransaction,
   defaultStatusKey: string,
 ): string {
   if (transaction.isBridgeTx && transaction.bridgeInfo) {
@@ -176,8 +186,6 @@ export const getInitialHistoryItem = ({
     targetContractAddress,
     account,
     status: {
-      // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
-      // Also we know the bare minimum fields for status at this point in time
       status: StatusTypes.PENDING,
       srcChain: {
         chainId: statusRequest.srcChainId,
