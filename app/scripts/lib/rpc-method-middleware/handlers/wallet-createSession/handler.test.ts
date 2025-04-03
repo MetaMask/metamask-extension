@@ -10,6 +10,7 @@ import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
 import { KnownSessionProperties } from './constants';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 
 jest.mock('../../../util', () => ({
   ...jest.requireActual('../../../util'),
@@ -357,7 +358,7 @@ describe('wallet_createSession', () => {
       })
       .mockReturnValueOnce({
         supportedScopes: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          [MultichainNetwork.Solana]: {
             methods: [],
             notifications: [],
             accounts: [
@@ -381,7 +382,7 @@ describe('wallet_createSession', () => {
 
     expect(getNonEvmAccountAddresses).toHaveBeenCalledTimes(2);
     expect(getNonEvmAccountAddresses).toHaveBeenCalledWith(
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      MultichainNetwork.Solana,
     );
     expect(getNonEvmAccountAddresses).toHaveBeenCalledWith('solana:deadbeef');
   });
@@ -417,7 +418,7 @@ describe('wallet_createSession', () => {
             notifications: [],
             accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
           },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          [MultichainNetwork.Solana]: {
             methods: [],
             notifications: [],
             accounts: [
@@ -435,34 +436,37 @@ describe('wallet_createSession', () => {
 
     await handler(baseRequest);
 
-    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: {
-              requiredScopes: {
-                'eip155:1337': {
-                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+    expect(requestPermissionsForOrigin).toHaveBeenCalledWith(
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {
+                  'eip155:1337': {
+                    accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+                  },
                 },
+                optionalScopes: {
+                  'eip155:100': {
+                    accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                  },
+                  [MultichainNetwork.Solana]: {
+                    accounts: [
+                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
+                    ],
+                  },
+                },
+                isMultichainOrigin: true,
+                sessionProperties: {},
               },
-              optionalScopes: {
-                'eip155:100': {
-                  accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
-                },
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                  accounts: [
-                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:EEivRh9T4GTLEJprEaKQyjSQzW13JRb5D7jSpvPQ8296',
-                  ],
-                },
-              },
-              isMultichainOrigin: true,
-              sessionProperties: {},
             },
-          },
-        ],
+          ],
+        },
       },
-    });
+      { promptToCreateSolanaAccount: false },
+    );
   });
 
   it('throws an error when requesting account permission approval fails', async () => {
@@ -576,29 +580,32 @@ describe('wallet_createSession', () => {
         unsupportableScopes: {},
       });
     await handler(baseRequest);
-    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: {
-              requiredScopes: {
-                'eip155:1337': {
-                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+    expect(requestPermissionsForOrigin).toHaveBeenCalledWith(
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {
+                  'eip155:1337': {
+                    accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+                  },
                 },
-              },
-              optionalScopes: {
-                'eip155:100': {
-                  accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                optionalScopes: {
+                  'eip155:100': {
+                    accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                  },
                 },
+                isMultichainOrigin: true,
+                sessionProperties: {},
               },
-              isMultichainOrigin: true,
-              sessionProperties: {},
             },
-          },
-        ],
+          ],
+        },
       },
-    });
+      { promptToCreateSolanaAccount: false },
+    );
   });
 
   it('preserves known session properties', async () => {
@@ -656,6 +663,159 @@ describe('wallet_createSession', () => {
           notifications: ['accountsChanged', 'chainChanged'],
         },
       },
+    });
+  });
+
+  describe('promptToCreateSolanaAccount', () => {
+    const baseRequestWithSolanaScope = {
+      jsonrpc: '2.0' as const,
+      id: 0,
+      method: 'wallet_createSession',
+      origin: 'http://test.com',
+      params: {
+        optionalScopes: {
+          [MultichainNetwork.Solana]: {
+            methods: [],
+            notifications: [],
+            accounts: [],
+          },
+        },
+        sessionProperties: {
+          [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
+        },
+      },
+    };
+    it('prompts to create a solana account if a solana scope is requested and no solana accounts are currently available', async () => {
+      const {
+        handler,
+        requestPermissionsForOrigin,
+        getNonEvmAccountAddresses,
+      } = createMockedHandler();
+      getNonEvmAccountAddresses.mockResolvedValue([]);
+      MockMultichain.validateAndNormalizeScopes.mockReturnValue({
+        normalizedRequiredScopes: {
+          [MultichainNetwork.Solana]: {
+            methods: [],
+            notifications: [],
+            accounts: [],
+          },
+        },
+        normalizedOptionalScopes: {},
+      });
+
+      MockMultichain.bucketScopes
+        .mockReturnValueOnce({
+          supportedScopes: {},
+          supportableScopes: {},
+          unsupportableScopes: {},
+        })
+        .mockReturnValueOnce({
+          supportedScopes: {
+            'eip155:1337': {
+              methods: [],
+              notifications: [],
+              accounts: [],
+            },
+          },
+          supportableScopes: {},
+          unsupportableScopes: {},
+        });
+
+      await handler(baseRequestWithSolanaScope);
+
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith(
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      accounts: [],
+                    },
+                  },
+                  isMultichainOrigin: true,
+                  sessionProperties: {
+                    [KnownSessionProperties.SolanaAccountChangedNotifications]:
+                      true,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        { promptToCreateSolanaAccount: true },
+      );
+    });
+
+    it('does not prompt to create a solana account if a solana scope is requested and solana accounts are currently available', async () => {
+      const {
+        handler,
+        requestPermissionsForOrigin,
+        getNonEvmAccountAddresses,
+      } = createMockedHandler();
+      getNonEvmAccountAddresses.mockResolvedValue([
+        'solana:101:0x1',
+        'solana:101:0x2',
+      ]);
+      MockMultichain.validateAndNormalizeScopes.mockReturnValue({
+        normalizedRequiredScopes: {},
+        normalizedOptionalScopes: {
+          [MultichainNetwork.Solana]: {
+            methods: [],
+            notifications: [],
+            accounts: [],
+          },
+        },
+      });
+
+      MockMultichain.bucketScopes
+        .mockReturnValueOnce({
+          supportedScopes: {},
+          supportableScopes: {},
+          unsupportableScopes: {},
+        })
+        .mockReturnValueOnce({
+          supportedScopes: {
+            [MultichainNetwork.Solana]: {
+              methods: [],
+              notifications: [],
+              accounts: [],
+            },
+          },
+          supportableScopes: {},
+          unsupportableScopes: {},
+        });
+
+      await handler(baseRequestWithSolanaScope);
+
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith(
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    [MultichainNetwork.Solana]: {
+                      accounts: [],
+                    },
+                  },
+                  isMultichainOrigin: true,
+                  sessionProperties: {
+                    [KnownSessionProperties.SolanaAccountChangedNotifications]:
+                      true,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        { promptToCreateSolanaAccount: false },
+      );
     });
   });
 });
