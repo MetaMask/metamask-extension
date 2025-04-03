@@ -91,5 +91,121 @@
     "shortName": "primuschain",
     "chainId": 78,
     "networkId": 78
+  },
+  {
+    "name": "Camino C-Chain",
+    "chain": "CAM",
+    "rpc": ["https://api.camino.network/ext/bc/C/rpc"],
+    "faucets": [],
+    "nativeCurrency": { "name": "Camino", "symbol": "CAM", "decimals": 18 },
+    "infoURL": "https://camino.network/",
+    "shortName": "Camino",
+    "chainId": 500,
+    "networkId": 1000,
+    "icon": "camino",
+    "explorers": [
+      {
+        "name": "blockexplorer",
+        "url": "https://suite.camino.network/explorer",
+        "standard": "none"
+      }
+    ]
+  },
+  {
+    "name": "Elysium Testnet",
+    "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged",
+    "chain": "Atlantis",
+    "rpc": ["https://rpc.atlantischain.network"],
+    "faucets": ["https://faucet.atlantischain.network"],
+    "nativeCurrency": { "name": "ELY", "symbol": "ELY", "decimals": 18 },
+    "infoURL": "https://elysiumchain.tech",
+    "shortName": "ATL",
+    "chainId": 1338,
+    "networkId": 1338,
+    "explorers": [
+      {
+        "name": "Atlantis explorer",
+        "url": "https://blockscout.atlantischain.network",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "Geth Testnet",
+    "title": "Go Ethereum (Geth) Private Testnet",
+    "chain": "ETH",
+    "rpc": ["http://127.0.0.1:8545"],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Geth Testnet Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "infoURL": "https://geth.ethereum.org",
+    "shortName": "geth",
+    "chainId": 1337,
+    "networkId": 1337,
+    "slip44": 1
+  },
+  {
+    "name": "Linea Sepolia",
+    "title": "Linea Sepolia Testnet",
+    "chain": "ETH",
+    "rpc": [
+      "https://rpc.sepolia.linea.build",
+      "wss://rpc.sepolia.linea.build",
+      "https://linea-sepolia.infura.io/v3/${INFURA_API_KEY}",
+      "wss://linea-sepolia.infura.io/ws/v3/${INFURA_API_KEY}",
+      "https://linea-sepolia-rpc.publicnode.com",
+      "wss://linea-sepolia-rpc.publicnode.com"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Linea Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "infoURL": "https://linea.build",
+    "shortName": "linea-sepolia",
+    "chainId": 59141,
+    "networkId": 59141,
+    "slip44": 1,
+    "icon": "linea",
+    "parent": {
+      "type": "L2",
+      "chain": "eip155-11155111",
+      "bridges": [{ "url": "https://bridge.linea.build/" }]
+    },
+    "explorers": [
+      {
+        "name": "Etherscan",
+        "url": "https://sepolia.lineascan.build",
+        "standard": "EIP3091",
+        "icon": "linea"
+      },
+      {
+        "name": "Blockscout",
+        "url": "https://explorer.sepolia.linea.build",
+        "standard": "EIP3091",
+        "icon": "linea"
+      }
+    ],
+    "status": "active"
+  },
+  {
+    "name": "MegaETH Testnet",
+    "chain": "ETH",
+    "nativeCurrency": {
+      "name": "MegaETH Testnet Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "rpc": ["https://carrot.megaeth.com/rpc", "wss://carrot.megaeth.com/ws"],
+    "faucets": [],
+    "infoURL": "https://testnet.megaeth.com",
+    "shortName": "megatest",
+    "chainId": 6342,
+    "networkId": 6342,
+    "slip44": 1
   }
 ]
