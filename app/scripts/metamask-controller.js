@@ -17,7 +17,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
+import { debounce, throttle, memoize, wrap, pick, cloneDeep, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -2837,49 +2837,6 @@ export default class MetamaskController extends EventEmitter {
                 });
               }
             });
-
-            // const removedSolanaScope =
-            //   sessionScopes[MultichainNetworks.SOLANA] ||
-            //   sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-            //   sessionScopes[MultichainNetworks.SOLANA_TESTNET];
-
-            const removedSolanaScope = Object.keys(
-              previousValue.get(origin)?.sessionScopes ?? {},
-            ).some((scope) => {
-              const { namespace } = parseCaipChainId(scope);
-              return namespace === KnownCaipNamespace.Solana;
-            });
-
-            // const currentValueHasNoSolanaScope =
-            //   !currentValue.get(origin)?.sessionScopes?.[
-            //     MultichainNetworks.SOLANA
-            //   ] &&
-            //   !currentValue.get(origin)?.sessionScopes?.[
-            //     MultichainNetworks.SOLANA_DEVNET
-            //   ] &&
-            //   !currentValue.get(origin)?.sessionScopes?.[
-            //     MultichainNetworks.SOLANA_TESTNET
-            //   ];
-
-            const currentValueHasSolanaScope = Object.keys(
-              currentValue.get(origin)?.sessionScopes ?? {},
-            ).some((scope) => {
-              const { namespace } = parseCaipChainId(scope);
-              return namespace === KnownCaipNamespace.Solana;
-            });
-
-            const solanaAccountChangedNotifications =
-              previousValue.get(origin)?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ];
-
-            if (
-              removedSolanaScope &&
-              !currentValueHasSolanaScope &&
-              solanaAccountChangedNotifications
-            ) {
-              this._notifySolanaAccountChange(origin, []);
-            }
           }
 
           // add new notification subscriptions for added/changed authorizations
@@ -2914,44 +2871,60 @@ export default class MetamaskController extends EventEmitter {
                 });
               }
             });
-
-            // const addedSolanaScope =
-            //   sessionScopes[MultichainNetworks.SOLANA] ||
-            //   sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-            //   sessionScopes[MultichainNetworks.SOLANA_TESTNET];
-
-            const addedSolanaScope = Object.keys(
-              currentValue.get(origin)?.sessionScopes ?? {},
-            ).some((scope) => {
-              const { namespace } = parseCaipChainId(scope);
-              return namespace === KnownCaipNamespace.Solana;
-            });
-
-            if (addedSolanaScope) {
-              const solanaAccountChangedNotifications =
-                currentValue.get(origin)?.sessionProperties?.[
-                  KnownSessionProperties.SolanaAccountChangedNotifications
-                ];
-
-              if (solanaAccountChangedNotifications) {
-                const { accounts } = addedSolanaScope;
-                const solanaFormattedAccounts = accounts.map(
-                  (caipAccountId) => {
-                    const { address } = parseCaipAccountId(caipAccountId);
-                    return address;
-                  },
-                );
-                const accountAddressToEmit = solanaFormattedAccounts.includes(
-                  lastSelectedSolanaAccountAddress,
-                )
-                  ? lastSelectedSolanaAccountAddress
-                  : solanaFormattedAccounts[0];
-                this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
-              }
-            }
-
             this._notifyAuthorizationChange(origin, authorization);
           }
+
+
+          // start solana
+
+            const previousCaveatValue = previousValue.get(origin)
+            const currentCaveatValue = currentValue.get(origin)
+
+            const previousSolanaAccountChangedNotificationsEnabled = Boolean(previousCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.SolanaAccountChangedNotifications
+            ]);
+            const currentSolanaAccountChangedNotificationsEnabled = Boolean(currentCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.SolanaAccountChangedNotifications
+            ]);
+
+            if(!previousSolanaAccountChangedNotificationsEnabled && !currentSolanaAccountChangedNotificationsEnabled) {
+              return
+            }
+
+            const previousSolanaCaipAccountIds = previousCaveatValue ? getPermittedAccountsForScopes(previousCaveatValue,
+              [
+                MultichainNetworks.SOLANA,
+                MultichainNetworks.SOLANA_DEVNET,
+                MultichainNetworks.SOLANA_TESTNET,
+              ],
+            ): [];
+            const _previousSolanaHexAccountAddresses = previousSolanaCaipAccountIds.map(caipAccountId => {
+              const {address} = parseCaipAccountId(caipAccountId)
+              return address
+            });
+            const previousSolanaHexAccountAddresses = uniq(_previousSolanaHexAccountAddresses);
+            const previousSelectedSolanaAccountAddress = this.sortAccountsByLastSelected(previousSolanaHexAccountAddresses)[0];
+
+            const currentSolanaCaipAccountIds = currentCaveatValue ? getPermittedAccountsForScopes(currentCaveatValue,
+              [
+                MultichainNetworks.SOLANA,
+                MultichainNetworks.SOLANA_DEVNET,
+                MultichainNetworks.SOLANA_TESTNET,
+              ],
+            ): []
+            const _currentSolanaHexAccountAddresses = currentSolanaCaipAccountIds.map(caipAccountId => {
+              const {address} = parseCaipAccountId(caipAccountId)
+              return address
+            })
+            const currentSolanaHexAccountAddresses = uniq(_currentSolanaHexAccountAddresses)
+            const currentSelectedSolanaAccountAddress = this.sortAccountsByLastSelected(currentSolanaHexAccountAddresses)[0]
+
+            if(previousSelectedSolanaAccountAddress !== currentSelectedSolanaAccountAddress) {
+              this._notifySolanaAccountChange(origin, currentSelectedSolanaAccountAddress ? [currentSelectedSolanaAccountAddress] : []);
+            }
+
+          /// end solana
+
         },
         getAuthorizedScopesByOrigin,
       );
@@ -2963,6 +2936,8 @@ export default class MetamaskController extends EventEmitter {
             account.type === 'solana:data-account' &&
             account.address !== lastSelectedSolanaAccountAddress
           ) {
+            lastSelectedSolanaAccountAddress = account.address;
+
             const originsWithSolanaAccountChangedNotifications =
               getOriginsWithSessionProperty(
                 this.permissionController.state,
@@ -2988,7 +2963,6 @@ export default class MetamaskController extends EventEmitter {
                 parsedSolanaAddresses.includes(account.address) &&
                 originsWithSolanaAccountChangedNotifications[origin]
               ) {
-                lastSelectedSolanaAccountAddress = account.address;
                 this._notifySolanaAccountChange(origin, [account.address]);
               }
             }
@@ -6319,24 +6293,13 @@ export default class MetamaskController extends EventEmitter {
       sessionScopes[MultichainNetworks.SOLANA_TESTNET];
 
     if (solanaAccountsChangedNotifications && solanaScope) {
-      let lastSelectedSolanaAccountAddress;
-      try {
-        lastSelectedSolanaAccountAddress =
-          this.accountsController.getSelectedMultichainAccount(
-            MultichainNetworks.SOLANA,
-          )?.address;
-      } catch {
-        // noop
-      }
-
       const { accounts } = solanaScope;
       const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
         const { address } = parseCaipAccountId(caipAccountId);
         return address;
       });
 
-      const accountAddressToEmit =
-        lastSelectedSolanaAccountAddress ?? parsedPermittedSolanaAddresses[0];
+      const accountAddressToEmit = this.sortAccountsByLastSelected(parsedPermittedSolanaAddresses)[0];
 
       if (accountAddressToEmit) {
         // delay emit so that the event is not emitted
