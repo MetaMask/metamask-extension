@@ -686,7 +686,7 @@ describe('wallet_createSession', () => {
         },
       },
     };
-    it('prompts to create a solana account if a solana scope is requested and no solana accounts are currently available, and other non solana scopes are requested', async () => {
+    it('prompts to create a solana account if a solana scope is requested and no solana accounts are currently available', async () => {
       const {
         handler,
         requestPermissionsForOrigin,
@@ -751,7 +751,7 @@ describe('wallet_createSession', () => {
       );
     });
 
-    it('does not prompt to create a solana account if a solana scope is requested and supported', async () => {
+    it('does not prompt to create a solana account if a solana scope is requested and solana accounts are currently available', async () => {
       const {
         handler,
         requestPermissionsForOrigin,
