@@ -1,6 +1,4 @@
-import { RpcEndpointType } from '@metamask/network-controller';
-import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
-import { cloneDeep, escapeRegExp } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };
@@ -9,71 +7,16 @@ type VersionedData = {
 
 export const version = 151;
 
-// Chains supported by Infura that are either built in or featured,
-// mapped to their corresponding failover URLs.
-// Copied from `FEATURED_RPCS` in shared/constants/network.ts:
-// <https://github.com/MetaMask/metamask-extension/blob/f28216fad810d138dab8577fe9bdb39f5b6d18d8/shared/constants/network.ts#L1051>
-export const INFURA_CHAINS_WITH_FAILOVERS: Map<
-  Hex,
-  { subdomain: string; getFailoverUrl: () => string | undefined }
-> = new Map([
-  [
-    '0x1',
-    {
-      subdomain: 'mainnet',
-      getFailoverUrl: () => process.env.QUICKNODE_MAINNET_URL,
-    },
-  ],
-  // linea mainnet
-  [
-    '0xe708',
-    {
-      subdomain: 'linea-mainnet',
-      getFailoverUrl: () => process.env.QUICKNODE_LINEA_MAINNET_URL,
-    },
-  ],
-  [
-    '0xa4b1',
-    {
-      subdomain: 'arbitrum',
-      getFailoverUrl: () => process.env.QUICKNODE_ARBITRUM_URL,
-    },
-  ],
-  [
-    '0xa86a',
-    {
-      subdomain: 'avalanche',
-      getFailoverUrl: () => process.env.QUICKNODE_AVALANCHE_URL,
-    },
-  ],
-  [
-    '0xa',
-    {
-      subdomain: 'optimism',
-      getFailoverUrl: () => process.env.QUICKNODE_OPTIMISM_URL,
-    },
-  ],
-  [
-    '0x89',
-    {
-      subdomain: 'polygon',
-      getFailoverUrl: () => process.env.QUICKNODE_POLYGON_URL,
-    },
-  ],
-  [
-    '0x2105',
-    {
-      subdomain: 'base',
-      getFailoverUrl: () => process.env.QUICKNODE_BASE_URL,
-    },
-  ],
-]);
-
 /**
- * This migration ensures that all RPC endpoints that hit Infura and use our API
- * key are Infura RPC endpoints and not custom RPC endpoints.
+ * This migration deletes the preference `petnamesEnabled` if the user has
+ * existing data.
  *
- * @param originalVersionedData - The original MetaMask extension state.
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly
+ * what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by
+ * controller.
  * @returns Updated versioned MetaMask extension state.
  */
 export async function migrate(
@@ -81,108 +24,14 @@ export async function migrate(
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-
-  try {
-    transformState(versionedData.data);
-  } catch (error) {
-    console.error(error);
-    const newError = new Error(
-      `Migration #${version}: ${getErrorMessage(error)}`,
-    );
-    if (global.sentry) {
-      global.sentry.captureException(newError);
-    }
-    // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests for work
-    versionedData.data = originalVersionedData.data;
-  }
-
+  transformState(versionedData.data);
   return versionedData;
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (!process.env.INFURA_PROJECT_ID) {
-    throw new Error('No INFURA_PROJECT_ID set!');
-  }
+  const preferencesControllerState = state?.PreferencesController as
+    | Record<string, unknown>
+    | undefined;
 
-  if (!hasProperty(state, 'NetworkController')) {
-    throw new Error('Missing NetworkController state');
-  }
-
-  if (!isObject(state.NetworkController)) {
-    throw new Error(
-      `Expected state.NetworkController to be an object, but is ${typeof state.NetworkController}`,
-    );
-  }
-
-  if (!hasProperty(state.NetworkController, 'networkConfigurationsByChainId')) {
-    throw new Error(
-      'Missing state.NetworkController.networkConfigurationsByChainId',
-    );
-  }
-
-  if (!isObject(state.NetworkController.networkConfigurationsByChainId)) {
-    throw new Error(
-      `Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is ${typeof state
-        .NetworkController.networkConfigurationsByChainId}`,
-    );
-  }
-
-  const { networkConfigurationsByChainId } = state.NetworkController;
-
-  for (const [chainId, networkConfiguration] of Object.entries(
-    networkConfigurationsByChainId,
-  )) {
-    const infuraChainWithFailover = INFURA_CHAINS_WITH_FAILOVERS.get(
-      chainId as Hex,
-    );
-
-    if (
-      !isObject(networkConfiguration) ||
-      !hasProperty(networkConfiguration, 'rpcEndpoints') ||
-      !Array.isArray(networkConfiguration.rpcEndpoints)
-    ) {
-      continue;
-    }
-
-    networkConfiguration.rpcEndpoints = networkConfiguration.rpcEndpoints.map(
-      (rpcEndpoint) => {
-        if (
-          !isObject(rpcEndpoint) ||
-          !hasProperty(rpcEndpoint, 'url') ||
-          typeof rpcEndpoint.url !== 'string' ||
-          hasProperty(rpcEndpoint, 'failoverUrls')
-        ) {
-          return rpcEndpoint;
-        }
-
-        // All featured networks that use Infura get added as custom RPC
-        // endpoints, not Infura RPC endpoints
-        const match = rpcEndpoint.url.match(
-          new RegExp(
-            `https://(.+?)\\.infura\\.io/v3/${escapeRegExp(
-              process.env.INFURA_PROJECT_ID,
-            )}`,
-            'u',
-          ),
-        );
-        const isInfuraLike =
-          match &&
-          infuraChainWithFailover &&
-          match[1] === infuraChainWithFailover.subdomain;
-
-        const failoverUrl = infuraChainWithFailover?.getFailoverUrl();
-
-        const failoverUrls =
-          failoverUrl &&
-          (rpcEndpoint.type === RpcEndpointType.Infura || isInfuraLike)
-            ? [failoverUrl]
-            : [];
-        return {
-          ...rpcEndpoint,
-          failoverUrls,
-        };
-      },
-    );
-  }
+  delete preferencesControllerState?.incomingTransactionsPreferences;
 }

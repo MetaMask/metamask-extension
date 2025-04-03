@@ -2903,14 +2903,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        const filteredChainIds = this.#getAllAddedNetworks().filter(
-          (networkId) =>
-            this.preferencesController.state.incomingTransactionsPreferences[
-              networkId
-            ],
-        );
-
-        if (filteredChainIds.length > 0) {
+        if (this.preferencesController.state.useExternalServices === true) {
           this.txController.stopIncomingTransactionPolling();
 
           await this.txController.updateIncomingTransactions();
@@ -3415,10 +3408,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
-      setIncomingTransactionsPreferences:
-        preferencesController.setIncomingTransactionsPreferences.bind(
-          preferencesController,
-        ),
       setServiceWorkerKeepAlivePreference:
         preferencesController.setServiceWorkerKeepAlivePreference.bind(
           preferencesController,
@@ -8156,16 +8145,9 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #restartSmartTransactionPoller() {
-    const filteredChainIds = this.#getAllAddedNetworks().filter(
-      (networkId) =>
-        this.preferencesController.state.incomingTransactionsPreferences[
-          networkId
-        ],
-    );
-
-    if (filteredChainIds.length > 0) {
+    if (this.preferencesController.state.useExternalServices === true) {
       this.txController.stopIncomingTransactionPolling();
-      this.txController.startIncomingTransactionPolling(filteredChainIds);
+      this.txController.startIncomingTransactionPolling();
     }
   }
 

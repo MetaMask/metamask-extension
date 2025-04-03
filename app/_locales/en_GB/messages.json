@@ -870,6 +870,12 @@
   "bridgeToChain": {
     "message": "Bridge to $1"
   },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "We can't verify this token."
+  },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
   },
@@ -4865,16 +4871,6 @@
   },
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
-  },
-  "showIncomingTransactions": {
-    "message": "Show incoming transactions"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address."
   },
   "showLess": {
     "message": "Show less"
