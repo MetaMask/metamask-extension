@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.15.0",
+  "version": "12.15.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -285,7 +285,7 @@
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^17.2.1",
-    "@metamask/keyring-controller": "^21.0.0",
+    "@metamask/keyring-controller": "^21.0.1",
     "@metamask/keyring-internal-api": "^6.0.0",
     "@metamask/keyring-snap-client": "^4.0.1",
     "@metamask/logging-controller": "^6.0.4",
