@@ -2920,7 +2920,7 @@ export default class MetamaskController extends EventEmitter {
               _previousSolanaHexAccountAddresses,
             );
             const previousSelectedSolanaAccountAddress =
-              this.sortAccountsByLastSelected(
+              this.sortMultichainAccountsByLastSelected(
                 previousSolanaHexAccountAddresses,
               )[0];
 
@@ -2940,7 +2940,7 @@ export default class MetamaskController extends EventEmitter {
               _currentSolanaHexAccountAddresses,
             );
             const currentSelectedSolanaAccountAddress =
-              this.sortAccountsByLastSelected(
+              this.sortMultichainAccountsByLastSelected(
                 currentSolanaHexAccountAddresses,
               )[0];
 
@@ -5417,6 +5417,56 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Sorts a list of multichain account addresses by most recently selected by using
+   * the lastSelected value for the matching InternalAccount object stored in state.
+   *
+   * @param {string[]} [accounts] - The list of accounts addresses to sort.
+   * @returns {string[]} The sorted accounts addresses.
+   */
+  sortMultichainAccountsByLastSelected(accounts) {
+    const internalAccounts = this.accountsController.listMultichainAccounts();
+
+    return accounts.sort((firstAddress, secondAddress) => {
+      const firstAccount = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
+      );
+
+      const secondAccount = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
+      );
+
+      if (!firstAccount) {
+        this.captureKeyringTypesWithMissingIdentities(
+          internalAccounts,
+          accounts,
+        );
+        throw new Error(`Missing identity for address: "${firstAddress}".`);
+      } else if (!secondAccount) {
+        this.captureKeyringTypesWithMissingIdentities(
+          internalAccounts,
+          accounts,
+        );
+        throw new Error(`Missing identity for address: "${secondAddress}".`);
+      } else if (
+        firstAccount.metadata.lastSelected ===
+        secondAccount.metadata.lastSelected
+      ) {
+        return 0;
+      } else if (firstAccount.metadata.lastSelected === undefined) {
+        return 1;
+      } else if (secondAccount.metadata.lastSelected === undefined) {
+        return -1;
+      }
+
+      return (
+        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
+      );
+    });
+  }
+
+  /**
    * Gets the sorted permitted accounts for the specified origin. Returns an empty
    * array if no accounts are permitted or the wallet is locked. Returns any permitted
    * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
@@ -6331,7 +6381,7 @@ export default class MetamaskController extends EventEmitter {
           return address;
         });
 
-        const accountAddressToEmit = this.sortAccountsByLastSelected(
+        const accountAddressToEmit = this.sortMultichainAccountsByLastSelected(
           parsedPermittedSolanaAddresses,
         )[0];
 
