@@ -27,8 +27,8 @@ export default class ExtensionStore implements BaseStore {
       return null;
     }
     const { local } = browser.storage;
-    // don't fetch more than we need, its faster to read known keys than
-    // to iterate over all keys (in the case where the DB has been initialized).
+    // don't fetch more than we need, incase extra stuff was put in the db
+    // by testing or users playing with the db
     return await local.get(['data', 'meta']);
   }
 

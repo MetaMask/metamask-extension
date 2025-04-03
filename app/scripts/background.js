@@ -469,73 +469,69 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
-  try {
-    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+  const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initData = await loadStateFromPersistence();
-    const initState = initData.data;
-    const initLangCode = await getFirstPreferredLangCode();
+  const initData = await loadStateFromPersistence();
+  const initState = initData.data;
+  const initLangCode = await getFirstPreferredLangCode();
 
-    let isFirstMetaMaskControllerSetup;
+  let isFirstMetaMaskControllerSetup;
 
-    // We only want to start this if we are running a test build, not for the release build.
-    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
-    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
-    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
-    if (process.env.IN_TEST && window.navigator?.webdriver) {
-      getSocketBackgroundToMocha();
-    }
-
-    if (isManifestV3) {
-      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-      // miliseconds. This keeps the service worker alive.
-      if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-        saveTimestamp();
-        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-      }
-
-      const sessionData = await browser.storage.session.get([
-        'isFirstMetaMaskControllerSetup',
-      ]);
-
-      isFirstMetaMaskControllerSetup =
-        sessionData?.isFirstMetaMaskControllerSetup === undefined;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-    }
-
-    const overrides = inTest
-      ? {
-          keyrings: {
-            trezorBridge: FakeTrezorBridge,
-            ledgerBridge: FakeLedgerBridge,
-          },
-        }
-      : {};
-
-    setupController(
-      initState,
-      initLangCode,
-      overrides,
-      isFirstMetaMaskControllerSetup,
-      initData.meta,
-      offscreenPromise,
-    );
-
-    // `setupController` sets up the `controller` object, so we can use it now:
-    maybeDetectPhishing(controller);
-
-    if (!isManifestV3) {
-      await loadPhishingWarningPage();
-    }
-    await sendReadyMessageToTabs();
-    log.info('MetaMask initialization complete.');
-
-    resolveInitialization();
-  } catch (error) {
-    rejectInitialization(error);
+  // We only want to start this if we are running a test build, not for the release build.
+  // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+  // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+  // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+  if (process.env.IN_TEST && window.navigator?.webdriver) {
+    getSocketBackgroundToMocha();
   }
+
+  if (isManifestV3) {
+    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+    // miliseconds. This keeps the service worker alive.
+    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+    }
+
+    const sessionData = await browser.storage.session.get([
+      'isFirstMetaMaskControllerSetup',
+    ]);
+
+    isFirstMetaMaskControllerSetup =
+      sessionData?.isFirstMetaMaskControllerSetup === undefined;
+    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+  }
+
+  const overrides = inTest
+    ? {
+        keyrings: {
+          trezorBridge: FakeTrezorBridge,
+          ledgerBridge: FakeLedgerBridge,
+        },
+      }
+    : {};
+
+  setupController(
+    initState,
+    initLangCode,
+    overrides,
+    isFirstMetaMaskControllerSetup,
+    initData.meta,
+    offscreenPromise,
+  );
+
+  // `setupController` sets up the `controller` object, so we can use it now:
+  maybeDetectPhishing(controller);
+
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
+  await sendReadyMessageToTabs();
+  log.info('MetaMask initialization complete.');
+
+  resolveInitialization();
 }
 
 /**
@@ -1369,7 +1365,7 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
-    // rejectInitialization(error);
+    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
