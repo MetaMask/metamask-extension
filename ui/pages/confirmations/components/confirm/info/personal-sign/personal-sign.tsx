@@ -42,11 +42,11 @@ import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { isValidUTF8 } from '../utils';
 import { SIWESignInfo } from './siwe-sign';
 
-const getMessageText = (hexString?: string) => {
+const getMessageText = (hexString?: string): string => {
   if (!hexString) {
-    return hexString;
+    return hexString ?? '';
   }
-  const messageText = sanitizeString(hexToText(hexString));
+  const messageText = sanitizeString(hexToText(hexString)) as string;
   return isValidUTF8(messageText) ? messageText : hexString;
 };
 
