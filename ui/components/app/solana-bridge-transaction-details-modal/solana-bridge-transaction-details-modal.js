@@ -604,46 +604,7 @@ function SolanaBridgeTransactionDetailsModal({
           <Box paddingTop={4}>
             <Divider />
           </Box>
-
-          {/* Transaction History Section - Commented out for now
-        <Box
-          className="solana-bridge-transaction-details-modal__transaction-history"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-        >
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-          >
-            {`Transaction created with a value of ${asset?.amount?.replace('-', '') || '0'} ${asset?.unit || 'ETH'} at ${formatTimestamp(timestamp)}.`}
-          </Text>
-
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-          >
-            {`Transaction submitted with estimated gas fee of ${baseFee ? `${baseFee.amount} ${baseFee.unit}` : '0 ETH'} at ${formatTimestamp(timestamp)}.`}
-          </Text>
-
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-          >
-            {`Transaction confirmed at ${formatTimestamp(timestamp)}.`}
-          </Text>
-
-          {isBridgeComplete && bridgeInfo?.destTxHash && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              {`Bridge completed at ${formatTimestamp(timestamp)}.`}
-            </Text>
-          )}
         </Box>
-        */}
-        </Box>{' '}
         {/* Close scrollable content */}
         <ModalFooter>
           <Button
