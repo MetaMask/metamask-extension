@@ -493,7 +493,6 @@ describe('permission background API methods', () => {
       expect(permissionController.revokePermission).not.toHaveBeenCalled();
     });
 
-    // TODO: review intended behavior here
     it('revokes the entire permission if the removed account is the only account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
