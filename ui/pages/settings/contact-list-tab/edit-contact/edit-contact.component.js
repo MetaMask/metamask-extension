@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Button from '../../../../components/ui/button/button.component';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
@@ -19,7 +20,6 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-
 import {
   AlignItems,
   BackgroundColor,
@@ -33,270 +33,219 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 import { getImageForChainId } from '../../../../selectors/multichain';
+import { AssetPickerModalNetwork } from '../../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network';
+import { I18nContext } from '../../../../contexts/i18n';
+import { setActiveNetworkWithError } from '../../../../store/actions';
 
-export default class EditContact extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+const EditContact = ({
+  addressBook,
+  internalAccounts,
+  networks,
+  addToAddressBook,
+  removeFromAddressBook,
+  name = '',
+  address,
+  chainId,
+  memo = '',
+  viewRoute,
+  listRoute,
+}) => {
+  const t = useContext(I18nContext);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const [contactName, setContactName] = useState(name);
+  const [newAddress, setNewAddress] = useState(address);
+  const [newMemo, setNewMemo] = useState(memo);
+  const [nameError, setNameError] = useState('');
+  const [addressError, setAddressError] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-  static propTypes = {
-    addressBook: PropTypes.array,
-    internalAccounts: PropTypes.array,
-    networks: PropTypes.array,
-    addToAddressBook: PropTypes.func,
-    removeFromAddressBook: PropTypes.func,
-    toggleNetworkMenu: PropTypes.func,
-    history: PropTypes.object,
-    name: PropTypes.string,
-    address: PropTypes.string,
-    chainId: PropTypes.string,
-    memo: PropTypes.string,
-    viewRoute: PropTypes.string,
-    listRoute: PropTypes.string,
-  };
-
-  static defaultProps = {
-    name: '',
-    memo: '',
-  };
-
-  state = {
-    newName: this.props.name,
-    newAddress: this.props.address,
-    newMemo: this.props.memo,
-    nameError: '',
-    addressError: '',
-    selectedNetwork: this.props.chainId,
-  };
-
-  validateName = (newName) => {
-    if (newName === this.props.name) {
+  const validateName = (nameValue) => {
+    if (nameValue === name) {
       return true;
     }
-
-    const { addressBook, internalAccounts } = this.props;
-
-    return !isDuplicateContact(addressBook, internalAccounts, newName);
+    return !isDuplicateContact(addressBook, internalAccounts, nameValue);
   };
 
-  handleNameChange = (e) => {
-    const newName = e.target.value;
-
-    const isValidName = this.validateName(newName);
-
-    this.setState({
-      nameError: isValidName ? null : this.context.t('nameAlreadyInUse'),
-    });
-
-    this.setState({ newName });
+  const handleNameChange = (e) => {
+    const nameValue = e.target.value;
+    setNameError(validateName(nameValue) ? '' : t('nameAlreadyInUse'));
+    setContactName(nameValue);
   };
 
-  render() {
-    const { t } = this.context;
-    const { selectedNetwork } = this.state;
-    console.log(this.props.networks, 'networks');
-    const {
-      address,
-      addToAddressBook,
-      chainId,
-      history,
-      listRoute,
-      memo,
-      name,
-      removeFromAddressBook,
-      viewRoute,
-      networks,
-    } = this.props;
+  if (!address) {
+    return <Redirect to={{ pathname: listRoute }} />;
+  }
 
-    if (!address) {
-      return <Redirect to={{ pathname: listRoute }} />;
-    }
-
-    return (
-      <div className="settings-page__content-row address-book__edit-contact">
+  return (
+    <div className="settings-page__content-row address-book__edit-contact">
+      <Box
+        className="settings-page__header address-book__header--edit"
+        paddingLeft={6}
+        paddingRight={6}
+        width={BlockSize.Full}
+        alignItems={AlignItems.center}
+      >
         <Box
-          className="settings-page__header address-book__header--edit"
-          paddingLeft={6}
-          paddingRight={6}
-          width={BlockSize.Full}
+          display={Display.Flex}
           alignItems={AlignItems.center}
+          paddingRight={2}
         >
+          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            marginInlineStart={4}
+            ellipsis
+          >
+            {name || address}
+          </Text>
+        </Box>
+        <Button
+          type="link"
+          onClick={async () => {
+            await removeFromAddressBook(chainId, address);
+            history.push(listRoute);
+          }}
+        >
+          {t('deleteContact')}
+        </Button>
+      </Box>
+      <div className="address-book__edit-contact__content">
+        <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group__label">
+            {t('userName')}
+          </div>
+          <TextField
+            id="nickname"
+            value={contactName}
+            onChange={handleNameChange}
+            error={nameError}
+            fullWidth
+            className="text-field-root"
+          />
+        </div>
+        <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group__label">
+            {t('ethereumPublicAddress')}
+          </div>
+          <TextField
+            id="address"
+            value={newAddress}
+            onChange={(e) => setNewAddress(e.target.value)}
+            error={addressError}
+            fullWidth
+            multiline
+            className="text-field-root"
+          />
+        </div>
+        <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group__label">
+            {t('memo')}
+          </div>
+          <TextField
+            id="memo"
+            value={newMemo}
+            onChange={(e) => setNewMemo(e.target.value)}
+            fullWidth
+            multiline
+            className="text-field-root"
+          />
+        </div>
+        <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group__label">
+            {t('network')}
+          </div>
           <Box
+            as="button"
+            padding={4}
             display={Display.Flex}
             alignItems={AlignItems.center}
-            style={{ overflow: 'hidden' }}
-            paddingRight={2}
+            backgroundColor={BackgroundColor.transparent}
+            borderColor={BorderColor.borderDefault}
+            justifyContent={JustifyContent.spaceBetween}
+            borderRadius={BorderRadius.XL}
+            onClick={() => setShowModal(true)}
+            className="network-selector"
           >
-            <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
-            <Text
-              className="address-book__header__name"
-              variant={TextVariant.bodyLgMedium}
-              marginInlineStart={4}
-              style={{ overflow: 'hidden' }}
-              ellipsis
-            >
-              {name || address}
-            </Text>
+            <Box display={Display.Flex} gap={2}>
+              <AvatarNetwork
+                size={AvatarNetworkSize.Sm}
+                src={getImageForChainId(chainId) || undefined}
+              />
+              <Text>{networks?.[chainId]?.name}</Text>
+            </Box>
+            <Icon
+              name={IconName.ArrowDown}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
           </Box>
-          <Box className="settings-page__address-book-button">
-            <Button
-              type="link"
-              onClick={async () => {
-                await removeFromAddressBook(chainId, address);
-                history.push(listRoute);
-              }}
-              style={{ display: 'contents' }}
-            >
-              {t('deleteContact')}
-            </Button>
-          </Box>
-        </Box>
-        <div className="address-book__edit-contact__content">
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label">
-              {t('userName')}
-            </div>
-            <TextField
-              type="text"
-              id="nickname"
-              placeholder={this.context.t('addAlias')}
-              value={this.state.newName}
-              onChange={this.handleNameChange}
-              fullWidth
-              margin="dense"
-              error={this.state.nameError}
-            />
-          </div>
-
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label">
-              {t('ethereumPublicAddress')}
-            </div>
-            <TextField
-              type="text"
-              id="address"
-              value={this.state.newAddress}
-              error={this.state.addressError}
-              onChange={(e) => this.setState({ newAddress: e.target.value })}
-              fullWidth
-              multiline
-              rows={4}
-              margin="dense"
-              classes={{
-                inputMultiline:
-                  'address-book__view-contact__address__text-area',
-                inputRoot: 'address-book__view-contact__address',
-              }}
-            />
-          </div>
-
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label--capitalized">
-              {t('memo')}
-            </div>
-            <TextField
-              type="text"
-              id="memo"
-              placeholder={memo}
-              value={this.state.newMemo}
-              onChange={(e) => this.setState({ newMemo: e.target.value })}
-              fullWidth
-              margin="dense"
-              multiline
-              rows={3}
-              classes={{
-                inputMultiline: 'address-book__view-contact__text-area',
-                inputRoot: 'address-book__view-contact__text-area-wrapper',
-              }}
-            />
-          </div>
-
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label--capitalized">
-              {t('network')}
-            </div>
-            <div className="settings-page__content-item">
-              <div className="settings-page__content-item-col">
-                <Box
-                  padding={4}
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  as="button"
-                  backgroundColor={BackgroundColor.transparent}
-                  borderColor={BorderColor.borderDefault}
-                  justifyContent={JustifyContent.spaceBetween}
-                  borderRadius={BorderRadius.XL}
-                  onClick={() => this.props.toggleNetworkMenu()}
-                >
-                  <Box display={Display.Flex} gap={2}>
-                    <AvatarNetwork
-                      size={AvatarNetworkSize.Sm}
-                      name={networks?.[selectedNetwork]?.name}
-                      src={getImageForChainId(chainId) || undefined}
-                      backgroundColor={BackgroundColor.backgroundDefault}
-                      borderWidth={2}
-                    />
-                    <Text>{networks?.[selectedNetwork]?.name}</Text>
-                  </Box>
-                  <Icon
-                    name={IconName.ArrowDown}
-                    color={IconColor.iconDefault}
-                    size={IconSize.Sm}
-                  />
-                </Box>
-              </div>
-            </div>
-          </div>
         </div>
-        <PageContainerFooter
-          cancelText={this.context.t('cancel')}
-          onSubmit={async () => {
+      </div>
+      <PageContainerFooter
+        cancelText={t('cancel')}
+        onSubmit={async () => {
+          if (newAddress && newAddress !== address) {
             if (
-              this.state.newAddress !== '' &&
-              this.state.newAddress !== address
+              !isBurnAddress(newAddress) &&
+              isValidHexAddress(newAddress, { mixedCaseUseChecksum: true })
             ) {
-              // if the user makes a valid change to the address field, remove the original address
-              if (
-                !isBurnAddress(this.state.newAddress) &&
-                isValidHexAddress(this.state.newAddress, {
-                  mixedCaseUseChecksum: true,
-                })
-              ) {
-                await removeFromAddressBook(chainId, address);
-                await addToAddressBook(
-                  this.state.newAddress,
-                  this.state.newName || name,
-                  this.state.newMemo || memo,
-                );
-                history.push(listRoute);
-              } else {
-                this.setState({
-                  addressError: this.context.t('invalidAddress'),
-                });
-              }
-            } else {
-              // update name
+              await removeFromAddressBook(chainId, address);
               await addToAddressBook(
-                address,
-                this.state.newName || name,
-                this.state.newMemo || memo,
+                newAddress,
+                contactName || name,
+                newMemo || memo,
               );
               history.push(listRoute);
+            } else {
+              setAddressError(t('invalidAddress'));
             }
+          } else {
+            await addToAddressBook(
+              address,
+              contactName || name,
+              newMemo || memo,
+            );
+            history.push(listRoute);
+          }
+        }}
+        onCancel={() => history.push(`${viewRoute}/${address}`)}
+        submitText={t('save')}
+        disabled={!contactName.trim() || nameError}
+      />
+      {showModal && (
+        <AssetPickerModalNetwork
+          isOpen
+          onClose={() => setShowModal(false)}
+          selectedChainIds={Object.keys(networks)}
+          onNetworkChange={(networkConfig) => {
+            console.log(networkConfig, 'networkClientId');
+            dispatch(
+              setActiveNetworkWithError(
+                networkConfig.rpcEndpoints[
+                  networkConfig.defaultRpcEndpointIndex
+                ].networkClientId || networkConfig.chainId,
+              ),
+            );
           }}
-          onCancel={() => {
-            history.push(`${viewRoute}/${address}`);
-          }}
-          submitText={this.context.t('save')}
-          disabled={Boolean(
-            (this.state.newName === name &&
-              this.state.newAddress === address &&
-              this.state.newMemo === memo) ||
-              !this.state.newName.trim() ||
-              this.state.nameError,
-          )}
         />
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
+
+EditContact.propTypes = {
+  addressBook: PropTypes.array,
+  internalAccounts: PropTypes.array,
+  networks: PropTypes.array,
+  addToAddressBook: PropTypes.func.isRequired,
+  removeFromAddressBook: PropTypes.func.isRequired,
+  name: PropTypes.string,
+  address: PropTypes.string.isRequired,
+  chainId: PropTypes.string,
+  memo: PropTypes.string,
+  viewRoute: PropTypes.string.isRequired,
+  listRoute: PropTypes.string.isRequired,
+};
+
+export default EditContact;

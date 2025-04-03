@@ -965,7 +965,17 @@ export function getAddressBook(state) {
   if (!state.metamask.addressBook[chainId]) {
     return [];
   }
+  console.log(Object.values(state.metamask.addressBook[chainId]));
   return Object.values(state.metamask.addressBook[chainId]);
+}
+
+export function getCompleteAddressBook(state) {
+  const addresses = state.metamask.addressBook;
+  const addressWithChainId = Object.fromEntries(
+    Object.entries(addresses).filter(([key]) => key !== '*'),
+  );
+  console.log(addressWithChainId, 'addressWithChainId');
+  return Object.values(addressWithChainId);
 }
 
 export function getEnsResolutionByAddress(state, address) {
