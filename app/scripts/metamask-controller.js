@@ -17,7 +17,15 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep, uniq } from 'lodash';
+import {
+  debounce,
+  throttle,
+  memoize,
+  wrap,
+  pick,
+  cloneDeep,
+  uniq,
+} from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -2874,57 +2882,82 @@ export default class MetamaskController extends EventEmitter {
             this._notifyAuthorizationChange(origin, authorization);
           }
 
-
           // start solana
 
-            const previousCaveatValue = previousValue.get(origin)
-            const currentCaveatValue = currentValue.get(origin)
+          const previousCaveatValue = previousValue.get(origin);
+          const currentCaveatValue = currentValue.get(origin);
 
-            const previousSolanaAccountChangedNotificationsEnabled = Boolean(previousCaveatValue?.sessionProperties?.[
+          const previousSolanaAccountChangedNotificationsEnabled = Boolean(
+            previousCaveatValue?.sessionProperties?.[
               KnownSessionProperties.SolanaAccountChangedNotifications
-            ]);
-            const currentSolanaAccountChangedNotificationsEnabled = Boolean(currentCaveatValue?.sessionProperties?.[
+            ],
+          );
+          const currentSolanaAccountChangedNotificationsEnabled = Boolean(
+            currentCaveatValue?.sessionProperties?.[
               KnownSessionProperties.SolanaAccountChangedNotifications
-            ]);
+            ],
+          );
 
-            if(!previousSolanaAccountChangedNotificationsEnabled && !currentSolanaAccountChangedNotificationsEnabled) {
-              return
-            }
+          if (
+            !previousSolanaAccountChangedNotificationsEnabled &&
+            !currentSolanaAccountChangedNotificationsEnabled
+          ) {
+            return;
+          }
 
-            const previousSolanaCaipAccountIds = previousCaveatValue ? getPermittedAccountsForScopes(previousCaveatValue,
-              [
+          const previousSolanaCaipAccountIds = previousCaveatValue
+            ? getPermittedAccountsForScopes(previousCaveatValue, [
                 MultichainNetworks.SOLANA,
                 MultichainNetworks.SOLANA_DEVNET,
                 MultichainNetworks.SOLANA_TESTNET,
-              ],
-            ): [];
-            const _previousSolanaHexAccountAddresses = previousSolanaCaipAccountIds.map(caipAccountId => {
-              const {address} = parseCaipAccountId(caipAccountId)
-              return address
+              ])
+            : [];
+          const _previousSolanaHexAccountAddresses =
+            previousSolanaCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
             });
-            const previousSolanaHexAccountAddresses = uniq(_previousSolanaHexAccountAddresses);
-            const previousSelectedSolanaAccountAddress = this.sortAccountsByLastSelected(previousSolanaHexAccountAddresses)[0];
+          const previousSolanaHexAccountAddresses = uniq(
+            _previousSolanaHexAccountAddresses,
+          );
+          const previousSelectedSolanaAccountAddress =
+            this.sortAccountsByLastSelected(
+              previousSolanaHexAccountAddresses,
+            )[0];
 
-            const currentSolanaCaipAccountIds = currentCaveatValue ? getPermittedAccountsForScopes(currentCaveatValue,
-              [
+          const currentSolanaCaipAccountIds = currentCaveatValue
+            ? getPermittedAccountsForScopes(currentCaveatValue, [
                 MultichainNetworks.SOLANA,
                 MultichainNetworks.SOLANA_DEVNET,
                 MultichainNetworks.SOLANA_TESTNET,
-              ],
-            ): []
-            const _currentSolanaHexAccountAddresses = currentSolanaCaipAccountIds.map(caipAccountId => {
-              const {address} = parseCaipAccountId(caipAccountId)
-              return address
-            })
-            const currentSolanaHexAccountAddresses = uniq(_currentSolanaHexAccountAddresses)
-            const currentSelectedSolanaAccountAddress = this.sortAccountsByLastSelected(currentSolanaHexAccountAddresses)[0]
+              ])
+            : [];
+          const _currentSolanaHexAccountAddresses =
+            currentSolanaCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const currentSolanaHexAccountAddresses = uniq(
+            _currentSolanaHexAccountAddresses,
+          );
+          const currentSelectedSolanaAccountAddress =
+            this.sortAccountsByLastSelected(
+              currentSolanaHexAccountAddresses,
+            )[0];
 
-            if(previousSelectedSolanaAccountAddress !== currentSelectedSolanaAccountAddress) {
-              this._notifySolanaAccountChange(origin, currentSelectedSolanaAccountAddress ? [currentSelectedSolanaAccountAddress] : []);
-            }
+          if (
+            previousSelectedSolanaAccountAddress !==
+            currentSelectedSolanaAccountAddress
+          ) {
+            this._notifySolanaAccountChange(
+              origin,
+              currentSelectedSolanaAccountAddress
+                ? [currentSelectedSolanaAccountAddress]
+                : [],
+            );
+          }
 
           /// end solana
-
         },
         getAuthorizedScopesByOrigin,
       );
@@ -6283,79 +6316,82 @@ export default class MetamaskController extends EventEmitter {
           KnownSessionProperties.SolanaAccountChangedNotifications
         ];
 
-    const sessionScopes = getSessionScopes(caip25Caveat.value, {
-      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
-    });
-
-    const solanaScope =
-      sessionScopes[MultichainNetworks.SOLANA] ||
-      sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-      sessionScopes[MultichainNetworks.SOLANA_TESTNET];
-
-    if (solanaAccountsChangedNotifications && solanaScope) {
-      const { accounts } = solanaScope;
-      const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
-        const { address } = parseCaipAccountId(caipAccountId);
-        return address;
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
       });
 
-      const accountAddressToEmit = this.sortAccountsByLastSelected(parsedPermittedSolanaAddresses)[0];
+      const solanaScope =
+        sessionScopes[MultichainNetworks.SOLANA] ||
+        sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+        sessionScopes[MultichainNetworks.SOLANA_TESTNET];
 
-      if (accountAddressToEmit) {
-        // delay emit so that the event is not emitted
-        // before the wallet standard script is ready to receive it
-        setTimeout(() => {
-          this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
-        }, 500);
-      }
-    }
+      if (solanaAccountsChangedNotifications && solanaScope) {
+        const { accounts } = solanaScope;
+        const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
+          const { address } = parseCaipAccountId(caipAccountId);
+          return address;
+        });
 
-    if (sender.id && sender.id !== this.extension.runtime.id) {
-      this.subjectMetadataController.addSubjectMetadata({
-        origin,
-        extensionId: sender.id,
-        subjectType: SubjectType.Extension,
-      });
-    }
+        const accountAddressToEmit = this.sortAccountsByLastSelected(
+          parsedPermittedSolanaAddresses,
+        )[0];
 
-    let tabId;
-    if (sender.tab && sender.tab.id) {
-      tabId = sender.tab.id;
-    }
-
-    const engine = this.setupProviderEngineCaip({
-      origin,
-      sender,
-      subjectType,
-      tabId,
-    });
-
-    const dupeReqFilterStream = createDupeReqFilterStream();
-
-    // setup connection
-    const providerStream = createEngineStream({ engine });
-
-    const connectionId = this.addConnection(origin, {
-      tabId,
-      apiType: API_TYPE.CAIP_MULTICHAIN,
-      engine,
-    });
-
-    pipeline(
-      outStream,
-      dupeReqFilterStream,
-      providerStream,
-      outStream,
-      (err) => {
-        // handle any middleware cleanup
-        engine.destroy();
-        connectionId && this.removeConnection(origin, connectionId);
-        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
-        if (err && !err.message?.match('Premature close')) {
-          log.error(err);
+        if (accountAddressToEmit) {
+          // delay emit so that the event is not emitted
+          // before the wallet standard script is ready to receive it
+          setTimeout(() => {
+            this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
+          }, 500);
         }
-      },
-    );
+      }
+
+      if (sender.id && sender.id !== this.extension.runtime.id) {
+        this.subjectMetadataController.addSubjectMetadata({
+          origin,
+          extensionId: sender.id,
+          subjectType: SubjectType.Extension,
+        });
+      }
+
+      let tabId;
+      if (sender.tab && sender.tab.id) {
+        tabId = sender.tab.id;
+      }
+
+      const engine = this.setupProviderEngineCaip({
+        origin,
+        sender,
+        subjectType,
+        tabId,
+      });
+
+      const dupeReqFilterStream = createDupeReqFilterStream();
+
+      // setup connection
+      const providerStream = createEngineStream({ engine });
+
+      const connectionId = this.addConnection(origin, {
+        tabId,
+        apiType: API_TYPE.CAIP_MULTICHAIN,
+        engine,
+      });
+
+      pipeline(
+        outStream,
+        dupeReqFilterStream,
+        providerStream,
+        outStream,
+        (err) => {
+          // handle any middleware cleanup
+          engine.destroy();
+          connectionId && this.removeConnection(origin, connectionId);
+          // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+          if (err && !err.message?.match('Premature close')) {
+            log.error(err);
+          }
+        },
+      );
+    }
   }
 
   /**
