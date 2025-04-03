@@ -127,11 +127,16 @@ export async function setupInitialStore(
 
   // initialize localization
   await setupLocale(draftInitialState.metamask.currentLocale);
-  const directionality = switchDirection(draftInitialState.metamask.currentLocale);
+  const directionality = switchDirection(
+    draftInitialState.metamask.currentLocale,
+  );
   document.documentElement.setAttribute('dir', directionality);
 
   // setup localization for the active tab
-  document.documentElement.setAttribute('lang', draftInitialState.metamask.currentLocale);
+  document.documentElement.setAttribute(
+    'lang',
+    draftInitialState.metamask.currentLocale,
+  );
 
   // update metamaskState with activeTab info
   await actions.updateMetamaskStateFromBackground();
@@ -147,10 +152,11 @@ export async function setupInitialStore(
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
     // Using our new utility function
-    const currentTabIsConnectedToSelectedAddress = isAccountConnectedToPermittedAccounts(
-      permittedAccountsForCurrentTab,
-      selectedAccount
-    );
+    const currentTabIsConnectedToSelectedAddress =
+      isAccountConnectedToPermittedAccounts(
+        permittedAccountsForCurrentTab,
+        selectedAccount,
+      );
 
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
@@ -308,4 +314,54 @@ function setupStateHooks(store) {
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     // we use the manifest.json version from getVersion and not
-    // `process.env.METAMASK_VERSION`
+    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+    // for more info)
+    state.version = global.platform.getVersion();
+    state.browser = window.navigator.userAgent;
+    return state;
+  };
+  window.stateHooks.getSentryAppState = function () {
+    const reduxState = store.getState();
+    return maskObject(reduxState, SENTRY_UI_STATE);
+  };
+  window.stateHooks.getLogs = function () {
+    // These logs are logged by LoggingController
+    const reduxState = store.getState();
+    const { logs } = reduxState.metamask;
+
+    const logsArray = Object.values(logs).sort((a, b) => {
+      return a.timestamp - b.timestamp;
+    });
+
+    return logsArray;
+  };
+}
+
+window.logStateString = async function (cb) {
+  const state = await window.stateHooks.getCleanAppState();
+  const logs = window.stateHooks.getLogs();
+  browser.runtime
+    .getPlatformInfo()
+    .then((platform) => {
+      state.platform = platform;
+      state.logs = logs;
+      const stateString = JSON.stringify(state, null, 2);
+      cb(null, stateString);
+    })
+    .catch((err) => {
+      cb(err);
+    });
+};
+
+window.logState = function (toClipboard) {
+  return window.logStateString((err, result) => {
+    if (err) {
+      console.error(err.message);
+    } else if (toClipboard) {
+      copyToClipboard(result, COPY_OPTIONS);
+      console.log('State log copied');
+    } else {
+      console.log(result);
+    }
+  });
+};
