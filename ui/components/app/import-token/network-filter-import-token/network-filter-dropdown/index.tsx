@@ -59,6 +59,7 @@ export const NetworkFilterDropdown = ({
         openListNetwork={openListNetwork}
         currentNetworkImageUrl={currentNetworkImageUrl}
         allOpts={allOpts}
+        setDropdownOpen={setDropdownOpen}
       />
       <ButtonIcon
         marginLeft="auto"

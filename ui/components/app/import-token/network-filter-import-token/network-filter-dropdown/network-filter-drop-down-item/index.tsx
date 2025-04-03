@@ -26,6 +26,7 @@ type NetworkFilterDropdownItemProps = {
   openListNetwork: () => void;
   currentNetworkImageUrl: string;
   allOpts: Record<string, boolean>;
+  setDropdownOpen: () => void;
 };
 
 export const NetworkFilterDropdownItem = ({
@@ -33,6 +34,7 @@ export const NetworkFilterDropdownItem = ({
   openListNetwork,
   currentNetworkImageUrl,
   allOpts,
+  setDropdownOpen,
 }: NetworkFilterDropdownItemProps) => {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -46,6 +48,7 @@ export const NetworkFilterDropdownItem = ({
         paddingTop={3}
         paddingBottom={3}
         gap={3}
+        onClick={setDropdownOpen}
       >
         <Box>
           <Text
@@ -79,6 +82,7 @@ export const NetworkFilterDropdownItem = ({
       paddingTop={3}
       paddingBottom={3}
       gap={3}
+      onClick={setDropdownOpen}
     >
       <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
         {t('popularNetworks')}
