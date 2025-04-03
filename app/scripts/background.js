@@ -17,7 +17,6 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { MISSING_VAULT_ERROR } from '../../shared/constants/errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -134,8 +133,9 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
-if (globalThis.stateHooks.onInstalledListener) {
-  globalThis.stateHooks.onInstalledListener.then(onInstall);
+// In MV3 onInstalled must be installed in the entry file
+if (globalThis.stateHooks.onInstalledListener?.promise) {
+  globalThis.stateHooks.onInstalledListener.promise.then(onInstall);
 } else {
   const onInstalledListener = function ({ reason }) {
     browser.runtime.onInstalled.removeListener(onInstalledListener);
@@ -603,37 +603,6 @@ export async function loadStateFromPersistence() {
   // read from disk
   // first from preferred, async API:
   let preMigrationVersionedData = await persistenceManager.get();
-
-  const vaultDataPresent = Boolean(
-    preMigrationVersionedData?.data?.KeyringController?.vault,
-  );
-
-  if (vaultDataPresent === false) {
-    // so we don't have a vault... don't panic yet! there is a chance we aren't
-    // supposed to have one at this point. There are valid reasons for this:
-    // 1. they installed but didn't onboard, so the vault wasn't created
-    // 2. there was an error writing to the initial data to the store for some reason
-    // 3. a developer is just testing things in weird ways.
-
-    // Luckily, we have other signals to use to determine if they should have
-    // a vault:
-    // 1. check in IndexedDB if the vault exists (TODO)
-    // 2. check if the vault is in window.localStorage
-    // 3. check if the vault is in a cookie.
-    // lets check these locations before we panic.
-    // const vaultInIndexedDB = await localStore.get();
-    const vaultSignalInLocalStorage = globalThis.localStorage.getItem([
-      'vaultCreated',
-    ]);
-    if (vaultSignalInLocalStorage !== '1') {
-      const vaultSignalInCookie = globalThis.document.cookie
-        .split('; ')
-        .includes('vaultCreated=1');
-      if (vaultSignalInCookie) {
-        throw new Error(MISSING_VAULT_ERROR);
-      }
-    }
-  }
 
   const migrator = new Migrator({
     migrations,

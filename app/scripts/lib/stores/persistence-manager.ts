@@ -2,12 +2,14 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { KeyringControllerState } from '@metamask/keyring-controller';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
 } from './base-store';
+import { DB } from './indexeddb-store';
 
 const STATE_LOCK = 'state-lock';
 
@@ -69,15 +71,39 @@ export class PersistenceManager {
 
   #localStore: BaseStore;
 
+  #db: DB;
+
+  #open: true;
+
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
+    this.#db = new DB('metamask-vault', 1);
+  }
+
+  async open() {
+    if (!this.#open) {
+      await this.#db.open();
+      this.#open = true;
+    }
   }
 
   setMetadata(metadata: MetaData) {
     this.#metadata = metadata;
   }
 
+  /**
+   * Sets the state in the local store.
+   *
+   * @param state - The state to set in the local store. This should be an object
+   * containing the state data to be stored.
+   * @throws Error if the state is missing or if the metadata is not set before
+   * calling this method.
+   * @throws Error if the local store is not open.
+   * @throws Error if the data persistence fails during the write operation.
+   */
   async set(state: MetaMaskStateType) {
+    await this.open();
+
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
@@ -86,50 +112,93 @@ export class PersistenceManager {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
-    await navigator.locks.request(STATE_LOCK, async () => {
-      try {
-        // atomically set all the keys
-        await this.#localStore.set({
-          data: state,
-          meta,
-        });
-        // write to cookie and to localStorage
-        // this is used to determine if the vault was created
-        const keyringController =
-          state.KeyringController as KeyringControllerState;
-        const vaultCreated = keyringController?.vault ?? null;
-        if (vaultCreated) {
-          document.cookie = `vaultCreated=1; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
-          window.localStorage.setItem('vaultCreated', '1');
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive' },
+      async () => {
+        try {
+          debugger;
+          // atomically set all the keys
+          await this.#localStore.set({
+            data: state,
+            meta,
+          });
+
+          // back up the vault in IndexedDB
+          const keyringController =
+            state.KeyringController as KeyringControllerState;
+          const vault = keyringController?.vault;
+          if (vault) {
+            await this.#db.set({ vault });
+          } else {
+            // if we don't have a vault, remove the backup from IndexedDB
+            // TODO: should we create a backup for the backup when a vault is
+            // removed?
+            await this.#db.remove(['vault']);
+          }
+
+          if (this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = false;
+          }
+        } catch (err) {
+          if (!this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = true;
+            captureException(err);
+          }
+          log.error('error setting state in local store:', err);
+        } finally {
+          this.#isExtensionInitialized = true;
         }
-        if (this.#dataPersistenceFailing) {
-          this.#dataPersistenceFailing = false;
-        }
-      } catch (err) {
-        if (!this.#dataPersistenceFailing) {
-          this.#dataPersistenceFailing = true;
-          captureException(err);
-        }
-        log.error('error setting state in local store:', err);
-      } finally {
-        this.#isExtensionInitialized = true;
-      }
-    });
+      },
+    );
   }
 
+  /**
+   * Retrieves the current state of the local store. If the store is empty,
+   * it returns null. If the store is not open, it throws an error.
+   *
+   * @returns The current state of the local store or null if the store is empty.
+   * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
+   * @throws Error if the local store is not open.
+   */
   async get(): Promise<MetaMaskStorageStructure | null> {
-    return await navigator.locks.request(STATE_LOCK, async () => {
-      const result = await this.#localStore.get();
+    await this.open();
 
-      if (isEmpty(result)) {
-        this.#mostRecentRetrievedState = null;
-        return undefined;
-      }
-      if (!this.#isExtensionInitialized) {
-        this.#mostRecentRetrievedState = result;
-      }
-      return result;
-    });
+    return await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'shared' },
+      async () => {
+        debugger;
+        const result = await this.#localStore.get();
+
+        const keyringController = result?.data?.KeyringController as
+          | KeyringControllerState
+          | undefined;
+        const hasVault = keyringController?.vault;
+
+        if (!hasVault) {
+          // check if we have a backup vault in IndexedDB
+          // if we do, we need to throw an error so that the user can be
+          // prompted to restore it
+          // if we don't, carry on as if everything is fine (it might be)
+          const [backupVault] = await this.#db.get<[string | undefined]>([
+            'vault',
+          ]);
+          if (backupVault) {
+            throw new Error(MISSING_VAULT_ERROR);
+          }
+        }
+
+        if (isEmpty(result)) {
+          this.#mostRecentRetrievedState = null;
+          return undefined;
+        }
+        if (!this.#isExtensionInitialized) {
+          this.#mostRecentRetrievedState = result;
+        }
+        return result;
+      },
+    );
   }
 
   get mostRecentRetrievedState() {
