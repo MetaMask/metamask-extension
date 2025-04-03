@@ -234,7 +234,6 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
           notification={notification}
           chainId={notification.chain_id}
           txHash={notification.tx_hash}
-          id={notification.id}
         />
       );
     },

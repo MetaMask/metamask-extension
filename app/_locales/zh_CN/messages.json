@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "aggregatedBalancePopover": {
-    "message": "这反映了您在给定网络上拥有的所有代币的价值。如果您更愿意看到以 ETH 或其他货币反映代币价值，请转到 $1。",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "我同意MetaMask的$1",
     "description": "$1 is the `terms` link"

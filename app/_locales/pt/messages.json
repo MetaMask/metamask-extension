@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "aggregatedBalancePopover": {
-    "message": "Isso reflete o valor de todos os tokens que você possui em uma dada rede. Se você preferir ver esse valor em ETH ou outras moedas, acesse a $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "Concordo com os $1 da MetaMask",
     "description": "$1 is the `terms` link"

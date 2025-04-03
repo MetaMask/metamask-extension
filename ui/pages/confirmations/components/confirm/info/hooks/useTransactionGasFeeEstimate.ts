@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   addHexes,
+  decGWEIToHexWEI,
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
@@ -30,9 +31,11 @@ export function useTransactionGasFeeEstimate(
 
   let gasEstimate: Hex;
   if (supportsEIP1559) {
+    const estimatedBaseFeeWeiHex = decGWEIToHexWEI(estimatedBaseFee);
+
     // Minimum Total Fee = (estimatedBaseFee + maxPriorityFeePerGas) * gasLimit
     let minimumFeePerGas = addHexes(
-      estimatedBaseFee || HEX_ZERO,
+      estimatedBaseFeeWeiHex || HEX_ZERO,
       maxPriorityFeePerGas,
     );
 

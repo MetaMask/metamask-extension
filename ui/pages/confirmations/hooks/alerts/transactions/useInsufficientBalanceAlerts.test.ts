@@ -123,6 +123,16 @@ describe('useInsufficientBalanceAlerts', () => {
     ).toEqual([]);
   });
 
+  it('returns no alerts if account has balance less than gas fee plus value but gas fee token is selected', () => {
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: { ...TRANSACTION_MOCK, selectedGasFeeToken: '0x123' },
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   it('returns alert if account has balance less than gas fee plus value', () => {
     const alerts = runHook({
       balance: 7,

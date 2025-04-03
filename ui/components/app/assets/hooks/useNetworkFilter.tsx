@@ -13,16 +13,14 @@ const useNetworkFilter = () => {
   const networkFilter = useSelector(getTokenNetworkFilter);
 
   useEffect(() => {
-    if (process.env.PORTFOLIO_VIEW) {
-      const allNetworkFilters = Object.fromEntries(
-        Object.keys(allNetworks).map((chainId) => [chainId, true]),
-      );
+    const allNetworkFilters = Object.fromEntries(
+      Object.keys(allNetworks).map((chainId) => [chainId, true]),
+    );
 
-      if (Object.keys(networkFilter).length > 1) {
-        dispatch(setTokenNetworkFilter(allNetworkFilters));
-      }
+    if (Object.keys(networkFilter).length > 1) {
+      dispatch(setTokenNetworkFilter(allNetworkFilters));
     }
-  }, [Object.keys(allNetworks).length, networkFilter, dispatch]);
+  }, [networkFilter, dispatch, allNetworks]);
 
   return { networkFilter };
 };

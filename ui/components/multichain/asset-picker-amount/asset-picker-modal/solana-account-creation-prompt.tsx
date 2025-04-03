@@ -24,11 +24,7 @@ import {
   useMultichainWalletSnapClient,
 } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 
-export const SolanaAccountCreationPrompt = ({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) => {
+export const SolanaAccountCreationPrompt = () => {
   const t = useI18nContext();
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
@@ -39,17 +35,23 @@ export const SolanaAccountCreationPrompt = ({
   const handleCreateAccount = useCallback(async () => {
     try {
       setIsCreating(true);
-      await solanaWalletSnapClient.createAccount({
-        scope: MultichainNetworks.SOLANA,
-        entropySource: primaryKeyring.metadata.id,
-      });
-      onSuccess();
+      await solanaWalletSnapClient.createAccount(
+        {
+          scope: MultichainNetworks.SOLANA,
+          entropySource: primaryKeyring?.metadata?.id,
+        },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        },
+      );
     } catch (error) {
       console.error('Error creating Solana account:', error);
     } finally {
       setIsCreating(false);
     }
-  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id, onSuccess]);
+  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id]);
 
   return (
     <Box

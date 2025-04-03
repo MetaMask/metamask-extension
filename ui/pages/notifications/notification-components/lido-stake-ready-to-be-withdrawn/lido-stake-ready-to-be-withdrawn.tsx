@@ -175,7 +175,6 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
             notification={notification}
             chainId={notification.chain_id}
             txHash={notification.tx_hash}
-            id={notification.id}
           />
         );
       },

@@ -136,7 +136,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        // We validate custom balance as it doesn't come from ganache but it's mocked
+        // We validate custom balance as it doesn't come from the local node but it's mocked
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
           text: '20 ETH',
@@ -176,7 +176,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        // We validate custom balance as it doesn't come from ganache but it's mocked
+        // We validate custom balance as it doesn't come from the local node but it's mocked
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
           text: '20 ETH',
@@ -217,7 +217,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
 
-        // We validate custom balance as it doesn't come from ganache but it's mocked
+        // We validate custom balance as it doesn't come from the local node but it's mocked
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
           text: '20 ETH',

@@ -277,7 +277,6 @@ export const components: NotificationComponent<StakeNotification> = {
           notification={notification}
           chainId={notification.chain_id}
           txHash={notification.tx_hash}
-          id={notification.id}
         />
       );
     },

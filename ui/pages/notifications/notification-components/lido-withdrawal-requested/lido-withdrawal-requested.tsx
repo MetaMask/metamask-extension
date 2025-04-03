@@ -195,7 +195,6 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
             notification={notification}
             chainId={notification.chain_id}
             txHash={notification.tx_hash}
-            id={notification.id}
           />
         );
       },

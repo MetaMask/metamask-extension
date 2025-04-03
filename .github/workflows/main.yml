@@ -105,9 +105,7 @@ jobs:
         with:
           is-high-risk-environment: false
 
-      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --browser=firefox --lockdown --sentry --snow --env production
-        env:
-          SEGMENT_PROD_WRITE_KEY: '-'
+      - run: yarn build:test:webpack
 
       - name: Upload artifact prep-build-test-webpack-chrome
         uses: actions/upload-artifact@v4
@@ -125,15 +123,20 @@ jobs:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
 
-      - run: yarn build dist
+      # GHA does not allow the : ? ternary operator, you must write && ||
+      - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
         env:
-          INFURA_PROJECT_ID: '-'
+          INFURA_PROJECT_ID: 'FAKE'
 
       - name: Upload artifact prep-build-dist-browserify-chrome
         uses: actions/upload-artifact@v4
@@ -214,6 +217,8 @@ jobs:
     needs:
       - needs-e2e
       - prep-build-test-browserify
+      - prep-build-test-webpack
+      - prep-build-dist-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
 

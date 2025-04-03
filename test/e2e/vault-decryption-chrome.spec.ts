@@ -160,6 +160,7 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
@@ -217,6 +218,7 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
