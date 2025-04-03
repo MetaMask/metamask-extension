@@ -362,7 +362,6 @@ export function getAccountTypeForKeyring(keyring) {
 
   switch (type) {
     case KeyringType.trezor:
-    case KeyringType.oneKey:
     case KeyringType.ledger:
     case KeyringType.lattice:
     case KeyringType.qr:
