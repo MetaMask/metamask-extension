@@ -120,7 +120,7 @@ describe('Show account details', function () {
     );
   });
 
-  it.only('should not reveal private key when password is incorrect', async function () {
+  it('should not reveal private key when password is incorrect', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
