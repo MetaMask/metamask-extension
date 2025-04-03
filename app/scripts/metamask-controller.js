@@ -3927,6 +3927,7 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
+        accountsController,
       }),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -6966,6 +6967,10 @@ export default class MetamaskController extends EventEmitter {
             ...params,
             origin,
           }),
+        getNonEvmAccountAddresses: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:getSupportedAccounts',
+        ),
       }),
     );
 

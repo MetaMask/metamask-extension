@@ -67,7 +67,38 @@ describe('permission background API methods', () => {
       ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
-    it('calls updateCaveat with the account added', () => {
+    it('gets the account for the passed in address', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn(),
+      };
+
+      try {
+        getPermissionBackgroundApiMethods({
+          permissionController,
+          accountsController,
+        }).addPermittedAccount('foo.com', '0x4');
+      } catch (err) {
+        // noop
+      }
+
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledTimes(1);
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledWith(
+        '0x4',
+      );
+    });
+
+    it('calls updateCaveat with the caip account address added', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -95,8 +126,16 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x4',
+          scopes: ['eip155:0'],
+        }),
+      };
+
       getPermissionBackgroundApiMethods({
         permissionController,
+        accountsController,
       }).addPermittedAccount('foo.com', '0x4');
 
       expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
@@ -197,7 +236,41 @@ describe('permission background API methods', () => {
       ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
-    it('calls updateCaveat with the accounts added to only eip155 scopes and all accounts for eip155 scopes synced', () => {
+    it('gets the accounts for the passed in addresses', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn(),
+      };
+
+      try {
+        getPermissionBackgroundApiMethods({
+          permissionController,
+          accountsController,
+        }).addPermittedAccounts('foo.com', ['0x4', '0x5']);
+      } catch (err) {
+        // noop
+      }
+
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledTimes(2);
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledWith(
+        '0x4',
+      );
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledWith(
+        '0x5',
+      );
+    });
+
+    it('calls updateCaveat with the caip account addresses added to respective scopes and all accounts for each scopes synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -225,8 +298,22 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
+      const accountsController = {
+        getAccountByAddress: jest
+          .fn()
+          .mockReturnValueOnce({
+            address: '0x4',
+            scopes: ['eip155:0'],
+          })
+          .mockReturnValueOnce({
+            address: '0x5',
+            scopes: ['eip155:0'],
+          }),
+      };
+
       getPermissionBackgroundApiMethods({
         permissionController,
+        accountsController,
       }).addPermittedAccounts('foo.com', ['0x4', '0x5']);
 
       expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
@@ -330,6 +417,37 @@ describe('permission background API methods', () => {
       ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
+    it('gets the account for the passed in address', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn(),
+      };
+
+      try {
+        getPermissionBackgroundApiMethods({
+          permissionController,
+          accountsController,
+        }).removePermittedAccount('foo.com', '0x1');
+      } catch (err) {
+        // noop
+      }
+
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledTimes(1);
+      expect(accountsController.getAccountByAddress).toHaveBeenCalledWith(
+        '0x1',
+      );
+    });
+
     it('does nothing if the account being removed does not exist', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
@@ -359,15 +477,24 @@ describe('permission background API methods', () => {
         revokePermission: jest.fn(),
       };
 
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0xdeadbeef',
+          scopes: ['eip155:0'],
+        }),
+      };
+
       getPermissionBackgroundApiMethods({
         permissionController,
+        accountsController,
       }).removePermittedAccount('foo.com', '0xdeadbeef');
 
       expect(permissionController.updateCaveat).not.toHaveBeenCalled();
       expect(permissionController.revokePermission).not.toHaveBeenCalled();
     });
 
-    it('revokes the entire permission if the removed account is the only eip:155 scoped account', () => {
+    // TODO: review intended behavior here
+    it('revokes the entire permission if the removed account is the only account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -381,9 +508,7 @@ describe('permission background API methods', () => {
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                accounts: [
-                  'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
-                ],
+                accounts: [],
               },
             },
             isMultichainOrigin: true,
@@ -392,8 +517,16 @@ describe('permission background API methods', () => {
         revokePermission: jest.fn(),
       };
 
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x1',
+          scopes: ['eip155:0'],
+        }),
+      };
+
       getPermissionBackgroundApiMethods({
         permissionController,
+        accountsController,
       }).removePermittedAccount('foo.com', '0x1');
 
       expect(permissionController.revokePermission).toHaveBeenCalledWith(
@@ -402,7 +535,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('updates the caveat with the account removed and all eip155 accounts synced', () => {
+    it('updates the caveat with the account removed and all accounts synced across respective scope', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -430,8 +563,16 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x2',
+          scopes: ['eip155:0'],
+        }),
+      };
+
       getPermissionBackgroundApiMethods({
         permissionController,
+        accountsController,
       }).removePermittedAccount('foo.com', '0x2');
 
       expect(permissionController.updateCaveat).toHaveBeenCalledWith(
@@ -571,7 +712,7 @@ describe('permission background API methods', () => {
       try {
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).addPermittedChain('foo.com', '0x1');
+        }).addPermittedChain('foo.com', 'eip155:1');
       } catch (err) {
         // noop
       }
@@ -593,7 +734,7 @@ describe('permission background API methods', () => {
       expect(() =>
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).addPermittedChain('foo.com', '0x1'),
+        }).addPermittedChain('foo.com', 'eip155:1'),
       ).toThrow(
         new Error(
           `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
@@ -611,11 +752,11 @@ describe('permission background API methods', () => {
       expect(() =>
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).addPermittedChain('foo.com', '0x1'),
+        }).addPermittedChain('foo.com', 'eip155:1'),
       ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
-    it('calls updateCaveat with the chain added and all eip155 accounts synced', () => {
+    it('calls updateCaveat with the chain added and all accounts synced across respective scopes', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -645,7 +786,7 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods({
         permissionController,
-      }).addPermittedChain('foo.com', '0x539'); // 1337
+      }).addPermittedChain('foo.com', 'eip155:1337');
 
       expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.updateCaveat).toHaveBeenCalledWith(
@@ -689,7 +830,7 @@ describe('permission background API methods', () => {
       try {
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).addPermittedChains('foo.com', ['0x1']);
+        }).addPermittedChains('foo.com', ['eip155:1']);
       } catch (err) {
         // noop
       }
@@ -711,7 +852,7 @@ describe('permission background API methods', () => {
       expect(() =>
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).addPermittedChains('foo.com', ['0x1']),
+        }).addPermittedChains('foo.com', ['eip155:1']),
       ).toThrow(
         new Error(
           `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
@@ -729,11 +870,11 @@ describe('permission background API methods', () => {
       expect(() =>
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).addPermittedChains('foo.com', ['0x1']),
+        }).addPermittedChains('foo.com', ['eip155:1']),
       ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
-    it('calls updateCaveat with the chains added and all eip155 accounts synced', () => {
+    it('calls updateCaveat with the chains added and all accounts synced across respective scopes', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -763,7 +904,7 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods({
         permissionController,
-      }).addPermittedChains('foo.com', ['0x4', '0x5']);
+      }).addPermittedChains('foo.com', ['eip155:4', 'eip155:5']);
 
       expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.updateCaveat).toHaveBeenCalledWith(
@@ -810,7 +951,7 @@ describe('permission background API methods', () => {
       try {
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).removePermittedChain('foo.com', '0x1');
+        }).removePermittedChain('foo.com', 'eip155:1');
       } catch (err) {
         // noop
       }
@@ -832,10 +973,10 @@ describe('permission background API methods', () => {
       expect(() =>
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).removePermittedChain('foo.com', '0x1'),
+        }).removePermittedChain('foo.com', 'eip155:1'),
       ).toThrow(
         new Error(
-          `Cannot remove permission for chainId "0x1": No permissions exist for origin "foo.com".`,
+          `Cannot remove permission for chainId "eip155:1": No permissions exist for origin "foo.com".`,
         ),
       );
     });
@@ -850,7 +991,7 @@ describe('permission background API methods', () => {
       expect(() =>
         getPermissionBackgroundApiMethods({
           permissionController,
-        }).removePermittedChain('foo.com', '0x1'),
+        }).removePermittedChain('foo.com', 'eip155:1'),
       ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
@@ -882,26 +1023,21 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods({
         permissionController,
-      }).removePermittedChain('foo.com', '0xdeadbeef');
+      }).removePermittedChain('foo.com', 'eip155:12345');
 
       expect(permissionController.updateCaveat).not.toHaveBeenCalled();
       expect(permissionController.revokePermission).not.toHaveBeenCalled();
     });
 
-    it('revokes the entire permission if the removed chain is the only eip:155 scope', () => {
+    // TODO: Verify this behavior (wallet vs non-wallet scopes)
+    it('revokes the entire permission if the removed chain is the only scope', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
             requiredScopes: {
               'eip155:1': {},
             },
-            optionalScopes: {
-              'bip122:000000000019d6689c085ae165831e93': {
-                accounts: [
-                  'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
-                ],
-              },
-            },
+            optionalScopes: {},
             isMultichainOrigin: true,
           },
         }),
@@ -910,7 +1046,7 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods({
         permissionController,
-      }).removePermittedChain('foo.com', '0x1');
+      }).removePermittedChain('foo.com', 'eip155:1');
 
       expect(permissionController.revokePermission).toHaveBeenCalledWith(
         'foo.com',
@@ -945,7 +1081,7 @@ describe('permission background API methods', () => {
 
       getPermissionBackgroundApiMethods({
         permissionController,
-      }).removePermittedChain('foo.com', '0xa'); // 10
+      }).removePermittedChain('foo.com', 'eip155:10');
 
       expect(permissionController.updateCaveat).toHaveBeenCalledWith(
         'foo.com',
