@@ -57,10 +57,10 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.check_completedTxNumberDisplayedInActivity(1);
 
-          await driver.delay(3000);
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          await driver.delay(3000);
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
 
@@ -109,9 +109,9 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.check_completedTxNumberDisplayedInActivity(1);
 
-          await driver.delay(3000);
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          await driver.delay(3000);
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
           await activityListPage.check_waitForTransactionStatus('cancelled');
