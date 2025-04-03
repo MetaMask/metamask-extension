@@ -164,7 +164,6 @@ async function walletCreateSessionHandler(
     const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
-    // do case insensitive compare!
 
     // TODO dry and or move to @metamask/chain-agnostic-permission
     const requiredAccounts = Object.values(supportedRequiredScopes).flatMap(
