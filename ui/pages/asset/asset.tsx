@@ -7,7 +7,7 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getSelectedAccountTokenByAddressAndChainId } from '../../selectors/assets';
+import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
@@ -25,7 +25,12 @@ const Asset = () => {
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
   const token = useSelector((state) =>
-    getSelectedAccountTokenByAddressAndChainId(state, decodedAsset, chainId),
+    getTokenByAccountAndAddressAndChainId(
+      state,
+      undefined, // Defaults to the selected account
+      decodedAsset,
+      chainId,
+    ),
   );
 
   const nft: Nft = nfts.find(

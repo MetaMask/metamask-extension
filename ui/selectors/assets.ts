@@ -11,6 +11,7 @@ import {
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -233,41 +234,52 @@ export const getMultiChainAssets = createDeepEqualSelector(
 );
 
 /**
- * Gets a {@link Token} (EVM or Multichain) owned by the selected account by address and chainId.
+ * Gets a {@link Token} (EVM or Multichain) owned by the passed account by address and chainId.
  *
  * @param state - Redux state object
  * @param tokenAddress - Token address (Hex for EVM, or CaipAssetType for non-EVM)
  * @param chainId - Chain ID (Hex for EVM, or CaipChainId for non-EVM)
+ * @param internalAccount - The account holding the token to search for
  * @returns Token object
  */
-export const getSelectedAccountTokenByAddressAndChainId =
-  createDeepEqualSelector(
-    (state) => state,
-    (_state, tokenAddress?: Hex | CaipAssetType | string) => tokenAddress,
-    (
-      _state,
-      _tokenAddress?: Hex | CaipAssetType | string,
-      _chainId?: Hex | CaipChainId,
-    ) => _chainId,
-    (state) => getSelectedInternalAccount(state),
-    (state, tokenAddress, chainId, selectedInternalAccount) => {
-      const isEvm = getMultichainIsEvm(state, selectedInternalAccount);
+export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
+  (state) => state,
+  (_state, account?: InternalAccount) => account,
+  (
+    _state,
+    _account?: InternalAccount,
+    tokenAddress?: Hex | CaipAssetType | string,
+  ) => tokenAddress,
+  (
+    _state,
+    _account?: InternalAccount,
+    _tokenAddress?: Hex | CaipAssetType | string,
+    _chainId?: Hex | CaipChainId,
+  ) => _chainId,
+  (
+    state,
+    account?: InternalAccount,
+    tokenAddress?: Hex | CaipAssetType | string,
+    chainId?: Hex | CaipChainId,
+  ) => {
+    const accountToUse = account ?? getSelectedInternalAccount(state);
+    const isEvm = getMultichainIsEvm(state, accountToUse);
 
-      const assetsToSearch = isEvm
-        ? (getSelectedAccountTokensAcrossChains(state) as Record<
-            Hex,
-            TokenWithFiatAmount[]
-          >)
-        : (groupBy(
-            getMultiChainAssets(state, selectedInternalAccount),
-            'chainId',
-          ) as Record<CaipChainId, TokenWithFiatAmount[]>);
+    const assetsToSearch = isEvm
+      ? (getSelectedAccountTokensAcrossChains(state) as Record<
+          Hex,
+          TokenWithFiatAmount[]
+        >)
+      : (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
+          CaipChainId,
+          TokenWithFiatAmount[]
+        >);
 
-      const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+    const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
 
-      return result;
-    },
-  );
+    return result;
+  },
+);
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 

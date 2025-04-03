@@ -1,13 +1,14 @@
 import { cloneDeep } from 'lodash';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
+  getTokenByAccountAndAddressAndChainId,
   getAssetsMetadata,
   getAssetsRates,
   getMultiChainAssets,
   getMultichainNativeAssetType,
-  getSelectedAccountTokenByAddressAndChainId,
 } from './assets';
 
 const mockRatesState = {
@@ -201,7 +202,7 @@ describe('getMultiChainAssets', () => {
   });
 });
 
-describe('getSelectedAccountTokenByAddressAndChainId', () => {
+describe('getTokenByAccountAndAddressAndChainId', () => {
   // Create a mock state with an EVM account and a non-EVM account, each having a token on their respective chains
   const mockState = {
     metamask: {
@@ -263,24 +264,24 @@ describe('getSelectedAccountTokenByAddressAndChainId', () => {
   };
 
   it('should return null if chainId is undefined', () => {
-    const result = getSelectedAccountTokenByAddressAndChainId(
+    const result = getTokenByAccountAndAddressAndChainId(
       mockState,
+      undefined,
       '0x458036e7bc0612e9b207640dc07ca7711346aae5',
       undefined,
     );
     expect(result).toBeNull();
   });
 
-  describe('when the selected account is an EVM account', () => {
-    const mockStateEvm = cloneDeep(mockState);
-
-    // Select the EVM account
-    mockStateEvm.metamask.internalAccounts.selectedAccount =
-      '81b1ead4-334c-4921-9adf-282fde539752';
+  describe('when the passed account is an EVM account', () => {
+    const account = mockState.metamask.internalAccounts.accounts[
+      '81b1ead4-334c-4921-9adf-282fde539752'
+    ] as unknown as InternalAccount;
 
     it('should return the token from the state', () => {
-      const result = getSelectedAccountTokenByAddressAndChainId(
-        mockStateEvm,
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockState,
+        account,
         '0x458036e7bc0612e9b207640dc07ca7711346aae5',
         'eip155:1',
       );
@@ -293,16 +294,46 @@ describe('getSelectedAccountTokenByAddressAndChainId', () => {
     });
   });
 
-  describe('when the selected account is a non-EVM account', () => {
-    const mockStateNonEvm = cloneDeep(mockState);
-
-    // Select the non-EVM account
-    mockStateNonEvm.metamask.internalAccounts.selectedAccount =
-      '5132883f-598e-482c-a02b-84eeaa352f5b';
+  describe('when the passed account is a non-EVM account', () => {
+    const account = mockState.metamask.internalAccounts.accounts[
+      '5132883f-598e-482c-a02b-84eeaa352f5b'
+    ] as unknown as InternalAccount;
 
     it('should return the token from the state', () => {
-      const result = getSelectedAccountTokenByAddressAndChainId(
-        mockStateNonEvm,
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockState,
+        account,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(result).toEqual({
+        address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        decimals: 9,
+        image: 'https://example.com/token-1.png',
+        isNative: true,
+        isStakeable: false,
+        primary: '0',
+        secondary: 0,
+        string: '',
+        symbol: 'TKN1',
+        title: 'Token 1',
+        tokenFiatAmount: 0,
+      });
+    });
+  });
+
+  describe('when the passed account is undefined', () => {
+    it('should use the selected account to return the token from the state', () => {
+      const account = undefined;
+      const mockStateWithSelectedAccount = cloneDeep(mockState);
+      mockStateWithSelectedAccount.metamask.internalAccounts.selectedAccount =
+        '5132883f-598e-482c-a02b-84eeaa352f5b';
+
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockStateWithSelectedAccount,
+        account,
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
