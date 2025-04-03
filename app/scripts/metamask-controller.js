@@ -17,15 +17,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  regExpEscape,
-  throttle,
-  memoize,
-  wrap,
-  pick,
-  cloneDeep,
-} from 'lodash';
+import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -63,7 +55,6 @@ import { AnnouncementController } from '@metamask/announcement-controller';
 import {
   NetworkController,
   getDefaultNetworkControllerState,
-  isConnectionError,
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
@@ -150,12 +141,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import {
-  hasProperty,
-  hexToBigInt,
-  hexToNumber,
-  toCaipChainId,
-} from '@metamask/utils';
+import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
@@ -199,7 +185,7 @@ import {
   MAINNET_DISPLAY_NAME,
   DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
-  QUICKNODE_URLS_BY_INFURA_NETWORK_NAME,
+  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -621,13 +607,9 @@ export default class MetamaskController extends EventEmitter {
 
       // Add failovers for default Infura RPC endpoints
       networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
-        QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['ethereum-mainnet']
-          ? [QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['ethereum-mainnet']]
-          : [];
+        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
       networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
-        QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['linea-mainnet']
-          ? [QUICKNODE_URLS_BY_INFURA_NETWORK_NAME['linea-mainnet']]
-          : [];
+        getFailoverUrlsForInfuraNetwork('linea-mainnet');
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
@@ -681,62 +663,28 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, endpointUrl, error }) => {
-        const isInfuraEndpointUrl = new RegExp(
-          `https://[^.]+.infura.io/v3/${regExpEscape(opts.infuraProjectId)}`,
-          'u',
-        ).test(endpointUrl);
-        const isQuicknodeEndpointUrl = Object.values(
-          QUICKNODE_URLS_BY_INFURA_NETWORK_NAME,
-        ).includes(endpointUrl);
-        if (
-          (isInfuraEndpointUrl || isQuicknodeEndpointUrl) &&
-          !isConnectionError(error)
-        ) {
-          log.debug(
-            `Creating Segment event "${
-              MetaMetricsEventName.RpcServiceUnavailable
-            }" with chain_id_caip: "eip155:${chainId}", rpc_endpoint_url: ${onlyKeepHost(
-              endpointUrl,
-            )}`,
-          );
-          this.metaMetricsController.trackEvent({
-            category: MetaMetricsEventCategory.Network,
-            event: MetaMetricsEventName.RpcServiceUnavailable,
-            properties: {
-              chain_id_caip: `eip155:${hexToNumber(chainId)}`,
-              rpc_endpoint_url: onlyKeepHost(endpointUrl),
-            },
-          });
-        }
+        onRpcEndpointUnavailable({
+          chainId,
+          endpointUrl,
+          error,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        });
       },
     );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
       async ({ chainId, endpointUrl }) => {
-        const isInfuraEndpointUrl = new RegExp(
-          `https://[^.]+.infura.io/v3/${regExpEscape(opts.infuraProjectId)}`,
-          'u',
-        ).test(endpointUrl);
-        const isQuicknodeEndpointUrl = Object.values(
-          QUICKNODE_URLS_BY_INFURA_NETWORK_NAME,
-        ).includes(endpointUrl);
-        if (isInfuraEndpointUrl || isQuicknodeEndpointUrl) {
-          log.debug(
-            `Creating Segment event "${
-              MetaMetricsEventName.RpcServiceDegraded
-            }" with chain_id_caip: "eip155:${chainId}", rpc_endpoint_url: ${onlyKeepHost(
-              endpointUrl,
-            )}`,
-          );
-          this.metaMetricsController.trackEvent({
-            category: MetaMetricsEventCategory.Network,
-            event: MetaMetricsEventName.RpcServiceDegraded,
-            properties: {
-              chain_id_caip: `eip155:${hexToNumber(chainId)}`,
-              rpc_endpoint_url: onlyKeepHost(endpointUrl),
-            },
-          });
-        }
+        onRpcEndpointDegraded({
+          chainId,
+          endpointUrl,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        });
       },
     );
     this.networkController.initializeProvider();
