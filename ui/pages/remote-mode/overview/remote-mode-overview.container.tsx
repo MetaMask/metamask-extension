@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Button, Box } from '../../../components/component-library';
+import { Button, Box, ButtonSize } from '../../../components/component-library';
 
 import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
 import RemoteModePermissions from './remote-mode-permissions.component';
@@ -34,6 +34,7 @@ export default function RemoteModeIntroducing() {
             <Button
               style={{ width: '100%' }}
               onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
+              size={ButtonSize.Lg}
             >
               Continue
             </Button>
@@ -45,7 +46,7 @@ export default function RemoteModeIntroducing() {
           <Box padding={6}>
             <RemoteModePermissions
               setStartEnableRemoteSwap={() => {
-                history.push(REMOTE_ROUTE_SETUP_SWAPS)
+                history.push(REMOTE_ROUTE_SETUP_SWAPS);
               }}
               setStartEnableDailyAllowance={() => {
                 history.push(REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE);

@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   ButtonVariant,
+  ButtonSize,
   Text,
   Icon,
   IconName,
@@ -73,6 +74,8 @@ export default function RemoteModeSetupSwaps({
     ToTokenOption.Any,
   );
   const [dailyLimit, setDailyLimit] = useState<string>('');
+  const [isAllowancesExpanded, setIsAllowancesExpanded] =
+    useState<boolean>(false);
 
   const history = useHistory();
 
@@ -275,18 +278,24 @@ export default function RemoteModeSetupSwaps({
                   Allow trading for any token. Higher risk option, in case the
                   authorized account gets compromised.
                 </Text>
-                <Button width={BlockSize.Full} onClick={handleAddAllowance}>
+                <Button
+                  width={BlockSize.Full}
+                  size={ButtonSize.Lg}
+                  onClick={handleAddAllowance}
+                >
                   Add
                 </Button>
               </Box>
               <Box backgroundColor={BackgroundColor.backgroundMuted}>
-                {swapAllowance.map((allowance) => (
-                  <RemoteModeSwapAllowanceCard
-                    key={allowance.from}
-                    swapAllowance={allowance}
-                    onRemove={() => handleRemoveAllowance(allowance.from)}
-                  />
-                ))}
+                <Box marginTop={2}>
+                  {swapAllowance.map((allowance) => (
+                    <RemoteModeSwapAllowanceCard
+                      key={allowance.from}
+                      swapAllowance={allowance}
+                      onRemove={() => handleRemoveAllowance(allowance.from)}
+                    />
+                  ))}
+                </Box>
               </Box>
             </Card>
             <Box marginTop={4} marginBottom={2}>
@@ -437,6 +446,38 @@ export default function RemoteModeSetupSwaps({
                   Edit
                 </Text>
               </Box>
+              <Box marginTop={2} marginBottom={2}>
+                <Box
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                  alignItems={AlignItems.center}
+                  onClick={() => setIsAllowancesExpanded(!isAllowancesExpanded)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <Text>
+                    {swapAllowance.length} token
+                    {swapAllowance.length !== 1 ? 's' : ''} enabled
+                  </Text>
+                  <Text color={TextColor.infoDefault}>
+                    {isAllowancesExpanded ? (
+                      <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
+                    ) : (
+                      <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+                    )}
+                  </Text>
+                </Box>
+                {isAllowancesExpanded && (
+                  <Box marginTop={2}>
+                    {swapAllowance.map((allowance) => (
+                      <RemoteModeSwapAllowanceCard
+                        key={allowance.from}
+                        swapAllowance={allowance}
+                        onRemove={() => handleRemoveAllowance(allowance.from)}
+                      />
+                    ))}
+                  </Box>
+                )}
+              </Box>
             </Card>
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box
@@ -490,19 +531,21 @@ export default function RemoteModeSetupSwaps({
         <Box
           paddingTop={2}
           display={Display.Flex}
-          gap={2}
+          gap={6}
           justifyContent={JustifyContent.center}
         >
           <Button
+            onClick={handleBack}
             variant={ButtonVariant.Secondary}
             width={BlockSize.Half}
-            onClick={handleBack}
+            size={ButtonSize.Lg}
           >
             {currentStep === 1 ? 'Cancel' : 'Back'}
           </Button>
           <Button
             onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
             width={BlockSize.Half}
+            size={ButtonSize.Lg}
           >
             {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
           </Button>
