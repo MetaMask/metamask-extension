@@ -37,11 +37,12 @@ class DecryptMessageConfirmation {
   }
 
   async clickDecryptMessageButton(): Promise<void> {
+    console.log('Click decrypt message button on decrypt message confirmation page');
     await this.driver.clickElement(this.decryptMessageButton);
   }
 
-  async confirmDecryptMessage(): Promise<void> {
-    console.log('Confirm decrypt message on decrypt message confirmation page');
+  async clickToConfirmDecryptMessage(): Promise<void> {
+    console.log('Click to confirm decrypt message on decrypt message confirmation page');
     await this.driver.clickElement(
       this.confirmDecryptMessageButton,
     );

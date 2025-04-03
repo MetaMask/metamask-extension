@@ -35,8 +35,8 @@ class GetEncryptionKeyConfirmation {
     console.log(`Get encryption key confirmation page is loaded`);
   }
 
-  async confirmProvideEncryptionKey(): Promise<void> {
-    console.log('Confirm provide encryption key on get encryption key confirmation page');
+  async clickToConfirmProvideEncryptionKey(): Promise<void> {
+    console.log('Click to confirm provide encryption key on get encryption key confirmation page');
     await this.driver.clickElementAndWaitForWindowToClose(
       this.provideEncryptionKeyButton,
     );

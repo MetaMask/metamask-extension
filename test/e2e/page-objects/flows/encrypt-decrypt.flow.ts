@@ -22,7 +22,7 @@ export async function getEncryptionKeyInDapp(driver: Driver, encryptionKey: stri
   // Check account balance is converted properly
   await getEncryptionKeyConfirmation.check_accountBalance(balanceValue);
 
-  await getEncryptionKeyConfirmation.confirmProvideEncryptionKey();
+  await getEncryptionKeyConfirmation.clickToConfirmProvideEncryptionKey();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await testDapp.check_getEncryptionKeyResult(encryptionKey);
 }
@@ -48,5 +48,5 @@ export async function decryptMessageAndVerifyResult(driver: Driver, message: str
   // Click decrypt message button and verify the result
   await decryptMessageConfirmation.clickDecryptMessageButton();
   await decryptMessageConfirmation.check_decryptedMessage(message);
-  await decryptMessageConfirmation.confirmDecryptMessage();
+  await decryptMessageConfirmation.clickToConfirmDecryptMessage();
 }

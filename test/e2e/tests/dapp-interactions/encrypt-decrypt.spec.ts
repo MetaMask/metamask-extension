@@ -86,7 +86,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
         await decryptMessageConfirmation.check_pageIsLoaded();
         await decryptMessageConfirmation.clickDecryptMessageButton();
         await decryptMessageConfirmation.check_decryptedMessage(message2);
-        await decryptMessageConfirmation.confirmDecryptMessage();
+        await decryptMessageConfirmation.clickToConfirmDecryptMessage();
 
         // ------ Verify decrypted message 2 in Test Dapp ------
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

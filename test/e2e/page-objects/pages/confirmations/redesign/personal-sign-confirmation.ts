@@ -43,7 +43,7 @@ export default class PersonalSignConfirmation extends Confirmation {
     assert.ok(await message);
   }
 
-  async verifySiweMessage() {
+  async check_siweMessage() {
     console.log('Verify sign in with ethereum message on confirmation screen');
     await this.driver.waitForMultipleSelectors([
       this.signinConfirmationTitle,
