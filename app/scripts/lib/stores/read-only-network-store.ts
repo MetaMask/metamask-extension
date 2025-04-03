@@ -1,9 +1,9 @@
 import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import {
-  type MetaMaskStateType,
-  type BaseStore,
-  type MetaMaskStorageStructure,
+import type {
+  MetaMaskStateType,
+  BaseStore,
+  MetaMaskStorageStructure,
 } from './base-store';
 
 const fetchWithTimeout = getFetchWithTimeout();

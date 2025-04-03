@@ -17,6 +17,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -473,7 +474,6 @@ async function initialize() {
 
     const initData = await loadStateFromPersistence();
     const initState = initData.data;
-
     const initLangCode = await getFirstPreferredLangCode();
 
     let isFirstMetaMaskControllerSetup;
@@ -611,7 +611,6 @@ async function loadPhishingWarningPage() {
  * Migrates that data schema in case it was last loaded on an older version.
  *
  * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
- * @throws {Error} If the vault is missing or if the migration fails.
  */
 export async function loadStateFromPersistence() {
   if (process.env.WITH_STATE) {
@@ -1370,7 +1369,7 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
-    rejectInitialization(error);
+    // rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {

@@ -154,7 +154,7 @@ export class PersistenceManager {
 
   /**
    * Retrieves the current state of the local store. If the store is empty,
-   * it returns null. If the store is not open, it throws an error.
+   * it returns undefined. If the store is not open, it throws an error.
    *
    * @returns The current state of the local store or null if the store is empty.
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.

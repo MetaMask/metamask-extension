@@ -196,7 +196,7 @@ const registerInPageContentScript = async () => {
  * is never called.
  * For MV2 builds, the listener is added in `background.js` instead.
  *
-* @param {chrome.runtime.InstalledDetails} details - Event details.
+ * @param {chrome.runtime.InstalledDetails} details - Event details.
  */
 function onInstalledListener(details) {
   if (details.reason === 'install') {

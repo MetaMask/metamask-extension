@@ -21,7 +21,7 @@ export default class ExtensionStore implements BaseStore {
    *
    * @returns All data stored`local` extension storage area.
    */
-  async get() {
+  async get(): Promise<MetaMaskStorageStructure | null> {
     if (!this.isSupported) {
       log.error('Storage local API not available.');
       return null;
@@ -36,8 +36,8 @@ export default class ExtensionStore implements BaseStore {
    * Overwrite data in `local` extension storage area
    *
    * @param data - The data to set
-   * @param data.data
-   * @param data.meta
+   * @param data.data - The MetaMask State tree
+   * @param data.meta - The metadata object
    */
   async set({ data, meta }: Required<MetaMaskStorageStructure>): Promise<void> {
     if (!this.isSupported) {
