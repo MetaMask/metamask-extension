@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.16.0]
 
+## [12.15.1]
+### Fixed
+- Re-fix state corruption resulting in inability to create/add accounts – previously fixed in 12.14.2 ([31274])(https://github.com/MetaMask/metamask-extension/pull/31274))
+
 ## [12.15.0]
 ### Added
 - When switching network, alert the user and get approval if there are pending requests from origin. ([#30674](https://github.com/MetaMask/metamask-extension/pull/30674))
@@ -5883,7 +5887,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...HEAD
-[12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.16.0
+[12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.16.0
+[12.15.1]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.15.1
 [12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0
 [12.14.2]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.14.2
 [12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
