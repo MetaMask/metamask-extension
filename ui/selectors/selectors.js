@@ -24,6 +24,7 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/multichain';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -114,7 +115,6 @@ import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -543,6 +543,18 @@ export const getMetaMaskHdKeyrings = createSelector(
 
 export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
+}
+
+export function getHDEntropyIndex(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+    keyring.accounts.includes(selectedAddress),
+  );
+  return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
 /**
@@ -1758,7 +1770,7 @@ export function getIsBridgeChain(state, overrideChainId) {
 }
 
 function getBridgeFeatureFlags(state) {
-  return state.metamask.bridgeState?.bridgeFeatureFlags;
+  return state.metamask.bridgeFeatureFlags;
 }
 
 export const getIsBridgeEnabled = createSelector(
