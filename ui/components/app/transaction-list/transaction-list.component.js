@@ -239,15 +239,15 @@ const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
  * @returns A copy of the nonEvmTransactions object with only the transactions
  * that involve the tokenAddress.
  */
-const keepOnlyNonEvmTransactionsForToken = (
-  nonEvmTransactions,
+export const keepOnlyNonEvmTransactionsForToken = (
+  nonEvmTransactions = { transactions: [] },
   tokenAddress,
 ) => {
   if (!tokenAddress) {
     return nonEvmTransactions;
   }
 
-  const transactionForToken = nonEvmTransactions.transactions.filter(
+  const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
       return transaction.to.some((item) => item.asset.type === tokenAddress);
     },
