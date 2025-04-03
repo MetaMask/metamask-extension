@@ -8,7 +8,6 @@ import {
 import * as Multichain from '@metamask/chain-agnostic-permission';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
 import { KnownSessionProperties } from './constants';
