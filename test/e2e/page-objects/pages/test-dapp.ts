@@ -88,9 +88,17 @@ class TestDapp {
 
   private readonly ethSubscribeResponse = '[data-testid="eth-subscribe-response"]';
 
+  private readonly getAccountsButton = '#getAccounts';
+
+  private readonly getAccountsResult = '#getAccountsResult';
+
   private readonly getEncryptionKeyButton = '#getEncryptionKeyButton';
 
   private readonly getEncryptionKeyResult = '#encryptionKeyDisplay';
+
+  private readonly getPermissionsButton = '#getPermissions';
+
+  private readonly getPermissionsResult = '#permissionsResult';
 
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
@@ -333,6 +341,23 @@ class TestDapp {
   }
 
   /**
+   * Verify get connected accounts result.
+   *
+   * @param expectedResult - The expected account address.
+   */
+    async check_getAccountsResult(expectedResult: string) {
+      console.log(
+        'Verify get connected accounts result contains:',
+        expectedResult,
+      );
+      await this.driver.clickElement(this.getAccountsButton);
+      await this.driver.waitForSelector({
+        css: this.getAccountsResult,
+        text: expectedResult,
+      });
+    }
+
+  /**
    * Verify the get encryption key result.
    *
    * @param encryptionKey - The encryption key to display.
@@ -342,6 +367,21 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.getEncryptionKeyResult,
       text: encryptionKey,
+    });
+  }
+
+  /**
+   * Verify get permissions result.
+   *
+   * @param expectedPermission - The expected displayed permission.
+   */
+  async check_getPermissionsResult(expectedPermission: string) {
+    console.log('Verify get permissions result contains:', expectedPermission);
+    await this.driver.waitForElementToStopMoving(this.getPermissionsButton);
+    await this.driver.clickElement(this.getPermissionsButton);
+    await this.driver.waitForSelector({
+      css: this.getPermissionsResult,
+      text: expectedPermission,
     });
   }
 

@@ -340,10 +340,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "aggregatedBalancePopover": {
-    "message": "This reflects the value of all tokens you own on a given network. If you prefer seeing this value in ETH or other currencies, go to $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
@@ -842,6 +838,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana account created"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -870,6 +869,12 @@
   },
   "bridgeToChain": {
     "message": "Bridge to $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "We can't verify this token."
   },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
@@ -4371,6 +4376,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "redeposit": {
+    "message": "Redeposit"
   },
   "refreshList": {
     "message": "Refresh list"
