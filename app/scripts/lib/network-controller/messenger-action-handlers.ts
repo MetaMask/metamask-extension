@@ -93,7 +93,6 @@ export function onRpcEndpointDegraded({
 }: {
   chainId: Hex;
   endpointUrl: string;
-  error: unknown;
   infuraProjectId: string;
   trackEvent: MetaMetricsController['trackEvent'];
 }): void {
