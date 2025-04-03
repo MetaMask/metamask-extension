@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -32,11 +32,6 @@ const defaultState = {
   metamask: {
     ...mockState.metamask,
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
-    incomingTransactionsPreferences: {
-      [CHAIN_IDS.POLYGON]: {
-        enabled: true,
-      },
-    },
     internalAccounts: {
       accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
       selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
@@ -64,7 +59,16 @@ const btcState = {
                   fungible: true,
                   type: '',
                   unit: 'BTC',
-                  amount: '0.000000723',
+                  amount: '1.1',
+                },
+              },
+              {
+                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                asset: {
+                  fungible: true,
+                  type: '',
+                  unit: 'BTC',
+                  amount: '0.1',
                 },
               },
             ],
@@ -227,8 +231,9 @@ describe('TransactionList', () => {
     // The activity list item has a status of "Confirmed" and a type of "Send"
     expect(getByText('Confirmed')).toBeInTheDocument();
     expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
-    // A BTC activity list iteem exists
+    // A BTC activity list item exists
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
