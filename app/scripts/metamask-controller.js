@@ -2881,7 +2881,10 @@ export default class MetamaskController extends EventEmitter {
             this._notifyAuthorizationChange(origin, authorization);
           }
 
-          const origins = uniq([...previousValue.keys(), currentValue.keys()]);
+          const origins = uniq([
+            ...previousValue.keys(),
+            ...currentValue.keys(),
+          ]);
           origins.forEach((origin) => {
             const previousCaveatValue = previousValue.get(origin);
             const currentCaveatValue = currentValue.get(origin);
