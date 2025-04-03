@@ -19,9 +19,8 @@ export const selectBridgeHistoryForAccount = createSelector(
   (selectedAddress, bridgeStatusState) => {
     // Handle the case when bridgeStatusState is undefined
     const { txHistory = {} } = bridgeStatusState || {};
-    
 
-    const result = Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
+    return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, txMetaId) => {
         const txHistoryItem = txHistory[txMetaId];
         if (txHistoryItem.account === selectedAddress) {
@@ -31,8 +30,6 @@ export const selectBridgeHistoryForAccount = createSelector(
       },
       {},
     );
-    
-    return result;
   },
 );
 
