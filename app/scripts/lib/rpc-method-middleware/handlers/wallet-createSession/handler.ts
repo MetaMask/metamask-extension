@@ -166,20 +166,20 @@ async function walletCreateSessionHandler(
       .map((account) => account.address);
 
     // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requestedRequiredAccounts = Object.values(supportedRequiredScopes).flatMap(
-      (scope) => scope.accounts,
-    );
-    const requestedOptionalAccounts = Object.values(supportedOptionalScopes).flatMap(
-      (scope) => scope.accounts,
-    );
+    const requestedRequiredAccounts = Object.values(
+      supportedRequiredScopes,
+    ).flatMap((scope) => scope.accounts);
+    const requestedOptionalAccounts = Object.values(
+      supportedOptionalScopes,
+    ).flatMap((scope) => scope.accounts);
 
     const allRequestedAccountAddresses = uniq([
-      ...requiredAccounts,
-      ...optionalAccounts,
+      ...requestedRequiredAccounts,
+      ...requestedOptionalAccounts,
     ]);
 
-    const supportedRequestedAccountAddresses = allAccountAddresses.filter(
-      (accountAddress) => {
+    const supportedRequestedAccountAddresses =
+      allRequestedAccountAddresses.filter((accountAddress) => {
         const {
           address,
           chain: { namespace },
@@ -198,8 +198,7 @@ async function walletCreateSessionHandler(
             return isEqualCaseInsensitive(accountAddress, existingCaipAddress);
           },
         );
-      },
-    );
+      });
 
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
@@ -211,7 +210,7 @@ async function walletCreateSessionHandler(
     const requestedCaip25CaveatValueWithSupportedAccounts =
       setPermittedAccounts(
         requestedCaip25CaveatValue,
-        supportedAccountAddresses,
+        supportedRequestedAccountAddresses,
       );
 
     // Note that we do not verify non-evm accounts here. Instead we rely on
