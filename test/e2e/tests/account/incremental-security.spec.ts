@@ -13,6 +13,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 /**
  * Sends ETH to the current account from the dapp send-eth-with-private-key-test
  * This dapp is only used in this test spec, so we keep the function here
+ * TODO: migrate this function to follow page object modal pattern when this dapp is used in other tests
  */
 async function sendEthWithPrivateKey(driver: Driver) {
   const sendEthWithPrivateKeyButton = '#send';
