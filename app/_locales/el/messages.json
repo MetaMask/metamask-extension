@@ -4564,16 +4564,6 @@
   "showHexDataDescription": {
     "message": "Επιλέξτε το για να εμφανιστεί το πεδίο δεκαεξαδικών δεδομένων στην οθόνη αποστολής"
   },
-  "showIncomingTransactions": {
-    "message": "Εμφάνιση εισερχόμενων συναλλαγών"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Αυτό βασίζεται στο $1, το οποίο θα έχει πρόσβαση στη διεύθυνση Ethereum και τη διεύθυνση IP σας. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Αυτό βασίζεται σε διαφορετικά API τρίτων για κάθε δίκτυο, τα οποία εκθέτουν τη διεύθυνση Ethereum και τη διεύθυνση IP σας."
-  },
   "showLess": {
     "message": "Εμφάνιση λιγότερων"
   },

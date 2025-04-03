@@ -62,7 +62,6 @@ import {
   setUseAddressBarEnsResolution,
   showModal,
   toggleNetworkMenu,
-  setIncomingTransactionsPreferences,
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
@@ -71,7 +70,6 @@ import {
   onboardingToggleBasicFunctionalityOn,
   openBasicFunctionalityModal,
 } from '../../../ducks/app/app';
-import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
@@ -92,7 +90,6 @@ export default function PrivacySettings() {
 
   const defaultState = useSelector((state) => state.metamask);
   const {
-    incomingTransactionsPreferences,
     use4ByteResolution,
     useTokenDetection,
     useCurrencyRateCheck,
@@ -179,7 +176,6 @@ export default function PrivacySettings() {
         settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: isProfileSyncingEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        show_incoming_tx: incomingTransactionsPreferences,
         turnon_token_detection: turnOnTokenDetection,
       },
     });
@@ -619,17 +615,6 @@ export default function PrivacySettings() {
                           ) : null}
                         </Box>
                       </>
-                    }
-                  />
-                  <IncomingTransactionToggle
-                    networkConfigurations={networkConfigurations}
-                    setIncomingTransactionsPreferences={(chainId, value) =>
-                      dispatch(
-                        setIncomingTransactionsPreferences(chainId, value),
-                      )
-                    }
-                    incomingTransactionsPreferences={
-                      incomingTransactionsPreferences
                     }
                   />
                   <Setting

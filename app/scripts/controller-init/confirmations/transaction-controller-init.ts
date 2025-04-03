@@ -107,10 +107,8 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       includeTokenTransfers: false,
       isEnabled: () =>
-        preferencesController().state.incomingTransactionsPreferences?.[
-          // @ts-expect-error PreferencesController incorrectly expects number index
-          getGlobalChainId()
-        ] && onboardingController().state.completedOnboarding,
+        preferencesController().state.useExternalServices &&
+        onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
     },

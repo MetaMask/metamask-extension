@@ -4564,16 +4564,6 @@
   "showHexDataDescription": {
     "message": "Выберите эту опцию, чтобы отобразить поле шестнадцатеричных данных на экране отправки"
   },
-  "showIncomingTransactions": {
-    "message": "Показать входящие транзакции"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Это использует $1, который будет иметь доступ к вашему адресу Ethereum и вашему IP-адресу. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Это базируется на различных сторонних API для каждой сети, которые раскрывают ваш адрес Ethereum и ваш IP-адрес."
-  },
   "showLess": {
     "message": "Показать меньше"
   },
