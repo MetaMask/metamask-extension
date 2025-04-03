@@ -1,10 +1,13 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { Anvil } from '@viem/anvil';
 import { Driver } from '../../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import FixtureBuilder from '../../../fixture-builder';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { mockEip7702FeatureFlag } from '../helpers';
@@ -30,8 +33,12 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, localNodes }: { driver: Driver, localNodes: Anvil }) => {
         await loginWithBalanceValidation(driver);
+
+        // We check that we have an EOA account
+        let accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        assert.strictEqual(accountBytecode, undefined);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -67,6 +74,10 @@ describe('Upgrade Account', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(1);
         await homePage.check_expectedBalanceIsDisplayed('24.9998', 'ETH');
+
+        // We check that we have an upgraded account
+        accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        assert.strictEqual(accountBytecode, '0xef01008438ad1c834623cff278ab6829a248e37c2d7e3f');
       },
     );
   });
