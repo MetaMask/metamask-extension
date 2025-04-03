@@ -140,9 +140,15 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
       // @ts-expect-error Controller type does not support undefined return value
-      publish: new Delegation7702PublishHook({
-        messenger: initMessenger,
-      }).getHook(),
+      publish: (transactionMeta, signedTx) =>
+        publishHook({
+          flatState: getFlatState(),
+          initMessenger,
+          signedTx,
+          smartTransactionsController: smartTransactionsController(),
+          transactionController: controller,
+          transactionMeta,
+        }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
         await publishBatchSmartTransactionHook({
           transactionController: controller,
@@ -233,7 +239,46 @@ function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
   };
 }
 
-function publishSmartTransactionHook(
+async function publishHook({
+  flatState,
+  initMessenger,
+  signedTx,
+  smartTransactionsController,
+  transactionController,
+  transactionMeta,
+}: {
+  flatState: ControllerFlatState;
+  initMessenger: TransactionControllerInitMessenger;
+  signedTx: string;
+  smartTransactionsController: SmartTransactionsController;
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta;
+}) {
+  const result = await publishSmartTransactionHook(
+    transactionController,
+    smartTransactionsController,
+    initMessenger,
+    flatState,
+    transactionMeta,
+    signedTx as Hex,
+  );
+
+  if (result?.transactionHash) {
+    return result;
+  }
+
+  const hook = new Delegation7702PublishHook({
+    isEIP7702Supported: async (account, chainId) =>
+      (await transactionController.isAtomicBatchSupported(account)).includes(
+        chainId,
+      ),
+    messenger: initMessenger,
+  }).getHook();
+
+  return await hook(transactionMeta, signedTx);
+}
+
+async function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
   hookControllerMessenger: SmartTransactionHookMessenger,
@@ -249,7 +294,7 @@ function publishSmartTransactionHook(
     return { transactionHash: undefined };
   }
 
-  return submitSmartTransactionHook({
+  return await submitSmartTransactionHook({
     transactionMeta,
     signedTransactionInHex,
     transactionController,

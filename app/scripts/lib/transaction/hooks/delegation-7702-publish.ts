@@ -25,16 +25,25 @@ import { submitRelayTransaction } from '../relay';
 const ENFORCER_ADDRESS = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 const EMPTY_HEX = '0x';
 
+const EMPTY_RESULT = {
+  transactionHash: undefined,
+};
+
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
+  #isEIP7702Supported: (account: Hex, chainId: Hex) => Promise<boolean>;
+
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
+    isEIP7702Supported,
     messenger,
   }: {
+    isEIP7702Supported: (account: Hex, chainId: Hex) => Promise<boolean>;
     messenger: TransactionControllerInitMessenger;
   }) {
+    this.#isEIP7702Supported = isEIP7702Supported;
     this.#messenger = messenger;
   }
 
@@ -60,31 +69,40 @@ export class Delegation7702PublishHook {
   ): Promise<PublishHookResult> {
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
+
     const { from, data, to, value } = txParams;
 
-    // if (!selectedGasFeeToken || !gasFeeTokens?.length) {
-    //   log('Skipping');
-    //   return {
-    //     transactionHash: undefined,
-    //   };
-    // }
+    const isEIP7702Supported = await this.#isEIP7702Supported(
+      from as Hex,
+      chainId,
+    );
 
-    // const gasFeeToken = gasFeeTokens.find(
-    //   (token) =>
-    //     token.tokenAddress.toLowerCase() === selectedGasFeeToken.toLowerCase(),
-    // );
+    if (!isEIP7702Supported) {
+      log('Skipping as EIP-7702 is not supported', { from, chainId });
+      return EMPTY_RESULT;
+    }
 
-    // if (!gasFeeToken) {
-    //   throw new Error('Selected gas fee token not found');
-    // }
+    if (!selectedGasFeeToken || !gasFeeTokens?.length) {
+      log('Skipping as no selected gas fee token');
+      return EMPTY_RESULT;
+    }
 
-    // const caveats = this.#buildCaveats(txParams, gasFeeToken);
+    const gasFeeToken = gasFeeTokens.find(
+      (token) =>
+        token.tokenAddress.toLowerCase() === selectedGasFeeToken.toLowerCase(),
+    );
 
-    // log('Caveats', caveats);
+    if (!gasFeeToken) {
+      throw new Error('Selected gas fee token not found');
+    }
+
+    const caveats = this.#buildCaveats(txParams, gasFeeToken);
+
+    log('Caveats', caveats);
 
     const delegation: UnsignedDelegation = {
       authority: ROOT_AUTHORITY,
-      caveats: [],
+      caveats,
       delegate: ANY_BENEFICIARY,
       delegator: from as Hex,
       salt: new Date().getTime(),
@@ -107,19 +125,19 @@ export class Delegation7702PublishHook {
       callData: (data as Hex) ?? EMPTY_HEX,
     };
 
-    // const transferExecution: Execution = {
-    //   target: gasFeeToken.tokenAddress,
-    //   value: '0x0',
-    //   callData: this.#buildTokenTransferData(
-    //     gasFeeToken.recipient,
-    //     gasFeeToken.amount,
-    //   ),
-    // };
+    const transferExecution: Execution = {
+      target: gasFeeToken.tokenAddress,
+      value: '0x0',
+      callData: this.#buildTokenTransferData(
+        gasFeeToken.recipient,
+        gasFeeToken.amount,
+      ),
+    };
 
     const transactionData = encodeRedeemDelegations(
       [[{ ...delegation, signature }]],
       [ExecutionMode.BATCH_DEFAULT_MODE],
-      [[userExecution]],
+      [[userExecution, transferExecution]],
     );
 
     const transactionParams: TransactionParams = {
