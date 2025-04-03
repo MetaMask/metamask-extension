@@ -1564,7 +1564,7 @@ function sanitizeTestTitle(testTitle) {
     .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
     .trim()
     .replace(/\s+/gu, '-') // Replace whitespace with dashes
-    .replace(/[^a-z0-9\-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
+    .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
     .replace(/--+/gu, '-') // Collapse multiple dashes
     .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
