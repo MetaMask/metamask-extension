@@ -13,8 +13,6 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
-  parseCaipChainId,
-  parseCaipAccountId,
   type CaipChainId,
   type Hex,
   type Json,

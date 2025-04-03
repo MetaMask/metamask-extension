@@ -62,12 +62,10 @@ export function getPermissionBackgroundApiMethods({
       return `${namespace}:${reference}:${internalAccount.address}`;
     });
 
-    // Get current permitted accounts using our utility function
     const existingPermittedAccounts = getAllPermittedAccounts(
       caip25Caveat.value,
     );
 
-    // Merge existing accounts with new accounts
     const updatedAccounts = Array.from(
       new Set([...existingPermittedAccounts, ...caipAccountIds]),
     );
@@ -93,7 +91,6 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    // Use our utility function to get all existing chain IDs and merge them
     const updatedChainIds = Array.from(
       new Set([...getAllScopes(caip25Caveat.value), ...chainIds]),
     );
@@ -103,7 +100,6 @@ export function getPermissionBackgroundApiMethods({
       updatedChainIds,
     );
 
-    // Get all permitted accounts using our utility function
     const permittedAccounts = getAllPermittedAccounts(caip25Caveat.value);
 
     // ensure that the list of permitted accounts is set for the newly added scopes

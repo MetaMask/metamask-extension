@@ -1,8 +1,9 @@
 import {
-  Caip25CaveatValue,
-  InternalScopesObject,
   InternalScopeObject,
+  InternalScopesObject,
+  Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   CaipAccountId,
   CaipChainId,
@@ -10,13 +11,6 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../modules/string-utils';
-
-// Type for an internal account with minimum required properties
-export interface InternalAccount {
-  address: string;
-  scopes: string[];
-}
-
 /**
  * Gets all permitted accounts from a CAIP-25 caveat
  * This extracts all account IDs from both required and optional scopes
