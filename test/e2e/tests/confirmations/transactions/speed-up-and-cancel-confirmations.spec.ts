@@ -57,6 +57,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.check_completedTxNumberDisplayedInActivity(1);
 
+          await driver.delay(3000);
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
@@ -108,6 +109,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.check_completedTxNumberDisplayedInActivity(1);
 
+          await driver.delay(3000);
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
           (await localNodes?.[0]?.mineBlock()) ??
