@@ -25,18 +25,18 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             .build(),
           localNodeOptions: {
             hardfork: 'london',
-            noMining: true,
+            blockBaseFeePerGas: 0,
           },
           title: this.test?.fullTitle(),
         },
-        async ({ driver, localNodes }: TestSuiteArguments) => {
+        async ({ driver }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
             value: ethInHexWei(0.1),
-            maxFeePerGas: '0x22ae4b8bcb',
-            maxPriorityFeePerGas: '0x59682f04',
+            maxFeePerGas: decimalToPrefixedHex(1),
+            maxPriorityFeePerGas: decimalToPrefixedHex(1),
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
@@ -60,8 +60,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
-          (await localNodes?.[0]?.mineBlock()) ??
-            console.error('localNodes is undefined or empty');
 
           await activityListPage.check_waitForTransactionStatus('confirmed');
         },
@@ -79,18 +77,18 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             .build(),
           localNodeOptions: {
             hardfork: 'london',
-            noMining: true,
+            blockBaseFeePerGas: 0,
           },
           title: this.test?.fullTitle(),
         },
-        async ({ driver, localNodes }: TestSuiteArguments) => {
+        async ({ driver }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
             value: ethInHexWei(0.1),
-            maxFeePerGas: '0x22ae4b8bcb',
-            maxPriorityFeePerGas: '0x59682f04',
+            maxFeePerGas: decimalToPrefixedHex(1),
+            maxPriorityFeePerGas: decimalToPrefixedHex(1),
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
@@ -110,8 +108,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
-          (await localNodes?.[0]?.mineBlock()) ??
-            console.error('localNodes is undefined or empty');
           await activityListPage.check_waitForTransactionStatus('cancelled');
         },
       );
