@@ -3277,21 +3277,6 @@ export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
-export function setIncomingTransactionsPreferences(
-  chainId: string,
-  value: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setIncomingTransactionsPreferences`);
-    await submitRequestToBackground('setIncomingTransactionsPreferences', [
-      chainId,
-      value,
-    ]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
 export function setCompletedOnboarding(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -6128,6 +6113,20 @@ export async function sendMultichainTransaction(
       },
     },
   });
+}
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+export async function createSnapAccount(
+  snapId: SnapId,
+  options: Record<string, Json>,
+  internalOptions?: SnapKeyringInternalOptions,
+): Promise<InternalAccount> {
+  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
+    snapId,
+    options,
+    internalOptions,
+  ]);
 }
 ///: END:ONLY_INCLUDE_IF
 
