@@ -6829,10 +6829,6 @@ export default class MetamaskController extends EventEmitter {
             origin,
           ),
         getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
-        getNonEvmAccountAddressesForScope: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'MultichainRouter:getSupportedAccounts',
-        ),
         isNonEvmScopeSupported: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'MultichainRouter:isSupportedScope',

@@ -95,7 +95,6 @@ const createMockedHandler = () => {
   const listAccounts = jest.fn().mockReturnValue([]);
   const getNonEvmSupportedMethods = jest.fn().mockReturnValue([]);
   const isNonEvmScopeSupported = jest.fn().mockReturnValue(false);
-  const getNonEvmAccountAddressesForScope = jest.fn().mockResolvedValue([]);
   const response = {
     jsonrpc: '2.0' as const,
     id: 0,

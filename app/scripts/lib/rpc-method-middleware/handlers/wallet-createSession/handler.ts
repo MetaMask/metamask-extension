@@ -12,6 +12,7 @@ import {
   getSupportedScopeObjects,
   Caip25CaveatValue,
   setPermittedAccounts,
+  KnownWalletRpcMethods,
 } from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
@@ -144,17 +145,29 @@ async function walletCreateSessionHandler(
     };
 
     // if solana is a requested scope but not supported, we add a promptToCreateSolanaAccount flag to request
-    const isSolanaRequested = Object.keys(
-      requiredScopesWithSupportedMethodsAndNotifications,
-    ).some((key) => {
-      let namespace = '';
-      try {
-        namespace = parseCaipChainId(key as CaipChainId).namespace;
-      } catch (err) {
-        return false;
-      }
-      return namespace === KnownCaipNamespace.Solana;
-    });
+    const isSolanaRequested =
+      Object.keys(requiredScopesWithSupportedMethodsAndNotifications).some(
+        (key) => {
+          let namespace = '';
+          try {
+            namespace = parseCaipChainId(key as CaipChainId).namespace;
+          } catch (err) {
+            return false;
+          }
+          return namespace === KnownCaipNamespace.Solana;
+        },
+      ) ||
+      Object.keys(optionalScopesWithSupportedMethodsAndNotifications).some(
+        (key) => {
+          let namespace = '';
+          try {
+            namespace = parseCaipChainId(key as CaipChainId).namespace;
+          } catch (err) {
+            return false;
+          }
+          return namespace === KnownCaipNamespace.Solana;
+        },
+      );
 
     let promptToCreateSolanaAccount = false;
     if (isSolanaRequested) {
@@ -182,6 +195,10 @@ async function walletCreateSessionHandler(
         getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
         isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
+    );
+
+    const allScopesRequested = Object.keys(supportedRequiredScopes).concat(
+      Object.keys(supportedOptionalScopes),
     );
 
     // Fetch EVM accounts from native wallet keyring
@@ -236,6 +253,18 @@ async function walletCreateSessionHandler(
         requestedCaip25CaveatValue,
         supportedRequestedAccountAddresses,
       );
+
+    // if `promptToCreateSolanaAccount` is true and there are no other valid scopes requested,
+    // we add a `wallet` scope to the request in order to get passed the CAIP-25 caveat validator.
+    // This is very hacky but is necessary because the solana opt-in flow breaks key assumptions
+    // of the CAIP-25 permission specification -  namely that we can have valid requests with no scopes.
+    if (promptToCreateSolanaAccount && allScopesRequested.length === 0) {
+      requestedCaip25CaveatValueWithSupportedAccounts.optionalScopes[
+        KnownCaipNamespace.Wallet
+      ] = {
+        accounts: [],
+      };
+    }
 
     // Note that we do not verify non-evm accounts here. Instead we rely on
     // the CAIP-25 caveat validator to throw an error about the requested
