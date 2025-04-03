@@ -2150,12 +2150,19 @@ export const getSettingsPageSnapsIds = createDeepEqualSelector(
   (snaps) => snaps.map((snap) => snap.id),
 );
 
+/**
+ * Get non-preinstalled snaps that have the snap_notify permission.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object[]} An array of notify snaps that are not preinstalled.
+ */
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
-      ({ id }) => subjects[id]?.permissions.snap_notify,
+      ({ id, preinstalled }) =>
+        subjects[id]?.permissions.snap_notify && !preinstalled,
     );
   },
 );
