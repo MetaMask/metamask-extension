@@ -3485,9 +3485,6 @@
     "message": "1A",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5124,13 +5121,6 @@
   "step1LedgerWalletMsg": {
     "message": "Baixe, configure e insira sua senha para desbloquear $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "Conecte a sua OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Conecte sua OneKey diretamente em seu computador e desbloqueie-o. Certifique-se de usar a frase secreta correta.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Conecte sua Trezor"
