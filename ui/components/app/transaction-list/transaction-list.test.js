@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -32,11 +32,6 @@ const defaultState = {
   metamask: {
     ...mockState.metamask,
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
-    incomingTransactionsPreferences: {
-      [CHAIN_IDS.POLYGON]: {
-        enabled: true,
-      },
-    },
     internalAccounts: {
       accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
       selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
@@ -116,7 +111,7 @@ const solanaSwapState = {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
-                  type: '',
+                  type: 'solCaip19',
                   unit: 'SOL',
                   amount: '0.01',
                 },
@@ -127,9 +122,9 @@ const solanaSwapState = {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
-                  type: '',
+                  type: 'bonkCaip19',
                   unit: 'BONK',
-                  amount: '2583.72',
+                  amount: '0.00000001', // Test extremely small amounts
                 },
               },
             ],
@@ -340,7 +335,7 @@ describe('TransactionList', () => {
 
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
-    expect(getByText('2,583.72 BONK')).toBeInTheDocument();
+    expect(getByText('<0.00001 BONK')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',
