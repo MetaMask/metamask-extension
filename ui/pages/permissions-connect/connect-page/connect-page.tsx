@@ -69,16 +69,14 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
+  getAllAccountsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
   getDefaultAccounts,
-  getAllRequestedAccounts,
-  getAllRequestedChainIds,
 } from './utils';
-import {
-  getAllPermittedAccounts,
-  getAllScopes,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export type ConnectPageRequest = {
   id: string;
