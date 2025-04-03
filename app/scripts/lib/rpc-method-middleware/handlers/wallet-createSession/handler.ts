@@ -27,6 +27,7 @@ import {
   JsonRpcSuccess,
   KnownCaipNamespace,
   parseCaipAccountId,
+  parseCaipChainId,
 } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import {
@@ -143,22 +144,24 @@ async function walletCreateSessionHandler(
     };
 
     // if solana is a requested scope but not supported, we need to add a metadata field to the request
-    const isSolanaRequested =
-      Object.keys(requiredScopesWithSupportedMethodsAndNotifications).includes(
-        MultichainNetwork.Solana,
-      ) ||
-      Object.keys(optionalScopesWithSupportedMethodsAndNotifications).includes(
-        MultichainNetwork.Solana,
-      );
+    const isSolanaRequested = Object.keys(
+      requiredScopesWithSupportedMethodsAndNotifications,
+    ).some((key) => {
+      let namespace = '';
+      try {
+        namespace = parseCaipChainId(key as CaipChainId).namespace;
+      } catch (err) {
+        return false;
+      }
+      return namespace === KnownCaipNamespace.Solana;
+    });
 
     let promptToCreateSolanaAccount = false;
     if (isSolanaRequested) {
       const supportedSolanaAccounts = await hooks.getNonEvmAccountAddresses(
         MultichainNetwork.Solana,
       );
-      if (supportedSolanaAccounts.length === 0) {
-        promptToCreateSolanaAccount = true;
-      }
+      promptToCreateSolanaAccount = supportedSolanaAccounts.length === 0;
     }
 
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
