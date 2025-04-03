@@ -9,7 +9,7 @@ import {
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
 
-import { TextProps, TextComponent } from './text.types';
+import { TextProps, TextComponent, FontFamily } from './text.types';
 
 const getTextElementDefault = (variant: TextVariant) => {
   switch (variant) {
@@ -35,7 +35,7 @@ export const Text: TextComponent = React.forwardRef(
       variant = TextVariant.bodyMd,
       fontWeight,
       fontStyle,
-      fontFamily,
+      fontFamily = FontFamily.Default,
       textTransform,
       textAlign,
       textDirection,

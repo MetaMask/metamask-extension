@@ -143,6 +143,26 @@ export const FontStyleStory: StoryFn<typeof Text> = (args) => (
 
 FontStyleStory.storyName = 'Font Style';
 
+export const FontFamilyStory: StoryFn<typeof Text> = (args) => (
+  <Box
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
+    gap={4}
+  >
+    <Text {...args} fontFamily={FontFamily.Default}>
+      Default Font (CentraNo1) - The quick brown fox jumps over the lazy dog
+    </Text>
+    <Text {...args} fontFamily={FontFamily.Accent}>
+      Accent Font (MMSans) - The quick brown fox jumps over the lazy dog
+    </Text>
+    <Text {...args} fontFamily={FontFamily.Hero}>
+      Hero Font (MMPoly) - The quick brown fox jumps over the lazy dog
+    </Text>
+  </Box>
+);
+
+FontFamilyStory.storyName = 'Font Family';
+
 export const TextTransformStory: StoryFn<typeof Text> = (args) => (
   <>
     {Object.values(TextTransform).map((transform) => (
@@ -286,23 +306,3 @@ export const Strong: StoryFn<typeof Text> = (args) => (
     </Text>
   </>
 );
-
-export const FontFamilyStory: StoryFn<typeof Text> = (args) => (
-  <Box
-    display={Display.Flex}
-    flexDirection={FlexDirection.Column}
-    gap={4}
-  >
-    <Text {...args} fontFamily={FontFamily.Default}>
-      Default Font (CentraNo1) - The quick brown fox jumps over the lazy dog
-    </Text>
-    <Text {...args} fontFamily={FontFamily.Accent}>
-      Accent Font (MM Sans) - The quick brown fox jumps over the lazy dog
-    </Text>
-    <Text {...args} fontFamily={FontFamily.Hero}>
-      Hero Font (MMPoly) - The quick brown fox jumps over the lazy dog
-    </Text>
-  </Box>
-);
-
-FontFamilyStory.storyName = 'Font Family';

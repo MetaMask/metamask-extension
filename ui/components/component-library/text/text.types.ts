@@ -19,9 +19,9 @@ export enum TextDirection {
 }
 
 export enum FontFamily {
-  Default = 'CentraNo1',
-  Accent = 'MM Sans',
-  Hero = 'MMPoly',
+  Default = 'default',
+  Accent = 'accent',
+  Hero = 'hero',
 }
 
 /**
