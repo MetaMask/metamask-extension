@@ -23,9 +23,8 @@ const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BitcoinWalletSnap as unknown as PreinstalledSnap,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+
   SolanaWalletSnap as unknown as PreinstalledSnap,
-  ///: END:ONLY_INCLUDE_IF
 ]);
 
 export default PREINSTALLED_SNAPS;
