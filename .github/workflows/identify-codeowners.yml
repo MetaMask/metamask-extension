@@ -4,8 +4,8 @@ on:
   pull_request:
     types:
       - opened
-      - synchronize
       - reopened
+      - synchronize
       - ready_for_review
 
 jobs:

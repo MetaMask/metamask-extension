@@ -23,6 +23,9 @@ jobs:
       HEADLESS: true
       ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
+      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
+      # For a `push` event, the fork is `github.event.repository.fork`.
+      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -42,7 +45,7 @@ jobs:
         run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
 
       - name: Upload '${{ env.OUTPUT_NAME }}' to S3
-        if: ${{ !github.event.repository.fork }}
+        if: ${{ !env.IS_FORK }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
