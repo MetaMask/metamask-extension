@@ -19,19 +19,19 @@ jobs:
           # For a `push` event, the head commit hash is `github.sha`.
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id')
-          echo "Waiting for pipeline '${pipeline_id}', commit hash '${HEAD_COMMIT_HASH}'"
-          workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].status")
+          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/${OWNER}/${REPOSITORY}/pipeline?branch=${BRANCH}" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id')
+          echo "Waiting for pipeline '${pipeline_id}', commit hash '${HEAD_COMMIT_HASH}' at https://circleci.com/api/v2/project/gh/${OWNER}/${REPOSITORY}/pipeline?branch=${BRANCH}"
+          workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" | jq -r ".items[0].status")
 
-          if [ "$workflow_status" == "running" ]; then
-            while [ "$workflow_status" == "running" ]; do
+          if [ "${workflow_status}" == "running" ]; then
+            while [ "${workflow_status}" == "running" ]; do
               sleep 30
-              workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].status")
+              workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" | jq -r ".items[0].status")
             done
           fi
 
           # The "not_run" only happens when you're developing CI workflows and testing weird cases
-          if [ "$workflow_status" != "success" ] && [ "$workflow_status" != "not_run" ]; then
-            echo "::error::Workflow status is '$workflow_status'. Exiting with error."
+          if [ "${workflow_status}" != "success" ] && [ "${workflow_status}" != "not_run" ]; then
+            echo "::error::Workflow status is '${workflow_status}'. Exiting with error."
             exit 1
           fi
