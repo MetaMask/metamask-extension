@@ -265,7 +265,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     needs:
       - run-benchmarks
       - bundle-size
