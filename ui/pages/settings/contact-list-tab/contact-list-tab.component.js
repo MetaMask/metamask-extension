@@ -66,15 +66,23 @@ export default class ContactListTab extends Component {
       history,
       selectedAddress,
     } = this.props;
-    const contacts = completeAddressBook.filter(({ name }) => Boolean(name));
-    const nonContacts = completeAddressBook.filter(({ name }) => !name);
+    const dattu = completeAddressBook.map((ch) => Object.values(ch));
+    const dattuMap = dattu.flat();
+    const contacts = dattuMap.filter(({ name }) => Boolean(name));
+
+    console.log(
+      Object.values(completeAddressBook),
+      contacts,
+      'completeAddressBook',
+    );
+    const nonContacts = dattuMap.filter(({ name }) => !name);
     const { t } = this.context;
 
     if (addressBook.length) {
       return (
         <div>
           <ContactList
-            addressBook={addressBook}
+            addressBook={dattuMap}
             internalAccounts={internalAccounts}
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
@@ -169,14 +177,14 @@ export default class ContactListTab extends Component {
   render() {
     const { addingContact, addressBook, currentPath, completeAddressBook } =
       this.props;
-    console.log(completeAddressBook, 'completeAddressBook');
+    // console.log(completeAddressBook, 'completeAddressBook');
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
         {currentPath === CONTACT_LIST_ROUTE &&
         !addingContact &&
-        addressBook.length > 0
+        completeAddressBook.length > 0
           ? this.renderAddButton()
           : null}
       </div>
