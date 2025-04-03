@@ -178,7 +178,7 @@ async function walletCreateSessionHandler(
       ...optionalAccounts,
     ]);
 
-    const supportedAccountAddresses = allAccountAddresses.filter(
+    const supportedRequestedAccountAddresses = allAccountAddresses.filter(
       (accountAddress) => {
         const {
           address,
