@@ -82,7 +82,7 @@ export const CreateSnapAccount = ({
       return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
-    const networkNickname = MULTICHAIN_NETWORK_TO_NICKNAME[chainId];
+    const networkNickname = MULTICHAIN_NETWORK_TO_NICKNAME[chainId] ?? '';
     const firstPartyAccountName =
       removeParenthesesAndCapitalizeWordInParentheses(networkNickname);
 
