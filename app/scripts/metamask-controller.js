@@ -6393,54 +6393,54 @@ export default class MetamaskController extends EventEmitter {
           }, 500);
         }
       }
-
-      if (sender.id && sender.id !== this.extension.runtime.id) {
-        this.subjectMetadataController.addSubjectMetadata({
-          origin,
-          extensionId: sender.id,
-          subjectType: SubjectType.Extension,
-        });
-      }
-
-      let tabId;
-      if (sender.tab && sender.tab.id) {
-        tabId = sender.tab.id;
-      }
-
-      const engine = this.setupProviderEngineCaip({
-        origin,
-        sender,
-        subjectType,
-        tabId,
-      });
-
-      const dupeReqFilterStream = createDupeReqFilterStream();
-
-      // setup connection
-      const providerStream = createEngineStream({ engine });
-
-      const connectionId = this.addConnection(origin, {
-        tabId,
-        apiType: API_TYPE.CAIP_MULTICHAIN,
-        engine,
-      });
-
-      pipeline(
-        outStream,
-        dupeReqFilterStream,
-        providerStream,
-        outStream,
-        (err) => {
-          // handle any middleware cleanup
-          engine.destroy();
-          connectionId && this.removeConnection(origin, connectionId);
-          // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
-          if (err && !err.message?.match('Premature close')) {
-            log.error(err);
-          }
-        },
-      );
     }
+
+    if (sender.id && sender.id !== this.extension.runtime.id) {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
+        extensionId: sender.id,
+        subjectType: SubjectType.Extension,
+      });
+    }
+
+    let tabId;
+    if (sender.tab && sender.tab.id) {
+      tabId = sender.tab.id;
+    }
+
+    const engine = this.setupProviderEngineCaip({
+      origin,
+      sender,
+      subjectType,
+      tabId,
+    });
+
+    const dupeReqFilterStream = createDupeReqFilterStream();
+
+    // setup connection
+    const providerStream = createEngineStream({ engine });
+
+    const connectionId = this.addConnection(origin, {
+      tabId,
+      apiType: API_TYPE.CAIP_MULTICHAIN,
+      engine,
+    });
+
+    pipeline(
+      outStream,
+      dupeReqFilterStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // handle any middleware cleanup
+        engine.destroy();
+        connectionId && this.removeConnection(origin, connectionId);
+        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        if (err && !err.message?.match('Premature close')) {
+          log.error(err);
+        }
+      },
+    );
   }
 
   /**
