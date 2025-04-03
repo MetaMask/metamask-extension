@@ -37,7 +37,7 @@ const renderComponent = () => {
       openListNetwork={mockOpenListNetwork}
       currentNetworkImageUrl="http://current-network.com"
       allOpts={{}}
-      setDropdownOpen={() => {}}
+      setDropdownOpen={() => ({})}
     />,
   );
 };

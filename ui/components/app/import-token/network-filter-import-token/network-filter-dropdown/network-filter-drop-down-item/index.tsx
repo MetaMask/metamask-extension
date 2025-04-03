@@ -99,6 +99,7 @@ export const NetworkFilterDropdownItem = ({
                 size={AvatarNetworkSize.Sm}
                 style={{
                   marginLeft: index === 0 ? 0 : '-20px',
+                  zIndex: 5 - index,
                 }}
               />
             );
