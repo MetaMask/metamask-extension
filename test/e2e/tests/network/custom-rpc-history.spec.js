@@ -9,7 +9,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Custom RPC history', function () {
+describe('Custom RPC history ', function () {
   it(`creates first custom RPC entry`, async function () {
     const port = 8546;
     const chainId = 1338;
@@ -279,7 +279,7 @@ describe('Custom RPC history', function () {
     );
   });
 
-  it.only('deletes a custom RPC', async function () {
+  it('deletes a custom RPC', async function () {
     const networkState = mockNetworkStateOld(
       {
         rpcUrl: 'http://127.0.0.1:8545/1',
