@@ -6,6 +6,7 @@ import {
   BorderColor,
   FontWeight,
   FontStyle,
+  FontFamily,
   TextColor,
   TextAlign,
   OverflowWrap,
@@ -20,7 +21,7 @@ import { Box } from '../box';
 
 import README from './README.mdx';
 import { Text } from './text';
-import { TextDirection, FontFamily } from './text.types';
+import { TextDirection } from './text.types';
 
 export default {
   title: 'Components/ComponentLibrary/Text',

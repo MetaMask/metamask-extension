@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  FontFamily,
   FontWeight,
   FontStyle,
   TextVariant,
@@ -16,12 +17,6 @@ export enum TextDirection {
   LeftToRight = 'ltr',
   RightToLeft = 'rtl',
   Auto = 'auto',
-}
-
-export enum FontFamily {
-  Default = 'default',
-  Accent = 'accent',
-  Hero = 'hero',
 }
 
 /**

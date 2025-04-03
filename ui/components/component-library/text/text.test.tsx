@@ -3,13 +3,14 @@ import { render } from '@testing-library/react';
 import {
   FontWeight,
   FontStyle,
+  FontFamily,
   TextColor,
   TextAlign,
   OverflowWrap,
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TextDirection, FontFamily } from './text.types';
+import { TextDirection } from './text.types';
 import { Text } from './text';
 
 describe('Text', () => {
