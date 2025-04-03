@@ -60,8 +60,6 @@ describe('eth_subscribe', function () {
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
         await testDapp2.check_ethSubscribeResponse(false);
-
-      // throw new Error('Not implemented');
       },
     );
   });
