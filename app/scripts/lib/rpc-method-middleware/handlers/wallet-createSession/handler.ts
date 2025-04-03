@@ -192,7 +192,7 @@ async function walletCreateSessionHandler(
         }
 
         const getNonEvmAccountAddressesForChainId =
-          hooks.getNonEvmAccountAddresses(chainId);
+          hooks.getNonEvmAccountAddresses(caipChainId);
         return getNonEvmAccountAddressesForChainId.some(
           (existingCaipAddress) => {
             return isEqualCaseInsensitive(accountAddress, existingCaipAddress);
