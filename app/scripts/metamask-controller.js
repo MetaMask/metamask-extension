@@ -6293,15 +6293,21 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // solana account changed notifications
-    const caip25Caveat = this.permissionController.getCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-    );
-    const solanaAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties[
-        KnownSessionProperties.SolanaAccountChangedNotifications
-      ];
+    let caip25Caveat;
+    try {
+      caip25Caveat = this.permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch {
+      // noop
+    }
+    if (caip25Caveat) {
+      const solanaAccountsChangedNotifications =
+        caip25Caveat.value.sessionProperties[
+          KnownSessionProperties.SolanaAccountChangedNotifications
+        ];
 
     const sessionScopes = getSessionScopes(caip25Caveat.value, {
       getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
