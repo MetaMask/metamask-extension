@@ -116,7 +116,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
-      !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
+      !shouldShowFiat || isTestnet
         ? // @ts-expect-error: balance is not typed.
           account.balance
         : totalFiatBalance;
