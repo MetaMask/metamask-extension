@@ -75,40 +75,6 @@ export function getCaip25PermissionsResponse(
 }
 
 /**
- * Filters networks based on the CAIP request scopes.
- *
- * @param networks - Network configurations.
- * @param requestedCaip25CaveatValue - CAIP-25 caveat value.
- * @returns Filtered network configurations matching the requested scopes.
- */
-export function getFilteredNetworks(
-  networks: Record<string, NetworkConfiguration>,
-  requestedCaip25CaveatValue: Caip25CaveatValue,
-): Record<string, NetworkConfiguration> {
-  const filteredNetworks: Record<string, NetworkConfiguration> = {};
-  const allScopes = {
-    ...(requestedCaip25CaveatValue.requiredScopes || {}),
-    ...(requestedCaip25CaveatValue.optionalScopes || {}),
-  };
-
-  const hasEipRequest = Object.keys(allScopes).some(
-    (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
-  );
-
-  Object.entries(networks).forEach(([chainId, network]) => {
-    if (chainId.startsWith('0x')) {
-      if (hasEipRequest) {
-        filteredNetworks[chainId] = network;
-      }
-    } else if (Object.keys(allScopes).includes(chainId)) {
-      filteredNetworks[chainId] = network;
-    }
-  });
-
-  return filteredNetworks;
-}
-
-/**
  * Gets the default accounts for the requested namespaces.
  * We need at least one default per requested namespace
  * if there are more explicitly requested accounts, use those instead
