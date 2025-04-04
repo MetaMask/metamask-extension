@@ -28,7 +28,7 @@ import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -42,7 +42,7 @@ const expectedResults = [
     isSubmitted: false,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0x0ccc8...f8848',
     subtitleContainsOrigin: false,
@@ -55,7 +55,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send',
+    title: 'Sent',
     category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
@@ -68,7 +68,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x31b98...84523',
     subtitleContainsOrigin: false,
@@ -81,7 +81,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x9eca6...6a149',
     subtitleContainsOrigin: false,
@@ -94,7 +94,7 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
+    title: 'Received',
     category: TransactionGroupCategory.receive,
     subtitle: 'From: 0xee014...efebb',
     subtitleContainsOrigin: false,
