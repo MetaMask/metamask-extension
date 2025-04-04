@@ -87,7 +87,7 @@ const AssetPrice = forwardRef(
         <Text
           data-testid="asset-hovered-price"
           style={{ width: '100px' }}
-          variant={TextVariant.headingLg}
+          variant={TextVariant.displayMd}
           borderRadius={BorderRadius.LG}
           marginBottom={1}
           backgroundColor={
