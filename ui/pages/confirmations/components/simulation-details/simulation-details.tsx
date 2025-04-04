@@ -350,6 +350,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        {staticRows.map((staticRow, index) => (
+          <BalanceChangeList
+            key={index}
+            heading={staticRow.label}
+            balanceChanges={staticRow.balanceChanges}
+          />
+        ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}
@@ -360,13 +367,6 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
-        {staticRows.map((staticRow, index) => (
-          <BalanceChangeList
-            key={index}
-            heading={staticRow.label}
-            balanceChanges={staticRow.balanceChanges}
-          />
-        ))}
       </Box>
     </SimulationDetailsLayout>
   );

@@ -62,6 +62,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -107,10 +108,8 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       includeTokenTransfers: false,
       isEnabled: () =>
-        preferencesController().state.incomingTransactionsPreferences?.[
-          // @ts-expect-error PreferencesController incorrectly expects number index
-          getGlobalChainId()
-        ] && onboardingController().state.completedOnboarding,
+        preferencesController().state.useExternalServices &&
+        onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
     },
@@ -176,6 +175,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -337,8 +337,21 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
+  updateAccountBalanceForTransactionNetwork: (
+    transactionMeta: TransactionMeta,
+  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
+
+  initMessenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    updateAccountBalanceForTransactionNetwork,
+  );
+
+  initMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    updateAccountBalanceForTransactionNetwork,
+  );
 
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
