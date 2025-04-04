@@ -5,6 +5,7 @@ import {
   InternalScopeString,
   KnownSessionProperties,
   NormalizedScopesObject,
+  parseScopeString,
 } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -12,7 +13,6 @@ import {
   CaipChainId,
   CaipNamespace,
   parseCaipAccountId,
-  parseCaipChainId,
 } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../modules/string-utils';
 
@@ -28,12 +28,12 @@ import { isEqualCaseInsensitive } from '../../modules/string-utils';
 export function getCaip25CaveatFromPermission(caip25Permission: {
   caveats: {
     type: string;
-    value: Caip25CaveatValue | unknown;
+    value: Caip25CaveatValue;
   }[];
 }):
   | {
       type: string;
-      value: Caip25CaveatValue | unknown;
+      value: Caip25CaveatValue;
     }
   | undefined {
   if (!Array.isArray(caip25Permission.caveats)) {
@@ -161,7 +161,7 @@ export function getAllScopesFromCaip25CaveatValue(
 export function getAllScopesFromPermission(caip25Permission: {
   caveats: {
     type: string;
-    value: Caip25CaveatValue | unknown;
+    value: Caip25CaveatValue;
   }[];
 }): CaipChainId[] {
   const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
@@ -194,8 +194,7 @@ export function isInternalAccountInPermittedAccounts(
     const parsedPermittedAccount = parseCaipAccountId(account);
 
     return internalAccount.scopes.some((scope) => {
-      const internalAccountScope = scope as CaipChainId;
-      const { namespace, reference } = parseCaipChainId(internalAccountScope);
+      const { namespace, reference } = parseScopeString(scope);
 
       if (
         namespace !== parsedPermittedAccount.chain.namespace ||
@@ -227,13 +226,8 @@ export function isNamespaceInScopesObject(
   scopesObject: NormalizedScopesObject,
   caipNamespace: CaipNamespace,
 ) {
-  return Object.keys(scopesObject).some((key) => {
-    let namespace = '';
-    try {
-      ({ namespace } = parseCaipChainId(key as CaipChainId));
-    } catch (err) {
-      return false;
-    }
+  return Object.keys(scopesObject).some((scope) => {
+    const { namespace } = parseScopeString(scope);
     return namespace === caipNamespace;
   });
 }
