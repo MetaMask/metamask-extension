@@ -166,7 +166,7 @@ export const NftItem = ({
             ellipsis
           >
             {nft?.name}
-          </Text>{' '}
+          </Text>
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
