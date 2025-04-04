@@ -301,6 +301,8 @@ function getChainId(
   });
 
   if (matchingNetworkConfigurationEntry) {
+    // `matchingNetworkConfigurationEntry` is a tuple of [chainId, config], so
+    // we return the first element of the tuple, which is the chainId.
     return matchingNetworkConfigurationEntry[0] as Hex;
   }
 
