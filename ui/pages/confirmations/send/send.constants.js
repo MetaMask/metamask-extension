@@ -40,6 +40,7 @@ const ENS_UNKNOWN_ERROR = 'ensUnknownError';
 const NO_RESOLUTION_FOR_DOMAIN = 'noDomainResolution';
 const SWAPS_NO_QUOTES = 'swapQuotesNotAvailableErrorTitle';
 const SWAPS_QUOTES_ERROR = 'swapFetchingQuotesErrorTitle';
+const INVALID_HEX_DATA_ERROR = 'invalidHexDataError';
 
 const RECIPIENT_TYPES = {
   SMART_CONTRACT: 'SMART_CONTRACT',
@@ -73,4 +74,5 @@ export {
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
+  INVALID_HEX_DATA_ERROR,
 };

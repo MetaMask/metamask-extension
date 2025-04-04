@@ -3,13 +3,13 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:22.13-browsers
+      - image: cimg/node:22.14-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:22.13-browsers
+      - image: cimg/node:22.14-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
@@ -21,7 +21,7 @@ executors:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:22.13-browsers
+      - image: cimg/node:22.14-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
@@ -95,10 +95,6 @@ workflows:
               pattern: /^rerun-from-failed.*/
               value: << pipeline.schedule.name >>
     jobs:
-      - create_release_pull_request:
-          <<: *rc_branch_only
-          requires:
-            - prep-deps
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
@@ -219,15 +215,6 @@ workflows:
             - test-e2e-firefox-flask
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
-      - benchmark:
-          requires:
-            - prep-build-test
-      - user-actions-benchmark:
-          requires:
-            - prep-build-test
-      - bundle-size:
-          requires:
-            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -240,9 +227,6 @@ workflows:
             - prep-build-test-flask
             - prep-build-test-flask-mv2
             - prep-build-ts-migration-dashboard
-            - benchmark
-            - user-actions-benchmark
-            - bundle-size
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -277,26 +261,6 @@ workflows:
             - prep-deps
 
 jobs:
-  create_release_pull_request:
-    executor: node-browsers-medium
-    steps:
-      - checkout
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Bump manifest version
-          command: .circleci/scripts/release-bump-manifest-version.sh
-      - run:
-          name: Update changelog
-          command: yarn update-changelog --rc
-      - run:
-          name: Commit changes
-          command: .circleci/scripts/release-commit-version-bump.sh
-      - run:
-          name: Create GitHub Pull Request for version
-          command: .circleci/scripts/release-create-release-pr.sh
-
   prep-deps:
     executor: node-browsers-medium
     steps:
@@ -930,84 +894,6 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
-
-  benchmark:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Run page load benchmark
-          command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
-
-  user-actions-benchmark:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Run page load benchmark
-          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
-
-  bundle-size:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Measure bundle size
-          command: yarn bundle-size --out test-artifacts/chrome
-      - run:
-          name: Install jq
-          command: sudo apt install jq -y
-      - run:
-          name: Record bundle size at commit
-          command: ./.circleci/scripts/bundle-stats-commit.sh
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
 
   job-publish-prerelease:
     executor: node-browsers-medium

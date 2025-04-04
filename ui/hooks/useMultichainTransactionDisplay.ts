@@ -1,117 +1,134 @@
-import { Transaction, TransactionType } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus as KeyringTransactionStatus,
+  TransactionType,
+} from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
+import { TransactionGroupStatus } from '../../shared/constants/transaction';
+import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 
-type Fee = Transaction['fees'][0]['asset'];
-type Token = Transaction['from'][0]['asset'];
+export const KEYRING_TRANSACTION_STATUS_KEY = {
+  [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
+  [KeyringTransactionStatus.Confirmed]: TransactionStatus.confirmed,
+  [KeyringTransactionStatus.Unconfirmed]: TransactionGroupStatus.pending,
+  [KeyringTransactionStatus.Submitted]: TransactionStatus.submitted,
+};
 
-export function useMultichainTransactionDisplay({
-  transaction,
-  userAddress,
-}: {
-  transaction: Transaction;
-  userAddress: string;
-}) {
+type Asset = {
+  unit: string;
+  type: `${string}:${string}/${string}:${string}`;
+  amount: string;
+  fungible: true;
+};
+
+type Movement = {
+  asset: Asset;
+  address?: string;
+};
+
+type AggregatedMovement = {
+  address?: string;
+  unit: string;
+  amount: number;
+};
+
+export function useMultichainTransactionDisplay(
+  transaction: Transaction,
+  networkConfig: MultichainProviderConfig,
+) {
   const locale = useSelector(getIntlLocale);
+  const isNegative = transaction.type === TransactionType.Send;
 
-  const transactionFromEntry = transaction.from?.find(
-    (entry) => entry?.address === userAddress,
+  const assetInputs = aggregateAmount(
+    transaction.from as Movement[],
+    isNegative,
+    locale,
+    networkConfig.decimals,
   );
-  const transactionToEntry = transaction.to?.find(
-    (entry) => entry?.address === userAddress,
+  const assetOutputs = aggregateAmount(
+    transaction.to as Movement[],
+    isNegative,
+    locale,
+    networkConfig.decimals,
   );
-
-  const baseFee = transaction?.fees?.find((fee) => fee.type === 'base') ?? null;
-  const priorityFee =
-    transaction?.fees?.find((fee) => fee.type === 'priority') ?? null;
-
-  let from = null;
-  let to = null;
-
-  switch (transaction.type) {
-    case TransactionType.Swap:
-      from = transactionFromEntry ?? null;
-      to = transactionToEntry ?? null;
-      break;
-    case TransactionType.Send:
-      from = transactionFromEntry ?? transaction.from?.[0] ?? null;
-      to = transaction.to?.[0] ?? null;
-      break;
-    case TransactionType.Receive:
-      from = transaction.from?.[0] ?? null;
-      to = transactionToEntry ?? transaction.to?.[0] ?? null;
-      break;
-    default:
-      from = transaction.from?.[0] ?? null;
-      to = transaction.to?.[0] ?? null;
-  }
-
-  const asset = {
-    [TransactionType.Send]: parseAssetWithThreshold(
-      from?.asset ?? null,
-      '0.00001',
-      { locale, isNegative: true },
-    ),
-    [TransactionType.Receive]: parseAssetWithThreshold(
-      to?.asset ?? null,
-      '0.00001',
-      { locale, isNegative: false },
-    ),
-    [TransactionType.Swap]: parseAssetWithThreshold(
-      from?.asset ?? null,
-      '0.00001',
-      { locale, isNegative: true },
-    ),
-  }[transaction.type];
+  const baseFee = aggregateAmount(
+    transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
+    isNegative,
+    locale,
+  );
+  const priorityFee = aggregateAmount(
+    transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
+    isNegative,
+    locale,
+  );
 
   return {
-    ...transaction,
-    from,
-    to,
-    asset,
-    baseFee: parseAssetWithThreshold(baseFee?.asset ?? null, '0.0000001', {
-      locale,
-      isNegative: false,
-    }),
-    priorityFee: parseAssetWithThreshold(
-      priorityFee?.asset ?? null,
-      '0.0000001',
-      { locale, isNegative: false },
-    ),
+    assetInputs,
+    assetOutputs,
+    baseFee,
+    priorityFee,
+    isRedeposit: assetOutputs.length === 0,
   };
 }
 
-function parseAssetWithThreshold(
-  asset: Token | Fee | null,
-  threshold: string,
-  { locale, isNegative }: { locale: string; isNegative: boolean },
+function aggregateAmount(
+  movement: Movement[],
+  isNegative: boolean,
+  locale: string,
+  decimals?: number,
 ) {
-  if (asset?.fungible) {
-    const numberOfDecimals = threshold.split('.')?.[1]?.length ?? 0;
+  const amountByAsset: Record<string, AggregatedMovement> = {};
 
-    const amount = formatWithThreshold(
-      Number(asset?.amount),
-      Number(threshold),
-      locale,
-      {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: numberOfDecimals,
-      },
-    );
-
-    if (isNegative && !amount.startsWith('<')) {
-      return {
-        ...asset,
-        amount: `-${amount}`,
+  for (const mv of movement) {
+    if (!mv?.asset.fungible) {
+      continue;
+    }
+    const assetId = mv.asset.type;
+    if (!amountByAsset[assetId]) {
+      amountByAsset[assetId] = {
+        amount: parseFloat(mv.asset.amount),
+        address: mv.address,
+        unit: mv.asset.unit,
       };
+      continue;
     }
 
-    return {
-      ...asset,
-      amount,
-    };
+    amountByAsset[assetId].amount += parseFloat(mv.asset.amount);
   }
 
-  return null;
+  // Convert to a proper display array.
+  return Object.entries(amountByAsset).map(([_, mv]) =>
+    parseAsset(mv, locale, isNegative, decimals),
+  );
+}
+
+function parseAsset(
+  movement: AggregatedMovement,
+  locale: string,
+  isNegative: boolean,
+  decimals?: number,
+) {
+  const threshold = 1 / 10 ** (decimals || 8); // Smallest unit to display given the decimals.
+  const displayAmount = formatWithThreshold(
+    movement.amount,
+    threshold,
+    locale,
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals || 8,
+    },
+  );
+
+  let finalAmount = displayAmount;
+  if (isNegative) {
+    finalAmount = `-${displayAmount}`;
+  }
+
+  return {
+    ...movement,
+    amount: finalAmount,
+  };
 }

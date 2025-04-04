@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 
@@ -21,6 +22,19 @@ export const pathRegexps = {
 
 export type UserStorageResponseData = { HashedKey: string; Data: string };
 
+export enum UserStorageMockttpControllerEvents {
+  GET_NOT_FOUND = 'GET_NOT_FOUND',
+  GET_SINGLE = 'GET_SINGLE',
+  GET_ALL = 'GET_ALL',
+  PUT_SINGLE = 'PUT_SINGLE',
+  PUT_BATCH = 'PUT_BATCH',
+  DELETE_NOT_FOUND = 'DELETE_NOT_FOUND',
+  DELETE_SINGLE = 'DELETE_SINGLE',
+  DELETE_ALL = 'DELETE_ALL',
+  DELETE_BATCH_NOT_FOUND = 'DELETE_BATCH_NOT_FOUND',
+  DELETE_BATCH = 'DELETE_BATCH',
+}
+
 const determineIfFeatureEntryFromURL = (url: string) =>
   url.substring(url.lastIndexOf('userstorage') + 12).split('/').length === 2;
 
@@ -33,6 +47,8 @@ export class UserStorageMockttpController {
     }
   > = new Map();
 
+  eventEmitter: EventEmitter = new EventEmitter();
+
   readonly onGet = async (
     path: keyof typeof pathRegexps,
     request: Pick<CompletedRequest, 'path'>,
@@ -41,6 +57,11 @@ export class UserStorageMockttpController {
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_NOT_FOUND, {
+        path,
+        statusCode,
+      });
+
       return {
         statusCode,
         json: null,
@@ -55,6 +76,11 @@ export class UserStorageMockttpController {
           (entry) => entry.HashedKey === request.path.split('/').pop(),
         ) || null;
 
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_SINGLE, {
+        path,
+        statusCode,
+      });
+
       return {
         statusCode,
         json,
@@ -64,6 +90,11 @@ export class UserStorageMockttpController {
     const json = internalPathData?.response.length
       ? internalPathData.response
       : null;
+
+    this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_ALL, {
+      path,
+      statusCode,
+    });
 
     return {
       statusCode,
@@ -90,6 +121,14 @@ export class UserStorageMockttpController {
       const internalPathData = this.paths.get(path);
 
       if (!internalPathData) {
+        this.eventEmitter.emit(
+          UserStorageMockttpControllerEvents.DELETE_BATCH_NOT_FOUND,
+          {
+            path,
+            statusCode,
+          },
+        );
+
         return {
           statusCode,
         };
@@ -100,6 +139,11 @@ export class UserStorageMockttpController {
         response: internalPathData.response.filter(
           (entry) => !keysToDelete.includes(entry.HashedKey),
         ),
+      });
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.DELETE_BATCH, {
+        path,
+        statusCode,
       });
     }
 
@@ -146,6 +190,21 @@ export class UserStorageMockttpController {
             ],
           });
         }
+
+        if (newOrUpdatedSingleOrBatchEntries.length === 1) {
+          this.eventEmitter.emit(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+            {
+              path,
+              statusCode,
+            },
+          );
+        } else {
+          this.eventEmitter.emit(UserStorageMockttpControllerEvents.PUT_BATCH, {
+            path,
+            statusCode,
+          });
+        }
       });
     }
 
@@ -162,6 +221,14 @@ export class UserStorageMockttpController {
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
+      this.eventEmitter.emit(
+        UserStorageMockttpControllerEvents.DELETE_NOT_FOUND,
+        {
+          path,
+          statusCode,
+        },
+      );
+
       return {
         statusCode,
       };
@@ -176,10 +243,20 @@ export class UserStorageMockttpController {
           (entry) => entry.HashedKey !== request.path.split('/').pop(),
         ),
       });
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.DELETE_SINGLE, {
+        path,
+        statusCode,
+      });
     } else {
       this.paths.set(path, {
         ...internalPathData,
         response: [],
+      });
+
+      this.eventEmitter.emit(UserStorageMockttpControllerEvents.DELETE_ALL, {
+        path,
+        statusCode,
       });
     }
 

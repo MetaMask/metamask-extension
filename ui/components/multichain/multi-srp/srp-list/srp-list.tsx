@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import Card from '../../../ui/card';
@@ -24,6 +24,11 @@ import {
 } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SrpListItem } from './srp-list-item';
 
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
@@ -36,6 +41,7 @@ export const SrpList = ({
   hideShowAccounts?: boolean;
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const hdKeyrings: KeyringObjectWithMetadata[] = useSelector(
     getMetaMaskHdKeyrings,
   );
@@ -69,7 +75,13 @@ export const SrpList = ({
         <Card
           key={`srp-${keyring.metadata.id}`}
           data-testid={`hd-keyring-${keyring.metadata.id}`}
-          onClick={() => onActionComplete(keyring.metadata.id)}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.SecretRecoveryPhrasePickerSelected,
+            });
+            onActionComplete(keyring.metadata.id);
+          }}
           className="select-srp__container"
           marginBottom={3}
         >
@@ -89,6 +101,11 @@ export const SrpList = ({
                   className="srp-list__show-accounts"
                   onClick={(event: React.MouseEvent) => {
                     event.stopPropagation();
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Accounts,
+                      event:
+                        MetaMetricsEventName.SecretRecoveryPhrasePickerDetailsClicked,
+                    });
                     setShowAccounts((prevState) =>
                       prevState.map((value, i) =>
                         i === index ? !value : value,

@@ -9,9 +9,7 @@ import {
 } from './common-solana';
 
 describe('Transaction activity list', function (this: Suite) {
-  // Temporarily disabled on Mar 26, 2025 because of CI failures.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('user can see activity list and a confirmed transaction details', async function () {
+  it('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {

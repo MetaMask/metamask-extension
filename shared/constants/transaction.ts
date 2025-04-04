@@ -118,6 +118,10 @@ export enum TransactionGroupCategory {
    * where the final token is sent to another chain.
    */
   bridge = 'bridge',
+  /**
+   * Transaction group representing a redeposit (a send to ourselves), mainly used for consolidation.
+   */
+  redeposit = 'redeposit',
 }
 
 /**

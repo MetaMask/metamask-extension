@@ -24,11 +24,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const history = useHistory();
   const t = useI18nContext();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const currentKeyring = useSelector(getCurrentKeyring);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         </Typography>
       </div>
       <div className="import-srp__description">
-        <Typography variant={TypographyVariant.H4}>
+        <Typography align={TEXT_ALIGN.LEFT} variant={TypographyVariant.H4}>
           {t('accessYourWalletWithSRPDescription', [
             <a
               key="learnMore"
@@ -69,10 +71,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       </div>
       <div className="import-srp__actions">
         <Box textAlign={TEXT_ALIGN.LEFT}>
-          <SrpInput
-            onChange={setSecretRecoveryPhrase}
-            srpText={t('typeYourSRP')}
-          />
+          <SrpInput onChange={setSecretRecoveryPhrase} />
           <Button
             className="import-srp__confirm-button"
             type="primary"
@@ -84,6 +83,9 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
                 category: MetaMetricsEventCategory.Onboarding,
                 event:
                   MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+                properties: {
+                  hd_entropy_index: hdEntropyIndex,
+                },
               });
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
             }}

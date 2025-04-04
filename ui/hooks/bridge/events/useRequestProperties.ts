@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
 import { useSelector } from 'react-redux';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getQuoteRequest,
   getFromToken,
   getToToken,
 } from '../../../ducks/bridge/selectors';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 
 export const useRequestProperties = () => {
   const { srcChainId, destChainId, srcTokenAddress, destTokenAddress } =

@@ -89,7 +89,7 @@ test.beforeAll(
 );
 
 // TODO: Skipping test as it's failing in the pipeline for unknown reasons
-test.skip(`Get quote on Mainnet Network`, async () => {
+test(`Get quote on Mainnet Network`, async () => {
   await walletPage.selectSwapAction();
   await walletPage.page.waitForTimeout(3000);
   await swapPage.enterQuote({
@@ -105,16 +105,14 @@ test.skip(`Get quote on Mainnet Network`, async () => {
 });
 
 test(`Add Custom Networks and import test account`, async () => {
-  let response;
   wallet = ethers.Wallet.createRandom();
 
-  response = await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
+  const response = await addFundsToAccount(
+    Tenderly.Mainnet.url,
+    wallet.address,
+  );
   expect(response.error).toBeUndefined();
 
-  response = await addFundsToAccount(Tenderly.Linea.url, wallet.address);
-  expect(response.error).toBeUndefined();
-
-  await networkController.addCustomNetwork(Tenderly.Linea);
   await networkController.addCustomNetwork(Tenderly.Mainnet);
 
   await walletPage.importAccount(wallet.privateKey);
@@ -129,10 +127,7 @@ testSet.forEach((options) => {
     if (balance === '0 ETH') {
       test.skip();
     }
-
     await walletPage.selectSwapAction();
-    // Allow balance label to populate
-    await walletPage.page.waitForTimeout(3000);
     const quoteEntered = await swapPage.enterQuote({
       from: options.source,
       to: options.destination,

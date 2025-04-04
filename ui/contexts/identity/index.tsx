@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useAccountSyncing } from '../../hooks/identity/useProfileSyncing';
+import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,

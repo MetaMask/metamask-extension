@@ -98,6 +98,7 @@ export function getTransactionControllerInitMessenger(
       'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [
+      'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',

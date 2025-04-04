@@ -24,6 +24,7 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/multichain';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -114,7 +115,6 @@ import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -129,6 +129,7 @@ import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getMultichainNetwork,
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
@@ -361,6 +362,7 @@ export function getAccountTypeForKeyring(keyring) {
 
   switch (type) {
     case KeyringType.trezor:
+    case KeyringType.oneKey:
     case KeyringType.ledger:
     case KeyringType.lattice:
     case KeyringType.qr:
@@ -379,7 +381,7 @@ export function getAccountTypeForKeyring(keyring) {
 /**
  * Get MetaMask accounts, including account name and balance.
  */
-export const getMetaMaskAccounts = createSelector(
+export const getMetaMaskAccounts = createDeepEqualSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
@@ -504,7 +506,7 @@ export const getSelectedEvmInternalAccount = createSelector(
  * @param accounts - The object containing the accounts.
  * @returns The array of internal accounts sorted by keyring.
  */
-export const getInternalAccountsSortedByKeyring = createSelector(
+export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
@@ -541,6 +543,18 @@ export const getMetaMaskHdKeyrings = createSelector(
 
 export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
+}
+
+export function getHDEntropyIndex(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+    keyring.accounts.includes(selectedAddress),
+  );
+  return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
 /**
@@ -800,7 +814,7 @@ function getNativeTokenInfo(state, chainId) {
  *
  * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
-export const getMetaMaskAccountsOrdered = createSelector(
+export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
@@ -1247,9 +1261,8 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
-export function getPetnamesEnabled(state) {
-  const { petnamesEnabled = true } = getPreferences(state);
-  return petnamesEnabled;
+export function getUseExternalNameSources(state) {
+  return state.metamask.useExternalNameSources;
 }
 
 export const getTokenSortConfig = createDeepEqualSelector(
@@ -1739,13 +1752,25 @@ export function getIsSwapsChain(state, overrideChainId) {
 }
 
 export function getIsBridgeChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
+  const account = getSelectedInternalAccount(state);
+  const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
+    state,
+    account,
+  );
+
+  let currentChainId = selectedMultiChainId;
+
+  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
+  if (isEvmNetwork) {
+    currentChainId = getCurrentChainId(state);
+  }
+
   const chainId = overrideChainId ?? currentChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
 function getBridgeFeatureFlags(state) {
-  return state.metamask.bridgeState?.bridgeFeatureFlags;
+  return state.metamask.bridgeFeatureFlags;
 }
 
 export const getIsBridgeEnabled = createSelector(
@@ -2867,6 +2892,18 @@ export function getIsCustomNetwork(state) {
   return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
 }
 
+/**
+ * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * This flag determines whether the user should see a `Discover` button on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ */
+export function getIsPortfolioDiscoverButtonEnabled(state) {
+  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
+  return Boolean(nePortfolioDiscoverButton);
+}
+
 export function getBlockExplorerLinkText(
   state,
   accountDetailsModalComponent = false,
@@ -2909,22 +2946,6 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   const hasNoTokens = getNumberOfTokens(state) === 0;
 
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
-}
-
-export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
-    state.metamask;
-
-  // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = getSelectedInternalAccount(state)
-    ? getCurrentEthBalance(state)
-    : 0;
-
-  return (
-    seedPhraseBackedUp === false &&
-    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false
-  );
 }
 
 export function getUnconnectedAccounts(state, activeTab) {

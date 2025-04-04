@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "我们不建议继续处理此请求。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "此请求可疑"
   },
   "confirmed": {
     "message": "已确认"
@@ -3851,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "您收到"
   },
-  "permitSimulationChange_revoke": {
-    "message": "支出上限"
-  },
   "permitSimulationChange_transfer": {
     "message": "您发送"
   },
@@ -3865,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
-  },
-  "petnamesEnabledToggle": {
-    "message": "允许昵称"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "这样可以协助您为任何地址添加昵称。我们将在可能的情况下为您与之交互的地址提供名称建议。"
   },
   "pinToTop": {
     "message": "置顶"
@@ -5961,9 +5946,6 @@
   },
   "twelveHrTitle": {
     "message": "12小时："
-  },
-  "typeYourSRP": {
-    "message": "输入私钥助记词"
   },
   "u2f": {
     "message": "U2F",

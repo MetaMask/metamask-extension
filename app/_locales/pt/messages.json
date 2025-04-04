@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Não é recomendável prosseguir com esta solicitação."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Se você aprovar essa solicitação, algum terceiro conhecido por aplicar golpes poderá tomar todos os seus ativos."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Esta solicitação é suspeita"
   },
   "confirmed": {
     "message": "Confirmada"
@@ -3851,9 +3845,6 @@
   "permitSimulationChange_receive": {
     "message": "Você recebe"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Limite de gastos"
-  },
   "permitSimulationChange_transfer": {
     "message": "Você envia"
   },
@@ -3865,12 +3856,6 @@
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Permitir apelidos"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Isso permite que você atribua um apelido a qualquer endereço. Sempre que possível, vamos sugerir nomes para os endereços com os quais você interage."
   },
   "pinToTop": {
     "message": "Fixar ao topo"
@@ -5961,9 +5946,6 @@
   },
   "twelveHrTitle": {
     "message": "12 h:"
-  },
-  "typeYourSRP": {
-    "message": "Digite sua Frase de Recuperação Secreta"
   },
   "u2f": {
     "message": "U2F",

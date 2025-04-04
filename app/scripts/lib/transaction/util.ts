@@ -63,15 +63,9 @@ export type AddDappTransactionRequest = BaseAddTransactionRequest & {
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest, transactionParams } = request;
+  const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
   const { securityAlertResponse, traceContext } = dappRequest;
-
-  // Temporary fix for E2E tests that rely on `gasLimit` being ignored
-  // and resulting `eth_estimateGas` delaying confirmation.
-  if (process.env.IN_TEST && transactionParams.gasLimit?.length) {
-    transactionParams.gasLimit = undefined;
-  }
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
@@ -214,7 +208,7 @@ async function addUserOperationWithController(
   };
 }
 
-function getTransactionById(
+export function getTransactionById(
   transactionId: string,
   transactionController: TransactionController,
 ) {

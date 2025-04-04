@@ -17,7 +17,7 @@ describe('Permissions', function () {
       },
       async ({ driver, localNodes }) => {
         const addresses = await localNodes[0].getAccounts();
-        const publicAddress = addresses[0];
+        const publicAddress = addresses[0].toLowerCase();
         await unlockWallet(driver);
 
         await openDapp(driver);

@@ -590,7 +590,7 @@ export class AppStateController extends BaseController<
         );
       });
 
-      state.slides = [...updatedCurrentSlides, ...newSlides];
+      state.slides = [...newSlides, ...updatedCurrentSlides];
     });
   }
 

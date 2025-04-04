@@ -12,9 +12,7 @@ import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
 
-  // Having 2 versions of the address is a bug(#25286)
-  const shortSampleAddress = '0x1111...1111';
-  const shortSampleAddresV2 = '0x11111...11111';
+  const shortSampleAddress = '0x11111...11111';
   const chainId = 1;
 
   // ENS Contract Addresses and Function Signatures
@@ -108,7 +106,7 @@ describe('ENS', function (this: Suite) {
         // Verify the resolved ENS address can be used as the recipient address
         await sendToPage.check_ensAddressAsRecipient(
           sampleEnsDomain,
-          shortSampleAddresV2,
+          shortSampleAddress,
         );
       },
     );

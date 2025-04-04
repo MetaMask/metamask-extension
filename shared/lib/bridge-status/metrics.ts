@@ -1,4 +1,8 @@
 /* eslint-disable import/no-restricted-paths, camelcase */
+import {
+  formatChainIdToCaip,
+  BRIDGE_DEFAULT_SLIPPAGE,
+} from '@metamask/bridge-controller';
 import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
 import {
   MetricsBackgroundState,
@@ -8,9 +12,7 @@ import { isHardwareKeyring } from '../../../ui/helpers/utils/hardware';
 import { ActionType } from '../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';
 import { getCurrentKeyring } from '../../../ui/selectors';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../constants/bridge';
 import { getIsSmartTransaction } from '../../modules/selectors';
-import { formatChainIdToCaip } from '../../modules/bridge-utils/caip-formatters';
 
 export const getCommonProperties = (
   bridgeHistoryItem: BridgeHistoryItem,

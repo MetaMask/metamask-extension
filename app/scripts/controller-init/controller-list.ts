@@ -32,6 +32,8 @@ import {
 } from '@metamask/rate-limit-controller';
 import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
+import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
+import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -52,6 +54,8 @@ export type Controller =
   | MultichainTransactionsController
   | MultichainNetworkController
   | NetworkController
+  | NotificationServicesController
+  | NotificationServicesPushController
   | OnboardingController
   | PermissionController<
       PermissionSpecificationConstraint,
