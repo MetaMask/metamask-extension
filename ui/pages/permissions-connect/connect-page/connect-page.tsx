@@ -1,7 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
   generateCaip25Caveat,
@@ -67,7 +65,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
+import {
+  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+  MergedInternalAccountWithCaipAccountId,
+} from '../../../selectors/selectors.types';
 import {
   getAllAccountsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
@@ -141,12 +142,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           return [nonTestNetworksList, testNetworksList];
         },
         [
-          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
-            caipChainId: CaipChainId;
-          })[],
-          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
-            caipChainId: CaipChainId;
-          })[],
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
         ],
       ),
     [networkConfigurationsByCaipChainId],

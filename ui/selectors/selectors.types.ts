@@ -1,6 +1,8 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { SubjectMetadata } from '@metamask/permission-controller';
-import { CaipAccountId } from '@metamask/utils';
+import { CaipAccountId, CaipChainId } from '@metamask/utils';
 
 type KeyringType = {
   type: string;
@@ -34,4 +36,11 @@ export type AccountConnections = {
     iconUrl?: string;
     metadata: SubjectMetadata;
   }[];
+};
+
+export type EvmAndMultichainNetworkConfigurationsWithCaipChainId = (
+  | NetworkConfiguration
+  | MultichainNetworkConfiguration
+) & {
+  caipChainId: CaipChainId;
 };

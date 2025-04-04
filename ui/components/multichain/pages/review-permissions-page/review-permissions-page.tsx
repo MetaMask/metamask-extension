@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import {
@@ -10,7 +9,6 @@ import {
   parseCaipAccountId,
   KnownCaipNamespace,
 } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { uniq } from 'lodash';
 import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import {
@@ -59,7 +57,10 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import { MergedInternalAccountWithCaipAccountId } from '../../../../selectors/selectors.types';
+import {
+  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+  MergedInternalAccountWithCaipAccountId,
+} from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
@@ -138,12 +139,8 @@ export const ReviewPermissions = () => {
           return [nonTestNetworksList, testNetworksList];
         },
         [
-          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
-            caipChainId: CaipChainId;
-          })[],
-          [] as ((NetworkConfiguration | MultichainNetworkConfiguration) & {
-            caipChainId: CaipChainId;
-          })[],
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
         ],
       ),
     [networkConfigurationsByCaipChainId],
