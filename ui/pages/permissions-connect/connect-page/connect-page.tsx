@@ -236,15 +236,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     supportedAccountsForRequestedNamespaces,
   );
 
-  const defaultCaip10AccountAddresses = defaultAccounts.map(
+  const defaultCaipAccountAddresses = defaultAccounts.map(
     ({ caipAccountId }) => caipAccountId,
   );
 
-  const [selectedCaip10AccountAddresses, setSelectedCaip10AccountAddresses] =
-    useState(defaultCaip10AccountAddresses);
+  const [selectedCaipAccountAddresses, setSelectedCaipAccountAddresses] =
+    useState(defaultCaipAccountAddresses);
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
-    return selectedCaip10AccountAddresses.some((selectedCaipAccountId) => {
+    return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
       return isEqualCaseInsensitive(selectedCaipAccountId, caipAccountId);
     });
   });
@@ -256,7 +256,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValue,
-          selectedCaip10AccountAddresses,
+          selectedCaipAccountAddresses,
           selectedChainIds,
         ),
       },
@@ -419,10 +419,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 <EditAccountsModal
                   accounts={allAccounts}
                   defaultSelectedAccountAddresses={
-                    selectedCaip10AccountAddresses
+                    selectedCaipAccountAddresses
                   }
                   onClose={() => setShowEditAccountsModal(false)}
-                  onSubmit={setSelectedCaip10AccountAddresses}
+                  onSubmit={setSelectedCaipAccountAddresses}
                 />
               )}
             </Box>
@@ -438,9 +438,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
                 accounts={allAccounts}
-                onSelectAccountAddresses={setSelectedCaip10AccountAddresses}
+                onSelectAccountAddresses={setSelectedCaipAccountAddresses}
                 onSelectChainIds={setSelectedChainIds}
-                selectedAccountAddresses={selectedCaip10AccountAddresses}
+                selectedAccountAddresses={selectedCaipAccountAddresses}
                 selectedChainIds={selectedChainIds}
                 isConnectFlow
               />
@@ -471,7 +471,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               size={ButtonSize.Lg}
               onClick={onConfirm}
               disabled={
-                selectedCaip10AccountAddresses.length === 0 ||
+                selectedCaipAccountAddresses.length === 0 ||
                 selectedChainIds.length === 0
               }
             >
