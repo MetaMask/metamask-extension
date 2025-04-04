@@ -22,7 +22,7 @@ export function NestedTransactionData() {
   }
 
   return (
-    <Box>
+    <Box data-testid="batch-txs">
       {nestedTransactions.map((nestedTransaction, index) => (
         <NestedTransaction
           key={index}
