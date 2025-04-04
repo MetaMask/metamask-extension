@@ -1,11 +1,8 @@
 import React, { useContext } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import {
-  getBridgeStatusKey,
-  isBridgeComplete,
-  isBridgeFailed,
-} from '../../../../shared/lib/bridge-status/utils';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { getBridgeStatusKey } from '../../../../shared/lib/bridge-status/utils';
 import {
   Display,
   FlexDirection,
@@ -66,7 +63,6 @@ import {
   ExtendedTransaction,
   BridgeOriginatedItem,
 } from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
-import { TransactionStatus } from '@metamask/transaction-controller';
 
 type SolanaBridgeTransactionDetailsModalProps = {
   transaction: ExtendedTransaction | BridgeOriginatedItem;
@@ -74,18 +70,9 @@ type SolanaBridgeTransactionDetailsModalProps = {
   userAddress: string;
 };
 
-/**
- * Modal component for displaying Solana bridge transaction details
- *
- * @param options0
- * @param options0.transaction
- * @param options0.onClose
- * @param options0.userAddress
- */
 function SolanaBridgeTransactionDetailsModal({
   transaction,
   onClose,
-  userAddress,
 }: SolanaBridgeTransactionDetailsModalProps): JSX.Element {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -130,14 +117,6 @@ function SolanaBridgeTransactionDetailsModal({
     statusColor = TextColor.errorDefault;
   }
 
-  /**
-   * Gets the correct block explorer URL for a transaction hash based on chain type
-   *
-   * @param txHash - Transaction hash/ID
-   * @param chainId - Chain ID (can be EVM or Solana format)
-   * @param networkProps - Network properties for EVM chains
-   * @returns Block explorer URL for the transaction
-   */
   const getChainExplorerUrl = (
     txHash: string,
     chainId: string,
@@ -148,14 +127,12 @@ function SolanaBridgeTransactionDetailsModal({
     }
 
     try {
-      // Check if it's a Solana chain
       const caipChainId = formatChainIdToCaip(chainId);
       const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
       let blockExplorerUrl = '';
 
       if (isSolana) {
-        // Handle Solana chains
         const blockExplorerUrls =
           MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
         if (blockExplorerUrls) {
@@ -200,18 +177,13 @@ function SolanaBridgeTransactionDetailsModal({
     }
   };
 
-  /**
-   * Format destination token amount based on decimals
-   *
-   * @param amount - Amount in base units
-   * @param decimals - Number of decimals
-   * @returns Formatted amount
-   */
   const formatDestTokenAmount = (
     amount: string | undefined,
     decimals: number | undefined = 18,
   ): string => {
-    if (!amount) return '0';
+    if (!amount) {
+      return '0';
+    }
     try {
       const amountBN = BigInt(amount);
       const divisor = BigInt(10) ** BigInt(decimals);
@@ -486,7 +458,7 @@ function SolanaBridgeTransactionDetailsModal({
                     data-testid="transaction-source-amount"
                   >
                     {(() => {
-                      if (assetData && assetData.fungible) {
+                      if (assetData?.fungible) {
                         const displayAmount = assetData.amount?.startsWith('-')
                           ? assetData.amount.substring(1)
                           : assetData.amount;

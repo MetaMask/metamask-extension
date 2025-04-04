@@ -65,7 +65,7 @@ type SolanaBridgeTransactionListItemProps = {
  */
 const SolanaBridgeTransactionListItem: React.FC<
   SolanaBridgeTransactionListItemProps
-> = ({ transaction, userAddress, toggleShowDetails }) => {
+> = ({ transaction, toggleShowDetails }) => {
   const t = useI18nContext();
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 

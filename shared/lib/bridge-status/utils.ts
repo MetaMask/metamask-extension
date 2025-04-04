@@ -86,13 +86,6 @@ type BridgeTransaction = {
   };
 };
 
-/**
- * Determines if a bridge transaction is truly complete based on its status
- * AND the presence of a destination transaction hash.
- *
- * @param transaction - The transaction object to check
- * @returns Whether the transaction is fully complete.
- */
 export function isBridgeComplete(transaction: BridgeTransaction): boolean {
   return Boolean(
     transaction.isBridgeTx &&
@@ -104,14 +97,6 @@ export function isBridgeComplete(transaction: BridgeTransaction): boolean {
   );
 }
 
-/**
- * Determines if a bridge transaction has failed by checking its bridge status
- * OR the base transaction status key.
- *
- * @param transaction - The transaction object to check
- * @param baseStatusKey - The status key derived from the base source transaction
- * @returns Whether the transaction is considered failed.
- */
 export function isBridgeFailed(
   transaction: BridgeTransaction,
   baseStatusKey: string,
@@ -127,14 +112,6 @@ export function isBridgeFailed(
   return bridgeFailed || baseFailed;
 }
 
-/**
- * Determines the final display status key for a bridge transaction,
- * considering both the source transaction status and the bridge operation status.
- *
- * @param transaction - The transaction object
- * @param baseStatusKey - The status key derived from the base source transaction status
- * @returns The final display status key (e.g., confirmed, failed, submitted)
- */
 export function getBridgeStatusKey(
   transaction: BridgeTransaction,
   baseStatusKey: string,
