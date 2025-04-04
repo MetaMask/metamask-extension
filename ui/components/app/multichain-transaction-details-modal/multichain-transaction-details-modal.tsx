@@ -260,9 +260,9 @@ export function MultichainTransactionDetailsModal({
 
             {/* Amounts per token */}
             {transaction.type === TransactionType.Swap
-              ? assetInputs.map((input) => (
+              ? assetInputs.map((input, index) => (
                   <>
-                    {accountComponent(t('to'), input.address)}
+                    {accountComponent(t('to'), assetOutputs[index].address)}
                     {amountComponent(input, t('amount'), 'transaction-amount')}
                   </>
                 ))
