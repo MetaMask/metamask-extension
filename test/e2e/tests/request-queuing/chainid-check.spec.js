@@ -109,9 +109,9 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElementAndWaitForWindowToClose(
-          { text: 'Confirm',
-            tag: 'button',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'button',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
