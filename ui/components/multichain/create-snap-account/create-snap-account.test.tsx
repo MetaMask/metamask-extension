@@ -144,4 +144,17 @@ describe('CreateSnapAccount', () => {
       });
     });
   });
+
+  it('only calls createAccount once', async () => {
+    const { getByTestId } = render();
+
+    const createButton = getByTestId('submit-add-account-with-name');
+    fireEvent.click(createButton);
+    fireEvent.click(createButton);
+    fireEvent.click(createButton);
+
+    await waitFor(() => {
+      expect(mockCreateAccount).toHaveBeenCalledTimes(1);
+    });
+  });
 });

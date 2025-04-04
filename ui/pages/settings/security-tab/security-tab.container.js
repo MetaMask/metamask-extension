@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  setIncomingTransactionsPreferences,
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
@@ -38,7 +37,6 @@ const mapStateToProps = (state) => {
   const { metamask } = state;
 
   const {
-    incomingTransactionsPreferences,
     participateInMetaMetrics,
     dataCollectionForMarketing,
     usePhishDetect,
@@ -62,7 +60,6 @@ const mapStateToProps = (state) => {
   ///: END:ONLY_INCLUDE_IF
 
   return {
-    incomingTransactionsPreferences,
     networkConfigurations,
     participateInMetaMetrics,
     dataCollectionForMarketing,
@@ -90,8 +87,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIncomingTransactionsPreferences: (chainId, value) =>
-      dispatch(setIncomingTransactionsPreferences(chainId, value)),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
     setDataCollectionForMarketing: (val) =>
