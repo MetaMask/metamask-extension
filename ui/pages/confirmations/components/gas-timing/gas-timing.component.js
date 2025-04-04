@@ -131,7 +131,9 @@ export default function GasTiming({
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
   const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
-  let text = `${estimateEmoji} ${t(estimateToUse)}`;
+  let text = estimateEmoji
+    ? `${estimateEmoji} ${t(estimateToUse)}`
+    : t(estimateToUse);
   let time = '';
 
   if (estimateToUse === 'low') {
