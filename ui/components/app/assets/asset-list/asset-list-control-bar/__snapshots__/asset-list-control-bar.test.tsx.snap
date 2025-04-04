@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetListControlBar should render correctly 1`] = `
+<div>
+  <div
+    class="mm-box asset-list-control-bar mm-box--margin-right-2 mm-box--margin-left-2"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+    >
+      <div
+        class="mm-box asset-list-control-bar__buttons mm-box--display-flex mm-box--justify-content-flex-end"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="Sort by"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-sm asset-list-control-bar__button mm-text--body-md-medium mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill"
+              data-testid="sort-by-popover-toggle"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/filter.svg');"
+              />
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+              />
+            </button>
+          </div>
+        </div>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm asset-list-control-bar__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill"
+          data-testid="import-token-button"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/more-vertical.svg');"
+          />
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
