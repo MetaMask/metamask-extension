@@ -201,7 +201,7 @@ function transformState(state: Record<string, unknown>) {
 
     updatedSubjects.push(key);
 
-    const caveatValue = addPermittedEthChainId(
+    const caip25PermissionCaveatWithCurrentChainIdSet = addPermittedEthChainId(
       getExistingCaip25PermissionCaveat(subject),
       currentChainId,
     );
@@ -221,7 +221,7 @@ function transformState(state: Record<string, unknown>) {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caveatValue,
+              value: caip25PermissionCaveatWithCurrentChainIdSet,
             },
           ],
           date,
