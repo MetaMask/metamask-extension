@@ -44,8 +44,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             ...scopesToIgnore,
           ]);
 
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
-
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
           const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
@@ -90,7 +95,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             [SECOND_ACCOUNT_IN_WALLET, ACCOUNT_NOT_IN_WALLET],
           );
 
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
 
           const getSessionResult = await testDapp.getSession();
           /**
@@ -202,7 +213,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             await permissionsTab.click();
             await updateNetworkCheckboxes(driver, ['Localhost 8545']);
 
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
 
             const getSessionResult = await testDapp.getSession();
 
@@ -282,7 +299,10 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
 
             await addAccountInWalletAndAuthorize(driver);
 
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -392,7 +412,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
               await driver.clickElement(`input[name="${scope}"]`),
           );
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [TREZOR_ACCOUNT]);
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
           await driver.delay(largeDelayMs);
 
           const newgetSessionResult = await testDapp.getSession();
