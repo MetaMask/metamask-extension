@@ -64,7 +64,6 @@ const SolanaBridgeTransactionListItem: React.FC<
   const t = useI18nContext();
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
-  // Extract display data, including the raw status from the source chain transaction
   const {
     type,
     status: sourceTxRawStatus,
