@@ -36,7 +36,7 @@ export const Text: TextComponent = React.forwardRef(
       variant = TextVariant.bodyMd,
       fontWeight,
       fontStyle,
-      fontFamily = FontFamily.Default,
+      fontFamily,
       textTransform,
       textAlign,
       textDirection,
