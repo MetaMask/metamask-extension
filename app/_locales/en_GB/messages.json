@@ -871,6 +871,9 @@
   "bridgeToChain": {
     "message": "Bridge to $1"
   },
+  "bridgeTransactionProgress": {
+    "message": "Transaction $1 of 2"
+  },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
   },

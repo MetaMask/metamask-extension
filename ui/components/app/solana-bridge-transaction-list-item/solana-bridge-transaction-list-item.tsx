@@ -7,6 +7,7 @@ import {
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import {
@@ -17,6 +18,7 @@ import { formatTimestamp } from '../multichain-transaction-details-modal/helpers
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { ActivityListItem } from '../../multichain';
+import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
   Display,
   FlexDirection,
@@ -101,6 +103,18 @@ const SolanaBridgeTransactionListItem: React.FC<
   )
     ? undefined
     : finalDisplayStatusKey;
+
+  const srcSegmentStatus: StatusTypes = isSourceTxConfirmed
+    ? StatusTypes.COMPLETE
+    : StatusTypes.PENDING;
+
+  const destSegmentStatus: StatusTypes | null = !isSourceTxConfirmed
+    ? null
+    : isBridgeFullyComplete
+    ? StatusTypes.COMPLETE
+    : StatusTypes.PENDING;
+
+  const txIndex = srcSegmentStatus === StatusTypes.PENDING ? 1 : 2;
 
   let title = capitalize(type);
   if (transaction.isBridgeTx && transaction.bridgeInfo) {
@@ -195,34 +209,21 @@ const SolanaBridgeTransactionListItem: React.FC<
             transaction.bridgeInfo &&
             !isTerminalState && (
               <Box
-                marginTop={2}
+                marginTop={0}
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
                 gap={1}
                 width={BlockSize.Full}
               >
+                <Text
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodySm}
+                >
+                  {t('bridgeTransactionProgress', [txIndex])}
+                </Text>
                 <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-                  <Box
-                    className="solana-bridge-transaction-list-item__segment-container"
-                    width={BlockSize.Full}
-                  >
-                    <Box
-                      className={`solana-bridge-transaction-list-item__segment ${
-                        isSourceTxConfirmed
-                          ? 'solana-bridge-transaction-list-item__segment--complete'
-                          : 'solana-bridge-transaction-list-item__segment--pending'
-                      }`}
-                    />
-                  </Box>
-
-                  <Box
-                    className="solana-bridge-transaction-list-item__segment-container"
-                    width={BlockSize.Full}
-                  >
-                    {isSourceTxConfirmed && (
-                      <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--pending" />
-                    )}
-                  </Box>
+                  <Segment type={srcSegmentStatus} />
+                  <Segment type={destSegmentStatus} />
                 </Box>
               </Box>
             )}
