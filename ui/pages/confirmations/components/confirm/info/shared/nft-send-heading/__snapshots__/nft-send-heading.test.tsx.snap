@@ -37,12 +37,6 @@ exports[`<NFTSendHeading /> renders component 1`] = `
             </div>
           </div>
         </button>
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-        />
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-        />
       </div>
     </div>
     <h2
