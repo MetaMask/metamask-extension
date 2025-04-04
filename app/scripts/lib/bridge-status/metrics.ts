@@ -37,7 +37,6 @@ export const handleBridgeTransactionComplete = async (
     backgroundState,
     trackEvent,
     getRemoteFeatureFlags,
-    getParticipateInMetrics,
   }: {
     backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
@@ -45,7 +44,6 @@ export const handleBridgeTransactionComplete = async (
       'transactions-tx-hash-in-analytics'?: boolean;
       [key: string]: boolean | undefined;
     };
-    getParticipateInMetrics: () => boolean;
   },
 ) => {
   const { bridgeHistoryItem } = payload;
