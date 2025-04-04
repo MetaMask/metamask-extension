@@ -40,7 +40,7 @@ export function useMultichainTransactionDisplay(
   networkConfig: MultichainProviderConfig,
 ) {
   const locale = useSelector(getIntlLocale);
-  const isNegative = transaction.type === TransactionType.Send;
+  const isNegative = transaction.type !== TransactionType.Receive;
 
   const assetInputs = aggregateAmount(
     transaction.from as Movement[],
