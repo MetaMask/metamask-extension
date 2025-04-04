@@ -319,6 +319,16 @@
         "isEvm": false
       }
     },
+    "networksWithTransactionActivity": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "namespace": "eip155",
+        "activeChain": ["0x5"]
+      },
+      "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+        "namespace": "solana",
+        "activeChain": []
+      }
+    },
     "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
     "isEvmSelected": true,
     "selectedNetworkClientId": "goerli",
