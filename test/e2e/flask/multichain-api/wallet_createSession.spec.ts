@@ -47,8 +47,13 @@ describeBrowserOnly(
               ...scopesToIgnore,
             ]);
 
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.TestDApp,
+            );
             const getSessionResult = await testDapp.getSession();
 
             for (const scope of scopesToIgnore) {
@@ -93,8 +98,13 @@ describeBrowserOnly(
               [SECOND_ACCOUNT_IN_WALLET, ACCOUNT_NOT_IN_WALLET],
             );
 
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.TestDApp,
+            );
             const getSessionResult = await testDapp.getSession();
             /**
              * Accounts in scope should not include invalid account {@link ACCOUNT_NOT_IN_WALLET}, only the valid accounts.
@@ -140,10 +150,7 @@ describeBrowserOnly(
           await testDapp.initCreateSessionScopes(requestScopes);
 
           // navigate to network selection screen
-          const permissionsTab = await driver.findElement(
-            '[data-testid="permissions-tab"]',
-          );
-          await permissionsTab.click();
+          await driver.clickElement('[data-testid="permissions-tab"]');
           const editButtons = await driver.findElements('[data-testid="edit"]');
           await editButtons[1].click();
           await driver.delay(largeDelayMs);
@@ -201,14 +208,17 @@ describeBrowserOnly(
               );
 
               await addAccountInWalletAndAuthorize(driver);
-              const permissionsTab = await driver.findElement(
-                '[data-testid="permissions-tab"]',
-              );
-              await permissionsTab.click();
+              await driver.clickElement('[data-testid="permissions-tab"]');
               await updateNetworkCheckboxes(driver, ['Localhost 8545']);
 
-              await driver.clickElement({ text: 'Connect', tag: 'button' });
+              await driver.clickElementAndWaitForWindowToClose({
+                text: 'Connect',
+                tag: 'button',
+              });
 
+              await driver.switchToWindowWithTitle(
+                WINDOW_TITLES.TestDApp,
+              );
               const getSessionResult = await testDapp.getSession();
 
               assert.strictEqual(
@@ -289,7 +299,10 @@ describeBrowserOnly(
 
               await addAccountInWalletAndAuthorize(driver);
 
-              await driver.clickElement({ text: 'Connect', tag: 'button' });
+              await driver.clickElementAndWaitForWindowToClose({
+                text: 'Connect',
+                tag: 'button',
+              });
               await driver.switchToWindowWithTitle(
                 WINDOW_TITLES.MultichainTestDApp,
               );
@@ -401,7 +414,13 @@ describeBrowserOnly(
             await testDapp.initCreateSessionScopes(NEW_SCOPES, [
               TREZOR_ACCOUNT,
             ]);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.TestDApp,
+            );
             await driver.delay(largeDelayMs);
 
             const newgetSessionResult = await testDapp.getSession();
