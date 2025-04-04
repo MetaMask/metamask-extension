@@ -1,315 +1,353 @@
 import { useSelector } from 'react-redux';
 import { Transaction } from '@metamask/keyring-api';
+import {
+  isCaipChainId,
+  type CaipChainId,
+  type CaipAssetType,
+} from '@metamask/utils';
 import { Numeric, NumericValue } from '../../../shared/modules/Numeric';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
+} from '../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 
 /**
- * Hook to map Solana bridge transactions with EVM destination info
+ * Defines the structure for additional bridge-related information added to transactions.
+ */
+type BridgeInfo = {
+  destChainId?: NumericValue;
+  destChainName?: string;
+  destAsset?: {
+    symbol?: string;
+    decimals?: number;
+    [key: string]: unknown;
+  };
+  destTokenAmount?: string;
+  status?: string;
+  destTxHash?: string;
+  srcTxHash?: string;
+  provider?: string;
+  destBlockExplorerUrl?: string;
+};
+
+/**
+ * Extends the base Transaction type with custom fields used for non-originated bridge transactions.
+ */
+export type ExtendedTransaction = Transaction & {
+  network?: string;
+  isBridgeTx?: boolean;
+  bridgeInfo?: BridgeInfo;
+  isBridgeOriginated?: false; // Ensure this is explicitly false or undefined for this type
+};
+
+/**
+ * Defines the specific structure for transactions originated purely from bridge history.
+ * Does NOT extend the base Transaction type and omits fields not present in bridge history.
+ */
+export type BridgeOriginatedItem = {
+  id: string; // Source Tx Hash
+  account: string;
+  timestamp: number;
+  type: 'send'; // Base type for potential filtering
+  from: {
+    address: string;
+    asset: {
+      type: CaipAssetType;
+      amount: string;
+      unit: string;
+      fungible: boolean;
+    };
+  }[];
+  to: []; // Not applicable for originated items
+  isBridgeOriginated: true; // Discriminator
+  bridgeStatus?: string;
+  network?: string;
+  isBridgeTx?: boolean;
+  bridgeInfo?: BridgeInfo;
+  // Does NOT include: status, chain, events, fees etc. from base Transaction
+};
+
+/**
+ * Defines the data structure returned by the hook, containing a list of potentially mixed transaction types.
+ */
+type MixedTransactionsData = {
+  transactions: (ExtendedTransaction | BridgeOriginatedItem)[]; // Array of mixed types
+  next: string | null;
+  lastUpdated: number;
+};
+
+// Define a type for the bridge history items (replace 'any' with a specific type if available)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BridgeHistoryItem = any;
+
+/**
+ * Hook that takes a list of non-EVM transactions and enhances them with information
+ * about related bridge operations. It identifies transactions that are part of a bridge,
+ * adds details like destination chain and status, and includes transactions found
+ * only in the bridge history (marked as `isBridgeOriginated`).
  *
- * @param nonEvmTransactions - The non-EVM transactions to process
- * @returns Enhanced non-EVM transactions with bridging information
+ * @param initialNonEvmTransactions - The initial list of non-EVM transactions.
+ * @returns An object containing the list of enhanced transactions (mixed types), or undefined if the input was undefined.
  */
 export default function useSolanaBridgeTransactionMapping(
-  nonEvmTransactions:
-    | { transactions: Transaction[]; next: string | null; lastUpdated: number }
+  initialNonEvmTransactions:
+    | {
+        transactions: Transaction[];
+        next: string | null;
+        lastUpdated: number;
+      }
     | undefined,
-) {
-  // Get bridge transactions from the bridge status controller
+): MixedTransactionsData | undefined {
+  // Return mixed data type
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
   /**
-   * Gets a human-readable network name from a chain ID
+   * Gets a human-readable network name from a chain ID.
    *
-   * @param chainId - The chain ID to resolve (can be decimal or hex)
-   * @returns The network name or the original chain ID if not found
+   * @param chainId - The chain ID to resolve.
+   * @returns The network name or the original chain ID if not found.
    */
-  const getNetworkName = (chainId: NumericValue) => {
-    // First check if it's in the MULTICHAIN_PROVIDER_CONFIGS (for non-EVM chains)
-    // @ts-expect-error WIP: Need to fix type for indexing MULTICHAIN_PROVIDER_CONFIGS with NumericValue
-    let networkName = MULTICHAIN_PROVIDER_CONFIGS[chainId]?.nickname;
+  const getNetworkName = (chainId: NumericValue | undefined): string => {
+    if (chainId === undefined || chainId === null) {
+      return 'Unknown Network';
+    }
+    const chainIdStr = chainId.toString();
 
-    // If not found and it might be an EVM chain ID, convert to hex and check NETWORK_TO_NAME_MAP
+    let networkName =
+      MULTICHAIN_PROVIDER_CONFIGS[
+        chainIdStr as keyof typeof MULTICHAIN_PROVIDER_CONFIGS
+      ]?.nickname;
+
     if (!networkName && !isNaN(Number(chainId))) {
       try {
-        // Convert decimal to hex with '0x' prefix
         const hexChainId = new Numeric(chainId, 10).toPrefixedHexString();
         // @ts-expect-error WIP: Need to fix type for indexing NETWORK_TO_NAME_MAP with string
         networkName = NETWORK_TO_NAME_MAP[hexChainId];
       } catch (e) {
-        // If conversion fails, just use the original chain ID
         console.error('Error converting chain ID', e);
       }
     }
-
-    // Return the network name or the original chain ID if no mapping found
-    return networkName || chainId;
+    return networkName || chainIdStr;
   };
 
-  // Create a map of bridge transaction signatures for quick lookups
-  const bridgeTxSignatures = {};
+  // Create a lookup map for faster access to bridge history items by source transaction hash.
+  const bridgeTxSignatures: { [key: string]: BridgeHistoryItem } = {};
   if (bridgeHistory) {
     Object.values(bridgeHistory).forEach((bridgeTx) => {
-      // For Solana transactions, we need to check both options for where the source tx hash might be
-      const possibleTxHashes = [
-        bridgeTx.srcTxHash, // Direct property
-        bridgeTx.status?.srcChain?.txHash, // Nested in status object
-      ].filter(Boolean); // Filter out undefined/null values
-
-      // Add entries for each possible tx hash
-      possibleTxHashes.forEach((txHash) => {
-        if (txHash) {
-          // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
-          bridgeTxSignatures[txHash] = bridgeTx;
-        }
-      });
+      const txHash = bridgeTx.status?.srcChain?.txHash;
+      if (txHash) {
+        bridgeTxSignatures[txHash] = bridgeTx;
+      }
     });
   }
 
-  // No transactions to process
-  if (!nonEvmTransactions?.transactions?.length) {
-    return nonEvmTransactions;
-  }
+  // Clone the input data. The initial transactions are treated as potential ExtendedTransaction.
+  let nonEvmTransactions: MixedTransactionsData = initialNonEvmTransactions
+    ? {
+        ...initialNonEvmTransactions,
+        // Map initial transactions - assume they are NOT originated
+        transactions: (initialNonEvmTransactions.transactions || []).map(
+          (tx) => ({ ...tx, isBridgeOriginated: false } as ExtendedTransaction),
+        ),
+      }
+    : { transactions: [], next: null, lastUpdated: Date.now() };
 
-  // Create synthetic transactions for bridge transactions that might not be in the non-EVM transactions list
-  // These are transactions from the bridge history that we want to make sure are displayed
-  const syntheticBridgeTxs: Transaction[] = [];
+  // Identify and create specific items for recent bridge operations found only in the bridge history.
+  const bridgeOriginatedTxs: BridgeOriginatedItem[] = []; // Use specific type
 
   if (bridgeHistory) {
-    // Loop through all bridge history entries
-    Object.entries(bridgeHistory).forEach(([id, bridgeTx]) => {
-      // Check if this is a recent transaction (last 24 hours)
+    Object.entries(bridgeHistory).forEach(([_id, bridgeTx]) => {
+      // Limit to bridge operations started within the last 24 hours.
       const isRecent =
         bridgeTx.startTime &&
         Date.now() - bridgeTx.startTime < 24 * 60 * 60 * 1000;
 
       if (isRecent) {
-        // Get the source transaction hash
-        const srcTxHash =
-          bridgeTx.srcTxHash || bridgeTx.status?.srcChain?.txHash;
-
-        // Check if this transaction is already in the nonEvmTransactions list
-        const existsInTxList = nonEvmTransactions?.transactions?.some(
-          (tx) => tx.id === srcTxHash || tx.hash === srcTxHash,
+        const srcTxHash = bridgeTx.status?.srcChain?.txHash;
+        // Check if a transaction with the same source hash already exists in the main list.
+        const existsInTxList = nonEvmTransactions.transactions.some(
+          (tx) => tx.id === srcTxHash, // Check against combined list
         );
 
-        // If it's not already in the list, create a synthetic transaction
+        // If it doesn't exist and we have a hash, create a new BridgeOriginatedItem entry for it.
         if (!existsInTxList && srcTxHash) {
-          // Create a minimal synthetic transaction object with the necessary fields
-          const syntheticTx: Transaction = {
+          const timestampSeconds =
+            ((bridgeTx.status?.status === 'COMPLETE'
+              ? bridgeTx.completionTime ?? bridgeTx.startTime
+              : bridgeTx.startTime) ?? Date.now()) / 1000;
+
+          // Determine the chain identifier using type guard.
+          const rawChainId = bridgeTx.quote?.srcChainId;
+          const chainId: CaipChainId = isCaipChainId(rawChainId)
+            ? rawChainId
+            : MultichainNetworks.SOLANA; // Default to Solana if invalid/missing
+
+          // Determine the native asset type (CAIP-19) for the determined chainId.
+          const assetType: CaipAssetType =
+            ((
+              MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 as Record<
+                CaipChainId,
+                string
+              >
+            )[chainId] as CaipAssetType) ?? 'eip155:1/slip44:60'; // Default to ETH native asset type if chainId not found
+
+          // Create the BridgeOriginatedItem without base Transaction fields.
+          const bridgeOriginatedTx: BridgeOriginatedItem = {
             id: srcTxHash,
             account: bridgeTx.account,
-            // Use completionTime for completed transactions, otherwise use startTime
-            // This ensures completed transactions sort correctly
-            timestamp:
-              bridgeTx.status === 'COMPLETE' ||
-              bridgeTx.status?.status === 'COMPLETE'
-                ? (bridgeTx.completionTime || bridgeTx.startTime) / 1000
-                : bridgeTx.startTime / 1000, // Convert to seconds for consistency
-            hash: srcTxHash,
-            type: 'bridge',
-            // Add minimal required fields
+            timestamp: timestampSeconds,
+            type: 'send',
             to: [],
             from: [
               {
                 address: bridgeTx.account,
                 asset: {
+                  type: assetType,
                   amount: (
-                    Number(bridgeTx.quote?.srcTokenAmount) /
-                    10 ** (bridgeTx.quote?.srcAsset?.decimals || 9)
+                    Number(bridgeTx.quote?.srcTokenAmount ?? 0) /
+                    10 ** (bridgeTx.quote?.srcAsset?.decimals ?? 9)
                   ).toString(),
-                  unit: bridgeTx.quote?.srcAsset?.symbol || 'SOL',
+                  unit: bridgeTx.quote?.srcAsset?.symbol ?? 'Unknown',
                   fungible: true,
                 },
               },
             ],
-            // Adding synthetic flag to identify these transactions
-            synthetic: true,
-            // Adding status information directly on the transaction
-            bridgeStatus: bridgeTx.status || bridgeTx.status?.status,
+            isBridgeOriginated: true,
+            bridgeStatus: bridgeTx.status?.status ?? 'PENDING',
+            network: bridgeTx.quote?.srcChainId?.toString() ?? 'unknown',
+            isBridgeTx: true, // Assume originated are bridge transactions initially.
+            bridgeInfo: undefined, // Populated later.
+            // NO status, chain, events, fees added here.
           };
-
-          syntheticBridgeTxs.push(syntheticTx);
+          bridgeOriginatedTxs.push(bridgeOriginatedTx);
         }
       }
     });
   }
 
-  // If we have synthetic transactions, add them to the transactions list
-  if (syntheticBridgeTxs.length > 0) {
-    if (!nonEvmTransactions) {
-      // Create a new transactions object if none exists
-      nonEvmTransactions = {
-        transactions: [],
-        next: null,
-        lastUpdated: Date.now(),
-      };
-    }
+  // Add the newly created bridge-originated transactions to the main list.
+  if (bridgeOriginatedTxs.length > 0) {
     nonEvmTransactions = {
       ...nonEvmTransactions,
-      transactions: [...nonEvmTransactions.transactions, ...syntheticBridgeTxs],
+      transactions: [
+        ...nonEvmTransactions.transactions,
+        ...bridgeOriginatedTxs,
+      ],
     };
   }
 
-  // Create a modified copy with bridge info added
-  const modifiedTransactions = nonEvmTransactions.transactions.map((tx) => {
-    // The signature is in the id field for non-EVM transactions
-    const txSignature = tx.id;
-    // Also check tx.hash which might contain the signature in some cases
-    const txHash = tx.hash;
+  // If there are no transactions at all (neither initial nor originated), return early.
+  if (!nonEvmTransactions.transactions.length) {
+    return initialNonEvmTransactions === undefined &&
+      bridgeOriginatedTxs.length === 0
+      ? undefined
+      : nonEvmTransactions;
+  }
 
-    // If the transaction type is explicitly 'swap', never mark it as a bridge
-    if (tx.type === 'swap') {
-      return {
-        ...tx,
-        // Explicitly set to false to ensure it's never marked as a bridge
-        isBridgeTx: false,
-      };
-    }
+  // Map through all transactions (original + originated) to add bridge details.
+  const modifiedTransactions: (ExtendedTransaction | BridgeOriginatedItem)[] =
+    nonEvmTransactions.transactions.map((tx) => {
+      const txSignature = tx.id;
 
-    // If the transaction type is already 'bridge' (from a synthetic transaction),
-    // try to find its matching bridge history entry
-    if (tx.type === 'bridge') {
-      // Find the matching bridge history entry by txMetaId
-      const matchingBridgeTxEntry = Object.entries(bridgeHistory).find(
-        ([_, entry]) =>
-          entry.srcTxHash === txSignature ||
-          entry.status?.srcChain?.txHash === txSignature,
-      );
-
-      if (matchingBridgeTxEntry) {
-        const [_, matchingBridgeTx] = matchingBridgeTxEntry;
-
-        // Get source and destination chain IDs, handle both possible data structures
-        const srcChainId =
-          matchingBridgeTx.srcChainId || matchingBridgeTx.quote?.srcChainId;
-        const destChainId =
-          matchingBridgeTx.destChainId || matchingBridgeTx.quote?.destChainId;
-
+      // Swaps are handled differently (Swaps should be ExtendedTransaction type).
+      if (tx.type === 'swap' && !tx.isBridgeOriginated) {
+        // Ensure it conforms to ExtendedTransaction (isBridgeOriginated defaults/is false)
         return {
-          ...tx,
-          isBridgeTx: true,
-          bridgeInfo: {
-            destChainId,
-            destChainName: getNetworkName(destChainId),
-            destAsset: {
-              ...(matchingBridgeTx.destAsset ||
-                matchingBridgeTx.quote?.destAsset ||
-                {}),
-              decimals:
-                matchingBridgeTx.destAsset?.decimals ||
-                matchingBridgeTx.quote?.destAsset?.decimals ||
-                18,
-            },
-            destTokenAmount:
-              matchingBridgeTx.destTokenAmount ||
-              matchingBridgeTx.quote?.destTokenAmount,
-            status:
-              // Direct status property (string) takes precedence
-              typeof matchingBridgeTx.status === 'string'
-                ? matchingBridgeTx.status
-                : // Then status.status if it exists
-                  matchingBridgeTx.status?.status ||
-                  // Default to 'PENDING' if no status found
-                  'PENDING',
-            destTxHash:
-              matchingBridgeTx.destTxHash ||
-              matchingBridgeTx.status?.destChain?.txHash,
-            srcTxHash:
-              matchingBridgeTx.srcTxHash ||
-              matchingBridgeTx.status?.srcChain?.txHash,
-            provider:
-              matchingBridgeTx.provider || matchingBridgeTx.quote?.provider,
-            destBlockExplorerUrl:
-              matchingBridgeTx.destBlockExplorerUrl ||
-              matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
-          },
+          ...(tx as ExtendedTransaction),
+          isBridgeTx: false,
+          isBridgeOriginated: false,
         };
       }
-    }
 
-    // Check if this transaction signature matches a bridge transaction
-    // First check txSignature (tx.id), then fall back to txHash (tx.hash)
-    const matchingSignature =
-      txSignature && bridgeTxSignatures[txSignature]
-        ? txSignature
-        : txHash && bridgeTxSignatures[txHash]
-        ? txHash
+      // Look for a matching entry in the bridge history using the transaction signature/ID.
+      const matchingBridgeTx = txSignature
+        ? bridgeTxSignatures[txSignature]
         : null;
 
-    if (matchingSignature) {
-      // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
-      const matchingBridgeTx = bridgeTxSignatures[matchingSignature];
+      // Case 1: Transaction found in bridge history (could be original or originated).
+      if (matchingBridgeTx) {
+        const srcChainId = matchingBridgeTx.quote?.srcChainId;
+        const destChainId = matchingBridgeTx.quote?.destChainId;
+        // It's a true bridge transaction if source and destination chains differ.
+        const isBridgeTx =
+          srcChainId !== undefined &&
+          destChainId !== undefined &&
+          srcChainId !== destChainId;
 
-      // Get source and destination chain IDs, handle both possible data structures
-      const srcChainId =
-        matchingBridgeTx.srcChainId || matchingBridgeTx.quote?.srcChainId;
-      const destChainId =
-        matchingBridgeTx.destChainId || matchingBridgeTx.quote?.destChainId;
-
-      // Only consider it a bridge if source and destination chains are different
-      const isBridgeTx =
-        srcChainId && destChainId && srcChainId !== destChainId;
-
-      // Return an enhanced version of the transaction with bridge info
-      return {
-        ...tx,
-        // Change the type to bridge only if it's truly a bridge transaction
-        type: isBridgeTx ? 'bridge' : tx.type,
-        // Add bridge-specific flag based on chain comparison
-        isBridgeTx,
-        // Include destination chain details - handle both possible data structures
-        bridgeInfo: isBridgeTx
+        const bridgeInfo: BridgeInfo | undefined = isBridgeTx
           ? {
               destChainId,
               destChainName: getNetworkName(destChainId),
               destAsset: {
-                ...(matchingBridgeTx.destAsset ||
-                  matchingBridgeTx.quote?.destAsset ||
-                  {}),
-                // Ensure decimals is always available for the destination asset
-                decimals:
-                  matchingBridgeTx.destAsset?.decimals ||
-                  matchingBridgeTx.quote?.destAsset?.decimals ||
-                  18,
+                ...(matchingBridgeTx.quote?.destAsset ?? {}),
+                decimals: matchingBridgeTx.quote?.destAsset?.decimals ?? 18,
               },
-              destTokenAmount:
-                matchingBridgeTx.destTokenAmount ||
-                matchingBridgeTx.quote?.destTokenAmount,
-              // Add status information for UI display
-              status:
-                // Direct status property (string) takes precedence
-                typeof matchingBridgeTx.status === 'string'
-                  ? matchingBridgeTx.status
-                  : // Then status.status if it exists
-                    matchingBridgeTx.status?.status ||
-                    // Default to 'PENDING' if no status found
-                    'PENDING',
-              destTxHash:
-                matchingBridgeTx.destTxHash ||
-                matchingBridgeTx.status?.destChain?.txHash,
-              srcTxHash:
-                matchingBridgeTx.srcTxHash ||
-                matchingBridgeTx.status?.srcChain?.txHash,
-              provider:
-                matchingBridgeTx.provider || matchingBridgeTx.quote?.provider,
-              // Add block explorer URL for destination chain based on chainId if available
+              destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
+              status: matchingBridgeTx.status?.status ?? 'PENDING',
+              destTxHash: matchingBridgeTx.status?.destChain?.txHash,
+              srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
+              provider: matchingBridgeTx.quote?.provider,
               destBlockExplorerUrl:
-                matchingBridgeTx.destBlockExplorerUrl ||
                 matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
             }
-          : undefined,
+          : undefined;
+
+        // If the original tx was bridge originated, return BridgeOriginatedItem
+        if (tx.isBridgeOriginated) {
+          return {
+            id: tx.id,
+            account: tx.account,
+            timestamp: tx.timestamp,
+            type: tx.type,
+            from: tx.from,
+            to: tx.to,
+            isBridgeOriginated: true,
+            bridgeStatus: tx.bridgeStatus,
+            network: tx.network,
+            isBridgeTx,
+            bridgeInfo,
+          } as BridgeOriginatedItem;
+        }
+        // Otherwise, return ExtendedTransaction
+        return {
+          ...(tx as ExtendedTransaction),
+          isBridgeTx,
+          bridgeInfo,
+          isBridgeOriginated: false,
+        };
+      }
+
+      // Case 2: Transaction originated from bridge history but somehow wasn't matched above.
+      if (tx.isBridgeOriginated) {
+        // Return as BridgeOriginatedItem, but mark as not a bridge and clear info
+        return {
+          id: tx.id,
+          account: tx.account,
+          timestamp: tx.timestamp,
+          type: tx.type,
+          from: tx.from,
+          to: tx.to,
+          isBridgeOriginated: true,
+          bridgeStatus: tx.bridgeStatus,
+          network: tx.network,
+          isBridgeTx: false,
+          bridgeInfo: undefined,
+        } as BridgeOriginatedItem;
+      }
+
+      // Case 3: Default - Transaction is not a swap, not found in bridge history, and not originated from it.
+      // Ensure it conforms to ExtendedTransaction
+      return {
+        ...(tx as ExtendedTransaction),
+        isBridgeTx: false,
+        isBridgeOriginated: false,
       };
-    }
+    });
 
-    // Return the original transaction unchanged if not a bridge transaction
-    return tx;
-  });
-
-  // Return the modified transactions with bridge info added
-
-  // Return a modified copy of the original transactions with bridge info
+  // Return the final data structure with the list of modified transactions.
   return {
     ...nonEvmTransactions,
     transactions: modifiedTransactions,

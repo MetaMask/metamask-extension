@@ -65,7 +65,6 @@ import {
   IconName,
   BadgeWrapper,
   AvatarNetwork,
-  Icon,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -80,13 +79,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
-  FlexDirection,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  IconColor,
-  AlignItems,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -515,7 +507,6 @@ export default function TransactionList({
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
                 {(() => {
-                  
                   const dateGroups = groupNonEvmTransactionsByDate(
                     modifiedNonEvmTransactions || nonEvmTransactions,
                   );
@@ -530,7 +521,20 @@ export default function TransactionList({
                         {dateGroup.date}
                       </Text>
                       {dateGroup.transactionGroups.map((transaction, index) => {
-                        // Use a separate component for bridge transactions
+                        // Type Guard: Check if it's a bridge-originated item
+                        if (transaction.isBridgeOriginated) {
+                          // Render using SolanaBridgeTransactionListItem
+                          // Assuming it can handle the BridgeOriginatedItem shape
+                          return (
+                            <SolanaBridgeTransactionListItem
+                              key={`bridge-originated-${transaction.id}`}
+                              transaction={transaction} // Pass BridgeOriginatedItem
+                              userAddress={selectedAccount.address}
+                              index={index}
+                              toggleShowDetails={toggleShowDetails}
+                            />
+                          );
+                        }
                         if (transaction.isBridgeTx && transaction.bridgeInfo) {
                           return (
                             <SolanaBridgeTransactionListItem
@@ -543,7 +547,6 @@ export default function TransactionList({
                           );
                         }
 
-                        // Use regular transaction component for non-bridge transactions
                         return (
                           <MultichainTransactionListItem
                             key={`${transaction.account}:${index}`}
