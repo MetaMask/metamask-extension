@@ -106,6 +106,7 @@ import { InstitutionalFeaturesController } from '@metamask-institutional/institu
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
+
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -363,6 +364,7 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
+import { InstitutionalSnapControllerInit } from './controller-init/accounts/institutional-snap-controller-init';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   MultichainAssetsControllerInit,
@@ -1416,7 +1418,6 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
     ///: END:ONLY_INCLUDE_IF
-
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1875,6 +1876,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ExecutionService: ExecutionServiceInit,
+      InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
       SnapController: SnapControllerInit,
@@ -3498,6 +3500,11 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+
+      setManageInstitutionalWallets:
+        preferencesController.setManageInstitutionalWallets.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {

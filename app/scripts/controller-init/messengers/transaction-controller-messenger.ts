@@ -30,10 +30,17 @@ import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import {
+  InstitutionalSnapControllerPublishHookAction,
+  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
+} from './accounts/institutional-snap-controller-messenger';
 
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction // FIXME: this is from https://github.com/MetaMask/metamask-extension/pull/30271/files#diff-eb756059bd2cb349825faa3880f3ec5ed26bd7a72bef432a29c64ae4da1c0d9e
+  | InstitutionalSnapControllerPublishHookAction
+  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
   | AccountsControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -67,6 +74,8 @@ export function getTransactionControllerMessenger(
   return messenger.getRestricted({
     name: 'TransactionController',
     allowedActions: [
+      'AccountsController:getState', // FIXME: this is from https://github.com/MetaMask/metamask-extension/pull/30271/files#diff-eb756059bd2cb349825faa3880f3ec5ed26bd7a72bef432a29c64ae4da1c0d9e
+      // allows me to use newer transaction controller
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
@@ -103,6 +112,8 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'InstitutionalSnapController:publishHook',
+      'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',
