@@ -4,15 +4,17 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
-import { SolAccountType } from '@metamask/keyring-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { orderBy, uniqBy } from 'lodash';
-import { createSelector } from 'reselect';
-import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { BigNumber } from 'bignumber.js';
-import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import { CaipChainId, Hex } from '@metamask/utils';
 import {
+  calcAdjustedReturn,
+  calcCost,
+  calcRelayerFee,
+  calcSentAmount,
+  calcSwapRate,
+  calcToAmount,
+  calcEstimatedAndMaxTotalGasFee,
+  calcSolanaTotalNetworkFee,
+  calcTotalEstimatedNetworkFee,
+  calcTotalMaxNetworkFee,
   isSolanaChainId,
   type L1GasFees,
   type BridgeToken,
@@ -29,6 +31,14 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { SolAccountType } from '@metamask/keyring-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { orderBy, uniqBy } from 'lodash';
+import { createSelector } from 'reselect';
+import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { BigNumber } from 'bignumber.js';
+import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import { CaipChainId, Hex } from '@metamask/utils';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -47,16 +57,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-import {
-  calcAdjustedReturn,
-  calcCost,
-  calcRelayerFee,
-  calcSentAmount,
-  calcSwapRate,
-  calcToAmount,
-  calcEstimatedAndMaxTotalGasFee,
-  calcSolanaTotalNetworkFee,
-} from '../../pages/bridge/utils/quote';
+import {} from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
@@ -453,21 +454,11 @@ const _getQuotesWithMetadata = createSelector(
           nativeToDisplayCurrencyExchangeRate,
           nativeToUsdExchangeRate,
         );
-        totalEstimatedNetworkFee = {
-          amount: gasFee.amount.plus(relayerFee.amount),
-          valueInCurrency:
-            gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
-            null,
-          usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
-        };
-        totalMaxNetworkFee = {
-          amount: gasFee.amountMax.plus(relayerFee.amount),
-          valueInCurrency:
-            gasFee.valueInCurrencyMax?.plus(
-              relayerFee.valueInCurrency || '0',
-            ) ?? null,
-          usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
-        };
+        totalEstimatedNetworkFee = calcTotalEstimatedNetworkFee(
+          gasFee,
+          relayerFee,
+        );
+        totalMaxNetworkFee = calcTotalMaxNetworkFee(gasFee, relayerFee);
       }
 
       const sentAmount = calcSentAmount(
@@ -511,7 +502,8 @@ const _getSortedQuotesWithMetadata = createSelector(
       default:
         return orderBy(
           quotesWithMetadata,
-          ({ cost }) => cost.valueInCurrency?.toNumber(),
+          ({ cost }) =>
+            cost.valueInCurrency ? Number(cost.valueInCurrency) : 0,
           'asc',
         );
     }
@@ -681,7 +673,7 @@ export const getValidationErrors = createDeepEqualSelector(
         activeQuote?.sentAmount?.valueInCurrency &&
         activeQuote?.adjustedReturn?.valueInCurrency &&
         fromTokenInputValue
-          ? activeQuote.adjustedReturn.valueInCurrency.lt(
+          ? new BigNumber(activeQuote.adjustedReturn.valueInCurrency).lt(
               new BigNumber(
                 1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
               ).times(activeQuote.sentAmount.valueInCurrency),

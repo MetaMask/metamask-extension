@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  getNativeAssetForChainId,
+  isQuoteExpired as isQuoteExpiredUtil,
+} from '@metamask/bridge-controller';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -35,7 +38,6 @@ import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRe
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
-import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
