@@ -40,9 +40,6 @@ export const ANY_BENEFICIARY = '0x0000000000000000000000000000000000000a11';
 const PRIMARY_TYPE_DELEGATION = 'Delegation';
 const DOMAIN_NAME = 'DelegationManager';
 
-export const ADDRESS_DELEGATION_MANAGER = process.env
-  .DELEGATION_MANAGER_ADDRESS as Hex;
-
 const ABI_TYPES_CAVEAT = [
   { type: 'address', name: 'enforcer' },
   { type: 'bytes', name: 'terms' },
@@ -130,7 +127,7 @@ export async function signDelegation({
       chainId: String(hexToNumber(chainId)),
       name: DOMAIN_NAME,
       version: '1',
-      verifyingContract: ADDRESS_DELEGATION_MANAGER,
+      verifyingContract: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
     },
     message: { ...delegation, chainId: hexToNumber(chainId) },
   };
@@ -182,7 +179,7 @@ function encodeBatchExecution(executions: Execution[]): Hex {
     ],
     [executions],
   ) as Hex;
-};
+}
 
 function encodeDelegation(delegations: Delegation[]): Hex {
   return defaultAbiCoder.encode(

@@ -10,7 +10,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, add0x, createProjectLogger, remove0x } from '@metamask/utils';
 import {
-  ADDRESS_DELEGATION_MANAGER,
   ANY_BENEFICIARY,
   Caveat,
   Delegation,
@@ -28,9 +27,7 @@ import {
   RelaySubmitRequest,
   submitRelayTransaction,
 } from '../transaction-relay';
-import { toHex } from '@metamask/controller-utils';
 
-const ENFORCER_ADDRESS = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 const EMPTY_HEX = '0x';
 
 const EMPTY_RESULT = {
@@ -137,7 +134,7 @@ export class Delegation7702PublishHook {
       data: transactionData,
       maxFeePerGas: maxFeePerGas as Hex,
       maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
-      to: ADDRESS_DELEGATION_MANAGER,
+      to: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
     };
 
     if (!delegationAddress) {
@@ -224,6 +221,7 @@ export class Delegation7702PublishHook {
     const { amount, recipient, tokenAddress } = gasFeeToken;
     const { data, to } = txParams;
     const tokenAmountPadded = add0x(remove0x(amount).padStart(64, '0'));
+    const enforcer = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 
     const enforcerTerms = add0x(
       (
@@ -241,7 +239,7 @@ export class Delegation7702PublishHook {
 
     return [
       {
-        enforcer: ENFORCER_ADDRESS,
+        enforcer,
         terms: enforcerTerms,
         args: EMPTY_HEX,
       },
