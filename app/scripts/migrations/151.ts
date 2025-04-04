@@ -202,7 +202,7 @@ function transformState(state: Record<string, unknown>) {
     updatedSubjects.push(key);
 
     const caveatValue = addPermittedEthChainId(
-      getCaveat(subject),
+      getExistingCaip25PermissionCaveat(subject),
       currentChainId,
     );
 
@@ -261,7 +261,7 @@ function transformState(state: Record<string, unknown>) {
  * @param subject - The subject to get the existing caveat value for.
  * @returns The existing `endowment:caip25` caveat value.
  */
-function getCaveat(
+function getExistingCaip25PermissionCaveat(
   subject: GenericPermissionControllerSubject,
 ): Caip25CaveatValue {
   const existingCaveat = subject.permissions[
