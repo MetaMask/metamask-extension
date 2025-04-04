@@ -30,7 +30,7 @@ const mockAccounts: [InternalAccount] = [
 export default {
   title: 'Pages/Vault/RemoteMode/Setup',
   component: RemoteModeSetupSwaps,
-  id: 'pages-remote-mode-setup--docs',
+  id: 'pages-remote-mode-setup-swaps--docs',
   decorators: [
     (story) => (
       <Provider store={store}>
