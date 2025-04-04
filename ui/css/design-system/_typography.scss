@@ -1,6 +1,6 @@
 @use "sass:map";
 
-$font-family: var(--font-family-sans); // --font-family-sans from @metamask/design-tokens stylesheet
+$font-family: var(--font-family-default); // from @metamask/design-tokens stylesheet
 
 $typography-variants: (
   'h1': 2.5rem,

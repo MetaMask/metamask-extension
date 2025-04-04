@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  FontFamily,
   FontWeight,
   FontStyle,
   TextVariant,
@@ -115,6 +116,10 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * ./ui/helpers/constants/design-system.js
    */
   fontStyle?: FontStyle;
+  /**
+   * The font family of the Text component. Should use the FontFamily enum
+   */
+  fontFamily?: FontFamily;
   /**
    * The textTransform of the Text component. Should use the TextTransform enum from
    * ./ui/helpers/constants/design-system.js
