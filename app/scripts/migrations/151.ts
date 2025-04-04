@@ -168,7 +168,7 @@ function transformState(state: Record<string, unknown>) {
   if (typeof currentChainId !== 'string') {
     global.sentry?.captureException?.(
       new Error(
-        'Skipping migration: No chain ID was found, or the chain ID resolved from the `NetworkController.selectedNetworkClientId` value is not a string.',
+        'Skipping migration: No currently selected chainId was found, or the chainId resolved from the `NetworkController.selectedNetworkClientId` value is not a string.',
       ),
     );
 
