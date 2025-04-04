@@ -26,6 +26,7 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
+ * @param request.trackEvent - Event tracking hook.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -37,6 +38,7 @@ export const SnapControllerInit: ControllerInitFunction<
   controllerMessenger,
   persistedState,
   removeAllConnections,
+  trackEvent,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
@@ -111,6 +113,7 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Update the controller to accept a readonly array.
     preinstalledSnaps: PREINSTALLED_SNAPS,
     getFeatureFlags,
+    trackEvent,
   });
 
   return {
