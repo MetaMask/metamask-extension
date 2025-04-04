@@ -1127,8 +1127,8 @@
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "This site is requesting to switch back to a standard account."
+  "confirmTitleDescDelegationRevoke": {
+    "message": "You're switching back to a standard account (EOA)."
   },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
@@ -1142,8 +1142,8 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remove permission"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset account"
+  "confirmTitleDelegationRevoke": {
+    "message": "Account update"
   },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
