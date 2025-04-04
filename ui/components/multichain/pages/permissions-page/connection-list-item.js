@@ -35,11 +35,12 @@ export const ConnectionListItem = ({ connection, onClick }) => {
     getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
   const permittedChains = _permittedChains.filter((caipChainId) => {
-    if (caipChainId === KnownCaipNamespace.Wallet) {
+    try {
+      const { namespace } = parseCaipChainId(caipChainId);
+      return namespace !== KnownCaipNamespace.Wallet;
+    } catch (err) {
       return false;
     }
-    const { namespace } = parseCaipChainId(caipChainId);
-    return namespace !== KnownCaipNamespace.Wallet;
   });
 
   return (

@@ -152,11 +152,12 @@ export const ReviewPermissions = () => {
 
   const connectedChainIds = _connectedChainIds.filter(
     (chainId: InternalScopeString) => {
-      if (chainId === KnownCaipNamespace.Wallet) {
+      try {
+        const { namespace } = parseCaipChainId(chainId as CaipChainId);
+        return namespace !== KnownCaipNamespace.Wallet;
+      } catch (err) {
         return false;
       }
-      const { namespace } = parseCaipChainId(chainId);
-      return namespace !== KnownCaipNamespace.Wallet;
     },
   );
 
