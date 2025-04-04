@@ -27,6 +27,7 @@ import {
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
+import Tooltip from '../../ui/tooltip/tooltip';
 
 type NftItemProps = {
   nft?: NFT;
@@ -103,6 +104,12 @@ export const NftItem = ({
       />
     );
 
+  const isLongName = nft?.name && nft.name.length > 12;
+  const isLongCollection =
+    nft?.collection?.name &&
+    typeof nft?.collection?.name === 'string' &&
+    nft.collection.name.length > 12;
+
   return (
     <Box className="nft-item__card">
       <Box
@@ -135,16 +142,34 @@ export const NftItem = ({
           {nftImageComponentToRender}
         </BadgeWrapper>
       </Box>
-      <Text variant={TextVariant.bodySm} color={TextColor.textDefault} ellipsis>
-        {nft?.name}
-      </Text>
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        ellipsis
-      >
-        {nft?.collection?.name}
-      </Text>
+      {nft && (
+        <Tooltip
+          position="bottom"
+          html={
+            <>
+              <span>{nft?.name}</span>
+              <br />
+              <span>{nft.collection?.name}</span>
+            </>
+          }
+          disabled={!isLongName && !isLongCollection}
+        >
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            ellipsis
+          >
+            {nft?.name}
+          </Text>{' '}
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            ellipsis
+          >
+            {nft?.collection?.name}
+          </Text>
+        </Tooltip>
+      )}
     </Box>
   );
 };
