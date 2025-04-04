@@ -1,10 +1,7 @@
-const {
-  withFixtures,
-  openDapp,
-  DAPP_ONE_URL,
-  unlockWallet,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+import { DAPP_ONE_URL, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('eth_subscribe', function () {
   it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
@@ -15,12 +12,13 @@ describe('eth_subscribe', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         const setupSubscriptionListener = `
           const responseContainer = document.createElement('div');
@@ -52,18 +50,16 @@ describe('eth_subscribe', function () {
         `);
 
         // Verify that the new block is seen on the first dapp
-        await driver.findElement('[data-testid="eth-subscribe-response"]');
+        await testDapp.check_ethSubscribeResponse(true);
 
         // Switch to the second dapp
-        await openDapp(driver, null, DAPP_ONE_URL);
+        const testDapp2 = new TestDapp(driver);
+        await testDapp2.openTestDappPage({ url: DAPP_ONE_URL });
+        await testDapp2.check_pageIsLoaded();
 
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
-
-        await driver.assertElementNotPresent(
-          '[data-testid="eth-subscribe-response"]',
-          { waitAtLeastGuard: 1000 }, // A waitAtLeastGuard of 1000ms is the best choice here
-        );
+        await testDapp2.check_ethSubscribeResponse(false);
       },
     );
   });

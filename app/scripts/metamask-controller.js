@@ -7499,6 +7499,17 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  updateAccountBalanceForTransactionNetwork(transactionMeta) {
+    const {
+      networkClientId,
+      txParams: { from },
+    } = transactionMeta;
+    this.accountTrackerController.updateAccountByAddress({
+      from,
+      networkClientId,
+    });
+  }
+
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
     this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
@@ -8275,6 +8286,8 @@ export default class MetamaskController extends EventEmitter {
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      updateAccountBalanceForTransactionNetwork:
+        this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
       persistedState: initState,
       removeAllConnections: this.removeAllConnections.bind(this),
