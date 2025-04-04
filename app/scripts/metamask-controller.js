@@ -2922,10 +2922,10 @@ export default class MetamaskController extends EventEmitter {
             const previousSolanaHexAccountAddresses = uniq(
               _previousSolanaHexAccountAddresses,
             );
-            const previousSelectedSolanaAccountAddress =
+            const [previousSelectedSolanaAccountAddress] =
               this.sortMultichainAccountsByLastSelected(
                 previousSolanaHexAccountAddresses,
-              )[0];
+              );
 
             const currentSolanaCaipAccountIds = currentCaveatValue
               ? getPermittedAccountsForScopes(currentCaveatValue, [
@@ -2942,10 +2942,10 @@ export default class MetamaskController extends EventEmitter {
             const currentSolanaHexAccountAddresses = uniq(
               _currentSolanaHexAccountAddresses,
             );
-            const currentSelectedSolanaAccountAddress =
+            const [currentSelectedSolanaAccountAddress] =
               this.sortMultichainAccountsByLastSelected(
                 currentSolanaHexAccountAddresses,
-              )[0];
+              );
 
             if (
               previousSelectedSolanaAccountAddress !==
@@ -5922,9 +5922,9 @@ export default class MetamaskController extends EventEmitter {
         return address;
       });
 
-      const accountAddressToEmit = this.sortMultichainAccountsByLastSelected(
+      const [accountAddressToEmit] = this.sortMultichainAccountsByLastSelected(
         parsedPermittedSolanaAddresses,
-      )[0];
+      );
 
       if (accountAddressToEmit) {
         // delay emit so that the event is not emitted
