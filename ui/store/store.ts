@@ -10,6 +10,7 @@ import {
 } from '@metamask/assets-controllers';
 import { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import type { NetworkStatus } from '../../shared/constants/network';
@@ -68,6 +69,7 @@ type TemporaryBackgroundState = NftControllerState &
       };
     };
     selectedNetworkClientId: string;
+    networkConfigurationsByChainId: Record<string, NetworkConfiguration>;
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     knownMethodData?: {
