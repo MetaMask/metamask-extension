@@ -119,4 +119,12 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
   });
+
+  it('does not select first gas fee token if sufficient balance', () => {
+    useInsufficientBalanceAlertsMock.mockReturnValue([]);
+
+    runHook();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
 });
