@@ -13,12 +13,6 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { Box } from '../../component-library/box';
-import { Text } from '../../component-library/text';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../component-library/banner-alert';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -52,7 +46,6 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
-    showErrorBanner: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
@@ -163,7 +156,6 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       showCancel,
-      showErrorBanner,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
     } = this.props;
@@ -177,17 +169,6 @@ export default class TransactionListItemDetails extends PureComponent {
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
-            {showErrorBanner && (
-              <BannerAlert severity={BannerAlertSeverity.Warning}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  as="h6"
-                  data-testid="transaction-list-item-details-banner-error-message"
-                >
-                  {t('transactionFailedBannerMessage')}
-                </Text>
-              </BannerAlert>
-            )}
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
@@ -214,7 +195,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     className="transaction-list-item-details__header-button"
                     data-testid="rety-button"
                   >
-                    <i className="fa fa-sync" />
+                    <i className="fa fa-sync"></i>
                   </Button>
                 </Tooltip>
               )}
@@ -226,18 +207,22 @@ export default class TransactionListItemDetails extends PureComponent {
               data-testid="transaction-list-item-details-tx-status"
             >
               <div>{t('status')}</div>
-              <TransactionStatus />
+              <div>
+                <TransactionStatus />
+              </div>
             </div>
             <div className="transaction-list-item-details__tx-hash">
-              <Button
-                type="link"
-                onClick={this.handleBlockExplorerClick}
-                disabled={!hash}
-              >
-                {blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                  ? t('addBlockExplorer')
-                  : t('viewOnBlockExplorer')}
-              </Button>
+              <div>
+                <Button
+                  type="link"
+                  onClick={this.handleBlockExplorerClick}
+                  disabled={!hash}
+                >
+                  {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                    ? t('addBlockExplorer')
+                    : t('viewOnBlockExplorer')}
+                </Button>
+              </div>
               <div>
                 <Tooltip
                   wrapperClassName="transaction-list-item-details__header-button"

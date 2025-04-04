@@ -372,8 +372,6 @@ function TransactionListItemInner({
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
-          showCancel={isPending && !hasCancelled && !isBridgeTx}
-          showErrorBanner={Boolean(error)}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
@@ -382,7 +380,6 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
-              shouldShowTooltip={false}
             />
           )}
           chainId={chainId}
