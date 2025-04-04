@@ -50,7 +50,7 @@ export const getPermittedAccountsByOrigin = createSelector(
  *
  * @param {Record<string, Record<string, unknown>>} state - The PermissionController state
  * @param {string[]} scopes - The scopes to get the permitted accounts for
- * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scope
+ * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scopes
  */
 export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
   const subjects = getSubjects(state);
