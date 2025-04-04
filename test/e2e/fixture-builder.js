@@ -237,6 +237,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityEnabled() {
+    return this.withPreferencesController({
+      useExternalServices: true,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -1631,14 +1637,6 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
-  }
-
-  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
-    return this.withPreferencesController({
-      featureFlags: {
-        showIncomingTransactions: incomingTransactionsPreferences,
-      },
-    });
   }
 
   withIncomingTransactionsCache(cache) {

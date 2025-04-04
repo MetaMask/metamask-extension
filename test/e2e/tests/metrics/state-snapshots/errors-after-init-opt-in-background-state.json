@@ -239,7 +239,6 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
-    "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",

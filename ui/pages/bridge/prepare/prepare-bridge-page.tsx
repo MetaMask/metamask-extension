@@ -115,9 +115,11 @@ import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
+import { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -133,7 +135,7 @@ const PrepareBridgePage = () => {
     [fromTokens],
   );
 
-  const toToken = useSelector(getToToken);
+  const toToken = useSelector(getToToken) as TmpBridgeToken;
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -222,6 +224,11 @@ const PrepareBridgePage = () => {
   // Resets the banner visibility when new alerts found
   const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
   useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
+
+  // Resets the banner visibility when toToken is changed
+  const [isCannotVerifyTokenBannerOpen, setIsCannotVerifyTokenBannerOpen] =
+    useState(true);
+  useEffect(() => setIsCannotVerifyTokenBannerOpen(true), [toToken?.address]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
@@ -431,6 +438,11 @@ const PrepareBridgePage = () => {
       }
     }
   }, []);
+
+  const occurrences = Number(toToken?.occurrences ?? 0);
+  const toTokenIsNotDefault =
+    toToken?.address &&
+    !isSwapsDefaultTokenAddress(toToken?.address, toChain?.chainId as string);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
@@ -774,6 +786,21 @@ const PrepareBridgePage = () => {
             textAlign={TextAlign.Left}
           />
         )}
+        {isCannotVerifyTokenBannerOpen &&
+          isEvm &&
+          toToken &&
+          toTokenIsNotDefault &&
+          occurrences < 2 && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Warning}
+              title={t('bridgeTokenCannotVerifyTitle')}
+              description={t('bridgeTokenCannotVerifyDescription')}
+              marginInline={4}
+              marginBottom={3}
+              textAlign={TextAlign.Left}
+              onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
+            />
+          )}
         {isEstimatedReturnLow && isLowReturnBannerOpen && (
           <BannerAlert
             ref={insufficientBalanceBannerRef}

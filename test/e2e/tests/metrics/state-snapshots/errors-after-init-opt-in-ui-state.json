@@ -191,7 +191,6 @@
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
-    "incomingTransactionsPreferences": {},
     "identities": "object",
     "lostIdentities": "object",
     "forgottenPassword": false,
