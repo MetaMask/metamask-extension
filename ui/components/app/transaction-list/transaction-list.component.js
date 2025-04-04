@@ -32,8 +32,8 @@ import {
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
-import SolanaBridgeTransactionListItem from '../solana-bridge-transaction-list-item';
-import SolanaBridgeTransactionDetailsModal from '../solana-bridge-transaction-details-modal';
+import SolanaBridgeTransactionListItem from '../solana-bridge-transaction-list-item/solana-bridge-transaction-list-item';
+import SolanaBridgeTransactionDetailsModal from '../solana-bridge-transaction-details-modal/solana-bridge-transaction-details-modal';
 ///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
