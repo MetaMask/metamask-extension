@@ -107,6 +107,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',

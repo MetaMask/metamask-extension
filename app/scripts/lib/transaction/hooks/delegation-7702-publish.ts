@@ -1,5 +1,7 @@
 import {
   GasFeeToken,
+  IsAtomicBatchSupportedRequest,
+  IsAtomicBatchSupportedResult,
   PublishHook,
   PublishHookResult,
   TransactionMeta,
@@ -20,7 +22,11 @@ import {
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { Interface } from '@ethersproject/abi';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
-import { RelaySubmitRequest, submitRelayTransaction } from '../transaction-relay';
+import {
+  RelaySubmitRequest,
+  submitRelayTransaction,
+} from '../transaction-relay';
+import { toHex } from '@metamask/controller-utils';
 
 const ENFORCER_ADDRESS = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 const EMPTY_HEX = '0x';
@@ -32,18 +38,22 @@ const EMPTY_RESULT = {
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
-  #isEIP7702Supported: (account: Hex, chainId: Hex) => Promise<boolean>;
+  #isAtomicBatchSupported: (
+    request: IsAtomicBatchSupportedRequest,
+  ) => Promise<IsAtomicBatchSupportedResult>;
 
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
-    isEIP7702Supported,
+    isAtomicBatchSupported,
     messenger,
   }: {
-    isEIP7702Supported: (account: Hex, chainId: Hex) => Promise<boolean>;
+    isAtomicBatchSupported: (
+      request: IsAtomicBatchSupportedRequest,
+    ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
   }) {
-    this.#isEIP7702Supported = isEIP7702Supported;
+    this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
   }
 
@@ -70,18 +80,30 @@ export class Delegation7702PublishHook {
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
 
-    const { data, from, maxFeePerGas, maxPriorityFeePerGas, to, value } =
+    const { data, from, maxFeePerGas, maxPriorityFeePerGas, nonce, to, value } =
       txParams;
 
-    const isEIP7702Supported = await this.#isEIP7702Supported(
-      from as Hex,
-      chainId,
+    const atomicBatchSupport = await this.#isAtomicBatchSupported({
+      address: from as Hex,
+      chainIds: [chainId],
+    });
+
+    const atomicBatchChainSupport = atomicBatchSupport.find(
+      (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
     );
 
-    if (!isEIP7702Supported) {
+    const isChainSupported =
+      atomicBatchChainSupport &&
+      (!atomicBatchChainSupport.delegationAddress ||
+        atomicBatchChainSupport.isSupported);
+
+    if (!isChainSupported) {
       log('Skipping as EIP-7702 is not supported', { from, chainId });
       return EMPTY_RESULT;
     }
+
+    const { delegationAddress, upgradeContractAddress } =
+      atomicBatchChainSupport;
 
     if (!selectedGasFeeToken || !gasFeeTokens?.length) {
       log('Skipping as no selected gas fee token');
@@ -141,16 +163,51 @@ export class Delegation7702PublishHook {
       [[userExecution, transferExecution]],
     );
 
-    const transactionParams: RelaySubmitRequest = {
+    const relayRequest: RelaySubmitRequest = {
       data: transactionData,
       maxFeePerGas: maxFeePerGas as Hex,
       maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
       to: ADDRESS_DELEGATION_MANAGER,
     };
 
-    log('Transaction params', transactionParams);
+    if (!delegationAddress) {
+      log('Including authorization as not upgraded');
 
-    const { transactionHash } = await submitRelayTransaction(transactionParams);
+      if (!upgradeContractAddress) {
+        throw new Error('Upgrade contract address not found');
+      }
+
+      const authorizationSignature = (await this.#messenger.call(
+        'KeyringController:signEip7702Authorization',
+        {
+          chainId: parseInt(chainId, 16),
+          contractAddress: upgradeContractAddress,
+          from,
+          nonce:parseInt(nonce as string, 16),
+        },
+      )) as Hex;
+
+      const { r, s, yParity } = this.#decodeAuthorizationSignature(
+        authorizationSignature,
+      );
+
+      log('Authorization signature', authorizationSignature, r, s, yParity);
+
+      relayRequest.authorizationList = [
+        {
+          address: upgradeContractAddress,
+          chainId,
+          nonce: toHex(parseInt(nonce as string, 16)),
+          r,
+          s,
+          yParity,
+        },
+      ];
+    }
+
+    log('Relay request', relayRequest);
+
+    const { transactionHash } = await submitRelayTransaction(relayRequest);
 
     return {
       transactionHash,
@@ -193,5 +250,18 @@ export class Delegation7702PublishHook {
       recipient,
       amount,
     ]) as Hex;
+  }
+
+  #decodeAuthorizationSignature(signature: Hex) {
+    const r = signature.slice(0, 66) as Hex;
+    const s = `0x${signature.slice(66, 130)}` as Hex;
+    const v = parseInt(signature.slice(130, 132), 16);
+    const yParity = v - 27 === 0 ? ('0x' as const) : ('0x1' as const);
+
+    return {
+      r,
+      s,
+      yParity,
+    };
   }
 }
