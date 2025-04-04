@@ -3735,9 +3735,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5474,13 +5471,6 @@
   "step1LedgerWalletMsg": {
     "message": "Mag-download, mag-set up, at maglagay ng password para ma-unlock ang $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "Ikonekta ang iyong OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Direktang ikonekta ang iyong OneKey sa iyong computer at i-unlock ito. Tiyaking ginagamit mo ang tamang passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Ikonekta ang iyong Trezor"
