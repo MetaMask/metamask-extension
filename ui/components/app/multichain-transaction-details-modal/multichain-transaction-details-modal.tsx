@@ -259,12 +259,19 @@ export function MultichainTransactionDetailsModal({
                 )}
 
             {/* Amounts per token */}
-            {assetOutputs.map((output) => (
-              <>
-                {accountComponent(t('to'), output.address)}
-                {amountComponent(output, t('amount'), 'transaction-amount')}
-              </>
-            ))}
+            {transaction.type === TransactionType.Swap
+              ? assetInputs.map((input, index) => (
+                  <>
+                    {accountComponent(t('to'), assetOutputs[index].address)}
+                    {amountComponent(input, t('amount'), 'transaction-amount')}
+                  </>
+                ))
+              : assetOutputs.map((output) => (
+                  <>
+                    {accountComponent(t('to'), output.address)}
+                    {amountComponent(output, t('amount'), 'transaction-amount')}
+                  </>
+                ))}
 
             {/* Base Fees */}
             {baseFee.map((fee) =>

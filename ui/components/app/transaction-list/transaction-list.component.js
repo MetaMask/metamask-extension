@@ -705,8 +705,12 @@ const MultichainTransactionListItem = ({
   }
 
   return assetOutputs.map((output, index) => {
+    let { amount, unit } = output;
+
     if (transaction.type === TransactionType.swap) {
       title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
+      amount = assetInputs[index].amount;
+      unit = assetInputs[index].unit;
     }
 
     return (
@@ -744,7 +748,7 @@ const MultichainTransactionListItem = ({
             title="Primary Currency"
             variant="body-lg-medium"
           >
-            {output.amount} {output.unit}
+            {amount} {unit}
           </Text>
         }
         title={transaction.isBridgeTx ? t('bridge') : title}
