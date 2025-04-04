@@ -12,6 +12,10 @@ import {
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  getAllAccountsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -58,24 +62,13 @@ export function getPermissionBackgroundApiMethods({
       return `${namespace}:${reference}:${internalAccount.address}`;
     });
 
-    // TODO dry this into core
-    const permittedAccounts = new Set();
-    Object.values(caip25Caveat.value.requiredScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
-    Object.values(caip25Caveat.value.optionalScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
+    const existingPermittedAccounts = getAllAccountsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
 
-    caipAccountIds.forEach((account) => {
-      permittedAccounts.add(account);
-    });
-
-    const updatedAccounts = Array.from(permittedAccounts);
+    const updatedAccounts = Array.from(
+      new Set([...existingPermittedAccounts, ...caipAccountIds]),
+    );
 
     const updatedCaveatValue = setPermittedAccounts(
       caip25Caveat.value,
@@ -98,11 +91,11 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
-    const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
     const updatedChainIds = Array.from(
-      new Set([...requiredScopes, ...optionalScopes, ...chainIds]),
+      new Set([
+        ...getAllScopesFromCaip25CaveatValue(caip25Caveat.value),
+        ...chainIds,
+      ]),
     );
 
     const caveatValueWithChains = setPermittedChainIds(
@@ -110,23 +103,14 @@ export function getPermissionBackgroundApiMethods({
       updatedChainIds,
     );
 
-    // TODO dry this into core
-    const permittedAccounts = new Set();
-    Object.values(caip25Caveat.value.requiredScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
-    Object.values(caip25Caveat.value.optionalScopes).forEach(({ accounts }) => {
-      accounts.forEach((account) => {
-        permittedAccounts.add(account);
-      });
-    });
+    const permittedAccounts = getAllAccountsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
 
     // ensure that the list of permitted accounts is set for the newly added scopes
     const caveatValueWithAccountsSynced = setPermittedAccounts(
       caveatValueWithChains,
-      Array.from(permittedAccounts),
+      permittedAccounts,
     );
 
     permissionController.updateCaveat(
@@ -193,24 +177,9 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      // TODO dry this into core
-      const permittedAccounts = new Set();
-      Object.values(caip25Caveat.value.requiredScopes).forEach(
-        ({ accounts }) => {
-          accounts.forEach((account) => {
-            permittedAccounts.add(account);
-          });
-        },
+      const existingAccounts = getAllAccountsFromCaip25CaveatValue(
+        caip25Caveat.value,
       );
-      Object.values(caip25Caveat.value.optionalScopes).forEach(
-        ({ accounts }) => {
-          accounts.forEach((account) => {
-            permittedAccounts.add(account);
-          });
-        },
-      );
-
-      const existingAccounts = Array.from(permittedAccounts);
 
       const internalAccount = accountsController.getAccountByAddress(address);
 
@@ -271,12 +240,8 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      // TODO dry and or move to @metamask/chain-agnostic-permission
-      const requiredScopes = Object.keys(caip25Caveat.value.requiredScopes);
-      const optionalScopes = Object.keys(caip25Caveat.value.optionalScopes);
-
-      const existingChainIds = Array.from(
-        new Set([...requiredScopes, ...optionalScopes]),
+      const existingChainIds = getAllScopesFromCaip25CaveatValue(
+        caip25Caveat.value,
       );
 
       const remainingChainIds = existingChainIds.filter(

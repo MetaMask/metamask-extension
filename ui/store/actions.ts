@@ -12,13 +12,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import {
-  parseCaipChainId,
-  parseCaipAccountId,
-  type CaipChainId,
-  type Hex,
-  type Json,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -130,6 +124,7 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import { isInternalAccountInPermittedAccounts } from '../../shared/lib/multichain/chain-agnostic-permission';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
@@ -1863,54 +1858,17 @@ export function setSelectedAccount(
     const permittedAccountsForCurrentTab =
       getAllPermittedAccountsForCurrentTab(state);
 
-    // TODO: DRY this
     const currentTabIsConnectedToPreviousAddress =
-      permittedAccountsForCurrentTab.some((account) => {
-        const parsedPermittedAccount = parseCaipAccountId(account);
-
-        return prevAccount.scopes.some((scope) => {
-          const { namespace, reference } = parseCaipChainId(scope);
-
-          if (
-            namespace !== parsedPermittedAccount.chain.namespace ||
-            !isEqualCaseInsensitive(
-              prevAccount.address,
-              parsedPermittedAccount.address,
-            )
-          ) {
-            return false;
-          }
-
-          return (
-            reference === '0' ||
-            reference === parsedPermittedAccount.chain.reference
-          );
-        });
-      });
+      isInternalAccountInPermittedAccounts(
+        permittedAccountsForCurrentTab,
+        prevAccount,
+      );
 
     const currentTabIsConnectedToNextAddress =
-      permittedAccountsForCurrentTab.some((account) => {
-        const parsedPermittedAccount = parseCaipAccountId(account);
-
-        return nextAccount.scopes.some((scope) => {
-          const { namespace, reference } = parseCaipChainId(scope);
-
-          if (
-            namespace !== parsedPermittedAccount.chain.namespace ||
-            !isEqualCaseInsensitive(
-              nextAccount.address,
-              parsedPermittedAccount.address,
-            )
-          ) {
-            return false;
-          }
-
-          return (
-            reference === '0' ||
-            reference === parsedPermittedAccount.chain.reference
-          );
-        });
-      });
+      isInternalAccountInPermittedAccounts(
+        permittedAccountsForCurrentTab,
+        nextAccount,
+      );
 
     const switchingToUnconnectedAddress =
       Boolean(activeTabOrigin) &&

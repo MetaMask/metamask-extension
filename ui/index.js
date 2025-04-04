@@ -6,7 +6,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
-import { parseCaipChainId, parseCaipAccountId } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -21,7 +20,7 @@ import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../shared/modules/string-utils';
+import { isInternalAccountInPermittedAccounts } from '../shared/lib/multichain/chain-agnostic-permission';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -136,33 +135,11 @@ export async function setupInitialStore(
 
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
-    let currentTabIsConnectedToSelectedAddress;
-    if (selectedAccount) {
-      currentTabIsConnectedToSelectedAddress =
-        // TODO: dry and move to @metamask/chain-agnostic-permission package
-        permittedAccountsForCurrentTab.some((account) => {
-          const parsedPermittedAccount = parseCaipAccountId(account);
-
-          return selectedAccount.scopes.some((scope) => {
-            const { namespace, reference } = parseCaipChainId(scope);
-
-            if (
-              namespace !== parsedPermittedAccount.chain.namespace ||
-              !isEqualCaseInsensitive(
-                selectedAccount.address,
-                parsedPermittedAccount.address,
-              )
-            ) {
-              return false;
-            }
-
-            return (
-              reference === '0' ||
-              reference === parsedPermittedAccount.chain.reference
-            );
-          });
-        });
-    }
+    const currentTabIsConnectedToSelectedAddress =
+      isInternalAccountInPermittedAccounts(
+        permittedAccountsForCurrentTab,
+        selectedAccount,
+      );
 
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);

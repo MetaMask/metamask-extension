@@ -74,39 +74,6 @@ export function getCaip25PermissionsResponse(
 }
 
 /**
- * Gets a list of unique accounts from the given CAIP-25 caveat value.
- *
- * @param requestedCaip25CaveatValue - CAIP-25 request values.
- * @returns Accounts available for requesting.
- */
-export function getAllRequestedAccounts(
-  requestedCaip25CaveatValue: Caip25CaveatValue,
-) {
-  const requiredAccounts = Object.values(
-    requestedCaip25CaveatValue.requiredScopes,
-  ).flatMap((scope) => scope.accounts);
-
-  const optionalAccounts = Object.values(
-    requestedCaip25CaveatValue.optionalScopes,
-  ).flatMap((scope) => scope.accounts);
-
-  const allAccounts = [...requiredAccounts, ...optionalAccounts];
-
-  return [...new Set(allAccounts)];
-}
-
-export function getAllRequestedChainIds(
-  requestedCaip25CaveatValue: Caip25CaveatValue,
-) {
-  const allScopes = [
-    ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
-    ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
-  ];
-
-  return [...new Set(allScopes)];
-}
-
-/**
  * Filters networks based on the CAIP request scopes.
  *
  * @param networks - Network configurations.

@@ -69,11 +69,13 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
+  getAllAccountsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
   getDefaultAccounts,
-  getAllRequestedAccounts,
-  getAllRequestedChainIds,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -113,10 +115,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedCaipAccountIds = getAllRequestedAccounts(
+
+  const requestedCaipAccountIds = getAllAccountsFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
-  const requestedCaipChainIds = getAllRequestedChainIds(
+  const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
 
