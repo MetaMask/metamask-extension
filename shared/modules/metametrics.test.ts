@@ -25,6 +25,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     finalizeEventFragment: jest.fn(),
     getEventFragmentById: jest.fn(),
     updateEventFragment: jest.fn(),
+    getAccountBalance: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),
     getHardwareTypeForMetric: jest.fn(),
