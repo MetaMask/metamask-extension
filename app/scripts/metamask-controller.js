@@ -149,7 +149,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   hasProperty,
   hexToBigInt,
@@ -2967,7 +2967,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.accountsController.name}:selectedAccountChange`,
         async (account) => {
           if (
-            account.type === 'solana:data-account' &&
+            account.type === SolAccountType.DataAccount &&
             account.address !== lastSelectedSolanaAccountAddress
           ) {
             lastSelectedSolanaAccountAddress = account.address;
