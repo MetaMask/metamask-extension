@@ -61,6 +61,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
           console.error('localNodes is undefined or empty');
 
@@ -112,6 +113,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
           await activityListPage.check_waitForTransactionStatus('cancelled');
