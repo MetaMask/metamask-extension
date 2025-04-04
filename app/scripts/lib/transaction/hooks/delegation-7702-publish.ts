@@ -1,4 +1,5 @@
 import {
+  AuthorizationList,
   GasFeeToken,
   IsAtomicBatchSupportedRequest,
   IsAtomicBatchSupportedResult,
@@ -12,6 +13,7 @@ import {
   ADDRESS_DELEGATION_MANAGER,
   ANY_BENEFICIARY,
   Caveat,
+  Delegation,
   Execution,
   ExecutionMode,
   ROOT_AUTHORITY,
@@ -80,8 +82,7 @@ export class Delegation7702PublishHook {
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
 
-    const { data, from, maxFeePerGas, maxPriorityFeePerGas, nonce, to, value } =
-      txParams;
+    const { from, maxFeePerGas, maxPriorityFeePerGas } = txParams;
 
     const atomicBatchSupport = await this.#isAtomicBatchSupported({
       address: from as Hex,
@@ -119,6 +120,74 @@ export class Delegation7702PublishHook {
       throw new Error('Selected gas fee token not found');
     }
 
+    const delegation = await this.#buildDelegation(
+      transactionMeta,
+      gasFeeToken,
+    );
+
+    const executions = this.#buildExecutions(transactionMeta, gasFeeToken);
+
+    const transactionData = encodeRedeemDelegations(
+      [[delegation]],
+      [ExecutionMode.BATCH_DEFAULT_MODE],
+      [executions],
+    );
+
+    const relayRequest: RelaySubmitRequest = {
+      data: transactionData,
+      maxFeePerGas: maxFeePerGas as Hex,
+      maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
+      to: ADDRESS_DELEGATION_MANAGER,
+    };
+
+    if (!delegationAddress) {
+      relayRequest.authorizationList = await this.#buildAuthorizationList(
+        transactionMeta,
+        upgradeContractAddress,
+      );
+    }
+
+    log('Relay request', relayRequest);
+
+    const { transactionHash } = await submitRelayTransaction(relayRequest);
+
+    return {
+      transactionHash,
+    };
+  }
+
+  #buildExecutions(
+    transactionMeta: TransactionMeta,
+    gasFeeToken: GasFeeToken,
+  ): Execution[] {
+    const { txParams } = transactionMeta;
+    const { data, to, value } = txParams;
+
+    const userExecution: Execution = {
+      target: to as Hex,
+      value: (value as Hex) ?? '0x0',
+      callData: (data as Hex) ?? EMPTY_HEX,
+    };
+
+    const transferExecution: Execution = {
+      target: gasFeeToken.tokenAddress,
+      value: '0x0',
+      callData: this.#buildTokenTransferData(
+        gasFeeToken.recipient,
+        gasFeeToken.amount,
+      ),
+    };
+
+    return [userExecution, transferExecution];
+  }
+
+  async #buildDelegation(
+    transactionMeta: TransactionMeta,
+    gasFeeToken: GasFeeToken,
+  ): Promise<Delegation> {
+    const { chainId, txParams } = transactionMeta;
+    const { from } = txParams;
+
     const caveats = this.#buildCaveats(txParams, gasFeeToken);
 
     log('Caveats', caveats);
@@ -142,75 +211,9 @@ export class Delegation7702PublishHook {
 
     log('Delegation signature', signature);
 
-    const userExecution: Execution = {
-      target: to as Hex,
-      value: (value as Hex) ?? '0x0',
-      callData: (data as Hex) ?? EMPTY_HEX,
-    };
-
-    const transferExecution: Execution = {
-      target: gasFeeToken.tokenAddress,
-      value: '0x0',
-      callData: this.#buildTokenTransferData(
-        gasFeeToken.recipient,
-        gasFeeToken.amount,
-      ),
-    };
-
-    const transactionData = encodeRedeemDelegations(
-      [[{ ...delegation, signature }]],
-      [ExecutionMode.BATCH_DEFAULT_MODE],
-      [[userExecution, transferExecution]],
-    );
-
-    const relayRequest: RelaySubmitRequest = {
-      data: transactionData,
-      maxFeePerGas: maxFeePerGas as Hex,
-      maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
-      to: ADDRESS_DELEGATION_MANAGER,
-    };
-
-    if (!delegationAddress) {
-      log('Including authorization as not upgraded');
-
-      if (!upgradeContractAddress) {
-        throw new Error('Upgrade contract address not found');
-      }
-
-      const authorizationSignature = (await this.#messenger.call(
-        'KeyringController:signEip7702Authorization',
-        {
-          chainId: parseInt(chainId, 16),
-          contractAddress: upgradeContractAddress,
-          from,
-          nonce:parseInt(nonce as string, 16),
-        },
-      )) as Hex;
-
-      const { r, s, yParity } = this.#decodeAuthorizationSignature(
-        authorizationSignature,
-      );
-
-      log('Authorization signature', authorizationSignature, r, s, yParity);
-
-      relayRequest.authorizationList = [
-        {
-          address: upgradeContractAddress,
-          chainId,
-          nonce: toHex(parseInt(nonce as string, 16)),
-          r,
-          s,
-          yParity,
-        },
-      ];
-    }
-
-    log('Relay request', relayRequest);
-
-    const { transactionHash } = await submitRelayTransaction(relayRequest);
-
     return {
-      transactionHash,
+      ...delegation,
+      signature,
     };
   }
 
@@ -241,6 +244,47 @@ export class Delegation7702PublishHook {
         enforcer: ENFORCER_ADDRESS,
         terms: enforcerTerms,
         args: EMPTY_HEX,
+      },
+    ];
+  }
+
+  async #buildAuthorizationList(
+    transactionMeta: TransactionMeta,
+    upgradeContractAddress?: Hex,
+  ): Promise<AuthorizationList> {
+    const { chainId, txParams } = transactionMeta;
+    const { from, nonce } = txParams;
+
+    log('Including authorization as not upgraded');
+
+    if (!upgradeContractAddress) {
+      throw new Error('Upgrade contract address not found');
+    }
+
+    const authorizationSignature = (await this.#messenger.call(
+      'KeyringController:signEip7702Authorization',
+      {
+        chainId: parseInt(chainId, 16),
+        contractAddress: upgradeContractAddress,
+        from,
+        nonce: parseInt(nonce as string, 16),
+      },
+    )) as Hex;
+
+    const { r, s, yParity } = this.#decodeAuthorizationSignature(
+      authorizationSignature,
+    );
+
+    log('Authorization signature', { authorizationSignature, r, s, yParity });
+
+    return [
+      {
+        address: upgradeContractAddress,
+        chainId,
+        nonce: nonce as Hex,
+        r,
+        s,
+        yParity,
       },
     ];
   }
