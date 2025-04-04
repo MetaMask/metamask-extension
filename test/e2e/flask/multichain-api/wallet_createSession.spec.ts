@@ -49,7 +49,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             tag: 'button',
           });
           await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.TestDApp,
+            WINDOW_TITLES.MultichainTestDApp,
           );
           const getSessionResult = await testDapp.getSession();
 
@@ -100,7 +100,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             tag: 'button',
           });
           await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.TestDApp,
+            WINDOW_TITLES.MultichainTestDApp,
           );
 
           const getSessionResult = await testDapp.getSession();
@@ -218,7 +218,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
               tag: 'button',
             });
             await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.TestDApp,
+              WINDOW_TITLES.MultichainTestDApp,
             );
 
             const getSessionResult = await testDapp.getSession();
@@ -417,7 +417,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             tag: 'button',
           });
           await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.TestDApp,
+            WINDOW_TITLES.MultichainTestDApp,
           );
           await driver.delay(largeDelayMs);
 
