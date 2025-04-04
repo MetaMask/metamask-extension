@@ -455,6 +455,7 @@ const PrepareBridgePage = () => {
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
+  const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
 
   return (
     <>
@@ -533,6 +534,7 @@ const PrepareBridgePage = () => {
           onBlockExplorerClick={(token) => {
             setBlockExplorerToken(token);
             setShowBlockExplorerToast(true);
+            setToastTriggerCounter((prev) => prev + 1);
           }}
         />
 
@@ -680,6 +682,7 @@ const PrepareBridgePage = () => {
             onBlockExplorerClick={(token) => {
               setBlockExplorerToken(token);
               setShowBlockExplorerToast(true);
+              setToastTriggerCounter((prev) => prev + 1);
             }}
           />
 
@@ -941,9 +944,10 @@ const PrepareBridgePage = () => {
         >
           <ToastContainer>
             <Toast
+              key={toastTriggerCounter}
               text={t('bridgeBlockExplorerLinkCopied')}
               onClose={() => setShowBlockExplorerToast(false)}
-              autoHideTime={5000}
+              autoHideTime={2500}
               startAdornment={
                 <AvatarFavicon
                   name={blockExplorerToken.symbol}

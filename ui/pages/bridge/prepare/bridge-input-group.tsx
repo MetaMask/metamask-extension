@@ -133,7 +133,7 @@ export const BridgeInputGroup = ({
         if (blockExplorerUrls) {
           blockExplorerUrl = formatBlockExplorerAddressUrl(
             blockExplorerUrls,
-            token.address.split(':').at(-1) ?? token.address,
+            token.address,
           );
         }
       } else {
