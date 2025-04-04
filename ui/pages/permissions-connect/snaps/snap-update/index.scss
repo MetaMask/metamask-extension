@@ -16,7 +16,7 @@
     position: sticky;
     right: 0;
     left: 0;
-    bottom: -16px; // accounts for snap-update__content padding
+    bottom: 0;
     height: 48px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative) 100%);
   }
