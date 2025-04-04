@@ -6,7 +6,6 @@ import {
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import { sortSelectedInternalAccounts } from '../../../helpers/utils/util';
 
@@ -105,25 +104,27 @@ export function getDefaultAccounts(
     sortSelectedInternalAccounts(allAccounts);
 
   requestedNamespaces.forEach((namespace) => {
-    if (
-      !defaultAccounts.find((account) => {
+    const defaultAccountExistsForNamespace = defaultAccounts.find((account) => {
+      const {
+        chain: { namespace: accountNamespace },
+      } = parseCaipAccountId(account.caipAccountId);
+      return accountNamespace === namespace;
+    });
+
+    if (defaultAccountExistsForNamespace) {
+      return;
+    }
+
+    const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
+      (account) => {
         const {
           chain: { namespace: accountNamespace },
         } = parseCaipAccountId(account.caipAccountId);
         return accountNamespace === namespace;
-      })
-    ) {
-      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
-        (account) => {
-          const {
-            chain: { namespace: accountNamespace },
-          } = parseCaipAccountId(account.caipAccountId);
-          return accountNamespace === namespace;
-        },
-      );
-      if (defaultAccountForNamespace) {
-        defaultAccounts.push(defaultAccountForNamespace);
-      }
+      },
+    );
+    if (defaultAccountForNamespace) {
+      defaultAccounts.push(defaultAccountForNamespace);
     }
   });
 
