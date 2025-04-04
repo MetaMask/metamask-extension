@@ -2172,6 +2172,16 @@ export const getNotifySnaps = createDeepEqualSelector(
     );
   },
 );
+/**
+ * Get non-preinstalled snaps that have the snap_notify permission.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object[]} An array of notify snaps that are not preinstalled.
+ */
+export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+  getNotifySnaps,
+  (snaps) => snaps.filter((snap) => !snap.preinstalled),
+);
 
 function getAllSnapInsights(state) {
   return state.metamask.insights;
