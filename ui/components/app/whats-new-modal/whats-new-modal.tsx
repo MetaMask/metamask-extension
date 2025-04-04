@@ -116,15 +116,16 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   };
 
   return (
-    <Modal
-      onClose={() => null}
-      data-testid="whats-new-modal"
-      isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}
-      isClosedOnOutsideClick
-      isClosedOnEscapeKey
-      autoFocus={false}
-    >
-      <ModalOverlay />
+    <>
+      <Modal
+        onClose={() => null}
+        data-testid="whats-new-modal"
+        isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}
+        isClosedOnOutsideClick
+        isClosedOnEscapeKey
+        autoFocus={false}
+      >
+        <ModalOverlay />
 
         {notifications.map(({ id }) => {
           const notification = getTranslatedUINotifications(t)[id];
