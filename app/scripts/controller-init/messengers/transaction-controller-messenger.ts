@@ -115,6 +115,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:updateRequestState',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
+      'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',

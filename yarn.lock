@@ -6622,9 +6622,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^53.0.0":
+"@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller::locator=metamask-crx%40workspace%3A.":
   version: 53.0.0
-  resolution: "@metamask/transaction-controller@npm:53.0.0"
+  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=abafd5&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6654,7 +6654,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/da03881c02ee22cfa6b806d3bbdfcd127c1c1f43cbaae0edd1ca82df2aefe8e950804a627ef3a16444cd3efdbd01ff7382f2f9557e1990f74990bb26012576f8
+  checksum: 10/183414781e16e75d384be082f90b382da8ab7e532c9a7474466a95a6ce3c44f627bc263023ae4f027b21aaa69a5b3c40840f212fe5f68bbdb8b0e9fcab1a421e
   languageName: node
   linkType: hard
 
@@ -27384,7 +27384,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^53.0.0"
+    "@metamask/transaction-controller": "file:.yalc/@metamask/transaction-controller"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"

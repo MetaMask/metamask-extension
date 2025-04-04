@@ -268,10 +268,9 @@ async function publishHook({
   }
 
   const hook = new Delegation7702PublishHook({
-    isEIP7702Supported: async (account, chainId) =>
-      (await transactionController.isAtomicBatchSupported(account)).includes(
-        chainId,
-      ),
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
     messenger: initMessenger,
   }).getHook();
 

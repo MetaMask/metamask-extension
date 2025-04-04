@@ -1,6 +1,8 @@
+import { AuthorizationList } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 
 export type RelaySubmitRequest = {
+  authorizationList?: AuthorizationList;
   data: Hex;
   maxFeePerGas: Hex;
   maxPriorityFeePerGas: Hex;
