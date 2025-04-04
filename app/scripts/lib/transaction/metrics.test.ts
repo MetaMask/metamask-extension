@@ -1261,208 +1261,218 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe.each([
-    ['if added', handleTransactionAdded],
-    ['if approved', handleTransactionApproved],
-    ['if dropped', handleTransactionDropped],
-    ['if failed', handleTransactionFailed],
-    ['if rejected', handleTransactionRejected],
-    ['if submitted', handleTransactionSubmitted],
+  (
     [
-      'if confirmed',
-      (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
-        handleTransactionConfirmed(
-          request,
-          args.transactionMeta as TransactionMetaEventPayload,
-        ),
-    ],
-  ])('%s', (_title, fn) => {
-    it('includes batch properties', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        delegationAddress: ADDRESS_3_MOCK,
-        nestedTransactions: [
-          {
-            to: ADDRESS_MOCK,
-            data: '0x1',
-            type: TransactionType.contractInteraction,
-          },
-          {
-            to: ADDRESS_2_MOCK,
-            data: '0x2',
-            type: TransactionType.contractInteraction,
-          },
-        ],
-        txParams: {
-          ...mockTransactionMeta.txParams,
-          authorizationList: [
+      ['if added', handleTransactionAdded],
+      ['if approved', handleTransactionApproved],
+      ['if dropped', handleTransactionDropped],
+      ['if failed', handleTransactionFailed],
+      ['if rejected', handleTransactionRejected],
+      ['if submitted', handleTransactionSubmitted],
+      [
+        'if confirmed',
+        (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+          handleTransactionConfirmed(
+            request,
+            args.transactionMeta as TransactionMetaEventPayload,
+          ),
+      ],
+    ] as [
+      string,
+      (
+        request: TransactionMetricsRequest,
+        args: TransactionEventPayload,
+      ) => ReturnType<typeof handleTransactionConfirmed>,
+    ][]
+  ).forEach(([_title, fn]) =>
+    describe(_title, () => {
+      it('includes batch properties', async () => {
+        const transactionMeta = {
+          ...mockTransactionMeta,
+          delegationAddress: ADDRESS_3_MOCK,
+          nestedTransactions: [
             {
-              address: ADDRESS_3_MOCK,
+              to: ADDRESS_MOCK,
+              data: '0x1',
+              type: TransactionType.contractInteraction,
+            },
+            {
+              to: ADDRESS_2_MOCK,
+              data: '0x2',
+              type: TransactionType.contractInteraction,
             },
           ],
-        },
-      } as TransactionMeta;
+          txParams: {
+            ...mockTransactionMeta.txParams,
+            authorizationList: [
+              {
+                address: ADDRESS_3_MOCK,
+              },
+            ],
+          },
+        } as TransactionMeta;
 
-      jest
-        .mocked(mockTransactionMetricsRequest.getMethodData)
-        .mockResolvedValueOnce({
-          name: METHOD_NAME_MOCK,
-        })
-        .mockResolvedValueOnce({
-          name: METHOD_NAME_2_MOCK,
+        jest
+          .mocked(mockTransactionMetricsRequest.getMethodData)
+          .mockResolvedValueOnce({
+            name: METHOD_NAME_MOCK,
+          })
+          .mockResolvedValueOnce({
+            name: METHOD_NAME_2_MOCK,
+          });
+
+        await fn(mockTransactionMetricsRequest, {
+          transactionMeta,
         });
 
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
+        const { properties, sensitiveProperties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).toStrictEqual(
+          expect.objectContaining({
+            api_method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+            batch_transaction_count: 2,
+            batch_transaction_method: 'eip7702',
+            eip7702_upgrade_transaction: true,
+            transaction_contract_method: [METHOD_NAME_MOCK, METHOD_NAME_2_MOCK],
+          }),
+        );
+
+        expect(sensitiveProperties).toStrictEqual(
+          expect.objectContaining({
+            account_eip7702_upgraded: ADDRESS_3_MOCK,
+            transaction_contract_address: [ADDRESS_MOCK, ADDRESS_2_MOCK],
+          }),
+        );
       });
 
-      const { properties, sensitiveProperties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
+      it('includes gas_paid_with if selected gas fee token', async () => {
+        const transactionMeta = {
+          ...mockTransactionMeta,
+          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        } as TransactionMeta;
 
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          api_method: MESSAGE_TYPE.WALLET_SEND_CALLS,
-          batch_transaction_count: 2,
-          batch_transaction_method: 'eip7702',
-          eip7702_upgrade_transaction: true,
-          transaction_contract_method: [METHOD_NAME_MOCK, METHOD_NAME_2_MOCK],
-        }),
-      );
+        await fn(mockTransactionMetricsRequest, {
+          transactionMeta,
+        });
 
-      expect(sensitiveProperties).toStrictEqual(
-        expect.objectContaining({
-          account_eip7702_upgraded: ADDRESS_3_MOCK,
-          transaction_contract_address: [ADDRESS_MOCK, ADDRESS_2_MOCK],
-        }),
-      );
-    });
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
 
-    it('includes gas_paid_with if selected gas fee token', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-      } as TransactionMeta;
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
+        expect(properties).toStrictEqual(
+          expect.objectContaining({
+            gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
+          }),
+        );
       });
 
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
+      it('includes gas_payment_tokens_available if gas fee tokens', async () => {
+        const transactionMeta = {
+          ...mockTransactionMeta,
+          gasFeeTokens: [
+            GAS_FEE_TOKEN_MOCK,
+            { ...GAS_FEE_TOKEN_MOCK, symbol: 'DAI' },
+          ],
+        } as TransactionMeta;
 
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
-        }),
-      );
-    });
+        await fn(mockTransactionMetricsRequest, {
+          transactionMeta,
+        });
 
-    it('includes gas_payment_tokens_available if gas fee tokens', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        gasFeeTokens: [
-          GAS_FEE_TOKEN_MOCK,
-          { ...GAS_FEE_TOKEN_MOCK, symbol: 'DAI' },
-        ],
-      } as TransactionMeta;
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
 
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
+        expect(properties).toStrictEqual(
+          expect.objectContaining({
+            gas_payment_tokens_available: [GAS_FEE_TOKEN_MOCK.symbol, 'DAI'],
+          }),
+        );
       });
 
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
+      it('includes transasction_type as gas_payment', async () => {
+        const transactionMeta = {
+          ...mockTransactionMeta,
+          batchId: '0x123',
+        } as TransactionMeta;
 
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_payment_tokens_available: [GAS_FEE_TOKEN_MOCK.symbol, 'DAI'],
-        }),
-      );
-    });
+        await fn(mockTransactionMetricsRequest, {
+          transactionMeta,
+        });
 
-    it('includes transasction_type as gas_payment', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        batchId: '0x123',
-      } as TransactionMeta;
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
 
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
+        expect(properties).toStrictEqual(
+          expect.objectContaining({
+            transaction_type: 'gas_payment',
+          }),
+        );
       });
 
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
+      it('includes gas_insufficient_native_asset as true if insufficient native balance', async () => {
+        const transactionMeta = {
+          ...mockTransactionMeta,
+          txParams: {
+            ...mockTransactionMeta.txParams,
+            gas: toHex(10),
+            maxFeePerGas: toHex(5),
+            value: toHex(3),
+          },
+        } as TransactionMeta;
 
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          transaction_type: 'gas_payment',
-        }),
-      );
-    });
+        jest
+          .mocked(mockTransactionMetricsRequest.getAccountBalance)
+          .mockReturnValueOnce(toHex(52));
 
-    it('includes gas_insufficient_native_asset as true if insufficient native balance', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        txParams: {
-          ...mockTransactionMeta.txParams,
-          gas: toHex(10),
-          maxFeePerGas: toHex(5),
-          value: toHex(3),
-        },
-      } as TransactionMeta;
+        await fn(mockTransactionMetricsRequest, {
+          transactionMeta,
+        });
 
-      jest
-        .mocked(mockTransactionMetricsRequest.getAccountBalance)
-        .mockReturnValueOnce(toHex(52));
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
 
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
+        expect(properties).toStrictEqual(
+          expect.objectContaining({
+            gas_insufficient_native_asset: true,
+          }),
+        );
       });
 
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
+      it('includes gas_insufficient_native_asset as false if sufficient native balance', async () => {
+        const transactionMeta = {
+          ...mockTransactionMeta,
+          txParams: {
+            ...mockTransactionMeta.txParams,
+            gas: toHex(10),
+            maxFeePerGas: toHex(5),
+            value: toHex(3),
+          },
+        } as TransactionMeta;
 
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_insufficient_native_asset: true,
-        }),
-      );
-    });
+        jest
+          .mocked(mockTransactionMetricsRequest.getAccountBalance)
+          .mockReturnValueOnce(toHex(53));
 
-    it('includes gas_insufficient_native_asset as false if sufficient native balance', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        txParams: {
-          ...mockTransactionMeta.txParams,
-          gas: toHex(10),
-          maxFeePerGas: toHex(5),
-          value: toHex(3),
-        },
-      } as TransactionMeta;
+        await fn(mockTransactionMetricsRequest, {
+          transactionMeta,
+        });
 
-      jest
-        .mocked(mockTransactionMetricsRequest.getAccountBalance)
-        .mockReturnValueOnce(toHex(53));
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
 
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
+        expect(properties).toStrictEqual(
+          expect.objectContaining({
+            gas_insufficient_native_asset: false,
+          }),
+        );
       });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          gas_insufficient_native_asset: false,
-        }),
-      );
-    });
-  });
+    }),
+  );
 });
