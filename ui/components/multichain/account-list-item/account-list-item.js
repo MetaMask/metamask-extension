@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { BigNumber } from 'bignumber.js';
 ///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
@@ -72,7 +73,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getMultiAccountChainBalances } from '../../../selectors/multichain/networks';
+import { getChainIdsWithTransactionActivity } from '../../../selectors/multichain/networks';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -80,7 +81,10 @@ import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NAME_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../shared/constants/network';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -162,18 +166,27 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
-  const accountListBalancesByChainId = useSelector(
-    getMultiAccountChainBalances,
+  const chainsWithTransactionActivity = useSelector(
+    getChainIdsWithTransactionActivity,
   );
-  const userAggregatedNetworkBalances = useMemo(() => {
-    const balances = accountListBalancesByChainId?.[account.address] ?? [];
-    return balances
-      .filter((item) => item.totalFiatBalance > 0)
-      .sort((a, b) => b.totalFiatBalance - a.totalFiatBalance)
-      .map((item) => ({
-        avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[item.chainId],
-      }));
-  }, [accountListBalancesByChainId, account.address]);
+
+  const sortedNetworkIcons = useMemo(() => {
+    const chainsWithActivityByAddress =
+      chainsWithTransactionActivity?.[account.address]?.activeChains ?? [];
+
+    const chainsWithActivity = chainsWithActivityByAddress
+      .map((chainId) => toHex(chainId))
+      .map((chainId) => {
+        const networkName = CHAIN_ID_TO_NAME_MAP[chainId];
+        return {
+          chainId,
+          name: networkName,
+          avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
+        };
+      });
+
+    return chainsWithActivity;
+  }, [chainsWithTransactionActivity, account.address]);
 
   let balanceToTranslate;
   if (isEvmNetwork) {
@@ -387,10 +400,10 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {userAggregatedNetworkBalances.length > 0 && (
+          {sortedNetworkIcons.length > 0 && (
             <AvatarGroup
               avatarType={AvatarType.NETWORK}
-              members={userAggregatedNetworkBalances}
+              members={sortedNetworkIcons}
               limit={4}
               renderTag={false}
             />

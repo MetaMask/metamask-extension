@@ -5,7 +5,6 @@ import {
   toMultichainNetworkConfiguration,
   ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
-import { toHex } from '@metamask/controller-utils';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { type CaipChainId, type Hex } from '@metamask/utils';
@@ -20,19 +19,8 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-  getAllTokens,
-  getMarketData,
-  selectAccountsByChainId,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
-import {
-  getTokenBalances,
-  getCurrencyRates,
-  getCurrentCurrency,
-} from '../../ducks/metamask/metamask';
-
-import { ChainFiatBalances } from './types';
-import { calculateChainBalance } from './utils';
 
 export type MultichainNetworkControllerState = {
   metamask: InternalMultichainNetworkState;
@@ -205,69 +193,21 @@ export const getSelectedMultichainNetworkConfiguration = (
   return networkConfigurationsByChainId[chainId];
 };
 
-export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
-  state.metamask.networksWithTransactionActivity;
+/**
+ * Selector to get networks with transaction activity for all accounts
+ *
+ * @param state - The global state object
+ * @returns The networks with transaction activity by account address
+ */
+export const networksWithTransactionActivity = (
+  state: MultichainNetworkConfigState,
+) => state.metamask.networksWithTransactionActivity;
 
 /**
- * Selector to get the multi-account chain balances
- *
- * @param allTokenBalances - The token balances for all accounts
- * @param allTokens - The tokens for all accounts
- * @param allNetworks - The networks for all accounts
- * @param accountsByChainId - The accounts by chain id
- * @param marketData - The market data for all accounts
- * @param currencyRates - The currency rates for all accounts
- * @param currentCurrency - The current currency for all accounts
- * @returns The multi-account chain balances for all accounts for each chain
+ * Memoized selector that returns networks with transaction activity
+ * Uses deep equality comparison to prevent unnecessary rerenders
  */
-export const getMultiAccountChainBalances = createDeepEqualSelector(
-  [
-    getNetworksWithActivity,
-    getTokenBalances,
-    getAllTokens,
-    getNetworkConfigurationsByChainId,
-    selectAccountsByChainId,
-    getMarketData,
-    getCurrencyRates,
-    getCurrentCurrency,
-  ],
-  (
-    networksWithActivity,
-    allTokenBalances,
-    allTokens,
-    allNetworks,
-    accountsByChainId,
-    marketData,
-    currencyRates,
-    currentCurrency,
-  ): ChainFiatBalances => {
-    const result: ChainFiatBalances = {};
-    for (const [accountAddress, networkMetadata] of Object.entries(
-      networksWithActivity,
-    )) {
-      result[accountAddress] = [];
-
-      const activeNetworks = networkMetadata.activeChains;
-      for (const chainId of activeNetworks) {
-        const currentChainId = toHex(chainId);
-        const tokenBalances = allTokenBalances[accountAddress as Hex];
-
-        const chainBalance = calculateChainBalance(
-          currentChainId,
-          accountAddress,
-          accountsByChainId,
-          allNetworks,
-          currencyRates,
-          currentCurrency,
-          allTokens,
-          marketData,
-          tokenBalances,
-        );
-
-        result[accountAddress].push(chainBalance);
-      }
-    }
-
-    return result;
-  },
+export const getChainIdsWithTransactionActivity = createDeepEqualSelector(
+  networksWithTransactionActivity,
+  (networksWithActivity) => networksWithActivity,
 );
