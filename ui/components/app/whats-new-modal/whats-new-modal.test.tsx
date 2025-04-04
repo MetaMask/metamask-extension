@@ -15,6 +15,11 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   },
 }));
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  getNextAvailableAccountName: () => 'Test Account',
+}));
+
 describe('WhatsNewModal', () => {
   const mockOnClose = jest.fn();
   const mockCreateAccount = jest.fn();
