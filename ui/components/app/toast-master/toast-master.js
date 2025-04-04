@@ -212,6 +212,42 @@ function PrivacyPolicyToast() {
     setNewPrivacyPolicyToastShownDate(Date.now());
   }
 
+  const handleReadMore = () => {
+    global.platform.openTab({
+      url: PRIVACY_POLICY_LINK,
+    });
+
+    // Only track if platform.trackEvent exists
+    if (global.platform?.trackEvent) {
+      global.platform.trackEvent({
+        event: 'ToastSelect',
+        category: 'Toast',
+        properties: {
+          'toast name': 'privacy',
+          action: 'read more',
+        },
+      });
+    }
+
+    setNewPrivacyPolicyToastClickedOrClosed();
+  };
+
+  const handleClose = () => {
+    // Only track if platform.trackEvent exists
+    if (global.platform?.trackEvent) {
+      global.platform.trackEvent({
+        event: 'ToastSelect',
+        category: 'Toast',
+        properties: {
+          'toast name': 'privacy',
+          action: 'close',
+        },
+      });
+    }
+
+    setNewPrivacyPolicyToastClickedOrClosed();
+  };
+
   return (
     showPrivacyPolicyToast && (
       <Toast
@@ -221,13 +257,8 @@ function PrivacyPolicyToast() {
         }
         text={t('newPrivacyPolicyTitle')}
         actionText={t('newPrivacyPolicyActionButton')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: PRIVACY_POLICY_LINK,
-          });
-          setNewPrivacyPolicyToastClickedOrClosed();
-        }}
-        onClose={setNewPrivacyPolicyToastClickedOrClosed}
+        onActionClick={handleReadMore}
+        onClose={handleClose}
       />
     )
   );

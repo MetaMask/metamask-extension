@@ -28,6 +28,7 @@ export type CrossChainSwapsEventProperties = {
       usd_actual_gas: number;
       quote_vs_execution_ratio: number;
       quoted_vs_used_gas_ratio: number;
+      transaction_hash?: string;
     };
   [MetaMetricsEventName.ActionSubmitted]: RequestParams &
     RequestMetadata &
@@ -38,6 +39,7 @@ export type CrossChainSwapsEventProperties = {
     TxStatusData & {
       actual_time_minutes: number;
       error_message: string;
+      transaction_hash?: string;
     };
   [MetaMetricsEventName.CrossChainSwapsQuotesRequested]: RequestParams &
     RequestMetadata & {

@@ -534,7 +534,10 @@ export class AppStateController extends BaseController<
 
   setOnboardingDate(): void {
     this.update((state) => {
-      state.onboardingDate = Date.now();
+      // Only set if not already set
+      if (!state.onboardingDate) {
+        state.onboardingDate = Date.now();
+      }
     });
   }
 

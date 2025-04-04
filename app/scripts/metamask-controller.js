@@ -1713,6 +1713,8 @@ export default class MetamaskController extends EventEmitter {
         const state = this._getMetaMaskState();
         return getFeatureFlagsByChainId(state);
       },
+      getParticipateInMetrics: () =>
+        this.metaMetricsController.state.participateInMetaMetrics,
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
@@ -7480,6 +7482,12 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      getRemoteFeatureFlags: () => {
+        // Get the remoteFeatureFlags property from state
+        const featureFlags = this.remoteFeatureFlagController?.state || {};
+        // Return just the remoteFeatureFlags object, not the whole state
+        return featureFlags.remoteFeatureFlags || {};
+      },
     };
     return {
       ...controllerActions,

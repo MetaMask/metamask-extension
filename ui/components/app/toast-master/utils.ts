@@ -40,7 +40,13 @@ export function setNewPrivacyPolicyToastShownDate(time: number) {
 }
 
 export function setNewPrivacyPolicyToastClickedOrClosed() {
-  submitRequestToBackgroundAndCatch('setNewPrivacyPolicyToastClickedOrClosed');
+  try {
+    submitRequestToBackgroundAndCatch(
+      'setNewPrivacyPolicyToastClickedOrClosed',
+    );
+  } catch (error) {
+    console.error('Failed to close privacy policy toast:', error);
+  }
 }
 
 export function setShowNftDetectionEnablementToast(

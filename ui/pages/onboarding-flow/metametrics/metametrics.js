@@ -143,7 +143,7 @@ export default function OnboardingMetametrics() {
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverCollect', [
+            {t('onboardingMetametricsNeverCollectText', [
               <Text
                 variant={TextVariant.inherit}
                 key="never"

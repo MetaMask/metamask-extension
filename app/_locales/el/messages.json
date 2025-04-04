@@ -3399,10 +3399,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Πολιτική Απορρήτου"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 τα κλικ και οι προβολές στην εφαρμογή αποθηκεύονται, ωστόσο άλλα στοιχεία (όπως η δημόσια διεύθυνσή σας) όχι.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Ιδιωτικές:"
   },
