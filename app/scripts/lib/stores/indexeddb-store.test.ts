@@ -18,7 +18,7 @@ describe('IndexedDBStore', () => {
     db = new DB();
   });
   afterEach(() => {
-    db.close();
+    db?.close();
   });
 
   describe('open', () => {
@@ -82,13 +82,14 @@ describe('IndexedDBStore', () => {
     it('rejects on transaction error with non-serializable value', async () => {
       await db.open(dbName, dbVersion);
       const values = {
+        // Functions are not serializable, so this will ensure an error:
         key: () => {
           return undefined;
         },
-      }; // Functions are not serializable
-      await expect(db.set(values)).rejects.toThrow(
-        'The data being stored could not be cloned by the internal structured cloning algorithm.',
-      );
+      };
+      // don't matter exactly what the error
+      // is, we just need to ensure that it does propagate errors.
+      await expect(db.set(values)).rejects.toThrow('could not be cloned');
     });
   });
 
