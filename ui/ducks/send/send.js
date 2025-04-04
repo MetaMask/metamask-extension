@@ -141,6 +141,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import {
   getDisabledSwapAndSendNetworksFromAPI,
   getSwapAndSendQuotes,
@@ -1751,15 +1752,16 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
-            new BigNumber(state.gasLimitMinimum),
-          ):
-            slice.caseReducers.addHistoryEntry(state, {
-              payload: `Form is invalid because ${draftTransaction.gas.gasLimit} is lessThan ${state.gasLimitMinimum}`,
-            });
+          // TODO: not elegible for non-EVM
+          // case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
+          //   new BigNumber(state.gasLimitMinimum),
+          // ):
+          //   slice.caseReducers.addHistoryEntry(state, {
+          //     payload: `Form is invalid because ${draftTransaction.gas.gasLimit} is lessThan ${state.gasLimitMinimum}`,
+          //   });
 
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
+          //   draftTransaction.status = SEND_STATUSES.INVALID;
+          //   break;
           case draftTransaction.recipient.warning === 'loading':
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Form is invalid because recipient warning is loading`,
@@ -3580,7 +3582,7 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
-  (state) => getCurrentChainId(state),
+  (state) => getMultichainCurrentChainId(state),
   (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
   (chainId, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
