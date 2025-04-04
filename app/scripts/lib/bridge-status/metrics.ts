@@ -116,7 +116,7 @@ export const handleBridgeTransactionComplete = async (
   };
 
   if (
-    getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
+    getRemoteFeatureFlags().transactionsTxHashInAnalytics &&
     getParticipateInMetrics() &&
     bridgeHistoryItem.status.srcChain.txHash
   ) {
