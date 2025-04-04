@@ -283,7 +283,7 @@ function getChainId(
   networkClientId: string,
   networkConfigurationsByChainId: RuntimeObject,
 ): Hex | undefined {
-  const configurationChainId = Object.entries(
+  const matchingNetworkConfigurationEntry = Object.entries(
     networkConfigurationsByChainId,
   ).find(([, config]) => {
     if (
@@ -300,8 +300,8 @@ function getChainId(
     );
   });
 
-  if (configurationChainId) {
-    return configurationChainId[0] as Hex;
+  if (matchingNetworkConfigurationEntry) {
+    return matchingNetworkConfigurationEntry[0] as Hex;
   }
 
   return BUILT_IN_NETWORKS.get(networkClientId);
