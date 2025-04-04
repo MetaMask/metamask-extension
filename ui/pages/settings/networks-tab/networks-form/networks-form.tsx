@@ -56,7 +56,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FontStyle,
   JustifyContent,
   TextColor,
   TextVariant,
