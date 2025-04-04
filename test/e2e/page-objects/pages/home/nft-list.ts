@@ -31,6 +31,14 @@ class NftListPage {
     tag: 'h6',
   };
 
+  private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
+
+  private readonly nftFilterByPopularNetworks =
+    '[data-testid="network-filter-all"]';
+
+  private readonly nftFilterByCurrentNetwork =
+    '[data-testid="network-filter-current"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -105,6 +113,37 @@ class NftListPage {
       'Check that success removed NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successRemoveNftMessage);
+  }
+
+  async check_numberOfNftsDisplayed(
+    expectedNumberOfNfts: number,
+  ): Promise<void> {
+    console.log(
+      `Check that ${expectedNumberOfNfts} NFTs are displayed in NFT tab on homepage`,
+    );
+    await this.driver.wait(async () => {
+      const nftIconOnActivityList = await this.driver.findElements(
+        this.nftIconOnActivityList,
+      );
+      return nftIconOnActivityList.length === expectedNumberOfNfts;
+    }, 10000);
+
+    console.log(`${expectedNumberOfNfts} NFTs found in NFT list on homepage`);
+  }
+
+  async filterNftsByNetworks(networkName: string): Promise<void> {
+    await this.driver.clickElement(this.nftFilterByNetworks);
+    if (networkName === 'Popular networks') {
+      await this.driver.waitForSelector(this.nftFilterByPopularNetworks);
+      await this.driver.clickElement(this.nftFilterByPopularNetworks);
+    } else if (networkName === 'Current network') {
+      await this.driver.waitForSelector(this.nftFilterByCurrentNetwork);
+      await this.driver.clickElement(this.nftFilterByCurrentNetwork);
+    } else {
+      throw new Error(
+        `Invalid network name selected for filtering NFTs: ${networkName}`,
+      );
+    }
   }
 }
 
