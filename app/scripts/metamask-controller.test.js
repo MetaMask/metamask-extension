@@ -552,8 +552,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId:
-            metamaskController.networkController.state.selectedNetworkClientId,
+          networkClientId: undefined,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
