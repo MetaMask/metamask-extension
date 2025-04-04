@@ -1985,6 +1985,11 @@ export function getShouldShowAggregatedBalancePopover(state) {
   return shouldShowAggregatedBalancePopover;
 }
 
+export function getDismissSmartAccountSuggestionEnabled(state) {
+  const { dismissSmartAccountSuggestionEnabled } = getPreferences(state);
+  return dismissSmartAccountSuggestionEnabled;
+}
+
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
   (snapsData) => {

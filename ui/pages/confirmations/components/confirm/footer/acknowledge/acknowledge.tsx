@@ -1,5 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
 import { useIsUpgradeTransaction } from '../../info/hooks/useIsUpgradeTransaction';
+import { getDismissSmartAccountSuggestionEnabled } from '../../../../../../selectors';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { Checkbox } from '../../../../../../components/component-library';
 import { AlignItems } from '../../../../../../helpers/constants/design-system';
@@ -13,8 +16,11 @@ export function Acknowledge(props: AcknowledgeProps) {
   const t = useI18nContext();
   const isUpgradeTransaction = useIsUpgradeTransaction();
   const { isAcknowledged, onAcknowledgeToggle } = props;
+  const dismissSmartAccountSuggestionEnabled = useSelector(
+    getDismissSmartAccountSuggestionEnabled,
+  );
 
-  if (!isUpgradeTransaction) {
+  if (!isUpgradeTransaction || dismissSmartAccountSuggestionEnabled) {
     return null;
   }
 
