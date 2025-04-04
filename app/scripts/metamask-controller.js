@@ -179,6 +179,7 @@ import {
   setPermittedEthChainIds,
   setEthAccounts,
   getPermittedAccountsForScopes,
+  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 
 import {
@@ -415,7 +416,6 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
-import { KnownSessionProperties } from './lib/rpc-method-middleware/handlers/wallet-createSession/constants';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 

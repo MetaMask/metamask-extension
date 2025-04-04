@@ -1,15 +1,20 @@
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
+  KnownSessionProperties,
+  NormalizedScopesObject,
 } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   CaipAccountId,
   CaipChainId,
+  CaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../modules/string-utils';
+
+// Helpers to be adapted and moved to @metamask/chain-agnostic-permission
 
 /**
  * Helper to get the CAIP-25 caveat from a permission
@@ -172,5 +177,28 @@ export function isInternalAccountInPermittedAccounts(
         reference === parsedPermittedAccount.chain.reference
       );
     });
+  });
+}
+
+export function isKnownSessionPropertyValue(
+  value: string,
+): value is KnownSessionProperties {
+  return Object.values(KnownSessionProperties).includes(
+    value as KnownSessionProperties,
+  );
+}
+
+export function isNamespaceInScopesObject(
+  scopesObject: NormalizedScopesObject,
+  caipNamespace: CaipNamespace,
+) {
+  return Object.keys(scopesObject).some((key) => {
+    let namespace = '';
+    try {
+      ({ namespace } = parseCaipChainId(key as CaipChainId));
+    } catch (err) {
+      return false;
+    }
+    return namespace === caipNamespace;
   });
 }
