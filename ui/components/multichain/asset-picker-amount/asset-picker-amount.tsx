@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
@@ -14,6 +14,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getAllEnabledNetworks,
+  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -35,6 +37,7 @@ import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmatio
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { setActiveNetworkWithError } from '../../../store/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -52,6 +55,7 @@ type AssetPickerAmountProps = OverridingUnion<
     isAmountLoading?: boolean;
     action?: 'send' | 'receive';
     error?: string;
+    showNetworkPicker?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -69,12 +73,13 @@ export const AssetPickerAmount = ({
   onAmountChange,
   action,
   isAmountLoading,
+  showNetworkPicker,
   error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-
+  const dispatch = useDispatch();
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
   );
@@ -90,7 +95,10 @@ export const AssetPickerAmount = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-
+  const nonTestNetwork = useSelector(getAllEnabledNetworks);
+  const allNetworks = Object.values(nonTestNetwork);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -220,6 +228,25 @@ export const AssetPickerAmount = ({
         <AssetPicker
           action={action}
           asset={standardizedAsset}
+          networkProps={
+            showNetworkPickerinModal
+              ? {
+                  network: currentNetwork,
+                  networks: allNetworks,
+                  onNetworkChange: (networkConfig) => {
+                    console.log(networkConfig, 'networkClientId');
+                    dispatch(
+                      setActiveNetworkWithError(
+                        networkConfig.rpcEndpoints[
+                          networkConfig.defaultRpcEndpointIndex
+                        ].networkClientId || networkConfig.chainId,
+                      ),
+                    );
+                  },
+                  header: t('yourNetworks'),
+                }
+              : undefined
+          }
           {...assetPickerProps}
         />
         <SwappableCurrencyInput
