@@ -109,6 +109,8 @@ describe('onRpcEndpointUnavailable', () => {
   )) {
     describe(`for the Infura network ${infuraNetwork}`, () => {
       it(`creates a Segment event if the endpoint is a known Quicknode URL and the error is not a connection error`, () => {
+        // We can assume this is set.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const endpointUrl = getQuicknodeEndpointUrl()!;
         const trackEvent = jest.fn();
 
@@ -131,6 +133,8 @@ describe('onRpcEndpointUnavailable', () => {
       });
 
       it(`creates a Segment event if the endpoint is a known Quicknode URL but the error is a connection error`, () => {
+        // We can assume this is set.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const endpointUrl = getQuicknodeEndpointUrl()!;
         const trackEvent = jest.fn();
 
