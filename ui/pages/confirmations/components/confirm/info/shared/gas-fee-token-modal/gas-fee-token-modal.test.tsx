@@ -11,10 +11,12 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
-} from '../../../../../../../store/actions/transaction-controller';
+} from '../../../../../../../store/controller-actions/transaction-controller';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
-jest.mock('../../../../../../../store/actions/transaction-controller');
+jest.mock(
+  '../../../../../../../store/controller-actions/transaction-controller',
+);
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),

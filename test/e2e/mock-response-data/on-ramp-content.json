@@ -1,0 +1,172 @@
+{
+  "networks": [
+    {
+      "active": true,
+      "chainId": "42161",
+      "chainName": "Arbitrum Mainnet",
+      "shortName": "Arbitrum",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "1313161554",
+      "chainName": "Aurora Mainnet",
+      "shortName": "Aurora",
+      "isEvm": true,
+      "nativeTokenSupported": false
+    },
+    {
+      "active": true,
+      "chainId": "43114",
+      "chainName": "Avalanche C-Chain Mainnet",
+      "shortName": "Avalanche C-Chain",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "8453",
+      "chainName": "Base Mainnet",
+      "shortName": "Base",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "80094",
+      "chainName": "Berachain Mainnet",
+      "shortName": "Berachain",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "bip122:000000000019d6689c085ae165831e93",
+      "chainName": "Bitcoin",
+      "shortName": "Bitcoin",
+      "nativeTokenSupported": true,
+      "isEvm": false
+    },
+    {
+      "active": true,
+      "chainId": "56",
+      "chainName": "BNB Chain Mainnet",
+      "shortName": "BNB Chain",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "42220",
+      "chainName": "Celo Mainnet",
+      "shortName": "Celo",
+      "isEvm": true,
+      "nativeTokenSupported": false
+    },
+    {
+      "active": true,
+      "chainId": "25",
+      "chainName": "Cronos Mainnet",
+      "shortName": "Cronos",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "1",
+      "chainName": "Ethereum Mainnet",
+      "shortName": "Ethereum",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "250",
+      "chainName": "Fantom Mainnet",
+      "shortName": "Fantom",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "100",
+      "chainName": "Gnosis Mainnet",
+      "shortName": "Gnosis",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "1666600000",
+      "chainName": "Harmony Mainnet (Shard 0)",
+      "shortName": "Harmony (Shard 0)",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "59144",
+      "chainName": "Linea",
+      "shortName": "Linea",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "1284",
+      "chainName": "Moonbeam Mainnet",
+      "shortName": "Moonbeam",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "1285",
+      "chainName": "Moonriver Mainnet",
+      "shortName": "Moonriver",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "10",
+      "chainName": "Optimism Mainnet",
+      "shortName": "Optimism",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "137",
+      "chainName": "Polygon Mainnet",
+      "shortName": "Polygon",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "1101",
+      "chainName": "Polygon zkEVM",
+      "shortName": "Polygon zkEVM",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "146",
+      "chainName": "Sonic",
+      "shortName": "Sonic",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    },
+    {
+      "active": true,
+      "chainId": "324",
+      "chainName": "zkSync Era Mainnet",
+      "shortName": "zkSync Era",
+      "isEvm": true,
+      "nativeTokenSupported": true
+    }
+  ]
+}
