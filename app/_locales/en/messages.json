@@ -988,7 +988,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
-    "description": "$1 is a link to the Privacy Notice"
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -3645,8 +3645,7 @@
     "message": "IPFS gateway URL is valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
-    "description": "$1 is a link to the Privacy Notice"
+    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
