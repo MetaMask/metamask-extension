@@ -42,47 +42,45 @@ import {
 } from './cells';
 import { AvatarGroup } from '../../../multichain';
 import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
+import { DeFiProtocolCellPrimaryDisplay } from './cells/defi-protocol-cell-primary-display';
 
-
-export const TokenCellLocation = {
+export const AssetCellLocation = {
   TokensTab: 'TokensTab',
   DefiTab: 'DefiTab',
   DefiDetailsTab: 'DefiDetailsTab',
-} as const
-export type TokenCellLocation = (typeof TokenCellLocation)[keyof typeof TokenCellLocation];
+} as const;
+export type AssetCellLocation =
+  (typeof AssetCellLocation)[keyof typeof AssetCellLocation];
 
-type TokenCellProps =
+export type AssetCellProps =
   | {
-      location: typeof TokenCellLocation.TokensTab;
-      token: TokenWithFiatAmount;
-      onClick?: (chainId: string, address: string) => void;
+      location: typeof AssetCellLocation.TokensTab;
+      asset: TokenWithFiatAmount;
+      onClick: (chainId: string, address: string) => void;
       privacyMode: boolean;
     }
   | {
-      location: typeof TokenCellLocation.DefiDetailsTab;
-      token: TokenWithFiatAmount;
+      location: typeof AssetCellLocation.DefiDetailsTab;
+      asset: TokenWithFiatAmount;
       privacyMode: boolean;
       onClick: undefined;
     }
   | {
-      location: typeof TokenCellLocation.DefiTab;
-      onClick?: (chainId: string, protocolId: string) => void;
-      token: TokenWithFiatAmount & {
+      location: typeof AssetCellLocation.DefiTab;
+      onClick: (chainId: string, protocolId: string) => void;
+      asset: TokenWithFiatAmount & {
         iconGroup: { avatarValue: string; symbol: string }[];
         protocolId: string;
       };
       privacyMode: boolean;
     };
 
-
-
-
-export default function TokenCell({
-  token,
+export default function AssetCell({
+  asset,
   privacyMode = false,
   onClick,
   location,
-}: TokenCellProps) {
+}: AssetCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
@@ -91,7 +89,7 @@ export default function TokenCell({
   const { safeChains } = useSafeChains();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
+  const decimalChainId = isEvm && parseInt(hexToDecimal(asset.chainId), 10);
 
   const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
     if (typeof decimalChainId === 'number') {
@@ -101,40 +99,49 @@ export default function TokenCell({
   });
 
   const tokenDisplayInfo = useTokenDisplayInfo({
-    token,
+    token: asset,
   });
 
   const handleClick = useCallback(
     (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e?.preventDefault();
 
-      if (!onClick || !token.chainId || showScamWarningModal) {
+      if (!onClick || !asset.chainId || showScamWarningModal) {
         return;
       }
 
-      if (location === TokenCellLocation.TokensTab) {
-        onClick(token.chainId, token.address);
+      if (location === AssetCellLocation.TokensTab) {
+        onClick(asset.chainId, asset.address);
         trackEvent({
           category: MetaMetricsEventCategory.Tokens,
           event: MetaMetricsEventName.TokenDetailsOpened,
           properties: {
             location: 'Home',
-            chain_id: token.chainId,
-            token_symbol: token.symbol,
+            chain_id: asset.chainId,
+            token_symbol: asset.symbol,
           },
         });
-      } else if (location === TokenCellLocation.DefiTab) {
-        onClick(token.chainId, token.protocolId);
+      } else if (location === AssetCellLocation.DefiTab) {
+        onClick(asset.chainId, asset.protocolId);
+        trackEvent({
+          category: MetaMetricsEventCategory.DeFi,
+          event: MetaMetricsEventName.DefiDetailsOpened,
+          properties: {
+            location: 'Home',
+            chain_id: asset.chainId,
+            protocol_id: asset.protocolId,
+          },
+        });
       }
     },
-    [onClick, token, location, showScamWarningModal, trackEvent],
+    [onClick, asset, location, showScamWarningModal, trackEvent],
   );
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
 
-  if (!token.chainId) {
+  if (!asset.chainId) {
     return null;
   }
 
@@ -159,7 +166,7 @@ export default function TokenCell({
         style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
         data-testid="multichain-token-list-button"
       >
-        <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
+        <TokenCellBadge token={{ ...asset, ...tokenDisplayInfo }} />
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -172,9 +179,9 @@ export default function TokenCell({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellTitle token={{ ...asset, ...tokenDisplayInfo }} />
             <TokenCellSecondaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
+              token={{ ...asset, ...tokenDisplayInfo }}
               handleScamWarningModal={handleScamWarningModal}
               privacyMode={privacyMode}
             />
@@ -185,17 +192,17 @@ export default function TokenCell({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellPercentChange
+              token={{ ...asset, ...tokenDisplayInfo }}
+              location={location}
+            />
             {location === 'DefiTab' ? (
-              <AvatarGroup
-                avatarType={AvatarType.TOKEN}
-                limit={4}
-                members={token.iconGroup}
-              />
+              <DeFiProtocolCellPrimaryDisplay iconGroup={asset.iconGroup} />
             ) : (
               <TokenCellPrimaryDisplay
-                token={{ ...token, ...tokenDisplayInfo }}
+                token={{ ...asset, ...tokenDisplayInfo }}
                 privacyMode={privacyMode}
+                location={location}
               />
             )}
           </Box>
@@ -211,7 +218,7 @@ export default function TokenCell({
             </ModalHeader>
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
-                token.symbol,
+                asset.symbol,
                 safeChainDetails?.nativeCurrency?.symbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
@@ -219,7 +226,7 @@ export default function TokenCell({
             <ModalFooter>
               <ButtonSecondary
                 onClick={() => {
-                  dispatch(setEditedNetwork({ chainId: token.chainId }));
+                  dispatch(setEditedNetwork({ chainId: asset.chainId }));
                   history.push(NETWORKS_ROUTE);
                 }}
                 block

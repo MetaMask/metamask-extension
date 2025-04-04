@@ -829,6 +829,7 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  DefiDetailsOpened = 'Defi Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
@@ -940,6 +941,7 @@ export enum MetaMetricsEventCategory {
   Auth = 'Auth',
   Background = 'Background',
   Banner = 'Banner',
+  DeFi = 'DeFi',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',

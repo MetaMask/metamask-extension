@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import TokenCell from '../token-cell';
+import AssetCell from '../token-cell';
 import {
   getChainIdsToPoll,
   getNewTokensImported,
@@ -81,10 +81,10 @@ function TokenList({ onTokenClick }: TokenListProps) {
   return (
     <>
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
-        <TokenCell
+        <AssetCell
           key={`${token.chainId}-${token.symbol}-${token.address}`}
           location={'TokensTab'}
-          token={token}
+          asset={token}
           privacyMode={privacyMode}
           onClick={onTokenClick}
         />

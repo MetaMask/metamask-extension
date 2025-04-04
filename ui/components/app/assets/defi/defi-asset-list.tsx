@@ -17,7 +17,7 @@ import {
   DeFiPositionsControllerState,
   GroupedPositions,
 } from '@metamask/assets-controllers';
-import { TokenCellLocation } from '../token-cell/token-cell';
+import { AssetCellLocation } from '../token-cell/asset-cell';
 
 export type DefiState = {
   metamask: DeFiPositionsControllerState;
@@ -75,8 +75,8 @@ const DeFi = ({
         return (
           <TokenCell
             key={`${chainId}-${protocolId}`}
-            location={TokenCellLocation.DefiTab}
-            token={{
+            location={AssetCellLocation.DefiTab}
+            asset={{
               protocolId,
               address: '0x',
               title: protocol.protocolDetails.name,

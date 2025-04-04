@@ -8,16 +8,18 @@ import {
 import {
   DeFiPositionsControllerActions,
   DeFiPositionsControllerEvents,
+  DeFiPositionsControllerGetStateAction,
+  DeFiPositionsControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
 
 type Actions =
-  | DeFiPositionsControllerActions
+  | DeFiPositionsControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction;
 
 type Events =
   | NetworkControllerStateChangeEvent
   | AccountsControllerSelectedAccountChangeEvent
-  | DeFiPositionsControllerEvents;
+  | DeFiPositionsControllerStateChangeEvent;
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger
@@ -35,8 +37,12 @@ export function getDeFiPositionsControllerMessenger(
 ) {
   return messenger.getRestricted({
     name: 'DeFiPositionsController',
-    allowedActions: ['AccountsController:getSelectedAccount'],
+    allowedActions: [
+      // 'DeFiPositionsController:getState',
+      'AccountsController:getSelectedAccount',
+    ],
     allowedEvents: [
+      // 'DeFiPositionsController:stateChange',
       'AccountsController:selectedAccountChange',
       'NetworkController:stateChange',
     ],

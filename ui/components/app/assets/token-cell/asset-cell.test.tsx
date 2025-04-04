@@ -20,8 +20,8 @@ import {
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
-import { TokenCellProps } from './token-cell';
-import TokenCell from '.';
+import { AssetCellProps } from './asset-cell';
+import AssetCell from '.';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -101,11 +101,13 @@ describe('Token Cell', () => {
       isNative: false,
     };
 
-  const props = {
-    token: {
+  const props: AssetCellProps = {
+    location: 'TokensTab',
+    asset: {
       ...propToken,
-    },
+    } as TokenWithFiatAmount,
     onClick: jest.fn(),
+    privacyMode: false,
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
     currentCurrency: string;
@@ -122,9 +124,9 @@ describe('Token Cell', () => {
     decimals: 18,
     isNative: false,
   };
-  const propsLargeAmount = {
-    token: {
-      ...propAnotherToken,
+  const propsLargeAmount: AssetCellProps = {
+    asset: {
+      ...(propAnotherToken as TokenWithFiatAmount),
     },
     onClick: jest.fn(),
   };
@@ -157,7 +159,7 @@ describe('Token Cell', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <TokenCell {...(props as TokenCellProps)} />,
+      <AssetCell {...props} />,
       mockStore,
     );
 
@@ -166,7 +168,7 @@ describe('Token Cell', () => {
 
   it('calls onClick when clicked', () => {
     const { queryByTestId } = renderWithProvider(
-      <TokenCell {...(props as TokenCellProps)} />,
+      <AssetCell {...props} />,
       mockStore,
     );
 
@@ -179,7 +181,7 @@ describe('Token Cell', () => {
 
   it('should render the correct token and filter by symbol and address', () => {
     const { getByTestId, getByAltText } = renderWithProvider(
-      <TokenCell {...(props as TokenCellProps)} />,
+      <AssetCell {...props} />,
       mockStore,
     );
 
@@ -192,7 +194,7 @@ describe('Token Cell', () => {
 
   it('should render amount with the correct format', () => {
     const { getByTestId } = renderWithProvider(
-      <TokenCell {...(propsLargeAmount as TokenCellProps)} />,
+      <AssetCell {...propsLargeAmount} />,
       mockStore,
     );
 
