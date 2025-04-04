@@ -8,6 +8,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
+import { sortSelectedInternalAccounts } from '../../../helpers/utils/util';
 
 export type PermissionsRequest = Record<
   string,
@@ -134,26 +135,8 @@ export function getDefaultAccounts(
   });
 
   // sort accounts by lastSelected descending
-  const allAccountsSortedByLastSelected = allAccounts.sort((a, b) => {
-    const lastSelectedA = a.metadata.lastSelected;
-    const lastSelectedB = b.metadata.lastSelected;
-    if (!lastSelectedA && !lastSelectedB) {
-      return 0;
-    }
-    if (!lastSelectedA) {
-      return 1;
-    }
-    if (!lastSelectedB) {
-      return -1;
-    }
-
-    if (lastSelectedA > lastSelectedB) {
-      return -1;
-    } else if (lastSelectedA < lastSelectedB) {
-      return 1;
-    }
-    return 0;
-  });
+  const allAccountsSortedByLastSelected =
+    sortSelectedInternalAccounts(allAccounts);
 
   requestedNamespaces.forEach((namespace) => {
     if (

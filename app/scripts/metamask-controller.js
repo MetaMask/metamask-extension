@@ -5503,63 +5503,36 @@ export default class MetamaskController extends EventEmitter {
    * Sorts a list of evm account addresses by most recently selected by using
    * the lastSelected value for the matching InternalAccount object stored in state.
    *
-   * @param {Hex[]} [accounts] - The list of evm accounts addresses to sort.
+   * @param {Hex[]} [addresses] - The list of evm accounts addresses to sort.
    * @returns {Hex[]} The sorted evm accounts addresses.
    */
-  sortAccountsByLastSelected(accounts) {
+  sortEvmAccountsByLastSelected(addresses) {
     const internalAccounts = this.accountsController.listAccounts();
-
-    return accounts.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          accounts,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          accounts,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
+    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
   }
 
   /**
    * Sorts a list of multichain account addresses by most recently selected by using
    * the lastSelected value for the matching InternalAccount object stored in state.
    *
-   * @param {string[]} [accounts] - The list of accounts addresses to sort.
+   * @param {string[]} [addresses] - The list of addresses (not full CAIP-10 Account IDs) to sort.
    * @returns {string[]} The sorted accounts addresses.
    */
-  sortMultichainAccountsByLastSelected(accounts) {
+  sortMultichainAccountsByLastSelected(addresses) {
     const internalAccounts = this.accountsController.listMultichainAccounts();
+    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
+  }
 
-    return accounts.sort((firstAddress, secondAddress) => {
+  /**
+   * Sorts a list of addresses by most recently selected by using the lastSelected value for
+   * the matching InternalAccount object from the list of internalAccounts provided.
+   *
+   * @param {string[]} [addresses] - The list of caip accounts addresses to sort.
+   * @param {InternalAccount[]} [internalAccounts] - The list of InternalAccounts to determine lastSelected from.
+   * @returns {string[]} The sorted accounts addresses.
+   */
+  sortAddressesWithInternalAccounts(addresses, internalAccounts) {
+    return addresses.sort((firstAddress, secondAddress) => {
       const firstAccount = internalAccounts.find(
         (internalAccount) =>
           internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
@@ -5573,13 +5546,13 @@ export default class MetamaskController extends EventEmitter {
       if (!firstAccount) {
         this.captureKeyringTypesWithMissingIdentities(
           internalAccounts,
-          accounts,
+          addresses,
         );
         throw new Error(`Missing identity for address: "${firstAddress}".`);
       } else if (!secondAccount) {
         this.captureKeyringTypesWithMissingIdentities(
           internalAccounts,
-          accounts,
+          addresses,
         );
         throw new Error(`Missing identity for address: "${secondAddress}".`);
       } else if (
@@ -5634,7 +5607,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const ethAccounts = getEthAccounts(caveat.value);
-    return this.sortAccountsByLastSelected(ethAccounts);
+    return this.sortEvmAccountsByLastSelected(ethAccounts);
   }
 
   /**

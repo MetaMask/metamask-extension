@@ -418,9 +418,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               {showEditAccountsModal && (
                 <EditAccountsModal
                   accounts={allAccounts}
-                  defaultSelectedAccountAddresses={
-                    selectedCaipAccountAddresses
-                  }
+                  defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
                   onClose={() => setShowEditAccountsModal(false)}
                   onSubmit={setSelectedCaipAccountAddresses}
                 />
