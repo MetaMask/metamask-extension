@@ -6,7 +6,7 @@ import {
   getBridgeStatusKey,
   isBridgeComplete,
   isBridgeFailed,
-} from '../../../../shared/lib/bridge-status';
+} from '../../../../shared/lib/bridge-status/utils';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';

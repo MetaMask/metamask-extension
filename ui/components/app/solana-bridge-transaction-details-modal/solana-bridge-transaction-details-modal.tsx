@@ -5,7 +5,7 @@ import {
   getBridgeStatusKey,
   isBridgeComplete,
   isBridgeFailed,
-} from '../../../../shared/lib/bridge-status';
+} from '../../../../shared/lib/bridge-status/utils';
 import {
   Display,
   FlexDirection,
