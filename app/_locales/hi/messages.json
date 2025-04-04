@@ -3399,10 +3399,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "गोपनीयता नीति"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "ऐप पर $1 क्लिक और व्यूज़ स्टोर किए जाते हैं, लेकिन अन्य विवरण (जैसे आपका पब्लिक एड्रेस) स्टोर नहीं होते।",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "निजी:"
   },

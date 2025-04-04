@@ -3399,10 +3399,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "隐私政策"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 会存储点击量和应用程序的浏览量，但不会存储其他详情（如您的公钥）。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "私密："
   },

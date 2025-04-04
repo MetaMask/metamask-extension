@@ -3399,10 +3399,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Kebijakan Privasi"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 klik dan tampilan pada aplikasi disimpan, tetapi tidak untuk detail lainnya (seperti alamat publik).",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Pribadi:"
   },

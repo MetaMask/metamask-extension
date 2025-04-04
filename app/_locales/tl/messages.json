@@ -3399,10 +3399,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Patakaran sa Pagkapribado"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 mga click at view sa app ay nakaimbak, ngunit ang ibang detalye (tulad ng iyong address) ay hindi.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Pribado:"
   },

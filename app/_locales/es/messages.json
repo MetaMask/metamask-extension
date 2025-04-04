@@ -3399,10 +3399,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Política de privacidad"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "Se almacenan los clics y las visualizaciones de $1 en la aplicación, pero no otros detalles (como su dirección pública).",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Privadas:"
   },

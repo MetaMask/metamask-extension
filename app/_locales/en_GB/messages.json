@@ -3666,8 +3666,8 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Privacy Policy"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
+  "onboardingMetametricsNeverCollectText": {
+    "message": "$1 clicks and views on the app are stored, but other details are not.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
