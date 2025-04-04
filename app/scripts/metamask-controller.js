@@ -1713,9 +1713,6 @@ export default class MetamaskController extends EventEmitter {
         const state = this._getMetaMaskState();
         return getFeatureFlagsByChainId(state);
       },
-      getRemoteFeatureFlags: () => {
-        return this.remoteFeatureFlagController.state;
-      },
       getParticipateInMetrics: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
       getMetaMetricsProps: async () => {
