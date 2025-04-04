@@ -1023,7 +1023,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/accounts-controller>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "uuid": true
@@ -1435,14 +1435,15 @@
       "globals": {
         "URL": true,
         "console.error": true,
-        "console.info": true
+        "console.info": true,
+        "console.warn": true
       },
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "webpack>events": true,
@@ -1628,26 +1629,6 @@
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {
@@ -1862,6 +1843,18 @@
       }
     },
     "@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2289,7 +2282,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
