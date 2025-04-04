@@ -6,7 +6,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
+import { Json, add0x } from '@metamask/utils';
 import { Hex } from 'viem';
 import { errorCodes } from '@metamask/rpc-errors';
 import {
@@ -34,6 +34,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  addHexes,
   hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
@@ -57,6 +58,8 @@ import type {
 
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -1083,6 +1086,13 @@ async function buildEventFragmentProperties({
     sensitiveProperties,
   );
 
+  addGaslessProperties(
+    transactionMeta,
+    properties,
+    sensitiveProperties,
+    transactionMetricsRequest.getAccountBalance,
+  );
+
   return { properties, sensitiveProperties };
 }
 
@@ -1230,6 +1240,40 @@ async function addBatchProperties(
   sensitiveProperties.account_eip7702_upgraded = delegationAddress;
 }
 
+function addGaslessProperties(
+  transactionMeta: TransactionMeta,
+  properties: Record<string, Json | undefined>,
+  _sensitiveProperties: Record<string, Json | undefined>,
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex,
+) {
+  const {
+    batchId,
+    batchTransactions,
+    gasFeeTokens,
+    nestedTransactions,
+    selectedGasFeeToken,
+  } = transactionMeta;
+
+  properties.gas_payment_tokens_available = gasFeeTokens?.map(
+    (token) => token.symbol,
+  );
+
+  properties.gas_paid_with = gasFeeTokens?.find(
+    (token) =>
+      token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
+  )?.symbol;
+
+  properties.gas_insufficient_native_asset = isInsufficientNativeBalance(
+    transactionMeta,
+    getAccountBalance,
+  );
+
+  // Temporary pending nested transaction type support
+  if (batchId && !batchTransactions?.length && !nestedTransactions?.length) {
+    properties.transaction_type = 'gas_payment';
+  }
+}
+
 async function getNestedMethodNames(
   transactions: NestedTransactionMetadata[],
   getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
@@ -1245,4 +1289,23 @@ async function getNestedMethodNames(
     .filter((name) => name?.length) as string[];
 
   return names;
+}
+
+function isInsufficientNativeBalance(
+  transactionMeta: TransactionMeta,
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex,
+) {
+  const { chainId, txParams } = transactionMeta;
+  const { from, gas, gasPrice, maxFeePerGas, value } = txParams;
+  const nativeBalance = getAccountBalance(from as Hex, chainId);
+
+  const gasCost = getMaximumGasTotalInHexWei({
+    gasLimit: gas,
+    gasPrice,
+    maxFeePerGas,
+  });
+
+  const totalCost = add0x(addHexes(gasCost, value ?? '0x0'));
+
+  return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
 }

@@ -1498,4 +1498,55 @@ describe('util', () => {
       );
     });
   });
+
+  describe('checkExistingAllTokens', () => {
+    const tokensList = {
+      1: {
+        '0xAccount1': [{ address: '0xToken1' }, { address: '0xToken2' }],
+      },
+      2: {
+        '0xAccount2': [{ address: '0xToken3' }],
+      },
+    };
+
+    it('should return false if address is not provided', () => {
+      const result = util.checkExistingAllTokens(
+        '',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return false if token is not found in the list', () => {
+      const result = util.checkExistingAllTokens(
+        '0xNonExistentToken',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return true if token is found (exact match)', () => {
+      const result = util.checkExistingAllTokens(
+        '0xToken1',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(true);
+    });
+
+    it('should return true if token is found (case insensitive)', () => {
+      const result = util.checkExistingAllTokens(
+        '0xtoken2',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(true);
+    });
+  });
 });
