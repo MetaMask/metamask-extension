@@ -680,6 +680,50 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
+export async function simulateSolanaTransactionFailed(
+  mockServer: Mockttp,
+) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        "jsonrpc": "2.0",
+        "result": {
+          "context": {
+            "slot": 12345678
+          },
+          "value": {
+            "err": {
+              "InstructionError": [
+                1,
+                {
+                  "Custom": 1
+                }
+              ]
+            },
+            "logs": [
+              "Program 11111111111111111111111111111111 invoke [1]",
+              "Program 11111111111111111111111111111111 failed: custom program error: 0x1"
+            ],
+            "accounts": null,
+            "unitsConsumed": 200000
+          }
+        },
+        "id": 1
+      }
+    },
+  };
+
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({
+      method: 'simulateTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function simulateSolanaTransaction(
   mockServer: Mockttp,
   isNative: boolean = true,
@@ -2189,6 +2233,45 @@ export async function mockGetSuccessSignaturesForAddressDevnet(mockServer: Mockt
     });
 }
 
+export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      jsonrpc: "2.0",
+      error: {
+        code: -32002,
+        message: "Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1",
+        data: {
+          accounts: null,
+          err: {
+            InstructionError: [
+              0,
+              {
+                Custom: 1
+              }
+            ]
+          },
+          logs: [
+            "Program 11111111111111111111111111111111 invoke [1]",
+            "Program 11111111111111111111111111111111 failed: custom program error: 0x1"
+          ],
+          unitsConsumed: 200000,
+          returnData: null
+        }
+      },
+      id: 1
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({
+      method: 'sendTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockSendSolanaTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
@@ -2589,6 +2672,8 @@ export async function withSolanaAccountSnap(
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
+    simulateFailedTransaction,
+    sendFailedTransaction,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -2600,6 +2685,8 @@ export async function withSolanaAccountSnap(
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
+    simulateFailedTransaction?: boolean;
+    sendFailedTransaction?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -2665,6 +2752,9 @@ export async function withSolanaAccountSnap(
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaTransactionDevnet(mockServer));
+        } else if (sendFailedTransaction) {
+          mockList.push(await simulateSolanaTransaction(mockServer));
+          mockList.push(await mockSendSolanaFailedTransaction(mockServer));
         }
         return mockList;
       },
