@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -17,19 +18,31 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { id: transactionId, selectedGasFeeToken } = currentConfirmation ?? {};
+  const {
+    id: transactionId,
+    chainId,
+    selectedGasFeeToken,
+  } = currentConfirmation ?? {};
+
+  const batchTransactionValues =
+    currentConfirmation?.nestedTransactions?.map(
+      (trxn) => (trxn.value as Hex) ?? 0x0,
+    ) ?? [];
 
   const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId),
+    selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
   const value = useSelector((state) =>
     selectTransactionValue(state, transactionId),
   );
+
+  const totalValue = sumHexes(value, ...batchTransactionValues);
 
   const { hexMaximumTransactionFee } = useSelector((state) =>
     selectTransactionFeeById(state, transactionId),
@@ -38,7 +51,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
 
   const insufficientBalance = !isBalanceSufficient({
-    amount: value,
+    amount: totalValue,
     gasTotal: hexMaximumTransactionFee,
     balance,
   });

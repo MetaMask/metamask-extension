@@ -2347,4 +2347,28 @@ describe('#getConnectedSitesList', () => {
       expect(result1 === result2).toBe(true);
     });
   });
+
+  describe('getMetaMaskAccounts', () => {
+    it('return balance from cachedBalances if chainId passed is different from currentChainId', () => {
+      const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const BALANCE = '38D7EA4C680000';
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          accountsByChainId: {
+            ...mockState.metamask.accountsByChainId,
+            '0x1': {
+              [ACCOUNT_ADDRESS]: {
+                balance: BALANCE,
+              },
+            },
+          },
+        },
+      };
+      expect(
+        selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
+      ).toStrictEqual(BALANCE);
+    });
+  });
 });

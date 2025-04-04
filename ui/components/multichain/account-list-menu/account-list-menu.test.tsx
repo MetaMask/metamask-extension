@@ -41,8 +41,8 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    getNextAvailableAccountName: () => mockNextAccountName,
-    generateNewHdKeyring: () => mockGenerateNewHdKeyring,
+    getNextAvailableAccountName: () => mockNextAccountName(),
+    generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
   };
 });
 
@@ -586,6 +586,7 @@ describe('AccountListMenu', () => {
     });
 
     it('calls the bitcoin client to create an account', async () => {
+      mockNextAccountName.mockReturnValue('Snap Account 1');
       const { getByText, getByTestId } = render();
 
       const button = getByTestId(
