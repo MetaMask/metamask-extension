@@ -111,9 +111,10 @@ function parseAsset(
   isNegative: boolean,
   decimals?: number,
 ) {
+  const threshold = 1 / 10 ** (decimals || 8); // Smallest unit to display given the decimals.
   const displayAmount = formatWithThreshold(
     movement.amount,
-    0.00000001,
+    threshold,
     locale,
     {
       minimumFractionDigits: 0,
