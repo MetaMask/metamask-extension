@@ -10,11 +10,11 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
-import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   getAllAccountsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccounts,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export function getPermissionBackgroundApiMethods({
@@ -184,25 +184,10 @@ export function getPermissionBackgroundApiMethods({
       const internalAccount = accountsController.getAccountByAddress(address);
 
       const remainingAccounts = existingAccounts.filter((existingAccount) => {
-        const {
-          address: existingAddress,
-          chain: { namespace: existingNamespace, reference: existingReference },
-        } = parseCaipAccountId(existingAccount);
-
-        const matchesExistingAccount = internalAccount.scopes.some((scope) => {
-          const { namespace, reference } = parseCaipChainId(scope);
-
-          if (
-            namespace !== existingNamespace ||
-            !isEqualCaseInsensitive(internalAccount.address, existingAddress)
-          ) {
-            return false;
-          }
-
-          return reference === '0' || reference === existingReference;
-        });
-
-        return !matchesExistingAccount;
+        return !isInternalAccountInPermittedAccounts(
+          [existingAccount],
+          internalAccount,
+        );
       });
 
       if (remainingAccounts.length === existingAccounts.length) {

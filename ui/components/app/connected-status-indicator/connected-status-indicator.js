@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
-import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -20,7 +19,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isInternalAccountInPermittedAccounts } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
@@ -35,30 +34,8 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
-  const currentTabIsConnectedToSelectedAddress = permittedAccounts.some(
-    (account) => {
-      const parsedPermittedAccount = parseCaipAccountId(account);
-
-      return selectedAccount.scopes.some((scope) => {
-        const { namespace, reference } = parseCaipChainId(scope);
-
-        if (
-          namespace !== parsedPermittedAccount.chain.namespace ||
-          !isEqualCaseInsensitive(
-            selectedAccount.address,
-            parsedPermittedAccount.address,
-          )
-        ) {
-          return false;
-        }
-
-        return (
-          reference === '0' ||
-          reference === parsedPermittedAccount.chain.reference
-        );
-      });
-    },
-  );
+  const currentTabIsConnectedToSelectedAddress =
+    isInternalAccountInPermittedAccounts(permittedAccounts, selectedAccount);
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {
