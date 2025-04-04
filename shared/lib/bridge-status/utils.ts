@@ -75,79 +75,86 @@ export const serializeQuoteMetadata = (
 };
 
 /**
- * Bridge transaction interface defining the expected shape of transactions
- * processed by the bridge status utilities
+ * Internal type defining the relevant parts of a transaction object
+ * needed for bridge status utility functions.
  */
 type BridgeTransaction = {
   isBridgeTx: boolean;
   bridgeInfo?: {
     status?: string;
+    destTxHash?: string;
   };
 };
 
 /**
- * Determines if a bridge transaction is complete based on its status
+ * Determines if a bridge transaction is truly complete based on its status
+ * AND the presence of a destination transaction hash.
  *
  * @param transaction - The transaction object to check
- * @returns Whether the transaction is complete
+ * @returns Whether the transaction is fully complete.
  */
 export function isBridgeComplete(transaction: BridgeTransaction): boolean {
   return Boolean(
     transaction.isBridgeTx &&
       transaction.bridgeInfo &&
       (transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
-        transaction.bridgeInfo.status === 'COMPLETE'),
+        transaction.bridgeInfo.status === 'COMPLETE') &&
+      typeof transaction.bridgeInfo.destTxHash === 'string' &&
+      transaction.bridgeInfo.destTxHash.length > 0,
   );
 }
 
 /**
- * Determines if a bridge transaction has failed by checking its status
- * or comparing it with the provided status key
+ * Determines if a bridge transaction has failed by checking its bridge status
+ * OR the base transaction status key.
  *
  * @param transaction - The transaction object to check
- * @param statusKey - The calculated status key from transaction controller
- * @returns Whether the transaction is failed
+ * @param baseStatusKey - The status key derived from the base source transaction
+ * @returns Whether the transaction is considered failed.
  */
 export function isBridgeFailed(
   transaction: BridgeTransaction,
-  statusKey: string,
+  baseStatusKey: string,
 ): boolean {
-  return Boolean(
+  const bridgeFailed = Boolean(
     transaction.isBridgeTx &&
       transaction.bridgeInfo &&
       (transaction.bridgeInfo.status === StatusTypes.FAILED ||
-        transaction.bridgeInfo.status === 'FAILED' ||
-        statusKey === TransactionStatus.failed),
+        transaction.bridgeInfo.status === 'FAILED'),
   );
+  const baseFailed = baseStatusKey === TransactionStatus.failed;
+
+  return bridgeFailed || baseFailed;
 }
 
 /**
- * Determines the appropriate status key for a bridge transaction
- * by examining its status and returning the corresponding transaction status
+ * Determines the final display status key for a bridge transaction,
+ * considering both the source transaction status and the bridge operation status.
  *
  * @param transaction - The transaction object
- * @param defaultStatusKey - The default status key from regular transaction handling
- * @returns The appropriate status key
+ * @param baseStatusKey - The status key derived from the base source transaction status
+ * @returns The final display status key (e.g., confirmed, failed, submitted)
  */
 export function getBridgeStatusKey(
   transaction: BridgeTransaction,
-  defaultStatusKey: string,
+  baseStatusKey: string,
 ): string {
-  if (transaction.isBridgeTx && transaction.bridgeInfo) {
-    if (
-      transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
-      transaction.bridgeInfo.status === 'COMPLETE'
-    ) {
-      return TransactionStatus.confirmed;
-    } else if (
-      transaction.bridgeInfo.status === StatusTypes.FAILED ||
-      transaction.bridgeInfo.status === 'FAILED'
-    ) {
-      return TransactionStatus.failed;
-    }
+  if (!transaction.isBridgeTx || !transaction.bridgeInfo) {
+    return baseStatusKey;
   }
 
-  return defaultStatusKey;
+  if (isBridgeFailed(transaction, baseStatusKey)) {
+    return TransactionStatus.failed;
+  }
+
+  if (
+    isBridgeComplete(transaction) &&
+    baseStatusKey === TransactionStatus.confirmed
+  ) {
+    return TransactionStatus.confirmed;
+  }
+
+  return TransactionStatus.submitted;
 }
 
 export const getInitialHistoryItem = ({

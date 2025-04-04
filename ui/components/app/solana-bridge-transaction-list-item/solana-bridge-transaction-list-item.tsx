@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   getBridgeStatusKey,
   isBridgeComplete,
@@ -48,18 +49,14 @@ import {
 import './index.scss';
 
 interface SolanaBridgeTransactionListItemProps {
-  transaction: any; // Using any for now, should define specific transaction type
+  transaction: any; // TODO: Use ExtendedTransaction | BridgeOriginatedItem
   userAddress: string;
   toggleShowDetails: (transaction: any) => void;
 }
 
 /**
- * Component for Solana Bridge Transactions with EVM-style segment rendering
- *
- * @param options0
- * @param options0.transaction
- * @param options0.userAddress
- * @param options0.toggleShowDetails
+ * Renders a transaction list item specifically for Solana bridge operations,
+ * displaying progress across source and destination chains.
  */
 const SolanaBridgeTransactionListItem: React.FC<
   SolanaBridgeTransactionListItemProps
@@ -67,39 +64,54 @@ const SolanaBridgeTransactionListItem: React.FC<
   const t = useI18nContext();
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
-  const { type, status, to, from, asset } = useMultichainTransactionDisplay({
+  // Extract display data, including the raw status from the source chain transaction
+  const {
+    type,
+    status: sourceTxRawStatus,
+    to,
+    from,
+    asset,
+  } = useMultichainTransactionDisplay({
     transaction,
     userAddress,
   });
 
-  let title = capitalize(type);
+  const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
 
-  // Get the appropriate status key using the shared utility function
-  const statusKey = getBridgeStatusKey(
+  const finalDisplayStatusKey = getBridgeStatusKey(
     transaction,
-    KEYRING_TRANSACTION_STATUS_KEY[status],
+    sourceTxStatusKey,
   );
 
-  // For bridge transactions, create a more descriptive title
+  const isBridgeFullyComplete = isBridgeComplete(transaction);
+
+  const isBridgeFailedOrSourceFailed = isBridgeFailed(
+    transaction,
+    sourceTxStatusKey,
+  );
+
+  const isTerminalState = isBridgeFullyComplete || isBridgeFailedOrSourceFailed;
+
+  const isSourceTxConfirmed = sourceTxStatusKey === TransactionStatus.confirmed;
+
+  const statusLabelTextKey = [
+    TransactionStatus.submitted,
+    TransactionGroupStatus.pending,
+  ].includes(
+    finalDisplayStatusKey as TransactionStatus | TransactionGroupStatus,
+  )
+    ? undefined
+    : finalDisplayStatusKey;
+
+  let title = capitalize(type);
   if (transaction.isBridgeTx && transaction.bridgeInfo) {
     const { destChainName, provider, destChainId } = transaction.bridgeInfo;
-
-    // Chain name fallback
     const displayChainName = destChainName || destChainId;
-
-    // Create a detailed title with destination chain
     title = `${t('bridge')} ${t('to')} ${displayChainName}`;
-
-    // Add provider info if available
     if (provider) {
       title = `${title} ${t('via')} ${provider}`;
     }
   }
-
-  // Use shared utility functions to check transaction state
-  const txComplete = isBridgeComplete(transaction);
-  const txFailed = isBridgeFailed(transaction, statusKey);
-  const txTerminal = txComplete || txFailed;
 
   return (
     <ActivityListItem
@@ -135,7 +147,7 @@ const SolanaBridgeTransactionListItem: React.FC<
         >
           <TransactionIcon
             category={TransactionGroupCategory.bridge}
-            status={statusKey as TransactionGroupStatus}
+            status={finalDisplayStatusKey as TransactionGroupStatus}
           />
         </BadgeWrapper>
       }
@@ -172,40 +184,49 @@ const SolanaBridgeTransactionListItem: React.FC<
           <TransactionStatusLabel
             date={formatTimestamp(transaction.timestamp)}
             error={{}}
-            status={statusKey}
+            status={statusLabelTextKey}
             statusOnly
             className={
-              txComplete ? 'transaction-status-label--confirmed' : undefined
+              isBridgeFullyComplete
+                ? 'transaction-status-label--confirmed'
+                : undefined
             }
           />
-          {/* Bridge Steps with progress bars - only show for pending transactions */}
-          {transaction.isBridgeTx && transaction.bridgeInfo && !txTerminal && (
-            <Box
-              marginTop={2}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={1}
-              width={BlockSize.Full}
-            >
-              <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-                {/* Source Chain Segment - Complete (100% filled) */}
-                <Box
-                  className="solana-bridge-transaction-list-item__segment-container"
-                  width={BlockSize.Full}
-                >
-                  <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--complete" />
-                </Box>
+          {transaction.isBridgeTx &&
+            transaction.bridgeInfo &&
+            !isTerminalState && (
+              <Box
+                marginTop={2}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={1}
+                width={BlockSize.Full}
+              >
+                <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+                  <Box
+                    className="solana-bridge-transaction-list-item__segment-container"
+                    width={BlockSize.Full}
+                  >
+                    <Box
+                      className={`solana-bridge-transaction-list-item__segment ${
+                        isSourceTxConfirmed
+                          ? 'solana-bridge-transaction-list-item__segment--complete'
+                          : 'solana-bridge-transaction-list-item__segment--pending'
+                      }`}
+                    />
+                  </Box>
 
-                {/* Destination Chain Segment - Dynamic based on status */}
-                <Box
-                  className="solana-bridge-transaction-list-item__segment-container"
-                  width={BlockSize.Full}
-                >
-                  <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--pending" />
+                  <Box
+                    className="solana-bridge-transaction-list-item__segment-container"
+                    width={BlockSize.Full}
+                  >
+                    {isSourceTxConfirmed && (
+                      <Box className="solana-bridge-transaction-list-item__segment solana-bridge-transaction-list-item__segment--pending" />
+                    )}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          )}
+            )}
         </Box>
       }
     />
