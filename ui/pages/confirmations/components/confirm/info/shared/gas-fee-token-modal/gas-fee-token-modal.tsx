@@ -42,13 +42,12 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     [onClose, transactionId],
   );
 
-  const hasNativeToken = gasFeeTokens?.some(
-    (token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS,
-  );
-
   const gasFeeTokenAddresses = [
-    ...(hasNativeToken ? [] : [NATIVE_TOKEN_ADDRESS]),
-    ...(gasFeeTokens?.map((token) => token.tokenAddress) ?? []),
+    NATIVE_TOKEN_ADDRESS,
+    ...(gasFeeTokens
+      // Temporarily disable future ETH flow
+      ?.filter((token) => token.tokenAddress !== NATIVE_TOKEN_ADDRESS)
+      .map((token) => token.tokenAddress) ?? []),
   ];
 
   return (
