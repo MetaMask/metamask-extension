@@ -2,11 +2,13 @@ import {
   Caip25CaveatType,
   Caip25CaveatValue,
   KnownSessionProperties,
+  NormalizedScopesObject,
 } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   CaipAccountId,
   CaipChainId,
+  CaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -184,4 +186,19 @@ export function isKnownSessionPropertyValue(
   return Object.values(KnownSessionProperties).includes(
     value as KnownSessionProperties,
   );
+}
+
+export function isNamespaceInScopesObject(
+  scopesObject: NormalizedScopesObject,
+  caipNamespace: CaipNamespace,
+) {
+  return Object.keys(scopesObject).some((key) => {
+    let namespace = '';
+    try {
+      ({ namespace } = parseCaipChainId(key as CaipChainId));
+    } catch (err) {
+      return false;
+    }
+    return namespace === caipNamespace;
+  });
 }

@@ -27,7 +27,6 @@ import {
   JsonRpcSuccess,
   KnownCaipNamespace,
   parseCaipAccountId,
-  parseCaipChainId,
 } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import {
@@ -46,8 +45,10 @@ import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { isKnownSessionPropertyValue } from './constants';
-
+import {
+  isKnownSessionPropertyValue,
+  isNamespaceInScopesObject,
+} from '../../../../../../shared/lib/multichain/chain-agnostic-permission';
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
  * for prompting for approval and granting a CAIP-25 permission.
@@ -145,27 +146,13 @@ async function walletCreateSessionHandler(
 
     // if solana is a requested scope but not supported, we add a promptToCreateSolanaAccount flag to request
     const isSolanaRequested =
-      Object.keys(requiredScopesWithSupportedMethodsAndNotifications).some(
-        (key) => {
-          let namespace = '';
-          try {
-            namespace = parseCaipChainId(key as CaipChainId).namespace;
-          } catch (err) {
-            return false;
-          }
-          return namespace === KnownCaipNamespace.Solana;
-        },
+      isNamespaceInScopesObject(
+        requiredScopesWithSupportedMethodsAndNotifications,
+        KnownCaipNamespace.Solana,
       ) ||
-      Object.keys(optionalScopesWithSupportedMethodsAndNotifications).some(
-        (key) => {
-          let namespace = '';
-          try {
-            namespace = parseCaipChainId(key as CaipChainId).namespace;
-          } catch (err) {
-            return false;
-          }
-          return namespace === KnownCaipNamespace.Solana;
-        },
+      isNamespaceInScopesObject(
+        optionalScopesWithSupportedMethodsAndNotifications,
+        KnownCaipNamespace.Solana,
       );
 
     let promptToCreateSolanaAccount = false;
