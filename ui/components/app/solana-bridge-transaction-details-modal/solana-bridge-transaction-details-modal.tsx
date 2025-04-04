@@ -19,7 +19,7 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-// import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ModalOverlay,
   ModalContent,
@@ -99,8 +99,7 @@ function SolanaBridgeTransactionDetailsModal({
   onClose,
   userAddress,
 }: SolanaBridgeTransactionDetailsModalProps): JSX.Element {
-  // TODO: add translations.
-  // const t = useI18nContext();
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
   const { id, timestamp, chain, status, baseFee, asset } =
@@ -119,14 +118,14 @@ function SolanaBridgeTransactionDetailsModal({
   const txFailed = isBridgeFailed(transaction, statusKey);
 
   // Set display status based on transaction state
-  let displayStatus = 'In Progress';
+  let displayStatus = t('bridgeStatusInProgress');
   let statusColor = TextColor.primaryDefault;
 
   if (txComplete) {
-    displayStatus = 'Complete';
+    displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
   } else if (txFailed) {
-    displayStatus = 'Failed';
+    displayStatus = t('bridgeStatusFailed');
     statusColor = TextColor.errorDefault;
   }
 
@@ -251,7 +250,7 @@ function SolanaBridgeTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            Bridge details
+            {t('bridgeDetailsTitle')}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
@@ -284,7 +283,7 @@ function SolanaBridgeTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  Status
+                  {t('status')}
                 </Text>
                 <Text variant={TextVariant.bodyMd} color={statusColor}>
                   {displayStatus}
@@ -300,7 +299,7 @@ function SolanaBridgeTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  Transaction ID
+                  {t('transactionIdLabel')}
                 </Text>
                 <Box
                   display={Display.Flex}
@@ -338,7 +337,7 @@ function SolanaBridgeTransactionDetailsModal({
                     variant={TextVariant.bodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    Destination Tx ID
+                    {t('destinationTransactionIdLabel')}
                   </Text>
                   <Box
                     display={Display.Flex}
@@ -402,7 +401,7 @@ function SolanaBridgeTransactionDetailsModal({
                 fontWeight={FontWeight.Medium}
                 marginBottom={2}
               >
-                Bridging
+                {t('bridging')}
               </Text>
 
               {/* From section with source chain details */}
@@ -416,7 +415,7 @@ function SolanaBridgeTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  From
+                  {t('from')}
                 </Text>
                 <Box
                   display={Display.Flex}
@@ -452,7 +451,7 @@ function SolanaBridgeTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  To
+                  {t('to')}
                 </Text>
                 <Box
                   display={Display.Flex}
@@ -491,7 +490,7 @@ function SolanaBridgeTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  You sent
+                  {t('youSent')}
                 </Text>
                 <Box
                   display={Display.Flex}
@@ -541,34 +540,36 @@ function SolanaBridgeTransactionDetailsModal({
                 </Box>
               </Box>
 
-              {/* Destination Amount */}
-              {bridgeInfo?.destAsset && bridgeInfo?.destTokenAmount && (
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    You received
-                  </Text>
+              {/* Destination Amount - Show only when truly complete */}
+              {txComplete &&
+                bridgeInfo?.destAsset &&
+                bridgeInfo?.destTokenAmount && (
                   <Box
                     display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    alignItems={AlignItems.flexEnd}
+                    justifyContent={JustifyContent.spaceBetween}
                   >
                     <Text
                       variant={TextVariant.bodyMd}
-                      data-testid="transaction-dest-amount"
+                      fontWeight={FontWeight.Medium}
                     >
-                      {formatDestTokenAmount(
-                        bridgeInfo.destTokenAmount,
-                        bridgeInfo.destAsset.decimals,
-                      )}{' '}
-                      {bridgeInfo.destAsset.symbol}
+                      {t('youReceived')}
                     </Text>
-                    {/* <Box
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      alignItems={AlignItems.flexEnd}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        data-testid="transaction-dest-amount"
+                      >
+                        {formatDestTokenAmount(
+                          bridgeInfo.destTokenAmount,
+                          bridgeInfo.destAsset.decimals,
+                        )}{' '}
+                        {bridgeInfo.destAsset.symbol}
+                      </Text>
+                      {/* <Box
                       display={Display.Flex}
                       gap={1}
                       alignItems={AlignItems.center}
@@ -590,9 +591,9 @@ function SolanaBridgeTransactionDetailsModal({
                         {bridgeInfo?.destChainName || ''}
                       </Text>
                     </Box> */}
+                    </Box>
                   </Box>
-                </Box>
-              )}
+                )}
 
               {/* Gas Fee */}
               {baseFee && (
@@ -604,7 +605,7 @@ function SolanaBridgeTransactionDetailsModal({
                     variant={TextVariant.bodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    Total gas fee
+                    {t('transactionTotalGasFee')}
                   </Text>
                   <Box
                     display={Display.Flex}
@@ -650,7 +651,7 @@ function SolanaBridgeTransactionDetailsModal({
             }}
             endIconName={IconName.Export}
           >
-            View on explorer
+            {t('viewOnBlockExplorer')}
           </Button>
         </ModalFooter>
       </ModalContent>
