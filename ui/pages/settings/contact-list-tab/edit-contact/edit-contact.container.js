@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import {
   getAddressBook,
   getAddressBookEntry,
+  getAllEnabledNetworks,
   getInternalAccountByAddress,
   getInternalAccounts,
 } from '../../../../selectors';
@@ -15,6 +16,7 @@ import {
 import {
   addToAddressBook,
   removeFromAddressBook,
+  toggleNetworkMenu,
 } from '../../../../store/actions';
 import EditContact from './edit-contact.component';
 
@@ -28,6 +30,7 @@ const mapStateToProps = (state, ownProps) => {
     : ownProps.match.params.id;
 
   const contact = getAddressBookEntry(state, address);
+  const networks = getAllEnabledNetworks(state);
   const { memo } = contact || {};
   const name =
     contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
@@ -41,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     name,
     memo,
+    networks,
     viewRoute: CONTACT_VIEW_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,
   };
@@ -52,6 +56,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addToAddressBook(recipient, nickname, memo)),
     removeFromAddressBook: (chainId, addressToRemove) =>
       dispatch(removeFromAddressBook(chainId, addressToRemove)),
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 };
 

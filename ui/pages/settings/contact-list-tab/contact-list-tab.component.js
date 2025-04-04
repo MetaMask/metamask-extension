@@ -29,6 +29,7 @@ export default class ContactListTab extends Component {
 
   static propTypes = {
     addressBook: PropTypes.array,
+    completeAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
     history: PropTypes.object,
     selectedAddress: PropTypes.string,
@@ -58,17 +59,30 @@ export default class ContactListTab extends Component {
   }
 
   renderAddresses() {
-    const { addressBook, internalAccounts, history, selectedAddress } =
-      this.props;
-    const contacts = addressBook.filter(({ name }) => Boolean(name));
-    const nonContacts = addressBook.filter(({ name }) => !name);
+    const {
+      addressBook,
+      completeAddressBook,
+      internalAccounts,
+      history,
+      selectedAddress,
+    } = this.props;
+    const dattu = completeAddressBook.map((ch) => Object.values(ch));
+    const dattuMap = dattu.flat();
+    const contacts = dattuMap.filter(({ name }) => Boolean(name));
+
+    console.log(
+      Object.values(completeAddressBook),
+      contacts,
+      'completeAddressBook',
+    );
+    const nonContacts = dattuMap.filter(({ name }) => !name);
     const { t } = this.context;
 
     if (addressBook.length) {
       return (
         <div>
           <ContactList
-            addressBook={addressBook}
+            addressBook={dattuMap}
             internalAccounts={internalAccounts}
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
@@ -161,15 +175,16 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, addressBook, currentPath } = this.props;
-
+    const { addingContact, addressBook, currentPath, completeAddressBook } =
+      this.props;
+    // console.log(completeAddressBook, 'completeAddressBook');
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
         {currentPath === CONTACT_LIST_ROUTE &&
         !addingContact &&
-        addressBook.length > 0
+        completeAddressBook.length > 0
           ? this.renderAddButton()
           : null}
       </div>
