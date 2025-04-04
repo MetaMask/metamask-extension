@@ -10,10 +10,7 @@ import {
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
-import {
-  KEYRING_TRANSACTION_STATUS_KEY,
-  useMultichainTransactionDisplay,
-} from '../../../hooks/useMultichainTransactionDisplay';
+import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
@@ -47,14 +44,20 @@ import {
   TransactionGroupCategory,
   TransactionGroupStatus,
 } from '../../../../shared/constants/transaction';
+import type {
+  ExtendedTransaction,
+  BridgeOriginatedItem,
+} from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 
 import './index.scss';
 
-interface SolanaBridgeTransactionListItemProps {
-  transaction: any; // TODO: Use ExtendedTransaction | BridgeOriginatedItem
+type SolanaBridgeTransactionListItemProps = {
+  transaction: ExtendedTransaction | BridgeOriginatedItem;
   userAddress: string;
-  toggleShowDetails: (transaction: any) => void;
-}
+  toggleShowDetails: (
+    transaction: ExtendedTransaction | BridgeOriginatedItem,
+  ) => void;
+};
 
 /**
  * Renders a transaction list item specifically for Solana bridge operations,
@@ -66,34 +69,28 @@ const SolanaBridgeTransactionListItem: React.FC<
   const t = useI18nContext();
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
-  const {
-    type,
-    status: sourceTxRawStatus,
-    to,
-    from,
-    asset,
-  } = useMultichainTransactionDisplay({
-    transaction,
-    userAddress,
-  });
+  const { type, from, bridgeInfo, isBridgeOriginated, isSourceTxConfirmed } =
+    transaction;
+  const sourceAsset = from?.[0]?.asset;
 
+  const sourceTxRawStatus = !isBridgeOriginated
+    ? (transaction as ExtendedTransaction).status
+    : TransactionStatus.submitted;
   const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
 
   const finalDisplayStatusKey = getBridgeStatusKey(
-    transaction,
+    { ...transaction, isBridgeTx: transaction.isBridgeTx ?? false },
     sourceTxStatusKey,
   );
-
-  const isBridgeFullyComplete = isBridgeComplete(transaction);
-
+  const isBridgeFullyComplete = isBridgeComplete({
+    ...transaction,
+    isBridgeTx: transaction.isBridgeTx ?? false,
+  });
   const isBridgeFailedOrSourceFailed = isBridgeFailed(
-    transaction,
+    { ...transaction, isBridgeTx: transaction.isBridgeTx ?? false },
     sourceTxStatusKey,
   );
-
   const isTerminalState = isBridgeFullyComplete || isBridgeFailedOrSourceFailed;
-
-  const isSourceTxConfirmed = sourceTxStatusKey === TransactionStatus.confirmed;
 
   const statusLabelTextKey = [
     TransactionStatus.submitted,
@@ -114,11 +111,11 @@ const SolanaBridgeTransactionListItem: React.FC<
     ? StatusTypes.COMPLETE
     : StatusTypes.PENDING;
 
-  const txIndex = srcSegmentStatus === StatusTypes.PENDING ? 1 : 2;
+  const txIndex = isSourceTxConfirmed ? 2 : 1;
 
   let title = capitalize(type);
-  if (transaction.isBridgeTx && transaction.bridgeInfo) {
-    const { destChainName, provider, destChainId } = transaction.bridgeInfo;
+  if (transaction.isBridgeTx && bridgeInfo) {
+    const { destChainName, provider, destChainId } = bridgeInfo;
     const displayChainName = destChainName || destChainId;
     title = `${t('bridge')} ${t('to')} ${displayChainName}`;
     if (provider) {
@@ -177,10 +174,9 @@ const SolanaBridgeTransactionListItem: React.FC<
             variant={TextVariant.bodyLgMedium}
           >
             {(() => {
-              if (asset?.amount) {
-                return `${asset.amount} ${asset.unit}`;
-              } else if (transaction.from?.[0]?.asset?.amount) {
-                return `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`;
+              if (sourceAsset && sourceAsset.fungible) {
+                const displayAmount = sourceAsset.amount;
+                return `${displayAmount} ${sourceAsset.unit}`;
               }
               return '';
             })()}
@@ -205,28 +201,26 @@ const SolanaBridgeTransactionListItem: React.FC<
                 : undefined
             }
           />
-          {transaction.isBridgeTx &&
-            transaction.bridgeInfo &&
-            !isTerminalState && (
-              <Box
-                marginTop={0}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={1}
-                width={BlockSize.Full}
+          {transaction.isBridgeTx && bridgeInfo && !isTerminalState && (
+            <Box
+              marginTop={0}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={1}
+              width={BlockSize.Full}
+            >
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySm}
               >
-                <Text
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodySm}
-                >
-                  {t('bridgeTransactionProgress', [txIndex])}
-                </Text>
-                <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-                  <Segment type={srcSegmentStatus} />
-                  <Segment type={destSegmentStatus} />
-                </Box>
+                {t('bridgeTransactionProgress', [txIndex])}
+              </Text>
+              <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+                <Segment type={srcSegmentStatus} />
+                <Segment type={destSegmentStatus} />
               </Box>
-            )}
+            </Box>
+          )}
         </Box>
       }
     />

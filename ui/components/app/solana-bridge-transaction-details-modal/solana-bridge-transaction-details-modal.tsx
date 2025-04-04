@@ -16,7 +16,6 @@ import {
   FontWeight,
   TextColor,
   TextAlign,
-  BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -47,10 +46,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName } from '../../../helpers/utils/util';
-import {
-  KEYRING_TRANSACTION_STATUS_KEY,
-  useMultichainTransactionDisplay,
-} from '../../../hooks/useMultichainTransactionDisplay';
+import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -66,25 +62,17 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import './index.scss';
+import {
+  ExtendedTransaction,
+  BridgeOriginatedItem,
+} from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
-interface BridgeInfo {
-  destChainName?: string;
-  destChainId?: string;
-  provider?: string;
-  destTxHash?: string;
-  destBlockExplorerUrl?: string;
-  destAsset?: {
-    symbol: string;
-    decimals: number;
-  };
-  destTokenAmount?: string;
-}
-
-interface SolanaBridgeTransactionDetailsModalProps {
-  transaction: any; // Using any for now, should define specific transaction type
+type SolanaBridgeTransactionDetailsModalProps = {
+  transaction: ExtendedTransaction | BridgeOriginatedItem;
   onClose: () => void;
   userAddress: string;
-}
+};
 
 /**
  * Modal component for displaying Solana bridge transaction details
@@ -102,29 +90,42 @@ function SolanaBridgeTransactionDetailsModal({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { id, timestamp, chain, status, baseFee, asset } =
-    useMultichainTransactionDisplay({ transaction, userAddress });
+  // --- Extract data directly from transaction ---
+  const { id, timestamp, from, bridgeInfo, isBridgeOriginated } = transaction;
+  const chain =
+    transaction.network ??
+    (transaction as ExtendedTransaction).chain ??
+    undefined;
+  // Use TransactionStatus.submitted as the default
+  const sourceTxRawStatus = !isBridgeOriginated
+    ? (transaction as ExtendedTransaction).status
+    : TransactionStatus.submitted;
+  const assetData = from?.[0]?.asset;
+  const baseFeeAsset = !isBridgeOriginated
+    ? (transaction as ExtendedTransaction).fees?.find(
+        (fee) => fee.type === 'base',
+      )?.asset
+    : null;
+  // --- End direct extraction ---
 
-  const bridgeInfo: BridgeInfo = transaction.bridgeInfo || {};
+  const currentBridgeInfo = bridgeInfo || {};
 
-  // Get the transaction status key using shared utility
-  const statusKey = getBridgeStatusKey(
-    transaction,
-    KEYRING_TRANSACTION_STATUS_KEY[status],
+  const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
+
+  // Determine final display status key using utility
+  const finalDisplayStatusKey = getBridgeStatusKey(
+    { ...transaction, isBridgeTx: transaction.isBridgeTx ?? false },
+    sourceTxStatusKey,
   );
 
-  // Use shared utility functions to check transaction state
-  const txComplete = isBridgeComplete(transaction);
-  const txFailed = isBridgeFailed(transaction, statusKey);
-
-  // Set display status based on transaction state
+  // Determine display status text and color based on finalDisplayStatusKey
   let displayStatus = t('bridgeStatusInProgress');
   let statusColor = TextColor.primaryDefault;
 
-  if (txComplete) {
+  if (finalDisplayStatusKey === TransactionStatus.confirmed) {
     displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
-  } else if (txFailed) {
+  } else if (finalDisplayStatusKey === TransactionStatus.failed) {
     displayStatus = t('bridgeStatusFailed');
     statusColor = TextColor.errorDefault;
   }
@@ -132,10 +133,10 @@ function SolanaBridgeTransactionDetailsModal({
   /**
    * Gets the correct block explorer URL for a transaction hash based on chain type
    *
-   * @param {string} txHash - Transaction hash/ID
-   * @param {string} chainId - Chain ID (can be EVM or Solana format)
-   * @param {object} networkProps - Network properties for EVM chains
-   * @returns {string} Block explorer URL for the transaction
+   * @param txHash - Transaction hash/ID
+   * @param chainId - Chain ID (can be EVM or Solana format)
+   * @param networkProps - Network properties for EVM chains
+   * @returns Block explorer URL for the transaction
    */
   const getChainExplorerUrl = (
     txHash: string,
@@ -202,15 +203,15 @@ function SolanaBridgeTransactionDetailsModal({
   /**
    * Format destination token amount based on decimals
    *
-   * @param {string} amount - Amount in base units
-   * @param {number} decimals - Number of decimals
-   * @returns {string} Formatted amount
+   * @param amount - Amount in base units
+   * @param decimals - Number of decimals
+   * @returns Formatted amount
    */
-  const formatDestTokenAmount = (amount: string, decimals = 18): string => {
-    if (!amount) {
-      return '0';
-    }
-
+  const formatDestTokenAmount = (
+    amount: string | undefined,
+    decimals: number | undefined = 18,
+  ): string => {
+    if (!amount) return '0';
     try {
       const amountBN = BigInt(amount);
       const divisor = BigInt(10) ** BigInt(decimals);
@@ -221,7 +222,6 @@ function SolanaBridgeTransactionDetailsModal({
       const formattedDecimal = remainderStr
         .substring(0, decimalPlaces)
         .replace(/0+$/u, '');
-
       return formattedDecimal.length > 0
         ? `${integerPart}.${formattedDecimal}`
         : `${integerPart}`;
@@ -328,7 +328,7 @@ function SolanaBridgeTransactionDetailsModal({
               </Box>
 
               {/* If destination transaction exists, show it */}
-              {bridgeInfo?.destTxHash && (
+              {currentBridgeInfo?.destTxHash && (
                 <Box
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
@@ -353,12 +353,15 @@ function SolanaBridgeTransactionDetailsModal({
                       as="a"
                       externalLink
                       href={getChainExplorerUrl(
-                        bridgeInfo.destTxHash,
-                        bridgeInfo.destChainId ?? '',
-                        { blockExplorerUrl: bridgeInfo.destBlockExplorerUrl },
+                        currentBridgeInfo.destTxHash,
+                        currentBridgeInfo.destChainId?.toString() ?? '',
+                        {
+                          blockExplorerUrl:
+                            currentBridgeInfo.destBlockExplorerUrl,
+                        },
                       )}
                     >
-                      {shortenTransactionId(bridgeInfo.destTxHash)}
+                      {shortenTransactionId(currentBridgeInfo.destTxHash)}
                       <Icon
                         marginLeft={2}
                         name={IconName.Export}
@@ -369,25 +372,6 @@ function SolanaBridgeTransactionDetailsModal({
                   </Box>
                 </Box>
               )}
-
-              {/* Timestamp */}
-              {/* <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  Timestamp
-                </Text>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  className="solana-bridge-transaction-details-modal__timestamp"
-                >
-                  {formatTimestamp(timestamp)}
-                </Text>
-              </Box> */}
             </Box>
 
             <Box paddingTop={4} paddingBottom={4}>
@@ -461,7 +445,7 @@ function SolanaBridgeTransactionDetailsModal({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
                     className="solana-bridge-transaction-details-modal__network-badge"
-                    name={bridgeInfo?.destChainName || ''}
+                    name={currentBridgeInfo?.destChainName || ''}
                     src={
                       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                         bridgeInfo?.destChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
@@ -502,46 +486,20 @@ function SolanaBridgeTransactionDetailsModal({
                     data-testid="transaction-source-amount"
                   >
                     {(() => {
-                      if (asset?.amount) {
-                        return `${asset.amount.replace('-', '')} ${asset.unit}`;
-                      } else if (transaction.from?.[0]?.asset?.amount) {
-                        return `${transaction.from[0].asset.amount.replace(
-                          '-',
-                          '',
-                        )} ${transaction.from[0].asset.unit}`;
+                      if (assetData && assetData.fungible) {
+                        const displayAmount = assetData.amount?.startsWith('-')
+                          ? assetData.amount.substring(1)
+                          : assetData.amount;
+                        return `${displayAmount} ${assetData.unit}`;
                       }
                       return '';
                     })()}
                   </Text>
-                  {/* <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    <AvatarNetwork
-                      size={AvatarNetworkSize.Xs}
-                      name={
-                        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                          .nickname
-                      }
-                      src={SOLANA_TOKEN_IMAGE_URL}
-                      borderColor={BackgroundColor.backgroundDefault}
-                    />
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                    >
-                      {
-                        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                          .nickname
-                      }
-                    </Text>
-                  </Box> */}
                 </Box>
               </Box>
 
               {/* Destination Amount - Show only when truly complete */}
-              {txComplete &&
+              {finalDisplayStatusKey === TransactionStatus.confirmed &&
                 bridgeInfo?.destAsset &&
                 bridgeInfo?.destTokenAmount && (
                   <Box
@@ -569,34 +527,12 @@ function SolanaBridgeTransactionDetailsModal({
                         )}{' '}
                         {bridgeInfo.destAsset.symbol}
                       </Text>
-                      {/* <Box
-                      display={Display.Flex}
-                      gap={1}
-                      alignItems={AlignItems.center}
-                    >
-                      <AvatarNetwork
-                        size={AvatarNetworkSize.Xs}
-                        name={bridgeInfo?.destChainName || ''}
-                        src={
-                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                            bridgeInfo?.destChainId
-                          ] || ''
-                        }
-                        borderColor={BackgroundColor.backgroundDefault}
-                      />
-                      <Text
-                        variant={TextVariant.bodySm}
-                        color={TextColor.textAlternative}
-                      >
-                        {bridgeInfo?.destChainName || ''}
-                      </Text>
-                    </Box> */}
                     </Box>
                   </Box>
                 )}
 
               {/* Gas Fee */}
-              {baseFee && (
+              {baseFeeAsset && baseFeeAsset.fungible && (
                 <Box
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
@@ -616,7 +552,7 @@ function SolanaBridgeTransactionDetailsModal({
                       variant={TextVariant.bodyMd}
                       data-testid="transaction-gas-fee"
                     >
-                      {baseFee.amount} {baseFee.unit}
+                      {baseFeeAsset.amount} {baseFeeAsset.unit}
                     </Text>
                   </Box>
                 </Box>

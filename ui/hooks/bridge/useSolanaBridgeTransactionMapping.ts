@@ -1,5 +1,10 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Transaction } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus as KeyringTransactionStatus,
+} from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   isCaipChainId,
   type CaipChainId,
@@ -13,6 +18,7 @@ import {
 } from '../../../shared/constants/multichain/networks';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
+import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
 
 /**
  * Defines the structure for additional bridge-related information added to transactions.
@@ -41,7 +47,8 @@ export type ExtendedTransaction = Transaction & {
   network?: string;
   isBridgeTx?: boolean;
   bridgeInfo?: BridgeInfo;
-  isBridgeOriginated?: false; // Originated items use BridgeOriginatedItem type.
+  isBridgeOriginated?: false;
+  isSourceTxConfirmed?: boolean;
 };
 
 /**
@@ -68,6 +75,7 @@ export type BridgeOriginatedItem = {
   network?: string;
   isBridgeTx?: boolean;
   bridgeInfo?: BridgeInfo;
+  isSourceTxConfirmed?: boolean;
 };
 
 /**
@@ -102,6 +110,15 @@ export default function useSolanaBridgeTransactionMapping(
     | undefined,
 ): MixedTransactionsData | undefined {
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+
+  // Store original transactions by ID for quick status lookup later
+  const originalTxMap = useMemo(() => {
+    const map = new Map<string, Transaction>();
+    initialNonEvmTransactions?.transactions?.forEach((tx) => {
+      map.set(tx.id, tx);
+    });
+    return map;
+  }, [initialNonEvmTransactions]);
 
   /**
    * Gets a human-readable network name from a chain ID.
@@ -166,12 +183,10 @@ export default function useSolanaBridgeTransactionMapping(
 
       if (isRecent) {
         const srcTxHash = bridgeTx.status?.srcChain?.txHash;
-        const existsInTxList = nonEvmTransactions.transactions.some(
-          (tx) => tx.id === srcTxHash,
-        );
+        const existsInOriginalTxList = originalTxMap.has(srcTxHash ?? '');
 
         // If a recent bridge history item isn't in the main list, create a BridgeOriginatedItem for it.
-        if (!existsInTxList && srcTxHash) {
+        if (!existsInOriginalTxList && srcTxHash) {
           const timestampSeconds =
             ((bridgeTx.status?.status === 'COMPLETE'
               ? bridgeTx.completionTime ?? bridgeTx.startTime
@@ -216,6 +231,7 @@ export default function useSolanaBridgeTransactionMapping(
             network: bridgeTx.quote?.srcChainId?.toString() ?? 'unknown',
             isBridgeTx: true,
             bridgeInfo: undefined,
+            isSourceTxConfirmed: false,
           };
           bridgeOriginatedTxs.push(bridgeOriginatedTx);
         }
@@ -228,7 +244,7 @@ export default function useSolanaBridgeTransactionMapping(
     nonEvmTransactions = {
       ...nonEvmTransactions,
       transactions: [
-        ...nonEvmTransactions.transactions,
+        ...(nonEvmTransactions.transactions as ExtendedTransaction[]),
         ...bridgeOriginatedTxs,
       ],
     };
@@ -247,12 +263,22 @@ export default function useSolanaBridgeTransactionMapping(
     nonEvmTransactions.transactions.map((tx) => {
       const txSignature = tx.id;
 
+      // Find original transaction to get its status, if it exists
+      const originalTx = originalTxMap.get(txSignature);
+      const sourceTxRawStatus =
+        originalTx?.status ?? KeyringTransactionStatus.Submitted;
+      const sourceTxStatusKey =
+        KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
+      const isSourceTxConfirmed =
+        sourceTxStatusKey === TransactionStatus.confirmed;
+
       // Skip bridge processing for swaps.
       if (tx.type === 'swap' && !tx.isBridgeOriginated) {
         return {
           ...(tx as ExtendedTransaction),
           isBridgeTx: false,
           isBridgeOriginated: false,
+          isSourceTxConfirmed,
         };
       }
 
@@ -304,6 +330,7 @@ export default function useSolanaBridgeTransactionMapping(
             network: tx.network,
             isBridgeTx,
             bridgeInfo,
+            isSourceTxConfirmed,
           } as BridgeOriginatedItem;
         }
         // Return ExtendedTransaction with info.
@@ -312,6 +339,7 @@ export default function useSolanaBridgeTransactionMapping(
           isBridgeTx,
           bridgeInfo,
           isBridgeOriginated: false,
+          isSourceTxConfirmed,
         };
       }
 
@@ -330,6 +358,7 @@ export default function useSolanaBridgeTransactionMapping(
           network: tx.network,
           isBridgeTx: false,
           bridgeInfo: undefined,
+          isSourceTxConfirmed,
         } as BridgeOriginatedItem;
       }
 
@@ -338,6 +367,7 @@ export default function useSolanaBridgeTransactionMapping(
         ...(tx as ExtendedTransaction),
         isBridgeTx: false,
         isBridgeOriginated: false,
+        isSourceTxConfirmed,
       };
     });
 
