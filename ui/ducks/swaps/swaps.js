@@ -56,7 +56,10 @@ import {
   getValueFromWeiHex,
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
 import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
@@ -1082,6 +1085,7 @@ export const signAndSendTransactions = (
     const state = getState();
     const hdEntropyIndex = getHDEntropyIndex(state);
     const chainId = getCurrentChainId(state);
+    const globalNetworkClientId = getSelectedNetworkClientId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
@@ -1289,6 +1293,7 @@ export const signAndSendTransactions = (
         finalApproveTxMeta = await addTransactionAndWaitForPublish(
           { ...approveTxParams, amount: '0x0' },
           {
+            networkClientId: globalNetworkClientId,
             requireApproval: false,
             type: TransactionType.swapApproval,
             swaps: {
@@ -1327,6 +1332,7 @@ export const signAndSendTransactions = (
 
     try {
       await addTransactionAndWaitForPublish(usedTradeTxParams, {
+        networkClientId: globalNetworkClientId,
         requireApproval: false,
         type: TransactionType.swap,
         swaps: {
