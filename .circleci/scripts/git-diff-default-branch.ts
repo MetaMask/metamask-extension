@@ -1,6 +1,6 @@
 import { exec as execCallback } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { promisify } from 'util';
 
 const exec = promisify(execCallback);
@@ -107,8 +107,10 @@ async function gitDiff(): Promise<string> {
 
 function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
-  const labels = prInfo.labels.map(label => label.name).join(', ');
-  const updatedPrBody = `PR labels: {${labels}}\nPR base: {${prInfo.base.ref}}\n${prInfo.body.trim()}`;
+  const labels = prInfo.labels.map((label) => label.name).join(', ');
+  const updatedPrBody = `PR labels: {${labels}}\nPR base: {${
+    prInfo.base.ref
+  }}\n${prInfo.body?.trim() ?? ''}`;
   fs.writeFileSync(prBodyPath, updatedPrBody);
   console.log(`PR body and info saved to ${prBodyPath}`);
 }
@@ -146,7 +148,7 @@ async function storeGitDiffOutputAndPrBody() {
 
     // Store the output of git diff
     const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
-    fs.writeFileSync(outputPath, diffOutput.trim());
+    fs.writeFileSync(outputPath, diffOutput?.trim() ?? '');
     console.log(`Git diff results saved to ${outputPath}`);
 
     writePrBodyAndInfoToFile(prInfo);

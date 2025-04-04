@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
 import * as core from '@actions/core';
 
@@ -43,7 +43,13 @@ async function getPrInfo(): Promise<PRInfo | null> {
 async function getPrFilesChanged() {
   const { owner, repo } = context.repo;
 
-  const response = await octokit.graphql({
+  const response = await octokit.graphql<{
+    repository: {
+      pullRequest: {
+        files: { nodes: { changeType: string; path: string }[] };
+      };
+    };
+  }>({
     query: `
         {
           repository(owner: "${owner}", name: "${repo}") {
@@ -67,7 +73,7 @@ function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   const labels = prInfo.labels.map((label) => label.name).join(', ');
   const updatedPrBody = `PR labels: {${labels}}\nPR base: {${
     prInfo.base.ref
-  }}\n${prInfo.body.trim()}`;
+  }}\n${prInfo.body?.trim() ?? ''}`;
   fs.writeFileSync(prBodyPath, updatedPrBody);
   core.info(`PR body and info saved to ${prBodyPath}`);
 }
