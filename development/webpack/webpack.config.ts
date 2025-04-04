@@ -19,6 +19,7 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import { PREINSTALLED_SNAPS } from '../../app/scripts/snaps/preinstalled-snaps';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
@@ -170,6 +171,16 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: Filter out Snaps not meant to be included in this build type.
+      ...PREINSTALLED_SNAPS.map((snap) => ({
+        from: join(
+          context,
+          '../node_modules',
+          snap,
+          'dist/preinstalled-snap.json',
+        ),
+        to: `preinstalled-snaps/${snap}/preinstalled-snap.json`,
+      })),
     ],
   }),
 ];
