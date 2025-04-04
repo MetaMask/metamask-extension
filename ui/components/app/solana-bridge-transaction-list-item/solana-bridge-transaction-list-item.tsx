@@ -14,7 +14,7 @@ import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTran
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
 import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
   Display,
