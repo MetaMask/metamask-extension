@@ -750,7 +750,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
       >
         <h1
-          class="mm-box mm-text mm-text--display-md mm-box--margin-bottom-1 mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="asset-hovered-price"
           style="width: 100px;"
         >

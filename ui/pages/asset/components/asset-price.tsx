@@ -3,6 +3,7 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
+  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -88,6 +89,7 @@ const AssetPrice = forwardRef(
           data-testid="asset-hovered-price"
           style={{ width: '100px' }}
           variant={TextVariant.displayMd}
+          fontWeight={FontWeight.Medium}
           borderRadius={BorderRadius.LG}
           marginBottom={1}
           backgroundColor={
