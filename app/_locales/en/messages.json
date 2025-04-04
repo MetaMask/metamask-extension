@@ -2089,6 +2089,9 @@
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
+  "failover": {
+    "message": "Failover"
+  },
   "failoverRpcUrl": {
     "message": "Failover RPC URL"
   },

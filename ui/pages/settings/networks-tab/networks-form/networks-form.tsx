@@ -424,7 +424,7 @@ export const NetworksForm = ({
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
                 {item.failoverUrls.length > 0 ? (
-                  <Tag label="Failover" display={Display.Inline} />
+                  <Tag label={t('failover')} display={Display.Inline} />
                 ) : null}
               </Text>
             )
