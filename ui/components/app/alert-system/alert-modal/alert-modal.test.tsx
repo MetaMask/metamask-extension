@@ -339,55 +339,55 @@ describe('AlertModal', () => {
     const testCases = [
       {
         reason: BlockaidReason.rawSignatureFarming,
-        expectedKey: 'blockaidAlertInfoDescription3',
+        expectedKey: 'blockaidAlertDescriptionOthers',
       },
       {
         reason: BlockaidReason.approvalFarming,
-        expectedKey: 'blockaidAlertInfoDescription2',
+        expectedKey: 'blockaidAlertDescriptionWithdraw',
       },
       {
         reason: BlockaidReason.setApprovalForAll,
-        expectedKey: 'blockaidAlertInfoDescription2',
+        expectedKey: 'blockaidAlertDescriptionWithdraw',
       },
       {
         reason: BlockaidReason.permitFarming,
-        expectedKey: 'blockaidAlertInfoDescription2',
+        expectedKey: 'blockaidAlertDescriptionWithdraw',
       },
       {
         reason: BlockaidReason.transferFarming,
-        expectedKey: 'blockaidAlertInfoDescription',
+        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
       },
       {
         reason: BlockaidReason.transferFromFarming,
-        expectedKey: 'blockaidAlertInfoDescription',
+        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
       },
       {
         reason: BlockaidReason.rawNativeTokenTransfer,
-        expectedKey: 'blockaidAlertInfoDescription',
+        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
       },
       {
         reason: BlockaidReason.seaportFarming,
-        expectedKey: 'blockaidAlertInfoDescription4',
+        expectedKey: 'blockaidAlertDescriptionOpenSea',
       },
       {
         reason: BlockaidReason.blurFarming,
-        expectedKey: 'blockaidAlertInfoDescription5',
+        expectedKey: 'blockaidAlertDescriptionBlur',
       },
       {
         reason: BlockaidReason.maliciousDomain,
-        expectedKey: 'blockaidAlertInfoDescription6',
+        expectedKey: 'blockaidAlertDescriptionMalicious',
       },
       {
         reason: BlockaidReason.tradeOrderFarming,
-        expectedKey: 'blockaidAlertInfoDescription7',
+        expectedKey: 'blockaidAlertDescriptionOthers',
       },
       {
         reason: BlockaidReason.other,
-        expectedKey: 'blockaidAlertInfoDescription7',
+        expectedKey: 'blockaidAlertDescriptionOthers',
       },
       {
         reason: 'unknown reason',
-        expectedKey: 'blockaidAlertInfoDescription7',
+        expectedKey: 'blockaidAlertDescriptionOthers',
       },
     ];
 
@@ -431,7 +431,7 @@ describe('AlertModal', () => {
       );
 
       expect(
-        getByText(tEn('blockaidAlertInfoDescription7') as string),
+        getByText(tEn('blockaidAlertDescriptionOthers') as string),
       ).toBeInTheDocument();
     });
   });
