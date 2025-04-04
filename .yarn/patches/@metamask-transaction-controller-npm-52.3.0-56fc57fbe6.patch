@@ -1,0 +1,188 @@
+diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
+index c46bd8463907268ac5e2a762a04615d5c1371c20..e2a508e5a65f9ba4b6f31a49242914961cd12132 100644
+--- a/dist/TransactionController.cjs
++++ b/dist/TransactionController.cjs
+@@ -399,7 +399,7 @@ class TransactionController extends base_controller_1.BaseController {
+         });
+         const delegationAddressPromise = (0, eip7702_1.getDelegationAddress)(txParams.from, ethQuery).catch(() => undefined);
+         const isEIP1559Compatible = await this.getEIP1559Compatibility(networkClientId);
+-        (0, validation_1.validateTxParams)(txParams, isEIP1559Compatible);
++        (0, validation_1.validateTxParams)(txParams, isEIP1559Compatible, chainId);
+         if (!txParams.type) {
+             // Determine transaction type based on transaction parameters and network compatibility
+             (0, utils_2.setEnvelopeType)(txParams, isEIP1559Compatible);
+diff --git a/dist/TransactionController.mjs b/dist/TransactionController.mjs
+index 866bce89ab3c39ed2dc389b53a4fd220d014d8fb..6ae5a89df29969c223d467a21bb9133c3b78fbc9 100644
+--- a/dist/TransactionController.mjs
++++ b/dist/TransactionController.mjs
+@@ -401,7 +401,7 @@ export class TransactionController extends BaseController {
+         });
+         const delegationAddressPromise = getDelegationAddress(txParams.from, ethQuery).catch(() => undefined);
+         const isEIP1559Compatible = await this.getEIP1559Compatibility(networkClientId);
+-        validateTxParams(txParams, isEIP1559Compatible);
++        validateTxParams(txParams, isEIP1559Compatible, chainId);
+         if (!txParams.type) {
+             // Determine transaction type based on transaction parameters and network compatibility
+             setEnvelopeType(txParams, isEIP1559Compatible);
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index 0b709a5f4e5a941ab770ea2ced7fce96e7d9abd3..7a2be13a9faeb87b8668e63bda8a49b64f916619 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -613,6 +613,9 @@ export type TransactionParams = {
+     authorizationList?: AuthorizationList;
+     /**
+      * Network ID as per EIP-155.
++     *
++     * @deprecated Ignored.
++     * Use `networkClientId` when calling `addTransaction`.
+      */
+     chainId?: Hex;
+     /**
+diff --git a/dist/types.d.mts b/dist/types.d.mts
+index 17f5366caba8fa9a388b79ee46d617425a9c2728..5d53976bf2546fa58528c1efb1b393bf27d8339f 100644
+--- a/dist/types.d.mts
++++ b/dist/types.d.mts
+@@ -613,6 +613,9 @@ export type TransactionParams = {
+     authorizationList?: AuthorizationList;
+     /**
+      * Network ID as per EIP-155.
++     *
++     * @deprecated Ignored.
++     * Use `networkClientId` when calling `addTransaction`.
+      */
+     chainId?: Hex;
+     /**
+diff --git a/dist/utils/validation.cjs b/dist/utils/validation.cjs
+index bd6fa9156ff04ab90e2ea538446e3def97792eba..4c3cfe4554a286d73033ed86a59ec45c1c053708 100644
+--- a/dist/utils/validation.cjs
++++ b/dist/utils/validation.cjs
+@@ -62,15 +62,16 @@ exports.validateTransactionOrigin = validateTransactionOrigin;
+  *
+  * @param txParams - Transaction params object to validate.
+  * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
++ * @param chainId - The chain ID of the transaction.
+  */
+-function validateTxParams(txParams, isEIP1559Compatible = true) {
++function validateTxParams(txParams, isEIP1559Compatible = true, chainId) {
+     validateEnvelopeType(txParams.type);
+     validateEIP1559Compatibility(txParams, isEIP1559Compatible);
+     validateParamFrom(txParams.from);
+     validateParamRecipient(txParams);
+     validateParamValue(txParams.value);
+     validateParamData(txParams.data);
+-    validateParamChainId(txParams.chainId);
++    validateParamChainId(txParams.chainId, chainId);
+     validateGasFeeParams(txParams);
+     validateAuthorizationList(txParams);
+ }
+@@ -225,16 +226,14 @@ function validateParamData(value) {
+ /**
+  * Validates chainId type.
+  *
+- * @param chainId - The chainId to validate.
++ * @param chainIdParams - The chain ID to validate.
++ * @param chainIdNetworkClient - The chain ID of the network client.
+  */
+-function validateParamChainId(chainId) {
+-    if (chainId !== undefined &&
+-        typeof chainId !== 'number' &&
+-        typeof chainId !== 'string') {
+-        throw rpc_errors_1.rpcErrors.invalidParams(
+-        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-        `Invalid transaction params: chainId is not a Number or hex string. got: (${chainId})`);
++function validateParamChainId(chainIdParams, chainIdNetworkClient) {
++    if (chainIdParams &&
++        chainIdNetworkClient &&
++        chainIdParams.toLowerCase?.() !== chainIdNetworkClient.toLowerCase()) {
++        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: chainId must match the network client, got: ${chainIdParams}, expected: ${chainIdNetworkClient}`);
+     }
+ }
+ /**
+diff --git a/dist/utils/validation.d.cts b/dist/utils/validation.d.cts
+index 7cb8efdfc990face2f6a9f0b8a35d46640635286..56ad2d71dfcfe9e11f3b438bba57e30b6c20ed3a 100644
+--- a/dist/utils/validation.d.cts
++++ b/dist/utils/validation.d.cts
+@@ -1,3 +1,4 @@
++import type { Hex } from "@metamask/utils";
+ import type { TransactionBatchRequest } from "../types.cjs";
+ import { TransactionType, type TransactionParams } from "../types.cjs";
+ /**
+@@ -30,8 +31,9 @@ export declare function validateTransactionOrigin({ data, from, internalAccounts
+  *
+  * @param txParams - Transaction params object to validate.
+  * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
++ * @param chainId - The chain ID of the transaction.
+  */
+-export declare function validateTxParams(txParams: TransactionParams, isEIP1559Compatible?: boolean): void;
++export declare function validateTxParams(txParams: TransactionParams, isEIP1559Compatible?: boolean, chainId?: Hex): void;
+ /**
+  * Validates the recipient address in a transaction's parameters.
+  *
+diff --git a/dist/utils/validation.d.mts b/dist/utils/validation.d.mts
+index f4a60a3e1336e3754dde219ac7d68a50131ce37f..dccb426ea9b78171a25a7baa8f2e78e11a4b1c2c 100644
+--- a/dist/utils/validation.d.mts
++++ b/dist/utils/validation.d.mts
+@@ -1,3 +1,4 @@
++import type { Hex } from "@metamask/utils";
+ import type { TransactionBatchRequest } from "../types.mjs";
+ import { TransactionType, type TransactionParams } from "../types.mjs";
+ /**
+@@ -30,8 +31,9 @@ export declare function validateTransactionOrigin({ data, from, internalAccounts
+  *
+  * @param txParams - Transaction params object to validate.
+  * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
++ * @param chainId - The chain ID of the transaction.
+  */
+-export declare function validateTxParams(txParams: TransactionParams, isEIP1559Compatible?: boolean): void;
++export declare function validateTxParams(txParams: TransactionParams, isEIP1559Compatible?: boolean, chainId?: Hex): void;
+ /**
+  * Validates the recipient address in a transaction's parameters.
+  *
+diff --git a/dist/utils/validation.mjs b/dist/utils/validation.mjs
+index 70d3d5a73f104d3c50c1d3bc746ac19a5dac281c..86fc86081baf6ef12550a044d9f9705fc16aa9e6 100644
+--- a/dist/utils/validation.mjs
++++ b/dist/utils/validation.mjs
+@@ -58,15 +58,16 @@ export async function validateTransactionOrigin({ data, from, internalAccounts,
+  *
+  * @param txParams - Transaction params object to validate.
+  * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
++ * @param chainId - The chain ID of the transaction.
+  */
+-export function validateTxParams(txParams, isEIP1559Compatible = true) {
++export function validateTxParams(txParams, isEIP1559Compatible = true, chainId) {
+     validateEnvelopeType(txParams.type);
+     validateEIP1559Compatibility(txParams, isEIP1559Compatible);
+     validateParamFrom(txParams.from);
+     validateParamRecipient(txParams);
+     validateParamValue(txParams.value);
+     validateParamData(txParams.data);
+-    validateParamChainId(txParams.chainId);
++    validateParamChainId(txParams.chainId, chainId);
+     validateGasFeeParams(txParams);
+     validateAuthorizationList(txParams);
+ }
+@@ -218,16 +219,14 @@ function validateParamData(value) {
+ /**
+  * Validates chainId type.
+  *
+- * @param chainId - The chainId to validate.
++ * @param chainIdParams - The chain ID to validate.
++ * @param chainIdNetworkClient - The chain ID of the network client.
+  */
+-function validateParamChainId(chainId) {
+-    if (chainId !== undefined &&
+-        typeof chainId !== 'number' &&
+-        typeof chainId !== 'string') {
+-        throw rpcErrors.invalidParams(
+-        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-        `Invalid transaction params: chainId is not a Number or hex string. got: (${chainId})`);
++function validateParamChainId(chainIdParams, chainIdNetworkClient) {
++    if (chainIdParams &&
++        chainIdNetworkClient &&
++        chainIdParams.toLowerCase?.() !== chainIdNetworkClient.toLowerCase()) {
++        throw rpcErrors.invalidParams(`Invalid transaction params: chainId must match the network client, got: ${chainIdParams}, expected: ${chainIdNetworkClient}`);
+     }
+ }
+ /**
