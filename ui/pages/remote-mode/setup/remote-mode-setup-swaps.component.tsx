@@ -1,5 +1,6 @@
+import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -37,7 +38,8 @@ import RemoteModeHardwareWalletConfirm from './hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from './swap-allowance-card';
 import { SwapAllowance, TokenSymbol, ToTokenOption } from '../remote.types';
 import StepIndicator from './step-indicator/step-indicator.component';
-import { REMOTE_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, REMOTE_ROUTE } from '../../../helpers/constants/routes';
+import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
 
 const TOTAL_STEPS = 3;
 
@@ -78,6 +80,14 @@ export default function RemoteModeSetupSwaps({
     useState<boolean>(false);
 
   const history = useHistory();
+
+  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    if (!isRemoteModeEnabled) {
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [isRemoteModeEnabled, history]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {

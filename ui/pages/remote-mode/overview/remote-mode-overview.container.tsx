@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
 import { Button, Box, ButtonSize } from '../../../components/component-library';
 
 import {
+  DEFAULT_ROUTE,
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
 } from '../../../helpers/constants/routes';
@@ -24,6 +27,13 @@ export default function RemoteModeIntroducing() {
     RemoteScreen.OVERVIEW,
   );
   const history = useHistory();
+  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    if (!isRemoteModeEnabled) {
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [isRemoteModeEnabled, history]);
 
   const renderScreen = () => {
     switch (currentScreen) {
