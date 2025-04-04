@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "aggregatedBalancePopover": {
-    "message": "Bu, belirli bir ağda sahip olduğunuz tüm token'lerin değerini yansıtır. Bu değeri ETH olarak veya diğer para birimlerinde görmeyi tercih ediyorsanız $1 alanına gidin.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "MetaMask'in $1 bölümünü kabul ediyorum",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "Gönder ekranında on altılı veri alanını göstermek için bunu seçin"
-  },
-  "showIncomingTransactions": {
-    "message": "Gelen işlemleri göster"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ethereum adresinizi ve IP adresinizi açığa çıkaran her ağ için farklı üçüncü taraf API'lerine güvenir."
   },
   "showLess": {
     "message": "Daha az göster"

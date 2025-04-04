@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "aggregatedBalancePopover": {
-    "message": "这反映了您在给定网络上拥有的所有代币的价值。如果您更愿意看到以 ETH 或其他货币反映代币价值，请转到 $1。",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "我同意MetaMask的$1",
     "description": "$1 is the `terms` link"
@@ -4567,16 +4563,6 @@
   },
   "showHexDataDescription": {
     "message": "选择此项以在发送屏幕上显示十六进制数据字段"
-  },
-  "showIncomingTransactions": {
-    "message": "显示传入的交易"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "这取决于$1，即可以访问您的以太坊地址和 IP 地址的网络。$2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "这依赖于每个网络的不同第三方 API，这些 API 会导致您的以太坊地址和 IP 地址被获悉。"
   },
   "showLess": {
     "message": "收起"
