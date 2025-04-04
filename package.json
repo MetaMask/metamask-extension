@@ -223,7 +223,12 @@
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
     "@keystonehq/metamask-airgapped-keyring": "npm:@metamask/metamask-airgapped-keyring@0.15.0",
-    "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
+    "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
+    "@metamask/controller-utils@npm:^11.0.0": "11.6.0",
+    "@metamask/controller-utils@npm:^11.3.0": "11.6.0",
+    "@metamask/controller-utils@npm:^11.4.2": "11.6.0",
+    "@metamask/controller-utils@npm:^11.5.0": "11.6.0",
+    "@metamask/controller-utils@npm:^11.6.0": "11.6.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
