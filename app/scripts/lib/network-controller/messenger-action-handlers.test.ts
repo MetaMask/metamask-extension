@@ -89,6 +89,21 @@ describe('onRpcEndpointUnavailable', () => {
     expect(trackEvent).not.toHaveBeenCalled();
   });
 
+  it('does not create a Segment event if the endpoint URL ends with infura.io, contains our API key, and the error is not a connection error', () => {
+    const infuraProjectId = 'the-infura-project-id';
+    const trackEvent = jest.fn();
+
+    onRpcEndpointUnavailable({
+      chainId: '0xaa36a7',
+      endpointUrl: `https://someinfura.io/v3/${infuraProjectId}`,
+      error: new Error('some error'),
+      infuraProjectId,
+      trackEvent,
+    });
+
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
   for (const [infuraNetwork, getQuicknodeEndpointUrl] of Object.entries(
     QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
   )) {
