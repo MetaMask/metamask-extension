@@ -7440,6 +7440,10 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
       // Other dependencies
+      getAccountBalance: (account, chainId) =>
+        this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
+          account
+        ]?.balance,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
