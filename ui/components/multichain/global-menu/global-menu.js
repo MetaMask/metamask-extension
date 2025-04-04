@@ -96,6 +96,15 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
+  /**
+   * This condition is used to control whether the client shows the "turn on notifications"
+   * modal. This allowed third party users with existing notifications to view their snap
+   * notifications without turning on wallet notifications
+   *
+   * It excludes users with preinstalled notify snaps (e.g. the institutional snap)
+   * which have the notify permission, so as to retain the existing workflow
+   */
+
   let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
