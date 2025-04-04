@@ -40,7 +40,7 @@ const RpcListItem = ({
   rpcEndpoint: {
     name?: string;
     url: string;
-    failoverUrls: string[];
+    failoverUrls?: string[];
     type: RpcEndpointType;
   };
 }) => {
@@ -80,7 +80,7 @@ const RpcListItem = ({
           gap={1}
         >
           {name || displayEndpoint(url)}
-          {rpcEndpoint.failoverUrls.length > 0 ? (
+          {rpcEndpoint.failoverUrls && rpcEndpoint.failoverUrls.length > 0 ? (
             <Tag label={t('failover')} display={Display.Inline} />
           ) : null}
         </Text>

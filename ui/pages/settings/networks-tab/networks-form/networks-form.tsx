@@ -103,6 +103,10 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
+  const defaultRpcEndpoint =
+    rpcUrls.defaultRpcEndpointIndex &&
+    rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+
   const { safeChains } = useSafeChains();
 
   const [errors, setErrors] = useState<
@@ -422,7 +426,7 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {item.failoverUrls.length > 0 ? (
+                {item.failoverUrls && item.failoverUrls.length > 0 ? (
                   <Tag label={t('failover')} display={Display.Inline} />
                 ) : null}
               </Text>
@@ -463,10 +467,9 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {rpcUrls.defaultRpcEndpointIndex !== undefined &&
-        rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex] !== undefined &&
-        rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex].failoverUrls
-          .length > 0 ? (
+        {defaultRpcEndpoint &&
+        defaultRpcEndpoint.failoverUrls &&
+        defaultRpcEndpoint.failoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -479,10 +482,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(
-              rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex]
-                .failoverUrls[0],
-            )}
+            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
             disabled={true}
           />
         ) : null}
