@@ -30,6 +30,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
@@ -87,6 +88,7 @@ describe('Transfer custom tokens @no-mmi', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
             .build(),
+          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
