@@ -114,12 +114,6 @@ export const AccountOverviewTabs = ({
   ));
   ///: END:ONLY_INCLUDE_IF
 
-  const onClickAsset = useCallback(
-    (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${asset}`),
-    [history],
-  );
-
   return (
     <Box style={{ flexGrow: '1' }}>
       <Tabs
@@ -135,10 +129,28 @@ export const AccountOverviewTabs = ({
             {...tabProps}
           >
             <Box marginTop={2}>
-              <AssetList
-                showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={onClickAsset}
-              />
+              <AssetList showTokensLinks={showTokensLinks ?? true} />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+                <NeedHelpButtonLink
+                  justifyContent={JustifyContent.flexStart}
+                  paddingLeft={4}
+                  marginBottom={4}
+                ></NeedHelpButtonLink>
+                ///: END:ONLY_INCLUDE_IF
+              }
+            </Box>
+          </Tab>
+        )}
+        {showTokens && (
+          <Tab
+            name={'defi'}
+            tabKey="tokens"
+            data-testid="account-overview__asset-tab"
+            {...tabProps}
+          >
+            <Box marginTop={2}>
+              <AssetList showTokensLinks={showTokensLinks ?? true} />
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
                 <NeedHelpButtonLink

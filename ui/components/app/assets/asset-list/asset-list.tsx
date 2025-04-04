@@ -1,62 +1,19 @@
-import React, { useCallback, useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+
 import DetectedToken from '../../detected-token/detected-token';
-import {
-  useAssetListTokenDetection,
-  usePrimaryCurrencyProperties,
-} from '../hooks';
-import { getSelectedInternalAccount } from '../../../../selectors';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { useAssetListTokenDetection } from '../hooks';
+
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
 type AssetListProps = {
-  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
-const TokenListContainer = React.memo(
-  ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
-    const account = useSelector(getSelectedInternalAccount);
-    const { isEvmNetwork } = useMultichainSelector(
-      getMultichainNetwork,
-      account,
-    );
-    const trackEvent = useContext(MetaMetricsContext);
-    const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
-
-    const onTokenClick = useCallback(
-      (chainId: string, tokenAddress: string) => {
-        if (isEvmNetwork) {
-          onClickAsset(chainId, tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }
-      },
-      [],
-    );
-
-    return <TokenList onTokenClick={onTokenClick} />;
-  },
-);
-
-const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
+const AssetList = ({ showTokensLinks }: AssetListProps) => {
   const { showDetectedTokens, setShowDetectedTokens } =
     useAssetListTokenDetection();
   const isEvm = useSelector(getMultichainIsEvm);
@@ -67,7 +24,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenListContainer onClickAsset={onClickAsset} />
+      <TokenList />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
@@ -76,4 +33,4 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   );
 };
 
-export default AssetList;
+export default React.memo(AssetList);

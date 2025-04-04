@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
@@ -18,13 +18,12 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../../selectors/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
@@ -40,23 +39,23 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from './cells';
+import { getSelectedInternalAccount } from '../../../../selectors';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { useAssetClickHandler } from '../../../multichain/account-overview/asset-click-handler';
 
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  onClick?: (chainId: string, address: string) => void;
 };
 
 export default function TokenCell({
   token,
   privacyMode = false,
-  onClick,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const trackEvent = useContext(MetaMetricsContext);
   const { safeChains } = useSafeChains();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
@@ -73,36 +72,8 @@ export default function TokenCell({
     token,
   });
 
-  const handleClick = useCallback(
-    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e?.preventDefault();
-
-      // If the scam warning modal is open, do nothing
-      if (showScamWarningModal) {
-        return;
-      }
-
-      // Ensure token has a valid chainId before proceeding
-      if (!onClick || !token.chainId) {
-        return;
-      }
-
-      // Call the onClick handler with chainId and address if needed
-      onClick(token.chainId, token.address);
-
-      // Track the event
-      trackEvent({
-        category: MetaMetricsEventCategory.Tokens,
-        event: MetaMetricsEventName.TokenDetailsOpened,
-        properties: {
-          location: 'Home',
-          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
-          token_symbol: token.symbol,
-        },
-      });
-    },
-    [onClick, token, showScamWarningModal, trackEvent],
-  );
+  const account = useSelector(getSelectedInternalAccount);
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
@@ -111,6 +82,8 @@ export default function TokenCell({
   if (!token.chainId) {
     return null;
   }
+
+  const onClickAsset = useAssetClickHandler();
 
   return (
     <Box
@@ -122,7 +95,15 @@ export default function TokenCell({
     >
       <Box
         as="a"
-        onClick={handleClick}
+        onClick={(event) => {
+          // If the scam warning modal is open, do nothing
+          if (showScamWarningModal) {
+            return;
+          }
+
+          event.preventDefault();
+          onClickAsset(token);
+        }}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         paddingTop={2}
@@ -130,7 +111,7 @@ export default function TokenCell({
         paddingLeft={4}
         paddingRight={4}
         width={BlockSize.Full}
-        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
+        style={{ height: 62, cursor: 'pointer' }}
         data-testid="multichain-token-list-button"
       >
         <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
