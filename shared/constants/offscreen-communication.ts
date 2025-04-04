@@ -10,6 +10,8 @@ export enum OffscreenCommunicationTarget {
   ledgerOffscreen = 'ledger-offscreen',
   latticeOffscreen = 'lattice-offscreen',
   extension = 'extension-offscreen',
+  localStorageOffScreen = 'local-storage-offscreen',
+  extensionLocalStorage = 'extension-local-storage',
   extensionMain = 'extension',
 }
 
