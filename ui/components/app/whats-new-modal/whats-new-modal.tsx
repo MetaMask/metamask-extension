@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -6,6 +6,7 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { ModalOverlay, ModalContent, Modal } from '../../component-library';
+import { CreateSolanaAccountModal } from '../../multichain/create-solana-account-modal';
 
 import {
   MetaMetricsEventCategory,
@@ -48,12 +49,14 @@ type RenderNotificationProps = {
   notification: NotificationType;
   onClose: () => void;
   onNotificationViewed: (id: number) => void;
+  onCreateSolanaAccount: () => void;
 };
 
 const renderNotification = ({
   notification,
   onClose,
   onNotificationViewed,
+  onCreateSolanaAccount,
 }: RenderNotificationProps) => {
   const { id, title, image, modal } = notification;
 
@@ -76,7 +79,7 @@ const renderNotification = ({
       {modal?.body && <modal.body.component title={title} />}
       {modal?.footer && (
         <modal.footer.component
-          onAction={handleNotificationClose}
+          onAction={onCreateSolanaAccount}
           onCancel={handleNotificationClose}
         />
       )}
@@ -87,6 +90,8 @@ const renderNotification = ({
 export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
+  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
+    useState(false);
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
 
@@ -106,25 +111,40 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
     onClose();
   };
 
+  const handleCreateSolanaAccount = () => {
+    setShowCreateSolanaAccountModal(true);
+  };
+
   return (
-    <Modal
-      onClose={handleModalClose}
-      data-testid="whats-new-modal"
-      isOpen={notifications.length > 0}
-      isClosedOnOutsideClick
-      isClosedOnEscapeKey
-    >
-      <ModalOverlay />
+    <>
+      <Modal
+        onClose={() => null}
+        data-testid="whats-new-modal"
+        isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}
+        isClosedOnOutsideClick
+        isClosedOnEscapeKey
+      >
+        <ModalOverlay />
 
-      {notifications.map(({ id }) => {
-        const notification = getTranslatedUINotifications(t)[id];
+        {notifications.map(({ id }) => {
+          const notification = getTranslatedUINotifications(t)[id];
 
-        return renderNotification({
-          notification,
-          onClose,
-          onNotificationViewed: handleNotificationViewed,
-        });
-      })}
-    </Modal>
+          return renderNotification({
+            notification,
+            onClose,
+            onNotificationViewed: handleNotificationViewed,
+            onCreateSolanaAccount: handleCreateSolanaAccount,
+          });
+        })}
+      </Modal>
+      {showCreateSolanaAccountModal && (
+        <CreateSolanaAccountModal
+          onClose={() => {
+            setShowCreateSolanaAccountModal(false);
+            handleModalClose();
+          }}
+        />
+      )}
+    </>
   );
 }
