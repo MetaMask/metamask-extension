@@ -27,6 +27,10 @@ import {
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
+import Tooltip from '../../ui/tooltip/tooltip';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 type NftItemProps = {
   nft?: NFT;
@@ -103,6 +107,15 @@ export const NftItem = ({
       />
     );
 
+  const environmentType = getEnvironmentType();
+  const maxStrLen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN ? 40 : 20;
+
+  const isLongName = nft?.name && nft.name.length > maxStrLen;
+  const isLongCollection =
+    nft?.collection?.name &&
+    typeof nft?.collection?.name === 'string' &&
+    nft.collection.name.length > maxStrLen;
+
   return (
     <Box className="nft-item__card">
       <Box
@@ -135,16 +148,34 @@ export const NftItem = ({
           {nftImageComponentToRender}
         </BadgeWrapper>
       </Box>
-      <Text variant={TextVariant.bodySm} color={TextColor.textDefault} ellipsis>
-        {nft?.name}
-      </Text>
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        ellipsis
-      >
-        {nft?.collection?.name}
-      </Text>
+      {nft && (
+        <Tooltip
+          position="bottom"
+          html={
+            <>
+              <span>{nft?.name}</span>
+              <br />
+              <span>{nft.collection?.name}</span>
+            </>
+          }
+          disabled={!isLongName && !isLongCollection}
+        >
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            ellipsis
+          >
+            {nft?.name}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            ellipsis
+          >
+            {nft?.collection?.name}
+          </Text>
+        </Tooltip>
+      )}
     </Box>
   );
 };
