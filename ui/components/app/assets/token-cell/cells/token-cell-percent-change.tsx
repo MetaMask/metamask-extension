@@ -7,18 +7,20 @@ import { getMarketData } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
+import { AssetCellLocation } from '../asset-cell';
 
 type TokenCellPercentChangeProps = {
   token: TokenFiatDisplayInfo;
+  location: AssetCellLocation;
 };
 
 export const TokenCellPercentChange = React.memo(
-  ({ token }: TokenCellPercentChangeProps) => {
+  ({ token, location }: TokenCellPercentChangeProps) => {
     const isEvm = useSelector(getMultichainIsEvm);
     const multiChainMarketData = useSelector(getMarketData);
 
-    // We do not want to display any percentage with non-EVM since we don't have the data for this yet.
-    if (isEvm) {
+    // We do not want to display any percentage with non-EVM or DeFiTab since we don't have the data for this yet.
+    if (isEvm || location === AssetCellLocation.DefiTab) {
       const tokenPercentageChange = token.address
         ? multiChainMarketData?.[token.chainId]?.[token.address]
             ?.pricePercentChange1d
@@ -42,7 +44,7 @@ export const TokenCellPercentChange = React.memo(
       );
     }
 
-    // we don't support non-evm price changes yet.
+    // we don't support non-evm or defi protocol price changes yet.
     // annoyingly, we need an empty component here for flexbox to align everything nicely
     return <Box></Box>;
   },

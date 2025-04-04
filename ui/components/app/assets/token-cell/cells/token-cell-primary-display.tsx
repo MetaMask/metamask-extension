@@ -9,10 +9,12 @@ import {
   SensitiveTextLength,
 } from '../../../../component-library';
 import { TokenFiatDisplayInfo } from '../../types';
+import { AssetCellLocation } from '../asset-cell';
 
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   privacyMode: boolean;
+  location: AssetCellLocation;
 };
 
 export const TokenCellPrimaryDisplay = React.memo(

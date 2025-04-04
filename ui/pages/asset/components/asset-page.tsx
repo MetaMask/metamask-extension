@@ -294,7 +294,7 @@ const AssetPage = ({
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
-            token={{
+            asset={{
               address: address as Hex,
               chainId,
               symbol,

@@ -1,5 +1,5 @@
 import React from 'react';
-import TokenCell from './token-cell';
+import AssetCell from './asset-cell';
 
 export default {
   title: 'Components/App/TokenCell',
@@ -36,6 +36,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <TokenCell {...args} />;
+export const DefaultStory = (args) => <AssetCell {...args} />;
 
 DefaultStory.storyName = 'Default';
