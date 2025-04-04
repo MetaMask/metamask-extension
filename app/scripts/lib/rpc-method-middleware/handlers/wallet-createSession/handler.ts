@@ -184,11 +184,6 @@ async function walletCreateSessionHandler(
       },
     );
 
-    const allScopesRequested = getAllScopesFromScopesObjects([
-      supportedRequiredScopes,
-      supportedOptionalScopes,
-    ]);
-
     const allRequestedAccountAddresses = getAllAccountsFromScopesObjects([
       supportedRequiredScopes,
       supportedOptionalScopes,
@@ -234,11 +229,19 @@ async function walletCreateSessionHandler(
         supportedRequestedAccountAddresses,
       );
 
+    const allSupportedRequestedCaipChainIds = getAllScopesFromScopesObjects([
+      supportedRequiredScopes,
+      supportedOptionalScopes,
+    ]);
+
     // if `promptToCreateSolanaAccount` is true and there are no other valid scopes requested,
     // we add a `wallet` scope to the request in order to get passed the CAIP-25 caveat validator.
     // This is very hacky but is necessary because the solana opt-in flow breaks key assumptions
     // of the CAIP-25 permission specification -  namely that we can have valid requests with no scopes.
-    if (promptToCreateSolanaAccount && allScopesRequested.length === 0) {
+    if (
+      promptToCreateSolanaAccount &&
+      allSupportedRequestedCaipChainIds.length === 0
+    ) {
       requestedCaip25CaveatValueWithSupportedAccounts.optionalScopes[
         KnownCaipNamespace.Wallet
       ] = {
