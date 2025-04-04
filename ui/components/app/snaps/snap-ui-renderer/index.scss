@@ -11,7 +11,7 @@
 
     & > *:first-child {
       gap: 16px;
-      margin: 16px;
+      padding: 16px;
     }
   }
 
@@ -79,9 +79,6 @@
   &__footer {
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
     height: 80px;
-    position: fixed;
-    bottom: 0;
-    margin-top: auto;
     transition: bottom 0.3s ease-in-out;
 
     @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
