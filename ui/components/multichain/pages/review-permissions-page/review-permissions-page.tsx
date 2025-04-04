@@ -186,19 +186,21 @@ export const ReviewPermissions = () => {
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
   ) as CaipAccountId[];
 
-  // TODO move this into the selector where we map back to the internal accounts
-  // This will be necessary to add support for non EOA accounts
+  // This remaps EVM caip account addresses to match the 'eip155:0'
+  // value that is currently set in InternalAccount.scopes[0] for
+  // EOA EVM accounts. This logic will need to be updated to
+  // support non EOA accounts.
   const connectedAccountAddresses = uniq(
     _connectedAccountAddresses.map((caipAccountId) => {
       const {
         address,
-        chain: { namespace, reference },
+        chain: { namespace },
       } = parseCaipAccountId(caipAccountId);
       if (namespace === KnownCaipNamespace.Eip155) {
         // this is very hacky, but it works for now
-        return `${namespace}:0:${address}` as CaipAccountId;
+        return `eip155:0:${address}` as CaipAccountId;
       }
-      return `${namespace}:${reference}:${address}` as CaipAccountId;
+      return caipAccountId;
     }),
   );
 
