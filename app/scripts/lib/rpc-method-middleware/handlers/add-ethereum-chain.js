@@ -121,6 +121,7 @@ async function addEthereumChainHandler(
             ...clonedNetwork.rpcEndpoints,
             {
               url: firstValidRPCUrl,
+              failoverUrls: [],
               type: RpcEndpointType.Custom,
               name: chainName,
             },
@@ -171,6 +172,7 @@ async function addEthereumChainHandler(
           rpcEndpoints: [
             {
               url: firstValidRPCUrl,
+              failoverUrls: [],
               name: chainName,
               type: RpcEndpointType.Custom,
             },

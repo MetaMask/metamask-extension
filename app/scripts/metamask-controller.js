@@ -185,6 +185,7 @@ import {
   MAINNET_DISPLAY_NAME,
   DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
+  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -394,6 +395,10 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import {
+  onRpcEndpointUnavailable,
+  onRpcEndpointDegraded,
+} from './lib/network-controller/messenger-action-handlers';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -603,6 +608,12 @@ export default class MetamaskController extends EventEmitter {
         DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
       );
 
+      // Add failovers for default Infura RPC endpoints
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('linea-mainnet');
+
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
@@ -647,7 +658,38 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getRpcServiceOptions: () => ({
+        fetch: globalThis.fetch.bind(globalThis),
+        btoa: globalThis.btoa.bind(globalThis),
+      }),
     });
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointUnavailable',
+      async ({ chainId, endpointUrl, error }) => {
+        onRpcEndpointUnavailable({
+          chainId,
+          endpointUrl,
+          error,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        });
+      },
+    );
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointDegraded',
+      async ({ chainId, endpointUrl }) => {
+        onRpcEndpointDegraded({
+          chainId,
+          endpointUrl,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        });
+      },
+    );
     this.networkController.initializeProvider();
 
     if (process.env.MULTICHAIN_API) {

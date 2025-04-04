@@ -443,6 +443,7 @@
           {
             "type": "custom",
             "url": "https://testrpc.com",
+            "failoverUrls": [],
             "networkClientId": "testNetworkConfigurationId"
           }
         ],
@@ -458,7 +459,8 @@
           {
             "type": "custom",
             "url": "https://goerli.com",
-            "networkClientId": "goerli"
+            "networkClientId": "goerli",
+            "failoverUrls": []
           }
         ],
         "blockExplorerUrls": []

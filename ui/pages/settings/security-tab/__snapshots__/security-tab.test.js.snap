@@ -77,7 +77,7 @@ exports[`Security Tab should match snapshot 1`] = `
               rel="noreferrer noopener"
               target="_blank"
             >
-              Privacy policy
+              Privacy Notice
             </a>
             .
              
@@ -490,7 +490,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 rel="noreferrer"
                 target="_blank"
               >
-                Privacy policy
+                Privacy Notice
               </a>
               
                
@@ -650,13 +650,13 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
+              When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Privacy policy
+                Privacy Notice
               </a>
                to learn more about how Infura handles data.
                
@@ -1395,7 +1395,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Privacy policy
+                Privacy Notice
               </a>
               .
                
