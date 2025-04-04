@@ -5,17 +5,17 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { ModalOverlay, ModalContent, Modal } from '../../component-library';
+import { Modal, ModalContent, ModalOverlay } from '../../component-library';
 
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  ModalComponent,
-  ModalHeaderProps,
   ModalBodyProps,
+  ModalComponent,
   ModalFooterProps,
+  ModalHeaderProps,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -47,7 +47,7 @@ type NotificationType = {
 type RenderNotificationProps = {
   notification: NotificationType;
   onClose: () => void;
-  onNotificationViewed: (id: number) => void;
+  onNotificationViewed: (id: number) => Promise<void>;
 };
 
 const renderNotification = ({
@@ -57,8 +57,8 @@ const renderNotification = ({
 }: RenderNotificationProps) => {
   const { id, title, image, modal } = notification;
 
-  const handleNotificationClose = () => {
-    onNotificationViewed(id);
+  const handleNotificationClose = async () => {
+    await onNotificationViewed(id);
     onClose();
   };
 
@@ -90,15 +90,14 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
 
-  const handleNotificationViewed = (id: number) => {
-    updateViewedNotifications({ [id]: true });
+  const handleNotificationViewed = async (id: number) => {
+    await updateViewedNotifications({ [id]: true });
   };
 
-  const handleModalClose = () => {
-    notifications.forEach(({ id }) => {
-      handleNotificationViewed(id);
-    });
-
+  const handleModalClose = async () => {
+    await Promise.all(
+      notifications.map(({ id }) => handleNotificationViewed(id)),
+    );
     trackEvent({
       category: MetaMetricsEventCategory.Home,
       event: MetaMetricsEventName.WhatsNewViewed,
