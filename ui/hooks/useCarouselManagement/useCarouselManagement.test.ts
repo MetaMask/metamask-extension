@@ -1,10 +1,12 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeSlide, updateSlides } from '../../store/actions';
+import { updateSlides } from '../../store/actions';
+import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import {
-  useCarouselManagement,
   getSweepstakesCampaignActive,
+  useCarouselManagement,
 } from './useCarouselManagement';
 import {
   FUND_SLIDE,
@@ -14,39 +16,146 @@ import {
   SWEEPSTAKES_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
+  ZERO_BALANCE,
+  REMOTE_MODE_SLIDE,
 } from './constants';
+
+const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
+  { ...FUND_SLIDE, undismissable: true },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  CASH_SLIDE,
+];
+
+const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  { ...FUND_SLIDE, undismissable: false },
+  CASH_SLIDE,
+];
+
+const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
+  REMOTE_MODE_SLIDE,
+  { ...FUND_SLIDE, undismissable: true },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  CASH_SLIDE,
+];
+
+const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
+  REMOTE_MODE_SLIDE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  { ...FUND_SLIDE, undismissable: false },
+  CASH_SLIDE,
+];
+
+const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
+  { ...SWEEPSTAKES_SLIDE, dismissed: false },
+  { ...FUND_SLIDE, undismissable: true },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  CASH_SLIDE,
+];
+
+const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
+  { ...SWEEPSTAKES_SLIDE, dismissed: false },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  { ...FUND_SLIDE, undismissable: false },
+  CASH_SLIDE,
+];
+
+const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
+  { ...SWEEPSTAKES_SLIDE, dismissed: false },
+  REMOTE_MODE_SLIDE,
+  { ...FUND_SLIDE, undismissable: true },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  CASH_SLIDE,
+];
+
+const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
+  { ...SWEEPSTAKES_SLIDE, dismissed: false },
+  REMOTE_MODE_SLIDE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  { ...FUND_SLIDE, undismissable: false },
+  CASH_SLIDE,
+];
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+  useSelector: jest.fn((selector) => selector()),
 }));
 
 jest.mock('../../store/actions', () => ({
-  removeSlide: jest.fn((id) => ({ type: 'REMOVE_SLIDE', payload: id })),
-  updateSlides: jest.fn((slides) => ({
-    type: 'UPDATE_SLIDES',
-    payload: slides,
-  })),
+  updateSlides: jest.fn(),
 }));
 
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
-const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUpdateSlides = updateSlides as jest.MockedFunction<
-  typeof updateSlides
->;
-const mockRemoveSlide = removeSlide as jest.MockedFunction<typeof removeSlide>;
+jest.mock('../../selectors/selectors.js', () => ({
+  ...jest.requireActual('../../selectors/selectors.js'),
+  getSelectedAccountCachedBalance: jest.fn(),
+  getSlides: jest.fn(),
+}));
+
+jest.mock('../../selectors/remote-feature-flags', () => ({
+  getIsRemoteModeEnabled: jest.fn(),
+}));
+
+const mockUpdateSlides = jest.mocked(updateSlides);
+const mockUseSelector = jest.mocked(useSelector);
+const mockUseDispatch = jest.mocked(useDispatch);
+
+const mockGetSlides = jest.fn();
+const mockGetSelectedAccountCachedBalance = jest.fn();
+const mockGetIsRemoteModeEnabled = jest.fn();
 
 describe('useCarouselManagement', () => {
-  let mockDispatch: jest.Mock;
-  let slides: CarouselSlide[];
+  let validTestDate: string;
+  let invalidTestDate: string;
 
   beforeEach(() => {
-    mockDispatch = jest.fn();
-    mockUseDispatch.mockReturnValue(mockDispatch);
-
-    slides = [];
-    mockUseSelector.mockImplementation(() => slides);
-
+    // Test dates
+    validTestDate = new Date(SWEEPSTAKES_START.getTime() + 1000).toISOString(); // 1 day after
+    invalidTestDate = new Date(
+      SWEEPSTAKES_START.getTime() - 1000,
+    ).toISOString(); // 1 day before
+    // Mocks
+    mockUseDispatch.mockReturnValue(jest.fn());
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getSlides) {
+        return mockGetSlides();
+      }
+      if (selector === getSelectedAccountCachedBalance) {
+        return mockGetSelectedAccountCachedBalance();
+      }
+      if (selector === getIsRemoteModeEnabled) {
+        return mockGetIsRemoteModeEnabled();
+      }
+      return undefined;
+    });
+    // Default values
+    mockGetSlides.mockReturnValue([]);
+    mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
+    mockGetIsRemoteModeEnabled.mockReturnValue(false);
+    // Reset mocks
     jest.clearAllMocks();
   });
 
@@ -67,273 +176,185 @@ describe('useCarouselManagement', () => {
     });
   });
 
-  describe('hook behavior', () => {
-    it('should build slides correctly when sweepstakes is not active', () => {
-      const testDate = new Date(
-        SWEEPSTAKES_START.getTime() - 86400000,
-      ).toISOString(); // 1 day before
-
-      renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: false,
-          testDate,
-        }),
-      );
-
-      expect(mockUpdateSlides).toHaveBeenCalled();
+  describe('zero funds, remote off, sweepstakes off', () => {
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      const fundSlide = updatedSlides.find(
-        (slide: CarouselSlide) => slide.id === FUND_SLIDE.id,
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
       );
-      expect(fundSlide).toBeDefined();
-      expect(fundSlide?.undismissable).toBe(false);
-
-      expect(
-        updatedSlides.some(
-          (slide: CarouselSlide) => slide.id === BRIDGE_SLIDE.id,
-        ),
-      ).toBe(true);
-      expect(
-        updatedSlides.some(
-          (slide: CarouselSlide) => slide.id === CARD_SLIDE.id,
-        ),
-      ).toBe(true);
-      expect(
-        updatedSlides.some(
-          (slide: CarouselSlide) => slide.id === CASH_SLIDE.id,
-        ),
-      ).toBe(true);
-
-      const hasSweepstakesSlide = updatedSlides.some(
-        (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
-      );
-      expect(hasSweepstakesSlide).toBe(false);
     });
 
-    it('should build slides correctly when sweepstakes is active', () => {
-      const testDate = new Date(
-        SWEEPSTAKES_START.getTime() + 1000,
-      ).toISOString();
-
-      renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: false,
-          testDate,
-        }),
-      );
+    it('should mark fund slide as undismissable', () => {
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      const sweepstakesSlide = updatedSlides.find(
-        (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
-      );
-      expect(sweepstakesSlide).toBeDefined();
-      expect(sweepstakesSlide?.dismissed).toBe(false);
+      expect(updatedSlides[0].undismissable).toBe(true);
+    });
+  });
 
-      expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
-      expect(updatedSlides[1].id).toBe(FUND_SLIDE.id);
+  describe('zero funds, remote on, sweepstakes off', () => {
+    beforeEach(() => {
+      mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
-    it('should mark fund slide as undismissable when hasZeroBalance is true', () => {
-      const testDate = new Date(
-        SWEEPSTAKES_START.getTime() - 86400000,
-      ).toISOString();
-
-      renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: true,
-          testDate,
-        }),
-      );
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      const fundSlide = updatedSlides.find(
-        (slide: CarouselSlide) => slide.id === FUND_SLIDE.id,
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF,
       );
-      expect(fundSlide).toBeDefined();
-      expect(fundSlide?.undismissable).toBe(true);
+    });
+  });
+
+  describe('zero funds, remote off, sweepstakes on', () => {
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
+      );
+    });
+  });
+
+  describe('zero funds, remote on, sweepstakes on', () => {
+    beforeEach(() => {
+      mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
-    it('should remove sweepstakes slide if it exists and sweepstakes is not active', () => {
-      slides = [{ ...SWEEPSTAKES_SLIDE }];
-      const testDate = new Date(
-        SWEEPSTAKES_END.getTime() + 86400000,
-      ).toISOString();
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
-      renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: false,
-          testDate,
-        }),
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON,
       );
+    });
+  });
 
-      expect(mockRemoveSlide).toHaveBeenCalledWith(SWEEPSTAKES_SLIDE.id);
+  describe('positive funds, remote off, sweepstakes off', () => {
+    beforeEach(() => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
     });
 
-    it('should update slides when hasZeroBalance changes', () => {
-      const testDate = new Date().toISOString();
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
+      );
+    });
+  });
+
+  describe('positive funds, remote on, sweepstakes off', () => {
+    beforeEach(() => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
+      mockGetIsRemoteModeEnabled.mockReturnValue(true);
+    });
+
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF,
+      );
+    });
+  });
+
+  describe('positive funds, remote off, sweepstakes on', () => {
+    beforeEach(() => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
+    });
+
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
+      );
+    });
+  });
+
+  describe('positive funds, remote on, sweepstakes on', () => {
+    beforeEach(() => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
+      mockGetIsRemoteModeEnabled.mockReturnValue(true);
+    });
+
+    it('should have correct slide order', () => {
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON,
+      );
+    });
+  });
+
+  describe('state changes', () => {
+    it('should update slides when balance changes', () => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
+
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { hasZeroBalance: false, testDate },
+        initialProps: { testDate: invalidTestDate },
       });
 
+      expect(mockUpdateSlides).toHaveBeenCalled();
+      let updatedSlides = mockUpdateSlides.mock.calls[0][0];
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
+      );
+
+      mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
       mockUpdateSlides.mockClear();
 
-      rerender({ hasZeroBalance: true, testDate });
+      rerender({ testDate: invalidTestDate });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
 
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+      updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      const fundSlide = updatedSlides.find(
-        (slide: CarouselSlide) => slide.id === FUND_SLIDE.id,
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
       );
-      expect(fundSlide).toBeDefined();
-      expect(fundSlide?.undismissable).toBe(true);
     });
 
     it('should update slides when testDate changes', () => {
-      const initialTestDate = new Date(
-        SWEEPSTAKES_START.getTime() - 86400000,
-      ).toISOString();
-
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { hasZeroBalance: false, testDate: initialTestDate },
-      });
-
-      const initialSlides = mockUpdateSlides.mock.calls[0][0];
-
-      const initialHasSweepstakesSlide = initialSlides.some(
-        (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
-      );
-      expect(initialHasSweepstakesSlide).toBe(false);
-
-      mockUpdateSlides.mockClear();
-
-      const newTestDate = new Date(
-        SWEEPSTAKES_START.getTime() + 1000,
-      ).toISOString();
-      rerender({ hasZeroBalance: false, testDate: newTestDate });
-
-      const newSlides = mockUpdateSlides.mock.calls[0][0];
-
-      const newHasSweepstakesSlide = newSlides.some(
-        (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
-      );
-      expect(newHasSweepstakesSlide).toBe(true);
-    });
-  });
-
-  describe('return value', () => {
-    it('should return the current slides', () => {
-      const mockSlides: CarouselSlide[] = [
-        {
-          id: 'test-slide',
-          title: 'Test Slide',
-          description: 'Test Description',
-          image: 'test-image',
-        },
-      ];
-      slides = mockSlides;
-
-      const { result } = renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: false,
-        }),
-      );
-
-      expect(result.current.slides).toBe(mockSlides);
-    });
-  });
-
-  describe('slide order', () => {
-    it('should maintain correct order when slides are updated multiple times', () => {
-      const testDate = new Date(
-        SWEEPSTAKES_START.getTime() + 1000,
-      ).toISOString();
-
-      const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: {
-          hasZeroBalance: false,
-          testDate,
-        },
-      });
-
-      let updatedSlides = mockUpdateSlides.mock.calls[0][0] as CarouselSlide[];
-      expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
-      expect(updatedSlides[1].id).toBe(FUND_SLIDE.id);
-      expect(updatedSlides[1].undismissable).toBe(false);
-
-      mockUpdateSlides.mockClear();
-      mockDispatch.mockClear();
-
-      rerender({
-        hasZeroBalance: true,
-        testDate,
+        initialProps: { hasZeroBalance: false, testDate: invalidTestDate },
       });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
-      updatedSlides = mockUpdateSlides.mock.calls[0][0] as CarouselSlide[];
+      let updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
-      expect(updatedSlides[1].id).toBe(FUND_SLIDE.id);
-      const fundSlide = updatedSlides.find(
-        (slide) => slide.id === FUND_SLIDE.id,
-      );
-      expect(fundSlide?.undismissable).toBe(true);
-    });
-
-    it('should handle empty slides array', () => {
-      mockUseSelector.mockImplementation(() => []);
-      const testDate = new Date(
-        SWEEPSTAKES_START.getTime() + 1000,
-      ).toISOString();
-
-      renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: false,
-          testDate,
-        }),
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
       );
 
-      const updatedSlides = mockUpdateSlides.mock
-        .calls[0][0] as CarouselSlide[];
-      expect(updatedSlides.length).toBeGreaterThan(0);
-      expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
-    });
+      mockUpdateSlides.mockClear();
 
-    it('should maintain all required slide properties', () => {
-      const testDate = new Date(
-        SWEEPSTAKES_START.getTime() + 1000,
-      ).toISOString();
+      rerender({ hasZeroBalance: false, testDate: validTestDate });
 
-      renderHook(() =>
-        useCarouselManagement({
-          hasZeroBalance: true,
-          testDate,
-        }),
+      expect(mockUpdateSlides).toHaveBeenCalled();
+      updatedSlides = mockUpdateSlides.mock.calls[0][0];
+      expect(updatedSlides).toStrictEqual(
+        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
       );
-
-      const updatedSlides = mockUpdateSlides.mock
-        .calls[0][0] as CarouselSlide[];
-
-      const sweepstakesSlide = updatedSlides.find(
-        (slide) => slide.id === SWEEPSTAKES_SLIDE.id,
-      );
-      expect(sweepstakesSlide).toEqual({
-        ...SWEEPSTAKES_SLIDE,
-        dismissed: false,
-      });
-
-      const fundSlide = updatedSlides.find(
-        (slide) => slide.id === FUND_SLIDE.id,
-      );
-      expect(fundSlide).toEqual({
-        ...FUND_SLIDE,
-        undismissable: true,
-      });
     });
   });
 
@@ -343,7 +364,6 @@ describe('useCarouselManagement', () => {
 
       renderHook(() =>
         useCarouselManagement({
-          hasZeroBalance: false,
           testDate,
         }),
       );
@@ -358,7 +378,6 @@ describe('useCarouselManagement', () => {
 
       renderHook(() =>
         useCarouselManagement({
-          hasZeroBalance: false,
           testDate,
         }),
       );
@@ -374,7 +393,6 @@ describe('useCarouselManagement', () => {
       expect(() =>
         renderHook(() =>
           useCarouselManagement({
-            hasZeroBalance: false,
             testDate,
           }),
         ),
