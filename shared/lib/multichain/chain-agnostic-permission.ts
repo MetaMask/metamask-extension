@@ -1,6 +1,8 @@
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
+  InternalScopesObject,
+  InternalScopeString,
   KnownSessionProperties,
   NormalizedScopesObject,
 } from '@metamask/chain-agnostic-permission';
@@ -43,6 +45,36 @@ export function getCaip25CaveatFromPermission(caip25Permission: {
 }
 
 /**
+ * Gets all accounts from a scopes object
+ * This extracts all account IDs from both required and optional scopes
+ * and returns a unique set.
+ *
+ * @param scopesObject - The scopes object to extract accounts from
+ * @returns Array of unique account IDs
+ */
+export function getAllAccountsFromScopesObject(
+  scopesObject: InternalScopesObject,
+): CaipAccountId[] {
+  const allAccounts = new Set<CaipAccountId>();
+
+  Object.values(scopesObject).forEach(({ accounts }) => {
+    accounts.forEach((account) => {
+      allAccounts.add(account as CaipAccountId);
+    });
+  });
+
+  return Array.from(allAccounts);
+}
+
+export function getAllAccountsFromScopesObjects(
+  scopesObjects: InternalScopesObject[],
+): CaipAccountId[] {
+  return Array.from(
+    new Set([...scopesObjects.flatMap(getAllAccountsFromScopesObject)]),
+  );
+}
+
+/**
  * Gets all permitted accounts from a CAIP-25 caveat
  * This extracts all account IDs from both required and optional scopes
  * and returns a unique set.
@@ -53,21 +85,12 @@ export function getCaip25CaveatFromPermission(caip25Permission: {
 export function getAllAccountsFromCaip25CaveatValue(
   caip25CaveatValue: Caip25CaveatValue,
 ): CaipAccountId[] {
-  const permittedAccounts = new Set<CaipAccountId>();
-
-  Object.values(caip25CaveatValue.requiredScopes).forEach(({ accounts }) => {
-    accounts.forEach((account) => {
-      permittedAccounts.add(account as CaipAccountId);
-    });
-  });
-
-  Object.values(caip25CaveatValue.optionalScopes).forEach(({ accounts }) => {
-    accounts.forEach((account) => {
-      permittedAccounts.add(account as CaipAccountId);
-    });
-  });
-
-  return Array.from(permittedAccounts);
+  return Array.from(
+    new Set([
+      ...getAllAccountsFromScopesObject(caip25CaveatValue.requiredScopes),
+      ...getAllAccountsFromScopesObject(caip25CaveatValue.optionalScopes),
+    ]),
+  );
 }
 
 /**
@@ -82,7 +105,7 @@ export function getAllAccountsFromCaip25CaveatValue(
 export function getAllAccountsFromPermission(caip25Permission: {
   caveats: {
     type: string;
-    value: Caip25CaveatValue | unknown;
+    value: Caip25CaveatValue;
   }[];
 }): CaipAccountId[] {
   const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
@@ -90,8 +113,20 @@ export function getAllAccountsFromPermission(caip25Permission: {
     return [];
   }
 
-  return getAllAccountsFromCaip25CaveatValue(
-    caip25Caveat.value as Caip25CaveatValue,
+  return getAllAccountsFromCaip25CaveatValue(caip25Caveat.value);
+}
+
+export function getAllScopesFromScopesObject(
+  scopesObject: InternalScopesObject,
+): InternalScopeString[] {
+  return Object.keys(scopesObject) as InternalScopeString[];
+}
+
+export function getAllScopesFromScopesObjects(
+  scopesObjects: InternalScopesObject[],
+): InternalScopeString[] {
+  return Array.from(
+    new Set([...scopesObjects.flatMap(getAllScopesFromScopesObject)]),
   );
 }
 

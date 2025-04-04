@@ -34,7 +34,6 @@ import {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import { uniq } from 'lodash';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -48,6 +47,8 @@ import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-
 import {
   isKnownSessionPropertyValue,
   isNamespaceInScopesObject,
+  getAllAccountsFromScopesObjects,
+  getAllScopesFromScopesObjects,
 } from '../../../../../../shared/lib/multichain/chain-agnostic-permission';
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -183,30 +184,23 @@ async function walletCreateSessionHandler(
       },
     );
 
-    const allScopesRequested = Object.keys(supportedRequiredScopes).concat(
-      Object.keys(supportedOptionalScopes),
-    );
+    const allScopesRequested = getAllScopesFromScopesObjects([
+      supportedRequiredScopes,
+      supportedOptionalScopes,
+    ]);
+
+    const allRequestedAccountAddresses = getAllAccountsFromScopesObjects([
+      supportedRequiredScopes,
+      supportedOptionalScopes,
+    ]);
 
     // Fetch EVM accounts from native wallet keyring
     const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
 
-    // TODO dry and or move to @metamask/chain-agnostic-permission
-    const requestedRequiredAccounts = Object.values(
-      supportedRequiredScopes,
-    ).flatMap((scope) => scope.accounts);
-    const requestedOptionalAccounts = Object.values(
-      supportedOptionalScopes,
-    ).flatMap((scope) => scope.accounts);
-
-    const allRequestedAccountAddresses = uniq([
-      ...requestedRequiredAccounts,
-      ...requestedOptionalAccounts,
-    ]);
-
     const supportedRequestedAccountAddresses =
-      allRequestedAccountAddresses.filter((accountAddress) => {
+      allRequestedAccountAddresses.filter((accountAddress: CaipAccountId) => {
         const {
           address,
           chain: { namespace },
