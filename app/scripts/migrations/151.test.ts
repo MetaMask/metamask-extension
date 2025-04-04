@@ -163,7 +163,7 @@ describe(`migration #${version}`, () => {
                       value: {
                         isMultichainOrigin: false,
                         optionalScopes: {
-                          'eip155:59141': {
+                          'wallet:eip155': {
                             accounts: [
                               '0x1234567890123456789012345678901234567890',
                             ],
@@ -210,13 +210,13 @@ describe(`migration #${version}`, () => {
                   value: {
                     isMultichainOrigin: false,
                     optionalScopes: {
-                      'eip155:1': {
-                        accounts: [],
-                      },
-                      'eip155:59141': {
+                      'wallet:eip155': {
                         accounts: [
                           '0x1234567890123456789012345678901234567890',
                         ],
+                      },
+                      'eip155:1': {
+                        accounts: [],
                       },
                     },
                     requiredScopes: {},
