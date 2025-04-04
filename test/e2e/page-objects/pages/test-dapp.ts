@@ -103,6 +103,8 @@ class TestDapp {
 
   private readonly sign721PermitButton = '#sign721Permit';
 
+  private readonly sendCallsButton = '#eip5792SendCallsButton';
+
   private sign721PermitResult = '#sign721PermitResult';
 
   private sign721PermitResultR = '#sign721PermitResultR';
@@ -611,6 +613,10 @@ class TestDapp {
 
   async clickPersonalSign() {
     await this.driver.clickElement(this.personalSignButton);
+  }
+
+  async clickSendCalls() {
+    await this.driver.clickElement(this.sendCallsButton);
   }
 
   async clickSignTypedData() {

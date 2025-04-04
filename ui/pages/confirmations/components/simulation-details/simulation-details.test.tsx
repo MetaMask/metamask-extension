@@ -179,7 +179,8 @@ describe('SimulationDetails', () => {
 
     renderSimulationDetails({}, false, staticRows);
 
-    expect(BalanceChangeList).toHaveBeenLastCalledWith(
+    expect(BalanceChangeList).toHaveBeenNthCalledWith(
+      1,
       expect.objectContaining({
         heading: 'Test Label',
         balanceChanges: staticRows[0].balanceChanges,
