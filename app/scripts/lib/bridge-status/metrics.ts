@@ -117,9 +117,9 @@ export const handleBridgeTransactionComplete = async (
 
   if (
     getRemoteFeatureFlags().transactionsTxHashInAnalytics &&
-    getParticipateInMetrics() &&
     bridgeHistoryItem.status.srcChain.txHash
   ) {
+    // Note: getParticipateInMetrics() check happens in metametrics-controller.ts#submitEvent
     properties.transaction_hash = bridgeHistoryItem.status.srcChain.txHash;
   }
 
