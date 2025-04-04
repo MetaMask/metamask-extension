@@ -23,6 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { SizeNumber } from '../../../../ui/box/box';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -90,6 +91,9 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
 
   const isCollapsible = collapsed !== undefined;
 
+  const contentPaddingRight = ((copyEnabled ? 6 : 0) +
+    (isCollapsible ? 6 : 0)) as SizeNumber;
+
   return (
     <ConfirmInfoRowContext.Provider value={{ variant }}>
       <Box
@@ -105,7 +109,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         marginTop={2}
         marginBottom={2}
         paddingLeft={2}
-        paddingRight={copyEnabled ? 5 : 2}
+        paddingRight={2}
         color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
@@ -142,6 +146,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
           color={color}
+          paddingRight={contentPaddingRight || null}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>

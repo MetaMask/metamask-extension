@@ -1,10 +1,26 @@
 @use "design-system";
 
 .multichain-send-page {
-  width: 408px;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
 
-  @media (max-width: 371px) {
-    width: 100%;
+  // prevent overflow-x
+  max-width: 100%;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 2px;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
   }
 
   &__account-picker {

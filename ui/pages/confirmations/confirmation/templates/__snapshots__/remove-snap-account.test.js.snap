@@ -6,7 +6,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="mm-box confirmation-page__content mm-box--padding-4"
+      class="mm-box confirmation-page__content mm-box--padding-0"
       style="overflow-y: auto;"
     >
       <div
@@ -61,14 +61,14 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
           style="flex-grow: 1;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--width-full"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
             >
               <div
                 class="mm-box mm-box--padding-bottom-2"
@@ -83,7 +83,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                 </div>
               </div>
               <h2
-                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--color-text-default"
+                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-bottom-2 mm-box--color-text-default"
               >
                 Remove account
               </h2>
