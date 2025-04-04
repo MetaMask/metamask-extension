@@ -7,6 +7,7 @@ import {
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 type CreateSnapAccountProps = {
   /**
@@ -71,7 +72,32 @@ export const CreateSnapAccount = ({
   );
 
   const getNextAccountName = async () => {
-    return getNextAvailableAccountName(KeyringTypes.snap);
+    const defaultSnapAccountName = await getNextAvailableAccountName(
+      KeyringTypes.snap,
+    );
+
+    // FIXME: This is a temporary workaround to suggest a different account name for a first party snap.
+    const accountNumber = defaultSnapAccountName.trim().split(' ').pop();
+
+    switch (clientType) {
+      case WalletClientType.Bitcoin: {
+        if (chainId === MultichainNetworks.BITCOIN_TESTNET) {
+          return `Bitcoin Testnet Account ${accountNumber}`;
+        }
+        return `Bitcoin Account ${accountNumber}`;
+      }
+      case WalletClientType.Solana: {
+        if (chainId === MultichainNetworks.SOLANA_TESTNET) {
+          return `Solana Testnet Account ${accountNumber}`;
+        }
+        if (chainId === MultichainNetworks.SOLANA_DEVNET) {
+          return `Solana Devnet Account ${accountNumber}`;
+        }
+        return `Solana Account ${accountNumber}`;
+      }
+      default:
+        return defaultSnapAccountName;
+    }
   };
 
   return (

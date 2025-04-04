@@ -7733,6 +7733,10 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
       // Other dependencies
+      getAccountBalance: (account, chainId) =>
+        this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
+          account
+        ]?.balance,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
@@ -7786,6 +7790,17 @@ export default class MetamaskController extends EventEmitter {
       }),
       provider: this.provider,
     };
+  }
+
+  updateAccountBalanceForTransactionNetwork(transactionMeta) {
+    const {
+      networkClientId,
+      txParams: { from },
+    } = transactionMeta;
+    this.accountTrackerController.updateAccountByAddress({
+      from,
+      networkClientId,
+    });
   }
 
   toggleExternalServices(useExternal) {
@@ -8584,6 +8599,8 @@ export default class MetamaskController extends EventEmitter {
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      updateAccountBalanceForTransactionNetwork:
+        this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
       persistedState: initState,
       removeAllConnections: this.removeAllConnections.bind(this),
