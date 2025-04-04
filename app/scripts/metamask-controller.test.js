@@ -3946,7 +3946,7 @@ describe('MetaMaskController', () => {
         const newlyAddedKeyringId =
           metamaskController.keyringController.state.keyringsMetadata[
             metamaskController.keyringController.state.keyringsMetadata.length -
-              1
+              2 // -1 for the snap keyring, -1 for the newly added keyring
           ].id;
 
         const newSRP = Buffer.from(
@@ -3956,7 +3956,10 @@ describe('MetaMaskController', () => {
         expect(
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
-        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
+        ).toHaveLength(1);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 2);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
 

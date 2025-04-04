@@ -25,6 +25,9 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+///: END:ONLY_INCLUDE_IF
 import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
@@ -140,7 +143,12 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  SolScope,
+  ///: END:ONLY_INCLUDE_IF
+  isEvmAccountType,
+} from '@metamask/keyring-api';
 import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -245,6 +253,9 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4678,7 +4689,11 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
+      let entropySource = keyringId;
 
+      if (!entropySource) {
+        entropySource = this.keyringController.state.keyringsMetadata[0].id;
+      }
       const keyringSelector = keyringId
         ? { id: keyringId }
         : { type: KeyringTypes.hd };
@@ -4727,6 +4742,42 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      const client = new KeyringInternalSnapClient({
+        messenger: this.controllerMessenger,
+        snapId: SOLANA_WALLET_SNAP_ID,
+      });
+      // TODO: Use `withKeyring` instead.
+      const keyring = await this.getSnapKeyring();
+      for (let index = 0; ; index++) {
+        const discovered = await client.discoverAccounts(
+          [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+          entropySource,
+          index,
+        );
+
+        // We stop discovering accounts if none got discovered for that index.
+        if (discovered.length === 0) {
+          break;
+        }
+
+        await Promise.allSettled(
+          discovered.map(async (discoveredAccount) => {
+            const options = {
+              derivationPath: discoveredAccount.derivationPath,
+              entropySource,
+            };
+
+            await keyring.createAccount(SOLANA_WALLET_SNAP_ID, options, {
+              displayConfirmation: false,
+              displayAccountNameSuggestion: false,
+              setSelectedAccount: false,
+            });
+          }),
+        );
+      }
+      ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
