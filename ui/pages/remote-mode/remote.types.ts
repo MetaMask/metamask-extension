@@ -34,3 +34,14 @@ export enum ToTokenOption {
   Any = 'Any available token',
   HighLiquidity = 'High liquidity tokens'
 }
+
+
+
+export enum DailyAllowanceTokenTypes {
+  ETH = 'ETH',
+}
+
+export type DailyAllowance = {
+  tokenType: DailyAllowanceTokenTypes;
+  amount: number;
+}
