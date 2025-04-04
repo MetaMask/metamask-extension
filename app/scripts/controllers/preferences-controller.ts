@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
+  dismissSmartAccountSuggestionEnabled: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -200,6 +201,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      dismissSmartAccountSuggestionEnabled: false,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
