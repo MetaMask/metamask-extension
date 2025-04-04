@@ -5880,6 +5880,60 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  /**
+   * For origins with a solana scope permitted, sends a wallet_notify -> metamask_accountChanged
+   * event to fire for the solana scope with the currently selected solana account if any are
+   * permitted or empty array otherwise.
+   *
+   * @param {string} origin - The origin to notify with the current solana account
+   */
+  notifySolanaAccountChangeForCurrentAccount(origin) {
+    let caip25Caveat;
+    try {
+      caip25Caveat = this.permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch {
+      // noop
+    }
+    if (!caip25Caveat) {
+      return;
+    }
+    const solanaAccountsChangedNotifications =
+      caip25Caveat.value.sessionProperties[
+        KnownSessionProperties.SolanaAccountChangedNotifications
+      ];
+
+    const sessionScopes = getSessionScopes(caip25Caveat.value, {
+      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+    });
+
+    const solanaScope =
+      sessionScopes[MultichainNetworks.SOLANA] ||
+      sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
+      sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+
+    if (solanaAccountsChangedNotifications && solanaScope) {
+      const { accounts } = solanaScope;
+      const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
+      });
+
+      const accountAddressToEmit = this.sortMultichainAccountsByLastSelected(
+        parsedPermittedSolanaAddresses,
+      )[0];
+
+      if (accountAddressToEmit) {
+        // delay emit so that the event is not emitted
+        // before the wallet standard script is ready to receive it
+        this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
+      }
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -6454,53 +6508,6 @@ export default class MetamaskController extends EventEmitter {
       origin = new URL(sender.url).origin;
     }
 
-    // solana account changed notifications
-    let caip25Caveat;
-    try {
-      caip25Caveat = this.permissionController.getCaveat(
-        origin,
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-      );
-    } catch {
-      // noop
-    }
-    if (caip25Caveat) {
-      const solanaAccountsChangedNotifications =
-        caip25Caveat.value.sessionProperties[
-          KnownSessionProperties.SolanaAccountChangedNotifications
-        ];
-
-      const sessionScopes = getSessionScopes(caip25Caveat.value, {
-        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
-      });
-
-      const solanaScope =
-        sessionScopes[MultichainNetworks.SOLANA] ||
-        sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-        sessionScopes[MultichainNetworks.SOLANA_TESTNET];
-
-      if (solanaAccountsChangedNotifications && solanaScope) {
-        const { accounts } = solanaScope;
-        const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
-          const { address } = parseCaipAccountId(caipAccountId);
-          return address;
-        });
-
-        const accountAddressToEmit = this.sortMultichainAccountsByLastSelected(
-          parsedPermittedSolanaAddresses,
-        )[0];
-
-        if (accountAddressToEmit) {
-          // delay emit so that the event is not emitted
-          // before the wallet standard script is ready to receive it
-          setTimeout(() => {
-            this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
-          }, 500);
-        }
-      }
-    }
-
     if (sender.id && sender.id !== this.extension.runtime.id) {
       this.subjectMetadataController.addSubjectMetadata({
         origin,
@@ -6531,6 +6538,16 @@ export default class MetamaskController extends EventEmitter {
       apiType: API_TYPE.CAIP_MULTICHAIN,
       engine,
     });
+
+    // solana account changed notifications
+    // This delay is needed because it's possible for a dapp to not have listeners
+    // setup in time right after a connection is established.
+    // This can be resolved if we amend the caip standards to include a liveliness
+    // handshake as part of the initial connection.
+    setTimeout(
+      () => this.notifySolanaAccountChangeForCurrentAccount(origin),
+      500,
+    );
 
     pipeline(
       outStream,
