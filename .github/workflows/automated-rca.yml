@@ -1,0 +1,19 @@
+name: Automated RCA
+
+on:
+  push:
+    branches:
+      - INFRA-2406-AutomatedRCA
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  automated-rca:
+    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@INFRA-2406-AutomatedRCA-SharedWorkflow
+    with:
+      issue_labels: '["sev0-test", "sev1-test"]'
+      google_form_base_url: 'https://docs.google.com/forms/d/e/1FAIpQLSfnfEWH7JCFFtvjCHixgyqJdTU3LW3BmTwdF1dDezTNf7m4ig/viewform?usp=pp_url&entry.340898780='
+      repo_owner: 'MetaMask'
+      repo_name: 'metamask-extension'
