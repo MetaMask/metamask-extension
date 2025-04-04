@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import {
   TextVariant,
   TextColor,
-  FontFamily,
 } from '../../../helpers/constants/design-system';
 
 import { Box } from '../box';
