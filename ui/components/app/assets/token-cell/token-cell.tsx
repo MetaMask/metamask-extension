@@ -135,7 +135,9 @@ export default function TokenCell({
         style={{
           height: 62,
           cursor: onClick ? 'pointer' : 'auto',
-          backgroundColor: isHovered ? 'var(--color-background-default-hover)' : 'transparent',
+          backgroundColor: isHovered
+            ? 'var(--color-background-default-hover)'
+            : 'transparent',
           transition: 'background-color 0.2s ease-in-out',
         }}
         onMouseEnter={() => setIsHovered(true)}
