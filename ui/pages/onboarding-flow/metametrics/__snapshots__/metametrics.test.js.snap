@@ -50,7 +50,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             >
               Private:
             </span>
-             clicks and views on the app are stored, but other details (like your public address) are not.
+             clicks and views on the app are stored, but other details are not.
              
           </span>
         </div>
@@ -206,7 +206,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             >
               Private:
             </span>
-             clicks and views on the app are stored, but other details (like your public address) are not.
+             clicks and views on the app are stored, but other details are not.
              
           </span>
         </div>
