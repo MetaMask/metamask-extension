@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
 import {
+  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
@@ -59,6 +60,7 @@ export default function TokenCell({
   const trackEvent = useContext(MetaMetricsContext);
   const { safeChains } = useSafeChains();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
 
@@ -130,7 +132,14 @@ export default function TokenCell({
         paddingLeft={4}
         paddingRight={4}
         width={BlockSize.Full}
-        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
+        style={{
+          height: 62,
+          cursor: onClick ? 'pointer' : 'auto',
+          backgroundColor: isHovered ? 'var(--color-background-default-hover)' : 'transparent',
+          transition: 'background-color 0.2s ease-in-out',
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         data-testid="multichain-token-list-button"
       >
         <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
