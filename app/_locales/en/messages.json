@@ -3666,10 +3666,6 @@
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Privacy Policy"
   },
-  "onboardingMetametricsNeverCollectText": {
-    "message": "$1 clicks and views on the app are stored, but other details are not.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Private:"
   },
@@ -3679,6 +3675,10 @@
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
+  },
+  "onboardingMetametricsNeverCollectText": {
+    "message": "$1 clicks and views on the app are stored, but other details are not.",
+    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
