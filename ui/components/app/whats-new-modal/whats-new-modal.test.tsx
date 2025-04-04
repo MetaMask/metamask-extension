@@ -77,10 +77,10 @@ describe('WhatsNewModal', () => {
       const createButton = screen.getByTestId('create-solana-account-button');
       fireEvent.click(createButton);
 
-      expect(mockCreateAccount).toHaveBeenCalledWith(
-        MultichainNetworks.SOLANA,
-        KEYRING_ID,
-      );
+      expect(mockCreateAccount).toHaveBeenCalledWith({
+        scope: MultichainNetworks.SOLANA,
+        entropySource: KEYRING_ID,
+      });
       expect(mockOnClose).toHaveBeenCalled();
     });
 

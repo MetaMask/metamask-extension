@@ -8,7 +8,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
@@ -27,7 +27,8 @@ const NFTGridItem = (props: {
 }) => {
   const { nft, onClick, privacyMode } = props;
 
-  const { image, imageOriginal } = nft;
+  const { image: _image, imageOriginal } = nft;
+  const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftImageURL = useGetAssetImageUrl(
