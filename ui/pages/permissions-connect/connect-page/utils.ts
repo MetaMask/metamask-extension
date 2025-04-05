@@ -103,7 +103,7 @@ export function getDefaultAccounts(
   const allAccountsSortedByLastSelected =
     sortSelectedInternalAccounts(allAccounts);
 
-  requestedNamespaces.forEach((namespace) => {
+  for (const namespace of requestedNamespaces) {
     const defaultAccountExistsForNamespace = defaultAccounts.find((account) => {
       const {
         chain: { namespace: accountNamespace },
@@ -112,7 +112,7 @@ export function getDefaultAccounts(
     });
 
     if (defaultAccountExistsForNamespace) {
-      return;
+      continue;
     }
 
     const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
@@ -126,7 +126,7 @@ export function getDefaultAccounts(
     if (defaultAccountForNamespace) {
       defaultAccounts.push(defaultAccountForNamespace);
     }
-  });
+  }
 
   return defaultAccounts;
 }
