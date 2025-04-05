@@ -1,0 +1,35 @@
+@use "design-system";
+
+.solana-bridge-transaction-list-item {
+  &__segment {
+    height: 4px;
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-radius: var(--rounded-pill);
+    background-color: var(--color-primary-default);
+
+    &--pending {
+      width: 50%;
+    }
+
+    &--complete {
+      width: 100%;
+    }
+  }
+
+  &__segment-container {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-background-alternative);
+    border-radius: var(--rounded-pill);
+  }
+
+  &__dest-amount {
+    color: var(--color-text-alternative);
+  }
+
+  // Add specific style for completed bridge transactions
+  .transaction-status-label--confirmed {
+    color: var(--color-success-default);
+  }
+}
