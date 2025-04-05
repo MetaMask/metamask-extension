@@ -147,6 +147,14 @@ import { normalize } from '@metamask/eth-sig-util';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 import {
+  multichainMethodCallValidatorMiddleware,
+  MultichainSubscriptionManager,
+  MultichainMiddlewareManager,
+  walletGetSession,
+  walletRevokeSession,
+  walletInvokeMethod,
+} from '@metamask/multichain-api-middleware';
+import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -154,13 +162,7 @@ import {
   getSessionScopes,
   setPermittedEthChainIds,
   setEthAccounts,
-  multichainMethodCallValidatorMiddleware,
-  MultichainSubscriptionManager,
-  MultichainMiddlewareManager,
-  walletGetSession,
-  walletRevokeSession,
-  walletInvokeMethod,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
