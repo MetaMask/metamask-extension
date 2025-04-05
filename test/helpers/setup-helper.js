@@ -1,6 +1,5 @@
 /* eslint-disable-next-line */
 import 'fake-indexeddb/auto';
-import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
