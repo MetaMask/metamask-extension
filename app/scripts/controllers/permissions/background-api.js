@@ -55,6 +55,9 @@ export function getPermissionBackgroundApiMethods({
       return accountsController.getAccountByAddress(address);
     });
 
+    // Only the first scope in the scopes array is needed because
+    // setPermittedAccounts currently sets accounts on all matching
+    // namespaces, not just the exact CaipChainId.
     const caipAccountIds = internalAccounts.map((internalAccount) => {
       const { namespace, reference } = parseCaipChainId(
         internalAccount.scopes[0],
