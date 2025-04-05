@@ -845,6 +845,18 @@
   "bridgeSolanaAccountCreated": {
     "message": "Solana account created"
   },
+  "bridgeStatusComplete": {
+    "message": "Complete",
+    "description": "Status text indicating a bridge transaction has successfully completed."
+  },
+  "bridgeStatusFailed": {
+    "message": "Failed",
+    "description": "Status text indicating a bridge transaction has failed."
+  },
+  "bridgeStatusInProgress": {
+    "message": "In Progress",
+    "description": "Status text indicating a bridge transaction is currently processing."
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
