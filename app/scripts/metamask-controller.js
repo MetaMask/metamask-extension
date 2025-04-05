@@ -5887,7 +5887,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string} origin - The origin to notify with the current solana account
    */
-  notifySolanaAccountChangeForCurrentAccount(origin) {
+  notifySolanaAccountChangedForCurrentAccount(origin) {
     let caip25Caveat;
     try {
       caip25Caveat = this.permissionController.getCaveat(
@@ -6543,7 +6543,7 @@ export default class MetamaskController extends EventEmitter {
     // This can be resolved if we amend the caip standards to include a liveliness
     // handshake as part of the initial connection.
     setTimeout(
-      () => this.notifySolanaAccountChangeForCurrentAccount(origin),
+      () => this.notifySolanaAccountChangedForCurrentAccount(origin),
       500,
     );
 
