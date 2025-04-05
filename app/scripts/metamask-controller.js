@@ -2914,13 +2914,13 @@ export default class MetamaskController extends EventEmitter {
                   MultichainNetworks.SOLANA_TESTNET,
                 ])
               : [];
-            const _previousSolanaHexAccountAddresses =
+            const previousNonUniqueSolanaHexAccountAddresses =
               previousSolanaCaipAccountIds.map((caipAccountId) => {
                 const { address } = parseCaipAccountId(caipAccountId);
                 return address;
               });
             const previousSolanaHexAccountAddresses = uniq(
-              _previousSolanaHexAccountAddresses,
+              previousNonUniqueSolanaHexAccountAddresses,
             );
             const [previousSelectedSolanaAccountAddress] =
               this.sortMultichainAccountsByLastSelected(
@@ -2934,13 +2934,13 @@ export default class MetamaskController extends EventEmitter {
                   MultichainNetworks.SOLANA_TESTNET,
                 ])
               : [];
-            const _currentSolanaHexAccountAddresses =
+            const currentNonUniqueSolanaHexAccountAddresses =
               currentSolanaCaipAccountIds.map((caipAccountId) => {
                 const { address } = parseCaipAccountId(caipAccountId);
                 return address;
               });
             const currentSolanaHexAccountAddresses = uniq(
-              _currentSolanaHexAccountAddresses,
+              currentNonUniqueSolanaHexAccountAddresses,
             );
             const [currentSelectedSolanaAccountAddress] =
               this.sortMultichainAccountsByLastSelected(
