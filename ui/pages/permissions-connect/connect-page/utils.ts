@@ -27,7 +27,6 @@ export function getRequestedCaip25CaveatValue(
     )?.value ?? {
       optionalScopes: {},
       requiredScopes: {},
-      sessionProperties: {},
       isMultichainOrigin: false,
     }
   );

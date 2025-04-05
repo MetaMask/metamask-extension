@@ -1,7 +1,7 @@
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/chain-agnostic-permission';
+} from '@metamask/multichain';
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCaip25PermissionsResponse } from './utils';
@@ -14,7 +14,6 @@ const baseCaip25CaveatValue = {
     },
   },
   isMultichainOrigin: false,
-  sessionProperties: {},
 };
 
 describe('getCaip25PermissionsResponse', () => {
@@ -39,7 +38,6 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: {},
               },
             },
           ],
@@ -73,7 +71,6 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: {},
               },
             },
           ],
@@ -107,7 +104,6 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: {},
               },
             },
           ],
@@ -152,7 +148,6 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: {},
               },
             },
           ],
@@ -203,7 +198,6 @@ describe('getCaip25PermissionsResponse', () => {
                   },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: {},
               },
             },
           ],

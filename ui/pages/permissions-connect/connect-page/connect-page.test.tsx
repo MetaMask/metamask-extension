@@ -247,7 +247,6 @@ describe('ConnectPage', () => {
                       },
                     },
                     isMultichainOrigin: false,
-                    sessionProperties: {},
                   },
                 },
               ],

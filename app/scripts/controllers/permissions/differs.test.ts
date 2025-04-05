@@ -76,7 +76,6 @@ describe('PermissionController selectors', () => {
               },
             },
             isMultichainOrigin: true,
-            sessionProperties: {},
           },
         ],
       ]);
@@ -96,7 +95,6 @@ describe('PermissionController selectors', () => {
               },
             },
             isMultichainOrigin: true,
-            sessionProperties: {},
           },
         ],
       ]);
@@ -143,7 +141,6 @@ describe('PermissionController selectors', () => {
               },
             },
             isMultichainOrigin: true,
-            sessionProperties: {},
           },
         ],
       ]);
@@ -199,7 +196,6 @@ describe('PermissionController selectors', () => {
               },
             },
             isMultichainOrigin: true,
-            sessionProperties: {},
           },
         ],
       ]);
@@ -219,7 +215,6 @@ describe('PermissionController selectors', () => {
               },
             },
             isMultichainOrigin: true,
-            sessionProperties: {},
           },
         ],
       ]);
@@ -252,7 +247,6 @@ describe('PermissionController selectors', () => {
         },
         optionalScopes: {},
         isMultichainOrigin: true,
-        sessionProperties: {},
       };
       const previousAuthorizations = new Map([
         ['foo.bar', mockAuthorization],
