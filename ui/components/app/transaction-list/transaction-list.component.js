@@ -490,6 +490,7 @@ export default function TransactionList({
               transaction={selectedTransaction}
               onClose={() => toggleShowDetails(null)}
               userAddress={selectedAccount.address}
+              networkConfig={multichainNetwork.network}
             />
           ))}
 
@@ -792,36 +793,14 @@ const MultichainTransactionListItem = ({
             {output.amount} {output.unit}
           </Text>
         }
-        title={transaction.isBridgeTx ? t('bridge') : title}
+        title={title}
         subtitle={
-          transaction.isBridgeTx && transaction.bridgeInfo ? (
-            <>
-              <TransactionStatusLabel
-                date={formatTimestamp(transaction.timestamp)}
-                error={{}}
-                status={statusKey}
-                statusOnly
-              />
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {`${t('to')} ${transaction.bridgeInfo.destAsset?.symbol} ${t(
-                  'on',
-                )} ${
-                  transaction.bridgeInfo.destChainName ||
-                  transaction.bridgeInfo.destChainId
-                }`}
-              </Text>
-            </>
-          ) : (
-            <TransactionStatusLabel
-              date={formatTimestamp(transaction.timestamp)}
-              error={{}}
-              status={statusKey}
-              statusOnly
-            />
-          )
+          <TransactionStatusLabel
+            date={formatTimestamp(transaction.timestamp)}
+            error={{}}
+            status={statusKey}
+            statusOnly
+          />
         }
       />
     );

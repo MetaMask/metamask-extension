@@ -258,93 +258,59 @@ export default function useSolanaBridgeTransactionMapping(
       : nonEvmTransactions;
   }
 
-  // Final mapping step: Add bridgeInfo to relevant transactions.
-  const modifiedTransactions: (ExtendedTransaction | BridgeOriginatedItem)[] =
-    nonEvmTransactions.transactions.map((tx) => {
-      const txSignature = tx.id;
+  const modifiedTransactions: (
+    | ExtendedTransaction
+    | BridgeOriginatedItem
+    | Transaction
+  )[] = nonEvmTransactions.transactions.map((tx) => {
+    const txSignature = tx.id;
 
-      // Find original transaction to get its status, if it exists
-      const originalTx = originalTxMap.get(txSignature);
-      const sourceTxRawStatus =
-        originalTx?.status ?? KeyringTransactionStatus.Submitted;
-      const sourceTxStatusKey =
-        KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
-      const isSourceTxConfirmed =
-        sourceTxStatusKey === TransactionStatus.confirmed;
+    const originalTx = originalTxMap.get(txSignature);
+    const sourceTxRawStatus =
+      originalTx?.status ?? KeyringTransactionStatus.Submitted;
+    const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
+    const isSourceTxConfirmed =
+      sourceTxStatusKey === TransactionStatus.confirmed;
 
-      // Skip bridge processing for swaps.
-      if (tx.type === 'swap' && !tx.isBridgeOriginated) {
-        return {
-          ...(tx as ExtendedTransaction),
-          isBridgeTx: false,
-          isBridgeOriginated: false,
-          isSourceTxConfirmed,
-        };
+    if (tx.type === 'swap' && !tx.isBridgeOriginated) {
+      return tx as Transaction;
+    }
+
+    // Find matching bridge history data.
+    const matchingBridgeTx = txSignature
+      ? bridgeTxSignatures[txSignature]
+      : null;
+
+    // Case 1: Transaction (original or originated) matches bridge history.
+    if (matchingBridgeTx) {
+      const srcChainId = matchingBridgeTx.quote?.srcChainId;
+      const destChainId = matchingBridgeTx.quote?.destChainId;
+      const isBridgeTx =
+        srcChainId !== undefined &&
+        destChainId !== undefined &&
+        srcChainId !== destChainId;
+
+      if (!isBridgeTx) {
+        return tx as Transaction;
       }
 
-      // Find matching bridge history data.
-      const matchingBridgeTx = txSignature
-        ? bridgeTxSignatures[txSignature]
-        : null;
+      // Construct bridgeInfo only if it's a true cross-chain bridge.
+      const bridgeInfo: BridgeInfo = {
+        destChainId,
+        destChainName: getNetworkName(destChainId),
+        destAsset: {
+          ...(matchingBridgeTx.quote?.destAsset ?? {}),
+          decimals: matchingBridgeTx.quote?.destAsset?.decimals ?? 18,
+        },
+        destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
+        status: matchingBridgeTx.status?.status ?? 'PENDING',
+        destTxHash: matchingBridgeTx.status?.destChain?.txHash,
+        srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
+        provider: matchingBridgeTx.quote?.provider,
+        destBlockExplorerUrl:
+          matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
+      };
 
-      // Case 1: Transaction (original or originated) matches bridge history.
-      if (matchingBridgeTx) {
-        const srcChainId = matchingBridgeTx.quote?.srcChainId;
-        const destChainId = matchingBridgeTx.quote?.destChainId;
-        const isBridgeTx =
-          srcChainId !== undefined &&
-          destChainId !== undefined &&
-          srcChainId !== destChainId;
-
-        // Construct bridgeInfo only if it's a true cross-chain bridge.
-        const bridgeInfo: BridgeInfo | undefined = isBridgeTx
-          ? {
-              destChainId,
-              destChainName: getNetworkName(destChainId),
-              destAsset: {
-                ...(matchingBridgeTx.quote?.destAsset ?? {}),
-                decimals: matchingBridgeTx.quote?.destAsset?.decimals ?? 18,
-              },
-              destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
-              status: matchingBridgeTx.status?.status ?? 'PENDING',
-              destTxHash: matchingBridgeTx.status?.destChain?.txHash,
-              srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
-              provider: matchingBridgeTx.quote?.provider,
-              destBlockExplorerUrl:
-                matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
-            }
-          : undefined;
-
-        // Return the correct type with updated bridge info.
-        if (tx.isBridgeOriginated) {
-          // Return BridgeOriginatedItem with info.
-          return {
-            id: tx.id,
-            account: tx.account,
-            timestamp: tx.timestamp,
-            type: tx.type,
-            from: tx.from,
-            to: tx.to,
-            isBridgeOriginated: true,
-            bridgeStatus: tx.bridgeStatus,
-            network: tx.network,
-            isBridgeTx,
-            bridgeInfo,
-            isSourceTxConfirmed,
-          } as BridgeOriginatedItem;
-        }
-        // Return ExtendedTransaction with info.
-        return {
-          ...(tx as ExtendedTransaction),
-          isBridgeTx,
-          bridgeInfo,
-          isBridgeOriginated: false,
-          isSourceTxConfirmed,
-        };
-      }
-
-      // Case 2: Transaction was originated, but no matching bridge history found now?
-      // This might indicate stale data or an edge case. Treat as non-bridge.
       if (tx.isBridgeOriginated) {
         return {
           id: tx.id,
@@ -356,20 +322,43 @@ export default function useSolanaBridgeTransactionMapping(
           isBridgeOriginated: true,
           bridgeStatus: tx.bridgeStatus,
           network: tx.network,
-          isBridgeTx: false,
-          bridgeInfo: undefined,
+          isBridgeTx,
+          bridgeInfo,
           isSourceTxConfirmed,
         } as BridgeOriginatedItem;
       }
-
-      // Case 3: Default - Not a swap, not originated, no bridge history match.
       return {
-        ...(tx as ExtendedTransaction),
-        isBridgeTx: false,
+        ...(tx as Transaction),
+        isBridgeTx,
+        bridgeInfo,
         isBridgeOriginated: false,
         isSourceTxConfirmed,
-      };
-    });
+      } as ExtendedTransaction;
+    }
+
+    // Case 2: Transaction was originated, but no matching bridge history found now?
+    // This might indicate stale data or an edge case. Keep bridge fields for backward compatibility.
+    if (tx.isBridgeOriginated) {
+      return {
+        id: tx.id,
+        account: tx.account,
+        timestamp: tx.timestamp,
+        type: tx.type,
+        from: tx.from,
+        to: tx.to,
+        isBridgeOriginated: true,
+        bridgeStatus: tx.bridgeStatus,
+        network: tx.network,
+        isBridgeTx: false,
+        bridgeInfo: undefined,
+        isSourceTxConfirmed,
+      } as BridgeOriginatedItem;
+    }
+
+    // Case 3: Default - Not a swap, not originated, no bridge history match.
+    // Return the original transaction without modification
+    return tx as Transaction;
+  });
 
   // Return the final data structure.
   return {
