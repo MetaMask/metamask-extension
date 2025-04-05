@@ -11,6 +11,7 @@ exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
@@ -49,6 +50,7 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
@@ -103,6 +105,7 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
@@ -157,6 +160,7 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
@@ -211,6 +215,7 @@ exports[`SnapUIRenderer renders basic UI 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <p
           class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
@@ -238,6 +243,7 @@ exports[`SnapUIRenderer renders footers 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <p
           class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
@@ -309,6 +315,7 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <p
           class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
@@ -357,6 +364,7 @@ exports[`SnapUIRenderer supports interactive inputs 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
@@ -395,6 +403,7 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <p
           class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
@@ -443,6 +452,7 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <p
           class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
