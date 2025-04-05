@@ -3284,15 +3284,17 @@ export function getPermittedEVMChains(state, origin) {
 }
 
 export function getAllPermittedAccounts(state, origin) {
-  return getAllAccountsFromPermission(
-    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
+  const caip25Permission = getCaip25PermissionFromSubject(
+    subjectSelector(state, origin),
   );
+  return caip25Permission ? getAllAccountsFromPermission(caip25Permission) : [];
 }
 
 export function getAllPermittedScopes(state, origin) {
-  return getAllScopesFromPermission(
-    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
+  const caip25Permission = getCaip25PermissionFromSubject(
+    subjectSelector(state, origin),
   );
+  return caip25Permission ? getAllScopesFromPermission(caip25Permission) : [];
 }
 
 /**
@@ -3482,7 +3484,7 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 
 // selector helpers
 function getCaip25PermissionFromSubject(subject = {}) {
-  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
+  return subject.permissions?.[Caip25EndowmentPermissionName];
 }
 
 function getAccountsFromSubject(subject) {
@@ -3494,11 +3496,17 @@ function getEVMChainsFromSubject(subject) {
 }
 
 function getEVMAccountsFromPermission(caip25Permission) {
+  if (!caip25Permission) {
+    return [];
+  }
   const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
   return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
 }
 
 function getEVMChainsFromPermission(caip25Permission) {
+  if (!caip25Permission) {
+    return [];
+  }
   const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
   return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }

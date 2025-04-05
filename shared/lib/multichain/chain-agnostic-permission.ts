@@ -36,9 +36,6 @@ export function getCaip25CaveatFromPermission(caip25Permission: {
       value: Caip25CaveatValue;
     }
   | undefined {
-  if (!Array.isArray(caip25Permission.caveats)) {
-    return undefined;
-  }
   return caip25Permission.caveats.find(
     (caveat) => caveat.type === Caip25CaveatType,
   );
