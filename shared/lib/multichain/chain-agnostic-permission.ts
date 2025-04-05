@@ -59,7 +59,7 @@ export function getAllAccountsFromScopesObject(
 
   Object.values(scopesObject).forEach(({ accounts }) => {
     accounts.forEach((account) => {
-      allAccounts.add(account as CaipAccountId);
+      allAccounts.add(account);
     });
   });
 
