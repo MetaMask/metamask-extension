@@ -5927,8 +5927,6 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (accountAddressToEmit) {
-        // delay emit so that the event is not emitted
-        // before the wallet standard script is ready to receive it
         this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
       }
     }
