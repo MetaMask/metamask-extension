@@ -49,11 +49,8 @@ import type {
   BridgeOriginatedItem,
 } from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 
-import './index.scss';
-
 type SolanaBridgeTransactionListItemProps = {
   transaction: ExtendedTransaction | BridgeOriginatedItem;
-  userAddress: string;
   toggleShowDetails: (
     transaction: ExtendedTransaction | BridgeOriginatedItem,
   ) => void;
@@ -62,6 +59,10 @@ type SolanaBridgeTransactionListItemProps = {
 /**
  * Renders a transaction list item specifically for Solana bridge operations,
  * displaying progress across source and destination chains.
+ *
+ * @param options0 - Component props
+ * @param options0.transaction - The transaction data to display
+ * @param options0.toggleShowDetails - Function to call when the item is clicked
  */
 const SolanaBridgeTransactionListItem: React.FC<
   SolanaBridgeTransactionListItemProps
@@ -73,9 +74,9 @@ const SolanaBridgeTransactionListItem: React.FC<
     transaction;
   const sourceAsset = from?.[0]?.asset;
 
-  const sourceTxRawStatus = !isBridgeOriginated
-    ? (transaction as ExtendedTransaction).status
-    : TransactionStatus.submitted;
+  const sourceTxRawStatus = isBridgeOriginated
+    ? TransactionStatus.submitted
+    : (transaction as ExtendedTransaction).status;
   const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
 
   const finalDisplayStatusKey = getBridgeStatusKey(
@@ -105,11 +106,12 @@ const SolanaBridgeTransactionListItem: React.FC<
     ? StatusTypes.COMPLETE
     : StatusTypes.PENDING;
 
-  const destSegmentStatus: StatusTypes | null = !isSourceTxConfirmed
-    ? null
-    : isBridgeFullyComplete
-    ? StatusTypes.COMPLETE
-    : StatusTypes.PENDING;
+  let destSegmentStatus: StatusTypes | null = null;
+  if (isSourceTxConfirmed) {
+    destSegmentStatus = isBridgeFullyComplete
+      ? StatusTypes.COMPLETE
+      : StatusTypes.PENDING;
+  }
 
   const txIndex = isSourceTxConfirmed ? 2 : 1;
 
@@ -174,7 +176,7 @@ const SolanaBridgeTransactionListItem: React.FC<
             variant={TextVariant.bodyLgMedium}
           >
             {(() => {
-              if (sourceAsset && sourceAsset.fungible) {
+              if (sourceAsset?.fungible) {
                 const displayAmount = sourceAsset.amount;
                 return `${displayAmount} ${sourceAsset.unit}`;
               }

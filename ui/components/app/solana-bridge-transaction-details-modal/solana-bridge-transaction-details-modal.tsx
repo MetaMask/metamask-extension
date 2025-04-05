@@ -58,7 +58,6 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-import './index.scss';
 import {
   ExtendedTransaction,
   BridgeOriginatedItem,
@@ -67,7 +66,6 @@ import {
 type SolanaBridgeTransactionDetailsModalProps = {
   transaction: ExtendedTransaction | BridgeOriginatedItem;
   onClose: () => void;
-  userAddress: string;
 };
 
 function SolanaBridgeTransactionDetailsModal({
@@ -84,15 +82,15 @@ function SolanaBridgeTransactionDetailsModal({
     (transaction as ExtendedTransaction).chain ??
     undefined;
   // Use TransactionStatus.submitted as the default
-  const sourceTxRawStatus = !isBridgeOriginated
-    ? (transaction as ExtendedTransaction).status
-    : TransactionStatus.submitted;
+  const sourceTxRawStatus = isBridgeOriginated
+    ? TransactionStatus.submitted
+    : (transaction as ExtendedTransaction).status;
   const assetData = from?.[0]?.asset;
-  const baseFeeAsset = !isBridgeOriginated
-    ? (transaction as ExtendedTransaction).fees?.find(
+  const baseFeeAsset = isBridgeOriginated
+    ? null
+    : (transaction as ExtendedTransaction).fees?.find(
         (fee) => fee.type === 'base',
-      )?.asset
-    : null;
+      )?.asset;
   // --- End direct extraction ---
 
   const currentBridgeInfo = bridgeInfo || {};

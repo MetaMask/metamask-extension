@@ -484,7 +484,6 @@ export default function TransactionList({
             <SolanaBridgeTransactionDetailsModal
               transaction={selectedTransaction}
               onClose={() => toggleShowDetails(null)}
-              userAddress={selectedAccount.address}
             />
           ) : (
             <MultichainTransactionDetailsModal
@@ -520,8 +519,6 @@ export default function TransactionList({
                             <SolanaBridgeTransactionListItem
                               key={`bridge-originated-${transaction.id}`}
                               transaction={transaction}
-                              userAddress={selectedAccount.address}
-                              index={index}
                               toggleShowDetails={toggleShowDetails}
                             />
                           );
@@ -532,8 +529,6 @@ export default function TransactionList({
                             <SolanaBridgeTransactionListItem
                               key={`bridge-${transaction.account}:${index}`}
                               transaction={transaction}
-                              userAddress={selectedAccount.address}
-                              index={index}
                               toggleShowDetails={toggleShowDetails}
                             />
                           );
