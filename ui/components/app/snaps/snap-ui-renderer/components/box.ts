@@ -74,6 +74,7 @@ export const box: UIComponentFactory<BoxElement> = ({
       element.props.center,
     ),
     className: 'snap-ui-renderer__panel',
+    id: 'snap-ui-renderer-panel',
     color: TextColor.textDefault,
   },
 });

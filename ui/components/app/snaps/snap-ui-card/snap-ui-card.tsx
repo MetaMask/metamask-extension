@@ -29,6 +29,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
   return (
     <Box
       className="snap-ui-renderer__card"
+      data-testid="snap-ui-renderer-card"
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
