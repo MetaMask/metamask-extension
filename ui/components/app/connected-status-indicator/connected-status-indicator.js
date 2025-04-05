@@ -19,7 +19,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
-import { isInternalAccountInPermittedAccounts } from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
@@ -35,7 +35,7 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
   const currentTabIsConnectedToSelectedAddress =
-    isInternalAccountInPermittedAccounts(permittedAccounts, selectedAccount);
+    isInternalAccountInPermittedAccountIds(selectedAccount, permittedAccounts);
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {

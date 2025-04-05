@@ -177,11 +177,11 @@ export function getAllScopesFromPermission(caip25Permission: {
  * @param internalAccount - The internal account to check against permitted accounts
  * @returns True if the account is connected to any permitted account
  */
-export function isInternalAccountInPermittedAccounts(
-  permittedAccounts: CaipAccountId[],
+export function isInternalAccountInPermittedAccountIds(
   internalAccount: InternalAccount,
+  permittedAccounts: CaipAccountId[],
 ): boolean {
-  if (!permittedAccounts.length || !internalAccount) {
+  if (!internalAccount || !permittedAccounts.length) {
     return false;
   }
 

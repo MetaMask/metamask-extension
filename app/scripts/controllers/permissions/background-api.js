@@ -14,7 +14,7 @@ import { parseCaipChainId } from '@metamask/utils';
 import {
   getAllAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
-  isInternalAccountInPermittedAccounts,
+  isInternalAccountInPermittedAccountIds,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 
 export function getPermissionBackgroundApiMethods({
@@ -187,9 +187,9 @@ export function getPermissionBackgroundApiMethods({
       const internalAccount = accountsController.getAccountByAddress(address);
 
       const remainingAccounts = existingAccountIds.filter((existingAccountId) => {
-        return !isInternalAccountInPermittedAccounts(
-          [existingAccountId],
+        return !isInternalAccountInPermittedAccountIds(
           internalAccount,
+          [existingAccountId],
         );
       });
 

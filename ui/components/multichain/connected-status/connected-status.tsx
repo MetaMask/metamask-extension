@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-import { isInternalAccountInPermittedAccounts } from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 import {
   getAllPermittedAccountsForCurrentTab,
   getInternalAccountByAddress,
@@ -41,7 +41,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   );
 
   const currentTabIsConnectedToSelectedAddress =
-    isInternalAccountInPermittedAccounts(permittedAccounts, internalAccount);
+    isInternalAccountInPermittedAccountIds(internalAccount, permittedAccounts);
 
   let status = STATUS_NOT_CONNECTED;
   if (isActive) {
