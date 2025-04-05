@@ -751,8 +751,7 @@ const MultichainTransactionListItem = ({
 
   return assetOutputs.map((output, index) => {
     if (transaction.type === TransactionType.swap) {
-      const inputUnit = assetInputs?.[index]?.unit ?? '';
-      title = `${t('swap')} ${inputUnit} ${t('to')} ${output.unit}`;
+      title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
     }
 
     return (
