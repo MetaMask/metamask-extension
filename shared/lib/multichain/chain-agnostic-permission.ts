@@ -173,8 +173,8 @@ export function getAllScopesFromPermission(caip25Permission: {
  * Checks if an internal account is connected to any of the permitted accounts
  * based on scope matching
  *
- * @param permittedAccounts - Array of CAIP-10 account IDs that are permitted
  * @param internalAccount - The internal account to check against permitted accounts
+ * @param permittedAccounts - Array of CAIP-10 account IDs that are permitted
  * @returns True if the account is connected to any permitted account
  */
 export function isInternalAccountInPermittedAccountIds(

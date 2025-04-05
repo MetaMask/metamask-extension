@@ -3287,7 +3287,9 @@ export function getAllPermittedAccounts(state, origin) {
   const caip25Permission = getCaip25PermissionFromSubject(
     subjectSelector(state, origin),
   );
-  return caip25Permission ? getAllAccountIdsFromPermission(caip25Permission) : [];
+  return caip25Permission
+    ? getAllAccountIdsFromPermission(caip25Permission)
+    : [];
 }
 
 export function getAllPermittedScopes(state, origin) {

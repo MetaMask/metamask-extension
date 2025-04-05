@@ -69,13 +69,13 @@ export function getPermissionBackgroundApiMethods({
       caip25Caveat.value,
     );
 
-    const updatedAccounts = Array.from(
+    const updatedAccountIds = Array.from(
       new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
     const updatedCaveatValue = setPermittedAccounts(
       caip25Caveat.value,
-      updatedAccounts,
+      updatedAccountIds,
     );
 
     permissionController.updateCaveat(
@@ -101,7 +101,7 @@ export function getPermissionBackgroundApiMethods({
       ]),
     );
 
-    const caveatValueWithChains = setPermittedChainIds(
+    const caveatValueWithChainIds = setPermittedChainIds(
       caip25Caveat.value,
       updatedChainIds,
     );
@@ -112,7 +112,7 @@ export function getPermissionBackgroundApiMethods({
 
     // ensure that the list of permitted accounts is set for the newly added scopes
     const caveatValueWithAccountsSynced = setPermittedAccounts(
-      caveatValueWithChains,
+      caveatValueWithChainIds,
       permittedAccountIds,
     );
 
@@ -186,18 +186,19 @@ export function getPermissionBackgroundApiMethods({
 
       const internalAccount = accountsController.getAccountByAddress(address);
 
-      const remainingAccounts = existingAccountIds.filter((existingAccountId) => {
-        return !isInternalAccountInPermittedAccountIds(
-          internalAccount,
-          [existingAccountId],
-        );
-      });
+      const remainingAccountIds = existingAccountIds.filter(
+        (existingAccountId) => {
+          return !isInternalAccountInPermittedAccountIds(internalAccount, [
+            existingAccountId,
+          ]);
+        },
+      );
 
-      if (remainingAccounts.length === existingAccounts.length) {
+      if (remainingAccountIds.length === existingAccountIds.length) {
         return;
       }
 
-      if (remainingAccounts.length === 0) {
+      if (remainingAccountIds.length === 0) {
         permissionController.revokePermission(
           origin,
           Caip25EndowmentPermissionName,
@@ -205,7 +206,7 @@ export function getPermissionBackgroundApiMethods({
       } else {
         const updatedCaveatValue = setPermittedAccounts(
           caip25Caveat.value,
-          remainingAccounts,
+          remainingAccountIds,
         );
         permissionController.updateCaveat(
           origin,
