@@ -79,7 +79,7 @@ export function getAllAccountsFromScopesObjects(
  * @param caip25CaveatValue - The CAIP-25 caveat value to extract accounts from
  * @returns Array of unique account IDs
  */
-export function getAllAccountsFromCaip25CaveatValue(
+export function getAllAccountIdsFromCaip25CaveatValue(
   caip25CaveatValue: Caip25CaveatValue,
 ): CaipAccountId[] {
   return Array.from(
@@ -99,7 +99,7 @@ export function getAllAccountsFromCaip25CaveatValue(
  * @param caip25Permission.caveats - The caveats of the CAIP-25 permission
  * @returns Array of unique account IDs
  */
-export function getAllAccountsFromPermission(caip25Permission: {
+export function getAllAccountIdsFromPermission(caip25Permission: {
   caveats: {
     type: string;
     value: Caip25CaveatValue;
@@ -110,7 +110,7 @@ export function getAllAccountsFromPermission(caip25Permission: {
     return [];
   }
 
-  return getAllAccountsFromCaip25CaveatValue(caip25Caveat.value);
+  return getAllAccountIdsFromCaip25CaveatValue(caip25Caveat.value);
 }
 
 export function getAllScopesFromScopesObject(

@@ -70,7 +70,7 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
 import {
-  getAllAccountsFromCaip25CaveatValue,
+  getAllAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 import {
@@ -117,7 +117,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     request.permissions,
   );
 
-  const requestedCaipAccountIds = getAllAccountsFromCaip25CaveatValue(
+  const requestedCaipAccountIds = getAllAccountIdsFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(

@@ -120,7 +120,7 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   getCaip25CaveatFromPermission,
-  getAllAccountsFromPermission,
+  getAllAccountIdsFromPermission,
   getAllScopesFromPermission,
 } from '../../shared/lib/multichain/chain-agnostic-permission';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
@@ -3287,7 +3287,7 @@ export function getAllPermittedAccounts(state, origin) {
   const caip25Permission = getCaip25PermissionFromSubject(
     subjectSelector(state, origin),
   );
-  return caip25Permission ? getAllAccountsFromPermission(caip25Permission) : [];
+  return caip25Permission ? getAllAccountIdsFromPermission(caip25Permission) : [];
 }
 
 export function getAllPermittedScopes(state, origin) {

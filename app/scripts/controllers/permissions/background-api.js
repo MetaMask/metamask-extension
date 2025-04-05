@@ -12,7 +12,7 @@ import {
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipChainId } from '@metamask/utils';
 import {
-  getAllAccountsFromCaip25CaveatValue,
+  getAllAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccounts,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
@@ -65,12 +65,12 @@ export function getPermissionBackgroundApiMethods({
       return `${namespace}:${reference}:${internalAccount.address}`;
     });
 
-    const existingPermittedAccounts = getAllAccountsFromCaip25CaveatValue(
+    const existingPermittedAccountIds = getAllAccountIdsFromCaip25CaveatValue(
       caip25Caveat.value,
     );
 
     const updatedAccounts = Array.from(
-      new Set([...existingPermittedAccounts, ...caipAccountIds]),
+      new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
     const updatedCaveatValue = setPermittedAccounts(
@@ -106,14 +106,14 @@ export function getPermissionBackgroundApiMethods({
       updatedChainIds,
     );
 
-    const permittedAccounts = getAllAccountsFromCaip25CaveatValue(
+    const permittedAccountIds = getAllAccountIdsFromCaip25CaveatValue(
       caip25Caveat.value,
     );
 
     // ensure that the list of permitted accounts is set for the newly added scopes
     const caveatValueWithAccountsSynced = setPermittedAccounts(
       caveatValueWithChains,
-      permittedAccounts,
+      permittedAccountIds,
     );
 
     permissionController.updateCaveat(
@@ -180,15 +180,15 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      const existingAccounts = getAllAccountsFromCaip25CaveatValue(
+      const existingAccountIds = getAllAccountIdsFromCaip25CaveatValue(
         caip25Caveat.value,
       );
 
       const internalAccount = accountsController.getAccountByAddress(address);
 
-      const remainingAccounts = existingAccounts.filter((existingAccount) => {
+      const remainingAccounts = existingAccountIds.filter((existingAccountId) => {
         return !isInternalAccountInPermittedAccounts(
-          [existingAccount],
+          [existingAccountId],
           internalAccount,
         );
       });
