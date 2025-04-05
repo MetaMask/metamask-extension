@@ -169,9 +169,7 @@ export function getAllScopesFromPermission(caip25Permission: {
     return [];
   }
 
-  return getAllScopesFromCaip25CaveatValue(
-    caip25Caveat.value as Caip25CaveatValue,
-  );
+  return getAllScopesFromCaip25CaveatValue(caip25Caveat.value);
 }
 
 /**
