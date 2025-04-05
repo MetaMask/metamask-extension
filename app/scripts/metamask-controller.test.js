@@ -34,7 +34,7 @@ import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -927,7 +927,7 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['not_empty']);
 
           expect(
@@ -957,12 +957,12 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue([]);
 
           metamaskController.getPermittedAccounts('test.com');
           expect(
-            metamaskController.sortAccountsByLastSelected,
+            metamaskController.sortEvmAccountsByLastSelected,
           ).toHaveBeenCalledWith(['0xdead', '0xbeef']);
         });
 
@@ -980,7 +980,7 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['0xbeef', '0xdead']);
 
           expect(
@@ -1068,6 +1068,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1106,6 +1107,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1147,6 +1149,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1196,6 +1199,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:100:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1234,6 +1238,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1272,6 +1277,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1318,6 +1324,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1370,6 +1377,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:5:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1418,6 +1426,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1458,6 +1467,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1507,6 +1517,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1562,6 +1573,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1614,7 +1626,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#sortAccountsByLastSelected', () => {
+    describe('#sortEvmAccountsByLastSelected', () => {
       it('returns the keyring accounts in lastSelected order', () => {
         jest
           .spyOn(metamaskController.accountsController, 'listAccounts')
@@ -1682,7 +1694,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1737,7 +1749,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(() =>
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1795,7 +1807,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(() =>
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',

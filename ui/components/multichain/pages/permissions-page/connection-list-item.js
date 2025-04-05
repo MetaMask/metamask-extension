@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -25,14 +26,22 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getPermittedChainsForSelectedTab } from '../../../../selectors';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, connection.origin),
+  const _permittedChains = useSelector((state) =>
+    getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
+  const permittedChains = _permittedChains.filter((caipChainId) => {
+    try {
+      const { namespace } = parseCaipChainId(caipChainId);
+      return namespace !== KnownCaipNamespace.Wallet;
+    } catch (err) {
+      return false;
+    }
+  });
 
   return (
     <Box
@@ -89,7 +98,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               variant={TextVariant.bodyMd}
             >
               {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
-              {connectedNetworks.length} {t('networksSmallCase')}
+              {permittedChains.length} {t('networksSmallCase')}
             </Text>
           </Box>
         )}

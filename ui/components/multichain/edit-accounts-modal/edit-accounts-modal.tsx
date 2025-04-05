@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -29,7 +30,7 @@ import {
   AlignItems,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,10 +39,10 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
-  accounts: MergedInternalAccount[];
-  defaultSelectedAccountAddresses: string[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
+  defaultSelectedAccountAddresses: CaipAccountId[];
   onClose: () => void;
-  onSubmit: (addresses: string[]) => void;
+  onSubmit: (addresses: CaipAccountId[]) => void;
 };
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
@@ -66,7 +67,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   ]);
 
   const selectAll = () => {
-    const allNetworksAccountAddresses = accounts.map(({ address }) => address);
+    const allNetworksAccountAddresses = accounts.map(
+      ({ caipAccountId }) => caipAccountId,
+    );
     setSelectedAccountAddresses(allNetworksAccountAddresses);
   };
 
@@ -74,13 +77,19 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     setSelectedAccountAddresses([]);
   };
 
-  const handleAccountClick = (address: string) => {
-    if (selectedAccountAddresses.includes(address)) {
-      setSelectedAccountAddresses(
-        selectedAccountAddresses.filter((_address) => _address !== address),
-      );
+  const handleAccountClick = (caipAccountId: CaipAccountId) => {
+    const updatedSelectedAccountAddresses = selectedAccountAddresses.filter(
+      (selectedAccountId) => {
+        return !isEqualCaseInsensitive(selectedAccountId, caipAccountId);
+      },
+    );
+
+    if (
+      updatedSelectedAccountAddresses.length === selectedAccountAddresses.length
+    ) {
+      setSelectedAccountAddresses([...selectedAccountAddresses, caipAccountId]);
     } else {
-      setSelectedAccountAddresses([...selectedAccountAddresses, address]);
+      setSelectedAccountAddresses(updatedSelectedAccountAddresses);
     }
   };
 
@@ -136,9 +145,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
               {accounts.map((account) => (
                 <AccountListItem
-                  onClick={() => handleAccountClick(account.address)}
+                  onClick={() => handleAccountClick(account.caipAccountId)}
                   account={account}
-                  key={account.address}
+                  key={account.caipAccountId}
                   isPinned={Boolean(account.pinned)}
                   startAccessory={
                     <Checkbox
@@ -146,7 +155,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                         (selectedAccountAddress) =>
                           isEqualCaseInsensitive(
                             selectedAccountAddress,
-                            account.address,
+                            account.caipAccountId,
                           ),
                       )}
                     />

@@ -18,13 +18,13 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
 import {
-  Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -118,6 +118,11 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import {
+  getCaip25CaveatFromPermission,
+  getAllAccountsFromPermission,
+  getAllScopesFromPermission,
+} from '../../shared/lib/multichain/chain-agnostic-permission';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
@@ -3046,6 +3051,17 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   },
 );
 
+export const getUpdatedAndSortedAccountsWithCaipAccountId =
+  createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
+    return accounts.map((account) => {
+      const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+      return {
+        ...account,
+        caipAccountId: `${namespace}:${reference}:${account.address}`,
+      };
+    });
+  });
+
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
@@ -3255,16 +3271,30 @@ export function getPermissionSubjects(state) {
  * @param {string} origin - The origin/subject to get the permitted accounts for.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
-export function getPermittedAccounts(state, origin) {
-  return getAccountsFromPermission(
+export function getPermittedEVMAccounts(state, origin) {
+  return getEVMAccountsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
-export function getPermittedChains(state, origin) {
-  return getChainsFromPermission(
+export function getPermittedEVMChains(state, origin) {
+  return getEVMChainsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
+}
+
+export function getAllPermittedAccounts(state, origin) {
+  const caip25Permission = getCaip25PermissionFromSubject(
+    subjectSelector(state, origin),
+  );
+  return caip25Permission ? getAllAccountsFromPermission(caip25Permission) : [];
+}
+
+export function getAllPermittedScopes(state, origin) {
+  const caip25Permission = getCaip25PermissionFromSubject(
+    subjectSelector(state, origin),
+  );
+  return caip25Permission ? getAllScopesFromPermission(caip25Permission) : [];
 }
 
 /**
@@ -3274,20 +3304,32 @@ export function getPermittedChains(state, origin) {
  * @param {object} state - The current state.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
-export function getPermittedAccountsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+export function getPermittedEVMAccountsForCurrentTab(state) {
+  return getPermittedEVMAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedAccountsForSelectedTab(state, activeTab) {
-  return getPermittedAccounts(state, activeTab);
+export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
+  return getPermittedEVMAccounts(state, activeTab);
 }
 
-export function getPermittedChainsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+export function getAllPermittedAccountsForCurrentTab(state) {
+  return getAllPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedChainsForSelectedTab(state, activeTab) {
-  return getPermittedChains(state, activeTab);
+export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
+  return getAllPermittedAccounts(state, activeTab);
+}
+
+export function getPermittedEVMChainsForCurrentTab(state) {
+  return getPermittedEVMChains(state, getOriginOfCurrentTab(state));
+}
+
+export function getPermittedEVMChainsForSelectedTab(state, activeTab) {
+  return getPermittedEVMChains(state, activeTab);
+}
+
+export function getAllPermittedChainsForSelectedTab(state, activeTab) {
+  return getAllPermittedScopes(state, activeTab);
 }
 
 /**
@@ -3307,10 +3349,10 @@ export function getPermittedAccountsByOrigin(state) {
   }, {});
 }
 
-export function getPermittedChainsByOrigin(state) {
+export function getPermittedEVMChainsByOrigin(state) {
   const subjects = getPermissionSubjects(state);
   return Object.keys(subjects).reduce((acc, subjectKey) => {
-    const chains = getChainsFromSubject(subjects[subjectKey]);
+    const chains = getEVMChainsFromSubject(subjects[subjectKey]);
     if (chains.length > 0) {
       acc[subjectKey] = chains;
     }
@@ -3433,7 +3475,7 @@ export function getAddressConnectedSubjectMap(state) {
 }
 
 export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
-  getPermittedAccountsForCurrentTab,
+  getPermittedEVMAccountsForCurrentTab,
   (_state, address) => address,
   (permittedAccounts, address) => {
     return permittedAccounts.some((account) => account === address);
@@ -3442,31 +3484,30 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 
 // selector helpers
 function getCaip25PermissionFromSubject(subject = {}) {
-  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
+  return subject.permissions?.[Caip25EndowmentPermissionName];
 }
 
 function getAccountsFromSubject(subject) {
-  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
+  return getEVMAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getChainsFromSubject(subject) {
-  return getChainsFromPermission(getCaip25PermissionFromSubject(subject));
+function getEVMChainsFromSubject(subject) {
+  return getEVMChainsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getCaveatFromPermission(caip25Permission = {}) {
-  return (
-    Array.isArray(caip25Permission.caveats) &&
-    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
-  );
-}
-
-function getAccountsFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+function getEVMAccountsFromPermission(caip25Permission) {
+  if (!caip25Permission) {
+    return [];
+  }
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
   return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
 }
 
-function getChainsFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+function getEVMChainsFromPermission(caip25Permission) {
+  if (!caip25Permission) {
+    return [];
+  }
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
   return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
@@ -3476,7 +3517,7 @@ function subjectSelector(state, origin) {
 
 export function getAccountToConnectToActiveTab(state) {
   const selectedInternalAccount = getSelectedInternalAccount(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
 
   const {
     metamask: {
@@ -3511,7 +3552,7 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
@@ -3547,7 +3588,7 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
     // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForSelectedTab(
+  const connectedAccounts = getPermittedEVMAccountsForSelectedTab(
     state,
     activeTab,
   );
