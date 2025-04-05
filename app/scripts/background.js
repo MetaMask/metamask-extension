@@ -86,12 +86,6 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const migrator = new Migrator({
-  migrations,
-  defaultVersion: process.env.WITH_STATE
-    ? FIXTURE_STATE_METADATA_VERSION
-    : null,
-});
 
 const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
@@ -367,6 +361,14 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+function stringifyError(error) {
+  return JSON.stringify({
+    message: error.message,
+    name: error.name,
+    stack: error.stack,
+  });
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -374,10 +376,23 @@ let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  try {
+    await isInitialized;
+    connectRemote(...args);
+  } catch (error) {
+    const port = args[0];
+
+    const _state = await localStore.get();
+    sentry?.captureException(error);
+
+    port.postMessage({
+      target: 'ui',
+      error: stringifyError(error),
+      metamaskState: JSON.stringify(_state),
+    });
+  }
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -454,74 +469,69 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
-  try {
-    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+  const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initData = await loadStateFromPersistence();
+  const initData = await loadStateFromPersistence();
+  const initState = initData.data;
+  const initLangCode = await getFirstPreferredLangCode();
 
-    const initState = initData.data;
-    const initLangCode = await getFirstPreferredLangCode();
+  let isFirstMetaMaskControllerSetup;
 
-    let isFirstMetaMaskControllerSetup;
-
-    // We only want to start this if we are running a test build, not for the release build.
-    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
-    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
-    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
-    if (process.env.IN_TEST && window.navigator?.webdriver) {
-      getSocketBackgroundToMocha();
-    }
-
-    if (isManifestV3) {
-      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-      // miliseconds. This keeps the service worker alive.
-      if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-        saveTimestamp();
-        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-      }
-
-      const sessionData = await browser.storage.session.get([
-        'isFirstMetaMaskControllerSetup',
-      ]);
-
-      isFirstMetaMaskControllerSetup =
-        sessionData?.isFirstMetaMaskControllerSetup === undefined;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-    }
-
-    const overrides = inTest
-      ? {
-          keyrings: {
-            trezorBridge: FakeTrezorBridge,
-            ledgerBridge: FakeLedgerBridge,
-          },
-        }
-      : {};
-
-    setupController(
-      initState,
-      initLangCode,
-      overrides,
-      isFirstMetaMaskControllerSetup,
-      initData.meta,
-      offscreenPromise,
-    );
-
-    // `setupController` sets up the `controller` object, so we can use it now:
-    maybeDetectPhishing(controller);
-
-    if (!isManifestV3) {
-      await loadPhishingWarningPage();
-    }
-    await sendReadyMessageToTabs();
-    log.info('MetaMask initialization complete.');
-
-    resolveInitialization();
-  } catch (error) {
-    rejectInitialization(error);
+  // We only want to start this if we are running a test build, not for the release build.
+  // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+  // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+  // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+  if (process.env.IN_TEST && window.navigator?.webdriver) {
+    getSocketBackgroundToMocha();
   }
+
+  if (isManifestV3) {
+    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+    // miliseconds. This keeps the service worker alive.
+    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+    }
+
+    const sessionData = await browser.storage.session.get([
+      'isFirstMetaMaskControllerSetup',
+    ]);
+
+    isFirstMetaMaskControllerSetup =
+      sessionData?.isFirstMetaMaskControllerSetup === undefined;
+    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+  }
+
+  const overrides = inTest
+    ? {
+        keyrings: {
+          trezorBridge: FakeTrezorBridge,
+          ledgerBridge: FakeLedgerBridge,
+        },
+      }
+    : {};
+
+  setupController(
+    initState,
+    initLangCode,
+    overrides,
+    isFirstMetaMaskControllerSetup,
+    initData.meta,
+    offscreenPromise,
+  );
+
+  // `setupController` sets up the `controller` object, so we can use it now:
+  maybeDetectPhishing(controller);
+
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
+  await sendReadyMessageToTabs();
+  log.info('MetaMask initialization complete.');
+
+  resolveInitialization();
 }
 
 /**
@@ -596,12 +606,9 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
- * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
 export async function loadStateFromPersistence() {
-  // migrations
-  migrator.on('error', console.warn);
-
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -609,12 +616,18 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData =
-    (await persistenceManager.get()) ||
-    migrator.generateInitialState(firstTimeState);
+  let preMigrationVersionedData = await persistenceManager.get();
+
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.WITH_STATE
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
+    console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
@@ -622,6 +635,10 @@ export async function loadStateFromPersistence() {
       extra: { vaultStructure },
     });
   });
+
+  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
+  }
 
   // migrate data
   const versionedData = await migrator.migrateData(preMigrationVersionedData);
@@ -645,7 +662,7 @@ export async function loadStateFromPersistence() {
   persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  persistenceManager.set(versionedData.data);
+  await persistenceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -807,7 +824,6 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -1349,6 +1365,7 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
