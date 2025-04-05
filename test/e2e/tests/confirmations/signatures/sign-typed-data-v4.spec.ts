@@ -1,7 +1,7 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -25,6 +25,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { DAPP_URL, DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -51,7 +52,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress();
 
-        await assertInfoValues(driver);
+        await assertInfoValues({ driver });
         await scrollAndConfirmAndAssertConfirm(driver);
 
         await assertAccountDetailsMetrics(
@@ -111,13 +112,40 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
       },
     );
   });
+
+  it('signs message with verifyingContract field missing', async function () {
+    await withTransactionEnvelopeTypeFixtures(
+      this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
+      async ({
+        driver,
+      }: TestSuiteArguments) => {
+        await unlockWallet(driver);
+        await openDapp(
+          driver,
+          null,
+          `${DAPP_URL}/request?method=eth_signTypedData_v4&params=["${DEFAULT_FIXTURE_ACCOUNT}",{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"chainId","type":"uint256"},{"name":"version","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"},{"name":"attachment","type":"bytes"}]},"primaryType":"Mail","domain":{"chainId":"0x539","name":"Ether Mail","version":"1"},"message":{"contents":"Hello, Bob!","from":{"name":"Cow","wallets":["0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"]},"to":[{"name":"Bob","wallets":["0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB","0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57","0xB0B0b0b0b0b0B000000000000000000000000000"]}],"attachment":"0x"}}]`,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await assertInfoValues({ driver, verifyContract: false });
+        await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDappSendIndividualRequest);
+        await driver.waitForSelector({
+          tag: 'main',
+          text: '0xdf05fb422b6623939c9ec6b622d21b97e3974cc8bf0d7534aa8e5972be4c1e954261493934ecd1088aa32f4b0686dc9a4a847bd51fb572aba1f69153035533781c',
+        })
+      },
+    );
+  });
 });
 
-async function assertInfoValues(driver: Driver) {
+async function assertInfoValues({driver, verifyContract = true} : {driver: Driver, verifyContract?: boolean}) {
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  if (verifyContract) {
+    await signTypedData.verifyContractPetName();
+  };
   await signTypedData.verifyOrigin();
-  await signTypedData.verifyContractPetName();
   await signTypedData.verifyPrimaryType();
   await signTypedData.verifyFromName();
   await signTypedData.verifyFromAddress();
