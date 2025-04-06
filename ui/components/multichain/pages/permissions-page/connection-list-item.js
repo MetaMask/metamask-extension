@@ -31,17 +31,9 @@ import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const _permittedChains = useSelector((state) =>
+  const permittedChains = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
-  const permittedChains = _permittedChains.filter((caipChainId) => {
-    try {
-      const { namespace } = parseCaipChainId(caipChainId);
-      return namespace !== KnownCaipNamespace.Wallet;
-    } catch (err) {
-      return false;
-    }
-  });
 
   return (
     <Box

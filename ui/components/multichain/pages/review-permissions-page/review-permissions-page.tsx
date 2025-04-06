@@ -146,20 +146,9 @@ export const ReviewPermissions = () => {
     [networkConfigurationsByCaipChainId],
   );
 
-  const _connectedChainIds = useSelector((state) =>
+  const connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
-
-  const connectedChainIds = _connectedChainIds.filter(
-    (chainId: InternalScopeString) => {
-      try {
-        const { namespace } = parseCaipChainId(chainId as CaipChainId);
-        return namespace !== KnownCaipNamespace.Wallet;
-      } catch (err) {
-        return false;
-      }
-    },
-  );
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
