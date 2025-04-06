@@ -171,7 +171,7 @@ export const ReviewPermissions = () => {
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
 
-  const _connectedAccountAddresses = useSelector((state) =>
+  const nonRemappedConnectedAccountAddresses = useSelector((state) =>
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
   ) as CaipAccountId[];
 
@@ -180,7 +180,7 @@ export const ReviewPermissions = () => {
   // EOA EVM accounts. This logic will need to be updated to
   // support non EOA accounts.
   const connectedAccountAddresses = uniq(
-    _connectedAccountAddresses.map((caipAccountId) => {
+    nonRemappedConnectedAccountAddresses.map((caipAccountId) => {
       const {
         address,
         chain: { namespace },
