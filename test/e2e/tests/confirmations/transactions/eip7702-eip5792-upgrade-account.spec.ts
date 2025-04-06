@@ -81,7 +81,7 @@ describe('Upgrade Account', function (this: Suite) {
       },
     );
   });
-  it('an EOA account is not upgraded when rejecting batch and upgrade transaction, and cannot trigger new send calls', async function () {
+  it('an EOA account is not upgraded when rejecting a batch and upgrade transaction, and cannot trigger new send calls', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -133,7 +133,7 @@ describe('Upgrade Account', function (this: Suite) {
       },
     );
   });
-  it('an EOA account is not upgraded when rejecting batch and upgrade transaction, but can trigger a new send call', async function () {
+  it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
         dapp: true,
