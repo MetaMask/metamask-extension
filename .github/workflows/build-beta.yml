@@ -14,9 +14,6 @@ jobs:
       # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
       # For a `push` event, the head commit hash is `github.sha`.
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
-      # For a `push` event, the fork is `github.event.repository.fork`.
-      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,7 +65,7 @@ jobs:
         run: yarn validate-source-maps
 
       - name: Upload 'dist-beta' to S3
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && !env.IS_FORK }}
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -77,7 +74,7 @@ jobs:
           path: dist
 
       - name: Upload 'builds-beta' to S3
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && !env.IS_FORK }}
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}

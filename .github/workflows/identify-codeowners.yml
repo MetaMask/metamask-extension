@@ -10,7 +10,6 @@ on:
 
 jobs:
   identify-codeowners:
-    if: ${{ !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
@@ -20,6 +19,7 @@ jobs:
           skip-allow-scripts: true
 
       - name: Identify codeowners
+        if: ${{ env.PR_COMMENT_TOKEN }}
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
         run: yarn tsx ./.github/scripts/identify-codeowners.ts
