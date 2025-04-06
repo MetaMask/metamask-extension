@@ -30,10 +30,10 @@ jobs:
         id: needs-e2e
         run: |
           if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip e2e]'; then
-              printf '%s\n' "${HEAD_COMMIT_HASH} contains the tag '[skip e2e]' so e2e tests will not run"
+              printf '%s\n' "Commit message of '${HEAD_COMMIT_HASH}' contains the substring '[skip e2e]' so e2e tests will not run"
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
           else
-              printf '%s\n' "${HEAD_COMMIT_HASH} does not contain the tag '[skip e2e]' so e2e tests will run"
+              printf '%s\n' "Commit message of '${HEAD_COMMIT_HASH}' does not contain the substring '[skip e2e]' so e2e tests will run"
               echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
           fi
 
