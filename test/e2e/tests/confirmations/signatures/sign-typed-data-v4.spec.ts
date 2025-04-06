@@ -12,6 +12,7 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -130,10 +131,11 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await assertInfoValues({ driver, verifyingContract: false });
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDappSendIndividualRequest);
-        await driver.waitForSelector({
-          tag: 'main',
-          text: '0xdf05fb422b6623939c9ec6b622d21b97e3974cc8bf0d7534aa8e5972be4c1e954261493934ecd1088aa32f4b0686dc9a4a847bd51fb572aba1f69153035533781c',
-        })
+
+        const testDappIndividualRequest = new TestDappIndividualRequest(driver);
+        await testDappIndividualRequest.check_expectedResult(
+          '0xdf05fb422b6623939c9ec6b622d21b97e3974cc8bf0d7534aa8e5972be4c1e954261493934ecd1088aa32f4b0686dc9a4a847bd51fb572aba1f69153035533781c',
+        );
       },
     );
   });
