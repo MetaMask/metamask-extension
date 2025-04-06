@@ -52,6 +52,8 @@ class TestDapp {
 
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
+  private readonly eip5792SendCallsError = '#eip5792SendCallsError';
+
   private readonly encryptButton = '#encryptButton';
 
   private readonly encryptedMessage = '#ciphertextDisplay';
@@ -593,6 +595,13 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signPermitResultV,
       text: `v: ${expectedV}`,
+    });
+  }
+
+  async assertEip5792SendCallsError(expectedMessage: string) {
+    await this.driver.waitForSelector({
+      css: this.eip5792SendCallsError,
+      text: expectedMessage,
     });
   }
 

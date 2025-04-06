@@ -15,6 +15,15 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
   private readonly confirmUpgradeAccountCheckbox: string =
     '[data-testid="confirm-upgrade-acknowledge"] span input';
 
+  private readonly footerCancelButton =
+    '[data-testid="confirm-footer-cancel-button"]';
+
+  private readonly rejectBatchButton =
+    '[data-testid="upgrade-cancel-reject-upgrade"]';
+
+  private readonly rejectBatchRejectUpgradeButton =
+    '[data-testid="upgrade-cancel-reject"]';
+
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
 
@@ -36,6 +45,22 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
       css: this.txType,
       text: txType,
     });
+  }
+
+  async clickCancel(): Promise<void> {
+    await this.driver.clickElement(this.footerCancelButton);
+  }
+
+  async rejectBatchRejectUpgrade(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.rejectBatchButton,
+    );
+  }
+
+  async rejectBatch(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.rejectBatchRejectUpgradeButton,
+    );
   }
 
   async tickUpgradeCheckbox(): Promise<void> {
