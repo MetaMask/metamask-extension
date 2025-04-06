@@ -10,6 +10,13 @@ jobs:
   publish-prerelease:
     name: Publish prerelease
     runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -32,10 +39,6 @@ jobs:
         env:
           OWNER: ${{ github.repository_owner }}
           REPOSITORY: ${{ github.event.repository.name }}
-          # For a `pull_request` event, the branch is `github.head_ref``.
-          BRANCH: ${{ github.head_ref }}
-          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           JOB_NAME: job-publish-prerelease
         run: |
           pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id')
@@ -54,7 +57,6 @@ jobs:
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
