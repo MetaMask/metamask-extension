@@ -204,7 +204,7 @@ jobs:
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
-        if: ${{ !env.IS_FORK }}
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -265,7 +265,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' || !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: ${{ github.event_name == 'pull_request' }}
     needs:
       - run-benchmarks
       - bundle-size
@@ -319,7 +319,7 @@ jobs:
   log-merge-group-failure:
     name: Log merge group failure
     # Only run this job if the merge group event fails, skip on forks
-    if: ${{ github.event_name == 'merge_group' && failure() && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
     uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
