@@ -22,7 +22,7 @@ import {
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
-import { useIsGaslessSupported } from '../../../../../hooks/useIsGaslessSupported';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);

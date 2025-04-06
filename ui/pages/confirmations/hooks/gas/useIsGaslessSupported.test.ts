@@ -1,9 +1,9 @@
 import { act } from 'react-dom/test-utils';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
-import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
+import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
 jest.mock('../../../../shared/modules/selectors');

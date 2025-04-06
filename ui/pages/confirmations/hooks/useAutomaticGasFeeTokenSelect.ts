@@ -6,7 +6,7 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
-import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
