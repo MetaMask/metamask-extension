@@ -27,7 +27,7 @@ jobs:
           workflow_id=$(echo "${workflow}" | jq -r '.id')
           workflow_status=$(echo "${workflow}" | jq -r '.status')
 
-          echo "Waiting for pipeline '${pipeline_id}', workflow '${workflow_id}' at https://app.circleci.com/pipelines/github/${OWNER}/${REPOSITORY}/${pipeline_number}/workflows/${workflow_id}"
+          echo "Waiting for pipeline number '${pipeline_number}', workflow id '${workflow_id}' at https://app.circleci.com/pipelines/github/${OWNER}/${REPOSITORY}/${pipeline_number}/workflows/${workflow_id}"
 
           if [ "${workflow_status}" == "running" ]; then
             while [ "${workflow_status}" == "running" ]; do

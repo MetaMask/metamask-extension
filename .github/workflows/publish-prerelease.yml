@@ -52,7 +52,7 @@ jobs:
           echo "CIRCLE_WORKFLOW_JOB_ID=${job_id}" >> "$GITHUB_OUTPUT"
           echo "CIRCLE_BUILD_NUM=${job_number}" >> "$GITHUB_OUTPUT"
 
-          echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', job number '${job_number}', job id '${job_id}' at https://app.circleci.com/pipelines/github/${OWNER}/${REPOSITORY}/${pipeline_number}/workflows/${workflow_id}/jobs/${job_id}/artifacts"
+          echo "Getting artifacts from pipeline number '${pipeline_number}', workflow id '${workflow_id}', job number '${job_number}' at https://app.circleci.com/pipelines/github/${OWNER}/${REPOSITORY}/${pipeline_number}/workflows/${workflow_id}/jobs/${job_number}/artifacts"
 
       - name: Publish prerelease
         if: ${{ env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
