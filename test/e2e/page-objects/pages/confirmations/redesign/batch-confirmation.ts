@@ -18,11 +18,15 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
   private readonly footerCancelButton =
     '[data-testid="confirm-footer-cancel-button"]';
 
-  private readonly rejectBatchButton =
-    '[data-testid="upgrade-cancel-reject-upgrade"]';
+  private readonly rejectBatchButton = {
+    tag: 'button',
+    text: 'Cancel transaction',
+  };
 
-  private readonly rejectBatchRejectUpgradeButton =
-    '[data-testid="upgrade-cancel-reject"]';
+  private readonly rejectBatchRejectUpgradeButton = {
+    tag: 'button',
+    text: 'Cancel update & transaction',
+  };
 
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
@@ -53,13 +57,13 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   async rejectBatchRejectUpgrade(): Promise<void> {
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.rejectBatchButton,
+      this.rejectBatchRejectUpgradeButton,
     );
   }
 
   async rejectBatch(): Promise<void> {
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.rejectBatchRejectUpgradeButton,
+      this.rejectBatchButton,
     );
   }
 
