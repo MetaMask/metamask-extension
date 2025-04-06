@@ -66,7 +66,7 @@ export function getSelectedNetworkClientId(
  * @param state - Redux state.
  * @returns A consolidated object containing all available network configurations.
  */
-export const getAllNetworkConfigurationsByCaipChainId = createDeepEqualSelector(
+export const getAllNetworkConfigurationsByCaipChainId = createSelector(
   (state: MultichainNetworkConfigurationsByChainIdState) =>
     state.metamask.networkConfigurationsByChainId,
   (state: MultichainNetworkConfigurationsByChainIdState) =>
