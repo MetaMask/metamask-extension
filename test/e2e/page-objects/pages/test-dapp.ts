@@ -50,9 +50,9 @@ class TestDapp {
 
   private readonly depositPiggyBankContractButton = '#depositButton';
 
-  private readonly eip747ContractAddressInput = '#eip747ContractAddress';
-
   private readonly eip5792SendCallsError = '#eip5792SendCallsError';
+
+  private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
   private readonly encryptButton = '#encryptButton';
 
