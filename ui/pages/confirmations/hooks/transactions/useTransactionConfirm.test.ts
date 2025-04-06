@@ -30,6 +30,9 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   tokenAddress: '0x1234567890123456789012345678901234567890',
 };
 
+const TRANSACTION_META_MOCK =
+  genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+
 function runHook({
   customNonceValue,
   gasFeeTokens,
@@ -136,6 +139,27 @@ describe('useTransactionConfirm', () => {
         gas: GAS_FEE_TOKEN_MOCK.gas,
         maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
         maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+      }),
+    );
+  });
+
+  it('does not update transaction params if smart transaction and no selected gas fee token', async () => {
+    getIsSmartTransactionMock.mockReturnValue(true);
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+    });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+
+    expect(actualTransactionMeta.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: TRANSACTION_META_MOCK.txParams.gas,
+        maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
+        maxPriorityFeePerGas:
+          TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       }),
     );
   });
