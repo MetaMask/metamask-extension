@@ -12,7 +12,9 @@ import {
   CaipAccountId,
   CaipChainId,
   CaipNamespace,
+  KnownCaipNamespace,
   parseCaipAccountId,
+  parseCaipChainId,
 } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../modules/string-utils';
 
@@ -144,6 +146,35 @@ export function getAllScopesFromCaip25CaveatValue(
   return Array.from(
     new Set([...requiredScopes, ...optionalScopes]),
   ) as CaipChainId[];
+}
+
+/**
+ * Gets all non-wallet namespaces from a CAIP-25 caveat value
+ * This extracts all namespaces from both required and optional scopes
+ * and returns a unique set.
+ *
+ * @param caip25CaveatValue - The CAIP-25 caveat value to extract namespaces from
+ * @returns Array of unique namespace strings
+ */
+export function getAllNonWalletNamespacesFromCaip25CaveatValue(
+  caip25CaveatValue: Caip25CaveatValue,
+): CaipNamespace[] {
+  return Array.from(
+    getAllScopesFromCaip25CaveatValue(caip25CaveatValue).reduce(
+      (acc, scope) => {
+        const { namespace, reference } = parseScopeString(scope);
+        if (namespace === KnownCaipNamespace.Wallet) {
+          if (reference) {
+            acc.add(reference);
+          }
+        } else if (namespace) {
+          acc.add(namespace);
+        }
+        return acc;
+      },
+      new Set<CaipNamespace>(),
+    ),
+  );
 }
 
 /**

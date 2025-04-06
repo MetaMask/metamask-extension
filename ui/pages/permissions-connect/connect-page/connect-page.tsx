@@ -71,6 +71,7 @@ import {
 } from '../../../selectors/selectors.types';
 import {
   getAllAccountIdsFromCaip25CaveatValue,
+  getAllNonWalletNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 import {
@@ -188,18 +189,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
 
-  const requestedNamespaces = getUniqueArrayItems(
-    [
-      ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
-      ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
-    ].map((scope) => {
-      const scopeString = scope as InternalScopeString;
-      if (scopeString === KnownCaipNamespace.Wallet) {
-        return scopeString;
-      }
-      const { namespace, reference } = parseCaipChainId(scopeString);
-      return namespace === KnownCaipNamespace.Wallet ? reference : namespace;
-    }),
+  const requestedNamespaces = getAllNonWalletNamespacesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
   );
 
   // all accounts that match the requested namespaces
