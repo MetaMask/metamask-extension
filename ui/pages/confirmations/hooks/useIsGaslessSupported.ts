@@ -30,8 +30,8 @@ export function useIsGaslessSupported() {
 
   return (
     isSmartTransaction ||
-    (atomicBatchChainSupport &&
-      (atomicBatchChainSupport.isSupported ||
-        !atomicBatchChainSupport.delegationAddress))
+    (Boolean(atomicBatchChainSupport) &&
+      (atomicBatchChainSupport?.isSupported ||
+        !atomicBatchChainSupport?.delegationAddress))
   );
 }
