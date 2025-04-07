@@ -6844,7 +6844,10 @@ export default class MetamaskController extends EventEmitter {
             origin,
           ),
         getNonEvmSupportedMethods: () => [],
-        handleNonEvmRequestForOrigin: () => {},
+        handleNonEvmRequestForOrigin: () => {
+          // noop: this will be wired up in a PR to follow:
+          // https://github.com/MetaMask/metamask-extension/pull/29887
+        },
       }),
     );
 
