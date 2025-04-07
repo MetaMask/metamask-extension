@@ -14,7 +14,6 @@ import {
   CaipNamespace,
   KnownCaipNamespace,
   parseCaipAccountId,
-  parseCaipChainId,
 } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../modules/string-utils';
 
@@ -159,22 +158,19 @@ export function getAllScopesFromCaip25CaveatValue(
 export function getAllNonWalletNamespacesFromCaip25CaveatValue(
   caip25CaveatValue: Caip25CaveatValue,
 ): CaipNamespace[] {
-  return Array.from(
-    getAllScopesFromCaip25CaveatValue(caip25CaveatValue).reduce(
-      (acc, scope) => {
-        const { namespace, reference } = parseScopeString(scope);
-        if (namespace === KnownCaipNamespace.Wallet) {
-          if (reference) {
-            acc.add(reference);
-          }
-        } else if (namespace) {
-          acc.add(namespace);
-        }
-        return acc;
-      },
-      new Set<CaipNamespace>(),
-    ),
-  );
+  const allScopes = getAllScopesFromCaip25CaveatValue(caip25CaveatValue);
+  const allNamespaces = allScopes.reduce((acc, scope) => {
+    const { namespace, reference } = parseScopeString(scope);
+    if (namespace === KnownCaipNamespace.Wallet) {
+      if (reference) {
+        acc.add(reference);
+      }
+    } else if (namespace) {
+      acc.add(namespace);
+    }
+    return acc;
+  }, new Set<CaipNamespace>());
+  return Array.from(allNamespaces);
 }
 
 /**
