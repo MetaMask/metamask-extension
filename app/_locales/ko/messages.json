@@ -3731,9 +3731,6 @@
     "message": "1년",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5470,13 +5467,6 @@
   "step1LedgerWalletMsg": {
     "message": "$1의 잠금을 해제하려면 다운로드, 설정 및 비밀번호를 입력하세요.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "OneKey 연결"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "OneKey를 컴퓨터에 직접 연결하고 잠금을 해제하세요. 올바른 패스프레이즈를 사용하세요.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Trezor 지갑 연결"
