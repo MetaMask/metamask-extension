@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
   CurrencyRateController,
-  NftDetectionController,
   TokenDetectionController,
   TokenListController,
   TokensController,
@@ -373,6 +372,7 @@ import {
 import {
   AssetsContractControllerInit,
   NftControllerInit,
+  NftDetectionControllerInit,
   TokenRatesControllerInit,
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
@@ -751,35 +751,6 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       messenger: tokensControllerMessenger,
       chainId: this.#getGlobalChainId(),
-    });
-
-    const nftDetectionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'NftDetectionController',
-        allowedEvents: [
-          'NetworkController:stateChange',
-          'PreferencesController:stateChange',
-        ],
-        allowedActions: [
-          'ApprovalController:addRequest',
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
-          'AccountsController:getSelectedAccount',
-        ],
-      });
-
-    this.nftDetectionController = new NftDetectionController({
-      messenger: nftDetectionControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-      getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
-      getBalancesInSingleCall:
-        this.assetsContractController.getBalancesInSingleCall.bind(
-          this.assetsContractController,
-        ),
-      addNft: (...args) => this.nftController.addNft(...args),
-      getNftState: () => this.nftController.state,
-      // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
-      disabled: !this.preferencesController.state.useNftDetection,
     });
 
     const metaMetricsControllerMessenger =
@@ -1829,6 +1800,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
+      NftDetectionController: NftDetectionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
@@ -1870,6 +1842,7 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
     this.nftController = controllersByName.NftController;
+    this.nftDetectionController = controllersByName.NftDetectionController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;

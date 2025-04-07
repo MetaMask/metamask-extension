@@ -17,6 +17,7 @@ import {
   MultichainAssetsRatesController,
   MultichainBalancesController,
   NftController,
+  NftDetectionController,
   TokenRatesController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
@@ -79,6 +80,7 @@ export type Controller =
   | UserStorageController
   | TokenRatesController
   | NftController
+  | NftDetectionController
   | AssetsContractController;
 
 /**
@@ -112,4 +114,5 @@ export type ControllerFlatState = AccountsController['state'] &
   SwapsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
-  NftController['state'];
+  NftController['state'] &
+  NftDetectionController['state'];
