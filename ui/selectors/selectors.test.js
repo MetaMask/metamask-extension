@@ -253,7 +253,7 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toStrictEqual(8);
+      ).toStrictEqual(3);
     });
 
     it('returns correct number of unapproved transactions and messages', () => {

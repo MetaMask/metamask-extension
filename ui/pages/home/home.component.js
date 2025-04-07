@@ -86,8 +86,6 @@ function shouldCloseNotificationPopup({
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
 }) {
-  // we can't use totalUnapproved because there are also queued requests
-
   const shouldClose =
     isNotification &&
     totalUnapprovedCount === 0 &&
