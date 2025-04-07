@@ -3,10 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import RemoteModePermissions from './remote-mode-permissions.component';
 
-interface RemoteModePermissionsProps {
+type RemoteModePermissionsProps = {
   setStartEnableRemoteSwap?: (startEnableRemoteSwap: boolean) => void;
   setStartEnableDailyAllowance?: (startEnableDailyAllowance: boolean) => void;
-}
+};
 
 const defaultProps: RemoteModePermissionsProps = {
   setStartEnableRemoteSwap: () => undefined,
@@ -30,7 +30,11 @@ describe('RemoteModePermissions Component', () => {
   it('should render the permissions title and description', () => {
     const { queryByText } = renderComponent(defaultProps);
     expect(queryByText('Permissions')).toBeInTheDocument();
-    expect(queryByText('Safely access your hardware wallet funds without plugging it in. Revoke permissions anytime.')).toBeInTheDocument();
+    expect(
+      queryByText(
+        'Safely access your hardware wallet funds without plugging it in. Revoke permissions anytime.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('should render swap and daily allowances sections', () => {

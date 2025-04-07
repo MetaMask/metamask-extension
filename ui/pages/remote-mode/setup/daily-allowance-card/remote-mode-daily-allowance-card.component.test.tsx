@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import RemoteModeDailyAllowanceCard from './remote-mode-daily-allowance-card.component';
 import { DailyAllowance, DailyAllowanceTokenTypes } from '../../remote.types';
+import RemoteModeDailyAllowanceCard from './remote-mode-daily-allowance-card.component';
 
 const mockDailyAllowance: DailyAllowance = {
   tokenType: DailyAllowanceTokenTypes.ETH,

@@ -4,11 +4,11 @@ export enum TokenSymbol {
   USDC = 'USDC',
   WETH = 'WETH',
 }
-export interface TokenInfo {
+export type TokenInfo = {
   symbol: TokenSymbol;
   name: string;
   iconUrl: string;
-}
+};
 
 export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
   [TokenSymbol.USDC]: {

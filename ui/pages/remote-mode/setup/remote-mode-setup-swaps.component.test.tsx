@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import RemoteModeSetupSwaps from './remote-mode-setup-swaps.component';
 import { TokenSymbol, ToTokenOption } from '../remote.types';
+import RemoteModeSetupSwaps from './remote-mode-setup-swaps.component';
 
 const mockAccount = {
   address: '0x12C7e...q135f',

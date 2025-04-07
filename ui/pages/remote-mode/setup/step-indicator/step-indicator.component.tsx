@@ -10,15 +10,18 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 
-interface StepIndicatorProps {
+type StepIndicatorProps = {
   currentStep: number;
   totalSteps: number;
-}
+};
 
 /**
  * A component that displays the current step number and total steps in a setup process.
- * @param {number} currentStep - The current step number in the process
- * @param {number} totalSteps - The total number of steps in the process
+ *
+ * @param currentStep.currentStep
+ * @param currentStep - The current step number in the process
+ * @param totalSteps - The total number of steps in the process
+ * @param currentStep.totalSteps
  */
 export default function StepIndicator({
   currentStep,

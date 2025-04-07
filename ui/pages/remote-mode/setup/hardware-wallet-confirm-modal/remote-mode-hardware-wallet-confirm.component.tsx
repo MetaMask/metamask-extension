@@ -1,9 +1,6 @@
 import React from 'react';
 import {
   Text,
-} from '../../../../components/component-library';
-
-import {
   Modal,
   ModalOverlay,
   ModalContent,
@@ -15,11 +12,11 @@ import {
 /**
  * A modal component that displays confirmation modal for remote mode setup.
  *
- * @param {Object} props - Component props
- * @param {boolean} props.visible - Controls the visibility of the modal
- * @param {Function} props.onConfirm - Callback function triggered when user confirms
- * @param {Function} props.onClose - Callback function triggered when modal is closed
- * @returns {JSX.Element} A modal with hardware wallet confirmation instructions
+ * @param props - Component props
+ * @param props.visible - Controls the visibility of the modal
+ * @param props.onConfirm - Callback function triggered when user confirms
+ * @param props.onClose - Callback function triggered when modal is closed
+ * @returns A modal with hardware wallet confirmation instructions
  */
 export default function RemoteModeHardwareWalletConfirm({
   visible,
@@ -30,7 +27,6 @@ export default function RemoteModeHardwareWalletConfirm({
   onConfirm: () => void;
   onClose: () => void;
 }) {
-
   return (
     <Modal onClose={onClose} isOpen={visible}>
       <ModalOverlay />

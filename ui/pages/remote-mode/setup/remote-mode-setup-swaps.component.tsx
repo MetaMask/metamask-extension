@@ -34,12 +34,12 @@ import {
 import Card from '../../../components/ui/card';
 import { AccountPicker } from '../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../components/multichain/account-list-menu';
-import RemoteModeHardwareWalletConfirm from './hardware-wallet-confirm-modal';
-import RemoteModeSwapAllowanceCard from './swap-allowance-card';
 import { SwapAllowance, TokenSymbol, ToTokenOption } from '../remote.types';
-import StepIndicator from './step-indicator/step-indicator.component';
 import { DEFAULT_ROUTE, REMOTE_ROUTE } from '../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
+import RemoteModeHardwareWalletConfirm from './hardware-wallet-confirm-modal';
+import RemoteModeSwapAllowanceCard from './swap-allowance-card';
+import StepIndicator from './step-indicator/step-indicator.component';
 
 const TOTAL_STEPS = 3;
 
@@ -67,9 +67,9 @@ const account: InternalAccount = {
  * - Configure swap allowances
  * - Review and confirm changes (including EOA upgrade)
  *
- * @param {Object} props - Component props
- * @param {InternalAccount[]} [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
- * @returns {JSX.Element} The rendered component
+ * @param props - Component props
+ * @param [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
+ * @returns The rendered component
  */
 export default function RemoteModeSetupSwaps({
   accounts = [account],
@@ -115,7 +115,9 @@ export default function RemoteModeSetupSwaps({
   };
 
   const handleAddAllowance = () => {
-    if (!dailyLimit) return;
+    if (!dailyLimit) {
+      return;
+    }
 
     const newAllowance = {
       from: selectedFromToken,
