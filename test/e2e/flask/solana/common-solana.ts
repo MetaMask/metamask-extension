@@ -61,13 +61,13 @@ export const commonSolanaTxConfirmedDetailsFixture = {
 export async function mockAccountsApi(mockServer: Mockttp) {
   const response = {
     pageInfo: {
-        count: 0,
-        cursor: null,
-        hasNextPage: false
+      count: 0,
+      cursor: null,
+      hasNextPage: false,
     },
     data: [],
-    unprocessedNetworks: []
-};
+    unprocessedNetworks: [],
+  };
   return await mockServer
     .forGet(ACCOUNTS_API)
     .withQuery({
@@ -76,7 +76,7 @@ export async function mockAccountsApi(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: response
+        json: response,
       };
     });
 }
@@ -487,11 +487,9 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .thenCallback(() => {
-      return response;
-    });
+  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockTokenApiMainnet(mockServer: Mockttp) {
@@ -531,18 +529,18 @@ export async function mockTokenApiMainnet2(mockServer: Mockttp) {
     statusCode: 200,
     json: [
       {
-          decimals: 9,
-          assetId: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-          name: "Solana",
-          symbol: "SOL"
+        decimals: 9,
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        name: 'Solana',
+        symbol: 'SOL',
       },
       {
-          decimals: 9,
-          assetId: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
-          name: "Solana",
-          symbol: "SOL"
-      }
-  ]
+        decimals: 9,
+        assetId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    ],
   };
   return await mockServer
     .forGet(SOLANA_TOKEN_API)
@@ -571,8 +569,7 @@ export async function mockTokenApiDevnet2(mockServer: Mockttp) {
   return await mockServer
     .forGet(SOLANA_TOKEN_API)
     .withQuery({
-      assetIds:
-        'solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
+      assetIds: 'solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
     })
     .thenCallback(() => {
       return response;
@@ -680,37 +677,35 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
-export async function simulateSolanaTransactionFailed(
-  mockServer: Mockttp,
-) {
+export async function simulateSolanaTransactionFailed(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
       result: {
-        "jsonrpc": "2.0",
-        "result": {
-          "context": {
-            "slot": 12345678
+        jsonrpc: '2.0',
+        result: {
+          context: {
+            slot: 12345678,
           },
-          "value": {
-            "err": {
-              "InstructionError": [
+          value: {
+            err: {
+              InstructionError: [
                 1,
                 {
-                  "Custom": 1
-                }
-              ]
+                  Custom: 1,
+                },
+              ],
             },
-            "logs": [
-              "Program 11111111111111111111111111111111 invoke [1]",
-              "Program 11111111111111111111111111111111 failed: custom program error: 0x1"
+            logs: [
+              'Program 11111111111111111111111111111111 invoke [1]',
+              'Program 11111111111111111111111111111111 failed: custom program error: 0x1',
             ],
-            "accounts": null,
-            "unitsConsumed": 200000
-          }
+            accounts: null,
+            unitsConsumed: 200000,
+          },
         },
-        "id": 1
-      }
+        id: 1,
+      },
     },
   };
 
@@ -2160,7 +2155,9 @@ export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
       };
     });
 }
-export async function mockGetFailedSignaturesForAddressDevnet(mockServer: Mockttp) {
+export async function mockGetFailedSignaturesForAddressDevnet(
+  mockServer: Mockttp,
+) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_DEVNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -2209,7 +2206,9 @@ export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetSuccessSignaturesForAddressDevnet(mockServer: Mockttp) {
+export async function mockGetSuccessSignaturesForAddressDevnet(
+  mockServer: Mockttp,
+) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_DEVNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -2237,29 +2236,30 @@ export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
-      jsonrpc: "2.0",
+      jsonrpc: '2.0',
       error: {
         code: -32002,
-        message: "Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1",
+        message:
+          'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1',
         data: {
           accounts: null,
           err: {
             InstructionError: [
               0,
               {
-                Custom: 1
-              }
-            ]
+                Custom: 1,
+              },
+            ],
           },
           logs: [
-            "Program 11111111111111111111111111111111 invoke [1]",
-            "Program 11111111111111111111111111111111 failed: custom program error: 0x1"
+            'Program 11111111111111111111111111111111 invoke [1]',
+            'Program 11111111111111111111111111111111 failed: custom program error: 0x1',
           ],
           unitsConsumed: 200000,
-          returnData: null
-        }
+          returnData: null,
+        },
       },
-      id: 1
+      id: 1,
     },
   };
   return await mockServer
@@ -2668,11 +2668,9 @@ export async function withSolanaAccountSnap(
     mockSendTransaction,
     importAccount,
     simulateTransaction,
-    isNative,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
-    simulateFailedTransaction,
     sendFailedTransaction,
   }: {
     title?: string;
@@ -2681,11 +2679,9 @@ export async function withSolanaAccountSnap(
     mockSendTransaction?: boolean;
     importAccount?: boolean;
     simulateTransaction?: boolean;
-    isNative?: boolean;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
-    simulateFailedTransaction?: boolean;
     sendFailedTransaction?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
@@ -2707,42 +2703,50 @@ export async function withSolanaAccountSnap(
         if (mockGetTransactionSuccess && !mockGetTransactionFailed) {
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddressDevnet(mockServer));
+          mockList.push(
+            await mockGetSuccessSignaturesForAddressDevnet(mockServer),
+          );
           mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockGetTransactionFailed && !mockGetTransactionSuccess) {
           mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
           mockList.push(await mockGetFailedTransaction(mockServer));
-          mockList.push(await mockGetFailedSignaturesForAddressDevnet(mockServer));
+          mockList.push(
+            await mockGetFailedSignaturesForAddressDevnet(mockServer),
+          );
           mockList.push(await mockGetFailedTransactionDevnet(mockServer));
         }
         if (!mockGetTransactionSuccess && !mockGetTransactionFailed) {
           // success tx by default
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddressDevnet(mockServer));
+          mockList.push(
+            await mockGetSuccessSignaturesForAddressDevnet(mockServer),
+          );
           mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockCalls) {
-          mockList.push(...[
-            await mockSolanaBalanceQuote(mockServer),
-            await mockSolanaBalanceQuoteDevnet(mockServer),
-            await mockGetTokenAccountsByOwner(mockServer),
-            await mockGetTokenAccountsByOwnerDevnet(mockServer),
-            await mockMultiCoinPrice(mockServer),
-            await mockGetLatestBlockhash(mockServer),
-            await mockGetLatestBlockhashDevnet(mockServer),
-            await mockGetFeeForMessage(mockServer),
-            await mockGetFeeForMessageDevnet(mockServer),
-            await mockPriceApiSpotPrice(mockServer),
-            await mockPriceApiExchangeRates(mockServer),
-            await mockClientSideDetectionApi(mockServer),
-            await mockPhishingDetectionApi(mockServer),
-            await mockGetTokenAccountInfo(mockServer),
-            await mockGetAccountInfo(mockServer),
-            await mockTokenApiMainnetTest(mockServer),
-            await mockAccountsApi(mockServer),
-          ]);
+          mockList.push(
+            ...[
+              await mockSolanaBalanceQuote(mockServer),
+              await mockSolanaBalanceQuoteDevnet(mockServer),
+              await mockGetTokenAccountsByOwner(mockServer),
+              await mockGetTokenAccountsByOwnerDevnet(mockServer),
+              await mockMultiCoinPrice(mockServer),
+              await mockGetLatestBlockhash(mockServer),
+              await mockGetLatestBlockhashDevnet(mockServer),
+              await mockGetFeeForMessage(mockServer),
+              await mockGetFeeForMessageDevnet(mockServer),
+              await mockPriceApiSpotPrice(mockServer),
+              await mockPriceApiExchangeRates(mockServer),
+              await mockClientSideDetectionApi(mockServer),
+              await mockPhishingDetectionApi(mockServer),
+              await mockGetTokenAccountInfo(mockServer),
+              await mockGetAccountInfo(mockServer),
+              await mockTokenApiMainnetTest(mockServer),
+              await mockAccountsApi(mockServer),
+            ],
+          );
         }
         if (mockZeroBalance) {
           mockList.push(await mockSolanaBalanceQuote(mockServer, true));
