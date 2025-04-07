@@ -1785,12 +1785,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // clear unapproved transactions and messages when the network will change
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkWillChange',
-      clearPendingConfirmations.bind(this),
-    );
-
     // RemoteFeatureFlagController has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
