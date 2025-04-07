@@ -23,7 +23,6 @@ import {
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
-  getQueuedRequestCount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -92,9 +91,6 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = selectedAccount;
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const queuedRequestCount = getQueuedRequestCount(state);
-  const totalUnapprovedAndQueuedRequestCount =
-    totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
@@ -149,7 +145,6 @@ const mapStateToProps = (state) => {
     dataCollectionForMarketing,
     selectedAddress,
     totalUnapprovedCount,
-    totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
