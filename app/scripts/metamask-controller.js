@@ -795,7 +795,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getBalancesInSingleCall.bind(
           this.assetsContractController,
         ),
-      addNft: this.nftController.addNft.bind(this.nftController),
+      addNft: (...args) => this.nftController.addNft(...args),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled: !this.preferencesController.state.useNftDetection,
