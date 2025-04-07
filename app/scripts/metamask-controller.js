@@ -17,7 +17,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
+import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -86,6 +86,7 @@ import {
   ERC20,
   ERC721,
   BlockExplorerUrl,
+  ChainId,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -182,8 +183,6 @@ import {
   CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
-  MAINNET_DISPLAY_NAME,
-  DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
@@ -591,22 +590,9 @@ export default class MetamaskController extends EventEmitter {
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
-      // Note: Consider changing `getDefaultNetworkControllerState`
-      // on the controller side to include some of these tweaks.
-      networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
-      delete networks[CHAIN_IDS.GOERLI];
-      delete networks[CHAIN_IDS.LINEA_GOERLI];
-
-      // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
-      // and it is not using Infura as a provider, we need to add it manually.
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
-        DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-      );
-
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        // Note: The MegaETH Testnet is currently the only network that is not included.
         if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
@@ -647,6 +633,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getRpcServiceOptions: () => ({
+        fetch,
+        btoa,
+      }),
+      additionalDefaultNetworks: [ChainId['megaeth-testnet']],
     });
     this.networkController.initializeProvider();
 

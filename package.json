@@ -223,7 +223,8 @@
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
     "@keystonehq/metamask-airgapped-keyring": "npm:@metamask/metamask-airgapped-keyring@0.15.0",
-    "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
+    "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
+    "@metamask/network-controller@npm:^22.2.1": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -264,7 +265,7 @@
     "@metamask/bridge-controller": "^11.0.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^11.4.0",
+    "@metamask/controller-utils": "^11.7.0",
     "@metamask/design-tokens": "^6.0.1",
     "@metamask/ens-controller": "^15.0.2",
     "@metamask/ens-resolver-snap": "^0.1.2",
@@ -294,7 +295,7 @@
     "@metamask/multichain-network-controller": "^0.1.0",
     "@metamask/multichain-transactions-controller": "^0.7.2",
     "@metamask/name-controller": "^8.0.3",
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch",
     "@metamask/notification-services-controller": "^5.0.1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
