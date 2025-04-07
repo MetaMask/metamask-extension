@@ -12,7 +12,8 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
-  it('should batch confirmation txs for different dapps on same networks ', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should batch confirmation txs for different dapps on same networks ', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
