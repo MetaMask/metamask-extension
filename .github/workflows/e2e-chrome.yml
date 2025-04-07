@@ -69,3 +69,29 @@ jobs:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: prep-build-dist-browserify-chrome
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
+
+  test-e2e-chrome-report:
+    needs:
+      - test-e2e-chrome
+      - test-e2e-chrome-webpack
+      - test-e2e-chrome-multiple-providers
+      - test-e2e-chrome-rpc
+      - test-e2e-chrome-flask
+      - test-e2e-chrome-vault-decryption
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-chrome*
+          merge-multiple: true
+
+      - name: Custom Test Report
+        run: yarn tsx .github/scripts/create-e2e-test-report.ts
