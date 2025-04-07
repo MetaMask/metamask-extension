@@ -159,7 +159,7 @@ export const getTokenExchangeRate = async (request: {
 // This extracts a token's exchange rate from the marketData state object
 // These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
-  chainId: Hex | ChainId,
+  chainId: Hex | ChainId | CaipChainId,
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
 ) =>
