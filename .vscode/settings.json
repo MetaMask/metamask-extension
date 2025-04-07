@@ -20,8 +20,5 @@
       "url": "./.vscode/package.json-schema.json"
     }
   ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
