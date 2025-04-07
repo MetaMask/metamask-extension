@@ -63,34 +63,34 @@
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
     "bridgeFeatureFlags": {
+      "mobileConfig": "object",
       "extensionConfig": {
+        "refreshRate": "number",
+        "maxRefreshCount": "number",
         "support": "boolean",
         "chains": {
           "eip155:1": "object",
           "eip155:10": "object",
-          "eip155:56": "object",
           "eip155:137": "object",
           "eip155:324": "object",
-          "eip155:8453": "object",
           "eip155:42161": "object",
           "eip155:43114": "object",
+          "eip155:56": "object",
           "eip155:59144": "object",
+          "eip155:8453": "object",
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
-        },
-        "maxRefreshCount": "number",
-        "refreshRate": "number"
-      },
-      "mobileConfig": "object"
+        }
+      }
     },
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
-    "quotesInitialLoadTime": null,
     "quotes": {},
-    "quotesLastFetched": null,
-    "quotesLoadingStatus": null,
+    "quotesRefreshCount": 0,
     "quoteFetchError": null,
-    "quotesRefreshCount": 0
+    "quotesInitialLoadTime": null,
+    "quotesLastFetched": null,
+    "quotesLoadingStatus": null
   },
   "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
   "CronjobController": { "jobs": "object", "events": "object" },
@@ -102,6 +102,11 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
+      "MegaETH": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
+      },
       "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
@@ -111,11 +116,6 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
-      },
-      "MegaETH": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
       }
     }
   },
@@ -138,7 +138,6 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean"
   },
-  "InstitutionalSnapController": "object",
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
@@ -203,8 +202,8 @@
     "isCheckingAccountsPresence": "boolean"
   },
   "NotificationServicesPushController": {
-    "isPushEnabled": "boolean",
     "fcmToken": "string",
+    "isPushEnabled": "boolean",
     "isUpdatingFCMToken": "boolean"
   },
   "OnboardingController": {
@@ -269,8 +268,7 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {

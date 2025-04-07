@@ -77,7 +77,6 @@ import {
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
-  getManageInstitutionalWallets,
   getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -140,7 +139,6 @@ import { ImportAccount } from '../import-account';
 import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 ///: END:ONLY_INCLUDE_IF
-import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 // TODO: Should we use an enum for this instead?
@@ -394,8 +392,6 @@ export const AccountListMenu = ({
     });
   };
   ///: END:ONLY_INCLUDE_IF
-  const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
-
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 
   // Here we are getting the keyring of the last selected account
@@ -872,24 +868,6 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
-            {manageInstitutionalWallets && (
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Add}
-                  onClick={() => {
-                    onClose();
-                    history.push(
-                      `/snaps/view/${encodeURIComponent(
-                        INSTITUTIONAL_WALLET_SNAP_ID,
-                      )}`,
-                    );
-                  }}
-                >
-                  {t('manageInstitutionalWallets')}
-                </ButtonLink>
-              </Box>
-            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
