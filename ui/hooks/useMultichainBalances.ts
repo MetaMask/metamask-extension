@@ -19,11 +19,16 @@ import {
   getMultichainCoinRates,
 } from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
-import { getSelectedEvmInternalAccount } from '../selectors/selectors';
+import {
+  getInternalAccount,
+  getSelectedEvmInternalAccount,
+} from '../selectors/selectors';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // TODO replace this with getMultichainAssets
-const useNonEvmAssetsWithBalances = (): (
+const useNonEvmAssetsWithBalances = (
+  accountId?: string,
+): (
   | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
       chainId: `${string}:${string}`;
       decimals: number;
@@ -35,7 +40,6 @@ const useNonEvmAssetsWithBalances = (): (
       symbol: string;
     }
 )[] => {
-  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -50,12 +54,12 @@ const useNonEvmAssetsWithBalances = (): (
   const assetRates = useSelector(getAssetsRates);
 
   const nonEvmTokensWithFiatBalances = useMemo(() => {
-    if (!nonEvmAccount?.id) {
+    if (!accountId) {
       return [];
     }
 
-    const assetIds = assetsByAccountId?.[nonEvmAccount.id];
-    const balancesByAssetId = nonEvmBalancesByAccountId?.[nonEvmAccount.id];
+    const assetIds = assetsByAccountId?.[accountId];
+    const balancesByAssetId = nonEvmBalancesByAccountId?.[accountId];
     if (!balancesByAssetId || !assetIds) {
       return [];
     }
@@ -94,23 +98,35 @@ const useNonEvmAssetsWithBalances = (): (
     assetRates,
     assetsByAccountId,
     nativeRates,
-    nonEvmAccount?.id,
+    accountId,
     nonEvmBalancesByAccountId,
   ]);
 
   return nonEvmTokensWithFiatBalances;
 };
 
-// This hook is used to get the balances of all tokens and native tokens across all chains
-// This also returns the total fiat balances by chainId/caipChainId
-export const useMultichainBalances = () => {
+/**
+ * This hook is used to get the balances of all tokens and native tokens across all chains
+ * This also returns the total fiat balances by chainId/caipChainId
+ *
+ * @param accountId - the accountId to use for the token list, if not provided, the selected account will be used
+ */
+export const useMultichainBalances = (accountId?: string) => {
   // EVM data
   const selectedAccount = useSelector(getSelectedEvmInternalAccount);
+  const requestedAccount = useSelector((state) =>
+    getInternalAccount(state, accountId ?? ''),
+  );
+  const evmAccount = accountId ? requestedAccount : selectedAccount;
+
   const evmBalancesWithFiatByChainId = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount.address),
+    getTokenBalancesEvm(state, evmAccount?.address),
   );
   // Non-EVM data
-  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances();
+  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances(
+    accountId ?? nonEvmAccount?.id,
+  );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
