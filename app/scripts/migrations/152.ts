@@ -1,11 +1,11 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
-import {
-  Caip25EndowmentPermissionName,
-  Caip25CaveatType,
-} from '@metamask/chain-agnostic-permission';
 
 export const version = 152;
+
+// inlined from @metamask/chain-agnostic-permission
+const Caip25CaveatType = 'authorizedScopes';
+const Caip25EndowmentPermissionName = 'endowment:caip25';
 
 type VersionedData = {
   meta: { version: number };
