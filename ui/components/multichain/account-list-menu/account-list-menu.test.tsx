@@ -755,4 +755,15 @@ describe('AccountListMenu', () => {
       expect(getByTestId('select-srp-container')).toBeInTheDocument();
     });
   });
+
+  it('should render institutional wallet button if manage institutional wallets is enabled', () => {
+    const { getByText } = render({
+      metamask: {
+        ...mockState.metamask,
+        manageInstitutionalWallets: true,
+      },
+    });
+
+    expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
+  });
 });
