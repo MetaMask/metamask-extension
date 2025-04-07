@@ -270,7 +270,6 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object"
   },
-  "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,
