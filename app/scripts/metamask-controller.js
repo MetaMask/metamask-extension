@@ -6845,7 +6845,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         getNonEvmSupportedMethods: () => [],
         handleNonEvmRequestForOrigin: () => {},
-      }
+      }),
     );
 
     // Add a middleware that will switch chain on each request (as needed)
