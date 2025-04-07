@@ -119,4 +119,8 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getNftControllerMessenger,
     getInitMessenger: noop,
   },
+  /*   AssetsContractController: {
+    getMessenger: getAssetsContractControllerMessenger,
+    getInitMessenger: noop,
+  }, */
 } as const;

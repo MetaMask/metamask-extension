@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
-  AssetsContractController,
   CurrencyRateController,
   NftDetectionController,
   TokenDetectionController,
@@ -372,6 +371,7 @@ import {
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
 import {
+  AssetsContractControllerInit,
   NftControllerInit,
   TokenRatesControllerInit,
 } from './controller-init/assets';
@@ -728,25 +728,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       messenger: tokenListMessenger,
       state: initState.TokenListController,
-    });
-
-    const assetsContractControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'AssetsContractController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
-          'NetworkController:getSelectedNetworkClient',
-          'NetworkController:getState',
-        ],
-        allowedEvents: [
-          'PreferencesController:stateChange',
-          'NetworkController:networkDidChange',
-        ],
-      });
-    this.assetsContractController = new AssetsContractController({
-      messenger: assetsContractControllerMessenger,
-      chainId: this.#getGlobalChainId(),
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1847,6 +1828,7 @@ export default class MetamaskController extends EventEmitter {
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
       NftController: NftControllerInit,
+      AssetsContractController: AssetsContractControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,

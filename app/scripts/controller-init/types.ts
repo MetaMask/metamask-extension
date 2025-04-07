@@ -30,7 +30,11 @@ export type ControllerByName = {
  * e.g. `{ TransactionController: { transactions: [] } }`.
  */
 export type ControllerPersistedState = Partial<{
-  [name in ControllerName]: Partial<ControllerByName[name]['state']>;
+  [name in ControllerName]: Partial<
+    ControllerByName[name] extends { state: unknown }
+      ? ControllerByName[name]['state']
+      : never
+  >;
 }>;
 
 /** Generic controller messenger using base template types. */
