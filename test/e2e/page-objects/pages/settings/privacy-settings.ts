@@ -13,6 +13,10 @@ class PrivacySettings {
     tag: 'button',
   };
 
+  private readonly confirmDeleteMetaMetricsDataButton =
+  '[data-testid="clear-metametrics-data"]';
+
+
   private readonly copiedSrpExclamation = {
     text: tEn('copiedExclamation'),
     tag: 'button',
@@ -21,6 +25,14 @@ class PrivacySettings {
   private readonly copySrpButton = {
     text: tEn('copyToClipboard'),
     tag: 'button',
+  };
+
+  private readonly deleteMetaMetricsDataButton =
+    '[data-testid="delete-metametrics-data-button"]';
+
+  private readonly deleteMetaMetricsModalTitle = {
+    text: 'Delete MetaMetrics data?',
+    tag: 'h4',
   };
 
   private readonly privacySettingsPageTitle = {
@@ -106,6 +118,13 @@ class PrivacySettings {
       throw e;
     }
     console.log('Privacy & Security Settings page is loaded');
+  }
+
+  async deleteMetaMetrics(): Promise<void> {
+    console.log('Click to delete MetaMetrics data on privacy settings page');
+    await this.driver.clickElement(this.deleteMetaMetricsDataButton);
+    await this.driver.waitForSelector(this.deleteMetaMetricsModalTitle);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmDeleteMetaMetricsDataButton);
   }
 
   async closeRevealSrpDialog(): Promise<void> {
@@ -210,6 +229,24 @@ class PrivacySettings {
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  /**
+   * Checks if the delete MetaMetrics data button is enabled on privacy settings page.
+   *
+   */
+  async check_deleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(
+        this.deleteMetaMetricsDataButton,
+        1000,
+      );
+      } catch (e) {
+        console.log('Delete MetaMetrics data button not enabled', e);
+        return false;
+    }
+    console.log('Delete MetaMetrics data button is enabled');
+    return true;
   }
 
   async check_displayedSrpCanBeCopied(): Promise<void> {
