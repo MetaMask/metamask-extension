@@ -3,7 +3,7 @@
 exports[`AccountPicker renders properly 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+    class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
     data-testid="account-menu-icon"
   >
     <span
