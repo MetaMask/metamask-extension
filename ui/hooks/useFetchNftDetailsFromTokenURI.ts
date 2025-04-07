@@ -7,7 +7,7 @@ const useFetchNftDetailsFromTokenURI = (
   const [name, setName] = useState<string>('');
 
   useEffect(() => {
-    const useFetchDetails = async () => {
+    const fetchRemoteTokenURI = async () => {
       if (!tokenURI) {
         return;
       }
@@ -31,7 +31,7 @@ const useFetchNftDetailsFromTokenURI = (
       }
     };
 
-    useFetchDetails();
+    fetchRemoteTokenURI();
   }, [tokenURI]);
 
   return { image, name };
