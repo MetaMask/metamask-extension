@@ -1098,7 +1098,7 @@ async function buildEventFragmentProperties({
     properties,
     sensitiveProperties,
   );
-  
+
   addGaslessProperties(
     transactionMeta,
     properties,
