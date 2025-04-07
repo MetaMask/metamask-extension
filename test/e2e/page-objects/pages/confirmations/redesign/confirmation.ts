@@ -20,13 +20,6 @@ class Confirmation {
     text: 'Alert',
   };
 
-  private alertModalSelectedAlert = {
-    css: '[data-testid="alert-modal__selected-alert"]',
-    text: 'You do not have enough ETH in your account to pay for network fees.',
-  };
-
-  private alertModalButton = '[data-testid="alert-modal-button"]';
-
   private nextPageButton: RawLocator;
 
   private previousPageButton: RawLocator;
@@ -98,8 +91,6 @@ class Confirmation {
       throw e;
     }
   }
-
-
 }
 
 export default Confirmation;

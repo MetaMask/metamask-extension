@@ -3,7 +3,7 @@ import { Driver } from '../../../../webdriver/driver';
 class AlertModal {
   private driver: Driver;
 
-  private alertModalSelectedAlert = {
+  private insufficientFundsAlert = {
     css: '[data-testid="alert-modal__selected-alert"]',
     text: 'You do not have enough ETH in your account to pay for network fees.',
   };
@@ -13,24 +13,23 @@ class AlertModal {
     text: 'Alert',
   };
 
-  private alertModalButton = '[data-testid="alert-modal-button"]';
+  private confirmAlertButton = '[data-testid="alert-modal-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async waitForAlert() {
+  async waitForAlert(): Promise<void> {
     await this.driver.waitForSelector(this.inlineAlertButton);
   }
 
-  async waitForInsufficientBalanceAlert() {
-    await this.driver.waitForSelector(this.alertModalSelectedAlert);
+  async waitForInsufficientBalanceAlert(): Promise<void> {
+    await this.driver.waitForSelector(this.insufficientFundsAlert);
   }
 
-  async clickAlertModalButton() {
-    await this.driver.clickElement(this.alertModalButton);
+  async clickAlertModalButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmAlertButton);
   }
-
 }
 
 export default AlertModal;
