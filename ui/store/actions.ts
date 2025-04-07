@@ -6177,3 +6177,19 @@ export function setTransactionActive(
     ]);
   };
 }
+
+export const storeDelegation = async (delegation: Delegation) => {
+  return await submitRequestToBackground('storeDelegation', [delegation]);
+};
+
+export const signDelegation = async (delegation: Delegation) => {
+  return await submitRequestToBackground('signDelegation', [delegation]);
+};
+
+export const retrieveDelegation = async (filter: DelegationFilter) => {
+  return await submitRequestToBackground('retrieveDelegation', [filter]);
+};
+
+export const deleteDelegation = async (filter: DelegationFilter) => {
+  return await submitRequestToBackground('deleteDelegation', [filter]);
+};
