@@ -1,5 +1,6 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -8,7 +9,6 @@ import {
 import { TokenWithFiatAmount } from '../types';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../../selectors/multichain';
-import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../../selectors';
 
 export function useAssetClickHandler() {

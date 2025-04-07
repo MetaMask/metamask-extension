@@ -137,11 +137,7 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
 
   const store = configureMockStore([thunk])(state);
 
-
-  return renderWithProvider(
-    <AssetList showTokensLinks />,
-    store,
-  );
+  return renderWithProvider(<AssetList showTokensLinks />, store);
 };
 
 describe('AssetList', () => {

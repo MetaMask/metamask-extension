@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   getChainIdsToPoll,
   getNewTokensImported,
@@ -15,10 +16,9 @@ import {
 } from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
-import { useNetworkFilter } from '../hooks';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
-import { Hex } from '@metamask/utils';
 import { TokenWithFiatAmount } from '../types';
+import { useNetworkFilter } from '.';
 
 export function useSortedFilteredTokens(): {
   tokens: TokenWithFiatAmount[];

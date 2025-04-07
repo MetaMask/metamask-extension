@@ -28,7 +28,6 @@ import {
 } from './selectors';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
-
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
 };
@@ -159,7 +158,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               primary: '',
               secondary: 0,
               title,
-              detailsPageRoute:`${ASSET_ROUTE}/${chainId}/${address}`
+              detailsPageRoute: `${ASSET_ROUTE}/${chainId}/${address}`,
             });
           }
         });
