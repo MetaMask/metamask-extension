@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.15.2]
-### Fixed
-- Allow verifyingContract to be omitted from EIP-712 signatures ([#31613](https://github.com/MetaMask/metamask-extension/pull/31613))
-
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
+
+### Fixed
+- Allow verifyingContract to be omitted from EIP-712 signatures ([#31613](https://github.com/MetaMask/metamask-extension/pull/31613))
 
 ## [12.15.1]
 ### Fixed
