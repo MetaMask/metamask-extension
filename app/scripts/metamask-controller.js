@@ -6844,12 +6844,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
           ),
         getNonEvmSupportedMethods: () => [],
-        handleNonEvmRequestForOrigin: (params) =>
-          this.controllerMessenger.call('MultichainRouter:handleRequest', {
-            ...params,
-            origin,
-          }),
-      }),
+        handleNonEvmRequestForOrigin: () => {},
+      }
     );
 
     // Add a middleware that will switch chain on each request (as needed)
