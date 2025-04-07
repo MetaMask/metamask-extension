@@ -292,22 +292,24 @@ export const ImportSrp = ({
         />
       ) : null}
 
-      {numberOfWords !== 24 && (
+      {
         <Box width={BlockSize.Full} marginTop={4}>
           <ButtonLink
             width={BlockSize.Full}
             loading={loading}
             onClick={async () => {
-              setNumberOfWords(24);
+              setNumberOfWords(numberOfWords === 12 ? 24 : 12);
               setSrpError('');
-              setInvalidSrpWords(Array(24).fill(false));
+              setInvalidSrpWords(
+                Array(numberOfWords === 12 ? 24 : 12).fill(false),
+              );
             }}
             data-testid="import-srp__multi-srp__switch-word-count-button"
           >
-            {t('importNWordSRP', ['24'])}
+            {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
           </ButtonLink>
         </Box>
-      )}
+      }
 
       <Box width={BlockSize.Full} marginTop={4}>
         <ButtonPrimary

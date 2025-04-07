@@ -134,6 +134,24 @@ describe('ImportSrp', () => {
     expect(importButton).not.toBeEnabled();
   });
 
+  it('shows 12 word seed phrase option', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { getByText, getByTestId } = render;
+
+    const twentyFourSeedWordOption = getByTestId(
+      'import-srp__multi-srp__switch-word-count-button',
+    );
+
+    fireEvent.click(twentyFourSeedWordOption);
+
+    await waitFor(async () => {
+      expect(getByText('I have a 12 word recovery phrase'));
+    });
+  });
+
   it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
