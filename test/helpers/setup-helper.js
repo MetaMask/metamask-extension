@@ -1,4 +1,5 @@
 /* eslint-disable-next-line */
+import { TextEncoder, TextDecoder } from 'node:util';
 import 'fake-indexeddb/auto';
 import nock from 'nock';
 import log from 'loglevel';
