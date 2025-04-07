@@ -12,7 +12,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { tsMigrateWidenSignature } from '../../../shared/lib/typescript-migration-tools';
+import { FUNCTION_TOURNIQUET } from '../../../shared/lib/typescript-migration-tools';
 
 /**
  * Gets the URL for an asset image, with IPFS support
@@ -81,7 +81,7 @@ export function getRandomFileName(): string {
  * @param chainId - current chainId
  * @returns The prices for the requested tokens
  */
-export const fetchTokenExchangeRates = tsMigrateWidenSignature<
+export const fetchTokenExchangeRates = FUNCTION_TOURNIQUET<
   [string, string[], string]
 >()(
   async (
@@ -164,7 +164,7 @@ export const checkTokenIdExists = (
  * @param tokenPricePercentChange1dAgo - price percentage 1day ago
  * @returns token amount 1day ago
  */
-export const getCalculatedTokenAmount1dAgo = tsMigrateWidenSignature<
+export const getCalculatedTokenAmount1dAgo = FUNCTION_TOURNIQUET<
   [string | number | undefined, number | undefined]
 >()(
   (
