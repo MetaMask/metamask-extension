@@ -48,14 +48,6 @@ const mockTokens = [
   },
 ];
 
-jest.mock('../hooks/useSortedFilteredTokens', () => {
-  return {
-    useSortedFilteredTokens: () => ({
-      tokens: mockTokens,
-    }),
-  };
-});
-
 jest.mock('../../../../hooks/useTokenTracker', () => {
   return {
     useTokenTracker: () => ({

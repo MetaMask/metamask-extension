@@ -40,11 +40,7 @@ import {
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  onClick?: ({
-    chainId,
-    detailsPageRoute,
-    symbol,
-  }: TokenWithFiatAmount) => void;
+  onClick?: (token: TokenWithFiatAmount) => void;
 };
 
 export default function TokenCell({

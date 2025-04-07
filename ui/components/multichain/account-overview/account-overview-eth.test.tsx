@@ -17,15 +17,6 @@ jest.mock('../../../store/actions', () => ({
   removeSlide: jest.fn(),
   addImportedTokens: jest.fn(),
 }));
-
-jest.mock('../../app/assets/hooks/useSortedFilteredTokens', () => {
-  return {
-    useSortedFilteredTokens: () => ({
-      tokens: [],
-    }),
-  };
-});
-
 // Mock the dispatch function
 const mockDispatch = jest.fn();
 
