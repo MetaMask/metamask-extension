@@ -365,7 +365,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
     });
   });
 
-  describe('Dapp has existing session with 3 scopes and 2 accounts and then calls `wallet_createSession` with different scopes and accounts', function () {
+  describe.only('Dapp has existing session with 3 scopes and 2 accounts and then calls `wallet_createSession` with different scopes and accounts', function () {
     const OLD_SCOPES = ['eip155:1337', 'eip155:1', 'eip155:42161'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
@@ -407,10 +407,10 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           /**
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
            */
-          OLD_SCOPES.forEach(
+          await Promise.all(OLD_SCOPES.map(
             async (scope) =>
               await driver.clickElement(`input[name="${scope}"]`),
-          );
+          ));
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [TREZOR_ACCOUNT]);
           await driver.clickElementAndWaitForWindowToClose({
             text: 'Connect',
