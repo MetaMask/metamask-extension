@@ -189,6 +189,7 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
+  "NftDetectionController": "object",
   "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -212,7 +213,6 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "NftDetectionController": "object",
   "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
