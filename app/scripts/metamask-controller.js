@@ -75,6 +75,7 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
+import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
@@ -1280,6 +1281,28 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.SubjectMetadataController,
       subjectCacheLimit: 100,
+    });
+
+    const multichainRouterMessenger = this.controllerMessenger.getRestricted({
+      name: 'MultichainRouter',
+      allowedActions: [
+        `SnapController:getAll`,
+        `SnapController:handleRequest`,
+        `${this.permissionController.name}:getPermissions`,
+        `AccountsController:listMultichainAccounts`,
+      ],
+      allowedEvents: [],
+    });
+
+    this.multichainRouter = new MultichainRouter({
+      messenger: multichainRouterMessenger,
+      // Binding the call to provide the selector only giving the controller the option to pass the operation
+      withSnapKeyring: this.keyringController.withKeyring.bind(
+        this.keyringController,
+        {
+          type: 'Snap Keyring',
+        },
+      ),
     });
 
     // account tracker watches balances, nonces, and any code at their address
