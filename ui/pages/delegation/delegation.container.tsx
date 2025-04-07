@@ -9,7 +9,7 @@ import {
   Delegation,
   encodeRedeemDelegations,
   getDelegationHash,
-  sdk,
+  SDK,
 } from '@metamask/delegation-controller';
 import { Box, Button, Text } from '../../components/component-library';
 import {
@@ -22,6 +22,7 @@ import {
   storeDelegation,
   signDelegation,
   addTransaction,
+  deleteDelegation,
 } from '../../store/actions';
 import { getInternalAccounts, getSelectedAccount } from '../../selectors';
 import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
@@ -43,9 +44,9 @@ export const DelegationContainer = () => {
 
   const loadMetaMaskAccount = async () => {
     const owner = privateKeyToAccount(INTERNAL_GATOR_PK as `0x${string}`);
-    const account = await sdk.toMetaMaskSmartAccount({
+    const account = await SDK.toMetaMaskSmartAccount({
       client: publicClient,
-      implementation: sdk.Implementation.Hybrid,
+      implementation: SDK.Implementation.Hybrid,
       deployParams: [owner.address, [], [], []],
       deploySalt: '0x',
       signatory: { account: owner },
@@ -60,15 +61,21 @@ export const DelegationContainer = () => {
     storeDelegation({
       delegate: selectedAccount.address,
       delegator: selectedAccount.address,
-      authority: sdk.ROOT_AUTHORITY,
+      authority: SDK.ROOT_AUTHORITY,
       caveats: [],
       salt: `0x0`,
       signature: '0x',
     });
   };
 
+  const deleteDelegationObj = () => {
+    deleteDelegation({
+      delegator: selectedAccount.address,
+    });
+  };
+
   const generateRootDelegation = async (
-    metaMaskSmartAccount: sdk.MetaMaskSmartAccount<sdk.Implementation.Hybrid>,
+    metaMaskSmartAccount: SDK.MetaMaskSmartAccount<SDK.Implementation.Hybrid>,
   ) => {
     try {
       const caveateBuilder = createCaveatBuilder(sepolia.id);
@@ -155,7 +162,7 @@ export const DelegationContainer = () => {
 
   const redeem = async () => {
     const account2 = internalAccounts[1];
-    const gatorEnv = sdk.getDeleGatorEnvironment(sepolia.id);
+    const gatorEnv = SDK.getDeleGatorEnvironment(sepolia.id);
     const delegationManagerAddress = gatorEnv.DelegationManager;
 
     console.log('delegations', delegations);
@@ -164,7 +171,7 @@ export const DelegationContainer = () => {
     // Create a transaction to the DelegationManager contract for the chain
     const encodedCallData = encodeRedeemDelegations({
       delegations: [delegations],
-      modes: [sdk.SINGLE_DEFAULT_MODE],
+      modes: [SDK.SINGLE_DEFAULT_MODE],
       executions: [
         [
           {
@@ -210,6 +217,7 @@ export const DelegationContainer = () => {
         {delegations.length > 0 && (
           <Button onClick={redeem}>Redeem Delegation</Button>
         )}
+        <Button onClick={deleteDelegationObj}>Delete Delegation</Button>
       </Box>
     </div>
   );

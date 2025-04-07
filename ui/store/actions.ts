@@ -42,7 +42,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { Delegation } from '@metamask/delegation-controller';
+import { Delegation, DelegationFilter } from '@metamask/delegation-controller';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6134,9 +6134,17 @@ export const updateRemoteData = async ({
 };
 
 export const storeDelegation = async (delegation: Delegation) => {
-  return await submitRequestToBackground('storeDelegation', [delegation]);
+  return await submitRequestToBackground('store', [delegation]);
 };
 
 export const signDelegation = async (delegation: Delegation) => {
-  return await submitRequestToBackground('signDelegation', [delegation]);
+  return await submitRequestToBackground('sign', [delegation]);
+};
+
+export const retrieveDelegation = async (filter: DelegationFilter) => {
+  return await submitRequestToBackground('retrieve', [filter]);
+};
+
+export const deleteDelegation = async (filter: DelegationFilter) => {
+  return await submitRequestToBackground('delete', [filter]);
 };
