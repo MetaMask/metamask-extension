@@ -5572,6 +5572,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/institutional-wallet-snap@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/institutional-wallet-snap@npm:1.2.0"
+  checksum: 10/dd70e123e4a1aac6fe96cbf94050c86eaf90ac0ecdcf8a4120bd86f7b8ddb3085a2c5ee6f5c6325b63dc56597c5723c589a9f4048467ad03357b980fa6c21f21
+  languageName: node
+  linkType: hard
+
 "@metamask/jazzicon@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/jazzicon@npm:2.0.0"
@@ -6301,7 +6308,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^26.0.0":
+"@metamask/signature-controller@npm:26.0.0":
   version: 26.0.0
   resolution: "@metamask/signature-controller@npm:26.0.0"
   dependencies:
@@ -6319,6 +6326,27 @@ __metadata:
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
   checksum: 10/bdde18b1c9462eb0eda1f1f3d5c59e4f08e7aa2763c4530f4188e05c9415d8465a7aedaf0c3f3265095950b109d3a55024342f8e57964f6661aa51c0b7ae935e
+  languageName: node
+  linkType: hard
+
+"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch":
+  version: 26.0.0
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch::version=26.0.0&hash=eeb7c7"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.2.0"
+    jsonschema: "npm:^1.4.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^26.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/logging-controller": ^6.0.0
+    "@metamask/network-controller": ^22.0.0
+  checksum: 10/a2df7d134d1b8e48af9ef218c0011b8a41ca5dcbed23ce75cc089043950b5c95114bea223639230fc0197d81b1c89647bf99abad41b7368082aa829c2ff3aacd
   languageName: node
   linkType: hard
 
@@ -6521,10 +6549,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.16.0":
-  version: 1.16.1
-  resolution: "@metamask/solana-wallet-snap@npm:1.16.1"
-  checksum: 10/ccb167e2f03a37b1dc6e66328715ab48251b8f6bba5597efda11687c510195338bef739a724703e514fd93466b3f1117810e1e938d31ac23d22807467243c55e
+"@metamask/solana-wallet-snap@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.18.0"
+  checksum: 10/0374bf63c29df24985b8c109af4ada9e7524a52015a84a4683db888deb9a515b4294e05ef8cd4007e787f601fe806aa7f460836a7a421c3c46f1a507f1649817
   languageName: node
   linkType: hard
 
@@ -27290,6 +27318,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"
+    "@metamask/institutional-wallet-snap": "npm:1.2.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
@@ -27329,14 +27358,14 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
-    "@metamask/signature-controller": "npm:^26.0.0"
+    "@metamask/signature-controller": "patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch"
     "@metamask/smart-transactions-controller": "npm:^16.3.0"
     "@metamask/snaps-controllers": "npm:^11.1.0"
     "@metamask/snaps-execution-environments": "npm:^7.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
     "@metamask/snaps-sdk": "npm:^6.21.0"
     "@metamask/snaps-utils": "npm:^9.1.0"
-    "@metamask/solana-wallet-snap": "npm:^1.16.0"
+    "@metamask/solana-wallet-snap": "npm:^1.18.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"

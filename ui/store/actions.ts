@@ -1076,6 +1076,7 @@ export function updateTransaction(
  *
  * @param txParams - The transaction parameters
  * @param options
+ * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.sendFlowHistory - The history of the send flow at time of creation.
  * @param options.type - The type of the transaction being added.
  * @returns
@@ -1083,6 +1084,7 @@ export function updateTransaction(
 export function addTransactionAndRouteToConfirmationPage(
   txParams: TransactionParams,
   options?: {
+    networkClientId: NetworkClientId;
     sendFlowHistory?: DraftTransaction['history'];
     type?: TransactionType;
   },
@@ -1122,22 +1124,22 @@ export function addTransactionAndRouteToConfirmationPage(
  * @param txParams - the transaction parameters
  * @param options - Additional options for the transaction.
  * @param options.method
+ * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.requireApproval - Whether the transaction requires approval.
  * @param options.swaps - Options specific to swaps transactions.
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
- * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
   txParams: TransactionParams,
   options: {
     method?: string;
+    networkClientId: NetworkClientId;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
-    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransactionAndWaitForPublish');
@@ -1165,22 +1167,22 @@ export async function addTransactionAndWaitForPublish(
  * @param txParams - the transaction parameters
  * @param options - Additional options for the transaction.
  * @param options.method
+ * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.requireApproval - Whether the transaction requires approval.
  * @param options.swaps - Options specific to swaps transactions.
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
- * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransaction(
   txParams: TransactionParams,
   options: {
     method?: string;
+    networkClientId: NetworkClientId;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
-    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransaction');
