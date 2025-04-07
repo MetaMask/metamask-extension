@@ -4,7 +4,6 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
   DAPP_URL,
-  largeDelayMs,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -12,8 +11,7 @@ const {
 } = require('../../helpers');
 
 describe('Request from Multiple Dapps and Txs on different networks', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should put txs for different dapps on different networks adds extra tx after in same queue.', async function () {
+  it('should put txs for different dapps on different networks adds extra tx after in same queue.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -101,8 +99,6 @@ describe('Request from Multiple Dapps and Txs on different networks', function (
         });
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
-        // We cannot wait for the dialog, since it is already opened from before
-        await driver.delay(largeDelayMs);
 
         // Dapp 1 send 1 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -111,8 +107,6 @@ describe('Request from Multiple Dapps and Txs on different networks', function (
           text: '0x539',
         });
         await driver.clickElement('#sendButton');
-        // We cannot switch directly, as the dialog is sometimes closed and re-opened
-        await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
@@ -121,7 +115,7 @@ describe('Request from Multiple Dapps and Txs on different networks', function (
 
         await driver.findElement({
           css: 'p',
-          text: 'Localhost 8546',
+          text: 'Localhost 8545',
         });
 
         await driver.clickElement(
@@ -133,7 +127,7 @@ describe('Request from Multiple Dapps and Txs on different networks', function (
 
         await driver.findElement({
           css: 'p',
-          text: 'Localhost 8545',
+          text: 'Localhost 8546',
         });
 
         // Reject All Transactions
