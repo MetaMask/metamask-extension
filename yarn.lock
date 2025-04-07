@@ -6247,7 +6247,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^26.0.0":
+"@metamask/signature-controller@npm:26.0.0":
   version: 26.0.0
   resolution: "@metamask/signature-controller@npm:26.0.0"
   dependencies:
@@ -6265,6 +6265,27 @@ __metadata:
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
   checksum: 10/bdde18b1c9462eb0eda1f1f3d5c59e4f08e7aa2763c4530f4188e05c9415d8465a7aedaf0c3f3265095950b109d3a55024342f8e57964f6661aa51c0b7ae935e
+  languageName: node
+  linkType: hard
+
+"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch":
+  version: 26.0.0
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch::version=26.0.0&hash=eeb7c7"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.2.0"
+    jsonschema: "npm:^1.4.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^26.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/logging-controller": ^6.0.0
+    "@metamask/network-controller": ^22.0.0
+  checksum: 10/a2df7d134d1b8e48af9ef218c0011b8a41ca5dcbed23ce75cc089043950b5c95114bea223639230fc0197d81b1c89647bf99abad41b7368082aa829c2ff3aacd
   languageName: node
   linkType: hard
 
@@ -27274,7 +27295,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
-    "@metamask/signature-controller": "npm:^26.0.0"
+    "@metamask/signature-controller": "patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch"
     "@metamask/smart-transactions-controller": "npm:^16.3.0"
     "@metamask/snaps-controllers": "npm:^11.1.0"
     "@metamask/snaps-execution-environments": "npm:^7.1.0"
