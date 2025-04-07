@@ -136,8 +136,8 @@ export default function TokenCell({
         style={{
           height: 62,
           cursor: onClick ? 'pointer' : 'auto',
-          backgroundColor: !disableHover 
-            && isHovered
+          backgroundColor: 
+            !disableHover && isHovered
               ? 'var(--color-background-default-hover)'
               : 'transparent',
           transition: 'background-color 0.2s ease-in-out',
