@@ -107,7 +107,7 @@ export default function useBridgeChainInfo({
       : {
           defaultBlockExplorerUrlIndex: 0,
           blockExplorerUrls: [
-            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedSrcChainId],
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedDestChainId],
           ],
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [],
