@@ -16,6 +16,7 @@ import { TEST_CHAINS } from '../../shared/constants/network';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
+import { ASSET_ROUTE } from '../helpers/constants/routes';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -26,7 +27,7 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
-import { ASSET_ROUTE } from '../helpers/constants/routes';
+
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -185,7 +186,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   ) => {
     const { hideZeroBalanceTokens } = preferences;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id]
+    const balances = multichainBalances?.[selectedAccountAddress.id];
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
