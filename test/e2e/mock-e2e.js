@@ -676,20 +676,6 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ETH: {
-            USD: ethConversionInUsd,
-          },
-        },
-      };
-    });
-
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
   const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
   const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
