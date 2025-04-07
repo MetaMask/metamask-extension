@@ -14,7 +14,6 @@
   border: 1px solid var(--color-border-muted);
   border-radius: 2px;
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-  transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
   width: 100%;
   min-height: 0;
   height: auto;
@@ -29,10 +28,17 @@
     'content'
     'footer';
 
-  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-    margin-top: 32px;
-    margin-bottom: 32px;
-  }
+  /**
+   * @todo
+   * Support responsive margin top and bottom for snaps
+   * {@see {@link https://github.com/MetaMask/metamask-extension/issues/31671}}
+   */
+  // transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+  // @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+  //   margin-top: 32px;
+  //   margin-bottom: 32px;
+  // }
+
 
   @include design-system.screen-sm-min {
     width: $width-screen-sm-min;

@@ -84,10 +84,6 @@
     margin-top: auto;
     transition: bottom 0.3s ease-in-out;
 
-    @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-      bottom: 32px;
-    }
-
     @include design-system.screen-sm-min {
       max-width: $width-screen-sm-min;
     }
