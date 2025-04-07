@@ -16,8 +16,8 @@ jest.mock('../../../util', () => ({
 }));
 const MockUtil = jest.mocked(Util);
 
-jest.mock('@metamask/multichain', () => ({
-  ...jest.requireActual('@metamask/multichain'),
+jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
   getSessionScopes: jest.fn(),
