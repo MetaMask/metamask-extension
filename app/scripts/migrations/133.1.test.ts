@@ -94,9 +94,9 @@ describe(`migration #${version}`, () => {
 
     const tokensControllerState = newStorage.data
       .TokensController as TokensControllerState;
-    const { tokens } = tokensControllerState;
+    const { allTokens } = tokensControllerState;
 
-    expect(tokens).toEqual([
+    expect(allTokens).toEqual([
       { address: '0x8', symbol: 'TOKEN8', decimals: 18 },
     ]);
   });
@@ -108,9 +108,9 @@ describe(`migration #${version}`, () => {
 
     const tokensControllerState = newStorage.data
       .TokensController as TokensControllerState;
-    const { detectedTokens } = tokensControllerState;
+    const { allDetectedTokens } = tokensControllerState;
 
-    expect(detectedTokens).toEqual([
+    expect(allDetectedTokens).toEqual([
       { address: '0xA', symbol: 'TOKEN10', decimals: 6 },
     ]);
   });
