@@ -110,9 +110,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  // const shouldPromptToCreateSolanaAccount =
-  //   request.metadata?.promptToCreateSolanaAccount;
-
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
