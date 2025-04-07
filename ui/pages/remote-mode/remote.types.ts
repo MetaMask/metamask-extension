@@ -1,10 +1,9 @@
-// Note: this will likely be refactored to pull from contract metadata
+// Note: just some initial types (will likely be refactored to pull from contract metadata
 
 export enum TokenSymbol {
   USDC = 'USDC',
   WETH = 'WETH',
 }
-
 export interface TokenInfo {
   symbol: TokenSymbol;
   name: string;
@@ -34,8 +33,6 @@ export enum ToTokenOption {
   Any = 'Any available token',
   HighLiquidity = 'High liquidity tokens'
 }
-
-
 
 export enum DailyAllowanceTokenTypes {
   ETH = 'ETH',

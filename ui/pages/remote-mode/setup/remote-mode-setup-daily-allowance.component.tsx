@@ -60,6 +60,17 @@ const account: InternalAccount = {
   methods: [],
 };
 
+/**
+ * A multi-step setup component for configuring daily allowances in remote mode
+ * Allows users to:
+ * - Select an account
+ * - Configure daily token allowances
+ * - Review and confirm changes (including EOA upgrade)
+ *
+ * @param {Object} props - Component props
+ * @param {InternalAccount[]} [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
+ * @returns {JSX.Element} The rendered component
+ */
 export default function RemoteModeSetupDailyAllowance({
   accounts = [account],
 }: {
@@ -494,9 +505,6 @@ export default function RemoteModeSetupDailyAllowance({
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
           onConfirm={handleConfigureRemoteSwaps}
-          onBack={() => {
-            setIsConfirmModalOpen(false);
-          }}
           onClose={() => {
             setIsConfirmModalOpen(false);
           }}

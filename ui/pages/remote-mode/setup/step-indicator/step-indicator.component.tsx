@@ -15,6 +15,11 @@ interface StepIndicatorProps {
   totalSteps: number;
 }
 
+/**
+ * A component that displays the current step number and total steps in a setup process.
+ * @param {number} currentStep - The current step number in the process
+ * @param {number} totalSteps - The total number of steps in the process
+ */
 export default function StepIndicator({
   currentStep,
   totalSteps,

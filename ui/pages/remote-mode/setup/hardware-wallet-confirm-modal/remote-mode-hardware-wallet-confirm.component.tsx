@@ -11,15 +11,23 @@ import {
   ModalBody,
   ModalFooter,
 } from '../../../../components/component-library';
+
+/**
+ * A modal component that displays confirmation modal for remote mode setup.
+ *
+ * @param {Object} props - Component props
+ * @param {boolean} props.visible - Controls the visibility of the modal
+ * @param {Function} props.onConfirm - Callback function triggered when user confirms
+ * @param {Function} props.onClose - Callback function triggered when modal is closed
+ * @returns {JSX.Element} A modal with hardware wallet confirmation instructions
+ */
 export default function RemoteModeHardwareWalletConfirm({
   visible,
   onConfirm,
-  onBack,
   onClose,
 }: {
   visible: boolean;
   onConfirm: () => void;
-  onBack: () => void;
   onClose: () => void;
 }) {
 

@@ -21,6 +21,14 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { DailyAllowance, DailyAllowanceTokenTypes } from '../../remote.types';
 
+/**
+ * A card component that displays and manages a single daily allowance entry in remote mode.
+ * Shows the token type and daily limit amount, with the ability to remove the allowance.
+ *
+ * @param {DailyAllowance} props.dailyAllowance - The daily allowance configuration to display
+ * @param {() => void} props.onRemove - Callback function triggered when the allowance is removed
+ * @returns {JSX.Element} A card component displaying the daily allowance information
+ */
 export default function RemoteModeDailyAllowanceCard({
   dailyAllowance,
   onRemove,
@@ -57,11 +65,6 @@ export default function RemoteModeDailyAllowanceCard({
           borderRadius={BorderRadius.MD}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {/* <img
-              src={selectedToken.iconUrl}
-              alt={selectedToken.name}
-              style={{ width: '24px', height: '24px', borderRadius: '50%' }}
-            /> */}
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
               {dailyAllowance.tokenType}
             </Text>
