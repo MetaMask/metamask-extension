@@ -5945,9 +5945,7 @@ export default class MetamaskController extends EventEmitter {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
-        dappRequest?.networkClientId ??
-        transactionOptions?.networkClientId ??
-        this.#getGlobalNetworkClientId(),
+        dappRequest?.networkClientId ?? transactionOptions?.networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
       ),
@@ -7108,13 +7106,11 @@ export default class MetamaskController extends EventEmitter {
         listAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        requestPermissionsForOrigin: (requestedPermissions, metadata) =>
+        requestPermissionsForOrigin: (requestedPermissions, options = {}) =>
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
-            {
-              metadata,
-            },
+            options,
           ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,

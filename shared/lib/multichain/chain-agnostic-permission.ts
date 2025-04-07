@@ -212,12 +212,14 @@ export function isInternalAccountInPermittedAccountIds(
     return false;
   }
 
+  const parsedInteralAccountScopes = internalAccount.scopes.map((scope) => {
+    return parseScopeString(scope);
+  });
+
   return permittedAccounts.some((account) => {
     const parsedPermittedAccount = parseCaipAccountId(account);
 
-    return internalAccount.scopes.some((scope) => {
-      const { namespace, reference } = parseScopeString(scope);
-
+    return parsedInteralAccountScopes.some(({ namespace, reference }) => {
       if (
         namespace !== parsedPermittedAccount.chain.namespace ||
         !isEqualCaseInsensitive(

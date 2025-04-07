@@ -491,7 +491,7 @@ describe('wallet_createSession', () => {
           ],
         },
       },
-      { promptToCreateSolanaAccount: false },
+      { metadata: { promptToCreateSolanaAccount: false } },
     );
   });
 
@@ -624,7 +624,7 @@ describe('wallet_createSession', () => {
           ],
         },
       },
-      { promptToCreateSolanaAccount: false },
+      { metadata: { promptToCreateSolanaAccount: false } },
     );
   });
 
@@ -766,7 +766,7 @@ describe('wallet_createSession', () => {
             ],
           },
         },
-        { promptToCreateSolanaAccount: true },
+        { metadata: { promptToCreateSolanaAccount: true } },
       );
     });
 
@@ -834,7 +834,7 @@ describe('wallet_createSession', () => {
             ],
           },
         },
-        { promptToCreateSolanaAccount: false },
+        { metadata: { promptToCreateSolanaAccount: false } },
       );
     });
   });
