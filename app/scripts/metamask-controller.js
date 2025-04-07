@@ -3,7 +3,6 @@ import { finished, pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
-  NftController,
   NftDetectionController,
   TokenDetectionController,
   TokenListController,
@@ -173,7 +172,7 @@ import {
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import { AssetType, TokenStandard } from '../../shared/constants/transaction';
+import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -374,7 +373,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
-import { TokenRatesControllerInit } from './controller-init/assets';
+import {
+  NftControllerInit,
+  TokenRatesControllerInit,
+} from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -772,45 +774,6 @@ export default class MetamaskController extends EventEmitter {
       chainId: this.#getGlobalChainId(),
     });
 
-    const nftControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'NftController',
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'NetworkController:networkDidChange',
-        'AccountsController:selectedEvmAccountChange',
-      ],
-      allowedActions: [
-        `${this.approvalController.name}:addRequest`,
-        `${this.networkController.name}:getNetworkClientById`,
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccount',
-        'AssetsContractController:getERC721AssetName',
-        'AssetsContractController:getERC721AssetSymbol',
-        'AssetsContractController:getERC721TokenURI',
-        'AssetsContractController:getERC721OwnerOf',
-        'AssetsContractController:getERC1155BalanceOf',
-        'AssetsContractController:getERC1155TokenURI',
-      ],
-    });
-    this.nftController = new NftController({
-      state: initState.NftController,
-      messenger: nftControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-      onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.NftAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_contract_address: address,
-            token_symbol: symbol,
-            token_id: tokenId,
-            token_standard: standard,
-            asset_type: AssetType.NFT,
-            source,
-          },
-        }),
-    });
-
     const nftDetectionControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'NftDetectionController',
@@ -834,7 +797,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getBalancesInSingleCall.bind(
           this.assetsContractController,
         ),
-      addNft: this.nftController.addNft.bind(this.nftController),
+      addNft: (...args) => this.nftController.addNft(...args),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled: !this.preferencesController.state.useNftDetection,
@@ -1885,6 +1848,7 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: CronjobControllerInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
+      NftController: NftControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
@@ -1925,6 +1889,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
+    this.nftController = controllersByName.NftController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
