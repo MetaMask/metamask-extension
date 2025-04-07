@@ -410,6 +410,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
+    "xml2js": "^0.6.2",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
@@ -512,6 +513,7 @@
     "@types/watchify": "^3.11.1",
     "@types/webextension-polyfill": "^0.10.4",
     "@types/ws": "^8.5.10",
+    "@types/xml2js": "^0",
     "@types/yargs": "^17.0.32",
     "@types/yargs-parser": "^21.0.3",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
