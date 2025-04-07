@@ -12,6 +12,7 @@ import {
   type TxData,
   formatChainIdToHex,
   BridgeClientId,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -144,8 +145,9 @@ export const getTokenExchangeRate = async (request: {
     currency,
     tokenAddress,
   );
-  if (isSolanaChainId(chainId)) {
-    return exchangeRates?.[tokenAddress];
+  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
+  if (isSolanaChainId(chainId) && assetId) {
+    return exchangeRates?.[assetId];
   }
   // The exchange rate can be checksummed or not, so we need to check both
   const exchangeRate =
