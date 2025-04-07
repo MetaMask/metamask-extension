@@ -1,10 +1,6 @@
-import {
-  Caip25EndowmentPermissionName,
-  KnownSessionProperties,
-} from '@metamask/chain-agnostic-permission';
-
 import { migrate, version } from './152';
 
+const Caip25EndowmentPermissionName = 'endowment:caip25';
 const oldVersion = 151;
 
 describe(`migration #${version}`, () => {
@@ -101,7 +97,7 @@ describe(`migration #${version}`, () => {
 
   it('preserves existing sessionProperties in CAIP-25 permissions', async () => {
     const existingSessionProperties = {
-      [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
+      'solana-account-changed-notifications': true,
     };
 
     const oldStorage = {
