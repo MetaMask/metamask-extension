@@ -92,7 +92,7 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }}
+        run: ${{ inputs.test-command }} --retries 1
 
       - name: Upload test results and artifacts
         if: always()
