@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -18,12 +19,23 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import TransactionList from './transaction-list.component';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: '0xefga64466f257793eaa52fcfff5066894b76a149',
+  id: 'id-account',
+});
 
 const defaultState = {
   metamask: {
     ...mockState.metamask,
-    transactions: [],
+    transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
+    internalAccounts: {
+      accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+      selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+    },
   },
 };
 
@@ -40,7 +52,26 @@ const btcState = {
             type: 'send',
             account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
             from: [],
-            to: [],
+            to: [
+              {
+                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                asset: {
+                  fungible: true,
+                  type: '',
+                  unit: 'BTC',
+                  amount: '1.1',
+                },
+              },
+              {
+                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                asset: {
+                  fungible: true,
+                  type: '',
+                  unit: 'BTC',
+                  amount: '0.1',
+                },
+              },
+            ],
             fees: [],
             events: [],
           },
@@ -77,77 +108,23 @@ const solanaSwapState = {
             type: 'swap',
             from: [
               {
-                address: '8kR2HTHzPtTJuzpFZ8jtGCQ9TpahPaWbZfTNRs2GJdxq',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000073111',
-                },
-              },
-              {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
-                  type: '',
+                  type: 'solCaip19',
                   unit: 'SOL',
                   amount: '0.01',
-                },
-              },
-              {
-                address: 'HUCjBnmd4FoUjCCMYQ9xFz1ce1r8vWAd8uMhUQakE2FR',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BONK',
-                  amount: '2583.728601',
-                },
-              },
-              {
-                address: '3msVd34R5KxonDzyNSV5nT19UtUeJ2RF1NaQhvVPNLxL',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000073111',
                 },
               },
             ],
             to: [
               {
-                address: 'CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000000723',
-                },
-              },
-              {
-                address: 'HUCjBnmd4FoUjCCMYQ9xFz1ce1r8vWAd8uMhUQakE2FR',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.00007238',
-                },
-              },
-              {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
-                  type: '',
+                  type: 'bonkCaip19',
                   unit: 'BONK',
-                  amount: '2583.72',
-                },
-              },
-              {
-                address: '3msVd34R5KxonDzyNSV5nT19UtUeJ2RF1NaQhvVPNLxL',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.01',
+                  amount: '0.00000001', // Test extremely small amounts
                 },
               },
             ],
@@ -225,6 +202,24 @@ describe('TransactionList', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders TransactionList component with props hideTokenTransactions correctly', () => {
+    const defaultState2 = {
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.swap]],
+      },
+    };
+    const store = configureStore(defaultState2);
+    const { container } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideTokenTransactions />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders TransactionList component and does not show You have no transactions text', () => {
     const { queryByText } = render();
     expect(queryByText('You have no transactions')).toBeNull();
@@ -236,8 +231,9 @@ describe('TransactionList', () => {
     // The activity list item has a status of "Confirmed" and a type of "Send"
     expect(getByText('Confirmed')).toBeInTheDocument();
     expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
-    // A BTC activity list iteem exists
+    // A BTC activity list item exists
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {

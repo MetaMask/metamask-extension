@@ -57,11 +57,9 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
-  "bridgeState": {
-    "bridgeFeatureFlags": {
-      "extensionConfig": {
-        "support": false
-      }
+  "bridgeFeatureFlags": {
+    "extensionConfig": {
+      "support": false
     }
   },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
@@ -119,13 +117,6 @@
   },
   "ignoredNfts": [],
   "ignoredTokens": [],
-  "incomingTransactionsPreferences": {
-    "0x1": true,
-    "0xe708": true,
-    "0x5": true,
-    "0xaa36a7": true,
-    "0xe705": true
-  },
   "interfaces": {},
   "internalAccounts": {
     "accounts": {

@@ -112,29 +112,28 @@ export const SENTRY_BACKGROUND_STATE = {
     assetsRates: false,
   },
   BridgeController: {
-    bridgeState: {
-      bridgeFeatureFlags: {
-        extensionConfig: {
-          support: false,
-          chains: {},
-        },
+    bridgeFeatureFlags: {
+      extensionConfig: {
+        support: false,
+        chains: {},
       },
-      quoteRequest: {
-        walletAddress: false,
-        srcTokenAddress: true,
-        slippage: true,
-        srcChainId: true,
-        destChainId: true,
-        destTokenAddress: true,
-        srcTokenAmount: true,
-      },
-      quotes: [],
-      quotesInitialLoadTime: true,
-      quotesLastFetched: true,
-      quotesLoadingStatus: true,
-      quoteFetchError: true,
-      quotesRefreshCount: true,
+      mobileConfig: false,
     },
+    quoteRequest: {
+      walletAddress: false,
+      srcTokenAddress: true,
+      slippage: true,
+      srcChainId: true,
+      destChainId: true,
+      destTokenAddress: true,
+      srcTokenAmount: true,
+    },
+    quotes: [],
+    quotesInitialLoadTime: true,
+    quotesLastFetched: true,
+    quotesLoadingStatus: true,
+    quoteFetchError: true,
+    quotesRefreshCount: true,
   },
   BridgeStatusController: {
     bridgeStatusState: {
@@ -243,7 +242,6 @@ export const SENTRY_BACKGROUND_STATE = {
     featureFlags: true,
     forgottenPassword: true,
     identities: false,
-    incomingTransactionsPreferences: true,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     knownMethodData: false,
