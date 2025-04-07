@@ -312,6 +312,7 @@ const AssetPage = ({
               primary: balance ? balance.toString() : '',
               secondary: balance ? Number(balance) : 0,
             }}
+            disableHover={true}
           />
         )}
         <Box

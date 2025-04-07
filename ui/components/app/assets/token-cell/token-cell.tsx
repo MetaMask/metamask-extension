@@ -45,12 +45,14 @@ export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
+  disableHover?: boolean;
 };
 
 export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
+  disableHover = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -134,13 +136,13 @@ export default function TokenCell({
         style={{
           height: 62,
           cursor: onClick ? 'pointer' : 'auto',
-          backgroundColor: isHovered
+          backgroundColor: !disableHover && isHovered
             ? 'var(--color-background-default-hover)'
             : 'transparent',
           transition: 'background-color 0.2s ease-in-out',
         }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => !disableHover && setIsHovered(true)}
+        onMouseLeave={() => !disableHover && setIsHovered(false)}
         data-testid="multichain-token-list-button"
       >
         <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
