@@ -26,6 +26,7 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { ASSET_ROUTE } from '../helpers/constants/routes';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -157,6 +158,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               primary: '',
               secondary: 0,
               title,
+              detailsPageRoute:`${ASSET_ROUTE}/${chainId}/${address}`
             });
           }
         });

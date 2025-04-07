@@ -95,13 +95,13 @@ export default function TokenCell({
     >
       <Box
         as="a"
-        onClick={(event) => {
-          // If the scam warning modal is open, do nothing
+        onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+          e?.preventDefault();
+
           if (showScamWarningModal) {
             return;
           }
 
-          event.preventDefault();
           onClickAsset(token);
         }}
         display={Display.Flex}

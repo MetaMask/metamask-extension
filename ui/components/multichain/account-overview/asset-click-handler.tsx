@@ -7,28 +7,39 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TokenWithFiatAmount } from '../../app/assets/types';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { useSelector } from 'react-redux';
+import { getSelectedInternalAccount } from '../../../selectors';
 
 export function useAssetClickHandler() {
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
-  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const account = useSelector(getSelectedInternalAccount);
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
   return useCallback(
-    ({ chainId, address, symbol }: TokenWithFiatAmount) => {
+    ({ chainId, detailsPageRoute, symbol }: TokenWithFiatAmount) => {
+      // Check if the asset is a valid EVM token
+      if (!isEvmNetwork) {
+        return;
+      }
+
+      // Ensure token has a valid chainId before proceeding
       if (!chainId) {
         return;
       }
 
       // Navigate
-      history.push(`${ASSET_ROUTE}/${chainId}/${address}`);
+      history.push(detailsPageRoute);
 
       // Track event: screen opened
       trackEvent({
         event: MetaMetricsEventName.TokenScreenOpened,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          token_symbol: symbol ?? 'unknown',
           location: 'Home',
+          token_symbol: symbol ?? 'unknown',
         },
       });
 
@@ -38,11 +49,11 @@ export function useAssetClickHandler() {
         event: MetaMetricsEventName.TokenDetailsOpened,
         properties: {
           location: 'Home',
-          chain_id: chainId,
           token_symbol: symbol ?? 'unknown',
+          chain_id: chainId,
         },
       });
     },
-    [history, trackEvent, showScamWarningModal],
+    [history, trackEvent],
   );
 }

@@ -57,6 +57,7 @@ export type TokenWithFiatAmount = Token &
   TokenBalanceValues & {
     isStakeable?: boolean;
     title: string;
+    detailsPageRoute: string;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

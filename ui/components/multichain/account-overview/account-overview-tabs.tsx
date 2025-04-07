@@ -142,28 +142,6 @@ export const AccountOverviewTabs = ({
             </Box>
           </Tab>
         )}
-        {showTokens && (
-          <Tab
-            name={'defi'}
-            tabKey="tokens"
-            data-testid="account-overview__asset-tab"
-            {...tabProps}
-          >
-            <Box marginTop={2}>
-              <AssetList showTokensLinks={showTokensLinks ?? true} />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                <NeedHelpButtonLink
-                  justifyContent={JustifyContent.flexStart}
-                  paddingLeft={4}
-                  marginBottom={4}
-                ></NeedHelpButtonLink>
-                ///: END:ONLY_INCLUDE_IF
-              }
-            </Box>
-          </Tab>
-        )}
-
         {showNfts && (
           <Tab
             name={t('nfts')}
