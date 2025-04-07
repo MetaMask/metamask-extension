@@ -26,56 +26,84 @@ type IsWideningOf<
   : false;
 
 /**
- * Determines the return type of the FUNCTION_TOURNIQUET's inner function based
- * on whether the tourniquet is open and if the widened types are valid.
+ * Defines the possible states of the tourniquet.
+ * - 'closed': The default state. Relaxes parameter types at compile time.
+ * - 'open': Strict state. Enforces the original function's parameter types.
+ */
+type TourniquetStatus = 'open' | 'closed';
+
+/**
+ * Determines the return type of the TS_TOURNIQUET's inner function based on its status.
+ * When the tourniquet is "closed" (Status='closed'), it returns a function
+ * type with potentially widened parameter types if the widening is valid according
+ * to IsWideningOf.
+ * When the tourniquet is "open" (Status='open'), it bypasses widening and returns
+ * the original function type, allowing type errors at call sites to surface.
  *
  * @template TFunc - The original function type.
- * @template TWidened - The potential widened parameter types.
- * @template IsOpen - A flag to bypass widening and return the original type.
+ * @template TWidened - The potential widened parameter types (used when tourniquet is closed).
+ * @template Status - The current status of the tourniquet ('open' or 'closed').
  */
 type TourniquetReturnType<
   TFunc extends (...args: any[]) => any,
   TWidened extends any[],
-  IsOpen extends boolean,
-> = IsOpen extends true
-  ? TFunc // If IsOpen is true, bypass widening and return the original function type.
+  Status extends TourniquetStatus,
+> = Status extends 'open'
+  ? TFunc // If Status is 'open', bypass widening and return the original function type.
   : IsWideningOf<Parameters<TFunc>, TWidened> extends true
-  ? // If IsWideningOf is true, return the function type with widened parameters.
+  ? // If Status is 'closed' and IsWideningOf is true, return the widened type.
     (...args: TWidened) => ReturnType<TFunc>
   : // Otherwise (widening is invalid), return 'never' to indicate a type error.
     never;
 
 /**
- * Type helper that widens the signature of a function. Should be used when callers
- * are already using the widened types and allows for a gradual narrowing of the signature
- * to the desired types. Designed to help keep PRs small and focused.
+ * Applies a TypeScript "tourniquet" to a function's type signature.
+ * This utility is intended for gradual migrations, especially JS-to-TS conversions,
+ * where call sites might temporarily use wider types than the function's strict implementation requires.
  *
- * Uses IsWideningOf to enforce that the widened types are a superset of the original types.
+ * By default (Status='closed'), the tourniquet "closes" around the function type,
+ * relaxing the parameter types at compile time to match TWidened (if valid).
+ * This suppresses type errors at call sites, allowing large files to be converted
+ * and merged without immediately fixing all downstream type mismatches ("stopping the bleeding").
  *
- * Does not alter runtime behavior as it returns the original function with a modified type signature.
+ * Setting Status='open' "opens" or "releases" the tourniquet, restoring the original
+ * function type signature. This allows developers to incrementally fix the type errors
+ * at the call sites revealed by the stricter checking.
+ *
+ * Uses IsWideningOf to ensure TWidened is a valid superset of the original parameters.
+ *
+ * IMPORTANT: This helper uses 'as any' internally and only affects compile-time checks.
+ * It does NOT alter runtime behavior and relies on the assumption that runtime values
+ * actually conform to the original function's narrower types. Use with discipline.
  *
  * @example
- * function takesHex(hex: `0x${string}`) {
- *   return hex;
- * }
+ * ```typescript
+ * function takesHex(hex: `0x${string}`) {  ...  }
  *
- * // type is (string) => `0x${string}`
- * const takesString = FUNCTION_TOURNIQUET<[string]>()(takesHex);
+ * // Apply tourniquet: appears to take string, suppresses errors if called with string
+ * const takesStringTemporarily = TS_TOURNIQUET<[string]>()(takesHex);
+ * takesStringTemporarily('0x123'); // OK at compile time
  *
- * takesString('a string'); // No type error, even though the original function expects `0x${string}`
- * @template TWidened - The widened parameter types as a tuple
- * @returns A function that accepts the original function and returns it with widened parameter types
+ * // Release tourniquet: enforces original `0x${string}`, reveals errors
+ * const takesHexStrictly = TS_TOURNIQUET<[string], 'open'>()(takesHex);
+ * declare const myString: string;
+ * takesHexStrictly(myString); // Compile-time error: string is not `0x${string}`
+ * ```
+ *
+ * @template TWidened - The parameter types to assume when the tourniquet is closed.
+ * @template Status - Controls the tourniquet state ('closed'=relaxed, 'open'=strict). Defaults to 'closed'.
+ * @returns A function that accepts the original function and returns it with a potentially modified type signature based on the tourniquet state.
  */
 export function TS_TOURNIQUET<
   TWidened extends any[],
-  IsOpen extends boolean = false,
+  Status extends TourniquetStatus = 'closed',
 >() {
   return <TFunc extends (...args: any[]) => any>(
     fn: TFunc,
-  ): TourniquetReturnType<TFunc, TWidened, IsOpen> => {
-    // Using 'as any' is necessary here to bypass type checking during migration.
-    // This allows us to temporarily widen parameter types without TypeScript errors,
-    // while preserving runtime behavior of the original function.
+  ): TourniquetReturnType<TFunc, TWidened, Status> => {
+    // Using 'as any' is necessary here to apply the tourniquet effect at compile time.
+    // It bypasses strict type checking for the function itself, allowing its signature
+    // to appear wider temporarily, while preserving the original runtime behavior.
     return fn as any;
   };
 }
