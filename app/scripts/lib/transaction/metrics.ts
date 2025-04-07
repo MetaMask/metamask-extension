@@ -355,8 +355,7 @@ export const handlePostTransactionBalanceUpdate = async (
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     // Prepare the transaction hash addition if feature flag is enabled
     const shouldAddTransactionHash =
-      getRemoteFeatureFlags &&
-      getRemoteFeatureFlags()['transactions-tx-hash-in-analytics'] &&
+      getRemoteFeatureFlags?.()?.['transactions-tx-hash-in-analytics'] &&
       transactionMeta.hash;
 
     const transactionHashProperty = shouldAddTransactionHash
