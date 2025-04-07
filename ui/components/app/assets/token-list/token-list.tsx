@@ -27,6 +27,7 @@ type TokenListProps = {
 };
 
 function TokenList({ onTokenClick }: TokenListProps) {
+  console.log('TokenList component unmounted');
   const isEvm = useSelector(getMultichainIsEvm);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
