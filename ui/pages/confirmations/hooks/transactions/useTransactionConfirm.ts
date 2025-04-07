@@ -22,7 +22,7 @@ export function useTransactionConfirm() {
     [transactionMeta],
   );
 
-  const handleSmartTransactionConfirm = useCallback(() => {
+  const handleSmartTransaction = useCallback(() => {
     if (!selectedGasFeeToken) {
       return;
     }
@@ -38,11 +38,17 @@ export function useTransactionConfirm() {
       selectedGasFeeToken.maxPriorityFeePerGas;
   }, [selectedGasFeeToken, newTransactionMeta]);
 
+  const handleGasless7702 = useCallback(() => {
+    newTransactionMeta.isExternalSign = true;
+  }, [newTransactionMeta]);
+
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
     if (isSmartTransaction) {
-      handleSmartTransactionConfirm();
+      handleSmartTransaction();
+    } else if (selectedGasFeeToken) {
+      handleGasless7702();
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -50,7 +56,8 @@ export function useTransactionConfirm() {
     ///: END:ONLY_INCLUDE_IF
   }, [
     dispatch,
-    handleSmartTransactionConfirm,
+    handleGasless7702,
+    handleSmartTransaction,
     isSmartTransaction,
     newTransactionMeta,
   ]);
