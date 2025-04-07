@@ -239,7 +239,7 @@ const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
  * @returns A copy of the nonEvmTransactions object with only the transactions
  * that involve the tokenAddress.
  */
-export const keepOnlyNonEvmTransactionsForToken = (
+export const filterTransactionsByToken = (
   nonEvmTransactions = { transactions: [] },
   tokenAddress,
 ) => {
@@ -281,14 +281,14 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredForToken = keepOnlyNonEvmTransactionsForToken(
+  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
     nonEvmTransactions,
     tokenAddress,
   );
 
   // Use our custom hook to map Solana bridge transactions with destination chain info
   const modifiedNonEvmTransactions = useSolanaBridgeTransactionMapping(
-    nonEvmTransactionFilteredForToken,
+    nonEvmTransactionFilteredByToken,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -520,7 +520,7 @@ export default function TransactionList({
               <Box className="transaction-list__completed-transactions">
                 {groupNonEvmTransactionsByDate(
                   modifiedNonEvmTransactions ||
-                    nonEvmTransactionFilteredForToken,
+                    nonEvmTransactionFilteredByToken,
                 ).map((dateGroup) => (
                   <Fragment key={dateGroup.date}>
                     <Text
