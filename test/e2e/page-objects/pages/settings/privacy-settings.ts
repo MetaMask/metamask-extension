@@ -239,7 +239,10 @@ class PrivacySettings {
     try {
       await this.driver.findClickableElement(
         this.deleteMetaMetricsDataButton,
-        1000,
+        {
+          waitAtLeastGuard: 1000,
+          timeout: 2000,
+        },
       );
       } catch (e) {
         console.log('Delete MetaMetrics data button not enabled', e);
