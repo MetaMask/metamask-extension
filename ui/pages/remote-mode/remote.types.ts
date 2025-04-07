@@ -21,7 +21,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     name: 'WETH',
     iconUrl: './images/eth_logo.png',
   },
-}
+};
 
 export type SwapAllowance = {
   from: TokenSymbol;
@@ -31,7 +31,7 @@ export type SwapAllowance = {
 
 export enum ToTokenOption {
   Any = 'Any available token',
-  HighLiquidity = 'High liquidity tokens'
+  HighLiquidity = 'High liquidity tokens',
 }
 
 export enum DailyAllowanceTokenTypes {
@@ -41,4 +41,4 @@ export enum DailyAllowanceTokenTypes {
 export type DailyAllowance = {
   tokenType: DailyAllowanceTokenTypes;
   amount: number;
-}
+};

@@ -23,8 +23,8 @@ const mockAccounts: [InternalAccount] = [
       },
     },
     scopes: [],
-    methods: []
-  }
+    methods: [],
+  },
 ];
 
 export default {
@@ -40,6 +40,4 @@ export default {
   ],
 };
 
-export const Default = () => (
-  <RemoteModeSetupSwaps accounts={mockAccounts} />
-);
+export const Default = () => <RemoteModeSetupSwaps accounts={mockAccounts} />;

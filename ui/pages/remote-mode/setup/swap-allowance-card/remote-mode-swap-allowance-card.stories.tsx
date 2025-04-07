@@ -27,7 +27,10 @@ export default {
 };
 
 export const Default = () => (
-  <RemoteModeSwapAllowanceCard swapAllowance={mockSwapAllowance} onRemove={() => {}} />
+  <RemoteModeSwapAllowanceCard
+    swapAllowance={mockSwapAllowance}
+    onRemove={() => {}}
+  />
 );
 
 export const DifferentTokens = () => (

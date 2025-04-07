@@ -14,25 +14,25 @@ const mockDailyAllowance = {
 };
 
 export default {
-  title: 'Components/Vault/RemoteMode/RemoteModeDailyAllowanceCard',
-  component: RemoteModeDailyAllowanceCard,
-  id: 'pages-remote-mode-daily-allowance--docs',
-  decorators: [
+  title: 'Components/Vault/RemoteMode/RemoteModeDailyAllowanceCard', component: RemoteModeDailyAllowanceCard,
+  id: 'pages-remote-mode-daily-allowance--docs',decorators: [
+
     (story) => (
-      <Provider store={store}>
-        <MemoryRouter>{story()}</MemoryRouter>
-      </Provider>
+      <Provider store={store}><MemoryRouter>{story()}</MemoryRouter></Provider>
     ),
   ],
 };
 
 export const Default = () => (
-  <RemoteModeDailyAllowanceCard dailyAllowance={mockDailyAllowance} onRemove={() => {}} />
+  <RemoteModeDailyAllowanceCard
+    dailyAllowance={mockDailyAllowance}
+    onRemove={() => {}}
+  />
 );
 
 export const DifferentTokens = () => (
   <RemoteModeDailyAllowanceCard
-  dailyAllowance={{
+    dailyAllowance={{
       tokenType: DailyAllowanceTokenTypes.ETH,
       amount: 5,
     }}

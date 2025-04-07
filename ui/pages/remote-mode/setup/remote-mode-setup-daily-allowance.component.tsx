@@ -80,9 +80,8 @@ export default function RemoteModeSetupDailyAllowance({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const [dailyAllowance, setDailyAllowance] = useState<DailyAllowance[]>([]);
-  const [selectedAllowanceToken, setSelectedAllowanceToken] = useState<DailyAllowanceTokenTypes>(
-    DailyAllowanceTokenTypes.ETH,
-  );
+  const [selectedAllowanceToken, setSelectedAllowanceToken] =
+    useState<DailyAllowanceTokenTypes>(DailyAllowanceTokenTypes.ETH);
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
@@ -123,7 +122,10 @@ export default function RemoteModeSetupDailyAllowance({
       const filteredAllowances = prevAllowances.filter(
         (allowance) => allowance.tokenType !== selectedAllowanceToken,
       );
-      return [...filteredAllowances, { ...newAllowance, tokenType: selectedAllowanceToken }];
+      return [
+        ...filteredAllowances,
+        { ...newAllowance, tokenType: selectedAllowanceToken },
+      ];
     });
 
     setSelectedAllowanceToken(DailyAllowanceTokenTypes.ETH);
@@ -217,7 +219,9 @@ export default function RemoteModeSetupDailyAllowance({
                     <Text>Token</Text>
                     <Dropdown
                       onChange={(value) =>
-                        setSelectedAllowanceToken(value as DailyAllowanceTokenTypes)
+                        setSelectedAllowanceToken(
+                          value as DailyAllowanceTokenTypes,
+                        )
                       }
                       options={[
                         {
@@ -256,7 +260,9 @@ export default function RemoteModeSetupDailyAllowance({
                     <RemoteModeDailyAllowanceCard
                       key={allowance.tokenType}
                       dailyAllowance={allowance}
-                      onRemove={() => handleRemoveAllowance(allowance.tokenType)}
+                      onRemove={() =>
+                        handleRemoveAllowance(allowance.tokenType)
+                      }
                     />
                   ))}
                 </Box>
@@ -424,7 +430,9 @@ export default function RemoteModeSetupDailyAllowance({
                       <RemoteModeDailyAllowanceCard
                         key={allowance.tokenType}
                         dailyAllowance={allowance}
-                        onRemove={() => handleRemoveAllowance(allowance.tokenType)}
+                        onRemove={() =>
+                          handleRemoveAllowance(allowance.tokenType)
+                        }
                       />
                     ))}
                   </Box>

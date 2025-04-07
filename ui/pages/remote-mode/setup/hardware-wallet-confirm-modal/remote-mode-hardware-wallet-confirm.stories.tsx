@@ -23,7 +23,6 @@ export const Default = () => (
   <RemoteModeHardwareWalletConfirm
     visible={true}
     onConfirm={() => {}}
-    onBack={() => {}}
     onClose={() => {}}
   />
 );

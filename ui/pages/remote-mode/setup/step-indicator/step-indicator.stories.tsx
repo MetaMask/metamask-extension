@@ -7,7 +7,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A component that displays the current step number and total steps in a multi-step process.',
+        component:
+          'A component that displays the current step number and total steps in a multi-step process.',
       },
     },
   },

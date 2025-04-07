@@ -26,7 +26,10 @@ const renderComponent = (props = { accounts: [mockAccount] }) => {
       isRemoteModeEnabled: true,
     },
   });
-  return renderWithProvider(<RemoteModeSetupDailyAllowance {...props} />, store);
+  return renderWithProvider(
+    <RemoteModeSetupDailyAllowance {...props} />,
+    store,
+  );
 };
 
 describe('RemoteModeSetupDailyAllowance Component', () => {

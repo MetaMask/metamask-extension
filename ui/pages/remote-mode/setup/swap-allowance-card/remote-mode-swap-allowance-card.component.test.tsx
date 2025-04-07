@@ -10,10 +10,12 @@ const mockSwapAllowance: SwapAllowance = {
   amount: 100,
 };
 
-const renderComponent = (props = {
-  swapAllowance: mockSwapAllowance,
-  onRemove: () => undefined,
-}) => {
+const renderComponent = (
+  props = {
+    swapAllowance: mockSwapAllowance,
+    onRemove: () => undefined,
+  },
+) => {
   const store = configureMockStore([])({
     metamask: {},
   });

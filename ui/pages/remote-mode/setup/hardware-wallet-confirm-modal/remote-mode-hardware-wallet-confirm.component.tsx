@@ -37,7 +37,9 @@ export default function RemoteModeHardwareWalletConfirm({
       <ModalContent>
         <ModalHeader onClose={onClose}>Confirm</ModalHeader>
         <ModalBody>
-          <Text paddingBottom={4}>Ready to confirm on your hardware wallet?</Text>
+          <Text paddingBottom={4}>
+            Ready to confirm on your hardware wallet?
+          </Text>
           <Text paddingBottom={4}>Prior to clicking confirm:</Text>
           <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
             <Text as="li">

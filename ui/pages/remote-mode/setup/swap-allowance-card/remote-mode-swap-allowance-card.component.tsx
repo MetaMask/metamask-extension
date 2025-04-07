@@ -46,10 +46,7 @@ export default function RemoteModeSwapAllowanceCard({
   }, [onRemove]);
 
   return (
-    <Box
-      width={BlockSize.Full}
-      marginTop={4}
-    >
+    <Box width={BlockSize.Full} marginTop={4}>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -84,9 +81,7 @@ export default function RemoteModeSwapAllowanceCard({
           justifyContent={JustifyContent.spaceBetween}
           gap={2}
         >
-          <Text variant={TextVariant.bodyMd}>
-            Swap to
-          </Text>
+          <Text variant={TextVariant.bodyMd}>Swap to</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {swapAllowance.to}
           </Text>
@@ -96,9 +91,7 @@ export default function RemoteModeSwapAllowanceCard({
           justifyContent={JustifyContent.spaceBetween}
           gap={2}
         >
-          <Text variant={TextVariant.bodyMd}>
-            Daily limit
-          </Text>
+          <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {swapAllowance.amount}
           </Text>

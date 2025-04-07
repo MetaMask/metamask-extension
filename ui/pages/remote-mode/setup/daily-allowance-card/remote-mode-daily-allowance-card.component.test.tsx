@@ -9,10 +9,12 @@ const mockDailyAllowance: DailyAllowance = {
   amount: 100,
 };
 
-const renderComponent = (props = {
-  dailyAllowance: mockDailyAllowance,
-  onRemove: () => undefined,
-}) => {
+const renderComponent = (
+  props = {
+    dailyAllowance: mockDailyAllowance,
+    onRemove: () => undefined,
+  },
+) => {
   const store = configureMockStore([])({
     metamask: {},
   });

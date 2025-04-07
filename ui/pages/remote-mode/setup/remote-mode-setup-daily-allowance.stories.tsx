@@ -23,8 +23,8 @@ const mockAccounts: [InternalAccount] = [
       },
     },
     scopes: [],
-    methods: []
-  }
+    methods: [],
+  },
 ];
 
 export default {
