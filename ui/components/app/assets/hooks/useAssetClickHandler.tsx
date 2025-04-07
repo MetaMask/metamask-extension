@@ -1,7 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

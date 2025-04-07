@@ -1,9 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   SUPPORT_LINK,
@@ -61,7 +59,6 @@ export const AccountOverviewTabs = ({
   showNfts,
   showActivity,
 }: AccountOverviewTabsProps) => {
-  const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
