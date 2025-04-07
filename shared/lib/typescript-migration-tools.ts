@@ -66,7 +66,7 @@ type TourniquetReturnType<
  * @template TWidened - The widened parameter types as a tuple
  * @returns A function that accepts the original function and returns it with widened parameter types
  */
-export function FUNCTION_TOURNIQUET<
+export function TS_TOURNIQUET<
   TWidened extends any[],
   IsOpen extends boolean = false,
 >() {
