@@ -156,12 +156,19 @@ const AssetPage = ({
     tokenBalances[selectedAccount.address];
 
   const multiChainAssets = useMultiChainAssets();
-  const mutichainTokenWithFiatAmount = multiChainAssets.find((item) =>
-    item.chainId === chainId && isNative
-      ? item.isNative
-      : item.address ===
-        (asset.type === AssetType.token ? asset.address : undefined),
-  );
+  const mutichainTokenWithFiatAmount = multiChainAssets
+    .filter((item) => item.chainId === chainId)
+    .filter((item) => item.address !== undefined)
+    .find((item) => {
+      switch (type) {
+        case AssetType.native:
+          return item.isNative;
+        case AssetType.token:
+          return item.address === asset.address;
+        default:
+          return false;
+      }
+    });
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
