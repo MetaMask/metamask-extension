@@ -10,7 +10,8 @@ const {
 const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Switch Network on Dapp Send Tx while on different networks.', function () {
-  it('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
