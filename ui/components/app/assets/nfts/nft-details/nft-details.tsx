@@ -78,8 +78,11 @@ import {
 } from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import {
+  addUrlProtocolPrefix,
+  isWebUrl,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
@@ -143,10 +146,8 @@ export function NftDetailsComponent({
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
 
   const isImageHosted =
-    image?.startsWith('https:') ||
-    image?.startsWith('http:') ||
-    imageFromTokenURI?.startsWith('https:') ||
-    imageFromTokenURI?.startsWith('http:');
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
 
   const nftImageURL = useGetAssetImageUrl(
     imageOriginal ?? image ?? undefined,

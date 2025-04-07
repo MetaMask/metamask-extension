@@ -24,6 +24,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 
 export default function NftFullImage() {
   const t = useI18nContext();
@@ -47,10 +50,8 @@ export default function NftFullImage() {
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
-    image?.startsWith('https:') ||
-    image?.startsWith('http:') ||
-    imageFromTokenURI?.startsWith('https:') ||
-    imageFromTokenURI?.startsWith('http:');
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);

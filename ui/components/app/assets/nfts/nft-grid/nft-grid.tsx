@@ -19,6 +19,9 @@ import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -40,10 +43,8 @@ const NFTGridItem = (props: {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const isImageHosted =
-    image?.startsWith('https:') ||
-    image?.startsWith('http:') ||
-    imageFromTokenURI?.startsWith('https:') ||
-    imageFromTokenURI?.startsWith('http:');
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
