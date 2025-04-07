@@ -757,12 +757,18 @@ describe('AccountListMenu', () => {
   });
 
   it('should render institutional wallet button if manage institutional wallets is enabled', () => {
-    const { getByText } = render({
+    const { getByText, getByTestId } = render({
       metamask: {
         ...mockState.metamask,
         manageInstitutionalWallets: true,
       },
     });
+
+    // Click the action button to enter menu mode
+    const actionButton = getByTestId(
+      'multichain-account-menu-popover-action-button',
+    );
+    actionButton.click();
 
     expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
   });
