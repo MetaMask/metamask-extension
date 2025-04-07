@@ -32,6 +32,7 @@ describe('useMultichainBalances', () => {
           title: 'Ethereum',
           tokenFiatAmount: 3.53395e-14,
           type: 'NATIVE',
+          detailsPageRoute: "/asset/0xe708/"
         },
         {
           address: '',
@@ -48,6 +49,7 @@ describe('useMultichainBalances', () => {
           title: 'Ethereum',
           tokenFiatAmount: 2.5242500000000003e-14,
           type: 'NATIVE',
+          detailsPageRoute: "/asset/0x1/"
         },
       ]),
     );
@@ -75,6 +77,7 @@ describe('useMultichainBalances', () => {
           title: undefined,
           tokenFiatAmount: 0.004232,
           type: 'TOKEN',
+          detailsPageRoute: "/asset/0x1/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
         },
         {
           address: '',
@@ -91,6 +94,7 @@ describe('useMultichainBalances', () => {
           title: 'Ethereum',
           tokenFiatAmount: 3.53395e-14,
           type: 'NATIVE',
+          detailsPageRoute: "/asset/0xe708/"
         },
         {
           address: '',
@@ -107,6 +111,7 @@ describe('useMultichainBalances', () => {
           title: 'Ethereum',
           tokenFiatAmount: 2.5242500000000003e-14,
           type: 'NATIVE',
+          detailsPageRoute: "/asset/0x1/"
         },
         {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -119,6 +124,7 @@ describe('useMultichainBalances', () => {
           title: undefined,
           tokenFiatAmount: null,
           type: 'TOKEN',
+          detailsPageRoute: "/asset/0x1/0x514910771af9ca656af840dff83e8264ecf986ca"
         },
         {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -131,6 +137,7 @@ describe('useMultichainBalances', () => {
           title: undefined,
           tokenFiatAmount: null,
           type: 'TOKEN',
+          detailsPageRoute: "/asset/0xe708/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
         },
       ]),
     );
