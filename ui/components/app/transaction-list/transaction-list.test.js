@@ -22,7 +22,7 @@ import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import TransactionList, {
-  keepOnlyNonEvmTransactionsForToken,
+  filterTransactionsByToken,
 } from './transaction-list.component';
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
@@ -391,7 +391,7 @@ describe('TransactionList', () => {
       const tokenAddress =
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
-      const result = keepOnlyNonEvmTransactionsForToken(
+      const result = filterTransactionsByToken(
         nonEvmTransactions,
         tokenAddress,
       );
@@ -404,7 +404,7 @@ describe('TransactionList', () => {
     it('returns the original object if no token address is provided', () => {
       const tokenAddress = undefined;
 
-      const result = keepOnlyNonEvmTransactionsForToken(
+      const result = filterTransactionsByToken(
         nonEvmTransactions,
         tokenAddress,
       );
