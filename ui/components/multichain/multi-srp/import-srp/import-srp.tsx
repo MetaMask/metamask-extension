@@ -232,86 +232,94 @@ export const ImportSrp = ({
         {t('importSRPDescription')}
       </Text>
 
+      <Box className="import-srp__multi-srp__srp-inner-container">
+        <Box
+          className="import-srp__multi-srp__srp"
+          width={BlockSize.Full}
+          marginTop={4}
+        >
+          {Array.from({ length: numberOfWords }).map((_, index) => {
+            const id = `import-srp__multi-srp__srp-word-${index}`;
+            return (
+              <Box
+                key={index}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+              >
+                <Label
+                  className="import-srp__multi-srp__label"
+                  variant={TextVariant.bodyMdMedium}
+                  marginRight={4}
+                >
+                  {index + 1}.
+                </Label>
+                <Box
+                  className="import-srp__multi-srp__srp-word"
+                  marginBottom={4}
+                >
+                  <TextField
+                    id={id}
+                    data-testid={id}
+                    borderRadius={BorderRadius.LG}
+                    error={invalidSrpWords[index]}
+                    type={TextFieldType.Text}
+                    onChange={(e) => {
+                      e.preventDefault();
+                      onSrpWordChange(index, e.target.value);
+                    }}
+                    value={secretRecoveryPhrase[index]}
+                    autoComplete={false}
+                    onPaste={(event: React.ClipboardEvent) => {
+                      const newSrp = event.clipboardData.getData('text');
+
+                      if (newSrp.trim().match(/\s/u)) {
+                        event.preventDefault();
+                        onSrpPaste(newSrp);
+                      }
+                    }}
+                  />
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+        {srpError ? (
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            description={srpError}
+            actionButtonLabel={t('clear')}
+            actionButtonOnClick={() => {
+              onSrpChange(Array(defaultNumberOfWords).fill(''));
+              setSrpError('');
+            }}
+            data-testid="bannerAlert"
+          />
+        ) : null}
+
+        {
+          <Box width={BlockSize.Full} marginTop={4}>
+            <ButtonLink
+              width={BlockSize.Full}
+              loading={loading}
+              onClick={async () => {
+                setNumberOfWords(numberOfWords === 12 ? 24 : 12);
+                setSrpError('');
+                setInvalidSrpWords(
+                  Array(numberOfWords === 12 ? 24 : 12).fill(false),
+                );
+              }}
+              data-testid="import-srp__multi-srp__switch-word-count-button"
+            >
+              {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
+            </ButtonLink>
+          </Box>
+        }
+      </Box>
       <Box
-        className="import-srp__multi-srp__srp"
+        className="import-srp__multi-srp__import-button"
         width={BlockSize.Full}
         marginTop={4}
       >
-        {Array.from({ length: numberOfWords }).map((_, index) => {
-          const id = `import-srp__multi-srp__srp-word-${index}`;
-          return (
-            <Box
-              key={index}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-            >
-              <Label
-                className="import-srp__multi-srp__label"
-                variant={TextVariant.bodyMdMedium}
-                marginRight={4}
-              >
-                {index + 1}.
-              </Label>
-              <Box className="import-srp__multi-srp__srp-word" marginBottom={4}>
-                <TextField
-                  id={id}
-                  data-testid={id}
-                  borderRadius={BorderRadius.LG}
-                  error={invalidSrpWords[index]}
-                  type={TextFieldType.Text}
-                  onChange={(e) => {
-                    e.preventDefault();
-                    onSrpWordChange(index, e.target.value);
-                  }}
-                  value={secretRecoveryPhrase[index]}
-                  autoComplete={false}
-                  onPaste={(event: React.ClipboardEvent) => {
-                    const newSrp = event.clipboardData.getData('text');
-
-                    if (newSrp.trim().match(/\s/u)) {
-                      event.preventDefault();
-                      onSrpPaste(newSrp);
-                    }
-                  }}
-                />
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-      {srpError ? (
-        <BannerAlert
-          severity={BannerAlertSeverity.Danger}
-          description={srpError}
-          actionButtonLabel={t('clear')}
-          actionButtonOnClick={() => {
-            onSrpChange(Array(defaultNumberOfWords).fill(''));
-            setSrpError('');
-          }}
-          data-testid="bannerAlert"
-        />
-      ) : null}
-
-      {
-        <Box width={BlockSize.Full} marginTop={4}>
-          <ButtonLink
-            width={BlockSize.Full}
-            loading={loading}
-            onClick={async () => {
-              setNumberOfWords(numberOfWords === 12 ? 24 : 12);
-              setSrpError('');
-              setInvalidSrpWords(
-                Array(numberOfWords === 12 ? 24 : 12).fill(false),
-              );
-            }}
-            data-testid="import-srp__multi-srp__switch-word-count-button"
-          >
-            {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
-          </ButtonLink>
-        </Box>
-      }
-
-      <Box width={BlockSize.Full} marginTop={4}>
         <ButtonPrimary
           width={BlockSize.Full}
           disabled={!isValidSrp}
