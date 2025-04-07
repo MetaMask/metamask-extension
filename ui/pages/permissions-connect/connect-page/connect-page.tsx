@@ -1,17 +1,8 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
-import {
-  generateCaip25Caveat,
-  getUniqueArrayItems,
-  InternalScopeString,
-} from '@metamask/chain-agnostic-permission';
-import {
-  CaipChainId,
-  KnownCaipNamespace,
-  parseCaipAccountId,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
+import { CaipChainId, parseCaipAccountId } from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
@@ -71,6 +62,7 @@ import {
 } from '../../../selectors/selectors.types';
 import {
   getAllAccountIdsFromCaip25CaveatValue,
+  getAllNonWalletNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 import {
@@ -185,18 +177,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
 
-  const requestedNamespaces = getUniqueArrayItems(
-    [
-      ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
-      ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
-    ].map((scope) => {
-      const scopeString = scope as InternalScopeString;
-      if (scopeString === KnownCaipNamespace.Wallet) {
-        return scopeString;
-      }
-      const { namespace, reference } = parseCaipChainId(scopeString);
-      return namespace === KnownCaipNamespace.Wallet ? reference : namespace;
-    }),
+  const requestedNamespaces = getAllNonWalletNamespacesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
   );
 
   // all accounts that match the requested namespaces
