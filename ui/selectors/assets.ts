@@ -360,10 +360,10 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
   ) => {
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
-    const nativeTokenBalance = nativeAssetType
-      ? balances?.[nativeAssetType] || zeroBalanceAssetFallback
-      : zeroBalanceAssetFallback;
+    if (!nativeAssetType || !balances?.[nativeAssetType]) {
+      return zeroBalanceAssetFallback;
+    }
 
-    return nativeTokenBalance;
+    return balances[nativeAssetType];
   },
 );
