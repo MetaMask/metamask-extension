@@ -1,16 +1,16 @@
 import { useCallback, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { TokenWithFiatAmount } from '../../app/assets/types';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+} from '../../../../../shared/constants/metametrics';
+import { TokenWithFiatAmount } from '../types';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getMultichainNetwork } from '../../../../selectors/multichain';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../selectors';
 
 export function useAssetClickHandler() {
   const history = useHistory();

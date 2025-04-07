@@ -46,7 +46,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import { getPricePrecision, localizeLargeNumber } from '../util';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   getConversionRate,
   getCurrentCurrency,
@@ -311,6 +311,7 @@ const AssetPage = ({
               isNative: type === AssetType.native,
               primary: balance ? balance.toString() : '',
               secondary: balance ? Number(balance) : 0,
+              detailsPageRoute: `${ASSET_ROUTE}/${chainId}/${address}`,
             }}
           />
         )}

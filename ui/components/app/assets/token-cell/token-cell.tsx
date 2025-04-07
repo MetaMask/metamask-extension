@@ -18,10 +18,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
@@ -39,18 +36,21 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from './cells';
-import { getSelectedInternalAccount } from '../../../../selectors';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { useAssetClickHandler } from '../../../multichain/account-overview/asset-click-handler';
 
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
+  onClick?: ({
+    chainId,
+    detailsPageRoute,
+    symbol,
+  }: TokenWithFiatAmount) => void;
 };
 
 export default function TokenCell({
   token,
   privacyMode = false,
+  onClick,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -72,9 +72,6 @@ export default function TokenCell({
     token,
   });
 
-  const account = useSelector(getSelectedInternalAccount);
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
-
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
@@ -82,8 +79,6 @@ export default function TokenCell({
   if (!token.chainId) {
     return null;
   }
-
-  const onClickAsset = useAssetClickHandler();
 
   return (
     <Box
@@ -102,7 +97,7 @@ export default function TokenCell({
             return;
           }
 
-          onClickAsset(token);
+          onClick?.(token);
         }}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -111,7 +106,7 @@ export default function TokenCell({
         paddingLeft={4}
         paddingRight={4}
         width={BlockSize.Full}
-        style={{ height: 62, cursor: 'pointer' }}
+        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
         data-testid="multichain-token-list-button"
       >
         <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />

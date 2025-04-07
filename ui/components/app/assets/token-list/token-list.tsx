@@ -9,6 +9,7 @@ import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/
 import { TokenWithFiatAmount } from '../types';
 
 import { useSortedFilteredTokens } from '../hooks/useSortedFilteredTokens';
+import { useAssetClickHandler } from '../hooks/useAssetClickHandler';
 
 function TokenList() {
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
@@ -20,6 +21,7 @@ function TokenList() {
   });
 
   const { tokens: sortedFilteredTokens } = useSortedFilteredTokens();
+  const onClick = useAssetClickHandler();
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -34,6 +36,7 @@ function TokenList() {
           key={`${token.chainId}-${token.symbol}-${token.address}`}
           token={token}
           privacyMode={privacyMode}
+          onClick={onClick}
         />
       ))}
     </>

@@ -48,6 +48,14 @@ const mockTokens = [
   },
 ];
 
+jest.mock('../hooks/useSortedFilteredTokens', () => {
+  return {
+    useSortedFilteredTokens: () => ({
+      tokens: mockTokens,
+    }),
+  };
+});
+
 jest.mock('../../../../hooks/useTokenTracker', () => {
   return {
     useTokenTracker: () => ({
@@ -126,9 +134,12 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
       },
     },
   };
+
   const store = configureMockStore([thunk])(state);
+
+
   return renderWithProvider(
-    <AssetList onClickAsset={() => undefined} showTokensLinks />,
+    <AssetList showTokensLinks />,
     store,
   );
 };

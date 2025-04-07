@@ -185,7 +185,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   ) => {
     const { hideZeroBalanceTokens } = preferences;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
+    const balances = multichainBalances?.[selectedAccountAddress.id]
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
@@ -218,6 +218,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
           string: '',
           tokenFiatAmount: balanceInFiat.toNumber(), // for now we are keeping this is to satisfy sort, this should be fiat amount
           isStakeable: false,
+          detailsPageRoute: `${ASSET_ROUTE}/${chainId}/${assetId}`,
         });
       }
     });
