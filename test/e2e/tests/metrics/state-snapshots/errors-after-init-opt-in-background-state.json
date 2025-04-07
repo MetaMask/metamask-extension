@@ -212,6 +212,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
+  "NftDetectionController": "object",
   "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
