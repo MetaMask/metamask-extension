@@ -202,26 +202,27 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
-  t: (text: string) => string,
+  t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
+      return t('addAccountFromNetwork', ['Ethereum']);
     case ACTION_MODES.MENU:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
-      return t('addAccount');
+      return t('addAccountFromNetwork', ['Ethereum']);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
-      return t('addAccount');
+      return t('addAccountFromNetwork', ['Bitcoin']);
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
-      return t('addAccount');
+      return t('addAccountFromNetwork', ['Bitcoin Testnet']);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
-      return t('addAccount');
+      return t('addAccountFromNetwork', ['Solana']);
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
@@ -231,7 +232,7 @@ export const getActionTitle = (
     case ACTION_MODES.IMPORT_SRP:
       return t('importSecretRecoveryPhrase');
     case ACTION_MODES.SELECT_SRP:
-      return t('addAccount');
+      return t('selectSecretRecoveryPhrase');
     ///: END:ONLY_INCLUDE_IF
     default:
       return t('selectAnAccount');
