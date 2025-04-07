@@ -104,9 +104,13 @@ async function walletCreateSessionHandler(
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
     const requiredScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedRequiredScopes);
+      getSupportedScopeObjects(normalizedRequiredScopes, {
+        getNonEvmSupportedMethods: () => [],
+      });
     const optionalScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedOptionalScopes);
+      getSupportedScopeObjects(normalizedOptionalScopes, {
+        getNonEvmSupportedMethods: () => [],
+      });
 
     const networkClientExistsForChainId = (chainId: Hex) => {
       try {
@@ -120,16 +124,20 @@ async function walletCreateSessionHandler(
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       requiredScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: () => [],
+        isNonEvmScopeSupported: () => false,
       },
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
       optionalScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: () => [],
+        isNonEvmScopeSupported: () => false,
       },
     );
 
@@ -176,7 +184,9 @@ async function walletCreateSessionHandler(
       throw rpcErrors.internal();
     }
 
-    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue);
+    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue, {
+      getNonEvmSupportedMethods: () => [],
+    });
 
     // TODO: Contact analytics team for how they would prefer to track this
     // first time connection to dapp will lead to no log in the permissionHistory

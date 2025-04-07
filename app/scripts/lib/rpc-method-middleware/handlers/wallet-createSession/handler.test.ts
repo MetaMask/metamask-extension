@@ -206,13 +206,19 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(1, {
-      'eip155:1': {
-        methods: ['eth_chainId'],
-        notifications: ['accountsChanged', 'chainChanged'],
-        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
+      1,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
       },
-    });
+      expect.objectContaining({
+        getNonEvmSupportedMethods: expect.any(Function),
+      }),
+    );
   });
 
   it('filters the optional scopesObjects', async () => {
@@ -229,13 +235,19 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(2, {
-      'eip155:1': {
-        methods: ['eth_chainId'],
-        notifications: ['accountsChanged', 'chainChanged'],
-        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
+      2,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
       },
-    });
+      expect.objectContaining({
+        getNonEvmSupportedMethods: expect.any(Function),
+      }),
+    );
   });
 
   it('buckets the required scopes', async () => {
@@ -262,14 +274,16 @@ describe('wallet_createSession', () => {
         },
       },
       expect.objectContaining({
-        isChainIdSupported: expect.any(Function),
-        isChainIdSupportable: expect.any(Function),
+        isEvmChainIdSupported: expect.any(Function),
+        isEvmChainIdSupportable: expect.any(Function),
+        getNonEvmSupportedMethods: expect.any(Function),
+        isNonEvmScopeSupported: expect.any(Function),
       }),
     );
 
-    const isChainIdSupportedBody =
-      MockMultichain.bucketScopes.mock.calls[0][1].isChainIdSupported.toString();
-    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+    const isEvmChainIdSupportedBody =
+      MockMultichain.bucketScopes.mock.calls[0][1].isEvmChainIdSupported.toString();
+    expect(isEvmChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
   });
 
   it('buckets the optional scopes', async () => {
@@ -296,14 +310,16 @@ describe('wallet_createSession', () => {
         },
       },
       expect.objectContaining({
-        isChainIdSupported: expect.any(Function),
-        isChainIdSupportable: expect.any(Function),
+        isEvmChainIdSupported: expect.any(Function),
+        isEvmChainIdSupportable: expect.any(Function),
+        getNonEvmSupportedMethods: expect.any(Function),
+        isNonEvmScopeSupported: expect.any(Function),
       }),
     );
 
-    const isChainIdSupportedBody =
-      MockMultichain.bucketScopes.mock.calls[1][1].isChainIdSupported.toString();
-    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+    const isEvmChainIdSupportedBody =
+      MockMultichain.bucketScopes.mock.calls[1][1].isEvmChainIdSupported.toString();
+    expect(isEvmChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
   });
 
   it('gets a list of evm accounts in the wallet', async () => {

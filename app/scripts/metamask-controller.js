@@ -2761,7 +2761,9 @@ export default class MetamaskController extends EventEmitter {
             origin,
             authorization,
           ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization);
+            const sessionScopes = getSessionScopes(authorization, {
+              getNonEvmSupportedMethods: () => [],
+            });
             // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
             // then remove middleware and unsubscribe
             Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
@@ -2782,7 +2784,9 @@ export default class MetamaskController extends EventEmitter {
             origin,
             authorization,
           ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization);
+            const sessionScopes = getSessionScopes(authorization, {
+              getNonEvmSupportedMethods: () => [],
+            });
 
             // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
             // then get the subscriptionManager going for that scope
@@ -6848,12 +6852,12 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
-          getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
-          handleNonEvmRequestForOrigin: (params) =>
-            this.controllerMessenger.call('MultichainRouter:handleRequest', {
-              ...params,
-              origin,
-            }),
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+        handleNonEvmRequestForOrigin: (params) =>
+          this.controllerMessenger.call('MultichainRouter:handleRequest', {
+            ...params,
+            origin,
+          }),
       }),
     );
 
@@ -6989,7 +6993,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // add new notification subscriptions for changed authorizations
-      const sessionScopes = getSessionScopes(caip25Caveat.value);
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {
+        getNonEvmSupportedMethods: () => [],
+      });
 
       // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
       // then get the subscriptionManager going for that scope
@@ -7842,7 +7848,9 @@ export default class MetamaskController extends EventEmitter {
       {
         method: NOTIFICATION_NAMES.sessionChanged,
         params: {
-          sessionScopes: getSessionScopes(newAuthorization),
+          sessionScopes: getSessionScopes(newAuthorization, {
+            getNonEvmSupportedMethods: () => [],
+          }),
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
