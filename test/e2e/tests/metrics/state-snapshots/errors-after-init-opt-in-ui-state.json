@@ -109,7 +109,7 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": 1743769651.321,
+        "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
