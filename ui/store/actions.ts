@@ -2328,6 +2328,24 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
+export async function getTokenStandardAndDetailsByChain(
+  address: string,
+  userAddress?: string,
+  tokenId?: string,
+  chainId?: string,
+): Promise<
+  Awaited<
+    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+  > & { balance?: string }
+> {
+  return await submitRequestToBackground('getTokenStandardAndDetailsByChain', [
+    address,
+    userAddress,
+    tokenId,
+    chainId,
+  ]);
+}
+
 export async function getTokenSymbol(address: string): Promise<string | null> {
   return await submitRequestToBackground('getTokenSymbol', [address]);
 }
@@ -4328,6 +4346,7 @@ export function setOverrideContentSecurityPolicyHeader(
     dispatch(hideLoadingIndication());
   };
 }
+
 export function setManageInstitutionalWallets(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
