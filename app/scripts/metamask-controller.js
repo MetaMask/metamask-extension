@@ -7108,13 +7108,11 @@ export default class MetamaskController extends EventEmitter {
         listAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        requestPermissionsForOrigin: (requestedPermissions, metadata) =>
+        requestPermissionsForOrigin: (requestedPermissions, options = {}) =>
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
-            {
-              metadata,
-            },
+            options,
           ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,

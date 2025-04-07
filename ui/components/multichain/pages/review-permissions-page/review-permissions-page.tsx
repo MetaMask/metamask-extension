@@ -4,13 +4,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import {
   CaipAccountId,
   CaipChainId,
-  parseCaipChainId,
   NonEmptyArray,
   parseCaipAccountId,
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
-import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import {
   AlignItems,
   BlockSize,

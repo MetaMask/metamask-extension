@@ -265,7 +265,7 @@ async function walletCreateSessionHandler(
         },
       },
       {
-        promptToCreateSolanaAccount,
+        metadata: { promptToCreateSolanaAccount },
       },
     );
 
