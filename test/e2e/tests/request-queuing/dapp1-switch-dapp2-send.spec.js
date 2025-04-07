@@ -8,7 +8,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 
-describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
+describe('Request Navigating Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
     const port = 8546;
@@ -171,7 +171,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     );
   });
 
-  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
+  it('should submit send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(

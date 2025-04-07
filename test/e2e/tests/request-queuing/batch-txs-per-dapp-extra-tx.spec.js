@@ -1,27 +1,27 @@
 const { By } = require('selenium-webdriver');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  DAPP_ONE_URL,
+  DAPP_URL,
+  largeDelayMs,
   openDapp,
   unlockWallet,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
-  largeDelayMs,
+  withFixtures,
 } = require('../../helpers');
 
-describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
-  it('should batch confirmation txs for different dapps on same networks ', async function () {
+describe('Request from Multiple Dapps and Txs on different networks', function () {
+  it('should put txs for different dapps on different networks adds extra tx after in same queue.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleNode()
+          .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 3 },
+        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -31,13 +31,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
             options: {
               port,
               chainId,
-            },
-          },
-          {
-            type: 'anvil',
-            options: {
-              port: 7777,
-              chainId: 1000,
             },
           },
         ],
@@ -54,8 +47,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
-
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
@@ -63,29 +54,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
           tag: 'button',
         });
 
-        await driver.switchToWindowWithUrl(DAPP_URL);
-
-        let switchEthereumChainRequest = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }],
-        });
-
-        // Ensure Dapp One is on Localhost 7777
-        await driver.executeScript(
-          `window.ethereum.request(${switchEthereumChainRequest})`,
-        );
-
-        // Should auto switch without prompt since already approved via connect
-
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        // Wait for the first dapp's connect confirmation to disappear
-        await driver.waitUntilXWindowHandles(2);
-
-        // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
@@ -93,8 +61,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
-
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
@@ -104,62 +70,84 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
-        switchEthereumChainRequest = JSON.stringify({
+        const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: '0x53a' }],
         });
 
-        // Ensure Dapp Two is on Localhost 8545
+        // Ensure Dapp One is on Localhost 8546
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        // Should auto switch without prompt since already approved via connect
-
-        // Dapp one send two tx
+        // Dapp 1 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.delay(largeDelayMs);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x539',
+        });
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await driver.delay(largeDelayMs);
+        await driver.waitUntilXWindowHandles(4);
 
-        // Dapp two send two tx
+        // Dapp 2 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x53a',
+        });
+        await driver.clickElement('#sendButton');
+        await driver.clickElement('#sendButton');
+        // We cannot wait for the dialog, since it is already opened from before
         await driver.delay(largeDelayMs);
-        await driver.clickElement('#sendButton');
-        await driver.clickElement('#sendButton');
 
+        // Dapp 1 send 1 tx
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.findElement({
+          css: '[id="chainId"]',
+          text: '0x539',
+        });
+        await driver.clickElement('#sendButton');
+        // We cannot switch directly, as the dialog is sometimes closed and re-opened
+        await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 4']"),
+          By.xpath("//p[normalize-space(.)='1 of 5']"),
         );
 
-        // Check correct network on confirm tx.
-        await driver.findElement({
-          css: 'p',
-          text: 'Localhost 7777',
-        });
-
-        await driver.clickElement(
-          '[data-testid="confirm-nav__next-confirmation"]',
-        );
-        await driver.clickElement(
-          '[data-testid="confirm-nav__next-confirmation"]',
-        );
-
-        // Check correct network on confirm tx.
         await driver.findElement({
           css: 'p',
           text: 'Localhost 8546',
         });
 
-        // Reject All Transactions
-        await driver.clickElement({ text: 'Reject all', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
 
-        // Wait for confirmation to close
+        await driver.findElement({
+          css: 'p',
+          text: 'Localhost 8545',
+        });
+
+        // Reject All Transactions
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
+
         await driver.waitUntilXWindowHandles(3);
       },
     );

@@ -6,7 +6,7 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 
-describe('Request Queuing', function () {
+describe('Request Navigating', function () {
   // TODO: add a new spec which checks that after revoking and connecting again
   // a pending tx is still closed when using revokePermissions.
   // To be done once this bug is fixed: #29272
