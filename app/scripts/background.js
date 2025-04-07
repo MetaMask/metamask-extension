@@ -1056,13 +1056,6 @@ export function setupController(
     updateBadge,
   );
 
-  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
-    controller.controllerMessenger.subscribe(
-      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-      updateBadge,
-    );
-  }
-
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
     updateBadge,
@@ -1136,12 +1129,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      let pendingApprovalCount =
+      const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
-
-      pendingApprovalCount +=
-        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
