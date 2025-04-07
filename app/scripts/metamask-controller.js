@@ -5654,6 +5654,14 @@ export default class MetamaskController extends EventEmitter {
       },
     };
   }
+
+  getNonEvmSupportedMethods(scope) {
+    return this.controllerMessenger.call(
+      'MultichainRouter:getSupportedMethods',
+      scope,
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -6840,6 +6848,12 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
+          getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+          handleNonEvmRequestForOrigin: (params) =>
+            this.controllerMessenger.call('MultichainRouter:handleRequest', {
+              ...params,
+              origin,
+            }),
       }),
     );
 
