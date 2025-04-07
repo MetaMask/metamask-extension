@@ -94,7 +94,10 @@ export const ImportSrp = ({
         if (state.error) {
           return state;
         }
-        if (phrase.some((word) => word === '')) {
+        if (
+          phrase.some((word) => word === '') &&
+          !phrase.slice(0, 11).every((word) => word !== '')
+        ) {
           return { ...state, error: t('importSRPNumberOfWordsError') };
         }
         return state;
@@ -299,6 +302,7 @@ export const ImportSrp = ({
               setSrpError('');
               setInvalidSrpWords(Array(24).fill(false));
             }}
+            data-testid="import-srp__multi-srp__switch-word-count-button"
           >
             {t('importNWordSRP', ['24'])}
           </ButtonLink>

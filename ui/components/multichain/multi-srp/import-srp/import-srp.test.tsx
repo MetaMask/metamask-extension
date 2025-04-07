@@ -33,7 +33,9 @@ jest.mock('../../../../store/actions', () => ({
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
   const [firstWord] = srp.split(' ');
 
-  const firstSrpWordDiv = render.getByTestId('import-multi-srp__srp-word-0');
+  const firstSrpWordDiv = render.getByTestId(
+    'import-srp__multi-srp__srp-word-0',
+  );
   // This is safe because the input is always present in the word div.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const firstSrpWordInput = firstSrpWordDiv.querySelector('input')!;
@@ -230,7 +232,7 @@ describe('ImportSrp', () => {
     // Verify all input fields are cleared
     for (let i = 0; i < 12; i++) {
       const input = getByTestId(
-        `import-multi-srp__srp-word-${i}`,
+        `import-srp__multi-srp__srp-word-${i}`,
       ).querySelector('input');
       expect(input).toHaveValue('');
     }
@@ -278,7 +280,7 @@ describe('ImportSrp', () => {
 
     // Verify that validation errors are present
     const firstInput = getByTestId(
-      'import-multi-srp__srp-word-0',
+      'import-srp__multi-srp__srp-word-0',
     ).querySelector('input');
     expect(firstInput).toBeInvalid();
 
@@ -288,5 +290,32 @@ describe('ImportSrp', () => {
 
     // Verify that validation errors are cleared
     expect(firstInput).not.toBeInvalid();
+  });
+
+  it('does not show error if 24 word seed was selected and 12 word seed was entered', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { queryByText, getByTestId } = render;
+
+    const twentyFourSeedWordOption = getByTestId(
+      'import-srp__multi-srp__switch-word-count-button',
+    );
+
+    fireEvent.click(twentyFourSeedWordOption);
+
+    await waitFor(() => {
+      expect(
+        getByTestId('import-srp__multi-srp__srp-word-23').querySelector(
+          'input',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    expect(
+      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+    ).not.toBeInTheDocument();
   });
 });
