@@ -72,6 +72,10 @@ export const ImportSrp = ({
     return isValidMnemonic(secretRecoveryPhrase.join(' '));
   }, [secretRecoveryPhrase]);
 
+  const hasEmptyWords = useMemo(() => {
+    return secretRecoveryPhrase.some((word) => word === '');
+  }, [secretRecoveryPhrase]);
+
   const onSrpChange = useCallback(
     (newDraftSrp: string[]) => {
       const validateSrp = (phrase: string[], words: boolean[]) => {
@@ -94,10 +98,7 @@ export const ImportSrp = ({
         if (state.error) {
           return state;
         }
-        if (
-          phrase.some((word) => word === '') &&
-          !phrase.slice(0, 11).every((word) => word !== '')
-        ) {
+        if (phrase.some((word) => word === '')) {
           return { ...state, error: t('importSRPNumberOfWordsError') };
         }
         return state;
@@ -322,7 +323,7 @@ export const ImportSrp = ({
       >
         <ButtonPrimary
           width={BlockSize.Full}
-          disabled={!isValidSrp}
+          disabled={!isValidSrp || !hasEmptyWords}
           loading={loading}
           onClick={async () => {
             try {

@@ -310,12 +310,12 @@ describe('ImportSrp', () => {
     expect(firstInput).not.toBeInvalid();
   });
 
-  it('does not show error if 24 word seed was selected and 12 word seed was entered', async () => {
+  it('does not enable submit if 24 word seed was selected and 12 word seed was entered', async () => {
     const render = renderWithProvider(
       <ImportSrp onActionComplete={jest.fn()} />,
       store,
     );
-    const { queryByText, getByTestId } = render;
+    const { getByText, getByTestId } = render;
 
     const twentyFourSeedWordOption = getByTestId(
       'import-srp__multi-srp__switch-word-count-button',
@@ -332,8 +332,18 @@ describe('ImportSrp', () => {
     });
 
     pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-    expect(
-      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
-    ).not.toBeInTheDocument();
+
+    for (const [index, word] of VALID_SECRET_RECOVERY_PHRASE.split(
+      ' ',
+    ).entries()) {
+      // This is safe because the input is always present in the word div.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const input = getByTestId(
+        `import-srp__multi-srp__srp-word-${index}`,
+      ).querySelector('input')!;
+      fireEvent.change(input, { target: { value: word } });
+    }
+
+    expect(getByText('Import wallet')).not.toBeEnabled();
   });
 });
