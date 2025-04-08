@@ -1171,44 +1171,6 @@
         "eslint>fast-deep-equal": true
       }
     },
-    "@metamask/network-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
@@ -1753,7 +1715,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/network-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
@@ -2329,7 +2291,7 @@
         "@ethersproject/providers": true,
         "@ethersproject/wallet": true,
         "@metamask/base-controller": true,
-        "@metamask/transaction-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
