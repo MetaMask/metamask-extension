@@ -1,0 +1,18 @@
+name: ChangeLog Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  check_changelog:
+    uses: 'MetaMask/github-tools/.github/workflows/changelog-check.yml@cryptodev2s/changelog-checker'
+    with:
+      base-branch: main
+      head-ref: ${{ github.head_ref }}
+      pr-number: ${{ github.event.pull_request.number }}
+      repo: ${{ github.repository }}
+    secrets:
+      gh-token: ${{ secrets.GITHUB_TOKEN }}
