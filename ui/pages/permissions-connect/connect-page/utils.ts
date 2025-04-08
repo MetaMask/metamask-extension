@@ -89,6 +89,7 @@ export function getDefaultAccounts(
   allAccounts: MergedInternalAccountWithCaipAccountId[],
 ): MergedInternalAccountWithCaipAccountId[] {
   const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
+  const satisfiedNamespaces = new Set<CaipNamespace>();
 
   supportedRequestedAccounts.forEach((account) => {
     const {
@@ -96,35 +97,31 @@ export function getDefaultAccounts(
     } = parseCaipAccountId(account.caipAccountId);
     if (requestedNamespaces.includes(namespace)) {
       defaultAccounts.push(account);
+      satisfiedNamespaces.add(namespace);
     }
   });
 
-  // sort accounts by lastSelected descending
-  const allAccountsSortedByLastSelected =
-    sortSelectedInternalAccounts(allAccounts);
+  const unsatisfiedNamespaces = requestedNamespaces.filter(
+    (namespace) => !satisfiedNamespaces.has(namespace),
+  );
 
-  for (const namespace of requestedNamespaces) {
-    const defaultAccountExistsForNamespace = defaultAccounts.find((account) => {
-      const {
-        chain: { namespace: accountNamespace },
-      } = parseCaipAccountId(account.caipAccountId);
-      return accountNamespace === namespace;
-    });
+  if (unsatisfiedNamespaces.length > 0) {
+    const allAccountsSortedByLastSelected =
+      sortSelectedInternalAccounts(allAccounts);
 
-    if (defaultAccountExistsForNamespace) {
-      continue;
-    }
+    for (const namespace of unsatisfiedNamespaces) {
+      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
+        (account) => {
+          const {
+            chain: { namespace: accountNamespace },
+          } = parseCaipAccountId(account.caipAccountId);
+          return accountNamespace === namespace;
+        },
+      );
 
-    const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
-      (account) => {
-        const {
-          chain: { namespace: accountNamespace },
-        } = parseCaipAccountId(account.caipAccountId);
-        return accountNamespace === namespace;
-      },
-    );
-    if (defaultAccountForNamespace) {
-      defaultAccounts.push(defaultAccountForNamespace);
+      if (defaultAccountForNamespace) {
+        defaultAccounts.push(defaultAccountForNamespace);
+      }
     }
   }
 
