@@ -166,6 +166,7 @@ export const SENTRY_BACKGROUND_STATE = {
     gasFeeEstimatesByChainId: true,
     nonRPCGasFeeApisDisabled: false,
   },
+  InstitutionalSnapController: {},
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
