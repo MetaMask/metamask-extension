@@ -95,6 +95,9 @@ async function main() {
     {} as { [method: string]: string },
   );
 
+  const server = mockServer(port, await parseOpenRPCDocument(transformedDoc));
+  server.start();
+
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
     {
@@ -117,12 +120,6 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
-
-      const server = mockServer(
-        port,
-        await parseOpenRPCDocument(transformedDoc),
-      );
-      server.start();
 
       const getSession = doc.methods.find(
         (m) => (m as MethodObject).name === 'wallet_getSession',
@@ -173,9 +170,9 @@ async function main() {
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
-      testSpecificMock: async (server: Mockttp) => {
+      testSpecificMock: async (mockedServer: Mockttp) => {
         // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
-        await server
+        await mockedServer
           .forGet('https://foo.io/token-image.svg')
           .thenCallback(() => {
             return {
