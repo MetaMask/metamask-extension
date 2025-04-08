@@ -18,6 +18,7 @@ export enum TraceName {
   DeveloperTest = 'Developer Test',
   FirstRender = 'First Render',
   GetState = 'Get State',
+  ImportNfts = 'Import Nfts',
   ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',
   LazyLoadComponent = 'Lazy Load Component',

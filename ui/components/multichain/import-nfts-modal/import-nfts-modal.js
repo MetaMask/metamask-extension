@@ -55,6 +55,7 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -82,6 +83,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
 
   const handleAddNft = async () => {
+    trace({ name: TraceName.ImportNfts });
     try {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
@@ -101,7 +103,10 @@ export const ImportNftsModal = ({ onClose }) => {
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
+    } finally {
+      endTrace({ name: TraceName.ImportNfts });
     }
+
     if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
