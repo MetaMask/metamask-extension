@@ -306,6 +306,11 @@ export default function ConfirmationPage({
   const pendingConfirmationMessageKey =
     pendingConfirmation?.requestData?.message?.key;
 
+  /**
+   * FIXME: This header <> padding solution isn't ideal. It's a hack to remove the content padding
+   * where we render the header inside of confirmation-page__content. It would be great to remove
+   * this while applying consistent padding for all confirmation-page__content instances.
+   */
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
     isSnapCustomUIDialog ||
