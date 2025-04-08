@@ -1351,6 +1351,7 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
     ///: END:ONLY_INCLUDE_IF
+
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
