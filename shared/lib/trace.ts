@@ -15,6 +15,7 @@ export enum TraceName {
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   BackgroundConnect = 'Background Connect',
   ConnectPage = 'Connect Page',
+  CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
   DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',

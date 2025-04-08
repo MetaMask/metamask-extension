@@ -60,8 +60,8 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
-import { SiteCell } from './site-cell/site-cell';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
+import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
