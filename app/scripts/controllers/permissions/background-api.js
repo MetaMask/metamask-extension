@@ -16,7 +16,7 @@ import {
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -43,46 +43,6 @@ export function getPermissionBackgroundApiMethods({
       }
     }
     return caip25Caveat;
-  };
-
-  const getAllNetworkConfigurationsByCaipChainId = () => {
-    const caipFormattedEvmNetworkConfigurations = {};
-    const { internalAccounts } = accountsController.state;
-    const { networkConfigurationsByChainId } = networkController.state;
-    const { multichainNetworkConfigurationsByChainId } =
-      multichainNetworkController.state;
-
-    Object.entries(networkConfigurationsByChainId).forEach(
-      ([chainId, network]) => {
-        const caipChainId = `eip155:${hexToDecimal(chainId)}`;
-        caipFormattedEvmNetworkConfigurations[caipChainId] = network;
-      },
-    );
-
-    // For now we need to filter out networkConfigurations/scopes without accounts because
-    // the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
-    // due to how the `MultichainRouter.isSupportedScope()` method is implemented
-    Object.entries(multichainNetworkConfigurationsByChainId).forEach(
-      ([caipChainId, networkConfig]) => {
-        const matchesAccount = Object.values(internalAccounts.accounts).some(
-          (account) => {
-            const matchesScope = account.scopes.some((scope) => {
-              return scope === caipChainId;
-            });
-
-            const isSnapEnabled = account.metadata.snap?.enabled;
-
-            return matchesScope && isSnapEnabled;
-          },
-        );
-
-        if (matchesAccount) {
-          caipFormattedEvmNetworkConfigurations[caipChainId] = networkConfig;
-        }
-      },
-    );
-
-    return caipFormattedEvmNetworkConfigurations;
   };
 
   // To add more than one account when already connected to the dapp
@@ -120,7 +80,13 @@ export function getPermissionBackgroundApiMethods({
     let updatedPermittedChainIds = [...existingPermittedChainIds];
 
     const allNetworksList = Object.keys(
-      getAllNetworkConfigurationsByCaipChainId(),
+      getNetworkConfigurationsByCaipChainId({
+        networkConfigurationsByChainId:
+          networkController.state.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          multichainNetworkController.statae.networkConfigurationsByChainId,
+        internalAccounts: accountsController.state.internalAccounts,
+      }),
     );
 
     updatedAccountIds.forEach((caipAccountAddress) => {

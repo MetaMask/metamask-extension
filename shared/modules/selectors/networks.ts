@@ -61,6 +61,65 @@ export function getSelectedNetworkClientId(
 }
 
 /**
+ * Combines and returns network configurations for all chains (EVM and not) by caip chain id.
+ *
+ * @param params - The parameters object.
+ * @param params.multichainNetworkConfigurationsByChainId - network configurations by caip chain id from the MultichainNetworkController state.
+ * @param params.networkConfigurationsByChainId - network configurations by hex chain id from the NetworkController state.
+ * @param params.internalAccounts - InternalAccounts object from the AccountController state.
+ * @returns A consolidated object containing all available network configurations by caip chain id.
+ */
+export const getNetworkConfigurationsByCaipChainId = ({
+  multichainNetworkConfigurationsByChainId,
+  networkConfigurationsByChainId,
+  internalAccounts,
+}: {
+  multichainNetworkConfigurationsByChainId: Record<
+    string,
+    InternalMultichainNetworkConfiguration
+  >;
+  networkConfigurationsByChainId: Record<string, InternalNetworkConfiguration>;
+  internalAccounts: AccountsControllerState['internalAccounts'];
+}) => {
+  const caipFormattedEvmNetworkConfigurations: Record<
+    string,
+    InternalNetworkConfiguration | InternalMultichainNetworkConfiguration
+  > = {};
+
+  Object.entries(networkConfigurationsByChainId).forEach(
+    ([chainId, network]) => {
+      const caipChainId = `eip155:${hexToDecimal(chainId)}`;
+      caipFormattedEvmNetworkConfigurations[caipChainId] = network;
+    },
+  );
+
+  // For now we need to filter out networkConfigurations/scopes without accounts because
+  // the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
+  // due to how the `MultichainRouter.isSupportedScope()` method is implemented
+  Object.entries(multichainNetworkConfigurationsByChainId).forEach(
+    ([caipChainId, networkConfig]) => {
+      const matchesAccount = Object.values(internalAccounts.accounts).some(
+        (account) => {
+          const matchesScope = account.scopes.some((scope) => {
+            return scope === caipChainId;
+          });
+
+          const isSnapEnabled = account.metadata.snap?.enabled;
+
+          return matchesScope && isSnapEnabled;
+        },
+      );
+
+      if (matchesAccount) {
+        caipFormattedEvmNetworkConfigurations[caipChainId] = networkConfig;
+      }
+    },
+  );
+
+  return caipFormattedEvmNetworkConfigurations;
+};
+
+/**
  * Combines and returns network configurations for all chains (EVM and not).
  *
  * @param state - Redux state.
@@ -79,42 +138,11 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     multichainNetworkConfigurationsByChainId,
     internalAccounts,
   ) => {
-    const caipFormattedEvmNetworkConfigurations: Record<
-      string,
-      InternalNetworkConfiguration | InternalMultichainNetworkConfiguration
-    > = {};
-
-    Object.entries(networkConfigurationsByChainId).forEach(
-      ([chainId, network]) => {
-        const caipChainId = `eip155:${hexToDecimal(chainId)}`;
-        caipFormattedEvmNetworkConfigurations[caipChainId] = network;
-      },
-    );
-
-    // For now we need to filter out networkConfigurations/scopes without accounts because
-    // the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
-    // due to how the `MultichainRouter.isSupportedScope()` method is implemented
-    Object.entries(multichainNetworkConfigurationsByChainId).forEach(
-      ([caipChainId, networkConfig]) => {
-        const matchesAccount = Object.values(internalAccounts.accounts).some(
-          (account) => {
-            const matchesScope = account.scopes.some((scope) => {
-              return scope === caipChainId;
-            });
-
-            const isSnapEnabled = account.metadata.snap?.enabled;
-
-            return matchesScope && isSnapEnabled;
-          },
-        );
-
-        if (matchesAccount) {
-          caipFormattedEvmNetworkConfigurations[caipChainId] = networkConfig;
-        }
-      },
-    );
-
-    return caipFormattedEvmNetworkConfigurations;
+    return getNetworkConfigurationsByCaipChainId({
+      networkConfigurationsByChainId,
+      multichainNetworkConfigurationsByChainId,
+      internalAccounts,
+    });
   },
 );
 
