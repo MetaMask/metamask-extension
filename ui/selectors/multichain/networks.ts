@@ -198,3 +198,8 @@ export const getSelectedMultichainNetworkConfiguration = (
 
 export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
   state.metamask.networksWithTransactionActivity;
+
+export const getNetworksWithTransactionActivity = createDeepEqualSelector(
+  getNetworksWithActivity,
+  (networksWithActivity) => networksWithActivity,
+);
