@@ -76,6 +76,7 @@ import {
   getRequestedCaip25CaveatValue,
   getDefaultAccounts,
 } from './utils';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 export type ConnectPageRequest = {
   id: string;
@@ -292,6 +293,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   });
 
   const onConfirm = () => {
+    trace({ name: TraceName.ConnectPage });
     const _request = {
       ...request,
       permissions: {
@@ -304,6 +306,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     };
     approveConnection(_request);
+    endTrace({ name: TraceName.ConnectPage });
   };
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
