@@ -70,8 +70,18 @@ async function mockInfuraWithBenignResponses(mockServer) {
 
 async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockInfura(mockServer);
+  const requestMock = {
+    method: 'eth_sendTransaction',
+    params: [
+      {
+        from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+        value: '0x9184e72a000',
+      },
+    ],
+  };
 
-  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
+  await mockRequest(mockServer, requestMock, {
     block: 20733277,
     result_type: 'Malicious',
     reason: 'transfer_farming',
