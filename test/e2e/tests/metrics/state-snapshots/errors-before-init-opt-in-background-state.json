@@ -60,6 +60,7 @@
       "gasEstimateType": "none",
       "gasFeeEstimates": {}
     },
+    "InstitutionalSnapController": {},
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
