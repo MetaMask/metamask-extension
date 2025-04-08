@@ -600,6 +600,7 @@ describe('AccountListMenu', () => {
     });
 
     it('calls the bitcoin client to create an account', async () => {
+      mockNextAccountName.mockReturnValue('Snap Account 1');
       const { getByText, getByTestId } = render();
 
       const button = getByTestId(

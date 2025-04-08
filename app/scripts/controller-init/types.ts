@@ -8,6 +8,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
 import {
@@ -116,6 +117,13 @@ export type ControllerInitRequest<
    * Includes data and callbacks required to generate metrics.
    */
   getTransactionMetricsRequest(): TransactionMetricsRequest;
+
+  /**
+   * Function to update account balance for network of the transaction
+   */
+  updateAccountBalanceForTransactionNetwork(
+    transactionMeta: TransactionMeta,
+  ): void;
 
   /**
    * A promise that resolves when the offscreen document is ready.
