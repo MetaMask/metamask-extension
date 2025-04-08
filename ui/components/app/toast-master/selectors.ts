@@ -49,10 +49,11 @@ export function selectShowSurveyToast(state: State): boolean {
 }
 
 /**
- * Determines if the privacy policy toast should be shown based on the remote feature flag and whether the toast was clicked or closed.
+ * Determines if the privacy policy toast should be shown based on the remote feature flag
+ * and whether the toast was previously clicked or closed.
  *
  * @param state - The application state containing the privacy policy data.
- * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
+ * @returns An object with a boolean indicating whether to show the toast and the date it was last shown.
  */
 export function selectShowPrivacyPolicyToast(state: State): {
   showPrivacyPolicyToast: boolean;
@@ -65,22 +66,22 @@ export function selectShowPrivacyPolicyToast(state: State): {
   } = state.metamask || {};
 
   const remoteFeatureFlags = state.metamask?.remoteFeatureFlags || {};
-
   const policyUpdateDate = String(
     remoteFeatureFlags.transactionsPrivacyPolicyUpdate || '',
   );
 
   // If the feature flag isn't set or is empty, don't show the toast
   if (!policyUpdateDate) {
-    // No policy update date found
     return { showPrivacyPolicyToast: false, newPrivacyPolicyToastShownDate };
   }
 
-  // Create dates and ensure consistent timezone handling
+  // Parse and validate the policy update date
   const newPrivacyPolicyDate = new Date(policyUpdateDate);
-  const currentDate = new Date();
+  if (isNaN(newPrivacyPolicyDate.getTime())) {
+    return { showPrivacyPolicyToast: false, newPrivacyPolicyToastShownDate };
+  }
 
-  const currentTimestamp = currentDate.getTime();
+  const currentTimestamp = Date.now();
   const policyTimestamp = newPrivacyPolicyDate.getTime();
 
   const isRecent = getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate);
