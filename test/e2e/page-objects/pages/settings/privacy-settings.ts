@@ -124,6 +124,9 @@ class PrivacySettings {
     console.log('Click to delete MetaMetrics data on privacy settings page');
     await this.driver.clickElement(this.deleteMetaMetricsDataButton);
     await this.driver.waitForSelector(this.deleteMetaMetricsModalTitle);
+    // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
+    // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
+    await this.driver.delay(3000);
     await this.driver.clickElementAndWaitToDisappear(this.confirmDeleteMetaMetricsDataButton);
   }
 
