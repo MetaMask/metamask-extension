@@ -3485,9 +3485,6 @@
     "message": "1T",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5124,13 +5121,6 @@
   "step1LedgerWalletMsg": {
     "message": "Unduh, atur, dan masukkan kata sandi Anda untuk membuka $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "Hubungkan OneKey Anda"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Pasang OneKey langsung ke komputer dan buka. Pastikan Anda menggunakan passphrase yang benar.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Hubungkan Trezor Anda"
