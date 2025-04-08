@@ -7,7 +7,56 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { getPermissionBackgroundApiMethods } from './background-api';
+import { setupPermissionBackgroundApiMethods } from './background-api';
+import * as NetworkSelectors from '../../../../shared/modules/selectors/networks';
+import { getAccountByAddress } from '../../../../ui/helpers/utils/util';
+
+jest.mock('../../../../shared/modules/selectors/networksb', () => ({
+  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
+  getNetworkConfigurationsByCaipChainId: jest.fn(),
+}));
+const MockNetworkSelectors = jest.mocked(NetworkSelectors);
+
+const baseParams = {
+  permissionController: ,
+  approvalController,
+  accountsController,
+  networkController,
+  multichainNetworkController,
+}
+
+const setupPermissionBackgroundApiMethods = (overrides) => {
+  const params = {
+    permissionController: {
+      getCaveat: jest.fn(),
+      updateCaveat: jest.fn(),
+      grantPermissions: jest.fn(),
+      revokePermission: jest.fn(),
+    },
+    approvalController: {
+      addAndShowApprovalRequest: jest.fn()
+    },
+    accountsController: {
+      getAccountByAddress: jest.fn(),
+      state: {
+        internalAccounts: {}
+      }
+    },
+    networkController: {
+      state: {
+        networkConfigurationsByChainId: {}
+      }
+    },
+    multichainNetworkController: {
+      state: {
+        multichainNetworkConfigurationsByChainId: {}
+      }
+    },
+    ...overrides
+  }
+
+  return getPermissionBackgroundApiMethods(params)
+}
 
 describe('permission background API methods', () => {
   afterEach(() => {
@@ -21,7 +70,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccount('foo.com', '0x1');
       } catch (err) {
@@ -43,7 +92,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccount('foo.com', '0x1'),
       ).toThrow(
@@ -61,7 +110,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccount('foo.com', '0x1'),
       ).toThrow(new Error(`unexpected getCaveat error`));
@@ -84,7 +133,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
           accountsController,
         }).addPermittedAccount('foo.com', '0x4');
@@ -98,7 +147,11 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the caip account address added', () => {
+    it('calls updateCaveat with the caip account address added to added scopes when no matching scopes exist', () => {
+
+    })
+
+    it('calls updateCaveat with the caip account address added to existing matching scopes when they exist', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -133,7 +186,7 @@ describe('permission background API methods', () => {
         }),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
         accountsController,
       }).addPermittedAccount('foo.com', '0x4');
@@ -190,7 +243,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccounts('foo.com', ['0x1']);
       } catch (err) {
@@ -212,7 +265,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccounts('foo.com', ['0x1']),
       ).toThrow(
@@ -230,7 +283,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccounts('foo.com', ['0x1']),
       ).toThrow(new Error(`unexpected getCaveat error`));
@@ -253,7 +306,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
           accountsController,
         }).addPermittedAccounts('foo.com', ['0x4', '0x5']);
@@ -311,7 +364,7 @@ describe('permission background API methods', () => {
           }),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
         accountsController,
       }).addPermittedAccounts('foo.com', ['0x4', '0x5']);
@@ -371,7 +424,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedAccount('foo.com', '0x1');
       } catch (err) {
@@ -393,7 +446,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedAccount('foo.com', '0x1'),
       ).toThrow(
@@ -411,7 +464,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedAccount('foo.com', '0x1'),
       ).toThrow(new Error(`unexpected getCaveat error`));
@@ -434,7 +487,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
           accountsController,
         }).removePermittedAccount('foo.com', '0x1');
@@ -484,7 +537,7 @@ describe('permission background API methods', () => {
         }),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
         accountsController,
       }).removePermittedAccount('foo.com', '0xdeadbeef');
@@ -523,7 +576,7 @@ describe('permission background API methods', () => {
         }),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
         accountsController,
       }).removePermittedAccount('foo.com', '0x1');
@@ -569,7 +622,7 @@ describe('permission background API methods', () => {
         }),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
         accountsController,
       }).removePermittedAccount('foo.com', '0x2');
@@ -637,7 +690,7 @@ describe('permission background API methods', () => {
         grantPermissions: jest.fn(),
       };
 
-      const result = getPermissionBackgroundApiMethods({
+      const result = setupPermissionBackgroundApiMethods({
         approvalController,
         permissionController,
       }).requestAccountsAndChainPermissionsWithId('foo.com');
@@ -686,7 +739,7 @@ describe('permission background API methods', () => {
         grantPermissions: jest.fn(),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         approvalController,
         permissionController,
       }).requestAccountsAndChainPermissionsWithId('foo.com');
@@ -709,7 +762,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChain('foo.com', 'eip155:1');
       } catch (err) {
@@ -731,7 +784,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChain('foo.com', 'eip155:1'),
       ).toThrow(
@@ -749,7 +802,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChain('foo.com', 'eip155:1'),
       ).toThrow(new Error(`unexpected getCaveat error`));
@@ -783,7 +836,7 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
       }).addPermittedChain('foo.com', 'eip155:1337');
 
@@ -827,7 +880,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChains('foo.com', ['eip155:1']);
       } catch (err) {
@@ -849,7 +902,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChains('foo.com', ['eip155:1']),
       ).toThrow(
@@ -867,7 +920,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChains('foo.com', ['eip155:1']),
       ).toThrow(new Error(`unexpected getCaveat error`));
@@ -901,7 +954,7 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
       }).addPermittedChains('foo.com', ['eip155:4', 'eip155:5']);
 
@@ -948,7 +1001,7 @@ describe('permission background API methods', () => {
       };
 
       try {
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedChain('foo.com', 'eip155:1');
       } catch (err) {
@@ -970,7 +1023,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedChain('foo.com', 'eip155:1'),
       ).toThrow(
@@ -988,7 +1041,7 @@ describe('permission background API methods', () => {
       };
 
       expect(() =>
-        getPermissionBackgroundApiMethods({
+        setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedChain('foo.com', 'eip155:1'),
       ).toThrow(new Error(`unexpected getCaveat error`));
@@ -1020,7 +1073,7 @@ describe('permission background API methods', () => {
         revokePermission: jest.fn(),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
       }).removePermittedChain('foo.com', 'eip155:12345');
 
@@ -1043,7 +1096,7 @@ describe('permission background API methods', () => {
         revokePermission: jest.fn(),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
       }).removePermittedChain('foo.com', 'eip155:1');
 
@@ -1078,7 +1131,7 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
-      getPermissionBackgroundApiMethods({
+      setupPermissionBackgroundApiMethods({
         permissionController,
       }).removePermittedChain('foo.com', 'eip155:10');
 
