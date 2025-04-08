@@ -19,7 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
@@ -85,6 +85,7 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
+import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
@@ -96,7 +97,7 @@ export function NftDetailsComponent({
   nftChainId: string;
 }) {
   const {
-    image,
+    image: _image,
     imageOriginal,
     name,
     description,
@@ -132,6 +133,7 @@ export function NftDetailsComponent({
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftImageAlt = getNftImageAlt(nft);
+  const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
@@ -292,8 +294,8 @@ export function NftDetailsComponent({
         type: AssetType.NFT,
         details: {
           ...nft,
-          tokenId: Number(nft.tokenId),
-          image: nft.image ?? undefined,
+          tokenId: nft.tokenId as unknown as number,
+          image: image ?? undefined,
         },
       }),
     );
@@ -350,14 +352,6 @@ export function NftDetailsComponent({
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-
-  const renderShortTokenId = (text: string, chars: number) => {
-    if (text.length <= MAX_TOKEN_ID_LENGTH) {
-      return text;
-    }
-    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
-  };
-
   const nftItemSrc = isImageHosted ? image : nftImageURL;
 
   return (
@@ -410,7 +404,7 @@ export function NftDetailsComponent({
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
                 variant={TextVariant.headingMd}
-                fontWeight={FontWeight.Bold}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.textDefault}
                 fontStyle={FontStyle.Normal}
                 style={{ fontSize: '24px' }}

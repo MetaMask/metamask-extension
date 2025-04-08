@@ -106,6 +106,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
         const tokenList = tokens as Token[];
         tokenList.forEach((token: Token) => {
           const { isNative, address, decimals } = token;
+
           const balance =
             calculateTokenBalance({
               isNative,
@@ -138,6 +139,14 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             balance !== '0' ||
             (token.isNative && isOnCurrentNetwork)
           ) {
+            // title is used for sorting. We override native ETH to Ethereum
+            let title;
+            if (token.isNative) {
+              title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
+            } else {
+              title = token.name || token.symbol;
+            }
+
             tokensWithBalance.push({
               ...token,
               address: token.address as CaipAssetType,
@@ -147,7 +156,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               string: String(balance),
               primary: '',
               secondary: 0,
-              title: '',
+              title,
             });
           }
         });

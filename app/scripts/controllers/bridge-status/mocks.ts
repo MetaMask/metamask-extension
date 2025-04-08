@@ -1,4 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   BridgeId,
   StatusResponse,
@@ -123,6 +124,7 @@ export const getMockQuote = ({
   srcTokenAmount: '991250000000000',
   srcAsset: {
     address: '0x0000000000000000000000000000000000000000',
+    assetId: getNativeAssetForChainId(srcChainId).assetId,
     chainId: srcChainId,
     symbol: 'ETH',
     decimals: 18,
@@ -137,6 +139,7 @@ export const getMockQuote = ({
   destTokenAmount: '990654755978612',
   destAsset: {
     address: '0x0000000000000000000000000000000000000000',
+    assetId: getNativeAssetForChainId(destChainId).assetId,
     chainId: destChainId,
     symbol: 'ETH',
     decimals: 18,
@@ -152,6 +155,7 @@ export const getMockQuote = ({
       amount: '8750000000000',
       asset: {
         address: '0x0000000000000000000000000000000000000000',
+        assetId: getNativeAssetForChainId(srcChainId).assetId,
         chainId: srcChainId,
         symbol: 'ETH',
         decimals: 18,
@@ -178,6 +182,7 @@ export const getMockQuote = ({
       },
       srcAsset: {
         address: '0x0000000000000000000000000000000000000000',
+        assetId: getNativeAssetForChainId(srcChainId).assetId,
         chainId: srcChainId,
         symbol: 'ETH',
         decimals: 18,
@@ -190,6 +195,7 @@ export const getMockQuote = ({
       },
       destAsset: {
         address: '0x0000000000000000000000000000000000000000',
+        assetId: getNativeAssetForChainId(destChainId).assetId,
         chainId: destChainId,
         symbol: 'ETH',
         decimals: 18,

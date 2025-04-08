@@ -280,6 +280,12 @@ export const ImportSrp = ({
         <BannerAlert
           severity={BannerAlertSeverity.Danger}
           description={srpError}
+          actionButtonLabel={t('clear')}
+          actionButtonOnClick={() => {
+            onSrpChange(Array(defaultNumberOfWords).fill(''));
+            setSrpError('');
+          }}
+          data-testid="bannerAlert"
         />
       ) : null}
 
@@ -290,6 +296,8 @@ export const ImportSrp = ({
             loading={loading}
             onClick={async () => {
               setNumberOfWords(24);
+              setSrpError('');
+              setInvalidSrpWords(Array(24).fill(false));
             }}
           >
             {t('importNWordSRP', ['24'])}

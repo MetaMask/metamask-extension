@@ -552,8 +552,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId:
-            metamaskController.networkController.state.selectedNetworkClientId,
+          networkClientId: undefined,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
@@ -3577,15 +3576,13 @@ describe('MetaMaskController', () => {
     });
 
     describe('incoming transactions', () => {
-      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
+      it('starts incoming transaction polling if useExternalServices is enabled for that chainId', async () => {
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: true,
-          },
+          useExternalServices: true,
         });
 
         expect(
@@ -3593,15 +3590,13 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async () => {
+      it('stops incoming transaction polling if useExternalServices is disabled for that chainId', async () => {
         expect(
           TransactionController.prototype.stopIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: false,
-          },
+          useExternalServices: false,
         });
 
         expect(
