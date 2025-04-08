@@ -211,9 +211,19 @@ async function walletCreateSessionHandler(
             return isEqualCaseInsensitive(address, existingEvmAddress);
           });
         }
-
         const getNonEvmAccountAddressesForChainId =
           hooks.getNonEvmAccountAddresses(caipChainId);
+
+        if (namespace === KnownCaipNamespace.Solana) {
+          return getNonEvmAccountAddressesForChainId.some(
+            (existingCaipAddress) => {
+              // solana addresses are case sensitive
+              return accountAddress === existingCaipAddress;
+            },
+          );
+        }
+        // TODO we may need to handle case sensitivity for other namespaces
+        // For now, we only support solana case sensitivity
         return getNonEvmAccountAddressesForChainId.some(
           (existingCaipAddress) => {
             return isEqualCaseInsensitive(accountAddress, existingCaipAddress);
