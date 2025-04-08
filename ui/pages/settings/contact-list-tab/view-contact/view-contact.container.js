@@ -24,6 +24,7 @@ const mapStateToProps = (state, ownProps) => {
   const internalAccount = getInternalAccountByAddress(state, address);
 
   const contact = getAddressBookEntry(state, address);
+  console.log(contact, 'contact');
   const { memo } = contact || {};
   const name = contact?.name || internalAccount.metadata.name;
 

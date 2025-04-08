@@ -34,14 +34,17 @@ const mapStateToProps = (state, ownProps) => {
   const { memo } = contact || {};
   const name =
     contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
+  console.log(contact, getInternalAccountByAddress(state, address));
 
   const { chainId } = getProviderConfig(state);
+  const contactChainId = contact?.chainId || chainId;
+  console.log(contactChainId, 'contactChainId');
 
   return {
     address: contact ? address : null,
     addressBook: getAddressBook(state),
     internalAccounts: getInternalAccounts(state),
-    chainId,
+    contactChainId,
     name,
     memo,
     networks,
@@ -52,8 +55,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToAddressBook: (recipient, nickname, memo) =>
-      dispatch(addToAddressBook(recipient, nickname, memo)),
+    addToAddressBook: (recipient, nickname, memo, customChainId) =>
+      dispatch(addToAddressBook(recipient, nickname, memo, customChainId)),
     removeFromAddressBook: (chainId, addressToRemove) =>
       dispatch(removeFromAddressBook(chainId, addressToRemove)),
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),

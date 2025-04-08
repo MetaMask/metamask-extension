@@ -28,7 +28,6 @@ export default class ContactListTab extends Component {
   };
 
   static propTypes = {
-    addressBook: PropTypes.array,
     completeAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
     history: PropTypes.object,
@@ -59,26 +58,15 @@ export default class ContactListTab extends Component {
   }
 
   renderAddresses() {
-    const {
-      addressBook,
-      completeAddressBook,
-      internalAccounts,
-      history,
-      selectedAddress,
-    } = this.props;
+    const { completeAddressBook, internalAccounts, history, selectedAddress } =
+      this.props;
     const dattu = completeAddressBook.map((ch) => Object.values(ch));
     const dattuMap = dattu.flat();
     const contacts = dattuMap.filter(({ name }) => Boolean(name));
-
-    console.log(
-      Object.values(completeAddressBook),
-      contacts,
-      'completeAddressBook',
-    );
     const nonContacts = dattuMap.filter(({ name }) => !name);
     const { t } = this.context;
 
-    if (addressBook.length) {
+    if (completeAddressBook.length) {
       return (
         <div>
           <ContactList
@@ -175,9 +163,7 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, addressBook, currentPath, completeAddressBook } =
-      this.props;
-    // console.log(completeAddressBook, 'completeAddressBook');
+    const { addingContact, currentPath, completeAddressBook } = this.props;
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}

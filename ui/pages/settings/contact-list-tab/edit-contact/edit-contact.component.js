@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import Button from '../../../../components/ui/button/button.component';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
@@ -33,9 +32,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { AssetPickerModalNetwork } from '../../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network';
 import { I18nContext } from '../../../../contexts/i18n';
-import { setActiveNetworkWithError } from '../../../../store/actions';
+import { ContactNetworks } from '../contact-networks';
 
 const EditContact = ({
   addressBook,
@@ -45,20 +43,20 @@ const EditContact = ({
   removeFromAddressBook,
   name = '',
   address,
-  chainId,
+  contactChainId,
   memo = '',
   viewRoute,
   listRoute,
 }) => {
   const t = useContext(I18nContext);
   const history = useHistory();
-  const dispatch = useDispatch();
   const [contactName, setContactName] = useState(name);
   const [newAddress, setNewAddress] = useState(address);
   const [newMemo, setNewMemo] = useState(memo);
   const [nameError, setNameError] = useState('');
   const [addressError, setAddressError] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [selectedChainId, setSelectedChainId] = useState(contactChainId);
 
   const validateName = (nameValue) => {
     if (nameValue === name) {
@@ -103,7 +101,7 @@ const EditContact = ({
         <Button
           type="link"
           onClick={async () => {
-            await removeFromAddressBook(chainId, address);
+            await removeFromAddressBook(contactChainId, address);
             history.push(listRoute);
           }}
         >
@@ -170,9 +168,9 @@ const EditContact = ({
             <Box display={Display.Flex} gap={2}>
               <AvatarNetwork
                 size={AvatarNetworkSize.Sm}
-                src={getImageForChainId(chainId) || undefined}
+                src={getImageForChainId(selectedChainId) || undefined}
               />
-              <Text>{networks?.[chainId]?.name}</Text>
+              <Text>{networks?.[selectedChainId]?.name}</Text>
             </Box>
             <Icon
               name={IconName.ArrowDown}
@@ -185,26 +183,39 @@ const EditContact = ({
       <PageContainerFooter
         cancelText={t('cancel')}
         onSubmit={async () => {
+          const isChainChanged = selectedChainId !== contactChainId;
+
           if (newAddress && newAddress !== address) {
             if (
               !isBurnAddress(newAddress) &&
               isValidHexAddress(newAddress, { mixedCaseUseChecksum: true })
             ) {
-              await removeFromAddressBook(chainId, address);
+              await removeFromAddressBook(contactChainId, address);
               await addToAddressBook(
                 newAddress,
                 contactName || name,
                 newMemo || memo,
+                selectedChainId,
               );
               history.push(listRoute);
             } else {
               setAddressError(t('invalidAddress'));
             }
+          } else if (isChainChanged) {
+            await removeFromAddressBook(contactChainId, address);
+            await addToAddressBook(
+              address,
+              contactName || name,
+              newMemo || memo,
+              selectedChainId,
+            );
+            history.push(listRoute);
           } else {
             await addToAddressBook(
               address,
               contactName || name,
               newMemo || memo,
+              selectedChainId,
             );
             history.push(listRoute);
           }
@@ -214,20 +225,11 @@ const EditContact = ({
         disabled={!contactName.trim() || nameError}
       />
       {showModal && (
-        <AssetPickerModalNetwork
+        <ContactNetworks
           isOpen
           onClose={() => setShowModal(false)}
-          selectedChainIds={Object.keys(networks)}
-          onNetworkChange={(networkConfig) => {
-            console.log(networkConfig, 'networkClientId');
-            dispatch(
-              setActiveNetworkWithError(
-                networkConfig.rpcEndpoints[
-                  networkConfig.defaultRpcEndpointIndex
-                ].networkClientId || networkConfig.chainId,
-              ),
-            );
-          }}
+          selectedChainId={selectedChainId}
+          onSelect={(chainname) => setSelectedChainId(chainname)}
         />
       )}
     </div>
@@ -242,7 +244,7 @@ EditContact.propTypes = {
   removeFromAddressBook: PropTypes.func.isRequired,
   name: PropTypes.string,
   address: PropTypes.string.isRequired,
-  chainId: PropTypes.string,
+  contactChainId: PropTypes.string,
   memo: PropTypes.string,
   viewRoute: PropTypes.string.isRequired,
   listRoute: PropTypes.string.isRequired,
