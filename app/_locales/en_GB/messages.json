@@ -6181,9 +6181,6 @@
   "transactionErrored": {
     "message": "Transaction encountered an error."
   },
-  "transactionFailedBannerMessage": {
-    "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
-  },
   "transactionFlowNetwork": {
     "message": "Network"
   },
