@@ -82,7 +82,9 @@ export const ContactNetworks = ({
                   ] ?? name
                 }
                 selected={selectedChainId === chainId}
-                onClick={() => onSelect?.(chainId)}
+                onClick={() => {
+                  onSelect?.(chainId), onClose;
+                }}
                 iconSrc={getImageForChainId(chainId)}
                 iconSize={AvatarNetworkSize.Sm}
                 focus={false}
@@ -101,7 +103,9 @@ export const ContactNetworks = ({
                   ] ?? name
                 }
                 selected={selectedChainId === chainId}
-                onClick={() => onSelect?.(chainId)}
+                onClick={() => {
+                  onSelect?.(chainId), onClose;
+                }}
                 iconSrc={getImageForChainId(chainId)}
                 iconSize={AvatarNetworkSize.Sm}
                 focus={false}

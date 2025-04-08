@@ -74,6 +74,7 @@ export default class ContactList extends PureComponent {
       addressBook,
       internalAccounts,
     );
+
     const unsortedContactsByLetter = searchForContacts().reduce(
       (obj, contact) => {
         const firstLetter = contact.name[0].toUpperCase();

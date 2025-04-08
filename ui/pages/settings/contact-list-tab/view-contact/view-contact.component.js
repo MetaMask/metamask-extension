@@ -44,16 +44,6 @@ function ViewContact({
   if (!address) {
     return <Redirect to={{ pathname: listRoute }} />;
   }
-  console.log(
-    history,
-    name,
-    address,
-    checkSummedAddress,
-    memo,
-    editRoute,
-    listRoute,
-    "view-contact"
-  );
 
   return (
     <div className="settings-page__content-row">
