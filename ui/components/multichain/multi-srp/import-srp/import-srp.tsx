@@ -72,9 +72,12 @@ export const ImportSrp = ({
     return isValidMnemonic(secretRecoveryPhrase.join(' '));
   }, [secretRecoveryPhrase]);
 
-  const hasEmptyWords = useMemo(() => {
-    return secretRecoveryPhrase.some((word) => word === '');
-  }, [secretRecoveryPhrase]);
+  const hasEmptyWordsOrIncorrectLength = useMemo(() => {
+    return (
+      secretRecoveryPhrase.some((word) => word === '') ||
+      secretRecoveryPhrase.length !== numberOfWords
+    );
+  }, [secretRecoveryPhrase, numberOfWords]);
 
   const onSrpChange = useCallback(
     (newDraftSrp: string[]) => {
@@ -323,7 +326,7 @@ export const ImportSrp = ({
       >
         <ButtonPrimary
           width={BlockSize.Full}
-          disabled={!isValidSrp || !hasEmptyWords}
+          disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
           loading={loading}
           onClick={async () => {
             try {

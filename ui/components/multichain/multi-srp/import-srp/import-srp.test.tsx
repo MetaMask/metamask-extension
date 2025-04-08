@@ -331,8 +331,6 @@ describe('ImportSrp', () => {
       ).toBeInTheDocument();
     });
 
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-
     for (const [index, word] of VALID_SECRET_RECOVERY_PHRASE.split(
       ' ',
     ).entries()) {
