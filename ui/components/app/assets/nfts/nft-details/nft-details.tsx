@@ -416,7 +416,7 @@ export function NftDetailsComponent({
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
                 variant={TextVariant.headingMd}
-                fontWeight={FontWeight.Bold}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.textDefault}
                 fontStyle={FontStyle.Normal}
                 style={{ fontSize: '24px' }}
