@@ -52,6 +52,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   string
 > = {
   [CHAIN_IDS.MAINNET]: 'Ethereum',
+  [MultichainNetworks.ETHEREUM]: 'Ethereum',
   [CHAIN_IDS.LINEA_MAINNET]: 'Linea',
   [CHAIN_IDS.POLYGON]: NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON],
   [CHAIN_IDS.AVALANCHE]: 'Avalanche',
