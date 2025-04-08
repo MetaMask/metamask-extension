@@ -52,7 +52,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   string
 > = {
   [CHAIN_IDS.MAINNET]: 'Ethereum',
-  [MultichainNetworks.ETHEREUM]: 'Ethereum',
+  [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: 'Ethereum',
   [CHAIN_IDS.LINEA_MAINNET]: 'Linea',
   [CHAIN_IDS.POLYGON]: NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON],
   [CHAIN_IDS.AVALANCHE]: 'Avalanche',
@@ -71,7 +71,6 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]:
     NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
   [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
-  [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
