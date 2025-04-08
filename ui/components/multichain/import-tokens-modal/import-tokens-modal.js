@@ -113,6 +113,7 @@ import { getImageForChainId } from '../../../selectors/multichain';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 const ACTION_MODES = {
   // Displays the import token modal
@@ -1011,7 +1012,9 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonPrimary
               size={Size.LG}
               onClick={async () => {
+                trace({ name: TraceName.ImportTokens });
                 await handleAddTokens();
+                endTrace({ name: TraceName.ImportTokens });
                 history.push(DEFAULT_ROUTE);
               }}
               block
