@@ -134,6 +134,18 @@ export const getMultichainNetworkConfigurationsByChainId =
       if (solanaEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] = {
+          chainId: SolScope.Testnet,
+          name: 'Solana Testnet',
+          nativeCurrency: `${SolScope.Testnet}/slip44:501`,
+          isEvm: false,
+        };
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] = {
+          chainId: SolScope.Devnet,
+          name: 'Solana Testnet',
+          nativeCurrency: `${SolScope.Testnet}/slip44:501`,
+          isEvm: false,
+        };
       }
       ///: END:ONLY_INCLUDE_IF
 

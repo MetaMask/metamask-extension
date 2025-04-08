@@ -50,7 +50,11 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+  NON_EVM_TESTNETS,
+  NETWORK_TO_ACCOUNT_TYPE_MAP,
+} from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -190,12 +194,17 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestnetsList, testnetsList], [id, network]) => {
+          let isTest = false;
           const chainId = network.isEvm
             ? convertCaipToHexChainId(id as CaipChainId)
             : id;
-          // This is type casted to string since chainId could be
-          // Hex or CaipChainId.
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          if (network.isEvm) {
+            const hexChainId = convertCaipToHexChainId(id as CaipChainId);
+            isTest = (TEST_CHAINS as string[]).includes(hexChainId);
+          } else {
+            // @ts-expect-error - Ignore error
+            isTest = NON_EVM_TESTNETS.includes(chainId);
+          }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];
         },
@@ -493,12 +502,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
+    const name = network.isEvm
+      ? network.name
+      : MULTICHAIN_NETWORK_TO_NICKNAME[network.chainId];
 
     return (
       <NetworkListItem
         key={network.chainId}
         chainId={network.chainId}
-        name={network.name}
+        name={name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
         selected={isCurrentNetwork && !focusSearch}
@@ -752,7 +764,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     selectedNonEvmNetwork
   ) {
     title = t('addNonEvmAccount', [
-      MULTICHAIN_NETWORK_TO_NICKNAME[selectedNonEvmNetwork],
+      NETWORK_TO_ACCOUNT_TYPE_MAP[selectedNonEvmNetwork],
     ]);
   } else {
     title = editedNetwork?.name ?? '';
