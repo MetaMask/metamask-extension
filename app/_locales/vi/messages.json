@@ -6143,9 +6143,6 @@
   "transactionErrored": {
     "message": "Giao dịch đã gặp lỗi."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Giao dịch này sẽ khiến bạn tốn thêm phí, vì vậy chúng tôi đã dừng lại. Tiền của bạn vẫn còn trong ví."
-  },
   "transactionFlowNetwork": {
     "message": "Mạng"
   },
