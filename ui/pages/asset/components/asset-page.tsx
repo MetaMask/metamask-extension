@@ -2,7 +2,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
 import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -67,6 +67,7 @@ import { getPricePrecision, localizeLargeNumber } from '../util';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -114,6 +115,10 @@ const AssetPage = ({
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = useMultichainSelector(getMultichainIsEvm);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AssetDetails });
+  }, []);
 
   const { chainId, type, symbol, name, image, decimals } = asset;
 
