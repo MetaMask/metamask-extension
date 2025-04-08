@@ -103,9 +103,9 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionDate": "object",
+        "conversionRate": null,
+        "usdConversionRate": null
       },
       "SepoliaETH": {
         "conversionDate": "number",
