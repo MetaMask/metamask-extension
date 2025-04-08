@@ -921,26 +921,6 @@ const PrepareBridgePage = () => {
               onClose={() => setIsLowReturnBannerOpen(false)}
             />
           )}
-          {tokenAlert && isTokenAlertBannerOpen && (
-            <BannerAlert
-              ref={tokenAlertBannerRef}
-              marginInline={4}
-              marginBottom={3}
-              title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
-              severity={
-                tokenAlert.type === TokenFeatureType.MALICIOUS
-                  ? BannerAlertSeverity.Danger
-                  : BannerAlertSeverity.Warning
-              }
-              description={
-                tokenAlert.descriptionId
-                  ? t(tokenAlert.descriptionId)
-                  : tokenAlert.description
-              }
-              textAlign={TextAlign.Left}
-              onClose={() => setIsTokenAlertBannerOpen(false)}
-            />
-          )}
           {!isLoading &&
             activeQuote &&
             !isInsufficientBalance(srcTokenBalance) &&
