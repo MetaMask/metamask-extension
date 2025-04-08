@@ -5,7 +5,6 @@ import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-curren
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { Asset } from '../../../../ducks/send';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   TextColor,
@@ -19,6 +18,7 @@ import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenWithBalance } from '../asset-picker-modal/types';
+import { getMultichainCurrentCurrency } from '../../../../selectors/multichain';
 
 export type AssetBalanceTextProps = {
   asset: Asset;
@@ -32,7 +32,7 @@ export function AssetBalanceText({
   error,
 }: AssetBalanceTextProps) {
   const t = useI18nContext();
-  const secondaryCurrency = useSelector(getCurrentCurrency);
+  const secondaryCurrency = useSelector(getMultichainCurrentCurrency);
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 

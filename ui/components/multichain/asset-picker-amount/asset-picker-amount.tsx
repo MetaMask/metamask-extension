@@ -15,7 +15,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getIpfsGateway,
-  getNativeCurrencyImage,
   getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
@@ -32,9 +31,12 @@ import {
   type Asset,
 } from '../../../ducks/send';
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getMultichainCurrentChainId,
+  getMultichainNativeCurrency,
+  getMultichainNativeCurrencyImage,
+} from '../../../selectors/multichain';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -84,9 +86,9 @@ export const AssetPickerAmount = ({
   const isMaxMode = useSelector(getSendMaxModeState);
   const isNativeSendPossible = useSelector(getIsNativeSendPossible);
 
-  const currentChainId = useSelector(getCurrentChainId);
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const nativeCurrencySymbol = useSelector(getMultichainNativeCurrency);
+  const nativeCurrencyImageUrl = useSelector(getMultichainNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
