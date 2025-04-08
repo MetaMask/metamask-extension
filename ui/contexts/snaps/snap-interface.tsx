@@ -99,7 +99,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   ) => {
     handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
       snapId,
-      origin: '',
+      origin: 'metamask',
       handler: 'onUserInput',
       request: {
         jsonrpc: '2.0',
@@ -161,7 +161,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const uploadFile = (name: string, file: FileObject | null) => {
     handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
       snapId,
-      origin: '',
+      origin: 'metamask',
       handler: 'onUserInput',
       request: {
         jsonrpc: '2.0',

@@ -71,7 +71,7 @@ describe('SnapUIFileInput', () => {
       [
         {
           handler: 'onUserInput',
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             method: ' ',
@@ -104,7 +104,7 @@ describe('SnapUIFileInput', () => {
       [
         {
           handler: 'onUserInput',
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             method: ' ',
@@ -125,7 +125,7 @@ describe('SnapUIFileInput', () => {
       [
         {
           handler: 'onUserInput',
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             method: ' ',
