@@ -7,6 +7,7 @@ import {
   setAccountLabel,
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
 } from '../../../store/actions';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { CreateAccount } from '../create-account';
 
 export const CreateEthAccount = ({
@@ -19,6 +20,7 @@ export const CreateEthAccount = ({
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
+    trace({ name: TraceName.AddAccount });
     const newAccountAddress = await dispatch(
       addNewAccount(
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
@@ -30,6 +32,7 @@ export const CreateEthAccount = ({
       dispatch(setAccountLabel(newAccountAddress, name));
     }
     onActionComplete(true);
+    endTrace({ name: TraceName.AddAccount });
   };
 
   const getNextAvailableAccountName = async () => {
