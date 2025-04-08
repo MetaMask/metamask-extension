@@ -2978,6 +2978,7 @@ export default class MetamaskController extends EventEmitter {
                 KnownSessionProperties.SolanaAccountChangedNotifications,
               );
 
+            // returns a map of origins to permitted solana accounts
             const solanaAccounts = getPermittedAccountsForScopesByOrigin(
               this.permissionController.state,
               [
@@ -2987,17 +2988,19 @@ export default class MetamaskController extends EventEmitter {
               ],
             );
 
-            for (const [origin, accounts] of solanaAccounts.entries()) {
-              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
+            if (solanaAccounts.size > 0) {
+              for (const [origin, accounts] of solanaAccounts.entries()) {
+                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                  const { address } = parseCaipAccountId(caipAccountId);
+                  return address;
+                });
 
-              if (
-                parsedSolanaAddresses.includes(account.address) &&
-                originsWithSolanaAccountChangedNotifications[origin]
-              ) {
-                this._notifySolanaAccountChange(origin, [account.address]);
+                if (
+                  parsedSolanaAddresses.includes(account.address) &&
+                  originsWithSolanaAccountChangedNotifications[origin]
+                ) {
+                  this._notifySolanaAccountChange(origin, [account.address]);
+                }
               }
             }
           }

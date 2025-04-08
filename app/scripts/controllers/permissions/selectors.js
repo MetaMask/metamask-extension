@@ -30,7 +30,8 @@ const getSubjects = (state) => state.subjects;
 export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
-    return Object.values(subjects).reduce((originToAccountsMap, subject) => {
+    const originToAccountsMap = new Map();
+    Object.values(subjects).forEach((subject) => {
       const caveats =
         subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
@@ -40,8 +41,8 @@ export const getPermittedAccountsByOrigin = createSelector(
         const ethAccounts = getEthAccounts(caveat.value);
         originToAccountsMap.set(subject.origin, ethAccounts);
       }
-      return originToAccountsMap;
-    }, new Map());
+    });
+    return originToAccountsMap;
   },
 );
 
@@ -56,7 +57,8 @@ export const getPermittedAccountsForScopesByOrigin = createSelector(
   getSubjects,
   (_, scopes) => scopes,
   (subjects, scopes) => {
-    return Object.values(subjects).reduce((originToAccountsMap, subject) => {
+    const originToAccountsMap = new Map();
+    Object.values(subjects).forEach((subject) => {
       const caveats =
         subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
@@ -72,8 +74,8 @@ export const getPermittedAccountsForScopesByOrigin = createSelector(
           originToAccountsMap.set(subject.origin, scopeAccounts);
         }
       }
-      return originToAccountsMap;
-    }, new Map());
+    });
+    return originToAccountsMap;
   },
 );
 
