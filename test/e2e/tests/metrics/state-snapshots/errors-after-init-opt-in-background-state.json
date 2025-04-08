@@ -60,6 +60,7 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
+  "AssetsContractController": "undefined",
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
     "bridgeFeatureFlags": {
@@ -219,7 +220,6 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
-  "AssetsContractController": "undefined",
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
