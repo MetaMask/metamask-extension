@@ -3714,9 +3714,6 @@
     "message": "1 Г",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5453,13 +5450,6 @@
   "step1LedgerWalletMsg": {
     "message": "Скачайте $1, настройте его и введите пароль для его разблокировки.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "Подключите свой OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Подключите свой OneKey напрямую к компьютеру и разблокируйте его. Убедитесь, что вы используете правильную парольную фразу.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Подключить кошелек Trezor"
