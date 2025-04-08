@@ -46,11 +46,8 @@ async function main() {
         `./test/test-results/e2e/${filename}`,
         'utf8',
       );
-      console.log(`Parsing ${filename}`);
-      console.log(file);
       const results = await XML.parse(file);
-      console.log(results);
-      for (const suite of results.testsuites.testsuite) {
+      for (const suite of results.testsuites.testsuite || []) {
         if (!suite.testcase) continue;
         const name = `${suite.$.name}`;
         const fullPath = `${suite.$.file}`;
