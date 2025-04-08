@@ -58,7 +58,7 @@ export function getPermissionBackgroundApiMethods({
     // setPermittedAccounts currently sets accounts on all matching
     // namespaces, not just the exact CaipChainId.
     const caipAccountIds = internalAccounts.map((internalAccount) => {
-      return `${internalAccount.scopes[0]}}:${internalAccount.address}`;
+      return `${internalAccount.scopes[0]}:${internalAccount.address}`;
     });
 
     const existingPermittedAccountIds = getAllAccountIdsFromCaip25CaveatValue(
