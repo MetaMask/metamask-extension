@@ -55,7 +55,6 @@ export default function TransactionStatusLabel({
   isEarliestNonce,
   className,
   statusOnly,
-  shouldShowTooltip,
 }) {
   const t = useI18nContext();
   const statusKey = getStatusKey(status, isEarliestNonce);
@@ -66,7 +65,7 @@ export default function TransactionStatusLabel({
     statusText = date;
   }
 
-  return shouldShowTooltip ? (
+  return (
     <Tooltip
       position="top"
       title={tooltipText}
@@ -79,17 +78,6 @@ export default function TransactionStatusLabel({
     >
       {statusText}
     </Tooltip>
-  ) : (
-    <div
-      data-testid="transaction-status-label"
-      className={classnames(
-        'transaction-status-label',
-        className,
-        statusToClassNameHash[statusKey],
-      )}
-    >
-      {statusText}
-    </div>
   );
 }
 
@@ -100,9 +88,4 @@ TransactionStatusLabel.propTypes = {
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
   statusOnly: PropTypes.bool,
-  shouldShowTooltip: PropTypes.bool,
-};
-
-TransactionStatusLabel.defaultProps = {
-  shouldShowTooltip: true,
 };

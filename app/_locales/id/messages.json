@@ -5821,9 +5821,6 @@
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Transaksi ini akan dikenakan biaya tambahan, jadi kami menghentikannya. Uang Anda masih ada di dompet."
-  },
   "transactionFlowNetwork": {
     "message": "Jaringan"
   },
