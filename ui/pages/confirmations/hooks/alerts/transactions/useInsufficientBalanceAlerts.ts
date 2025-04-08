@@ -23,7 +23,11 @@ import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { id: transactionId, selectedGasFeeToken } = currentConfirmation ?? {};
+  const {
+    id: transactionId,
+    chainId,
+    selectedGasFeeToken,
+  } = currentConfirmation ?? {};
 
   const batchTransactionValues =
     currentConfirmation?.nestedTransactions?.map(
@@ -31,7 +35,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     ) ?? [];
 
   const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId),
+    selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
   const value = useSelector((state) =>
