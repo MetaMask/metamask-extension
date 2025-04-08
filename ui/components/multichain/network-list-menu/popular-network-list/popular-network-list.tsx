@@ -42,6 +42,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { translate } from '@metamask/snaps-utils';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -96,18 +97,22 @@ const PopularNetworkList = ({
             />
             <Popover
               referenceElement={referenceElement}
-              position={PopoverPosition.Top}
+              position={PopoverPosition.TopStart}
+              paddingTop={3}
+              paddingBottom={3}
+              offset={[16, 12]}
               isOpen={isOpen}
-              matchWidth
               flip
-              hasArrow
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={BackgroundColor.backgroundMuted}
               onMouseLeave={handleMouseLeave}
+              style={{
+                width: '326px'
+              }}
             >
-              {t('popularNetworkAddToolTip', [
+              <Text variant={TextVariant.bodyMd}> {t('popularNetworkAddToolTip')} </Text>
                 <Box key="learn-more-link">
                   <ButtonLink
-                    size={ButtonLinkSize.Inherit}
+                    size={ButtonLinkSize.Auto}
                     externalLink
                     onClick={() => {
                       global.platform.openTab({
@@ -117,8 +122,7 @@ const PopularNetworkList = ({
                   >
                     {t('learnMoreUpperCase')}
                   </ButtonLink>
-                </Box>,
-              ])}
+                </Box>
             </Popover>
           </Box>
         </Box>
