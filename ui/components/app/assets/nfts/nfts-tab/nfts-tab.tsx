@@ -37,7 +37,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import Spinner from '../../../../ui/spinner';
-import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
@@ -118,10 +118,12 @@ export default function NftsTab() {
   };
 
   const onRefresh = () => {
+    trace({ name: TraceName.NftsTabRefresh });
     if (isMainnet) {
       dispatch(detectNfts(allChainIds));
     }
     checkAndUpdateAllNftsOwnershipStatus();
+    endTrace({ name: TraceName.NftsTabRefresh });
   };
 
   const sortedNfts = sortAssets(currentlyOwnedNfts, {
