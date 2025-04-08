@@ -14,11 +14,14 @@ const mockDailyAllowance = {
 };
 
 export default {
-  title: 'Components/Vault/RemoteMode/RemoteModeDailyAllowanceCard', component: RemoteModeDailyAllowanceCard,
-  id: 'pages-remote-mode-daily-allowance--docs',decorators: [
-
+  title: 'components/vault/remotemode/remotemodedailyallowancecard',
+  component: RemoteModeDailyAllowanceCard,
+  id: 'pages-remote-mode-daily-allowance--docs',
+  decorators: [
     (story) => (
-      <Provider store={store}><MemoryRouter>{story()}</MemoryRouter></Provider>
+      <Provider store={store}>
+        <MemoryRouter>{story()}</MemoryRouter>
+      </Provider>
     ),
   ],
 };

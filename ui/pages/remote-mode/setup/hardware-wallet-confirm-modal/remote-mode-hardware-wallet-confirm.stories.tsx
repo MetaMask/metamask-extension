@@ -7,7 +7,7 @@ import RemoteModeHardwareWalletConfirm from './remote-mode-hardware-wallet-confi
 const store = configureStore({});
 
 export default {
-  title: 'Components/Vault/RemoteMode/HardwareWalletConfirm',
+  title: 'components/vault/remotemode/hardwarewalletconfirm',
   component: RemoteModeHardwareWalletConfirm,
   id: 'pages-remote-mode-hardware-wallet-confirm--docs',
   decorators: [

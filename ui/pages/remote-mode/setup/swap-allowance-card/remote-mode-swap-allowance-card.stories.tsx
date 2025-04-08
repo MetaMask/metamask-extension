@@ -14,7 +14,7 @@ const mockSwapAllowance = {
 };
 
 export default {
-  title: 'Components/Vault/RemoteMode/RemoteModeSwapAllowanceCard',
+  title: 'components/vault/remotemode/remotemodeswapallowancecard',
   component: RemoteModeSwapAllowanceCard,
   id: 'pages-remote-mode-swap-allowance--docs',
   decorators: [
