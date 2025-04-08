@@ -161,6 +161,10 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountFromNetwork": {
+    "message": "Add $1 account",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -5031,6 +5035,12 @@
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
+  },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode is here!"
   },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
