@@ -193,21 +193,10 @@ export const getSelectedMultichainNetworkConfiguration = (
   return networkConfigurationsByChainId[chainId];
 };
 
-/**
- * Selector to get networks with transaction activity for all accounts
- *
- * @param state - The global state object
- * @returns The networks with transaction activity by account address
- */
-export const networksWithTransactionActivity = (
-  state: MultichainNetworkConfigState,
-) => state.metamask.networksWithTransactionActivity;
+export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
+  state.metamask.networksWithTransactionActivity;
 
-/**
- * Memoized selector that returns networks with transaction activity
- * Uses deep equality comparison to prevent unnecessary rerenders
- */
-export const getChainIdsWithTransactionActivity = createDeepEqualSelector(
-  networksWithTransactionActivity,
+export const getNetworksWithTransactionActivity = createDeepEqualSelector(
+  getNetworksWithActivity,
   (networksWithActivity) => networksWithActivity,
 );
