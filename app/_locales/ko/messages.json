@@ -6143,9 +6143,6 @@
   "transactionErrored": {
     "message": "트랜잭션에 오류가 발생했습니다."
   },
-  "transactionFailedBannerMessage": {
-    "message": "이 트랜잭션은 추가 수수료가 발생할 가능성이 있어 중단했습니다. 자금은 여전히 지갑에 있습니다."
-  },
   "transactionFlowNetwork": {
     "message": "네트워크"
   },
