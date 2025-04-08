@@ -1,7 +1,6 @@
 import { AuthorizationList } from '@metamask/transaction-controller';
 import React from 'react';
 import { act } from '@testing-library/react';
-
 import configureStore from '../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';

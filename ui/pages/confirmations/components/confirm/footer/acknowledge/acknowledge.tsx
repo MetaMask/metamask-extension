@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useIsUpgradeTransaction } from '../../info/hooks/useIsUpgradeTransaction';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { Checkbox } from '../../../../../../components/component-library';
