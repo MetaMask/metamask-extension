@@ -35,7 +35,10 @@ import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
 import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
-import { DEFAULT_ROUTE, REMOTE_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  REMOTE_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
