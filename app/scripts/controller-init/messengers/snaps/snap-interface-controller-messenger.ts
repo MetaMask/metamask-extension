@@ -13,6 +13,7 @@ import { MultichainAssetsControllerGetStateAction } from '@metamask/assets-contr
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 
 type Actions =
@@ -24,7 +25,8 @@ type Actions =
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerListMultichainAccountsAction;
+  | AccountsControllerListMultichainAccountsAction
+  | AccountsControllerSetSelectedAccountAction;
 
 type Events = NotificationListUpdatedEvent;
 
@@ -55,6 +57,7 @@ export function getSnapInterfaceControllerMessenger(
       `AccountsController:getSelectedMultichainAccount`,
       `AccountsController:getAccountByAddress`,
       `AccountsController:listMultichainAccounts`,
+      `AccountsController:setSelectedAccount`,
     ],
     allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
   });
