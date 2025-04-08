@@ -172,7 +172,6 @@ export default function RemoteModeSetupSwaps({
                 <Box display={Display.Flex} gap={2}>
                   <Text>Authorized account</Text>
                   <Tooltip
-                    onHidden={function noRefCheck() {}}
                     position="top"
                     title="Anyone with access to this account can swap with the allowances you grant below"
                     trigger="mouseenter"
@@ -206,7 +205,6 @@ export default function RemoteModeSetupSwaps({
                   <Box display={Display.Flex} gap={2}>
                     <Text>Recipient</Text>
                     <Tooltip
-                      onHidden={function noRefCheck() {}}
                       position="top"
                       title="Swapped funds are always received in your hardware account."
                       trigger="mouseenter"
@@ -479,7 +477,7 @@ export default function RemoteModeSetupSwaps({
                 >
                   <Text>
                     {swapAllowance.length} token
-                    {swapAllowance.length !== 1 ? 's' : ''} enabled
+                    {swapAllowance.length === 1 ? '' : 's'} enabled
                   </Text>
                   <Text color={TextColor.infoDefault}>
                     {isAllowancesExpanded ? (

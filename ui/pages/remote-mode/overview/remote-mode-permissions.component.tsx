@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { Box, Text } from '../../../components/component-library';
 import Card from '../../../components/ui/card';
@@ -19,8 +18,6 @@ export default function RemoteModePermissions({
   setStartEnableRemoteSwap?: (startEnableRemoteSwap: boolean) => void;
   setStartEnableDailyAllowance?: (startEnableDailyAllowance: boolean) => void;
 }) {
-  const history = useHistory();
-
   const handleEnableRemoteSwap = () => {
     if (setStartEnableRemoteSwap) {
       setStartEnableRemoteSwap(true);

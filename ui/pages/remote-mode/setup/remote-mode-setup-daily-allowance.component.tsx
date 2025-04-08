@@ -169,7 +169,6 @@ export default function RemoteModeSetupDailyAllowance({
                 <Box display={Display.Flex} gap={2}>
                   <Text>Authorized account</Text>
                   <Tooltip
-                    onHidden={function noRefCheck() {}}
                     position="top"
                     title="Anyone with access to this account can swap with the allowances you grant below"
                     trigger="mouseenter"
@@ -416,7 +415,7 @@ export default function RemoteModeSetupDailyAllowance({
                 >
                   <Text>
                     {dailyAllowance.length} token
-                    {dailyAllowance.length !== 1 ? 's' : ''} enabled
+                    {dailyAllowance.length === 1 ? '' : 's'} enabled
                   </Text>
                   <Text color={TextColor.infoDefault}>
                     {isAllowancesExpanded ? (

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import {
   Box,
@@ -19,16 +19,15 @@ import {
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { DailyAllowance, DailyAllowanceTokenTypes } from '../../remote.types';
+import { DailyAllowance } from '../../remote.types';
 
 /**
  * A card component that displays and manages a single daily allowance entry in remote mode.
  * Shows the token type and daily limit amount, with the ability to remove the allowance.
  *
+ * @param props - The component props
  * @param props.dailyAllowance - The daily allowance configuration to display
  * @param props.onRemove - Callback function triggered when the allowance is removed
- * @param props.dailyAllowance.dailyAllowance
- * @param props.dailyAllowance.onRemove
  * @returns A card component displaying the daily allowance information
  */
 export default function RemoteModeDailyAllowanceCard({
@@ -38,10 +37,6 @@ export default function RemoteModeDailyAllowanceCard({
   dailyAllowance: DailyAllowance;
   onRemove: () => void;
 }) {
-  const [selectedToken] = useState<DailyAllowanceTokenTypes>(
-    DailyAllowanceTokenTypes.ETH,
-  );
-
   const handleRemoveToken = useCallback(() => {
     onRemove();
   }, [onRemove]);

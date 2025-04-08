@@ -18,10 +18,9 @@ type StepIndicatorProps = {
 /**
  * A component that displays the current step number and total steps in a setup process.
  *
- * @param currentStep.currentStep
- * @param currentStep - The current step number in the process
- * @param totalSteps - The total number of steps in the process
- * @param currentStep.totalSteps
+ * @param props - The component props
+ * @param props.currentStep - The current step number in the process
+ * @param props.totalSteps - The total number of steps in the process
  */
 export default function StepIndicator({
   currentStep,

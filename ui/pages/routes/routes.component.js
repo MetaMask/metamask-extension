@@ -137,9 +137,7 @@ const ReviewPermissions = mmLazy(() =>
 );
 const Home = mmLazy(() => import('../home'));
 
-const RemoteModeOverview = mmLazy(() =>
-  import('../remote-mode/overview/remote-mode-overview.container'),
-);
+const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
 const RemoteModeSetupSwaps = mmLazy(() =>
   import('../remote-mode/setup/remote-mode-setup-swaps.component'),
 );

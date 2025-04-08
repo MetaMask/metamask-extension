@@ -25,11 +25,10 @@ import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
  * RemoteModeSwapAllowanceCard displays a card showing swap allowance details
  * for a specific token, including the token info, swap destination, and daily limit
  *
+ * @param props - The component props
  * @param props.swapAllowance - The swap allowance configuration containing
- *   token details, destination, and amount limits
+ * token details, destination, and amount limits
  * @param props.onRemove - Callback function triggered when the remove button is clicked
- * @param props.swapAllowance.swapAllowance
- * @param props.swapAllowance.onRemove
  * @returns A card component displaying swap allowance info
  */
 export default function RemoteModeSwapAllowanceCard({
