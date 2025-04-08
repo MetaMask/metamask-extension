@@ -14,7 +14,7 @@ class TestDappIndividualRequest {
    *
    * @param expectedResult - The expected result from the individual request.
    */
-  async check_expectedResult(expectedResult: string) {
+  async checkExpectedResult(expectedResult: string) {
     console.log('Verify the result from the individual request.');
     await this.driver.waitForSelector({
       tag: this.result,
