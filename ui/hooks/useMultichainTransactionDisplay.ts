@@ -40,28 +40,27 @@ export function useMultichainTransactionDisplay(
   networkConfig: MultichainProviderConfig,
 ) {
   const locale = useSelector(getIntlLocale);
-  const isNegative = transaction.type === TransactionType.Send;
 
   const assetInputs = aggregateAmount(
     transaction.from as Movement[],
-    isNegative,
+    true,
     locale,
     networkConfig.decimals,
   );
   const assetOutputs = aggregateAmount(
     transaction.to as Movement[],
-    isNegative,
+    transaction.type === TransactionType.Send,
     locale,
     networkConfig.decimals,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
-    isNegative,
+    true,
     locale,
   );
   const priorityFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
-    isNegative,
+    true,
     locale,
   );
 
