@@ -332,7 +332,6 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
  * @param transactionMetricsRequest.getHDEntropyIndex - Returns Index of the currently selected HD Keyring
- * @param transactionMetricsRequest.getRemoteFeatureFlags - Returns the remote feature flags object
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
@@ -342,7 +341,6 @@ export const handlePostTransactionBalanceUpdate = async (
     getParticipateInMetrics,
     trackEvent,
     getHDEntropyIndex,
-    getRemoteFeatureFlags,
   }: TransactionMetricsRequest,
   {
     transactionMeta,
