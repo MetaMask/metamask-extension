@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.16.0]
+
 ## [12.15.2]
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
@@ -5893,8 +5894,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...HEAD
-[12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.16.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...HEAD
+[12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.16.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
 [12.15.1]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.15.1
 [12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0
