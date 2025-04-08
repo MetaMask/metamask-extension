@@ -65,9 +65,9 @@ import {
 } from '../../../selectors/multichain';
 import { getPricePrecision, localizeLargeNumber } from '../util';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 /** Information about a native or token asset */
 export type Asset = (
