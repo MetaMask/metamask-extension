@@ -28,7 +28,7 @@ const mockAccounts: [InternalAccount] = [
 ];
 
 export default {
-  title: 'Pages/Vault/RemoteMode/Setup',
+  title: 'Pages/Vault/RemoteMode/SetupSwaps',
   component: RemoteModeSetupSwaps,
   decorators: [
     (story) => (
