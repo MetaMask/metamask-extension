@@ -41,7 +41,7 @@ export const handleBridgeTransactionComplete = async (
     backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
     getRemoteFeatureFlags: () => {
-      'transactions-tx-hash-in-analytics'?: boolean;
+      transactionsTxHashInAnalytics?: boolean;
       [key: string]: boolean | undefined;
     };
   },

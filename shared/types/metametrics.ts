@@ -67,7 +67,7 @@ export type TransactionMetricsRequest = {
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
   getRemoteFeatureFlags: () => {
-    'transactions-tx-hash-in-analytics'?: boolean;
+    transactionsTxHashInAnalytics?: boolean;
     [key: string]: boolean | undefined;
   };
 };

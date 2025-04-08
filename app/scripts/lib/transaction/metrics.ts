@@ -353,15 +353,6 @@ export const handlePostTransactionBalanceUpdate = async (
   },
 ) => {
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
-    // Prepare the transaction hash addition if feature flag is enabled
-    const shouldAddTransactionHash =
-      getRemoteFeatureFlags?.()?.['transactions-tx-hash-in-analytics'] &&
-      transactionMeta.hash;
-
-    const transactionHashProperty = shouldAddTransactionHash
-      ? { transaction_hash: transactionMeta.hash }
-      : {};
-
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
         event: MetaMetricsEventName.SwapFailed,
@@ -422,7 +413,6 @@ export const handlePostTransactionBalanceUpdate = async (
           // browsers.
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
-          ...transactionHashProperty, // Add transaction hash to sensitive properties
         },
         properties: {
           hd_entropy_index: getHDEntropyIndex(),
