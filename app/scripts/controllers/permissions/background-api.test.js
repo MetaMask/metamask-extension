@@ -7,23 +7,14 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { setupPermissionBackgroundApiMethods } from './background-api';
+import { getPermissionBackgroundApiMethods } from './background-api';
 import * as NetworkSelectors from '../../../../shared/modules/selectors/networks';
-import { getAccountByAddress } from '../../../../ui/helpers/utils/util';
 
-jest.mock('../../../../shared/modules/selectors/networksb', () => ({
+jest.mock('../../../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/modules/selectors/networks'),
   getNetworkConfigurationsByCaipChainId: jest.fn(),
 }));
 const MockNetworkSelectors = jest.mocked(NetworkSelectors);
-
-const baseParams = {
-  permissionController: ,
-  approvalController,
-  accountsController,
-  networkController,
-  multichainNetworkController,
-}
 
 const setupPermissionBackgroundApiMethods = (overrides) => {
   const params = {
@@ -61,6 +52,7 @@ const setupPermissionBackgroundApiMethods = (overrides) => {
 describe('permission background API methods', () => {
   afterEach(() => {
     jest.resetAllMocks();
+    MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue({})
   });
 
   describe('addPermittedAccount', () => {
@@ -130,6 +122,9 @@ describe('permission background API methods', () => {
 
       const accountsController = {
         getAccountByAddress: jest.fn(),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       try {
@@ -184,6 +179,9 @@ describe('permission background API methods', () => {
           address: '0x4',
           scopes: ['eip155:0'],
         }),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       setupPermissionBackgroundApiMethods({
@@ -303,6 +301,9 @@ describe('permission background API methods', () => {
 
       const accountsController = {
         getAccountByAddress: jest.fn(),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       try {
@@ -362,6 +363,9 @@ describe('permission background API methods', () => {
             address: '0x5',
             scopes: ['eip155:0'],
           }),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       setupPermissionBackgroundApiMethods({
@@ -484,6 +488,9 @@ describe('permission background API methods', () => {
 
       const accountsController = {
         getAccountByAddress: jest.fn(),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       try {
@@ -535,6 +542,9 @@ describe('permission background API methods', () => {
           address: '0xdeadbeef',
           scopes: ['eip155:0'],
         }),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       setupPermissionBackgroundApiMethods({
@@ -574,6 +584,9 @@ describe('permission background API methods', () => {
           address: '0x1',
           scopes: ['eip155:0'],
         }),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       setupPermissionBackgroundApiMethods({
@@ -620,6 +633,9 @@ describe('permission background API methods', () => {
           address: '0x2',
           scopes: ['eip155:0'],
         }),
+        state: {
+          internalAccounts: {}
+        }
       };
 
       setupPermissionBackgroundApiMethods({
