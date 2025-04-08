@@ -6,7 +6,6 @@ import { isEqual } from 'lodash';
 import { removeSlide } from '../../../store/actions';
 import { Carousel } from '..';
 import {
-  getSelectedAccountCachedBalance,
   getAppIsLoading,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
@@ -21,10 +20,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
-import {
-  useCarouselManagement,
-  ZERO_BALANCE,
-} from '../../../hooks/useCarouselManagement';
+import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -39,7 +35,6 @@ export const AccountOverviewLayout = ({
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
-  const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
@@ -48,10 +43,7 @@ export const AccountOverviewLayout = ({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   ///: END:ONLY_INCLUDE_IF
 
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
-  const { slides } = useCarouselManagement({
-    hasZeroBalance,
-  });
+  const { slides } = useCarouselManagement();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBridgeExperience } = useBridging();
@@ -78,9 +70,6 @@ export const AccountOverviewLayout = ({
   };
 
   const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
-    if (id === 'fund' && hasZeroBalance) {
-      return;
-    }
     if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
