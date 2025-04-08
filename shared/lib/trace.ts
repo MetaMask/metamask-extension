@@ -26,6 +26,7 @@ export enum TraceName {
   Middleware = 'Middleware',
   NestedTest1 = 'Nested Test 1',
   NestedTest2 = 'Nested Test 2',
+  NetworkList = 'Network List',
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
   SetupStore = 'Setup Store',
