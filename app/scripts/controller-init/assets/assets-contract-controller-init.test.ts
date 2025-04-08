@@ -1,4 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
+import { AssetsContractController } from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -6,7 +7,7 @@ import {
   getAssetsContractControllerMessenger,
 } from '../messengers/assets';
 import { AssetsContractControllerInit } from './assets-contract-controller-init';
-import { AssetsContractController } from '@metamask/assets-controllers';
+
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
