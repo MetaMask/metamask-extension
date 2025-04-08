@@ -48,7 +48,6 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
 } as const;
 
 export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
-  [MultichainNetworks.ETHEREUM]: 'Ethereum',
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin (testnet)',
   [MultichainNetworks.SOLANA]: 'Solana',
