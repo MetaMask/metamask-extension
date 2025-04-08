@@ -75,6 +75,8 @@ export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_TOKEN_IMAGE_URL =
   './images/bitcoin-testnet-logo.svg';
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
+export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
+export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
 export const SOLANA_BLOCK_EXPLORER_URL = 'https://solscan.io';
@@ -115,8 +117,8 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
-  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_TOKEN_IMAGE_URL,
-  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TOKEN_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
 } as const;
 
 export const MULTICHAIN_PROVIDER_CONFIGS: Record<
