@@ -3049,7 +3049,6 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `MultichainTransactionsController:transactionConfirmed`,
       (transaction) => {
-
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.TransactionFinalized,
           category: MetaMetricsEventCategory.Transactions,
@@ -3068,7 +3067,6 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `MultichainTransactionsController:transactionSubmitted`,
       (transaction) => {
-
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.TransactionSubmitted,
           category: MetaMetricsEventCategory.Transactions,
