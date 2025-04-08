@@ -19,6 +19,7 @@ export class SwapSendPage {
   }
 
   fillRecipientAddressInput = async (address: string) => {
+    console.log('Step: fillRecipientAddressInput');
     await this.driver.fill(
       'input[placeholder="Enter public address (0x) or domain name"]',
       address,
@@ -29,6 +30,7 @@ export class SwapSendPage {
     assetName: string,
     location: 'src' | 'dest' = 'src',
   ): Promise<void> {
+    console.log('Step: clickOnAsset');
     const isDest = location === 'dest';
     const buttons = await this.driver.findElements(
       '[data-testid="asset-picker-button"]',
@@ -46,6 +48,7 @@ export class SwapSendPage {
     symbol: string,
     location: 'src' | 'dest' = 'src',
   ) => {
+    console.log('Step: searchAndSelectToken');
     const isDest = location === 'dest';
     const buttons = await this.driver.findElements(
       '[data-testid="asset-picker-button"]',
@@ -107,6 +110,7 @@ export class SwapSendPage {
     expectedInputValues: string[],
     delayInMs = 0,
   ) => {
+    console.log('Step: verifyAssetSymbolsAndAmounts');
     await this.driver.delay(1000);
     const assetPickers = await this.driver.findElements(
       '[data-testid="asset-picker-button"]',
@@ -140,6 +144,7 @@ export class SwapSendPage {
   };
 
   fillAmountInput = async (amount: string) => {
+    console.log('Step: fillAmountInput');
     await this.driver.waitForSelector('[data-testid="currency-input"]');
     await this.driver.fill('[data-testid="currency-input"]', amount);
   };
@@ -148,6 +153,7 @@ export class SwapSendPage {
     expectedAssetSymbols: string[],
     expectedInputValues: string[],
   ) => {
+    console.log('Step: verifyMaxButtonClick');
     const maxButton = await this.driver.findElement(
       '[data-testid="max-clear-button"]',
     );
@@ -170,6 +176,7 @@ export class SwapSendPage {
     initialParams: string[][],
     _expectedParams: string[][],
   ) => {
+    console.log('Step: switchPrimaryCurrency');
     await this.verifyAssetSymbolsAndAmounts(initialParams[0], initialParams[1]);
 
     // TODO click currency switch button
@@ -185,6 +192,7 @@ export class SwapSendPage {
     initialParams: string[][],
     expectedParams: string[][],
   ) => {
+    console.log('Step: verifySwitchPrimaryCurrency');
     await this.switchPrimaryCurrency(initialParams, expectedParams);
     // TODO uncomment these
     // await this.switchPrimaryCurrency(expectedParams, initialParams);
@@ -197,6 +205,7 @@ export class SwapSendPage {
     expectedGasFee: string,
     expectedGasFeeInFiat: string,
   ) => {
+    console.log('Step: verifyQuoteDisplay');
     // TODO verify that swaps was only called once
     const quoteRate = await this.driver.findElement(
       '[data-testid="quote-card__conversion-rate"]',
@@ -223,6 +232,7 @@ export class SwapSendPage {
     expectedTokenChange?: string,
     expectedFiatChange?: string,
   ) => {
+    console.log('Step: verifyHistoryEntry');
     // TODO loop through entries by the same confirmation
     const status = await this.driver.findElement(
       `.transaction-status-label--${expectedStatus.toLowerCase()}`,
@@ -256,6 +266,7 @@ export class SwapSendPage {
   };
 
   submitSwap = async () => {
+    console.log('Step: submitSwap');
     await (
       await this.driver.findClickableElement({
         text: 'Confirm',
