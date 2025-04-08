@@ -2728,6 +2728,7 @@ export default class MetamaskController extends EventEmitter {
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
     if (process.env.MULTICHAIN_API) {
+      // wallet_sessionChanged and eth_subscription setup/teardown
       this.controllerMessenger.subscribe(
         `${this.permissionController.name}:stateChange`,
         async (currentValue, previousValue) => {
@@ -2799,7 +2800,14 @@ export default class MetamaskController extends EventEmitter {
             });
             this._notifyAuthorizationChange(origin, authorization);
           }
+        },
+        getAuthorizedScopesByOrigin,
+      );
 
+      // wallet_notify for solana accountChanged when permission changes
+      this.controllerMessenger.subscribe(
+        `${this.permissionController.name}:stateChange`,
+        async (currentValue, previousValue) => {
           const origins = uniq([
             ...previousValue.keys(),
             ...currentValue.keys(),
@@ -2882,6 +2890,7 @@ export default class MetamaskController extends EventEmitter {
         getAuthorizedScopesByOrigin,
       );
 
+      // wallet_notify for solana accountChanged when selected account changes
       this.controllerMessenger.subscribe(
         `${this.accountsController.name}:selectedAccountChange`,
         async (account) => {
