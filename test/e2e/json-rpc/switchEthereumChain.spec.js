@@ -352,4 +352,171 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
     );
   });
+
+  describe('There are pending confirmation in the old network', function () {
+    it('show alerts on permission network if user does not have permission on new network', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleNode()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          dappOptions: { numberOfDapps: 2 },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                blockTime: 2,
+                vmErrorsOnRPCResponse: false,
+                mnemonic:
+                  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
+            await unlockWallet(driver);
+
+            await openDapp(driver);
+
+            await driver.clickElement('#personalSign');
+
+            // switchEthereumChain request
+            const switchEthereumChainRequest = JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x53a' }],
+            });
+
+            // Initiate switchEthereumChain on the Dapp
+            await driver.executeScript(
+              `window.ethereum.request(${switchEthereumChainRequest})`,
+            );
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            await driver.clickElement(
+              '[data-testid="confirm-nav__next-confirmation"]',
+            );
+
+            // User reviews pending alerts
+            await driver.clickElement({ text: 'Confirm', tag: 'button' });
+            await driver.clickElement(
+              '[data-testid="alert-modal-action-showPendingConfirmation"]',
+            );
+
+            // user confirms permissions
+            await driver.clickElement(
+              '[data-testid="confirm-nav__next-confirmation"]',
+            );
+            await driver.clickElement({ text: 'Confirm', tag: 'button' });
+            await driver.clickElement('[data-testid="alert-modal-button"]');
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+            // Wait for chain id element to change, there's a page reload.
+            await driver.waitForSelector({
+              css: '#chainId',
+              text: '0x53a',
+            });
+          }
+        },
+      );
+    });
+
+    it('show alerts on switch network page if user does has permission on new network', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleNode()
+            .withPermissionControllerConnectedToTestDappWithChains([
+              '0x539',
+              '0x53a',
+            ])
+            .build(),
+          dappOptions: { numberOfDapps: 2 },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                blockTime: 2,
+                vmErrorsOnRPCResponse: false,
+                mnemonic:
+                  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
+            await unlockWallet(driver);
+
+            await openDapp(driver);
+
+            await driver.clickElement('#personalSign');
+
+            // switchEthereumChain request
+            const switchEthereumChainRequest = JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x53a' }],
+            });
+
+            // Initiate switchEthereumChain on the Dapp
+            await driver.executeScript(
+              `window.ethereum.request(${switchEthereumChainRequest})`,
+            );
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            await driver.clickElement(
+              '[data-testid="confirm-nav__next-confirmation"]',
+            );
+
+            // User reviews pending alerts
+            await driver.clickElement({
+              text: 'Switch network',
+              tag: 'button',
+            });
+            await driver.clickElement(
+              '[data-testid="alert-modal-action-showPendingConfirmation"]',
+            );
+
+            // user confirms permissions
+            await driver.clickElement(
+              '[data-testid="confirm-nav__next-confirmation"]',
+            );
+            await driver.clickElement({
+              text: 'Switch network',
+              tag: 'button',
+            });
+            await driver.clickElement('[data-testid="alert-modal-button"]');
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+            // Wait for chain id element to change, there's a page reload.
+            await driver.waitForSelector({
+              css: '#chainId',
+              text: '0x53a',
+            });
+          }
+        },
+      );
+    });
+  });
 });
