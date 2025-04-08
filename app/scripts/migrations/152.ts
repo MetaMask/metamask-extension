@@ -93,7 +93,7 @@ export async function migrate(
       global.sentry.captureException(newError);
     }
     // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests for work
+    // the migrator tests to work
     versionedData.data = originalVersionedData.data;
   }
 
