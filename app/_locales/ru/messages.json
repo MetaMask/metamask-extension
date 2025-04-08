@@ -6143,9 +6143,6 @@
   "transactionErrored": {
     "message": "Транзакция обнаружила ошибку."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Эта транзакция потребовала бы дополнительных комиссий, поэтому мы остановили ее. Ваши деньги все еще в Вашем кошельке."
-  },
   "transactionFlowNetwork": {
     "message": "Сеть"
   },
