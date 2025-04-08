@@ -223,7 +223,10 @@
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch"
+    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
+    "@metamask/accounts-controller@^27.0.0": "npm:@metamask-previews/accounts-controller@27.0.0-preview-c7dcfd5a",
+    "@metamask/profile-sync-controller@^11.0.1": "npm:@metamask-previews/profile-sync-controller@11.0.0-preview-c7dcfd5a",
+    "@metamask/multichain-transaction-controller@^0.9.0": "npm:@metamask-previews/multichain-transaction-controller@0.9.0-preview-c7dcfd5a"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -259,7 +262,7 @@
     "@metamask/address-book-controller": "^6.0.3",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A55.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-55.0.1-c79349f4b7.patch",
+    "@metamask/assets-controllers": "patch:@metamask-previews/assets-controllers@npm%3A56.0.0-preview-c7dcfd5a#~/.yarn/patches/@metamask-assets-controllers-npm-55.0.1-c79349f4b7.patch",
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.9.0",
     "@metamask/bridge-controller": "^11.0.0",
