@@ -10,16 +10,20 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import {
   getAllAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
   accountsController,
+  networkController,
+  multichainNetworkController,
 }) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (origin) => {
@@ -39,6 +43,46 @@ export function getPermissionBackgroundApiMethods({
       }
     }
     return caip25Caveat;
+  };
+
+  const getAllNetworkConfigurationsByCaipChainId = () => {
+    const caipFormattedEvmNetworkConfigurations = {};
+    const { internalAccounts } = accountsController.state;
+    const { networkConfigurationsByChainId } = networkController.state;
+    const { multichainNetworkConfigurationsByChainId } =
+      multichainNetworkController.state;
+
+    Object.entries(networkConfigurationsByChainId).forEach(
+      ([chainId, network]) => {
+        const caipChainId = `eip155:${hexToDecimal(chainId)}`;
+        caipFormattedEvmNetworkConfigurations[caipChainId] = network;
+      },
+    );
+
+    // For now we need to filter out networkConfigurations/scopes without accounts because
+    // the `endowment:caip25` caveat validator will throw if there are no supported accounts for the given scope
+    // due to how the `MultichainRouter.isSupportedScope()` method is implemented
+    Object.entries(multichainNetworkConfigurationsByChainId).forEach(
+      ([caipChainId, networkConfig]) => {
+        const matchesAccount = Object.values(internalAccounts.accounts).some(
+          (account) => {
+            const matchesScope = account.scopes.some((scope) => {
+              return scope === caipChainId;
+            });
+
+            const isSnapEnabled = account.metadata.snap?.enabled;
+
+            return matchesScope && isSnapEnabled;
+          },
+        );
+
+        if (matchesAccount) {
+          caipFormattedEvmNetworkConfigurations[caipChainId] = networkConfig;
+        }
+      },
+    );
+
+    return caipFormattedEvmNetworkConfigurations;
   };
 
   // To add more than one account when already connected to the dapp
@@ -65,12 +109,60 @@ export function getPermissionBackgroundApiMethods({
       caip25Caveat.value,
     );
 
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
     const updatedAccountIds = Array.from(
       new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
-    const updatedCaveatValue = setPermittedAccounts(
+    let updatedPermittedChainIds = [...existingPermittedChainIds];
+
+    const allNetworksList = Object.keys(
+      getAllNetworkConfigurationsByCaipChainId(),
+    );
+
+    updatedAccountIds.forEach((caipAccountAddress) => {
+      const {
+        chain: { namespace: accountNamespace },
+      } = parseCaipAccountId(caipAccountAddress);
+
+      const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
+        (caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+
+      if (!existsSelectedChainForNamespace) {
+        const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        });
+
+        updatedPermittedChainIds = [
+          ...updatedPermittedChainIds,
+          ...chainIdsForNamespace,
+        ];
+      }
+    });
+
+    const updatedCaveatValueWithChainIds = setPermittedChainIds(
       caip25Caveat.value,
+      updatedPermittedChainIds,
+    );
+
+    const updatedCaveatValueWithAccountIds = setPermittedAccounts(
+      updatedCaveatValueWithChainIds,
       updatedAccountIds,
     );
 
@@ -78,7 +170,7 @@ export function getPermissionBackgroundApiMethods({
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
-      updatedCaveatValue,
+      updatedCaveatValueWithAccountIds,
     );
   };
 
