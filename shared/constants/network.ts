@@ -181,6 +181,7 @@ export const CHAIN_IDS = {
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
   MEGAETH_TESTNET: '0x18c6',
+  LENS: '0xe8',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -310,6 +311,7 @@ export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
 export const SHAPE_SEPOLIA_DISPLAY_NAME = 'Shape Sepolia';
 export const SHAPE_DISPLAY_NAME = 'Shape';
+export const LENS_DISPLAY_NAME = 'Lens';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -366,6 +368,7 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  LENS: 'GHO',
 } as const;
 
 // Non-EVM currency symbols
@@ -537,6 +540,8 @@ export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
 export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
+export const LENS_IMAGE_URL = './images/lens.png';
+export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -658,6 +663,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
   [CHAIN_IDS.LISK_SEPOLIA]: LISK_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.LENS]: LENS_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -788,6 +794,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE_SEPOLIA,
   [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+  [CHAIN_IDS.LENS]: CURRENCY_SYMBOLS.LENS,
 } as const;
 
 /**
@@ -922,6 +929,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: SHAPE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
+  [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -973,6 +981,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: TEST_ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LENS]: LENS_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 /**
