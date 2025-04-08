@@ -12,10 +12,12 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
+  AssetsContractController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
   NftController,
+  NftDetectionController,
   TokenRatesController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
@@ -77,7 +79,9 @@ export type Controller =
     })
   | UserStorageController
   | TokenRatesController
-  | NftController;
+  | NftController
+  | NftDetectionController
+  | AssetsContractController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -110,4 +114,5 @@ export type ControllerFlatState = AccountsController['state'] &
   SwapsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
-  NftController['state'];
+  NftController['state'] &
+  NftDetectionController['state'];
