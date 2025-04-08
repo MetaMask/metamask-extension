@@ -4059,20 +4059,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/base-eth-keyring@npm:^0.14.1":
-  version: 0.14.1
-  resolution: "@keystonehq/base-eth-keyring@npm:0.14.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.0.2"
-    "@ethereumjs/util": "npm:^8.0.0"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    hdkey: "npm:^2.0.1"
-    rlp: "npm:^3.0.0"
-    uuid: "npm:^8.3.2"
-  checksum: 10/07516e967fc5c618ef0ce67b155ba69c04f8fd84d5a6fd35f025f989c41256c9e6fa0375cfb0318da42876a61c64839e312d910e4b9fa801f86179df826adc69
-  languageName: node
-  linkType: hard
-
 "@keystonehq/bc-ur-registry-eth@npm:^0.19.1":
   version: 0.19.1
   resolution: "@keystonehq/bc-ur-registry-eth@npm:0.19.1"
@@ -4116,20 +4102,6 @@ __metadata:
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
   checksum: 10/44bb60d0e8471ec3148fab47bc3484406ea43b378c4e5bfbadc8978ed898ed387ad5d1c4f6b2983dced8ead4c26414e28a3b80c45364b6d066e0050a910e89d4
-  languageName: node
-  linkType: hard
-
-"@keystonehq/metamask-airgapped-keyring@npm:^0.14.1":
-  version: 0.14.1
-  resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.14.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.0.2"
-    "@keystonehq/base-eth-keyring": "npm:^0.14.1"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@metamask/obs-store": "npm:^9.0.0"
-    rlp: "npm:^2.2.6"
-    uuid: "npm:^8.3.2"
-  checksum: 10/8e34be8813c51488c7dc9b641ed17258740dda45fb72fe48670b077ecfb92273e0c5a2fbbab121b01d7e0906a3ec512f261fceb95da8089550021ab6a0c89c6b
   languageName: node
   linkType: hard
 
