@@ -3261,7 +3261,7 @@ export function setShowExtensionInFullSizeView(value: boolean) {
 }
 
 export function setDismissSmartAccountSuggestionEnabled(value: boolean) {
-  return setPreference('setDismissSmartAccountSuggestionEnabled', value);
+  return setPreference('dismissSmartAccountSuggestionEnabled', value);
 }
 
 export function setTokenSortConfig(value: SortCriteria) {

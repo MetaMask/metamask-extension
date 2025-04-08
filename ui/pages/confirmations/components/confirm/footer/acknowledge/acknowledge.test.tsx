@@ -1,7 +1,6 @@
 import { AuthorizationList } from '@metamask/transaction-controller';
 import React from 'react';
 import { act } from '@testing-library/react';
-import * as ReduxFunctions from 'react-redux';
 
 import configureStore from '../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
@@ -65,12 +64,6 @@ describe('Acknowledge', () => {
   });
 
   it('does not render if not an upgrade transaction', () => {
-    const { container } = render({});
-    expect(container).toBeEmptyDOMElement();
-  });
-
-  it('does not render if preference dismissSmartAccountSuggestionEnabled is enabled', () => {
-    jest.spyOn(ReduxFunctions, 'useSelector').mockReturnValue(true);
     const { container } = render({});
     expect(container).toBeEmptyDOMElement();
   });

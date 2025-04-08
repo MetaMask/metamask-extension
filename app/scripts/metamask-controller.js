@@ -2089,6 +2089,9 @@ export default class MetamaskController extends EventEmitter {
               updateSecurityAlertResponse:
                 this.updateSecurityAlertResponse.bind(this),
             }),
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
         },
         this.controllerMessenger,
       ),

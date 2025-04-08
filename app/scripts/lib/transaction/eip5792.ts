@@ -37,6 +37,7 @@ export async function processSendCalls(
       request: ValidateSecurityRequest,
       chainId: Hex,
     ) => Promise<void>;
+    getDismissSmartAccountSuggestionEnabled: () => boolean;
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
@@ -46,6 +47,7 @@ export async function processSendCalls(
     addTransactionBatch,
     getDisabledAccountUpgradeChains,
     validateSecurity: validateSecurityHook,
+    getDismissSmartAccountSuggestionEnabled,
   } = hooks;
 
   const { calls, from } = params;
@@ -58,8 +60,15 @@ export async function processSendCalls(
   ).configuration.chainId;
 
   const disabledChains = getDisabledAccountUpgradeChains();
+  const dismissSmartAccountSuggestionEnabled =
+    getDismissSmartAccountSuggestionEnabled();
 
-  validateSendCalls(params, dappChainId, disabledChains);
+  validateSendCalls(
+    params,
+    dappChainId,
+    disabledChains,
+    dismissSmartAccountSuggestionEnabled,
+  );
 
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
@@ -127,11 +136,13 @@ function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
   disabledChains: Hex[],
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
   validateUserDisabled(sendCalls, disabledChains, dappChainId);
+  validateUserPreference(dismissSmartAccountSuggestionEnabled);
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -195,6 +206,14 @@ function validateUserDisabled(
   if (isDisabled) {
     throw rpcErrors.methodNotSupported(
       `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
+    );
+  }
+}
+
+function validateUserPreference(dismissSmartAccountSuggestionEnabled: boolean) {
+  if (dismissSmartAccountSuggestionEnabled) {
+    throw rpcErrors.transactionRejected(
+      'User does not want to update account to smart account.',
     );
   }
 }
