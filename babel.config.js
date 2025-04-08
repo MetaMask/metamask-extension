@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = function (api) {
   api.cache(false);
   return {
@@ -13,12 +15,11 @@ module.exports = function (api) {
       // browsers (except we do still end up with transpiled logical assignment
       // operators 😭)
       '@babel/plugin-transform-logical-assignment-operators',
-
       [
-        './development/build/transforms/import-meta-url.js',
+        path.resolve(__dirname, 'app/scripts/transforms/import-meta-url.js'),
         {
           patterns: [/dist\/preinstalled-snap\.json$/u],
-          rootPathVar: './preinstalled-snaps/', // the directory you copy the JSON files to in the build process
+          rootPathVar: './preinstalled-snaps/',
         },
       ],
     ],
