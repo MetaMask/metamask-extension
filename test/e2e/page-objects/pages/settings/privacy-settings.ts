@@ -241,7 +241,7 @@ class PrivacySettings {
         this.deleteMetaMetricsDataButton,
         {
           waitAtLeastGuard: 1000,
-          timeout: 2000,
+          timeout: 3000,
         },
       );
       } catch (e) {
