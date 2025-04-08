@@ -25,7 +25,7 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -513,15 +513,6 @@ export default class MetamaskController extends EventEmitter {
       currentMigrationVersion: this.currentMigrationVersion,
       currentAppVersion: version,
     });
-
-    // next, we will initialize the controllers
-    // controller initialization order matters
-    const clearPendingConfirmations = () => {
-      this.encryptionPublicKeyController.clearUnapproved();
-      this.decryptMessageController.clearUnapproved();
-      this.signatureController.clearUnapproved();
-      this.approvalController.clear(providerErrors.userRejectedRequest());
-    };
 
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
