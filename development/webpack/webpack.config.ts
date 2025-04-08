@@ -19,7 +19,6 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
-import { PREINSTALLED_SNAPS } from '../../app/scripts/snaps/preinstalled-snaps';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
