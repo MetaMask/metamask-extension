@@ -6143,9 +6143,6 @@
   "transactionErrored": {
     "message": "La transacción encontró un error."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Esta transacción le hubiera generado tarifas adicionales, así que la interrumpimos. Su dinero sigue en su monedero."
-  },
   "transactionFlowNetwork": {
     "message": "Red"
   },
