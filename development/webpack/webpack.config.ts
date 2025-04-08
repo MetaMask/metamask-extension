@@ -171,16 +171,6 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
-      // TODO: Filter out Snaps not meant to be included in this build type.
-      ...PREINSTALLED_SNAPS.map((snap) => ({
-        from: join(
-          context,
-          '../node_modules',
-          snap,
-          'dist/preinstalled-snap.json',
-        ),
-        to: `preinstalled-snaps/${snap}/preinstalled-snap.json`,
-      })),
     ],
   }),
 ];
@@ -351,6 +341,12 @@ const config = {
         test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
+      },
+      // snaps
+      {
+        test: /\.json$/u,
+        dependency: 'url',
+        type: 'asset/resource',
       },
     ],
   },
