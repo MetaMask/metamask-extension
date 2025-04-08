@@ -1,6 +1,20 @@
-import * as core from '@actions/core';
 import * as fs from 'fs/promises';
 import * as xml2js from 'xml2js';
+
+let summary = '';
+
+const core = process.env.GITHUB_ACTIONS
+  ? await import('@actions/core')
+  : {
+      summary: {
+        addRaw: (text: string) => {
+          summary += text;
+        },
+        write: async () =>
+          await fs.writeFile('test/test-results/summary.md', summary),
+      },
+      setFailed: (msg: string) => console.error('Mock: setFailed', msg),
+    };
 
 const XML = {
   parse: new xml2js.Parser().parseStringPromise,
@@ -17,6 +31,7 @@ interface TestSuite {
   name: string;
   path: string;
   date: Date;
+  tests: number;
   passed: number;
   failed: number;
   skipped: number;
@@ -62,6 +77,7 @@ async function main() {
           name,
           path,
           date,
+          tests,
           passed,
           failed,
           skipped,
@@ -92,39 +108,53 @@ async function main() {
 
     const suites = Object.values(deduped);
 
-    console.table(
-      suites.map((testSuite) => ({
-        name: testSuite.name,
-        path: testSuite.path,
-        passed: testSuite.passed,
-        failed: testSuite.failed,
-        skipped: testSuite.skipped,
-        time: formatTime(testSuite.time),
-      })),
-    );
+    if (suites.length) {
+      const total = {
+        tests: suites.reduce((acc, suite) => acc + suite.tests, 0),
+        passed: suites.reduce((acc, suite) => acc + suite.passed, 0),
+        failed: suites.reduce((acc, suite) => acc + suite.failed, 0),
+        skipped: suites.reduce((acc, suite) => acc + suite.skipped, 0),
+        time: suites.reduce((acc, suite) => acc + suite.time, 0),
+      };
 
-    if (process.env.GITHUB_ACTIONS) {
-      await core.summary.clear();
+      const conclusion = `**${
+        total.tests
+      }** tests were completed in **${formatTime(total.time)}** with **${
+        total.passed
+      }** passed, **${total.failed}** failed and **${total.skipped}** skipped.`;
 
-      core.summary.addTable([
-        [
-          { data: 'Test suite', header: true },
-          { data: 'Passed', header: true },
-          { data: 'Failed', header: true },
-          { data: 'Skipped', header: true },
-          { data: 'Time', header: true },
-        ],
-        ...suites.map((testSuite) => [
-          testSuite.name,
-          testSuite.passed.toString(),
-          testSuite.failed.toString(),
-          testSuite.skipped.toString(),
-          formatTime(testSuite.time),
-        ]),
-      ]);
+      // replace markdown bold with ANSI escape codes
+      console.log(conclusion.replace(/\*\*(.*?)\*\*/g, '\x1b[1m$1\x1b[0m'));
 
-      await core.summary.write();
+      core.summary.addRaw(`${conclusion}\n`);
+
+      const rows = suites.map((suite) => ({
+        'Test suite': `[${suite.name}](${suite.path})`,
+        Passed: suite.passed ? `${suite.passed} ✅` : '',
+        Failed: suite.failed ? `${suite.failed} ❌` : '',
+        Skipped: suite.skipped ? `${suite.skipped} ⏩` : '',
+        Time: formatTime(suite.time),
+      }));
+
+      const columns = Object.keys(rows[0]);
+
+      const markdownTable = rows
+        .map((row) => `| ${Object.values(row).join(' | ')} |`)
+        .join('\n');
+
+      console.table(rows);
+
+      core.summary.addRaw(
+        `| ${columns.join(' | ')} |
+| :--- | ---: | ---: | ---: | ---: |
+${markdownTable}
+`,
+      );
+    } else {
+      core.summary.addRaw('No tests found');
     }
+
+    await core.summary.write();
   } catch (error) {
     core.setFailed(`Error creating the test report: ${error}`);
   }
