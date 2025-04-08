@@ -6,7 +6,6 @@ const {
   unlockWallet,
   DAPP_URL,
   WINDOW_TITLES,
-  largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
@@ -71,15 +70,22 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
           tag: 'button',
         });
 
-        // Wait for token to show in list of tokens to watch
-        await driver.delay(largeDelayMs);
-
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // Wait for token to show in list of tokens to watch
+        await driver.waitUntil(
+          async () => {
+            const tokens = await driver.findElements(
+              '.confirm-add-suggested-token__token-list-item',
+            );
+            return tokens.length === 2;
+          },
+          { timeout: 10000, interval: 100 },
+        );
 
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
         );
-
         // Confirm only 2 tokens are present in suggested token list
         assert.equal(multipleSuggestedtokens.length, 2);
       },
