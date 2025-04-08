@@ -219,6 +219,7 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
+  "AssetsContractController": "undefined",
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
