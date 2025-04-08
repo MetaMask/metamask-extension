@@ -200,26 +200,53 @@ async function walletCreateSessionHandler(
       .map((account) => account.address);
 
     const supportedRequestedAccountAddresses =
-      allRequestedAccountAddresses.filter((accountAddress: CaipAccountId) => {
-        const {
-          address,
-          chain: { namespace },
-          chainId: caipChainId,
-        } = parseCaipAccountId(accountAddress);
-        if (namespace === KnownCaipNamespace.Eip155) {
-          return existingEvmAddresses.some((existingEvmAddress) => {
-            return isEqualCaseInsensitive(address, existingEvmAddress);
-          });
-        }
+      allRequestedAccountAddresses.filter(
+        (requestedAccountAddress: CaipAccountId) => {
+          const {
+            address,
+            chain: { namespace },
+            chainId: caipChainId,
+          } = parseCaipAccountId(requestedAccountAddress);
+          if (namespace === KnownCaipNamespace.Eip155) {
+            return existingEvmAddresses.some((existingEvmAddress) => {
+              console.log('existingEvmAddress', existingEvmAddress);
+              console.log(
+                'requestedEVMAccountAddress',
+                requestedAccountAddress,
+              );
+              return isEqualCaseInsensitive(address, existingEvmAddress);
+            });
+          }
+          const getNonEvmAccountAddressesForChainId =
+            hooks.getNonEvmAccountAddresses(caipChainId);
 
-        const getNonEvmAccountAddressesForChainId =
-          hooks.getNonEvmAccountAddresses(caipChainId);
-        return getNonEvmAccountAddressesForChainId.some(
-          (existingCaipAddress) => {
-            return isEqualCaseInsensitive(accountAddress, existingCaipAddress);
-          },
-        );
-      });
+          if (namespace === KnownCaipNamespace.Solana) {
+            return getNonEvmAccountAddressesForChainId.some(
+              (existingCaipAddress) => {
+                console.log('existingCaipAddress', existingCaipAddress);
+                console.log('requestedAccountAddress', requestedAccountAddress);
+                // solana addresses are case sensitive
+                return requestedAccountAddress === existingCaipAddress;
+              },
+            );
+          }
+          // TODO we may need to handle case sensitivity for other namespaces
+          // For now, we only support solana case sensitivity
+          return getNonEvmAccountAddressesForChainId.some(
+            (existingCaipAddress) => {
+              return isEqualCaseInsensitive(
+                requestedAccountAddress,
+                existingCaipAddress,
+              );
+            },
+          );
+        },
+      );
+
+    console.log(
+      'supportedRequestedAccountAddresses',
+      supportedRequestedAccountAddresses,
+    );
 
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
