@@ -6,9 +6,6 @@ const glob = require('fast-glob');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
-const {
-  PREINSTALLED_SNAPS,
-} = require('../../app/scripts/snaps/preinstalled-snaps');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
