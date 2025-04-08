@@ -209,11 +209,6 @@ async function walletCreateSessionHandler(
           } = parseCaipAccountId(requestedAccountAddress);
           if (namespace === KnownCaipNamespace.Eip155) {
             return existingEvmAddresses.some((existingEvmAddress) => {
-              console.log('existingEvmAddress', existingEvmAddress);
-              console.log(
-                'requestedEVMAccountAddress',
-                requestedAccountAddress,
-              );
               return isEqualCaseInsensitive(address, existingEvmAddress);
             });
           }
@@ -223,8 +218,6 @@ async function walletCreateSessionHandler(
           if (namespace === KnownCaipNamespace.Solana) {
             return getNonEvmAccountAddressesForChainId.some(
               (existingCaipAddress) => {
-                console.log('existingCaipAddress', existingCaipAddress);
-                console.log('requestedAccountAddress', requestedAccountAddress);
                 // solana addresses are case sensitive
                 return requestedAccountAddress === existingCaipAddress;
               },
@@ -242,11 +235,6 @@ async function walletCreateSessionHandler(
           );
         },
       );
-
-    console.log(
-      'supportedRequestedAccountAddresses',
-      supportedRequestedAccountAddresses,
-    );
 
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
