@@ -390,7 +390,6 @@ async function withFixtures(options, testSuite) {
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      // if (false) {
       await fixtureServer.stop();
       for (const server of localNodes) {
         if (server) {
