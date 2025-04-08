@@ -145,7 +145,7 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSrpInput = '#import-multi-srp__srp-word-0';
+  private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
 
   private readonly importSrpConfirmButton = {
     text: 'Import wallet',
