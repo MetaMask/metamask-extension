@@ -230,6 +230,34 @@ const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
     nonEvmTransactions?.transactions,
     (transaction) => transaction.timestamp * 1000,
   );
+
+/**
+ * Returns a copy of the nonEvmTransactions object with only the transactions that involve the tokenAddress.
+ *
+ * @param nonEvmTransactions - The nonEvmTransactions object.
+ * @param tokenAddress - [Optional] The address of the token to filter for. Returns all transactions if not provided.
+ * @returns A copy of the nonEvmTransactions object with only the transactions
+ * that involve the tokenAddress.
+ */
+export const filterTransactionsByToken = (
+  nonEvmTransactions = { transactions: [] },
+  tokenAddress,
+) => {
+  if (!tokenAddress) {
+    return nonEvmTransactions;
+  }
+
+  const transactionForToken = (nonEvmTransactions.transactions || []).filter(
+    (transaction) => {
+      return transaction.to.some((item) => item.asset.type === tokenAddress);
+    },
+  );
+
+  return {
+    ...nonEvmTransactions,
+    transactions: transactionForToken,
+  };
+};
 ///: END:ONLY_INCLUDE_IF
 
 export default function TransactionList({
@@ -253,9 +281,15 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
+  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
+    nonEvmTransactions,
+    tokenAddress,
+  );
+
   // Use our custom hook to map Solana bridge transactions with destination chain info
-  const modifiedNonEvmTransactions =
-    useSolanaBridgeTransactionMapping(nonEvmTransactions);
+  const modifiedNonEvmTransactions = useSolanaBridgeTransactionMapping(
+    nonEvmTransactionFilteredByToken,
+  );
   ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactionsCurrentChain = useSelector(
@@ -485,7 +519,8 @@ export default function TransactionList({
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
                 {groupNonEvmTransactionsByDate(
-                  modifiedNonEvmTransactions || nonEvmTransactions,
+                  modifiedNonEvmTransactions ||
+                    nonEvmTransactionFilteredByToken,
                 ).map((dateGroup) => (
                   <Fragment key={dateGroup.date}>
                     <Text
