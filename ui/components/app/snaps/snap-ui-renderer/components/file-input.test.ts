@@ -76,7 +76,6 @@ describe('SnapUIFileInput', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: {
                 name: 'input',
                 type: 'FileUploadEvent',
@@ -109,7 +108,6 @@ describe('SnapUIFileInput', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: { name: 'submit', type: 'ButtonClickEvent' },
               id: MOCK_INTERFACE_ID,
             },
@@ -130,7 +128,6 @@ describe('SnapUIFileInput', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: {
                 name: 'form',
                 type: 'FormSubmitEvent',

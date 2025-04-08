@@ -59,7 +59,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: { name: 'input', type: 'InputChangeEvent', value: 'abc' },
               id: MOCK_INTERFACE_ID,
             },
@@ -83,7 +82,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: { name: 'submit', type: 'ButtonClickEvent' },
               id: MOCK_INTERFACE_ID,
             },
@@ -104,7 +102,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: {
                 name: 'form',
                 type: 'FormSubmitEvent',
@@ -160,7 +157,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: { name: 'input', type: 'InputChangeEvent', value: 'abc' },
               id: MOCK_INTERFACE_ID,
             },
@@ -190,7 +186,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: {
                 name: 'checkbox',
                 type: 'InputChangeEvent',
@@ -218,7 +213,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: { name: 'submit', type: 'ButtonClickEvent' },
               id: MOCK_INTERFACE_ID,
             },
@@ -239,7 +233,6 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: {
                 name: 'form',
                 type: 'FormSubmitEvent',
