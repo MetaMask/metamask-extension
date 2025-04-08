@@ -61,12 +61,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   getCaip25PermissionsResponse,
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
 } from './utils';
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 export type ConnectPageRequest = {
   id: string;
