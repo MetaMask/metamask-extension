@@ -1,5 +1,4 @@
 import {
-  BITCOIN_BLOCK_EXPLORER_URL,
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
@@ -71,9 +70,9 @@ describe('Block Explorer Tests', () => {
       expect(result).toBe(expectedUrl);
     });
 
-    it('returns the correct account URL for Bitcoin mainnet', () => {
+    it('returns the correct account URL for Binance Smart Chain', () => {
       const address = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
-      const expectedUrl = `${BITCOIN_BLOCK_EXPLORER_URL}/address/${address}`;
+      const expectedUrl = `https://mempool.space/address/${address}`;
 
       const result = getMultichainAccountUrl(address, mockNonEvmNetwork);
 

@@ -36,10 +36,10 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
         onClick={async () => {
           onAction();
 
-          await solanaWalletSnapClient.createAccount(
-            MultichainNetworks.SOLANA,
-            primaryKeyring.metadata.id,
-          );
+          await solanaWalletSnapClient.createAccount({
+            scope: MultichainNetworks.SOLANA,
+            entropySource: primaryKeyring.metadata.id,
+          });
         }}
       >
         {t('createSolanaAccount')}

@@ -29,6 +29,16 @@ import {
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
 } from './identity';
+import {
+  getAssetsContractControllerMessenger,
+  getNftControllerMessenger,
+  getNftDetectionControllerMessenger,
+  getTokenRatesControllerMessenger,
+} from './assets';
+import {
+  getNotificationServicesControllerMessenger,
+  getNotificationServicesPushControllerMessenger,
+} from './notifications';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -61,6 +71,15 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainNetworkController: {
     getMessenger: getMultichainNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NotificationServicesController: {
+    getMessenger: getNotificationServicesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NotificationServicesPushController: {
+    getMessenger: getNotificationServicesPushControllerMessenger,
+    getInitMessenger: noop,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
@@ -92,6 +111,22 @@ export const CONTROLLER_MESSENGERS = {
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
+    getInitMessenger: noop,
+  },
+  TokenRatesController: {
+    getMessenger: getTokenRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NftController: {
+    getMessenger: getNftControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NftDetectionController: {
+    getMessenger: getNftDetectionControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AssetsContractController: {
+    getMessenger: getAssetsContractControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

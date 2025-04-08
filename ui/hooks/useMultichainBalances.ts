@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
@@ -12,7 +16,6 @@ import {
 import {
   getLastSelectedNonEvmAccount,
   getMultichainBalances,
-  getMultichainCoinRates,
 } from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
 import { getSelectedEvmInternalAccount } from '../selectors/selectors';
@@ -23,7 +26,8 @@ const useNonEvmAssetsWithBalances = (): (
   | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
       chainId: `${string}:${string}`;
       decimals: number;
-      address: `${string}:${string}`;
+      address: string;
+      assetId: `${string}:${string}`;
       string: string;
       balance: string;
       tokenFiatAmount: number;
@@ -39,8 +43,6 @@ const useNonEvmAssetsWithBalances = (): (
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  // native exchange rates
-  const nativeRates = useSelector(getMultichainCoinRates);
   // asset exchange rates
   const assetRates = useSelector(getAssetsRates);
 
@@ -58,27 +60,22 @@ const useNonEvmAssetsWithBalances = (): (
     return assetIds
       .filter((caipAssetId) => assetMetadataById[caipAssetId])
       .map((caipAssetId) => {
-        const [caipChainId, address] = caipAssetId.split('/');
-        const [type] = address.split(':');
+        const { chainId, assetReference, assetNamespace } =
+          parseCaipAssetType(caipAssetId);
         return {
-          chainId: caipChainId as `${string}:${string}`,
+          chainId,
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
-          address: caipAssetId,
+          assetId: caipAssetId,
+          address: assetReference,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
-          type: type === 'token' ? AssetType.token : AssetType.native,
+          type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
-            .times(
-              assetRates?.[caipAssetId]?.rate ??
-                nativeRates?.[
-                  assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
-                ]?.conversionRate ??
-                '1',
-            )
+            .times(assetRates?.[caipAssetId]?.rate ?? '1')
             .toNumber(),
         };
       })
@@ -87,7 +84,6 @@ const useNonEvmAssetsWithBalances = (): (
     assetMetadataById,
     assetRates,
     assetsByAccountId,
-    nativeRates,
     nonEvmAccount?.id,
     nonEvmBalancesByAccountId,
   ]);

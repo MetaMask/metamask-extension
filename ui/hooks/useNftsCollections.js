@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
-import { getSelectedInternalAccount } from '../selectors';
+import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
+import {
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getSelectedInternalAccount,
+} from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getNftImage } from '../helpers/utils/nfts';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
@@ -17,10 +21,20 @@ export function useNftsCollections() {
     collectionName: previouslyOwnedText,
     nfts: [],
   });
-  const nfts = useSelector(getNfts);
-  const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
+  const allUserNfts = useSelector(getAllNfts);
+
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
+  const nfts = useMemo(() => {
+    return isTokenNetworkFilterEqualCurrentNetwork
+      ? allUserNfts?.[chainId] ?? []
+      : allUserNfts;
+  }, [isTokenNetworkFilterEqualCurrentNetwork, allUserNfts, chainId]);
+  const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
   const nftContracts = useSelector(getNftContracts);
   const prevNfts = usePrevious(nfts);
   const prevChainId = usePrevious(chainId);
@@ -38,7 +52,9 @@ export function useNftsCollections() {
         nfts: [],
       };
 
-      nfts.forEach((nft) => {
+      const allNfts = Object.values(nfts).flat();
+
+      allNfts.forEach((nft) => {
         if (nft?.isCurrentlyOwned === false) {
           newPreviouslyOwnedCollections.nfts.push(nft);
         } else if (newCollections[nft.address]) {
@@ -49,7 +65,7 @@ export function useNftsCollections() {
           );
           newCollections[nft.address] = {
             collectionName: collectionContract?.name || unknownCollectionText,
-            collectionImage: collectionContract?.logo || nft.image,
+            collectionImage: collectionContract?.logo || getNftImage(nft.image),
             nfts: [nft],
           };
         }

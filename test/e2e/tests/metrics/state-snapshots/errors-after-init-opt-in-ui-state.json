@@ -90,7 +90,6 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
-      "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
@@ -110,9 +109,9 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       },
       "SepoliaETH": {
         "conversionDate": "number",
@@ -191,7 +190,6 @@
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
-    "incomingTransactionsPreferences": {},
     "identities": "object",
     "lostIdentities": "object",
     "forgottenPassword": false,
@@ -340,25 +338,35 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "bridgeState": {
-      "bridgeFeatureFlags": {
-        "extensionConfig": {
-          "refreshRate": "number",
-          "maxRefreshCount": "number",
-          "support": "boolean",
-          "chains": {
-            "eip155:1": "object",
-            "eip155:42161": "object",
-            "eip155:59144": "object"
-          }
+    "bridgeFeatureFlags": {
+      "extensionConfig": {
+        "refreshRate": "number",
+        "maxRefreshCount": "number",
+        "support": "boolean",
+        "chains": {
+          "eip155:1": "object",
+          "eip155:10": "object",
+          "eip155:137": "object",
+          "eip155:324": "object",
+          "eip155:42161": "object",
+          "eip155:43114": "object",
+          "eip155:56": "object",
+          "eip155:59144": "object",
+          "eip155:8453": "object",
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
         }
       },
-      "quoteRequest": {
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-      },
-      "quotes": {},
-      "quotesRefreshCount": 0
+      "mobileConfig": "object"
     },
+    "quoteFetchError": null,
+    "quotesInitialLoadTime": null,
+    "quotesLastFetched": null,
+    "quotesLoadingStatus": null,
+    "quoteRequest": {
+      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+    },
+    "quotes": {},
+    "quotesRefreshCount": 0,
     "bridgeStatusState": { "txHistory": "object" },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
