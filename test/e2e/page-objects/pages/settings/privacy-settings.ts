@@ -240,8 +240,8 @@ class PrivacySettings {
       await this.driver.findClickableElement(
         this.deleteMetaMetricsDataButton,
         {
-          waitAtLeastGuard: 1000,
-          timeout: 3000,
+          waitAtLeastGuard: 2000,
+          timeout: 5000,
         },
       );
       } catch (e) {
