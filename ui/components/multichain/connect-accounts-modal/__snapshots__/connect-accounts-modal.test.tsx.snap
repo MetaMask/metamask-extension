@@ -104,6 +104,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
             </div>
             <div
               class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+              data-testid="account-item"
             >
               <div
                 class="mm-box mm-box--margin-top-1 mm-box--margin-inline-end-2"
