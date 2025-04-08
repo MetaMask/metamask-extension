@@ -110,6 +110,9 @@ export const SnapUIAccountSelector: FunctionComponent<
       {...props}
       optionComponents={optionComponents}
       onSelect={handleSelect}
+      style={{
+        maxHeight: '82px',
+      }}
     />
   );
 };
