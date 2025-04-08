@@ -48,10 +48,12 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
+
+        await driver.switchToWindowWithUrl(DAPP_URL);
 
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
@@ -62,7 +64,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
