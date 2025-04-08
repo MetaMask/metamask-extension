@@ -26,6 +26,7 @@ export enum TraceName {
   NetworkList = 'Network List',
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
+  ReceiveModal = 'Receive Modal',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
   Transaction = 'Transaction',
