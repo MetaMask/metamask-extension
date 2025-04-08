@@ -60,7 +60,6 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "AssetsContractController": "undefined",
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
     "bridgeFeatureFlags": {
