@@ -322,6 +322,7 @@ export enum TokenBucketPriority {
 export enum Slippage {
   default = 2,
   high = 3,
+  stable = 0.5,
 }
 
 const ETH_USDC_TOKEN_OBJECT = {
@@ -435,3 +436,15 @@ export const SWAPS_CHAINID_COMMON_TOKEN_PAIR = {
   [MultichainNetworks.SOLANA]: SOLANA_USDC_TOKEN_OBJECT,
   ///: END:ONLY_INCLUDE_IF
 };
+
+export const STABLE_PAIRS: Record<string, boolean> = {
+  [CURRENCY_SYMBOLS.USDC]: true,
+  [CURRENCY_SYMBOLS.USDT]: true,
+};
+
+export function isStablePair(
+  sourceSymbol: string,
+  destinationSymbol: string,
+): boolean {
+  return STABLE_PAIRS[sourceSymbol] && STABLE_PAIRS[destinationSymbol];
+}
