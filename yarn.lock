@@ -6309,9 +6309,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@metamask/smart-transactions-controller@npm:16.3.0"
+"@metamask/smart-transactions-controller@npm:^16.3.1":
+  version: 16.3.1
+  resolution: "@metamask/smart-transactions-controller@npm:16.3.1"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6333,7 +6333,7 @@ __metadata:
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/0dc4fc7ce58c45af6598b8209646e8ce1eff7f31fc3fd7abe6ceae5d3ead9e4eafa7445eff6ecdc2b606fea9af30658adf5e2e15fce3bdbfdcee41bceb31795e
+  checksum: 10/d94c33b735aecc7bf3d0e73c83e65c08fa5c21cb15199cf169953fd846fff19aa06f2c0c379d508e1ff4bf0634066e2710e6b82ae0f5ba51092245a284d011b3
   languageName: node
   linkType: hard
 
@@ -27345,7 +27345,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "patch:@metamask/signature-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-signature-controller-npm-26.0.0-ecbc8b6cda.patch"
-    "@metamask/smart-transactions-controller": "npm:^16.3.0"
+    "@metamask/smart-transactions-controller": "npm:^16.3.1"
     "@metamask/snaps-controllers": "npm:^11.1.0"
     "@metamask/snaps-execution-environments": "npm:^7.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
