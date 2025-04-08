@@ -38,13 +38,12 @@ import { initializeProvider } from '@metamask/providers/initializeInpageProvider
 // eslint-disable-next-line import/order
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import {
   getMultichainClient,
   getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
-import { METAMASK_BETA_CHROME_ID } from '../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 
 // contexts
@@ -66,9 +65,9 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
   getMultichainClient({
-    transport: getDefaultTransport({ extensionId: METAMASK_BETA_CHROME_ID }),
+    transport: getDefaultTransport(),
   }).then((client) => {
     registerSolanaWalletStandard({ client });
   });
