@@ -10,7 +10,7 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 
-describe('Request Navigating Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
+describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
   it('should queue `eth_requestAccounts` requests when the requesting dapp does not already have connected accounts', async function () {
     const port = 8546;
     const chainId = 1338;

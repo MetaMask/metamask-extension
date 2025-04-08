@@ -5,7 +5,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
-describe('Request Navigating', function () {
+describe('Request Queueing', function () {
   it('should keep subscription on dapp network when switching different mm network', async function () {
     const port = 8546;
     const chainId = 1338;

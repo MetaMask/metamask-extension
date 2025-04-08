@@ -12,7 +12,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
-  it('should batch confirmation txs for different dapps on same networks ', async function () {
+  it('should put confirmation txs for different dapps on same networks in same queue', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(

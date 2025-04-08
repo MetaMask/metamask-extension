@@ -9,7 +9,7 @@ const {
   largeDelayMs,
 } = require('../../helpers');
 
-describe('Request Navigation for Multiple Dapps and Txs on different networks.', function () {
+describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
   it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;

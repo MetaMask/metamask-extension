@@ -10,8 +10,8 @@ const {
   withFixtures,
 } = require('../../helpers');
 
-describe('Request from Multiple Dapps and Txs on different networks', function () {
-  it('should put txs for different dapps on different networks adds extra tx after in same queue.', async function () {
+describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
+  it('should put txs from different dapps on different networks adds extra tx after in same queue.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(

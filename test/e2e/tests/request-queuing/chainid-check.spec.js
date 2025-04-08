@@ -10,7 +10,7 @@ const {
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-describe('Request on different networks', function () {
+describe('Request Queueing chainId proxy sync', function () {
   it('should preserve per dapp network selections after connecting and switching without refresh calls', async function () {
     const port = 8546;
     const chainId = 1338;

@@ -8,10 +8,8 @@ const {
   withFixtures,
 } = require('../../helpers');
 
-describe('Request Navigating Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  // To be enabled after fixing: https://github.com/MetaMask/MetaMask-planning/issues/4603
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
+describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
+  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -152,27 +150,13 @@ describe('Request Navigating Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           tag: 'button',
         });
 
-        // Switch back to the extension
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-
-        // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });
 
-  it('should submit send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
+  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(

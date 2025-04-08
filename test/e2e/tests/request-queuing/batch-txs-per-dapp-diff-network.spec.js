@@ -11,8 +11,8 @@ const {
   largeDelayMs,
 } = require('../../helpers');
 
-describe('Navigating Requests from Multiple Dapps and Txs on different networks', function () {
-  it('should put confirmation txs for different dapps on different networks in single queue.', async function () {
+describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
+  it('should put confirmation txs for different dapps on different networks in single queue', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
