@@ -12,7 +12,7 @@ jobs:
     with:
       base-branch: main
       head-ref: ${{ github.head_ref }}
-      pr-number: ${{ github.event.pull_request.number }}
+      labels: ${{ toJSON(github.event.pull_request.labels) }}
       repo: ${{ github.repository }}
     secrets:
       gh-token: ${{ secrets.GITHUB_TOKEN }}
