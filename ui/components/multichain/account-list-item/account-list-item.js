@@ -122,8 +122,6 @@ const AccountListItem = ({
       : null,
   );
 
-  console.log('snap account', account);
-
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
   const setAccountListItemMenuRef = (ref) => {
