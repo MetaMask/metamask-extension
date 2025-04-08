@@ -5616,9 +5616,7 @@ export default class MetamaskController extends EventEmitter {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
-        dappRequest?.networkClientId ??
-        transactionOptions?.networkClientId ??
-        this.#getGlobalNetworkClientId(),
+        dappRequest?.networkClientId ?? transactionOptions?.networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
       ),
