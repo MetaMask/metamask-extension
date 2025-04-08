@@ -5,8 +5,8 @@ const {
   openDapp,
   unlockWallet,
   DAPP_URL,
-  regularDelayMs,
   WINDOW_TITLES,
+  largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
@@ -72,7 +72,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         });
 
         // Wait for token to show in list of tokens to watch
-        await driver.delay(regularDelayMs);
+        await driver.delay(largeDelayMs);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
