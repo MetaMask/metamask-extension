@@ -98,13 +98,6 @@ export function getAccountLabel(
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      if (snapName) {
-        return `${snapName} (${t('beta')})`;
-      }
-      return `${t('snaps')} (${t('beta')})`;
-    ///: END:ONLY_INCLUDE_IF
     default:
       return null;
   }
