@@ -1,21 +1,6 @@
 import * as fs from 'fs/promises';
 import * as xml2js from 'xml2js';
 
-let summary = '';
-
-const core = process.env.GITHUB_ACTIONS
-  ? await import('@actions/core')
-  : {
-      summary: {
-        addRaw: (text: string) => {
-          summary += text;
-        },
-        write: async () =>
-          await fs.writeFile('test/test-results/summary.md', summary),
-      },
-      setFailed: (msg: string) => console.error('Mock: setFailed', msg),
-    };
-
 const XML = {
   parse: new xml2js.Parser().parseStringPromise,
 };
@@ -52,6 +37,20 @@ interface TestSuite {
 }
 
 async function main() {
+  let summary = '';
+  const core = process.env.GITHUB_ACTIONS
+    ? await import('@actions/core')
+    : {
+        summary: {
+          addRaw: (text: string) => {
+            summary += text;
+          },
+          write: async () =>
+            await fs.writeFile('test/test-results/summary.md', summary),
+        },
+        setFailed: (msg: string) => console.error('Mock: setFailed', msg),
+      };
+
   try {
     const filenames = await fs.readdir('./test/test-results/e2e');
     const testSuites: TestSuite[] = [];
@@ -160,6 +159,4 @@ ${markdownTable}
   }
 }
 
-main().catch((error) => {
-  core.setFailed(`Unhandled error: ${error}`);
-});
+main();
