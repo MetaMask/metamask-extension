@@ -7,8 +7,8 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { getPermissionBackgroundApiMethods } from './background-api';
 import * as NetworkSelectors from '../../../../shared/modules/selectors/networks';
+import { getPermissionBackgroundApiMethods } from './background-api';
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/modules/selectors/networks'),
@@ -25,34 +25,36 @@ const setupPermissionBackgroundApiMethods = (overrides) => {
       revokePermission: jest.fn(),
     },
     approvalController: {
-      addAndShowApprovalRequest: jest.fn()
+      addAndShowApprovalRequest: jest.fn(),
     },
     accountsController: {
       getAccountByAddress: jest.fn(),
       state: {
-        internalAccounts: {}
-      }
+        internalAccounts: {},
+      },
     },
     networkController: {
       state: {
-        networkConfigurationsByChainId: {}
-      }
+        networkConfigurationsByChainId: {},
+      },
     },
     multichainNetworkController: {
       state: {
-        multichainNetworkConfigurationsByChainId: {}
-      }
+        multichainNetworkConfigurationsByChainId: {},
+      },
     },
-    ...overrides
-  }
+    ...overrides,
+  };
 
-  return getPermissionBackgroundApiMethods(params)
-}
+  return getPermissionBackgroundApiMethods(params);
+};
 
 describe('permission background API methods', () => {
   afterEach(() => {
     jest.resetAllMocks();
-    MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue({})
+    MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+      {},
+    );
   });
 
   describe('addPermittedAccount', () => {
@@ -123,8 +125,8 @@ describe('permission background API methods', () => {
       const accountsController = {
         getAccountByAddress: jest.fn(),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       try {
@@ -142,11 +144,84 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the caip account address added to added scopes when no matching scopes exist', () => {
+    it('calls updateCaveat with the caip account address added and all matching scopes added when no matching permitted scopes already exist', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+            },
+            optionalScopes: {
+              'bip122:000000000019d6689c085ae165831e93': {
+                accounts: [
+                  'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                ],
+              },
+            },
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
 
-    })
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x4',
+          scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        }),
+        state: {
+          internalAccounts: {},
+        },
+      };
 
-    it('calls updateCaveat with the caip account address added to existing matching scopes when they exist', () => {
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {},
+          'solana:foo': {},
+          'solana:bar': {},
+        },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+      }).addPermittedAccount('foo.com', '0x4');
+
+      expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
+      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        {
+          requiredScopes: {
+            'eip155:1': {
+              accounts: [],
+            },
+          },
+          optionalScopes: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              accounts: [
+                'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+              ],
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x4'],
+            },
+            'solana:foo': {
+              accounts: ['solana:foo:0x4'],
+            },
+            'solana:bar': {
+              accounts: ['solana:bar:0x4'],
+            },
+          },
+          isMultichainOrigin: true,
+        },
+      );
+    });
+
+    it('calls updateCaveat with the caip account address added to existing matching permitted scopes', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -180,8 +255,8 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       setupPermissionBackgroundApiMethods({
@@ -302,8 +377,8 @@ describe('permission background API methods', () => {
       const accountsController = {
         getAccountByAddress: jest.fn(),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       try {
@@ -364,8 +439,8 @@ describe('permission background API methods', () => {
             scopes: ['eip155:0'],
           }),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       setupPermissionBackgroundApiMethods({
@@ -413,6 +488,92 @@ describe('permission background API methods', () => {
                 'eip155:1:0x4',
                 'eip155:1:0x5',
               ],
+            },
+          },
+          isMultichainOrigin: true,
+        },
+      );
+    });
+
+    it('calls updateCaveat with the caip account addresses added when no matching permitted scopes already exist', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+            },
+            optionalScopes: {
+              'bip122:000000000019d6689c085ae165831e93': {
+                accounts: [
+                  'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                ],
+              },
+            },
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest
+          .fn()
+          .mockReturnValueOnce({
+            address: '0x4',
+            scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+          })
+          .mockReturnValueOnce({
+            address: '0x5',
+            scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+          }),
+        state: {
+          internalAccounts: {},
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {},
+          'solana:foo': {},
+          'solana:bar': {},
+        },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+      }).addPermittedAccounts('foo.com', ['0x4', '0x5']);
+
+      expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
+      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        {
+          requiredScopes: {
+            'eip155:1': {
+              accounts: [],
+            },
+          },
+          optionalScopes: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              accounts: [
+                'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+              ],
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              accounts: [
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x4',
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x5',
+              ],
+            },
+            'solana:foo': {
+              accounts: ['solana:foo:0x4', 'solana:foo:0x5'],
+            },
+            'solana:bar': {
+              accounts: ['solana:bar:0x4', 'solana:bar:0x5'],
             },
           },
           isMultichainOrigin: true,
@@ -489,8 +650,8 @@ describe('permission background API methods', () => {
       const accountsController = {
         getAccountByAddress: jest.fn(),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       try {
@@ -543,8 +704,8 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       setupPermissionBackgroundApiMethods({
@@ -585,8 +746,8 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       setupPermissionBackgroundApiMethods({
@@ -634,8 +795,8 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {}
-        }
+          internalAccounts: {},
+        },
       };
 
       setupPermissionBackgroundApiMethods({

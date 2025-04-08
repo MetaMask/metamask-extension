@@ -84,7 +84,8 @@ export function getPermissionBackgroundApiMethods({
         networkConfigurationsByChainId:
           networkController.state.networkConfigurationsByChainId,
         multichainNetworkConfigurationsByChainId:
-          multichainNetworkController.state.multichainNetworkConfigurationsByChainId,
+          multichainNetworkController.state
+            .multichainNetworkConfigurationsByChainId,
         internalAccounts: accountsController.state.internalAccounts,
       }),
     );
