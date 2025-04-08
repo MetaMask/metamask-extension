@@ -21,7 +21,7 @@ on:
         description: The test command to run
       test-timeout-minutes:
         type: number
-        default: 30
+        default: 40
         description: The timeout in minutes for the test command
       matrix-index:
         type: number
