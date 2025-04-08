@@ -113,6 +113,11 @@ const DetectedTokenSelectionPopover = ({
       onClose={onClose}
       footer={footer}
     >
+      {console.log(
+        'isTokenNetworkFilterEqualCurrentNetwork **************',
+        isTokenNetworkFilterEqualCurrentNetwork,
+        detectedTokens,
+      )}
       {isTokenNetworkFilterEqualCurrentNetwork ? (
         <Box margin={3}>
           {detectedTokens.map((token, index) => {

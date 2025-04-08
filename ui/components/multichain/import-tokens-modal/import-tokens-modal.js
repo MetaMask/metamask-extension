@@ -182,7 +182,9 @@ export const ImportTokensModal = ({ onClose }) => {
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
-  const tokens = useSelector((state) => state.metamask.tokens);
+  const chainId = useSelector(getCurrentChainId);
+  const allTokens = useSelector((state) => state.metamask.allTokens);
+  const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allOpts = useSelector(getIsAllNetworksFilterEnabled);
@@ -207,7 +209,6 @@ export const ImportTokensModal = ({ onClose }) => {
         ?.defaultBlockExplorerUrlIndex
     ] ?? null;
 
-  const chainId = useSelector(getCurrentChainId);
   const blockExplorerTokenLink = getTokenTrackerLink(
     customAddress,
     selectedNetworkForCustomImport,

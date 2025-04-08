@@ -57,6 +57,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  console.log('detectedTokens **************', detectedTokens);
   const networkClientId = useSelector(getSelectedNetworkClientId);
   const detectedTokensMultichain = useSelector(
     getAllDetectedTokensForSelectedAddress,
@@ -294,6 +295,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     setPartiallyIgnoreDetectedTokens(false);
   };
 
+  console.log('totalDetectedTokens **************', totalDetectedTokens);
   return (
     <>
       {showDetectedTokenIgnoredPopover && (

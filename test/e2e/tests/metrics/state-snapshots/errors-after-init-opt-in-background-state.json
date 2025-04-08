@@ -342,15 +342,11 @@
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
-    "tokenList": "object",
     "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
-    "tokens": "object",
-    "ignoredTokens": "object",
-    "detectedTokens": "object",
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
