@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Eine für Betrug bekannte dritte Partei hat Zugang zu dieser Website. Sollten Sie fortfahren, werden Sie Assets verlieren."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Die Website mag sicher erscheinen, aber eine Drittpartei könnte Zugang zu ihren Daten haben. Wenn Sie sich anmelden, könnten Ihre Assets gestohlen werden."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Wenn Sie bestätigen, können Sie Ihre gesamten Gelder und Assets verlieren."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Wenn Sie sich anmelden, sind sämtliche von Ihnen auf OpenSea aufgeführten Assets gefährdet."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Wenn Sie sich anmelden, sind alle von Ihnen auf Blur aufgeführten Assets gefährdet."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Diese Website gilt als schädliche Domain. Wenn Sie sich anmelden, verlieren Sie Gelder und Assets. Wir raten Ihnen dringend, diese Anfrage zu stornieren."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Wenn Sie sich anmelden, könnten Sie Ihre gesamten Assets verlieren. Wir raten Ihnen, diese Anfrage zu stornieren."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, könnte eine dritte Partei, die für Betrügereien bekannt ist, Ihre gesamten Assets an sich reißen."
   },
@@ -3735,9 +3714,6 @@
     "message": "1 J",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Verbinden Sie sich nur mit Websites, denen Sie vertrauen. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5451,6 @@
     "message": "Herunterladen, einrichten und Ihr Passwort eingeben, um $1 freizuschalten.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Verbinden Sie Ihren OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Schließen Sie Ihren OneKey direkt an Ihren Computer an und entsperren Sie ihn. Stellen Sie sicher, dass Sie die richtige Passphrase verwenden.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Verbinden Sie Ihre Trezor-Wallet."
   },
@@ -6173,9 +6142,6 @@
   },
   "transactionErrored": {
     "message": "Bei der Transaktion ist ein Fehler aufgetreten."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Diese Transaktion hätte für Sie zusätzliche Gebühren mit sich gebracht, weshalb wir sie gestoppt haben. Ihr Geld befindet sich weiterhin in Ihrer Wallet."
   },
   "transactionFlowNetwork": {
     "message": "Netzwerk"
