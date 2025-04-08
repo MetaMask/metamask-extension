@@ -5,132 +5,161 @@ const { join } = require('node:path');
  * @typedef {import('@babel/types').TemplateLiteral} TemplateLiteral
  * @typedef {import('@babel/types').TemplateElement} TemplateElement
  * @typedef {import('@babel/types').Expression} Expression
- * @typedef {import('@babel/types').Types} Types
- * @typedef {import('@babel/core').PluginObj } PluginObj;
- * @typedef {import('@babel/core') } Babel;
+ * @typedef {import('@babel/core').PluginObj} PluginObj
+ * @typedef {import('@babel/core')} Babel
  */
 
 /**
- * @param {{types: import('@babel/types')}} babel
- * @returns {PluginObj}
+ * Babel plugin to transform `new URL(relativePath, import.meta.url)` expressions
+ * when they match specified patterns.
+ * @param {{ types: import('@babel/types') }} babel - Babel types
+ * @returns {PluginObj} - The plugin object
  */
 module.exports = function ({ types: t }) {
   /**
-   * @type {PluginObj}
+   * Checks if the node is a `new URL(relativePath, import.meta.url)` expression.
+   * @param {import('@babel/core').NodePath} path - The AST node path
+   * @returns {boolean} - True if it matches the target pattern
    */
+  function isTargetNewURL(path) {
+    const node = path.node;
+    return (
+      t.isNewExpression(node) &&
+      t.isIdentifier(node.callee, { name: 'URL' }) &&
+      node.arguments.length === 2 &&
+      (t.isStringLiteral(node.arguments[0]) ||
+        t.isTemplateLiteral(node.arguments[0])) &&
+      t.isMemberExpression(node.arguments[1]) &&
+      t.isMetaProperty(node.arguments[1].object) &&
+      node.arguments[1].object.meta.name === 'import' &&
+      node.arguments[1].object.property.name === 'meta' &&
+      node.arguments[1].property.name === 'url'
+    );
+  }
+
+  /**
+   * Extracts the relative path from the first argument.
+   * - For string literals: returns the value
+   * - For template literals: joins quasis with '___'
+   * @param {StringLiteral | TemplateLiteral} arg - The first argument of new URL
+   * @returns {string} - The extracted relative path
+   */
+  function getRelativePath(arg) {
+    if (t.isStringLiteral(arg)) {
+      return arg.value;
+    }
+    return arg.quasis.map((q) => q.value.raw).join('___');
+  }
+
+  /**
+   * Checks if the relative path matches any provided patterns.
+   * - String patterns: exact match
+   * - RegExp patterns: tests against the pattern
+   * @param {string} relativePath - The path to check
+   * @param {Array<string | RegExp>} patterns - Patterns to match against
+   * @returns {boolean} - True if any pattern matches
+   */
+  function matchesPatterns(relativePath, patterns) {
+    return patterns.some((pattern) => {
+      if (typeof pattern === 'string') {
+        return relativePath === pattern;
+      }
+      if (pattern instanceof RegExp) {
+        return pattern.test(relativePath);
+      }
+      return false;
+    });
+  }
+
+  /**
+   * Builds the new path argument by prepending rootPath.
+   * - String literals: uses path.join
+   * - Template literals: prepends to first quasi
+   * @param {StringLiteral | TemplateLiteral} originalArg - Original path argument
+   * @param {string} rootPath - Root path variable to prepend
+   * @returns {StringLiteral | TemplateLiteral} - New path argument
+   */
+  function buildNewPathArg(originalArg, rootPath) {
+    if (t.isStringLiteral(originalArg)) {
+      return t.stringLiteral(join(rootPath, originalArg.value));
+    }
+
+    const quasis = [...originalArg.quasis];
+    const expressions = [...originalArg.expressions];
+
+    quasis[0] = t.templateElement(
+      {
+        raw: rootPath + quasis[0].value.raw,
+        cooked: rootPath + quasis[0].value.cooked,
+      },
+      quasis[0].tail,
+    );
+
+    return t.templateLiteral(quasis, expressions);
+  }
+
+  /**
+   * Builds the base argument: self.document?.baseURI || self.location.href
+   * This aligns with the way webpack's built-in handling of `import.meta.url`.
+   *
+   * @returns {import('@babel/types').LogicalExpression} - The base argument
+   */
+  function buildBaseArg() {
+    return t.logicalExpression(
+      '||',
+      t.optionalMemberExpression(
+        t.memberExpression(t.identifier('self'), t.identifier('document')),
+        t.identifier('baseURI'),
+        false,
+        true,
+      ),
+      t.memberExpression(
+        t.memberExpression(t.identifier('self'), t.identifier('location')),
+        t.identifier('href'),
+      ),
+    );
+  }
+
+  /**
+   * Creates the transformed `new URL` expression.
+   * @param {StringLiteral | TemplateLiteral} pathArg - New path argument
+   * @param {import('@babel/types').LogicalExpression} baseArg - Base argument
+   * @returns {import('@babel/types').NewExpression} - Transformed expression
+   */
+  function buildNewExpression(pathArg, baseArg) {
+    return t.newExpression(t.identifier('URL'), [pathArg, baseArg]);
+  }
+
   return {
     visitor: {
       NewExpression(path, state) {
-        // Retrieve plugin options
+        // Get and validate options
         /**
-         * @type {Array<string | RegExp>}
+         * @type { Array<string | RegExp> }
          */
         const patterns = state.opts.patterns || [];
         /**
          * @type {string}
          */
-        const rootPathVar = state.opts.rootPathVar || '';
+        const rootPath = state.opts.rootPath || '';
 
-        // Validate that rootPathVar is provided
-        if (!rootPathVar) {
-          throw new Error('rootPathVar option is required');
+        if (!rootPath) {
+          throw new Error('rootPath option is required');
         }
 
-        // Check if the node is new URL(relativePath, import.meta.url)
-        if (
-          // new URL call with two args...
-          path.node.callee.name === 'URL' &&
-          path.node.arguments.length === 2 &&
-          // and the first arg is a string or template literal
-          (t.isStringLiteral(path.node.arguments[0]) || t.isTemplateLiteral(path.node.arguments[0])) &&
-          // and the second arg is `import.meta.url`
-          t.isMemberExpression(path.node.arguments[1]) &&
-          t.isMetaProperty(path.node.arguments[1].object) &&
-          path.node.arguments[1].object.meta.name === 'import' &&
-          path.node.arguments[1].object.property.name === 'meta' &&
-          path.node.arguments[1].property.name === 'url'
-        ) {
-          /**
-           * @type {string}
-           */
-          let relativePath;
-          if (t.isStringLiteral(path.node.arguments[0])) {
-            relativePath = path.node.arguments[0].value;
-          } else {
-            relativePath = path.node.arguments[0].quasis.map(q => q.value.raw).join("___");
-          }
+        // Check if it's our target expression
+        if (!isTargetNewURL(path)) return;
 
-          // Check if the relative path matches any user-defined patterns
-          const matches = patterns.some((pattern) => {
-            if (typeof pattern === 'string') {
-              return relativePath === pattern;
-            } else if (pattern instanceof RegExp) {
-              return pattern.test(relativePath);
-            }
-            return false;
-          });
+        // Extract and check path
+        const originalArg = path.node.arguments[0];
+        const relativePath = getRelativePath(originalArg);
 
-          // Proceed with transformation if there's a match
-          if (matches) {
-            // Create the new argument: rootPathVar + transformedPath
-            /**
-             * @type {StringLiteral | TemplateLiteral}
-             */
-            let pathArg;
-            if (t.isStringLiteral(path.node.arguments[0])) {
-              pathArg = t.stringLiteral(join(rootPathVar, relativePath));
-            } else {
-              // we need to prepend the rootPathVar to the template literal
-              /**
-               * @type {Array<TemplateElement>}
-               */
-              const quasis = path.node.arguments[0].quasis;
-              /**
-               * @type {Array<Expression>}
-               */
-              const expressions = path.node.arguments[0].expressions;
-
-              const newQuasis = [...quasis];
-
-              // Prepend the string to the first quasi's raw/cooked text
-              newQuasis[0] = t.templateElement({
-                raw:    rootPathVar + quasis[0].value.raw,
-                cooked: rootPathVar + quasis[0].value.cooked
-              }, quasis[0].tail);
-
-              const newExpressions = [...expressions];
-              // create a new template literal
-              pathArg = t.templateLiteral(newQuasis, newExpressions);
-            }
-            const baseArg = t.logicalExpression(
-              '||',
-              t.optionalMemberExpression(
-                t.memberExpression(
-                  t.identifier('self'),
-                  t.identifier('document')
-                ),
-                t.identifier('baseURI'),
-                false, // computed: false, since 'baseURI' is not a computed property (e.g., self.document['baseURI'])
-                true   // optional: true, to enable the optional chaining operator (?.)
-              ),
-              t.memberExpression(
-                t.memberExpression(
-                  t.identifier('self'),
-                  t.identifier('location'),
-                ),
-                t.identifier('href'),
-              ),
-            );
-
-            // Create the new URL expression with one argument
-            const newExpression = t.newExpression(t.identifier('URL'), [
-              pathArg,
-              baseArg,
-            ]);
-
-            // Replace the original expression
-            path.replaceWith(newExpression);
-          }
+        // Transform if path matches patterns
+        if (matchesPatterns(relativePath, patterns)) {
+          const pathArg = buildNewPathArg(originalArg, rootPath);
+          const baseArg = buildBaseArg();
+          const newExpression = buildNewExpression(pathArg, baseArg);
+          path.replaceWith(newExpression);
         }
       },
     },

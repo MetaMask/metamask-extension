@@ -19,7 +19,7 @@ module.exports = function (api) {
         path.resolve(__dirname, 'development/build/transforms/import-meta-url.js'),
         {
           patterns: [/dist\/preinstalled-snap\.json$/u],
-          rootPathVar: '/preinstalled-snaps/',
+          rootPath: '/preinstalled-snaps/',
         },
       ],
     ],
