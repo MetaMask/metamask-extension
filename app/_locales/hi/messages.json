@@ -1127,9 +1127,6 @@
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आपका अकाउंट स्मार्ट अकाउंट में अपडेट हो जाएगा।"
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "ट्रांसेक्शन कैंसिल करें"
   },

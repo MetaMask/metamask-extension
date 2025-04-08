@@ -1127,9 +1127,6 @@
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Wenn Sie diese Anfrage bestätigen, wird Ihr Konto zu einem Smart-Konto aktualisiert."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Transaktion stornieren"
   },

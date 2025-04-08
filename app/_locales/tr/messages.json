@@ -1127,9 +1127,6 @@
   "confirmTitleTransaction": {
     "message": "İşlem talebi"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Bu talebi onaylarsanız hesabınız akıllı bir hesaba güncellenecektir."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "İşlemi iptal et"
   },
