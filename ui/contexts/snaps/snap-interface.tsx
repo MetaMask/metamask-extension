@@ -6,7 +6,6 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
-import { Json } from '@metamask/utils';
 import React, {
   FunctionComponent,
   createContext,
