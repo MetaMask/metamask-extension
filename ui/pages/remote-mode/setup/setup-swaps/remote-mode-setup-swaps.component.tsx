@@ -13,10 +13,10 @@ import {
   IconName,
   IconSize,
   Tag,
-} from '../../../components/component-library';
-import Tooltip from '../../../components/ui/tooltip';
-import UnitInput from '../../../components/ui/unit-input';
-import Dropdown from '../../../components/ui/dropdown';
+} from '../../../../components/component-library';
+import Tooltip from '../../../../components/ui/tooltip';
+import UnitInput from '../../../../components/ui/unit-input';
+import Dropdown from '../../../../components/ui/dropdown';
 import {
   AlignItems,
   FontWeight,
@@ -30,16 +30,16 @@ import {
   TextColor,
   BorderColor,
   BorderRadius,
-} from '../../../helpers/constants/design-system';
-import Card from '../../../components/ui/card';
-import { AccountPicker } from '../../../components/multichain/account-picker';
-import { AccountListMenu } from '../../../components/multichain/account-list-menu';
-import { SwapAllowance, TokenSymbol, ToTokenOption } from '../remote.types';
-import { DEFAULT_ROUTE, REMOTE_ROUTE } from '../../../helpers/constants/routes';
-import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
-import RemoteModeHardwareWalletConfirm from './hardware-wallet-confirm-modal';
-import RemoteModeSwapAllowanceCard from './swap-allowance-card';
-import StepIndicator from './step-indicator/step-indicator.component';
+} from '../../../../helpers/constants/design-system';
+import Card from '../../../../components/ui/card';
+import { AccountPicker } from '../../../../components/multichain/account-picker';
+import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
+import { DEFAULT_ROUTE, REMOTE_ROUTE } from '../../../../helpers/constants/routes';
+import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
+import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
+import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
+import StepIndicator from '../step-indicator/step-indicator.component';
 
 const TOTAL_STEPS = 3;
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/jest/rendering';
 import RemoteModeSetupDailyAllowance from './remote-mode-setup-daily-allowance.component';
 
 const mockAccount = {

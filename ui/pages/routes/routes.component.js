@@ -139,10 +139,10 @@ const Home = mmLazy(() => import('../home'));
 
 const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
 const RemoteModeSetupSwaps = mmLazy(() =>
-  import('../remote-mode/setup/remote-mode-setup-swaps.component'),
+  import('../remote-mode/setup/setup-swaps'),
 );
 const RemoteModeSetupDailyAllowance = mmLazy(() =>
-  import('../remote-mode/setup/remote-mode-setup-daily-allowance.component'),
+  import('../remote-mode/setup/setup-daily-allowance'),
 );
 // End Lazy Routes
 

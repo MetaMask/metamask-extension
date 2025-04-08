@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/constants/routes';
 
 import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
-import RemoteModeSetup from '../setup/remote-mode-setup-swaps.component';
+import RemoteModeSetup from '../setup/setup-swaps/remote-mode-setup-swaps.component';
 import RemoteModePermissions from './remote-mode-permissions.component';
 
 enum RemoteScreen {
