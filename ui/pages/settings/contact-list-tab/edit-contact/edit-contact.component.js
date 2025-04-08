@@ -155,7 +155,7 @@ const EditContact = ({
           </div>
           <Box
             as="button"
-            padding={4}
+            padding={3}
             display={Display.Flex}
             alignItems={AlignItems.center}
             backgroundColor={BackgroundColor.transparent}
