@@ -532,7 +532,7 @@ async function initialize() {
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS.map(async (snap) => {
-    const url = browser.runtime.getURL(`preinstalled-snaps/${snap}/preinstalled-snap.json`);
+    const url = new URL(`@metamask/${snap}/dist/preinstalled-snap.json`, import.meta.url);
     const response = await fetchWithTimeout(url);
     return await response.json();
   });
