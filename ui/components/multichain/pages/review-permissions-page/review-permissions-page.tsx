@@ -235,8 +235,7 @@ export const ReviewPermissions = () => {
       );
 
       if (!includesCaipAccountId) {
-        // Temporarily pass only the address part of the caipAccountId until
-        // the rest of the UI has been refactored to work with CaipAccountIds
+        // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
         dispatch(
           removePermittedAccount(
             activeTabOrigin,
