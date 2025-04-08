@@ -10,7 +10,6 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
-import { parseCaipChainId } from '@metamask/utils';
 import {
   getAllAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
@@ -59,10 +58,7 @@ export function getPermissionBackgroundApiMethods({
     // setPermittedAccounts currently sets accounts on all matching
     // namespaces, not just the exact CaipChainId.
     const caipAccountIds = internalAccounts.map((internalAccount) => {
-      const { namespace, reference } = parseCaipChainId(
-        internalAccount.scopes[0],
-      );
-      return `${namespace}:${reference}:${internalAccount.address}`;
+      return `${internalAccount.scopes[0]}}:${internalAccount.address}`;
     });
 
     const existingPermittedAccountIds = getAllAccountIdsFromCaip25CaveatValue(
