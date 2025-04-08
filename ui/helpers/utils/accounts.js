@@ -76,9 +76,6 @@ export function getAvatarNetworkColor(name) {
 export function getAccountLabel(
   type,
   account,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  snapName,
-  ///: END:ONLY_INCLUDE_IF
 ) {
   if (!account) {
     return null;
