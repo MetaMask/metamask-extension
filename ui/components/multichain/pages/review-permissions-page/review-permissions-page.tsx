@@ -197,13 +197,13 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    // Temporarily pass only the address part of the caipAccountId until
-    // the rest of the UI has been refactored to work with CaipAccountIds
-    const addresses = caipAccountIds.map((caipAccountId) => {
-      const { address } = parseCaipAccountId(caipAccountId);
-      return address;
+    const parsedCaipAccountIds = caipAccountIds.map((caipAccountId) => {
+      return parseCaipAccountId(caipAccountId);
     });
 
+    const addresses = parsedCaipAccountIds.map(({ address }) => address);
+
+    // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
     connectedAccountAddresses.forEach((connectedAddress: string) => {
@@ -213,26 +213,26 @@ export const ReviewPermissions = () => {
         connectedAddress as CaipAccountId,
       );
 
-      const includesCaipAccountId = caipAccountIds.some((caipAccountId) => {
-        const parsedAddress = parseCaipAccountId(caipAccountId);
+      const includesCaipAccountId = parsedCaipAccountIds.some(
+        (parsedAddress) => {
+          if (
+            parsedConnectedAddress.chain.namespace !==
+              parsedAddress.chain.namespace ||
+            !isEqualCaseInsensitive(
+              parsedConnectedAddress.address,
+              parsedAddress.address,
+            )
+          ) {
+            return false;
+          }
 
-        if (
-          parsedConnectedAddress.chain.namespace !==
-            parsedAddress.chain.namespace ||
-          !isEqualCaseInsensitive(
-            parsedConnectedAddress.address,
-            parsedAddress.address,
-          )
-        ) {
-          return false;
-        }
-
-        return (
-          parsedAddress.chain.reference === '0' ||
-          parsedAddress.chain.reference ===
-            parsedConnectedAddress.chain.reference
-        );
-      });
+          return (
+            parsedAddress.chain.reference === '0' ||
+            parsedAddress.chain.reference ===
+              parsedConnectedAddress.chain.reference
+          );
+        },
+      );
 
       if (!includesCaipAccountId) {
         // Temporarily pass only the address part of the caipAccountId until
