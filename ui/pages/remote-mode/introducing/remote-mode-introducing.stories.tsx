@@ -9,7 +9,6 @@ const store = configureStore({});
 export default {
   title: 'Pages/Vault/RemoteMode/Introducing',
   component: RemoteModeIntroducing,
-  id: 'pages-remote-mode-introducing--docs',
   decorators: [
     (story) => (
       <Provider store={store}>

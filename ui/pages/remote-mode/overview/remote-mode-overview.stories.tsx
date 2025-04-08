@@ -10,7 +10,6 @@ const store = configureStore(testData);
 export default {
   title: 'Pages/Vault/RemoteMode/Overview',
   component: RemoteModeOverview,
-  id: 'pages-remote-mode-walkthrough--docs',
   decorators: [
     (story) => (
       <Provider store={store}>

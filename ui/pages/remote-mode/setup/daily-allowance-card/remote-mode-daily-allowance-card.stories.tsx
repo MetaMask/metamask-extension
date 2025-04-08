@@ -14,9 +14,8 @@ const mockDailyAllowance = {
 };
 
 export default {
-  title: 'components/vault/remotemode/remotemodedailyallowancecard',
+  title: 'Components/Vault/RemoteMode/RemoteModeDailyAllowanceCard',
   component: RemoteModeDailyAllowanceCard,
-  id: 'pages-remote-mode-daily-allowance--docs',
   decorators: [
     (story) => (
       <Provider store={store}>
