@@ -15,6 +15,8 @@ function formatTime(ms: number): string {
 
 interface TestSuite {
   name: string;
+  path: string;
+  date: Date;
   passed: number;
   failed: number;
   skipped: number;
@@ -38,29 +40,35 @@ async function main() {
   try {
     const filenames = await fs.readdir('./test/test-results/e2e');
     const testSuites: TestSuite[] = [];
+
     for (const filename of filenames) {
       const file = await fs.readFile(
         `./test/test-results/e2e/${filename}`,
         'utf8',
       );
       const results = await XML.parse(file);
-      for (const testsuite of results.testsuites.testsuite) {
-        if (!testsuite.testcase) continue;
-        const name = `${testsuite.$.name}`;
-        const tests = +testsuite.$.tests;
-        const time = +testsuite.$.time;
-        const failed = +testsuite.$.failures;
-        const skipped = tests - testsuite.testcase.length;
+      for (const suite of results.testsuites.testsuite) {
+        if (!suite.testcase) continue;
+        const name = `${suite.$.name}`;
+        const fullPath = `${suite.$.file}`;
+        const path = fullPath.slice(fullPath.indexOf('test/'));
+        const date = new Date(suite.$.timestamp);
+        const tests = +suite.$.tests;
+        const time = +suite.$.time;
+        const failed = +suite.$.failures;
+        const skipped = tests - suite.testcase.length;
         const passed = tests - failed - skipped;
         const testSuite: TestSuite = {
           name,
+          path,
+          date,
           passed,
           failed,
           skipped,
           time,
           testCases: [],
         };
-        for (const testcase of testsuite.testcase) {
+        for (const testcase of suite.testcase) {
           const testCase: TestSuite['testCases'][number] = {
             name: testcase.$.name,
             time: +testcase.$.time,
@@ -73,26 +81,50 @@ async function main() {
       }
     }
 
-    await core.summary.clear();
+    const deduped: { [path: string]: TestSuite } = {};
+    for (const suite of testSuites) {
+      const existing = deduped[suite.path];
+      // If there is a duplicate, we keep the suite with the latest date
+      if (!existing || existing.date < suite.date) {
+        deduped[suite.path] = suite;
+      }
+    }
 
-    core.summary.addTable([
-      [
-        { data: 'Test suite', header: true },
-        { data: 'Passed', header: true },
-        { data: 'Failed', header: true },
-        { data: 'Skipped', header: true },
-        { data: 'Time', header: true },
-      ],
-      ...testSuites.map((testSuite) => [
-        testSuite.name,
-        testSuite.passed.toString(),
-        testSuite.failed.toString(),
-        testSuite.skipped.toString(),
-        formatTime(testSuite.time),
-      ]),
-    ]);
+    const suites = Object.values(deduped);
 
-    await core.summary.write();
+    console.table(
+      suites.map((testSuite) => ({
+        name: testSuite.name,
+        path: testSuite.path,
+        passed: testSuite.passed,
+        failed: testSuite.failed,
+        skipped: testSuite.skipped,
+        time: formatTime(testSuite.time),
+      })),
+    );
+
+    if (process.env.GITHUB_ACTIONS) {
+      await core.summary.clear();
+
+      core.summary.addTable([
+        [
+          { data: 'Test suite', header: true },
+          { data: 'Passed', header: true },
+          { data: 'Failed', header: true },
+          { data: 'Skipped', header: true },
+          { data: 'Time', header: true },
+        ],
+        ...suites.map((testSuite) => [
+          testSuite.name,
+          testSuite.passed.toString(),
+          testSuite.failed.toString(),
+          testSuite.skipped.toString(),
+          formatTime(testSuite.time),
+        ]),
+      ]);
+
+      await core.summary.write();
+    }
   } catch (error) {
     core.setFailed(`Error creating the test report: ${error}`);
   }
