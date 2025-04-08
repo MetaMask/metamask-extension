@@ -12,11 +12,11 @@ import {
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import {
-  getAllAccountIdsFromCaip25CaveatValue,
-  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllScopesFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -65,7 +65,7 @@ export function getPermissionBackgroundApiMethods({
       return `${internalAccount.scopes[0]}:${internalAccount.address}`;
     });
 
-    const existingPermittedAccountIds = getAllAccountIdsFromCaip25CaveatValue(
+    const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
       caip25Caveat.value,
     );
 
@@ -161,7 +161,7 @@ export function getPermissionBackgroundApiMethods({
       updatedChainIds,
     );
 
-    const permittedAccountIds = getAllAccountIdsFromCaip25CaveatValue(
+    const permittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
       caip25Caveat.value,
     );
 
@@ -235,7 +235,7 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      const existingAccountIds = getAllAccountIdsFromCaip25CaveatValue(
+      const existingAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
         caip25Caveat.value,
       );
 

@@ -43,11 +43,10 @@ import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import {
-  isKnownSessionPropertyValue,
-  getAllAccountsFromScopesObjects,
-  getAllScopesFromScopesObjects,
-} from '../../../../../../shared/lib/multichain/chain-agnostic-permission';
+import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { isKnownSessionPropertyValue } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
+
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
  * for prompting for approval and granting a CAIP-25 permission.
@@ -163,7 +162,7 @@ async function walletCreateSessionHandler(
       },
     );
 
-    const allRequestedAccountAddresses = getAllAccountsFromScopesObjects([
+    const allRequestedAccountAddresses = getCaipAccountIdsFromScopesObjects([
       supportedRequiredScopes,
       supportedOptionalScopes,
     ]);

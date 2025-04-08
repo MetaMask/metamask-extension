@@ -20,7 +20,7 @@ import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
-import { isInternalAccountInPermittedAccountIds } from '../shared/lib/multichain/chain-agnostic-permission';
+import { isInternalAccountInPermittedAccountIds } from '../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
