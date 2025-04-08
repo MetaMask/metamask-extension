@@ -60,6 +60,7 @@ jobs:
           # because in the workflow, we would like to parse the latest commit tag.
           # Specifying `ref` ensures that the head commit is checked out directly.
           ref: ${{ env.HEAD_COMMIT_HASH }}
+          skip-allow-scripts: true
 
       - name: Get changed files with git diff
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
@@ -81,6 +82,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download changed-files artifact
         uses: actions/download-artifact@v4

@@ -47,6 +47,7 @@ jobs:
         with:
           is-high-risk-environment: true
           ref: ${{ env.HEAD_COMMIT_HASH }}
+          skip-allow-scripts: true
 
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}

@@ -28,6 +28,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download artifact ${{ env.ARTIFACT_NAME }}
         uses: actions/download-artifact@v4

@@ -23,6 +23,7 @@ jobs:
         with:
           is-high-risk-environment: false
           cache-node-modules: true
+          skip-allow-scripts: true
 
   lint-workflows:
     name: Lint workflows
@@ -43,6 +44,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -77,6 +79,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - run: yarn build:test
 
@@ -101,6 +104,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - run: yarn build:test:webpack
 
@@ -129,6 +133,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       # GHA does not allow the : ? ternary operator, you must write && ||
       - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
@@ -185,6 +190,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download artifact prep-build-dist-browserify-chrome
         uses: actions/download-artifact@v4
