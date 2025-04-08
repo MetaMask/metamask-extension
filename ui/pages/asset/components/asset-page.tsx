@@ -157,8 +157,7 @@ const AssetPage = ({
 
   const multiChainAssets = useMultiChainAssets();
   const mutichainTokenWithFiatAmount = multiChainAssets
-    .filter((item) => item.chainId === chainId)
-    .filter((item) => item.address !== undefined)
+    .filter((item) => item.chainId === chainId && item.address !== undefined)
     .find((item) => {
       switch (type) {
         case AssetType.native:
