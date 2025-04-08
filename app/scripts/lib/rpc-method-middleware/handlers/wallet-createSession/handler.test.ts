@@ -838,4 +838,103 @@ describe('wallet_createSession', () => {
       );
     });
   });
+
+  describe('address case sensitivity', () => {
+    it('treats Solana addresses as case sensitive but other addresses as case insensitive', async () => {
+      const {
+        handler,
+        listAccounts,
+        requestPermissionsForOrigin,
+        getNonEvmAccountAddresses,
+      } = createMockedHandler();
+
+      listAccounts.mockReturnValue([
+        { address: '0xabc123' }, // Note: lowercase in wallet
+      ]);
+
+      getNonEvmAccountAddresses.mockImplementation((scope) => {
+        if (scope === MultichainNetwork.Solana) {
+          return ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:Address1'];
+        }
+        return [];
+      });
+
+      // Test both EVM (case-insensitive) and Solana (case-sensitive) behavior
+      MockMultichain.bucketScopes
+        .mockReturnValueOnce({
+          supportedScopes: {
+            'eip155:1': {
+              methods: [],
+              notifications: [],
+              accounts: ['eip155:1:0xABC123'], // Upper case in request
+            },
+          },
+          supportableScopes: {},
+          unsupportableScopes: {},
+        })
+        .mockReturnValueOnce({
+          supportedScopes: {
+            [MultichainNetwork.Solana]: {
+              methods: [],
+              notifications: [],
+              accounts: [
+                // Solana address in request is different case than what
+                // getNonEvmAccountAddresses (returns in wallet account address) returns
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:ADDRESS1',
+              ],
+            },
+          },
+          supportableScopes: {},
+          unsupportableScopes: {},
+        });
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 0,
+        method: 'wallet_createSession',
+        origin: 'http://test.com',
+        params: {
+          requiredScopes: {
+            eip155: {
+              methods: ['eth_accounts'],
+              notifications: [],
+            },
+          },
+          optionalScopes: {
+            [MultichainNetwork.Solana]: {
+              methods: ['getAccounts'],
+              notifications: [],
+            },
+          },
+        },
+      });
+
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith(
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {
+                    'eip155:1': {
+                      accounts: ['eip155:1:0xABC123'], // Requested EVM address included
+                    },
+                  },
+                  optionalScopes: {
+                    [MultichainNetwork.Solana]: {
+                      accounts: [], // Solana address excluded due to case mismatch
+                    },
+                  },
+                  isMultichainOrigin: true,
+                  sessionProperties: {},
+                },
+              },
+            ],
+          },
+        },
+        { metadata: { promptToCreateSolanaAccount: false } },
+      );
+    });
+  });
 });
