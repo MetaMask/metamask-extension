@@ -239,7 +239,46 @@ const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
     nonEvmTransactions?.transactions,
     (transaction) => transaction.timestamp * 1000,
   );
+
+/**
+ * Returns a copy of the nonEvmTransactions object with only the transactions that involve the tokenAddress.
+ *
+ * @param nonEvmTransactions - The nonEvmTransactions object.
+ * @param tokenAddress - [Optional] The address of the token to filter for. Returns all transactions if not provided.
+ * @returns A copy of the nonEvmTransactions object with only the transactions
+ * that involve the tokenAddress.
+ */
+export const filterTransactionsByToken = (
+  nonEvmTransactions = { transactions: [] },
+  tokenAddress,
+) => {
+  if (!tokenAddress) {
+    return nonEvmTransactions;
+  }
+
+  const transactionForToken = (nonEvmTransactions.transactions || []).filter(
+    (transaction) => {
+      return transaction.to.some((item) => item.asset.type === tokenAddress);
+    },
+  );
+
+  return {
+    ...nonEvmTransactions,
+    transactions: transactionForToken,
+  };
+};
 ///: END:ONLY_INCLUDE_IF
+
+// Remove transaction groups with no transactions
+const removeTxGroupsWithNoTx = (dateGroup) => {
+  dateGroup.transactionGroups = dateGroup.transactionGroups.filter(
+    (transactionGroup) => {
+      return transactionGroup.transactions.length > 0;
+    },
+  );
+
+  return dateGroup;
+};
 
 export default function TransactionList({
   hideTokenTransactions,
@@ -262,9 +301,15 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
+  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
+    nonEvmTransactions,
+    tokenAddress,
+  );
+
   // Use our custom hook to map Solana bridge transactions with destination chain info
-  const modifiedNonEvmTransactions =
-    useSolanaBridgeTransactionMapping(nonEvmTransactions);
+  const modifiedNonEvmTransactions = useSolanaBridgeTransactionMapping(
+    nonEvmTransactionFilteredByToken,
+  );
   ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactionsCurrentChain = useSelector(
@@ -439,17 +484,6 @@ export default function TransactionList({
     isTestNetwork,
   ]);
 
-  // Remove transaction groups with no transactions
-  const removeTxGroupsWithNoTx = (dateGroup) => {
-    dateGroup.transactionGroups = dateGroup.transactionGroups.filter(
-      (transactionGroup) => {
-        return transactionGroup.transactions.length > 0;
-      },
-    );
-
-    return dateGroup;
-  };
-
   // Remove date groups with no transaction groups
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
@@ -499,56 +533,53 @@ export default function TransactionList({
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {(() => {
-                  const dateGroups = groupNonEvmTransactionsByDate(
-                    modifiedNonEvmTransactions || nonEvmTransactions,
-                  );
-                  return dateGroups.map((dateGroup) => (
-                    <Fragment key={dateGroup.date}>
-                      <Text
-                        paddingTop={4}
-                        paddingInline={4}
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textDefault}
-                      >
-                        {dateGroup.date}
-                      </Text>
-                      {dateGroup.transactionGroups.map((transaction, index) => {
-                        // Type Guard for bridge-originated items
-                        if (transaction.isBridgeOriginated) {
-                          return (
-                            <SolanaBridgeTransactionListItem
-                              key={`bridge-originated-${transaction.id}`}
-                              transaction={transaction}
-                              toggleShowDetails={toggleShowDetails}
-                            />
-                          );
-                        }
-                        // Check for regular bridge transactions (non-originated)
-                        if (transaction.isBridgeTx && transaction.bridgeInfo) {
-                          return (
-                            <SolanaBridgeTransactionListItem
-                              key={`bridge-${transaction.account}:${index}`}
-                              transaction={transaction}
-                              toggleShowDetails={toggleShowDetails}
-                            />
-                          );
-                        }
-
-                        // Default: Render standard Multichain list item
-                        // Pass networkConfig as expected by the main branch version
+                {groupNonEvmTransactionsByDate(
+                  modifiedNonEvmTransactions ||
+                    nonEvmTransactionFilteredByToken,
+                ).map((dateGroup) => (
+                  <Fragment key={dateGroup.date}>
+                    <Text
+                      paddingTop={4}
+                      paddingInline={4}
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {dateGroup.date}
+                    </Text>
+                    {dateGroup.transactionGroups.map((transaction, index) => {
+                      // Type Guard for bridge-originated items
+                      if (transaction.isBridgeOriginated) {
                         return (
-                          <MultichainTransactionListItem
-                            key={`${transaction.id}`}
+                          <SolanaBridgeTransactionListItem
+                            key={`bridge-originated-${transaction.id}`}
                             transaction={transaction}
-                            networkConfig={multichainNetwork.network}
                             toggleShowDetails={toggleShowDetails}
                           />
                         );
-                      })}
-                    </Fragment>
-                  ));
-                })()}
+                      }
+                      // Check for regular bridge transactions (non-originated)
+                      if (transaction.isBridgeTx && transaction.bridgeInfo) {
+                        return (
+                          <SolanaBridgeTransactionListItem
+                            key={`bridge-${transaction.account}:${index}`}
+                            transaction={transaction}
+                            toggleShowDetails={toggleShowDetails}
+                          />
+                        );
+                      }
+
+                      // Default: Render standard Multichain list item
+                      return (
+                        <MultichainTransactionListItem
+                          key={`${transaction.id}`}
+                          transaction={transaction}
+                          networkConfig={multichainNetwork.network}
+                          toggleShowDetails={toggleShowDetails}
+                        />
+                      );
+                    })}
+                  </Fragment>
+                ))}
 
                 <Box className="transaction-list__view-on-block-explorer">
                   <Button
@@ -750,8 +781,12 @@ const MultichainTransactionListItem = ({
   }
 
   return assetOutputs.map((output, index) => {
+    let { amount, unit } = output;
+
     if (transaction.type === TransactionType.swap) {
       title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
+      amount = assetInputs[index].amount;
+      unit = assetInputs[index].unit;
     }
 
     return (
@@ -789,7 +824,7 @@ const MultichainTransactionListItem = ({
             title="Primary Currency"
             variant="body-lg-medium"
           >
-            {output.amount} {output.unit}
+            {amount} {unit}
           </Text>
         }
         title={title}
