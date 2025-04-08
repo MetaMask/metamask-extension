@@ -17,6 +17,7 @@ import {
   BtcAccountType,
   BtcMethod,
   EthAccountType,
+  SolScope,
 } from '@metamask/keyring-api';
 import { Messenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
@@ -36,6 +37,7 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
+import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -3985,6 +3987,80 @@ describe('MetaMaskController', () => {
           'This Secret Recovery Phrase has already been imported.',
         );
       });
+
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      it('discovers and creates Solana accounts through KeyringInternalSnapClient when importing a mnemonic', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        const mockDiscoverAccounts = jest
+          .fn()
+          .mockResolvedValueOnce([
+            { derivationPath: "m/44'/501'/0'/0'" },
+            { derivationPath: "m/44'/501'/1'/0'" },
+          ])
+          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/2'/0'" }])
+          .mockResolvedValueOnce([]); // Return empty array on third call to stop the discovery loop
+
+        jest
+          .spyOn(KeyringInternalSnapClient.prototype, 'discoverAccounts')
+          .mockImplementation(mockDiscoverAccounts);
+
+        const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
+        const mockSnapKeyring = { createAccount: mockCreateAccount };
+        jest
+          .spyOn(metamaskController, 'getSnapKeyring')
+          .mockResolvedValue(mockSnapKeyring);
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
+
+        // Assert that discoverAccounts was called correctly
+        // Should be called 3 times (twice with discovered accounts, once with empty array)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3);
+
+        // All calls should include the solana scopes
+        expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual(
+          expect.arrayContaining([
+            SolScope.Mainnet,
+            SolScope.Testnet,
+            SolScope.Devnet,
+          ]),
+        );
+
+        // First call should be for index 0
+        expect(mockDiscoverAccounts.mock.calls[0][2]).toBe(0);
+        // Second call should be for index 1
+        expect(mockDiscoverAccounts.mock.calls[1][2]).toBe(1);
+        // Third call should be for index 2
+        expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
+
+        // Assert that createAccount was called correctly for each discovered account
+        expect(mockCreateAccount).toHaveBeenCalledTimes(3);
+
+        // Check the first createAccount call
+        expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
+          expect.stringContaining('solana-wallet'),
+        );
+        expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
+          derivationPath: "m/44'/501'/0'/0'",
+          entropySource: expect.any(String),
+        });
+        expect(mockCreateAccount.mock.calls[0][2]).toStrictEqual({
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        });
+
+        expect(mockCreateAccount.mock.calls[2][0]).toStrictEqual(
+          expect.stringContaining('solana-wallet'),
+        );
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          derivationPath: "m/44'/501'/2'/0'",
+          entropySource: expect.any(String),
+        });
+      });
+      ///: END:ONLY_INCLUDE_IF
     });
   });
 
