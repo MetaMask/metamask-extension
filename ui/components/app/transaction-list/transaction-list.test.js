@@ -21,7 +21,9 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import TransactionList from './transaction-list.component';
+import TransactionList, {
+  filterTransactionsByToken,
+} from './transaction-list.component';
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: '0xefga64466f257793eaa52fcfff5066894b76a149',
@@ -341,5 +343,73 @@ describe('TransactionList', () => {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
+  });
+
+  describe('keepOnlyNonEvmTransactionsForToken', () => {
+    const transactionWithSolAndToken = {
+      to: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
+    };
+    const transactionWithOnlySol = {
+      to: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
+    };
+    const transactionWithOnlyToken = {
+      to: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
+    };
+
+    const nonEvmTransactions = {
+      transactions: [
+        transactionWithSolAndToken,
+        transactionWithOnlySol,
+        transactionWithOnlyToken,
+      ],
+    };
+
+    it('filters out transactions that do not involve the token address', () => {
+      const tokenAddress =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+
+      const result = filterTransactionsByToken(
+        nonEvmTransactions,
+        tokenAddress,
+      );
+
+      expect(result).toStrictEqual({
+        transactions: [transactionWithSolAndToken, transactionWithOnlyToken],
+      });
+    });
+
+    it('returns the original object if no token address is provided', () => {
+      const tokenAddress = undefined;
+
+      const result = filterTransactionsByToken(
+        nonEvmTransactions,
+        tokenAddress,
+      );
+
+      expect(result).toStrictEqual(nonEvmTransactions);
+    });
   });
 });
