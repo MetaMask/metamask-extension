@@ -1,7 +1,7 @@
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
 import { MultichainNetworkControllerMessenger } from '../messengers/multichain';
-import { MultichainNetworkServiceControllerInit } from './multichain-network-service-controller-init';
+import { MultichainNetworkServiceInit } from './multichain-network-service-init';
 
 /**
  * Initialize the Multichain Network controller.
@@ -22,7 +22,7 @@ export const MultichainNetworkControllerInit = ({
     MultichainNetworkControllerMessenger
   >
 > => {
-  const networkService = MultichainNetworkServiceControllerInit();
+  const networkService = MultichainNetworkServiceInit();
 
   const controller = new MultichainNetworkController({
     messenger: controllerMessenger,

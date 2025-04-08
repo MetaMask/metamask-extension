@@ -1,11 +1,11 @@
-import { MultichainNetworkServiceController } from '@metamask/multichain-network-controller';
-import { MultichainNetworkServiceControllerInit } from './multichain-network-service-controller-init';
+import { MultichainNetworkService } from '@metamask/multichain-network-controller';
+import { MultichainNetworkServiceInit } from './multichain-network-service-init';
 
 jest.mock('@metamask/multichain-network-controller');
 
 describe('MultichainNetworkServiceControllerInit', () => {
   const multichainNetworkServiceControllerClassMock = jest.mocked(
-    MultichainNetworkServiceController,
+    MultichainNetworkService,
   );
 
   beforeEach(() => {
@@ -14,12 +14,12 @@ describe('MultichainNetworkServiceControllerInit', () => {
   });
 
   it('returns controller instance', () => {
-    const controller = MultichainNetworkServiceControllerInit();
-    expect(controller).toBeInstanceOf(MultichainNetworkServiceController);
+    const controller = MultichainNetworkServiceInit();
+    expect(controller).toBeInstanceOf(MultichainNetworkService);
   });
 
   it('initializes with window.fetch', () => {
-    MultichainNetworkServiceControllerInit();
+    MultichainNetworkServiceInit();
 
     expect(multichainNetworkServiceControllerClassMock).toHaveBeenCalledWith(
       expect.objectContaining({
