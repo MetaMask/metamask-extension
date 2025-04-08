@@ -16,6 +16,7 @@ export enum TraceName {
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
   ConnectPage = 'Connect Page',
+  CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
   DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
