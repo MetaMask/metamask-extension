@@ -73,10 +73,7 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(
-  type,
-  account,
-) {
+export function getAccountLabel(type, account) {
   if (!account) {
     return null;
   }
