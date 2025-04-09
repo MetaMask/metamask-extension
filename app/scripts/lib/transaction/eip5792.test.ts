@@ -250,7 +250,7 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
-        'User does not want to update account to smart account.',
+        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
       );
     });
 

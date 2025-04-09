@@ -141,8 +141,12 @@ function validateSendCalls(
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
-  validateUserDisabled(sendCalls, disabledChains, dappChainId);
-  validateUserPreference(dismissSmartAccountSuggestionEnabled);
+  validateUserDisabled(
+    sendCalls,
+    disabledChains,
+    dappChainId,
+    dismissSmartAccountSuggestionEnabled,
+  );
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -199,21 +203,14 @@ function validateUserDisabled(
   sendCalls: SendCalls,
   disabledChains: Hex[],
   dappChainId: Hex,
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   const { from } = sendCalls;
   const isDisabled = disabledChains.includes(dappChainId);
 
-  if (isDisabled) {
+  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw rpcErrors.methodNotSupported(
       `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
-    );
-  }
-}
-
-function validateUserPreference(dismissSmartAccountSuggestionEnabled: boolean) {
-  if (dismissSmartAccountSuggestionEnabled) {
-    throw rpcErrors.transactionRejected(
-      'User does not want to update account to smart account.',
     );
   }
 }
