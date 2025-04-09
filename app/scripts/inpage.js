@@ -67,14 +67,14 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  if (process.env.MULTICHAIN_API) {
-    getMultichainClient({
-      transport: getDefaultTransport(),
-    }).then((client) => {
-      registerSolanaWalletStandard({ client });
-    });
-  }
-
+  // this is currently equivalent to process.env.MULTICHAIN_API
+  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
+  getMultichainClient({
+    transport: getDefaultTransport(),
+  }).then((client) => {
+    registerSolanaWalletStandard({ client });
+  });
+  ///: END:ONLY_INCLUDE_IF
   initializeProvider({
     connectionStream: metamaskStream,
     logger: log,
