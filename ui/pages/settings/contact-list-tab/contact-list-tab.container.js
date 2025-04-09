@@ -1,7 +1,11 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBook, getCompleteAddressBook, getInternalAccounts } from '../../../selectors';
+import {
+  getAddressBook,
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 
 import {
   CONTACT_ADD_ROUTE,

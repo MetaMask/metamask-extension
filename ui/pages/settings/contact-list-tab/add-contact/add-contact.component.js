@@ -204,45 +204,46 @@ const AddContact = ({
             </div>
           )}
         </div>
-
-        <div className="address-book__view-contact__group">
-          <div className="address-book__view-contact__group__label">
-            {t('network')}
-          </div>
-          <Box
-            as="button"
-            padding={3}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            backgroundColor={BackgroundColor.transparent}
-            borderColor={BorderColor.borderDefault}
-            justifyContent={JustifyContent.spaceBetween}
-            borderRadius={BorderRadius.XL}
-            onClick={() => setShowModal(true)}
-            className="network-selector"
-          >
-            <Box display={Display.Flex} gap={2}>
-              <AvatarNetwork
-                size={AvatarNetworkSize.Sm}
-                src={getImageForChainId(selectedChainId) || undefined}
+        {process.env.REMOVE_GNS ? (
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label">
+              {t('network')}
+            </div>
+            <Box
+              as="button"
+              padding={3}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              backgroundColor={BackgroundColor.transparent}
+              borderColor={BorderColor.borderDefault}
+              justifyContent={JustifyContent.spaceBetween}
+              borderRadius={BorderRadius.XL}
+              onClick={() => setShowModal(true)}
+              className="network-selector"
+            >
+              <Box display={Display.Flex} gap={2}>
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Sm}
+                  src={getImageForChainId(selectedChainId) || undefined}
+                />
+                <Text>{networks?.[selectedChainId]?.name}</Text>
+              </Box>
+              <Icon
+                name={IconName.ArrowDown}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
               />
-              <Text>{networks?.[selectedChainId]?.name}</Text>
             </Box>
-            <Icon
-              name={IconName.ArrowDown}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          </Box>
-          {showModal && (
-            <ContactNetworks
-              isOpen
-              onClose={() => setShowModal(false)}
-              selectedChainId={selectedChainId}
-              onSelect={(chainname) => setSelectedChainId(chainname)}
-            />
-          )}
-        </div>
+            {showModal && (
+              <ContactNetworks
+                isOpen
+                onClose={() => setShowModal(false)}
+                selectedChainId={selectedChainId}
+                onSelect={(chainname) => setSelectedChainId(chainname)}
+              />
+            )}
+          </div>
+        ) : null}
       </div>
       <PageContainerFooter
         cancelText={t('cancel')}

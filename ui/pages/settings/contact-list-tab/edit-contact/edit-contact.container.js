@@ -8,7 +8,10 @@ import {
   getInternalAccountByAddress,
   getInternalAccounts,
 } from '../../../../selectors';
-import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getProviderConfig,
+} from '../../../../../shared/modules/selectors/networks';
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -31,6 +34,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const contact = getAddressBookEntry(state, address);
   const networks = getAllEnabledNetworks(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
   const { memo } = contact || {};
   const name =
     contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
@@ -46,6 +50,7 @@ const mapStateToProps = (state, ownProps) => {
     name,
     memo,
     networks,
+    networkConfigurations,
     viewRoute: CONTACT_VIEW_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,
   };

@@ -28,7 +28,8 @@ export default class ContactListTab extends Component {
   };
 
   static propTypes = {
-    completeAddressBook: PropTypes.array,
+    addressBook: PropTypes.array,
+    updatedAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
     history: PropTypes.object,
     selectedAddress: PropTypes.string,
@@ -58,19 +59,28 @@ export default class ContactListTab extends Component {
   }
 
   renderAddresses() {
-    const { completeAddressBook, internalAccounts, history, selectedAddress } =
-      this.props;
-    const dattu = completeAddressBook.map((ch) => Object.values(ch));
-    const dattuMap = dattu.flat();
-    const contacts = dattuMap.filter(({ name }) => Boolean(name));
-    const nonContacts = dattuMap.filter(({ name }) => !name);
+    const {
+      updatedAddressBook,
+      addressBook,
+      internalAccounts,
+      history,
+      selectedAddress,
+    } = this.props;
+
+    const rawData = process.env.REMOVE_GNS
+      ? updatedAddressBook.flatMap((ch) => Object.values(ch)).flat()
+      : addressBook;
+
+    const contacts = rawData.filter(({ name }) => Boolean(name));
+    const nonContacts = rawData.filter(({ name }) => !name);
+
     const { t } = this.context;
 
-    if (completeAddressBook.length) {
+    if (rawData.length) {
       return (
         <div>
           <ContactList
-            addressBook={dattuMap}
+            addressBook={rawData}
             internalAccounts={internalAccounts}
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
@@ -82,6 +92,7 @@ export default class ContactListTab extends Component {
         </div>
       );
     }
+
     return (
       <div className="address-book__container">
         <div>
@@ -163,14 +174,20 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, currentPath, completeAddressBook } = this.props;
+    const { addingContact, currentPath, updatedAddressBook, addressBook } =
+      this.props;
+
+    const addressData = process.env.REMOVE_GNS
+      ? updatedAddressBook
+      : addressBook;
+
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
         {currentPath === CONTACT_LIST_ROUTE &&
         !addingContact &&
-        completeAddressBook.length > 0
+        addressData.length > 0
           ? this.renderAddButton()
           : null}
       </div>

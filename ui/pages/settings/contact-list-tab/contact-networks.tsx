@@ -83,7 +83,8 @@ export const ContactNetworks = ({
                 }
                 selected={selectedChainId === chainId}
                 onClick={() => {
-                  onSelect?.(chainId), onClose;
+                  onSelect?.(chainId);
+                  onClose();
                 }}
                 iconSrc={getImageForChainId(chainId)}
                 iconSize={AvatarNetworkSize.Sm}
@@ -104,7 +105,8 @@ export const ContactNetworks = ({
                 }
                 selected={selectedChainId === chainId}
                 onClick={() => {
-                  onSelect?.(chainId), onClose;
+                  onSelect?.(chainId);
+                  onClose();
                 }}
                 iconSrc={getImageForChainId(chainId)}
                 iconSize={AvatarNetworkSize.Sm}

@@ -1005,20 +1005,27 @@ export function getEnsResolutionByAddress(state, address) {
 }
 
 export function getAddressBookEntry(state, address) {
-  const addressBook = getCompleteAddressBook(state);
+  if (process.env.REMOVE_GNS) {
+    const addressBook = getCompleteAddressBook(state);
 
-  for (const item of addressBook) {
-    for (const key in item) {
-      if (Object.prototype.hasOwnProperty.call(item, key)) {
-        const contact = item[key];
-        if (isEqualCaseInsensitive(contact.address, address)) {
-          return contact;
+    for (const item of addressBook) {
+      for (const key in item) {
+        if (Object.prototype.hasOwnProperty.call(item, key)) {
+          const contact = item[key];
+          if (isEqualCaseInsensitive(contact.address, address)) {
+            return contact;
+          }
         }
       }
     }
-  }
 
-  return null;
+    return null;
+  }
+  const addressBook = getAddressBook(state);
+  const entry = addressBook.find((contact) =>
+    isEqualCaseInsensitive(contact.address, address),
+  );
+  return entry;
 }
 
 export function getAddressBookEntryOrAccountName(state, address) {
