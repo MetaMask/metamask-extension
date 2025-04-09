@@ -29,7 +29,6 @@ export function getSweepstakesCampaignActive(currentDate: Date) {
 export const useCarouselManagement = ({
   testDate,
 }: UseSlideManagementProps = {}) => {
-  const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
   const slides = useSelector(getSlides);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
@@ -69,10 +68,7 @@ export const useCarouselManagement = ({
 
     const isSweepstakesActive = checkSweepstakesActive(currentDate);
 
-    // Due to this is a time condition,
-    // which will affect the number of slides in the carousel on e2e testing,
-    // hence, we set a `inTest` condition to by pass it for e2e test.
-    if (!inTest && isSweepstakesActive) {
+    if (isSweepstakesActive) {
       defaultSlides.unshift({
         ...SWEEPSTAKES_SLIDE,
         dismissed: false,

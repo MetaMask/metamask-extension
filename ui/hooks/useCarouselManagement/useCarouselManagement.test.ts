@@ -132,7 +132,6 @@ describe('useCarouselManagement', () => {
   let invalidTestDate: string;
 
   beforeEach(() => {
-    delete process.env.IN_TEST;
     // Test dates
     validTestDate = new Date(SWEEPSTAKES_START.getTime() + 1000).toISOString(); // 1 day after
     invalidTestDate = new Date(
@@ -158,10 +157,6 @@ describe('useCarouselManagement', () => {
     mockGetIsRemoteModeEnabled.mockReturnValue(false);
     // Reset mocks
     jest.clearAllMocks();
-  });
-
-  afterEach(() => {
-    process.env.IN_TEST = 'true';
   });
 
   describe('getSweepstakesCampaignActive', () => {

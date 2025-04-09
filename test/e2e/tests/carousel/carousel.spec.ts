@@ -66,20 +66,13 @@ describe('Carousel component e2e tests', () => {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          // This flag is used to enable/disable the remote mode for the carousel
-          // component, which will impact to the slides count.
-          // - If this flag is not set, the slides count will be 4.
-          // - If this flag is set, the slides count will be 5.
-          remoteFeatureFlags: { vaultRemoteMode: false },
-        },
       },
       async ({ driver }) => {
         // A hardcoded number of the expected slides counter.
         // It should be updated if the number of slides changes
         // in the carousel component.
         // Please refer to the `useCarouselManagement` hook.
-        const slideCount = 4;
+        const slideCount = 5;
         await loginWithBalanceValidation(driver);
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
