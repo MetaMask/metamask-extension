@@ -28,10 +28,13 @@ export function useIsGaslessSupported() {
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  return (
-    isSmartTransaction ||
-    (Boolean(atomicBatchChainSupport) &&
-      (atomicBatchChainSupport?.isSupported ||
-        !atomicBatchChainSupport?.delegationAddress))
-  );
+  const supportsGaslessBundle = isSmartTransaction;
+
+  const supportsGasless7702 =
+    process.env.TRANSACTION_RELAY_API_URL &&
+    Boolean(atomicBatchChainSupport) &&
+    (atomicBatchChainSupport?.isSupported ||
+      !atomicBatchChainSupport?.delegationAddress);
+
+  return supportsGaslessBundle || supportsGasless7702;
 }
