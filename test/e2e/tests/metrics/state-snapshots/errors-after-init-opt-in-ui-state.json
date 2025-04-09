@@ -289,7 +289,6 @@
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean",
-    "queuedRequestCount": 0,
     "isPushEnabled": "boolean",
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",

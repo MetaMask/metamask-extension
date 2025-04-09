@@ -2010,9 +2010,6 @@
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para ver y confirmar su solicitud más reciente, primero deberá aprobar o rechazar las solicitudes existentes."
-  },
   "expandView": {
     "message": "Expandir vista"
   },
