@@ -65,10 +65,10 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
 import {
-  getAllAccountIdsFromCaip25CaveatValue,
   getAllNonWalletNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission';
+} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -110,7 +110,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     request.permissions,
   );
 
-  const requestedCaipAccountIds = getAllAccountIdsFromCaip25CaveatValue(
+  const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
