@@ -107,25 +107,26 @@ const PopularNetworkList = ({
               onMouseLeave={handleMouseLeave}
               style={{
                 width: '326px',
+                width: '326px',
               }}
             >
               <Text variant={TextVariant.bodyMd}>
                 {' '}
                 {t('popularNetworkAddToolTip')}{' '}
               </Text>
-                <Box key="learn-more-link">
-                  <ButtonLink
-                    size={ButtonLinkSize.Auto}
-                    externalLink
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: ZENDESK_URLS.UNKNOWN_NETWORK,
-                      });
-                    }}
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
-                </Box>
+              <Box key="learn-more-link">
+                <ButtonLink
+                  size={ButtonLinkSize.Auto}
+                  externalLink
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                    });
+                  }}
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </Box>
             </Popover>
           </Box>
         </Box>
