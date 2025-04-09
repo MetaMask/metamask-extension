@@ -262,6 +262,52 @@ const GET_BLOCK_BY_HASH_RESPONSE = {
 };
 
 export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
+  await mockSmartTransactionRequestsBase(mockServer);
+
+  await mockEthDaiTrade(mockServer);
+
+  await mockServer
+    .forPost(
+      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+    )
+    .once()
+    .thenJson(200, { uuid: STX_UUID });
+}
+
+export async function mockSmartTransactionBatchRequests(
+  mockServer: MockttpServer,
+  transactionHashes: string[],
+) {
+  await mockSmartTransactionRequestsBase(mockServer);
+
+  await mockServer
+    .forPost(
+      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+    )
+    .once()
+    .thenJson(200, {
+      uuid: STX_UUID,
+      txHashes: transactionHashes,
+    });
+
+  for (const transactionHash of transactionHashes) {
+    await mockServer
+      .forJsonRpcRequest({
+        method: 'eth_getTransactionReceipt',
+        params: [transactionHash],
+      })
+      .thenJson(200, GET_TRANSACTION_RECEIPT_RESPONSE);
+
+    await mockServer
+      .forJsonRpcRequest({
+        method: 'eth_getTransactionByHash',
+        params: [transactionHash],
+      })
+      .thenJson(200, GET_TRANSACTION_BY_HASH_RESPONSE);
+  }
+}
+
+async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
   await mockMultiNetworkBalancePolling(mockServer);
 
   await mockServerJsonRpc(mockServer, [
@@ -270,18 +316,9 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
     ['eth_chainId', { result: `0x1` }],
   ]);
 
-  await mockEthDaiTrade(mockServer);
-
   await mockServer
     .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
     .thenJson(200, GET_FEES_RESPONSE);
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID });
 
   await mockServer
     .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')

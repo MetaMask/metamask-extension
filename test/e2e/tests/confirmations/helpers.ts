@@ -9,6 +9,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -209,5 +210,58 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           ],
         };
       }),
+  ];
+}
+
+export async function mockSimulationResponse(mockServer: Mockttp) {
+  return [
+    await mockServer.forPost(TX_SENTINEL_URL).thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          result: {
+            transactions: [
+              {
+                return:
+                  '0x0000000000000000000000000000000000000000000000000000000000000000',
+                status: '0x1',
+                gasUsed: '0x5de2',
+                gasLimit: '0x5f34',
+                fees: [
+                  {
+                    maxFeePerGas: '0xf19b9f48d',
+                    maxPriorityFeePerGas: '0x9febc9',
+                    balanceNeeded: '0x59d9d3b865ed8',
+                    currentBalance: '0x77f9fd8d99e7e0',
+                    error: '',
+                    tokenFees: [
+                      {
+                        token: {
+                          address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+                          decimals: 6,
+                          symbol: 'USDC',
+                        },
+                        balanceNeededToken: '0x1',
+                        currentBalanceToken: '0x123456',
+                        feeRecipient:
+                          '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
+                        rateWei: '0x123',
+                      },
+                    ],
+                  },
+                ],
+                stateDiff: {},
+                feeEstimate: 972988071597550,
+                baseFeePerGas: 40482817574,
+              },
+            ],
+            blockNumber: '0x1293669',
+            id: 'faaab4c5-edf5-4077-ac75-8d26278ca2c5',
+          },
+        },
+      };
+    }),
   ];
 }

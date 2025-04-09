@@ -130,6 +130,7 @@ function ListItem({
               variant={TextVariant.bodyMdMedium}
               backgroundColor={BackgroundColor.transparent}
               padding={0}
+              data-testid="gas-fee-token-list-item-symbol"
             >
               {leftPrimary}
             </Text>

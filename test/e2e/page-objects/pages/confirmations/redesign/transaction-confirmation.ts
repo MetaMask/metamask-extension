@@ -19,6 +19,8 @@ class TransactionConfirmation extends Confirmation {
 
   private advancedDetailsHexData: RawLocator;
 
+  private gasFeeTokenPill: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -43,6 +45,7 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
+    this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
   }
 
   async check_walletInitiatedHeadingTitle() {
@@ -53,8 +56,19 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 
+  async check_selectedGasFeeTokenPill(symbol: string) {
+    await this.driver.waitForSelector({
+      css: this.gasFeeTokenPill,
+      text: symbol,
+    });
+  }
+
   async clickAdvancedDetailsButton() {
     await this.driver.clickElement(this.advancedDetailsButton);
+  }
+
+  async clickGasFeeTokenPill() {
+    await this.driver.clickElement(this.gasFeeTokenPill);
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {
