@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Este site quer permissão para gastar seus tokens."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Este site está solicitando retornar para uma conta padrão."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Um site quer que você faça login para comprovar que é titular desta conta."
   },
@@ -1111,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remover permissão"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Redefinir conta"
   },
   "confirmTitleSIWESignature": {
     "message": "Solicitação de entrada"

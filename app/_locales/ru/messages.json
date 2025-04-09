@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Этот сайт хочет получить разрешение на расходование ваших токенов."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Этот сайт запрашивает возврат к стандартному счету."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Сайт требует, чтобы вы вошли в систему и доказали, что вы являетесь владельцем этого счета."
   },
@@ -1111,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Удалить разрешение"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Сбросить счет"
   },
   "confirmTitleSIWESignature": {
     "message": "Запрос на вход"
