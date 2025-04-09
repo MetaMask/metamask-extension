@@ -30,6 +30,7 @@ import {
   getUserStorageControllerMessenger,
 } from './identity';
 import {
+  getAssetsContractControllerMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerMessenger,
@@ -122,6 +123,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   NftDetectionController: {
     getMessenger: getNftDetectionControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AssetsContractController: {
+    getMessenger: getAssetsContractControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

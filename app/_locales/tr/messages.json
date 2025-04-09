@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Dolandırıcılık yapmakla bilinen üçüncü bir tarafın bu siteye erişimi var. İlerlerseniz varlıklarınızı kaybedersiniz."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Site güvenli görünebilir ancak üçüncü bir tarafın sitenin bilgilerine erişimi olabilir. Giriş yaparsanız varlıklarınız çalınabilir."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Onaylarsanız tüm paranızı ve varlıklarınızı kaybedebilirsiniz."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Giriş yaparsanız OpenSea üzerinde yer alan tüm varlıklarınız tehlikeye girer."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Giriş yaparsanız Blur üzerinde yer alan tüm varlıklarınız tehlikeye girer."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Bu site kötü amaçlı bir alan olarak tanınıyor. Giriş yaparsanız para ve varlıkları kaybedersiniz. Bu talebi iptal etmenizi şiddetle tavsiye ederiz."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Giriş yaparsanız tüm varlıklarınızı kaybedebilirsiniz. Bu talebi iptal etmenizi öneririz."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
   },
@@ -6163,9 +6142,6 @@
   },
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Bu işlem size ekstra ücretlere mal olacaktı, bu yüzden bunu durdurduk. Paranız hala cüzdanınızda."
   },
   "transactionFlowNetwork": {
     "message": "Ağ"
