@@ -2,6 +2,7 @@
 
 .confirm_wrapper {
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  position: relative;
 
   @media screen and (min-width: design-system.$break-small) {
     max-width: 360px;
