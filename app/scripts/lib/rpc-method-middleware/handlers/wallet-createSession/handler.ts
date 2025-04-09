@@ -195,7 +195,6 @@ async function walletCreateSessionHandler(
       supportedOptionalScopes,
     ]);
 
-    // Fetch EVM accounts from native wallet keyring
     const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
@@ -213,27 +212,13 @@ async function walletCreateSessionHandler(
               return isEqualCaseInsensitive(address, existingEvmAddress);
             });
           }
-          const getNonEvmAccountAddressesForChainId =
-            hooks.getNonEvmAccountAddresses(caipChainId);
 
-          if (namespace === KnownCaipNamespace.Solana) {
-            return getNonEvmAccountAddressesForChainId.some(
-              (existingCaipAddress) => {
-                // solana addresses are case sensitive
-                return requestedAccountAddress === existingCaipAddress;
-              },
-            );
-          }
-          // TODO we may need to handle case sensitivity for other namespaces
-          // For now, we only support solana case sensitivity
-          return getNonEvmAccountAddressesForChainId.some(
-            (existingCaipAddress) => {
-              return isEqualCaseInsensitive(
-                requestedAccountAddress,
-                existingCaipAddress,
-              );
-            },
-          );
+          // If the namespace is not eip155 (EVM) we do a case sensitive check
+          return hooks
+            .getNonEvmAccountAddresses(caipChainId)
+            .some((existingCaipAddress) => {
+              return requestedAccountAddress === existingCaipAddress;
+            });
         },
       );
 
