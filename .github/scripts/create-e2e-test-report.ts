@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import humanizeDuration from 'humanize-duration';
 import * as xml2js from 'xml2js';
+import { sep } from 'path';
 
 const XML = {
   parse: new xml2js.Parser().parseStringPromise,
@@ -86,7 +87,7 @@ async function main() {
         if (!suite.testcase) continue;
         const name = `${suite.$.name}`;
         const fullPath = `${suite.$.file}`;
-        const path = fullPath.slice(fullPath.indexOf('test/'));
+        const path = fullPath.slice(fullPath.indexOf(`test${sep}`));
         const date = new Date(suite.$.timestamp);
         const tests = +suite.$.tests;
         const time = +suite.$.time * 1000; // convert to ms
@@ -147,16 +148,23 @@ async function main() {
       const latestEnd = Math.max(...times.map((t) => t.end));
       const executionTime = latestEnd - earliestStart;
 
-      const conclusion = `**${
+      const conclusion = `<strong>${
         total.tests
-      }** tests were completed in **${formatTime(executionTime)}** with **${
-        total.passed
-      }** passed, **${total.failed}** failed and **${total.skipped}** skipped.`;
+      }</strong> tests were completed in <strong>${formatTime(
+        executionTime,
+      )}</strong> with <strong>${total.passed}</strong> passed, <strong>${
+        total.failed
+      }</strong> failed and <strong>${total.skipped}</strong> skipped.`;
 
-      // replace markdown bold with ANSI escape codes
-      console.log(conclusion.replace(/\*\*(.*?)\*\*/g, '\x1b[1m$1\x1b[0m'));
+      // replace html bold with ANSI escape codes
+      console.log(
+        conclusion
+          .replaceAll('<strong>', '\x1b[1m')
+          .replaceAll('</strong>', '\x1b[0m'),
+      );
 
-      core.summary.addRaw(`${conclusion}\n`);
+      core.summary.addRaw(`\n<details>\n`);
+      core.summary.addRaw(`<summary>${conclusion}</summary>\n`);
 
       const rows = suites.map((suite) => ({
         'Test suite': process.env.GITHUB_ACTIONS
@@ -177,20 +185,22 @@ async function main() {
       console.table(rows);
 
       core.summary.addRaw(
-        `| ${columns.join(' | ')} |
+        `\n| ${columns.join(' | ')} |
 | :--- | ---: | ---: | ---: | ---: |
 ${markdownTable}\n
 `,
       );
 
+      core.summary.addRaw(`</details>\n`);
+
       if (total.failed > 0) {
-        core.summary.addRaw(`## ❌ Failed tests\n`);
+        core.summary.addRaw(`\n## ❌ Failed tests\n`);
         console.error(`❌ Failed tests`);
         for (const suite of suites) {
           if (suite.failed === 0) continue;
           core.summary.addRaw(`\n<details open>\n`);
           core.summary.addRaw(
-            ` <summary><strong>${suite.name}</strong></summary>\n`,
+            `<summary><strong>${suite.path}</strong></summary>\n`,
           );
           console.error(suite.name);
           for (const test of suite.testCases) {
