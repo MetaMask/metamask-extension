@@ -6143,9 +6143,6 @@
   "transactionErrored": {
     "message": "トランザクションでエラーが発生しました。"
   },
-  "transactionFailedBannerMessage": {
-    "message": "このトランザクションには追加の手数料がかかるため、中止しました。資金はウォレットから移動していません。"
-  },
   "transactionFlowNetwork": {
     "message": "ネットワーク"
   },

@@ -161,6 +161,10 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountFromNetwork": {
+    "message": "Add $1 account",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -2273,6 +2277,15 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "Be sure your $1 is plugged in and to select the Ethereum app."
+  },
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your $1 device."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "Prior to clicking Submit:"
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
@@ -5023,6 +5036,12 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode is here!"
+  },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
   },
@@ -6180,9 +6199,6 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
   },
   "transactionFlowNetwork": {
     "message": "Network"
