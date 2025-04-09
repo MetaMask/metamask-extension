@@ -916,9 +916,11 @@ describe('util', () => {
     it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
       expect(
         util.sanitizeString(
-          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+          'The Quick ‭Brown \u202EFox Jumps Over \u202DThe Lazy Dog',
         ),
-      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+      ).toStrictEqual(
+        'The Quick \\u202DBrown \\u202EFox Jumps Over \\u202DThe Lazy Dog',
+      );
     });
   });
 
