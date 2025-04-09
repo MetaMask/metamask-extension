@@ -733,14 +733,6 @@
         }
       }
     },
-    "incomingTransactionsPreferences": {
-      "0x1": true,
-      "0xe708": false,
-      "0xfa": true,
-      "0x5": false,
-      "0xaa36a7": true,
-      "0xe704": true
-    },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {

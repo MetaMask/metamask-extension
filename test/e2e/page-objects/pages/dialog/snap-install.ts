@@ -27,11 +27,6 @@ class SnapInstall {
     tag: 'span',
   };
 
-  private readonly transactionType = {
-    css: 'p',
-    text: 'ERC-20',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -109,16 +104,6 @@ class SnapInstall {
   async clickConnectButton() {
     console.log('Clicking the connect button');
     await this.driver.clickElement(this.connectButton);
-  }
-
-  async check_transactionInsightsTitle() {
-    console.log('Checking transaction insights title');
-    await this.driver.waitForSelector(this.insightTitle);
-  }
-
-  async check_transactionInsightsType() {
-    console.log('Checking transaction insights type');
-    await this.driver.waitForSelector(this.transactionType);
   }
 
   async check_messageResultSpan(

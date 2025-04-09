@@ -387,41 +387,54 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
   getMetaMaskCachedBalances,
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getCurrentChainId,
+  (_, chainId) => chainId,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
     multichainNetworkProviders,
+    currentChainId,
+    chainId,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
-      // We should consolidate the format to either hex or number
-      if (isEvmAccountType(internalAccount.type)) {
-        if (balances?.[internalAccount.address]) {
+      if (chainId === undefined || currentChainId === chainId) {
+        // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
+        // We should consolidate the format to either hex or number
+        if (isEvmAccountType(internalAccount.type)) {
+          if (balances?.[internalAccount.address]) {
+            account = {
+              ...account,
+              ...balances[internalAccount.address],
+            };
+          }
+        } else {
+          const multichainNetwork = multichainNetworkProviders.find((network) =>
+            network.isAddressCompatible(internalAccount.address),
+          );
           account = {
             ...account,
-            ...balances[internalAccount.address],
+            balance:
+              multichainBalances?.[internalAccount.id]?.[
+                MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
+              ]?.amount ?? '0',
+          };
+        }
+
+        if (account.balance === null || account.balance === undefined) {
+          account = {
+            ...account,
+            balance:
+              (cachedBalances && cachedBalances[internalAccount.address]) ??
+              '0x0',
           };
         }
       } else {
-        const multichainNetwork = multichainNetworkProviders.find((network) =>
-          network.isAddressCompatible(internalAccount.address),
-        );
-        account = {
-          ...account,
-          balance:
-            multichainBalances?.[internalAccount.id]?.[
-              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
-            ]?.amount ?? '0',
-        };
-      }
-
-      if (account.balance === null || account.balance === undefined) {
         account = {
           ...account,
           balance:
@@ -567,8 +580,8 @@ export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
 }
 
-export function getMetaMaskCachedBalances(state) {
-  const chainId = getCurrentChainId(state);
+export function getMetaMaskCachedBalances(state, networkChainId) {
+  const chainId = networkChainId ?? getCurrentChainId(state);
 
   if (state.metamask.accountsByChainId?.[chainId]) {
     return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
@@ -2159,6 +2172,16 @@ export const getNotifySnaps = createDeepEqualSelector(
     );
   },
 );
+/**
+ * Get non-preinstalled snaps that have the snap_notify permission.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object[]} An array of notify snaps that are not preinstalled.
+ */
+export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+  getNotifySnaps,
+  (snaps) => snaps.filter((snap) => !snap.preinstalled),
+);
 
 function getAllSnapInsights(state) {
   return state.metamask.insights;
@@ -2884,6 +2907,10 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
 export function getIsSolanaSupportEnabled(state) {
   const { addSolanaAccount } = getRemoteFeatureFlags(state);
   return Boolean(addSolanaAccount);
+}
+
+export function getManageInstitutionalWallets(state) {
+  return state.metamask.manageInstitutionalWallets;
 }
 
 export function getIsCustomNetwork(state) {
