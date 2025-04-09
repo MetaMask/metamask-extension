@@ -19,8 +19,8 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
-  DEFAULT_GANACHE_ETH_BALANCE_DEC,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -551,11 +551,11 @@ const multipleGanacheOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
     },
     {
       secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
     },
   ],
 };

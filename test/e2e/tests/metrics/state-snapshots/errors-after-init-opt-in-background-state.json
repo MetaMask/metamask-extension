@@ -103,9 +103,9 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       },
       "SepoliaETH": {
         "conversionDate": "number",
@@ -189,6 +189,7 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
+  "NftDetectionController": "object",
   "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -238,7 +239,6 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
-    "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",

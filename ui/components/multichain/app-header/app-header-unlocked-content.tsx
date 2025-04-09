@@ -201,8 +201,8 @@ export const AppHeaderUnlockedContent = ({
             }}
             disabled={disableAccountPicker}
             labelProps={{ fontWeight: FontWeight.Bold }}
-            paddingLeft={2}
-            paddingRight={2}
+            paddingLeft={0}
+            paddingRight={0}
           />
           <Tooltip
             position="left"

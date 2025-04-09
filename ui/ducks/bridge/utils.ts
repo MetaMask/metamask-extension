@@ -18,6 +18,8 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { toAssetId } from '../../../shared/lib/asset-utils';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -87,7 +89,9 @@ const fetchTokenExchangeRates = async (
   let exchangeRates;
   if (isSolanaChainId(chainId)) {
     const queryParams = new URLSearchParams({
-      assetIds: tokenAddresses.join(','),
+      assetIds: tokenAddresses
+        .map((address) => toAssetId(address, MultichainNetworks.SOLANA))
+        .join(','),
       includeMarketData: 'true',
       vsCurrency: currency,
     });

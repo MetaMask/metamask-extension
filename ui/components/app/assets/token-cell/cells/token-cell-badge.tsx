@@ -32,14 +32,16 @@ export const TokenCellBadge = React.memo(
             size={AvatarNetworkSize.Xs}
             name={allNetworks?.[token.chainId as Hex]?.name}
             src={getImageForChainId(token.chainId) || undefined}
-            backgroundColor={BackgroundColor.backgroundDefault}
+            backgroundColor={BackgroundColor.backgroundMuted}
             borderWidth={2}
           />
         }
         marginRight={4}
+        style={{ alignSelf: 'center' }}
       >
         <AvatarToken
           name={token.symbol}
+          backgroundColor={BackgroundColor.backgroundMuted}
           src={
             isEvm && token.isNative
               ? getNativeCurrencyForChain(token.chainId)
