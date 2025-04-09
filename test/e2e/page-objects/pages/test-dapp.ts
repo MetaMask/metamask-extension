@@ -954,15 +954,6 @@ class TestDapp {
       this.confirmSignatureButtonRedesign,
     );
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async request(method: string, params: any[]) {
-    await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
-        params,
-      )}`,
-    });
-  }
 }
 
 export default TestDapp;
