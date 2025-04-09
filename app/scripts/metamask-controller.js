@@ -1995,8 +1995,8 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledAccountUpgradeChains:
-            this.preferencesController.getDisabledAccountUpgradeChains.bind(
+          getDisabledAccountUpgradeChainsAddresses:
+            this.preferencesController.getDisabledAccountUpgradeChainsAddresses.bind(
               this.preferencesController,
             ),
           validateSecurity: (securityAlertId, request, chainId) =>
@@ -2016,8 +2016,8 @@ export default class MetamaskController extends EventEmitter {
         isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
           this.txController,
         ),
-        getDisabledAccountUpgradeChains:
-          this.preferencesController.getDisabledAccountUpgradeChains.bind(
+        getDisabledAccountUpgradeChainsAddresses:
+          this.preferencesController.getDisabledAccountUpgradeChainsAddresses.bind(
             this.preferencesController,
           ),
       }),
@@ -3406,8 +3406,8 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      disableAccountUpgradeForChain:
-        preferencesController.disableAccountUpgradeForChain.bind(
+      disableAccountUpgradeForChainAndAddress:
+        preferencesController.disableAccountUpgradeForChainAndAddress.bind(
           preferencesController,
         ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

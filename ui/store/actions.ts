@@ -6153,10 +6153,14 @@ export async function createSnapAccount(
 }
 ///: END:ONLY_INCLUDE_IF
 
-export async function disableAccountUpgradeForChain(chainId: string) {
-  return await submitRequestToBackground('disableAccountUpgradeForChain', [
-    chainId,
-  ]);
+export async function disableAccountUpgradeForChainAndAddress(
+  chainId: string,
+  address: string,
+) {
+  return await submitRequestToBackground(
+    'disableAccountUpgradeForChainAndAddress',
+    [chainId, address],
+  );
 }
 
 export async function getCode(address: Hex, networkClientId: string) {

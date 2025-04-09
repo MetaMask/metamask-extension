@@ -3,6 +3,7 @@
  */
 import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
+import { Hex } from '@metamask/utils';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
@@ -836,64 +837,88 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('getDisabledAccountUpgradeChains', () => {
-    it('returns empty array if disabledAccountUpgrades is empty', () => {
+  describe('getDisabledAccountUpgradeChainsAddresses', () => {
+    it('returns empty object if disabledAccountUpgradeChainsAddresses is empty', () => {
       const { controller } = setupController({});
-      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([]);
+      expect(
+        controller.getDisabledAccountUpgradeChainsAddresses(),
+      ).toStrictEqual({});
     });
 
     it('returns disabledAccountUpgrades state', () => {
+      const mockStateObject = {
+        [CHAIN_IDS.MAINNET]: ['0x0'] as Hex[],
+        [CHAIN_IDS.GOERLI]: ['0x1'] as Hex[],
+      };
       const { controller } = setupController({
         state: {
-          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+          accountUpgradeDisabledChainsAddresses: mockStateObject,
         },
       });
 
-      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([
-        CHAIN_IDS.MAINNET,
-        CHAIN_IDS.GOERLI,
-      ]);
+      expect(
+        controller.getDisabledAccountUpgradeChainsAddresses(),
+      ).toStrictEqual(mockStateObject);
     });
   });
 
-  describe('disableAccountUpgradeForChain', () => {
-    it('adds chain ID to disabledAccountUpgrades if empty', () => {
+  describe('disableAccountUpgradeForChainAndAddress', () => {
+    it('adds chain ID, address to disabledAccountUpgrades if empty', () => {
       const { controller } = setupController({});
 
-      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
-
-      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+      controller.disableAccountUpgradeForChainAndAddress(
         CHAIN_IDS.GOERLI,
-      ]);
+        '0x0',
+      );
+
+      expect(
+        controller.state.accountUpgradeDisabledChainsAddresses,
+      ).toStrictEqual({
+        [CHAIN_IDS.GOERLI]: ['0x0'],
+      });
     });
 
-    it('adds chain ID to disabledAccountUpgrades if not empty', () => {
+    it('adds chain ID, address to disabledAccountUpgrades if not empty', () => {
       const { controller } = setupController({
         state: {
-          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
+          accountUpgradeDisabledChainsAddresses: {
+            [CHAIN_IDS.MAINNET]: ['0x0'],
+          },
         },
       });
 
-      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
-
-      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
-        CHAIN_IDS.MAINNET,
+      controller.disableAccountUpgradeForChainAndAddress(
         CHAIN_IDS.GOERLI,
-      ]);
+        '0x1',
+      );
+
+      expect(
+        controller.state.accountUpgradeDisabledChainsAddresses,
+      ).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: ['0x0'],
+        [CHAIN_IDS.GOERLI]: ['0x1'],
+      });
     });
 
     it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
       const { controller } = setupController({
         state: {
-          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
+          accountUpgradeDisabledChainsAddresses: {
+            [CHAIN_IDS.MAINNET]: ['0x0'],
+          },
         },
       });
 
-      controller.disableAccountUpgradeForChain(CHAIN_IDS.MAINNET);
-
-      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
+      controller.disableAccountUpgradeForChainAndAddress(
         CHAIN_IDS.MAINNET,
-      ]);
+        '0x0',
+      );
+
+      expect(
+        controller.state.accountUpgradeDisabledChainsAddresses,
+      ).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: ['0x0'],
+      });
     });
   });
 });

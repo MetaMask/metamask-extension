@@ -31,7 +31,7 @@ const VERSION_GET_CALLS_STATUS = '1.0';
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
-    getDisabledAccountUpgradeChains: () => Hex[];
+    getDisabledAccountUpgradeChainsAddresses: () => Record<Hex, Hex[]>;
     validateSecurity: (
       securityAlertId: string,
       request: ValidateSecurityRequest,
@@ -44,7 +44,7 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
-    getDisabledAccountUpgradeChains,
+    getDisabledAccountUpgradeChainsAddresses,
     validateSecurity: validateSecurityHook,
   } = hooks;
 
@@ -57,9 +57,9 @@ export async function processSendCalls(
     networkClientId,
   ).configuration.chainId;
 
-  const disabledChains = getDisabledAccountUpgradeChains();
+  const disabledChainsAddresses = getDisabledAccountUpgradeChainsAddresses();
 
-  validateSendCalls(params, dappChainId, disabledChains);
+  validateSendCalls(params, dappChainId, disabledChainsAddresses);
 
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
@@ -126,12 +126,12 @@ export async function getCapabilities(_address: Hex, _chainIds?: Hex[]) {
 function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
-  disabledChains: Hex[],
+  disabledChainsAddresses: Record<Hex, Hex[]>,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
-  validateUserDisabled(sendCalls, disabledChains, dappChainId);
+  validateUserDisabled(sendCalls, disabledChainsAddresses, dappChainId);
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -186,11 +186,11 @@ function validateCapabilities(sendCalls: SendCalls) {
 
 function validateUserDisabled(
   sendCalls: SendCalls,
-  disabledChains: Hex[],
+  disabledChains: Record<Hex, Hex[]>,
   dappChainId: Hex,
 ) {
   const { from } = sendCalls;
-  const isDisabled = disabledChains.includes(dappChainId);
+  const isDisabled = disabledChains[dappChainId]?.includes(from);
 
   if (isDisabled) {
     throw rpcErrors.methodNotSupported(

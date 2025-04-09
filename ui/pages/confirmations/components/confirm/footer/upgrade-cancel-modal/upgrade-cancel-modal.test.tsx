@@ -9,7 +9,7 @@ import {
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
 import {
-  disableAccountUpgradeForChain,
+  disableAccountUpgradeForChainAndAddress,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
@@ -17,7 +17,7 @@ import { UpgradeCancelModal } from './upgrade-cancel-modal';
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
   rejectPendingApproval: jest.fn(),
-  disableAccountUpgradeForChain: jest.fn(),
+  disableAccountUpgradeForChainAndAddress: jest.fn(),
 }));
 
 const STORE_MOCK = configureStore(
@@ -29,14 +29,14 @@ const STORE_MOCK = configureStore(
 describe('UpgradeCancelModal', () => {
   const rejectPendingApprovalMock = jest.mocked(rejectPendingApproval);
 
-  const disableAccountUpgradeForChainMock = jest.mocked(
-    disableAccountUpgradeForChain,
+  const disableAccountUpgradeForChainAndAddressMock = jest.mocked(
+    disableAccountUpgradeForChainAndAddress,
   );
 
   beforeEach(() => {
     jest.resetAllMocks();
     rejectPendingApprovalMock.mockReturnValue({ type: 'mockAction' } as never);
-    disableAccountUpgradeForChainMock.mockResolvedValue({});
+    disableAccountUpgradeForChainAndAddressMock.mockResolvedValue({});
   });
 
   it('renders cancel buttons', () => {
@@ -103,6 +103,7 @@ describe('UpgradeCancelModal', () => {
 
   it('disables upgrade for chain when reject upgrade button is clicked', async () => {
     const onReject = jest.fn();
+    const from = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
 
     const { getByTestId } = renderWithConfirmContextProvider(
       <UpgradeCancelModal
@@ -119,7 +120,12 @@ describe('UpgradeCancelModal', () => {
       getByTestId('upgrade-cancel-reject-upgrade').click();
     });
 
-    expect(disableAccountUpgradeForChainMock).toHaveBeenCalledTimes(1);
-    expect(disableAccountUpgradeForChainMock).toHaveBeenCalledWith(CHAIN_ID);
+    expect(disableAccountUpgradeForChainAndAddressMock).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(disableAccountUpgradeForChainAndAddressMock).toHaveBeenCalledWith(
+      CHAIN_ID,
+      from,
+    );
   });
 });

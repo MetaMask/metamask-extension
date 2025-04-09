@@ -84,7 +84,9 @@ describe('EIP-5792', () => {
     TransactionControllerGetStateAction['handler']
   >;
 
-  let getDisabledAccountUpgradeChainsMock: jest.MockedFn<() => Hex[]>;
+  let getDisabledAccountUpgradeChainsAddressesMock: jest.MockedFn<
+    () => Record<Hex, Hex[]>
+  >;
 
   let validateSecurityMock: jest.MockedFunction<
     Parameters<typeof processSendCalls>[0]['validateSecurity']
@@ -98,7 +100,7 @@ describe('EIP-5792', () => {
     addTransactionBatchMock = jest.fn();
     getTransactionControllerStateMock = jest.fn();
     getNetworkClientByIdMock = jest.fn();
-    getDisabledAccountUpgradeChainsMock = jest.fn();
+    getDisabledAccountUpgradeChainsAddressesMock = jest.fn();
     validateSecurityMock = jest.fn();
 
     messenger = new Messenger();
@@ -123,7 +125,7 @@ describe('EIP-5792', () => {
       batchId: BATCH_ID_MOCK,
     });
 
-    getDisabledAccountUpgradeChainsMock.mockReturnValue([]);
+    getDisabledAccountUpgradeChainsAddressesMock.mockReturnValue({});
   });
 
   describe('processSendCalls', () => {
@@ -131,7 +133,8 @@ describe('EIP-5792', () => {
       await processSendCalls(
         {
           addTransactionBatch: addTransactionBatchMock,
-          getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDisabledAccountUpgradeChainsAddresses:
+            getDisabledAccountUpgradeChainsAddressesMock,
           validateSecurity: validateSecurityMock,
         },
         messenger,
@@ -154,8 +157,8 @@ describe('EIP-5792', () => {
         await processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
           },
           messenger,
@@ -170,8 +173,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
           },
           messenger,
@@ -186,8 +189,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
           },
           messenger,
@@ -200,14 +203,16 @@ describe('EIP-5792', () => {
     });
 
     it('throws if disabled preference for chain', async () => {
-      getDisabledAccountUpgradeChainsMock.mockReturnValue([CHAIN_ID_MOCK]);
+      getDisabledAccountUpgradeChainsAddressesMock.mockReturnValue({
+        [CHAIN_ID_MOCK]: [FROM_MOCK],
+      });
 
       await expect(
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
           },
           messenger,
@@ -224,8 +229,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
           },
           messenger,
@@ -247,8 +252,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
           },
           messenger,

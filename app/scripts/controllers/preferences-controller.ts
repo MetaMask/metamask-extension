@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -148,7 +148,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
-  accountUpgradeDisabledChains?: string[];
+  accountUpgradeDisabledChainsAddresses?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -252,6 +252,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    accountUpgradeDisabledChainsAddresses: {},
   });
 
 /**
@@ -422,7 +423,7 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  accountUpgradeDisabledChains: { persist: true, anonymous: false },
+  accountUpgradeDisabledChainsAddresses: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -946,19 +947,19 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  getDisabledAccountUpgradeChains(): string[] {
-    return this.state.accountUpgradeDisabledChains ?? [];
+  getDisabledAccountUpgradeChainsAddresses(): Record<Hex, Hex[]> {
+    return this.state.accountUpgradeDisabledChainsAddresses ?? {};
   }
 
-  disableAccountUpgradeForChain(chainId: string): void {
+  disableAccountUpgradeForChainAndAddress(chainId: Hex, address: Hex): void {
     this.update((state) => {
-      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
+      const { accountUpgradeDisabledChainsAddresses = {} } = state;
 
-      if (!existingDisabledChains?.includes(chainId)) {
-        state.accountUpgradeDisabledChains = [
-          ...(existingDisabledChains ?? []),
-          chainId,
-        ];
+      if (!accountUpgradeDisabledChainsAddresses[chainId]?.includes(address)) {
+        if (!accountUpgradeDisabledChainsAddresses[chainId]) {
+          accountUpgradeDisabledChainsAddresses[chainId] = [];
+        }
+        accountUpgradeDisabledChainsAddresses[chainId].push(address);
       }
     });
   }

@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
-  disableAccountUpgradeForChain,
+  disableAccountUpgradeForChainAndAddress,
   rejectPendingApproval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
@@ -12,13 +12,17 @@ import { useConfirmContext } from '../context/confirm';
 export function useSmartAccountActions() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { id: confirmationId, chainId } = currentConfirmation ?? {};
+  const {
+    id: confirmationId,
+    chainId,
+    txParams: { from },
+  } = currentConfirmation ?? {};
 
   const handleRejectUpgrade = useCallback(async () => {
     const error = rpcErrors.methodNotSupported('User rejected account upgrade');
     const serializedError = serializeError(error);
 
-    await disableAccountUpgradeForChain(chainId as string);
+    await disableAccountUpgradeForChainAndAddress(chainId as string, from);
 
     dispatch(rejectPendingApproval(confirmationId, serializedError));
   }, [dispatch, confirmationId, chainId]);
