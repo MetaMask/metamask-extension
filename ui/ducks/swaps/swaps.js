@@ -761,15 +761,30 @@ export const fetchQuotesAndSetQuoteState = (
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
 
-    // Determines if the pair is an eligible stable token pair.
-    // If the pair is a stable pair, use the lower slippage value of 0.5%.
+    // Helper function for case-insensitive address check in a Set
+    const checkAddressInSetCaseInsensitive = (addressSet, addressToCheck) => {
+      if (!addressToCheck) {
+        return false;
+      }
+      const lowerAddressToCheck = addressToCheck.toLowerCase();
+      for (const addrInSet of addressSet) {
+        if (addrInSet.toLowerCase() === lowerAddressToCheck) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Determines if the pair is an eligible stable token pair using case-insensitive check.
+    // If the pair is a stablecoin pair in our list, we can use a lower slippage value of 0.5%.
     const stablecoinsForChain = StablecoinsByChainId[chainId];
     const isStableTokenPair = Boolean(
       stablecoinsForChain &&
-        fromTokenAddress &&
-        toTokenAddress &&
-        stablecoinsForChain.has(fromTokenAddress.toLowerCase()) &&
-        stablecoinsForChain.has(toTokenAddress.toLowerCase()),
+        checkAddressInSetCaseInsensitive(
+          stablecoinsForChain,
+          fromTokenAddress,
+        ) &&
+        checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
     );
 
     const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;
