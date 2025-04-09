@@ -14,9 +14,9 @@ import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import {
   getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission';
-import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { getAllScopesFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
