@@ -4,6 +4,7 @@ import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
   CaipChainId,
+  KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -69,6 +70,7 @@ import {
   getAllScopesFromCaip25CaveatValue,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -203,7 +205,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     (acc, account) => {
       const supportedRequestedAccount =
         supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
-          const { namespace } = parseCaipAccountId(caipAccountId);
+          const {
+            chain: { namespace },
+          } = parseCaipAccountId(caipAccountId);
           // EIP155 (EVM) addresses are not case sensitive
           if (namespace === KnownCaipNamespace.Eip155) {
             return isEqualCaseInsensitive(caipAccountId, account);
