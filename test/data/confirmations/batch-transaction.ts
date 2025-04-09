@@ -1,4 +1,4 @@
-import { TransactionType } from "@metamask/transaction-controller";
+import { TransactionType } from '@metamask/transaction-controller';
 
 export const upgradeAccountConfirmation = {
   batchId: '0x6046131032d748a6bfac42fd5117479f',
