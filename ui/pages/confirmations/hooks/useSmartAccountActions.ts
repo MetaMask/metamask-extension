@@ -15,7 +15,7 @@ export function useSmartAccountActions() {
   const {
     id: confirmationId,
     chainId,
-    txParams: { from },
+    txParams: { from } = {},
   } = currentConfirmation ?? { txParams: {} };
 
   const handleRejectUpgrade = useCallback(async () => {
