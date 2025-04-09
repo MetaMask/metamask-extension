@@ -73,9 +73,7 @@ import {
 import { createOffscreen } from './offscreen';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
-
 /* eslint-enable import/first */
-
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
@@ -83,6 +81,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
+const { chrome } = globalThis;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -140,6 +139,29 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
+
+let updatePending = false;
+
+chrome.runtime.onUpdateAvailable.addListener(() => {
+  updatePending = true;
+});
+
+/**
+ * Checks if there's a pending update and reloads the extension if needed.
+ * This function is called when the extension is determined to be idle,
+ * making it a good time to apply updates without disrupting user activity.
+ *
+ * @returns {void}
+ */
+function onExtensionIdle() {
+  if (updatePending) {
+    try {
+      chrome.runtime.reload();
+    } catch (error) {
+      console.error('Failed to reload extension:', error);
+    }
+  }
+}
 
 if (!isManifestV3) {
   /**
@@ -854,7 +876,8 @@ export function setupController(
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
       controller.onClientClosed();
-      // otherwise we want to only remove the polling tokens for the environment type that has closed
+      // Only check for updates when explicitly closed, not during initialization
+      onExtensionIdle();
     } else {
       // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
       // its corresponding polling tokens unless all tabs are closed.
