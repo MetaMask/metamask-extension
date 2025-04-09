@@ -32,6 +32,10 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
+  private networkSelector = '[data-testid="avatar-group"]';
+
+  private applyButton = { text: 'Apply', tag: 'button' };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -39,8 +43,16 @@ class BridgeQuotePage {
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
     await this.driver.clickElement(this.sourceAssetPickerButton);
+    if (quote.tokenFrom === 'ETH') {
+      await this.driver.clickElement(this.networkSelector);
+      await this.driver.clickElement(this.lineaNetwork);
+      await this.driver.clickElement(this.applyButton);
+    }
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
-    await this.driver.clickElement(this.tokenButton);
+    await this.driver.delay(1000); // Wait for the token to be loaded/ Wait for the token to be loaded
+    const tokenButtons = await this.driver.findElements(this.tokenButton);
+    const firstButton = tokenButtons[0];
+    await firstButton.click();
 
     // QTY
     await this.driver.fill(this.sourceAmount, quote.amount);
@@ -50,8 +62,8 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.destinationAssetPickerButton);
     await this.driver.clickElement(`[data-testid="${quote.toChain}"]`);
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
+    await this.driver.delay(1000); // Wait for the token to be loaded
     await this.driver.clickElement(this.tokenButton);
-    // await this.driver.clickElement(this.serchedToken);
   };
 
   submitQuote = async () => {

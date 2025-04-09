@@ -14,7 +14,11 @@ import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
-  MOCK_BRIDGE_ETH_TO_LINEA,
+  MOCK_TOKEN_API,
+  MOCK_BRIDGE_ETH_TO_ETH_LINEA,
+  MOCK_BRIDGE_ETH_TO_DAI_LINEA,
+  MOCK_BRIDGE_DAI_TO_ETH_LINEA,
+  MOCK_BRIDGE_DAI_TO_USDT_LINEA,
 } from './constants';
 
 export class BridgePage {
@@ -146,14 +150,75 @@ async function mockTopAssets(mockServer: Mockttp) {
   });
 }
 
-async function mockGetQuote(mockServer: Mockttp) {
+async function mockTokenApi(mockServer: Mockttp) {
+  return await mockServer.forGet(/tokens/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: MOCK_TOKEN_API,
+    };
+  });
+}
+
+async function mockETHtoETH(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x0000000000000000000000000000000000000000',
+    })
     .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_BRIDGE_ETH_TO_LINEA,
+        json: MOCK_BRIDGE_ETH_TO_ETH_LINEA,
+      };
+    });
+}
+
+async function mockETHtoDAI(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_ETH_TO_DAI_LINEA,
+      };
+    });
+}
+
+async function mockDAItoETH(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      destTokenAddress: '0x0000000000000000000000000000000000000000',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_DAI_TO_ETH_LINEA,
+      };
+    });
+}
+
+async function mockDAItoUSDT(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      destTokenAddress: '0xA219439258ca9da29E9Cc4cE5596924745e12B93',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_DAI_TO_USDT_LINEA,
       };
     });
 }
@@ -192,10 +257,14 @@ export const getBridgeFixtures = (
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, featureFlags),
+      await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssets(mockServer),
-      await mockGetQuote(mockServer),
-      await mockPortfolioPage(mockServer),
+      await mockTokenApi(mockServer),
+      await mockETHtoETH(mockServer),
+      await mockETHtoDAI(mockServer),
+      await mockDAItoETH(mockServer),
+      await mockDAItoUSDT(mockServer),
     ],
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
