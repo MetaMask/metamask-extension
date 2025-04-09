@@ -3613,19 +3613,6 @@
   "onboardingMetametricsAgree": {
     "message": "동의함"
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. MetaMask는 제공받은 데이터를 절대 판매하지 않습니다."
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "메트릭을 수집할 때는 항상..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "이 데이터를 다른 목적으로 사용하기로 결정하면 알려드리겠습니다. 자세한 내용은 $1을(를) 참고하세요. 언제든지 설정으로 이동하여 해제할 수 있습니다.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "개인정보 처리방침"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "개인 정보:"
   },
@@ -3636,15 +3623,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "일반:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 언제든지 설정을 통해 사용 데이터를 공유할지 삭제할지 결정할 수 있습니다.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "선택 사항:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "프로필의 사용 데이터를 수집하는 동안 개인정보를 보호하는 방법을 알아보세요."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"

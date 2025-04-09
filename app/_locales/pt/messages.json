@@ -3613,19 +3613,6 @@
   "onboardingMetametricsAgree": {
     "message": "Concordo"
   },
-  "onboardingMetametricsDescription": {
-    "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "Quando coletamos as métricas, elas sempre são..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Política de Privacidade"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Privadas:"
   },
@@ -3636,15 +3623,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Gerais:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 você decide se quer compartilhar ou excluir seus dados de uso nas configurações, a qualquer momento.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionais:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Saiba como protegemos sua privacidade durante a coleta de dados de utilização relacionados ao seu perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"

@@ -3613,19 +3613,6 @@
   "onboardingMetametricsAgree": {
     "message": "我同意"
   },
-  "onboardingMetametricsDescription": {
-    "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "当我们收集指标时，总是..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "隐私政策"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "私密："
   },
@@ -3636,15 +3623,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "通用："
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 您可以随时决定是否通过设置共享或删除您的使用数据。",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "可选："
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "了解我们如何在收集您的个人资料使用数据的同时保护您的隐私。"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"

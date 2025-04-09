@@ -3613,19 +3613,6 @@
   "onboardingMetametricsAgree": {
     "message": "Я согласен(-на)"
   },
-  "onboardingMetametricsDescription": {
-    "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "Когда мы собираем показатели, они всегда будут..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Политикой конфиденциальности"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Приватными:"
   },
@@ -3636,15 +3623,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Общедоступными:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 вы в любое время решаете, хотите ли вы поделиться своими данными об использовании или удалить их в настройках.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Необязательными:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность при сборе данных об использовании вашего профиля."
   },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"

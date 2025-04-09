@@ -3678,18 +3678,15 @@
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
-  "onboardingMetametricsDescription": {
-    "message": "We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here."
+  "onboardingMetametricsDescriptionNew": {
+    "message": "We gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "When we gather metrics, it will always be..."
+  "onboardingMetametricsTerms": {
+    "message": "We’ll let you know if we ever plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
+    "description": "$1 represents `onboardingMetametricsNotice`"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Privacy Policy"
+  "onboardingMetametricsNotice": {
+    "message": "Privacy Notice"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Private:"
@@ -3701,19 +3698,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
-  "onboardingMetametricsNeverCollectText": {
-    "message": "$1 clicks and views on the app are stored, but other details are not.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataWithLink": {
     "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
+    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`."
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Learn how we protect your privacy while collecting usage data for your profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
@@ -4857,6 +4847,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "settingsLowercase": {
+    "message": "settings"
   },
   "settingsOptimisedForEaseOfUseAndSecurity": {
     "message": "Settings are optimised for ease of use and security. Change these any time."
