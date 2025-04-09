@@ -16,7 +16,6 @@ import {
 import {
   getLastSelectedNonEvmAccount,
   getMultichainBalances,
-  getMultichainCoinRates,
 } from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
 import { getSelectedEvmInternalAccount } from '../selectors/selectors';
@@ -44,8 +43,6 @@ const useNonEvmAssetsWithBalances = (): (
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  // native exchange rates
-  const nativeRates = useSelector(getMultichainCoinRates);
   // asset exchange rates
   const assetRates = useSelector(getAssetsRates);
 
@@ -78,13 +75,7 @@ const useNonEvmAssetsWithBalances = (): (
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
-            .times(
-              assetRates?.[caipAssetId]?.rate ??
-                nativeRates?.[
-                  assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
-                ]?.conversionRate ??
-                '1',
-            )
+            .times(assetRates?.[caipAssetId]?.rate ?? '1')
             .toNumber(),
         };
       })
@@ -93,7 +84,6 @@ const useNonEvmAssetsWithBalances = (): (
     assetMetadataById,
     assetRates,
     assetsByAccountId,
-    nativeRates,
     nonEvmAccount?.id,
     nonEvmBalancesByAccountId,
   ]);

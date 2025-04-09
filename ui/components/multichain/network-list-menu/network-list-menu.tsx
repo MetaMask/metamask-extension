@@ -80,7 +80,6 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -314,7 +313,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // the network changes.
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-    } else if (process.env.PORTFOLIO_VIEW) {
+    } else {
       const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
         return acc;
@@ -794,11 +793,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           paddingTop: 0,
           paddingBottom: 0,
         }}
-        height={
-          actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT
-            ? BlockSize.TwoFifths
-            : BlockSize.Screen
-        }
       >
         <ModalHeader
           paddingTop={4}

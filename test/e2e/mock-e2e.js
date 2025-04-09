@@ -35,8 +35,17 @@ const CDN_STALE_DIFF_RES_HEADERS_PATH =
 const CDN_STALE_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-res-headers.json';
 
+const ACCOUNTS_API_TOKENS_PATH =
+  'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
+const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
+  'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
+const CHAIN_ID_NETWORKS_PATH =
+  'test/e2e/mock-response-data/chain-id-network-chains.json';
+const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
+  'test/e2e/mock-response-data/client-side-detection-blocklist.json';
+const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const blocklistedHosts = [
@@ -826,6 +835,104 @@ async function setupMocking(
             ],
           },
         ],
+      };
+    });
+
+  // On Ramp Content
+  const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
+  await server
+    .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(ON_RAMP_CONTENT),
+      };
+    });
+
+  // Chains Metadata
+  const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
+  await server
+    .forGet('https://chainid.network/chains.json')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(CHAIN_ID_NETWORKS),
+      };
+    });
+
+  // Accounts API: supported networks
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v1/supportedNetworks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+          partialSupport: {
+            balances: [42220, 43114],
+          },
+        },
+      };
+    });
+
+  // Accounts API: tokens
+  const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
+  await server
+    .forGet('https://account.api.cx.metamask.io/networks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(ACCOUNTS_API_TOKENS),
+      };
+    });
+
+  // Bridge Feature Flags
+  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
+    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
+  );
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS),
+      };
+    });
+
+  // Client Side Detecition: Request Blocklist
+  const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
+    CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
+  );
+  await server
+    .forGet(
+      'https://client-side-detection.api.cx.metamask.io/v1/request-blocklist',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // On Ramp: Eligibility MetaMask Card
+  await server
+    .forGet('https://on-ramp.api.cx.metamask.io/eligibility/mm-card')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: true,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+        },
+      };
+    });
+
+  // Token Icons
+  await server
+    .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
       };
     });
 

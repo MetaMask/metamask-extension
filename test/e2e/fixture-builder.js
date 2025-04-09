@@ -115,9 +115,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
-        showTestNetworks: false,
-        smartTransactionsOptInStatus: true,
-        tokenNetworkFilter: {},
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -234,6 +231,12 @@ class FixtureBuilder {
   withUseBasicFunctionalityDisabled() {
     return this.withPreferencesController({
       useExternalServices: false,
+    });
+  }
+
+  withUseBasicFunctionalityEnabled() {
+    return this.withPreferencesController({
+      useExternalServices: true,
     });
   }
 
@@ -1631,14 +1634,6 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
-  }
-
-  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
-    return this.withPreferencesController({
-      featureFlags: {
-        showIncomingTransactions: incomingTransactionsPreferences,
-      },
-    });
   }
 
   withIncomingTransactionsCache(cache) {

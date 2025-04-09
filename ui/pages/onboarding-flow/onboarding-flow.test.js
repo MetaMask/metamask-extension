@@ -59,10 +59,6 @@ describe('Onboarding Flow', () => {
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
-
-      incomingTransactionsPreferences: {
-        [CHAIN_IDS.MAINNET]: true,
-      },
       preferences: {
         petnamesEnabled: true,
       },
