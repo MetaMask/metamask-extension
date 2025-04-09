@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -14,7 +19,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  getAllEnabledNetworks,
   getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
@@ -36,7 +40,10 @@ import {
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import MaxClearButton from './max-clear-button';
 import {
@@ -65,6 +72,11 @@ type AssetPickerAmountProps = OverridingUnion<
     ) => void;
   }
 >;
+
+type NetworkOption =
+  | NetworkConfiguration
+  | AddNetworkFields
+  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 
 // A component that combines an asset picker with an input for the amount to send.
 export const AssetPickerAmount = ({
@@ -95,8 +107,7 @@ export const AssetPickerAmount = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-  const nonTestNetwork = useSelector(getAllEnabledNetworks);
-  const allNetworks = Object.values(nonTestNetwork);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
   useEffect(() => {
@@ -231,10 +242,9 @@ export const AssetPickerAmount = ({
           networkProps={
             showNetworkPickerinModal
               ? {
-                  network: currentNetwork,
-                  networks: allNetworks,
+                  network: currentNetwork as unknown as NetworkOption,
+                  networks: Object.values(allNetworks) as NetworkOption[],
                   onNetworkChange: (networkConfig) => {
-                    console.log(networkConfig, 'networkClientId');
                     dispatch(
                       setActiveNetworkWithError(
                         networkConfig.rpcEndpoints[
