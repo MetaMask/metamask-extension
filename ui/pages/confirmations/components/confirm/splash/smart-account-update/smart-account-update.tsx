@@ -146,16 +146,15 @@ export function SmartAccountUpdate() {
               variant={TextVariant.bodyMd}
               fontWeight={FontWeight.Normal}
             >
-              {t('smartAccountFeaturesDescription')}
+              {t('smartAccountFeaturesDescription')}{' '}
               <a
                 key="learn_more_link"
                 href={SMART_ACCOUNT_INFO_LINK}
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 target="_blank"
               >
-                {t('learnMore')}
+                {t('learnMoreUpperCaseWithDot')}
               </a>
-              ,.
             </Text>
           </Box>
         </Box>
