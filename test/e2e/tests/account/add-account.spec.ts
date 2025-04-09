@@ -11,6 +11,30 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import { Mockttp } from 'mockttp';
+
+async function mockApis(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet(
+        'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
+      )
+      .withQuery({
+        limit: 50,
+        includeTopBid: 'true',
+        chainIds: ['1', '59144'],
+        continuation: '',
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            tokens: [],
+          },
+        };
+      }),
+  ];
+}
 
 describe('Add account', function () {
   const localNodeOptions = {
@@ -22,6 +46,7 @@ describe('Add account', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         localNodeOptions,
         title: this.test?.fullTitle(),
+        testSpecificMock: mockApis,
       },
       async ({ driver, localNodes }) => {
         await completeImportSRPOnboardingFlow({ driver });
