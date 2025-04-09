@@ -7,7 +7,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getPermittedAccountsForCurrentTab } from '../../../selectors';
+import { getPermittedEVMAccountsForCurrentTab } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
@@ -88,7 +88,7 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
   const isEvmAccount = isEvmAccountType(account?.type);
 
   return (

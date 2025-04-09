@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Um terceiro conhecido por aplicar golpes tem acesso a este site. Se você prosseguir, perderá ativos."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "O site pode parecer seguro, mas um terceiro pode ter acesso às informações dele. Se você fizer login, seus ativos poderão ser roubados."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Se você confirmar, poderá perder todos os seus fundos e ativos."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Se você fizer login, todo ativo que você listou no OpenSea estará em risco."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Se você se cadastrar, um ou todos os ativos que você listou no Blur correrão risco."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Este site é reconhecido como um domínio mal-intencionado. Se você fizer login, perderá fundos e ativos. É altamente recomendado que você cancele esta solicitação."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Se você fizer login, poderá perder todos os seus ativos. Recomendamos que cancele esta solicitação."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Se você aprovar essa solicitação, algum terceiro conhecido por aplicar golpes poderá tomar todos os seus ativos."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Este site quer permissão para gastar seus tokens."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Este site está solicitando retornar para uma conta padrão."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Um site quer que você faça login para comprovar que é titular desta conta."
   },
@@ -1132,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remover permissão"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Redefinir conta"
   },
   "confirmTitleSIWESignature": {
     "message": "Solicitação de entrada"
@@ -6163,9 +6136,6 @@
   },
   "transactionErrored": {
     "message": "A transação encontrou um erro."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Esta transação teria lhe custado taxas extras, por isso a interrompemos. Seu dinheiro ainda está na sua carteira."
   },
   "transactionFlowNetwork": {
     "message": "Rede"
