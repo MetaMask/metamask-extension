@@ -161,6 +161,10 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountFromNetwork": {
+    "message": "Add $1 account",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -706,26 +710,23 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "A third party known for scams has access to this site. If you proceed, you'll lose assets."
+  "blockaidAlertDescriptionBlur": {
+    "message": "If you continue, all the assets you’ve listed on Blur could be at risk."
   },
-  "blockaidAlertInfoDescription2": {
-    "message": "The site may look safe, but a third party might have access to its information. If you sign in, your assets could get stolen."
+  "blockaidAlertDescriptionMalicious": {
+    "message": "You’re interacting with a malicious site. If you continue, you will lose your assets."
   },
-  "blockaidAlertInfoDescription3": {
-    "message": "If you confirm, you could lose all your funds and assets."
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "If you continue, all the assets you’ve listed on OpenSea could be at risk."
   },
-  "blockaidAlertInfoDescription4": {
-    "message": "If you sign in, any or all assets you've listed on OpenSea are at risk."
+  "blockaidAlertDescriptionOthers": {
+    "message": "If you confirm this request, you could lose your assets. We recommend that you cancel this request."
   },
-  "blockaidAlertInfoDescription5": {
-    "message": "If you sign in, any or all assets you've listed on Blur are at risk."
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "You’re sending your assets to a scammer. If you continue, you’ll lose those assets."
   },
-  "blockaidAlertInfoDescription6": {
-    "message": "This site is recognized as a malicious domain. If you sign in, you will lose funds and assets. We strongly suggest you cancel this request."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "If you sign in, you could lose all your assets. We recommend you cancel this request."
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "If you confirm this request, you’re allowing a scammer to withdraw and spend your assets. You won’t get them back."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -782,6 +783,9 @@
   },
   "bridgeApprovalWarningForHardware": {
     "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
+  },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Block explorer link copied!"
   },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
@@ -1112,11 +1116,17 @@
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
   },
+  "confirmTitleDelegationRevoke": {
+    "message": "Account update"
+  },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
   },
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
+  },
+  "confirmTitleDescDelegationRevoke": {
+    "message": "You're switching back to a standard account (EOA)."
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -1126,9 +1136,6 @@
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
-  },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "This site is requesting to switch back to a standard account."
   },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
@@ -1141,9 +1148,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remove permission"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset account"
   },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
@@ -2274,6 +2278,15 @@
     "message": "(legacy)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "Be sure your $1 is plugged in and to select the Ethereum app."
+  },
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your $1 device."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "Prior to clicking Submit:"
+  },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
   },
@@ -2880,6 +2893,12 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "manageInstitutionalWallets": {
+    "message": "Manage Institutional Wallets"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "Turn this on to enable institutional wallets."
   },
   "managePermissions": {
     "message": "Manage permissions"
@@ -3750,9 +3769,6 @@
   "oneYearAbbreviation": {
     "message": "1Y",
     "description": "Shortened form of '1 year'"
-  },
-  "onekey": {
-    "message": "OneKey"
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
@@ -5029,6 +5045,12 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode is here!"
+  },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
   },
@@ -5372,7 +5394,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
@@ -5494,13 +5515,6 @@
   "step1LedgerWalletMsg": {
     "message": "Download, set up, and enter your password to unlock $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "Connect your OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Plug your OneKey directly into your computer and unlock it. Make sure you use the correct passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Connect your Trezor"
@@ -6193,9 +6207,6 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
   },
   "transactionFlowNetwork": {
     "message": "Network"

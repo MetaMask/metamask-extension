@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "BlockAid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Un tiers connu pour ses activités frauduleuses a accès à ce site. Si vous continuez, vous risquez de perdre vos actifs."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Le site peut sembler sécurisé, mais un tiers pourrait avoir accès à ses informations. En vous connectant, vous risquez de vous faire voler vos actifs."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Si vous confirmez, vous risquez de perdre l’ensemble de vos fonds et actifs."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Si vous vous connectez, vous risquez de perdre une partie ou la totalité des actifs que vous avez répertoriés sur OpenSea."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Si vous vous connectez, vous risquez de perdre une partie ou la totalité des actifs que vous avez répertoriés sur Blur."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Ce site est identifié comme un domaine malveillant. En vous connectant, vous risquez de vous faire voler vos fonds et vos actifs. Nous vous recommandons vivement d’annuler cette demande."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Si vous vous connectez, vous risquez de perdre tous vos actifs. Nous vous recommandons d’annuler cette demande."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Ce site demande que vous lui accordiez l'autorisation de dépenser vos jetons."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Ce site demande à repasser à un compte standard."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Un site vous demande de vous connecter pour prouver que vous êtes le titulaire de ce compte."
   },
@@ -1132,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Retirer l'autorisation"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Réinitialiser le compte"
   },
   "confirmTitleSIWESignature": {
     "message": "Demande de connexion"
@@ -3735,9 +3708,6 @@
     "message": "1 an",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5445,6 @@
     "message": "Téléchargez, configurez et saisissez votre mot de passe pour déverrouiller $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Connecter votre portefeuille OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Branchez votre OneKey directement sur votre ordinateur et déverrouillez-le. Veillez à utiliser la bonne phrase secrète.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Connecter le portefeuille Trezor"
   },
@@ -6173,9 +6136,6 @@
   },
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Cette transaction vous aurait occasionné des frais supplémentaires, c’est pourquoi nous l’avons annulée. Votre argent est toujours dans votre portefeuille."
   },
   "transactionFlowNetwork": {
     "message": "Réseau"

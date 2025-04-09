@@ -45,12 +45,14 @@ export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
+  disableHover?: boolean;
 };
 
 export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
+  disableHover = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -59,6 +61,7 @@ export default function TokenCell({
   const trackEvent = useContext(MetaMetricsContext);
   const { safeChains } = useSafeChains();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
 
@@ -130,7 +133,17 @@ export default function TokenCell({
         paddingLeft={4}
         paddingRight={4}
         width={BlockSize.Full}
-        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
+        style={{
+          height: 62,
+          cursor: onClick ? 'pointer' : 'auto',
+          backgroundColor:
+            !disableHover && isHovered
+              ? 'var(--color-background-default-hover)'
+              : 'transparent',
+          transition: 'background-color 0.2s ease-in-out',
+        }}
+        onMouseEnter={() => !disableHover && setIsHovered(true)}
+        onMouseLeave={() => !disableHover && setIsHovered(false)}
         data-testid="multichain-token-list-button"
       >
         <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
