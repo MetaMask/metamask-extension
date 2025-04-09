@@ -260,6 +260,7 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
+      // snaps
       {
         test: /\.json$/u,
         dependency: 'url',
@@ -345,12 +346,6 @@ const config = {
         test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
-      },
-      // snaps
-      {
-        test: /\.json$/u,
-        dependency: 'url',
-        type: 'asset/resource',
       },
     ],
   },
