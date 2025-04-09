@@ -4349,6 +4349,16 @@ export function setOverrideContentSecurityPolicyHeader(
   };
 }
 
+export function setManageInstitutionalWallets(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setManageInstitutionalWallets', [value]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function getRpcMethodPreferences(): ThunkAction<
   void,
   MetaMaskReduxState,

@@ -2395,4 +2395,18 @@ describe('#getConnectedSitesList', () => {
       ).toStrictEqual(BALANCE);
     });
   });
+
+  describe('getManageInstitutionalWallets', () => {
+    it('returns the manageInstitutionalWallets state', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask.metamask,
+          manageInstitutionalWallets: true,
+        },
+      };
+
+      expect(selectors.getManageInstitutionalWallets(state)).toBe(true);
+    });
+  });
 });

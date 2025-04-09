@@ -2911,6 +2911,10 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
+export function getManageInstitutionalWallets(state) {
+  return state.metamask.manageInstitutionalWallets;
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
