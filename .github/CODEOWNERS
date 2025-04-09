@@ -78,8 +78,6 @@ ui/components/component-library      @MetaMask/design-system-engineers
 # Controllers
 **/controllers/metamask-notifications/**            @MetaMask/notifications
 **/controllers/push-platform-notifications/**       @MetaMask/notifications
-**/controllers/institutional-snap/**                @MetaMask/multi-srp
-**/controller-init/institutional-snap/**            @MetaMask/multi-srp
 
 # UI
 **/metamask-notifications/**                        @MetaMask/notifications
