@@ -2008,6 +2008,9 @@ export default class MetamaskController extends EventEmitter {
               updateSecurityAlertResponse:
                 this.updateSecurityAlertResponse.bind(this),
             }),
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
         },
         this.controllerMessenger,
       ),
@@ -3416,6 +3419,11 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+
+      setManageInstitutionalWallets:
+        preferencesController.setManageInstitutionalWallets.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {
