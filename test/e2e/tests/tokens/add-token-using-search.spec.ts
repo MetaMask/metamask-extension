@@ -42,6 +42,17 @@ describe('Add existing token using search', function () {
                 address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
               },
             ],
+            tokensChainsCache: {
+              '0x38': {
+                data: {
+                  '0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+                    name: 'Basic Attention Token',
+                    symbol: 'BAT',
+                    address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+                  },
+                },
+              },
+            },
           })
           .withAppStateController({
             [CHAIN_IDS.OPTIMISM]: true,
