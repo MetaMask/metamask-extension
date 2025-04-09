@@ -127,7 +127,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle manage institutional wallets', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[4];
+    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[5];
 
     fireEvent.click(manageInstitutionalWalletsToggle);
 
