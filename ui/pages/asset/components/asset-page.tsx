@@ -347,7 +347,11 @@ const AssetPage = ({
           {t('yourBalance')}
         </Text>
         {[AssetType.token, AssetType.native].includes(type) && (
-          <TokenCell key={`${symbol}-${address}`} token={tokenWithFiatAmount} />
+          <TokenCell
+            key={`${symbol}-${address}`}
+            token={tokenWithFiatAmount}
+            disableHover={true}
+          />
         )}
         <Box
           marginTop={2}
