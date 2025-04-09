@@ -396,31 +396,32 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  it.each([
-    ['< 1', new BigNumber('100'), new BigNumber('5'), new BigNumber('0.05')],
-    ['>= 1', new BigNumber('1'), new BigNumber('2000'), new BigNumber('2000')],
-    ['0', new BigNumber('1'), new BigNumber('0'), new BigNumber('0')],
-  ])(
-    'calcSwapRate: %s rate',
-    (
-      _: string,
-      sentAmount: BigNumber,
-      destTokenAmount: BigNumber,
-      rate: BigNumber,
-    ) => {
-      const result = calcSwapRate(sentAmount, destTokenAmount);
-      expect(result).toStrictEqual(rate);
-    },
-  );
+  // TODO move tests to bridge-controller
+  // it.each([
+  //   ['< 1', new BigNumber('100'), new BigNumber('5'), new BigNumber('0.05')],
+  //   ['>= 1', new BigNumber('1'), new BigNumber('2000'), new BigNumber('2000')],
+  //   ['0', new BigNumber('1'), new BigNumber('0'), new BigNumber('0')],
+  // ])(
+  //   'calcSwapRate: %s rate',
+  //   (
+  //     _: string,
+  //     sentAmount: BigNumber,
+  //     destTokenAmount: BigNumber,
+  //     rate: BigNumber,
+  //   ) => {
+  //     const result = calcSwapRate(sentAmount, destTokenAmount);
+  //     expect(result).toStrictEqual(rate);
+  //   },
+  // );
 
-  it.each([
-    ['exact', 120, '2'],
-    ['rounded down', 2000, '33'],
-  ])(
-    'formatEtaInMinutes: %s conversion',
-    (_: string, estimatedProcessingTimeInSeconds: number, minutes: string) => {
-      const result = formatEtaInMinutes(estimatedProcessingTimeInSeconds);
-      expect(result).toStrictEqual(minutes);
-    },
-  );
+  // it.each([
+  //   ['exact', 120, '2'],
+  //   ['rounded down', 2000, '33'],
+  // ])(
+  //   'formatEtaInMinutes: %s conversion',
+  //   (_: string, estimatedProcessingTimeInSeconds: number, minutes: string) => {
+  //     const result = formatEtaInMinutes(estimatedProcessingTimeInSeconds);
+  //     expect(result).toStrictEqual(minutes);
+  //   },
+  // );
 });
