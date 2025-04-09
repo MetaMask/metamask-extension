@@ -143,7 +143,7 @@ describe('Send flow', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: false,
-        simulateTransaction: true,
+        sendFailedTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
