@@ -2912,6 +2912,16 @@ export function getIsSolanaSupportEnabled(state) {
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }
+/**
+ * Get the state of the `defiPositionsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `defiPositionsEnabled` remote feature flag.
+ */
+export function getIsDefiPositionsEnabled(state) {
+  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(assetsDefiPositionsEnabled);
+}
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);

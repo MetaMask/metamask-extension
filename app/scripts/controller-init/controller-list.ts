@@ -38,6 +38,7 @@ import { Controller as AuthenticationController } from '@metamask/profile-sync-c
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -48,6 +49,7 @@ import SwapsController from '../controllers/swaps';
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | DeFiPositionsController
   | ExecutionService
   | GasFeeController
   | JsonSnapsRegistry
@@ -90,6 +92,7 @@ export type Controller =
 export type ControllerFlatState = AccountsController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
+  DeFiPositionsController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &

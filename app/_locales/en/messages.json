@@ -764,6 +764,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "borrowed": {
+    "message": "Borrowed"
+  },
   "boughtFor": {
     "message": "Bought for"
   },
@@ -1581,6 +1584,9 @@
   },
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
+  },
+  "defi": {
+    "message": "DeFi"
   },
   "delete": {
     "message": "Delete"
@@ -4614,6 +4620,9 @@
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
   },
+  "reward": {
+    "message": "Reward"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -5484,6 +5493,9 @@
   "stake": {
     "message": "Stake"
   },
+  "staked": {
+    "message": "Staked"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -5605,6 +5617,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "supplied": {
+    "message": "Supplied"
   },
   "support": {
     "message": "Support"

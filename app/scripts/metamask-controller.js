@@ -389,6 +389,7 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
 import {
   getCallsStatus,
   getCapabilities,
@@ -1812,6 +1813,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
+      DeFiPositionsController: DeFiPositionsControllerInit,
     };
 
     const {
@@ -1861,6 +1863,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
+    this.deFiPositionsController = controllersByName.DeFiPositionsController;
 
     this.notificationServicesController.init();
 
@@ -2050,6 +2053,7 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
+
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
@@ -2074,6 +2078,7 @@ export default class MetamaskController extends EventEmitter {
       NftController: this.nftController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
+      DefiPositionsController: this.deFiPositionsController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2100,6 +2105,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
+
         ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
@@ -2148,6 +2154,7 @@ export default class MetamaskController extends EventEmitter {
         UserOperationController: this.userOperationController,
         // Notification Controllers
         AuthenticationController: this.authenticationController,
+        DefiPositionsController: this.deFiPositionsController,
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
         QueuedRequestController: this.queuedRequestController,
