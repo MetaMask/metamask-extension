@@ -4883,7 +4883,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:55.0.1":
+"@metamask/assets-controllers@npm:55.0.1, @metamask/assets-controllers@npm:^55.0.0":
   version: 55.0.1
   resolution: "@metamask/assets-controllers@npm:55.0.1"
   dependencies:
@@ -5023,19 +5023,24 @@ __metadata:
     "@ethersproject/constants": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/assets-controllers": "npm:^55.0.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/gas-fee-controller": "npm:^23.0.0"
     "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-network-controller": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/snaps-utils": "npm:^9.1.0"
+    "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
+    "@ts-bridge/cli": "npm:^0.6.3"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
+    "@metamask/assets-controllers": ^55.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^53.0.0
+    reselect: ^5.1.1
   languageName: node
   linkType: soft
 
@@ -5065,28 +5070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.7.0":
-  version: 11.7.0
-  resolution: "@metamask/controller-utils@npm:11.7.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@spruceid/siwe-parser": "npm:2.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    cockatiel: "npm:^3.1.2"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/68e5c91d9f8a4362b6e67c15cf2887ed00b7c8903ba201b6e0262d4f57bdc0c82d356ec4a34b96d562436f7193696d20c510af035053b9860b4a764a8d3b064f
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^11.7.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.7.0":
   version: 11.7.0
   resolution: "@metamask/controller-utils@npm:11.7.0"
   dependencies:
@@ -5559,6 +5543,27 @@ __metadata:
     "@babel/runtime": ^7.0.0
     "@metamask/network-controller": ^22.0.0
   checksum: 10/91d637bed896d69d1b8f7c79bdb9a3d2295d85160c3eae2019d27e07034a51bac32b341e2978531039200df83a33cad7dc3a8c64adf019774eb44a635b31056a
+  languageName: node
+  linkType: hard
+
+"@metamask/gas-fee-controller@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@metamask/gas-fee-controller@npm:23.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/network-controller": ^23.0.0
+  checksum: 10/bbe8de36fd066b25549fe02fda1927e7dac9568a514e5891340c78280acd95cb56ae4c315c5ebd8f07d93103e5dbeaf83cd4052b6b4466c2bd9f6f5976a906c8
   languageName: node
   linkType: hard
 
@@ -10685,6 +10690,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-bridge/cli@npm:^0.6.3":
+  version: 0.6.3
+  resolution: "@ts-bridge/cli@npm:0.6.3"
+  dependencies:
+    "@ts-bridge/resolver": "npm:^0.2.0"
+    chalk: "npm:^5.3.0"
+    cjs-module-lexer: "npm:^1.3.1"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    typescript: ">=4.8.0"
+  bin:
+    ts-bridge: ./dist/index.js
+    tsbridge: ./dist/index.js
+  checksum: 10/01cba56ff0f097ca0ef15b79cff80a6be07b7f237e7153f63f7a9acf911583d0a410385fa1711d7b14e3a5e95fed63310b6a743700e7ecc0dd3a2d97a0df75b3
+  languageName: node
+  linkType: hard
+
+"@ts-bridge/resolver@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@ts-bridge/resolver@npm:0.2.0"
+  checksum: 10/d4cfd1f47e9648a5f9c893b1b076adabde3a57cbe81ef823bcbbcc77a122fb6f06d99f40ff48198f8dc766bfc4b3b351d4e87cfcf2db64f7e6db924eb82a5db1
+  languageName: node
+  linkType: hard
+
 "@ts-graphviz/adapter@npm:^2.0.6":
   version: 2.0.6
   resolution: "@ts-graphviz/adapter@npm:2.0.6"
@@ -15669,6 +15698,13 @@ __metadata:
   version: 1.3.1
   resolution: "cjs-module-lexer@npm:1.3.1"
   checksum: 10/6629188d5ce74b57e5dce2222db851b5496a8d65b533a05957fb24089a3cec8d769378013c375a954c5a0f7522cde6a36d5a65bfd88f5575cb2de3176046fa8e
+  languageName: node
+  linkType: hard
+
+"cjs-module-lexer@npm:^1.3.1":
+  version: 1.4.3
+  resolution: "cjs-module-lexer@npm:1.4.3"
+  checksum: 10/d2b92f919a2dedbfd61d016964fce8da0035f827182ed6839c97cac56e8a8077cfa6a59388adfe2bc588a19cef9bbe830d683a76a6e93c51f65852062cfe2591
   languageName: node
   linkType: hard
 
