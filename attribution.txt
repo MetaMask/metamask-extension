@@ -14628,7 +14628,7 @@ SOFTWARE.
 ******************************
 
 @keystonehq/base-eth-keyring
-0.15.0 <https://github.com/KeystoneHQ/keystone-airgaped-base>
+0.15.1 <https://github.com/KeystoneHQ/keystone-airgaped-base>
 license: MIT
 authors: aaronisme <aarondongchen@gmail.com>
 
@@ -15059,6 +15059,13 @@ authors: soralit <soralitria@gmail.com>
 0.21.0 <>
 license: ISC
 authors: soralit <soralitria@gmail.com>
+
+******************************
+
+@keystonehq/metamask-airgapped-keyring
+0.15.2 <https://github.com/KeystoneHQ/keystone-airgaped-base>
+license: MIT
+authors: aaronisme <aarondongchen@gmail.com>
 
 ******************************
 
@@ -18921,13 +18928,6 @@ You are granted a non-exclusive, non-transferable, non-sublicensable license to 
 You will not use any trade mark, service mark, trade name, logo of ConsenSys or any other company or organization in a way that is likely or intended to cause confusion about the owner or authorized user of such marks, names or logos.
 
 If you have any questions, comments or interest in pursuing any other use cases, please reach out to us at metamask.license@consensys.net.
-
-******************************
-
-@metamask/metamask-airgapped-keyring
-0.15.0 <https://github.com/KeystoneHQ/keystone-airgaped-base>
-license: MIT
-authors: aaronisme <aarondongchen@gmail.com>
 
 ******************************
 
