@@ -3366,6 +3366,7 @@ export default class MetamaskController extends EventEmitter {
       gasFeeController,
       metaMetricsController,
       networkController,
+      multichainNetworkController,
       announcementController,
       onboardingController,
       permissionController,
@@ -3857,6 +3858,8 @@ export default class MetamaskController extends EventEmitter {
         permissionController,
         approvalController,
         accountsController,
+        networkController,
+        multichainNetworkController,
       }),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

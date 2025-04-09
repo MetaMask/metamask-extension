@@ -10,16 +10,20 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import {
   getAllAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
 } from '../../../../shared/lib/multichain/chain-agnostic-permission';
+import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
   accountsController,
+  networkController,
+  multichainNetworkController,
 }) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (origin) => {
@@ -65,12 +69,67 @@ export function getPermissionBackgroundApiMethods({
       caip25Caveat.value,
     );
 
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
     const updatedAccountIds = Array.from(
       new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
-    const updatedCaveatValue = setPermittedAccounts(
+    let updatedPermittedChainIds = [...existingPermittedChainIds];
+
+    const allNetworksList = Object.keys(
+      getNetworkConfigurationsByCaipChainId({
+        networkConfigurationsByChainId:
+          networkController.state.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          multichainNetworkController.state
+            .multichainNetworkConfigurationsByChainId,
+        internalAccounts: accountsController.state.internalAccounts,
+      }),
+    );
+
+    updatedAccountIds.forEach((caipAccountAddress) => {
+      const {
+        chain: { namespace: accountNamespace },
+      } = parseCaipAccountId(caipAccountAddress);
+
+      const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
+        (caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+
+      if (!existsSelectedChainForNamespace) {
+        const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        });
+
+        updatedPermittedChainIds = [
+          ...updatedPermittedChainIds,
+          ...chainIdsForNamespace,
+        ];
+      }
+    });
+
+    const updatedCaveatValueWithChainIds = setPermittedChainIds(
       caip25Caveat.value,
+      updatedPermittedChainIds,
+    );
+
+    const updatedCaveatValueWithAccountIds = setPermittedAccounts(
+      updatedCaveatValueWithChainIds,
       updatedAccountIds,
     );
 
@@ -78,7 +137,7 @@ export function getPermissionBackgroundApiMethods({
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
-      updatedCaveatValue,
+      updatedCaveatValueWithAccountIds,
     );
   };
 

@@ -1,7 +1,12 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
-import { CaipChainId, parseCaipAccountId } from '@metamask/utils';
+import {
+  CaipAccountId,
+  CaipChainId,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
@@ -137,10 +142,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [networkConfigurationsByCaipChainId],
   );
 
-  const allNetworksList = [
-    ...nonTestNetworkConfigurations,
-    ...testNetworkConfigurations,
-  ].map(({ caipChainId }) => caipChainId);
+  const allNetworksList = useMemo(
+    () =>
+      [...nonTestNetworkConfigurations, ...testNetworkConfigurations].map(
+        ({ caipChainId }) => caipChainId,
+      ),
+    [nonTestNetworkConfigurations, testNetworkConfigurations],
+  );
 
   const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
     (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
@@ -215,8 +223,58 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     ({ caipAccountId }) => caipAccountId,
   );
 
-  const [selectedCaipAccountAddresses, setSelectedCaipAccountAddresses] =
+  const [selectedCaipAccountAddresses, _setSelectedCaipAccountAddresses] =
     useState(defaultCaipAccountAddresses);
+
+  const setSelectedCaipAccountAddresses = useCallback(
+    (caipAccountAddresses: CaipAccountId[]) => {
+      let updatedSelectedChains = [...selectedChainIds];
+
+      caipAccountAddresses.forEach((caipAccountAddress) => {
+        const {
+          chain: { namespace: accountNamespace },
+        } = parseCaipAccountId(caipAccountAddress);
+
+        const existsSelectedChainForNamespace = updatedSelectedChains.some(
+          (caipChainId) => {
+            try {
+              const { namespace: chainNamespace } =
+                parseCaipChainId(caipChainId);
+              return accountNamespace === chainNamespace;
+            } catch (err) {
+              return false;
+            }
+          },
+        );
+
+        if (!existsSelectedChainForNamespace) {
+          const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
+            try {
+              const { namespace: chainNamespace } =
+                parseCaipChainId(caipChainId);
+              return accountNamespace === chainNamespace;
+            } catch (err) {
+              return false;
+            }
+          });
+
+          updatedSelectedChains = [
+            ...updatedSelectedChains,
+            ...chainIdsForNamespace,
+          ];
+        }
+      });
+
+      setSelectedChainIds(updatedSelectedChains);
+      _setSelectedCaipAccountAddresses(caipAccountAddresses);
+    },
+    [
+      _setSelectedCaipAccountAddresses,
+      selectedChainIds,
+      setSelectedChainIds,
+      allNetworksList,
+    ],
+  );
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
     return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
