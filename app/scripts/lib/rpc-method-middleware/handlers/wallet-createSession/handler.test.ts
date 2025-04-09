@@ -840,7 +840,7 @@ describe('wallet_createSession', () => {
   });
 
   describe('address case sensitivity', () => {
-    it('treats Solana addresses as case sensitive but other addresses as case insensitive', async () => {
+    it('treats EVM addresses as case insensitive but other addresses as case sensitive', async () => {
       const {
         handler,
         listAccounts,
@@ -852,14 +852,18 @@ describe('wallet_createSession', () => {
         { address: '0xabc123' }, // Note: lowercase in wallet
       ]);
 
+      // Mocking nonEVM account addresses in the wallet
       getNonEvmAccountAddresses.mockImplementation((scope) => {
         if (scope === MultichainNetwork.Solana) {
-          return ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:Address1'];
+          return ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:address1'];
+        }
+        if (scope === MultichainNetwork.Bitcoin) {
+          return ['bip122:000000000019d6689c085ae165831e93:address1'];
         }
         return [];
       });
 
-      // Test both EVM (case-insensitive) and Solana (case-sensitive) behavior
+      // Test both EVM (case-insensitive) and Solana (case-sensitive) and Bitcoin (case-sensitive) behavior
       MockMultichain.bucketScopes
         .mockReturnValueOnce({
           supportedScopes: {
@@ -883,6 +887,11 @@ describe('wallet_createSession', () => {
                 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:ADDRESS1',
               ],
             },
+            [MultichainNetwork.Bitcoin]: {
+              methods: [],
+              notifications: [],
+              accounts: ['bip122:000000000019d6689c085ae165831e93:ADDRESS1'],
+            },
           },
           supportableScopes: {},
           unsupportableScopes: {},
@@ -898,12 +907,19 @@ describe('wallet_createSession', () => {
             eip155: {
               methods: ['eth_accounts'],
               notifications: [],
+              accounts: ['eip155:1:0xABC123'],
             },
           },
           optionalScopes: {
             [MultichainNetwork.Solana]: {
               methods: ['getAccounts'],
               notifications: [],
+              accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:ADDRESS1'],
+            },
+            [MultichainNetwork.Bitcoin]: {
+              methods: ['getAccounts'],
+              notifications: [],
+              accounts: ['bip122:000000000019d6689c085ae165831e93:ADDRESS1'],
             },
           },
         },
@@ -924,6 +940,9 @@ describe('wallet_createSession', () => {
                   optionalScopes: {
                     [MultichainNetwork.Solana]: {
                       accounts: [], // Solana address excluded due to case mismatch
+                    },
+                    [MultichainNetwork.Bitcoin]: {
+                      accounts: [], // Bitcoin address excluded due to case mismatch
                     },
                   },
                   isMultichainOrigin: true,

@@ -60,7 +60,6 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -218,10 +217,7 @@ export const ReviewPermissions = () => {
           if (
             parsedConnectedAddress.chain.namespace !==
               parsedAddress.chain.namespace ||
-            !isEqualCaseInsensitive(
-              parsedConnectedAddress.address,
-              parsedAddress.address,
-            )
+            parsedConnectedAddress.address !== parsedAddress.address
           ) {
             return false;
           }

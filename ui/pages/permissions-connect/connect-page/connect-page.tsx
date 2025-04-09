@@ -195,8 +195,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const supportedRequestedAccounts = requestedCaipAccountIds.reduce(
     (acc, account) => {
       const supportedRequestedAccount =
-        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) =>
-          isEqualCaseInsensitive(caipAccountId, account),
+        supportedAccountsForRequestedNamespaces.find(
+          ({ caipAccountId }) => caipAccountId === account,
         );
       if (supportedRequestedAccount) {
         acc.push(supportedRequestedAccount);
@@ -221,7 +221,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
     return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
-      return isEqualCaseInsensitive(selectedCaipAccountId, caipAccountId);
+      return selectedCaipAccountId === caipAccountId;
     });
   });
 
