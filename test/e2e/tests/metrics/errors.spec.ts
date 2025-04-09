@@ -165,10 +165,10 @@ function getMissingProperties(complete: object, object: object): object {
   const missing: Record<string, any> = {};
   for (const [key, value] of Object.entries(complete)) {
     if (key in object) {
-      if (isObject(value) && isObject(object[key as keyof typeof object])) {
+      if (isObject(value) && isObject(object[key])) {
         const missingNestedProperties = getMissingProperties(
           value,
-          object[key as keyof typeof object] as object,
+          object[key],
         );
         if (Object.keys(missingNestedProperties).length > 0) {
           missing[key] = missingNestedProperties;
