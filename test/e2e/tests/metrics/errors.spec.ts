@@ -124,7 +124,7 @@ async function matchesSnapshot({
   snapshot,
   update = process.env.UPDATE_SNAPSHOTS === 'true',
 }: {
-  data: any;
+  data: JsonRpcResponse<Json>;
   snapshot: string;
   update?: boolean;
 }): Promise<void> {
