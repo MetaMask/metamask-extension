@@ -5045,6 +5045,9 @@
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
   },
+  "smartAccountAccept": {
+    "message": "Use smart account"
+  },
   "smartAccountBetterTransaction": {
     "message": "Faster transactions, lower fees"
   },
@@ -5063,17 +5066,14 @@
   "smartAccountPayTokenDescription": {
     "message": "Use the tokens you already have to cover network fees."
   },
+  "smartAccountReject": {
+    "message": "Don’t use smart account"
+  },
   "smartAccountRequestFor": {
     "message": "Request for"
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
-  },
-  "smartAccountAccept": {
-    "message": "Use smart account"
-  },
-  "smartAccountReject": {
-    "message": "Don’t use smart account"
   },
   "smartContracts": {
     "message": "Smart contracts"
