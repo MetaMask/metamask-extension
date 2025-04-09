@@ -103,9 +103,9 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       },
       "SepoliaETH": {
         "conversionDate": "number",
@@ -269,7 +269,8 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object"
+    "showIncomingTransactions": "object",
+    "manageInstitutionalWallets": "boolean"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {

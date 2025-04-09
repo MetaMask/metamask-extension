@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "一个以欺诈著称的第三方已获得此网站的访问权限。如继续操作，您的资产将面临损失风险。"
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "该网站可能看似安全，但第三方可能已获取其信息。如果您登录，资产可能面临被盗风险。"
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "如果您确认，可能会损失所有资金和资产。"
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "如果您登录，您在 OpenSea 上列出的任何或全部资产都将面临风险。"
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "如果您登录，您在 Blur 上列出的任何或全部资产都将面临风险。"
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "此网站经认定为恶意域名。如果您登录，您的资金和资产将面临损失风险。我们强烈建议您取消此请求。"
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "如果您登录，可能会损失所有资产。我们强烈建议您取消此请求。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "此网站需要获得许可来使用您的代币。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "此网站请求切换回标准账户。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "某个网站要求您登录以证明您拥有该账户。"
   },
@@ -1132,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "撤销权限"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "重设账户"
   },
   "confirmTitleSIWESignature": {
     "message": "登录请求"
@@ -6163,9 +6136,6 @@
   },
   "transactionErrored": {
     "message": "交易出现错误。"
-  },
-  "transactionFailedBannerMessage": {
-    "message": "此次交易会收取额外费用，因此我们终止了该交易。您的钱仍在您的钱包中。"
   },
   "transactionFlowNetwork": {
     "message": "网络"
