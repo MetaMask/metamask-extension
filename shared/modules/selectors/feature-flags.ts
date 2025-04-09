@@ -21,9 +21,10 @@ type FeatureFlagsMetaMaskState = {
 
 export function getFeatureFlagsByChainId(
   state: ProviderConfigState & FeatureFlagsMetaMaskState,
+  chainId?: string,
 ) {
-  const chainId = getCurrentChainId(state);
-  const networkName = getNetworkNameByChainId(chainId);
+  const effectiveChainId = chainId || getCurrentChainId(state);
+  const networkName = getNetworkNameByChainId(effectiveChainId);
   const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;
   if (!featureFlags?.[networkName]) {
     return null;

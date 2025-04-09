@@ -220,16 +220,19 @@ function getControllers(
   };
 }
 
-function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
+function getSmartTransactionCommonParams(
+  flatState: ControllerFlatState,
+  chainId?: string,
+) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
   // Ideally all backend logic would instead rely on messenger event / state subscriptions.
   const uiState = getUIState(flatState);
 
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const isSmartTransaction = getIsSmartTransaction(uiState);
+  const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
 
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlags = getFeatureFlagsByChainId(uiState);
+  const featureFlags = getFeatureFlagsByChainId(uiState, chainId);
 
   const isHardwareWalletAccount = isHardwareWallet(uiState);
 
@@ -287,7 +290,7 @@ async function publishSmartTransactionHook(
   signedTransactionInHex: Hex,
 ) {
   const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState);
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
@@ -320,16 +323,6 @@ function publishBatchSmartTransactionHook({
   flatState: ControllerFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState);
-
-  if (!isSmartTransaction) {
-    // Will cause TransactionController to publish to the RPC provider as normal.
-    throw new Error(
-      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
-    );
-  }
-
   // Get transactionMeta based on the last transaction ID
   const lastTransaction = transactions[transactions.length - 1];
   const transactionMeta = getTransactionById(
@@ -341,6 +334,15 @@ function publishBatchSmartTransactionHook({
   if (!transactionMeta) {
     throw new Error(
       `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
+    );
+  }
+
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  if (!isSmartTransaction) {
+    throw new Error(
+      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
     );
   }
 

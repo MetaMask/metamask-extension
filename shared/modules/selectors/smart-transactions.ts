@@ -131,15 +131,22 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
 
 export const getCurrentChainSupportsSmartTransactions = (
   state: NetworkState,
+  chainId?: string,
 ): boolean => {
-  const chainId = getCurrentChainId(state);
-  return getAllowedSmartTransactionsChainIds().includes(chainId);
+  const effectiveChainId = chainId || getCurrentChainId(state);
+  return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
-  const chainId = getCurrentChainId(state);
+const getIsAllowedRpcUrlForSmartTransactions = (
+  state: NetworkState,
+  chainId?: string,
+) => {
+  const effectiveChainId = chainId || getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
-  if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
+  if (
+    !isProduction() ||
+    SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(effectiveChainId)
+  ) {
     return true;
   }
   const rpcUrl = getCurrentNetwork(state)?.rpcUrl;
@@ -155,18 +162,19 @@ const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
 
 export const getSmartTransactionsEnabled = (
   state: SmartTransactionsMetaMaskState & NetworkState,
+  chainId?: string,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlagsByChainId = getFeatureFlagsByChainId(state);
+  const featureFlagsByChainId = getFeatureFlagsByChainId(state, chainId);
   // TODO: Create a new proxy service only for MM feature flags.
   const smartTransactionsFeatureFlagEnabled =
     featureFlagsByChainId?.smartTransactions?.extensionActive;
   const smartTransactionsLiveness =
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
-    getCurrentChainSupportsSmartTransactions(state) &&
-      getIsAllowedRpcUrlForSmartTransactions(state) &&
+    getCurrentChainSupportsSmartTransactions(state, chainId) &&
+      getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
       supportedAccount &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness,
@@ -175,10 +183,11 @@ export const getSmartTransactionsEnabled = (
 
 export const getIsSmartTransaction = (
   state: SmartTransactionsMetaMaskState & NetworkState,
+  chainId?: string,
 ): boolean => {
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
-  const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+  const smartTransactionsEnabled = getSmartTransactionsEnabled(state, chainId);
   return Boolean(
     smartTransactionsPreferenceEnabled && smartTransactionsEnabled,
   );
