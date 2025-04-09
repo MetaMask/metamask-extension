@@ -11,6 +11,7 @@ const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
 const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
 const mockSetStxPrefEnabled = jest.fn();
+const mockSetManageInstitutionalWallets = jest.fn();
 const mockSetDismissSmartAccountSuggestionEnabled = jest.fn();
 const mockDisplayErrorInSettings = jest.fn();
 
@@ -21,6 +22,7 @@ jest.mock('../../../store/actions.ts', () => {
     setShowFiatConversionOnTestnetsPreference: () =>
       mockSetShowFiatConversionOnTestnetsPreference,
     setSmartTransactionsPreferenceEnabled: () => mockSetStxPrefEnabled,
+    setManageInstitutionalWallets: () => mockSetManageInstitutionalWallets,
     setDismissSmartAccountSuggestionEnabled: () =>
       mockSetDismissSmartAccountSuggestionEnabled,
   };
@@ -120,6 +122,16 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should toggle manage institutional wallets', () => {
+    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[4];
+
+    fireEvent.click(manageInstitutionalWalletsToggle);
+
+    expect(mockSetManageInstitutionalWallets).toHaveBeenCalled();
   });
 
   describe('renderToggleStxOptIn', () => {

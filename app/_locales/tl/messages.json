@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "May access sa site na ito ang isang third party na kilalang sangkot sa mga scam. Kung magpapatuloy ka, mawawalan ka ng mga asset."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Puwedeng mukhang ligtas ang site, pero may access sa impormasyon nito ang isang third party. Kung magsa-sign in ka, posibleng mawala ang mga asset mo."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Kung kukumpirmahin mo, posibleng mawala sa iyo ang lahat ng pondo at asset mo."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Kung magsa-sign in ka, manganganib ang anumang asset o lahat ng asset na inilista mo sa OpenSea."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Kung magsa-sign in ka, manganganib ang anumang asset o lahat ng asset na ni-list mo sa Blur."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Natukoy na mapaminsalang domain ang site na ito. Kung magsa-sign in ka, mawawala ang mga pondo at asset mo. Mahigpit naming iminumungkahi na kanselahin mo ang kahilingang ito."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Kung magsa-sign in, posibleng mawala sa iyo ang lahat ng asset mo. Inirerekomenda naming kanselahin mo ang kahilingang ito."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng kunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Ang site na ito ay nais ng permiso para gamitin ang iyong mga token."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Humihiling ang site na ito na bumalik sa standard account."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Nais ng site na mag-sign in ka upang patunayan na pag-aari mo ang account na ito."
   },
@@ -1132,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Alisin ang pahintulot"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "I-reset ang account"
   },
   "confirmTitleSIWESignature": {
     "message": "Kahilingan sa pag-sign in"
@@ -6163,9 +6136,6 @@
   },
   "transactionErrored": {
     "message": "Nagkaroon ng error sa transaksyon."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Gagastos ka sana ng dagdag na bayad sa transaksyong ito, kaya pinigilan namin ito. Nasa wallet mo pa rin ang iyong pera."
   },
   "transactionFlowNetwork": {
     "message": "Network"
