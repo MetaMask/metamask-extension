@@ -227,6 +227,7 @@ const AddContact = ({
                 <AvatarNetwork
                   size={AvatarNetworkSize.Sm}
                   src={getImageForChainId(selectedChainId) || undefined}
+                  name={networks?.[selectedChainId]?.name}
                 />
                 <Text>{networks?.[selectedChainId]?.name}</Text>
               </Box>
