@@ -17,6 +17,8 @@ import {
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
 import { Confirmation } from '../../../../../types/confirm';
+import * as useDecodedTransactionDataModule from '../../hooks/useDecodedTransactionData';
+import { DecodedTransactionDataSource } from '../../../../../../../../shared/types/transaction-decode';
 import { TransactionData } from './transaction-data';
 
 const DATA_MOCK = '0x123456';
@@ -118,6 +120,61 @@ describe('TransactionData', () => {
 
     const { container } = await renderTransactionData({
       currentData: DATA_MOCK,
+    });
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders a truncated token id for an NFT with a long token id', async () => {
+    jest
+      .spyOn(useDecodedTransactionDataModule, 'useDecodedTransactionData')
+      .mockReturnValue({
+        idle: false,
+        pending: false,
+        value: {
+          data: [
+            {
+              name: 'safeTransferFrom',
+              description: 'See {IERC1155-safeTransferFrom}.',
+              params: [
+                {
+                  name: 'from',
+                  type: 'address',
+                  value: '0xDc47789de4ceFF0e8Fe9D15D728Af7F17550c164',
+                },
+                {
+                  name: 'to',
+                  type: 'address',
+                  value: '0x24867Bf3Fd28a01C76652dEe209561A53E1F563A',
+                },
+                {
+                  name: 'id',
+                  type: 'uint256',
+                  value:
+                    '47089694566375617016335405007688653314974960512522647149273695300528435250823',
+                },
+                {
+                  name: 'amount',
+                  type: 'uint256',
+                  value: '1',
+                },
+                {
+                  name: 'data',
+                  type: 'bytes',
+                  value: '0x00',
+                },
+              ],
+            },
+          ],
+          source: 'sourcify' as DecodedTransactionDataSource.Sourcify,
+        },
+        error: undefined,
+        status: 'success',
+      });
+    decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_NESTED);
+
+    const { container } = await renderTransactionData({
+      currentData: 'testdata',
     });
 
     expect(container).toMatchSnapshot();

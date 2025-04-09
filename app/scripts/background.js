@@ -141,22 +141,35 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-if (isFirefox) {
-  browser.runtime.onInstalled.addListener(function (details) {
+if (!isManifestV3) {
+  /**
+   * `onInstalled` event handler.
+   *
+   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+   * is never called.
+   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
+   *
+   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
+   */
+  const onInstalledListener = (details) => {
     if (details.reason === 'install') {
-      browser.storage.session.set({ isFirstTimeInstall: true });
-    } else if (details.reason === 'update') {
-      browser.storage.session.set({ isFirstTimeInstall: false });
+      onInstall();
+      browser.runtime.onInstalled.removeListener(onInstalledListener);
     }
-  });
-} else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === 'install') {
-      global.sessionStorage.setItem('isFirstTimeInstall', true);
-    } else if (details.reason === 'update') {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-  });
+  };
+
+  browser.runtime.onInstalled.addListener(onInstalledListener);
+
+  // This condition is for when the `onInstalled` listener in `app-init` was called before
+  // `background.js` was loaded.
+} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
+  onInstall();
+  // Delete just to clean up global namespace
+  delete globalThis.stateHooks.metamaskWasJustInstalled;
+  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+  // called.
+} else {
+  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
 /**
@@ -270,6 +283,7 @@ function maybeDetectPhishing(theController) {
       // is shipped.
       if (
         details.initiator &&
+        details.initiator !== 'null' &&
         // compare normalized URLs
         new URL(details.initiator).host === phishingPageUrl.host
       ) {
@@ -504,12 +518,6 @@ async function initialize() {
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
-
-    if (isManifestV3 || isFirefox) {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    } else {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
 
     resolveInitialization();
   } catch (error) {
@@ -1049,10 +1057,12 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-    updateBadge,
-  );
+  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
+    controller.controllerMessenger.subscribe(
+      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
+      updateBadge,
+    );
+  }
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
@@ -1284,24 +1294,15 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-// On first install, open a new tab with MetaMask
-async function onInstall() {
-  const sessionData =
-    isManifestV3 || isFirefox
-      ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.sessionStorage.getItem('isFirstTimeInstall');
-
-  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
-
-  if (process.env.IN_TEST) {
-    addAppInstalledEvent();
-  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
-    // If storeAlreadyExisted is true then this is a fresh installation
-    // and an app installed event should be tracked.
-    addAppInstalledEvent();
+/**
+ * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
+ */
+function onInstall() {
+  log.debug('First install detected');
+  addAppInstalledEvent();
+  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  onNavigateToTab();
 }
 
 function onNavigateToTab() {
@@ -1332,7 +1333,7 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  await onInstall();
+  onNavigateToTab();
   try {
     await initialize();
     if (process.env.IN_TEST) {

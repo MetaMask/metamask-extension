@@ -11,6 +11,14 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
+
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
@@ -247,11 +255,7 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
-              .withPreferencesController({
-                preferences: {
-                  showFiatInTestnets: true,
-                },
-              })
+              .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
             localNodeOptions: 'anvil',
@@ -284,7 +288,7 @@ describe('Send ETH', function () {
             await editGasFeeForm(driver, '21000', '100');
             await driver.findElement({
               css: '[data-testid="first-gas-field"]',
-              text: '0.0021 ETH',
+              text: '0.0021',
             });
 
             await driver.findElement({
@@ -326,11 +330,7 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
-              .withPreferencesController({
-                preferences: {
-                  showFiatInTestnets: true,
-                },
-              })
+              .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             localNodeOptions: [
               {
@@ -377,7 +377,7 @@ describe('Send ETH', function () {
 
             await driver.findElement({
               css: '[data-testid="first-gas-field"]',
-              text: '0.045 ETH',
+              text: '0.045',
             });
 
             await driver.findElement({
@@ -478,10 +478,10 @@ describe('Send ETH', function () {
             await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
-              text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+              text: '0xc427D...Acd28',
             });
 
-            assert.equal(recipientAddress.length, 1);
+            assert.equal(recipientAddress.length, 2);
           },
         );
       });

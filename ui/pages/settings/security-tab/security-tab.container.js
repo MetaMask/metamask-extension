@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  setIncomingTransactionsPreferences,
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
@@ -25,7 +24,7 @@ import {
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
-  getPetnamesEnabled,
+  getHDEntropyIndex,
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -37,10 +36,7 @@ import SecurityTab from './security-tab.component';
 const mapStateToProps = (state) => {
   const { metamask } = state;
 
-  const petnamesEnabled = getPetnamesEnabled(state);
-
   const {
-    incomingTransactionsPreferences,
     participateInMetaMetrics,
     dataCollectionForMarketing,
     usePhishDetect,
@@ -64,7 +60,6 @@ const mapStateToProps = (state) => {
   ///: END:ONLY_INCLUDE_IF
 
   return {
-    incomingTransactionsPreferences,
     networkConfigurations,
     participateInMetaMetrics,
     dataCollectionForMarketing,
@@ -80,10 +75,10 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalNameSources,
     useExternalServices,
-    petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
+    hdEntropyIndex: getHDEntropyIndex(state),
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     hasMultipleHdKeyrings,
     ///: END:ONLY_INCLUDE_IF
@@ -92,8 +87,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIncomingTransactionsPreferences: (chainId, value) =>
-      dispatch(setIncomingTransactionsPreferences(chainId, value)),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
     setDataCollectionForMarketing: (val) =>

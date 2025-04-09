@@ -32,6 +32,7 @@ import {
   getHdKeyringIndexByIdOrDefault,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   MetaMetricsEventAccountType,
@@ -95,6 +96,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       const history = useHistory();
       const trackEvent = useContext(MetaMetricsContext);
+      const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
       const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
@@ -102,6 +104,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         getMetaMaskAccountsOrdered,
       );
 
+      const [loading, setLoading] = useState(false);
       const [defaultAccountName, setDefaultAccountName] = useState('');
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
@@ -135,8 +138,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
+          setLoading(true);
           event.preventDefault();
-
           try {
             await onCreateAccount(trimmedAccountName || defaultAccountName);
             trackEvent({
@@ -145,6 +148,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               properties: {
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -155,6 +159,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               properties: {
                 account_type: MetaMetricsEventAccountType.Default,
                 error: (error as Error).message,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
           }
@@ -165,6 +170,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       return (
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
+            data-testid="account-name-input"
             ref={ref}
             size={FormTextFieldSize.Lg}
             gap={2}
@@ -212,7 +218,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             <ButtonPrimary
               data-testid="submit-add-account-with-name"
               type="submit"
-              disabled={!isValidAccountName}
+              disabled={!isValidAccountName || loading}
+              loading={loading}
               block
             >
               {t('addAccount')}

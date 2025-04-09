@@ -7,6 +7,7 @@ import {
   TransactionMeta,
   TransactionReceipt,
   TransactionStatus,
+  ValidateSecurityRequest,
 } from '@metamask/transaction-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
@@ -16,6 +17,7 @@ import {
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
+import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -30,12 +32,24 @@ export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
     getDisabledAccountUpgradeChains: () => Hex[];
+    validateSecurity: (
+      securityAlertId: string,
+      request: ValidateSecurityRequest,
+      chainId: Hex,
+    ) => Promise<void>;
+    getDismissSmartAccountSuggestionEnabled: () => boolean;
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
   req: JsonRpcRequest & { networkClientId: string; origin?: string },
 ): Promise<SendCallsResult> {
-  const { addTransactionBatch, getDisabledAccountUpgradeChains } = hooks;
+  const {
+    addTransactionBatch,
+    getDisabledAccountUpgradeChains,
+    validateSecurity: validateSecurityHook,
+    getDismissSmartAccountSuggestionEnabled,
+  } = hooks;
+
   const { calls, from } = params;
   const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
@@ -46,14 +60,26 @@ export async function processSendCalls(
   ).configuration.chainId;
 
   const disabledChains = getDisabledAccountUpgradeChains();
+  const dismissSmartAccountSuggestionEnabled =
+    getDismissSmartAccountSuggestionEnabled();
 
-  validateSendCalls(params, dappChainId, disabledChains);
+  validateSendCalls(
+    params,
+    dappChainId,
+    disabledChains,
+    dismissSmartAccountSuggestionEnabled,
+  );
+
+  const securityAlertId = generateSecurityAlertId();
+  const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
 
   const { batchId: id } = await addTransactionBatch({
     from,
     networkClientId,
     origin,
+    securityAlertId,
     transactions,
+    validateSecurity,
   });
 
   return { id };
@@ -110,11 +136,17 @@ function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
   disabledChains: Hex[],
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
-  validateUserDisabled(sendCalls, disabledChains, dappChainId);
+  validateUserDisabled(
+    sendCalls,
+    disabledChains,
+    dappChainId,
+    dismissSmartAccountSuggestionEnabled,
+  );
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -171,11 +203,12 @@ function validateUserDisabled(
   sendCalls: SendCalls,
   disabledChains: Hex[],
   dappChainId: Hex,
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   const { from } = sendCalls;
   const isDisabled = disabledChains.includes(dappChainId);
 
-  if (isDisabled) {
+  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw rpcErrors.methodNotSupported(
       `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );

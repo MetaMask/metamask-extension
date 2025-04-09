@@ -18,12 +18,13 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
 import {
-  Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -114,10 +115,12 @@ import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
@@ -129,6 +132,7 @@ import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getMultichainNetwork,
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
@@ -386,41 +390,54 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
   getMetaMaskCachedBalances,
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getCurrentChainId,
+  (_, chainId) => chainId,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
     multichainNetworkProviders,
+    currentChainId,
+    chainId,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
-      // We should consolidate the format to either hex or number
-      if (isEvmAccountType(internalAccount.type)) {
-        if (balances?.[internalAccount.address]) {
+      if (chainId === undefined || currentChainId === chainId) {
+        // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
+        // We should consolidate the format to either hex or number
+        if (isEvmAccountType(internalAccount.type)) {
+          if (balances?.[internalAccount.address]) {
+            account = {
+              ...account,
+              ...balances[internalAccount.address],
+            };
+          }
+        } else {
+          const multichainNetwork = multichainNetworkProviders.find((network) =>
+            network.isAddressCompatible(internalAccount.address),
+          );
           account = {
             ...account,
-            ...balances[internalAccount.address],
+            balance:
+              multichainBalances?.[internalAccount.id]?.[
+                MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
+              ]?.amount ?? '0',
+          };
+        }
+
+        if (account.balance === null || account.balance === undefined) {
+          account = {
+            ...account,
+            balance:
+              (cachedBalances && cachedBalances[internalAccount.address]) ??
+              '0x0',
           };
         }
       } else {
-        const multichainNetwork = multichainNetworkProviders.find((network) =>
-          network.isAddressCompatible(internalAccount.address),
-        );
-        account = {
-          ...account,
-          balance:
-            multichainBalances?.[internalAccount.id]?.[
-              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
-            ]?.amount ?? '0',
-        };
-      }
-
-      if (account.balance === null || account.balance === undefined) {
         account = {
           ...account,
           balance:
@@ -445,11 +462,15 @@ export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
 
-export function getInternalAccountByAddress(state, address) {
-  return Object.values(state.metamask.internalAccounts.accounts).find(
-    (account) => isEqualCaseInsensitive(account.address, address),
-  );
-}
+export const getInternalAccountByAddress = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (_, address) => address,
+  (accounts, address) => {
+    return Object.values(accounts).find((account) =>
+      isEqualCaseInsensitive(account.address, address),
+    );
+  },
+);
 
 export function getMaybeSelectedInternalAccount(state) {
   // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
@@ -544,6 +565,18 @@ export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
 }
 
+export function getHDEntropyIndex(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+    keyring.accounts.includes(selectedAddress),
+  );
+  return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
+}
+
 /**
  * Get account balances state.
  *
@@ -554,8 +587,8 @@ export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
 }
 
-export function getMetaMaskCachedBalances(state) {
-  const chainId = getCurrentChainId(state);
+export function getMetaMaskCachedBalances(state, networkChainId) {
+  const chainId = networkChainId ?? getCurrentChainId(state);
 
   if (state.metamask.accountsByChainId?.[chainId]) {
     return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
@@ -1248,9 +1281,8 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
-export function getPetnamesEnabled(state) {
-  const { petnamesEnabled = true } = getPreferences(state);
-  return petnamesEnabled;
+export function getUseExternalNameSources(state) {
+  return state.metamask.useExternalNameSources;
 }
 
 export const getTokenSortConfig = createDeepEqualSelector(
@@ -1740,13 +1772,25 @@ export function getIsSwapsChain(state, overrideChainId) {
 }
 
 export function getIsBridgeChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
+  const account = getSelectedInternalAccount(state);
+  const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
+    state,
+    account,
+  );
+
+  let currentChainId = selectedMultiChainId;
+
+  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
+  if (isEvmNetwork) {
+    currentChainId = getCurrentChainId(state);
+  }
+
   const chainId = overrideChainId ?? currentChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
 function getBridgeFeatureFlags(state) {
-  return state.metamask.bridgeState?.bridgeFeatureFlags;
+  return state.metamask.bridgeFeatureFlags;
 }
 
 export const getIsBridgeEnabled = createSelector(
@@ -2134,6 +2178,16 @@ export const getNotifySnaps = createDeepEqualSelector(
       ({ id }) => subjects[id]?.permissions.snap_notify,
     );
   },
+);
+/**
+ * Get non-preinstalled snaps that have the snap_notify permission.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object[]} An array of notify snaps that are not preinstalled.
+ */
+export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+  getNotifySnaps,
+  (snaps) => snaps.filter((snap) => !snap.preinstalled),
 );
 
 function getAllSnapInsights(state) {
@@ -2862,10 +2916,26 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
+export function getManageInstitutionalWallets(state) {
+  return state.metamask.manageInstitutionalWallets;
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
   return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
+}
+
+/**
+ * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * This flag determines whether the user should see a `Discover` button on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ */
+export function getIsPortfolioDiscoverButtonEnabled(state) {
+  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
+  return Boolean(nePortfolioDiscoverButton);
 }
 
 export function getBlockExplorerLinkText(
@@ -2910,33 +2980,6 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   const hasNoTokens = getNumberOfTokens(state) === 0;
 
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
-}
-
-export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
-    state.metamask;
-
-  const [primaryKeyring] = getMetaMaskHdKeyrings(state);
-
-  if (!isUnlocked || !primaryKeyring) {
-    return false;
-  }
-
-  const selectedAccount = getSelectedInternalAccount(state);
-  // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
-
-  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
-    selectedAccount.address.toLowerCase(),
-  );
-
-  const showMessage =
-    isAccountFromPrimarySrp &&
-    seedPhraseBackedUp === false &&
-    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false;
-
-  return showMessage;
 }
 
 export function getUnconnectedAccounts(state, activeTab) {
@@ -3023,6 +3066,17 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
     return sortedSearchResults;
   },
 );
+
+export const getUpdatedAndSortedAccountsWithCaipAccountId =
+  createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
+    return accounts.map((account) => {
+      const { namespace, reference } = parseCaipChainId(account.scopes[0]);
+      return {
+        ...account,
+        caipAccountId: `${namespace}:${reference}:${account.address}`,
+      };
+    });
+  });
 
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
@@ -3233,16 +3287,33 @@ export function getPermissionSubjects(state) {
  * @param {string} origin - The origin/subject to get the permitted accounts for.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
-export function getPermittedAccounts(state, origin) {
-  return getAccountsFromPermission(
+export function getPermittedEVMAccounts(state, origin) {
+  return getEVMAccountsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
-export function getPermittedChains(state, origin) {
-  return getChainsFromPermission(
+export function getPermittedEVMChains(state, origin) {
+  return getEVMChainsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
+}
+
+export function getAllPermittedAccounts(state, origin) {
+  const caip25Permission = getCaip25PermissionFromSubject(
+    subjectSelector(state, origin),
+  );
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
+  return caip25Caveat
+    ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
+    : [];
+}
+
+export function getAllPermittedScopes(state, origin) {
+  const caip25Permission = getCaip25PermissionFromSubject(
+    subjectSelector(state, origin),
+  );
+  return caip25Permission ? getAllScopesFromPermission(caip25Permission) : [];
 }
 
 /**
@@ -3252,20 +3323,40 @@ export function getPermittedChains(state, origin) {
  * @param {object} state - The current state.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
-export function getPermittedAccountsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+export function getPermittedEVMAccountsForCurrentTab(state) {
+  return getPermittedEVMAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedAccountsForSelectedTab(state, activeTab) {
-  return getPermittedAccounts(state, activeTab);
+export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
+  return getPermittedEVMAccounts(state, activeTab);
 }
 
-export function getPermittedChainsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+export function getAllPermittedAccountsForCurrentTab(state) {
+  return getAllPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedChainsForSelectedTab(state, activeTab) {
-  return getPermittedChains(state, activeTab);
+export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
+  return getAllPermittedAccounts(state, activeTab);
+}
+
+export function getPermittedEVMChainsForSelectedTab(state, activeTab) {
+  return getPermittedEVMChains(state, activeTab);
+}
+
+export function getAllPermittedChainsForSelectedTab(state, activeTab) {
+  const permittedScopes = getAllPermittedScopes(state, activeTab);
+  // our `endowment:caip25` permission can include a special class of `wallet` scopes,
+  // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
+  // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
+  // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
+  return permittedScopes.filter((caipChainId) => {
+    try {
+      const { namespace } = parseCaipChainId(caipChainId);
+      return namespace !== KnownCaipNamespace.Wallet;
+    } catch (err) {
+      return false;
+    }
+  });
 }
 
 /**
@@ -3285,10 +3376,10 @@ export function getPermittedAccountsByOrigin(state) {
   }, {});
 }
 
-export function getPermittedChainsByOrigin(state) {
+export function getPermittedEVMChainsByOrigin(state) {
   const subjects = getPermissionSubjects(state);
   return Object.keys(subjects).reduce((acc, subjectKey) => {
-    const chains = getChainsFromSubject(subjects[subjectKey]);
+    const chains = getEVMChainsFromSubject(subjects[subjectKey]);
     if (chains.length > 0) {
       acc[subjectKey] = chains;
     }
@@ -3411,7 +3502,7 @@ export function getAddressConnectedSubjectMap(state) {
 }
 
 export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
-  getPermittedAccountsForCurrentTab,
+  getPermittedEVMAccountsForCurrentTab,
   (_state, address) => address,
   (permittedAccounts, address) => {
     return permittedAccounts.some((account) => account === address);
@@ -3420,31 +3511,30 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 
 // selector helpers
 function getCaip25PermissionFromSubject(subject = {}) {
-  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
+  return subject.permissions?.[Caip25EndowmentPermissionName];
 }
 
 function getAccountsFromSubject(subject) {
-  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
+  return getEVMAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getChainsFromSubject(subject) {
-  return getChainsFromPermission(getCaip25PermissionFromSubject(subject));
+function getEVMChainsFromSubject(subject) {
+  return getEVMChainsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getCaveatFromPermission(caip25Permission = {}) {
-  return (
-    Array.isArray(caip25Permission.caveats) &&
-    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
-  );
-}
-
-function getAccountsFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+function getEVMAccountsFromPermission(caip25Permission) {
+  if (!caip25Permission) {
+    return [];
+  }
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
   return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
 }
 
-function getChainsFromPermission(caip25Permission) {
-  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+function getEVMChainsFromPermission(caip25Permission) {
+  if (!caip25Permission) {
+    return [];
+  }
+  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
   return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
@@ -3454,7 +3544,7 @@ function subjectSelector(state, origin) {
 
 export function getAccountToConnectToActiveTab(state) {
   const selectedInternalAccount = getSelectedInternalAccount(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
 
   const {
     metamask: {
@@ -3489,7 +3579,7 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
@@ -3525,7 +3615,7 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
     // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForSelectedTab(
+  const connectedAccounts = getPermittedEVMAccountsForSelectedTab(
     state,
     activeTab,
   );

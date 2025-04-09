@@ -42,8 +42,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 
 function SmartAccountPill({ address }) {
   const t = useI18nContext();
@@ -127,6 +128,7 @@ export const AccountDetailsDisplay = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -182,6 +184,7 @@ export const AccountDetailsDisplay = ({
               properties: {
                 key_type: MetaMetricsEventKeyType.Pkey,
                 location: 'Account Details Modal',
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             onExportClick('PrivateKey');

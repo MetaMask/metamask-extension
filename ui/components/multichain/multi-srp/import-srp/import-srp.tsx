@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -50,6 +50,14 @@ export const ImportSrp = ({
   );
 
   const [loading, setLoading] = useState(false);
+
+  // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
+  // We want to hide the warning when the component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(actions.hideWarning());
+    };
+  }, [dispatch]);
 
   async function importWallet() {
     const joinedSrp = secretRecoveryPhrase.join(' ');
@@ -145,19 +153,21 @@ export const ImportSrp = ({
         return state;
       };
 
-      const joinedDraftSrp = newDraftSrp.join(' ').trim();
-      const invalidWords = Array(newDraftSrp.length).fill(false);
-      let validationResult = validateSrp(newDraftSrp, invalidWords);
-      validationResult = validateCompleteness(validationResult, newDraftSrp);
-      validationResult = validateCase(validationResult, joinedDraftSrp);
-      validationResult = validateWords(validationResult);
-      validationResult = validateMnemonic(validationResult, joinedDraftSrp);
+      if (newDraftSrp.filter((word) => word !== '').length === numberOfWords) {
+        const joinedDraftSrp = newDraftSrp.join(' ').trim();
+        const invalidWords = Array(newDraftSrp.length).fill(false);
+        let validationResult = validateSrp(newDraftSrp, invalidWords);
+        validationResult = validateCase(validationResult, joinedDraftSrp);
+        validationResult = validateCompleteness(validationResult, newDraftSrp);
+        validationResult = validateWords(validationResult);
+        validationResult = validateMnemonic(validationResult, joinedDraftSrp);
+        setSrpError(validationResult.error);
+        setInvalidSrpWords(validationResult.words);
+      }
 
       setSecretRecoveryPhrase(newDraftSrp);
-      setSrpError(validationResult.error);
-      setInvalidSrpWords(validationResult.words);
     },
-    [t, setSrpError, setSecretRecoveryPhrase],
+    [t, setSrpError, setSecretRecoveryPhrase, numberOfWords],
   );
 
   const onSrpPaste = useCallback(
@@ -270,6 +280,12 @@ export const ImportSrp = ({
         <BannerAlert
           severity={BannerAlertSeverity.Danger}
           description={srpError}
+          actionButtonLabel={t('clear')}
+          actionButtonOnClick={() => {
+            onSrpChange(Array(defaultNumberOfWords).fill(''));
+            setSrpError('');
+          }}
+          data-testid="bannerAlert"
         />
       ) : null}
 
@@ -280,6 +296,8 @@ export const ImportSrp = ({
             loading={loading}
             onClick={async () => {
               setNumberOfWords(24);
+              setSrpError('');
+              setInvalidSrpWords(Array(24).fill(false));
             }}
           >
             {t('importNWordSRP', ['24'])}

@@ -31,6 +31,9 @@ export async function withFixturesForSmartTransactions(
         .withNetworkControllerOnMainnet()
         .build(),
       title,
+      localNodeOptions: {
+        hardfork: 'london',
+      },
       testSpecificMock,
       dapp: true,
     },

@@ -218,7 +218,6 @@ const BridgeTxStatusResponses = {
 
 describe('validators', () => {
   describe('bridgeStatusValidator', () => {
-    // @ts-expect-error - it.each is a function
     it.each([
       {
         input: BridgeTxStatusResponses.STATUS_PENDING_VALID,
