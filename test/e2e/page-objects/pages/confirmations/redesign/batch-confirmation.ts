@@ -48,17 +48,15 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
-  async clickCancel(): Promise<void> {
-    await this.driver.clickElement(this.footerCancelButton);
-  }
-
   async rejectBatch(): Promise<void> {
+    await this.driver.clickElement(this.footerCancelButton);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.rejectBatchButton,
     );
   }
 
   async rejectBatchRejectUpgrade(): Promise<void> {
+    await this.driver.clickElement(this.footerCancelButton);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.rejectBatchRejectUpgradeButton,
     );

@@ -116,7 +116,6 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject upgrade and batch tx
-        await upgradeAndBatchTxConfirmation.clickCancel();
         await upgradeAndBatchTxConfirmation.rejectBatchRejectUpgrade();
 
         // We check that we continue to have an EOA account
@@ -168,7 +167,6 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject batch tx
-        await upgradeAndBatchTxConfirmation.clickCancel();
         await upgradeAndBatchTxConfirmation.rejectBatch();
 
         // We check that we continue to have an EOA account
