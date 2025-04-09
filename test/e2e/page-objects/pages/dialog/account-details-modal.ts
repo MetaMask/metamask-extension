@@ -32,7 +32,7 @@ class AccountDetailsModal {
   private readonly errorMessageForIncorrectPassword = {
     css: '.mm-help-text',
     text: 'Incorrect Password.',
-  }
+  };
 
   private readonly holdToRevealPrivateKeyButton = {
     text: tEn('holdToRevealPrivateKey'),
