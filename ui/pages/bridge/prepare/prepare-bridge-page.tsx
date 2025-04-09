@@ -48,6 +48,7 @@ import {
   isBridgeSolanaEnabled,
   getIsToOrFromSolana,
   getQuoteRefreshRate,
+  getHardwareWalletName,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -122,6 +123,7 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
+import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -187,6 +189,8 @@ const PrepareBridgePage = () => {
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
+  const hardwareWalletName = useSelector(getHardwareWalletName);
+  const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
   const ticker = useSelector(getNativeCurrency);
@@ -811,6 +815,34 @@ const PrepareBridgePage = () => {
               </Footer>
             </Column>
           </Row>
+          {isUsingHardwareWallet &&
+            isTxSubmittable &&
+            hardwareWalletName &&
+            activeQuote && (
+              <BannerAlert
+                marginInline={4}
+                marginBottom={3}
+                title={t('hardwareWalletSubmissionWarningTitle')}
+                textAlign={TextAlign.Left}
+              >
+                <ul style={{ listStyle: 'disc' }}>
+                  <li>
+                    <Text variant={TextVariant.bodyMd}>
+                      {t('hardwareWalletSubmissionWarningStep1', [
+                        hardwareWalletName,
+                      ])}
+                    </Text>
+                  </li>
+                  <li>
+                    <Text variant={TextVariant.bodyMd}>
+                      {t('hardwareWalletSubmissionWarningStep2', [
+                        hardwareWalletName,
+                      ])}
+                    </Text>
+                  </li>
+                </ul>
+              </BannerAlert>
+            )}
           {isNoQuotesAvailable && !isQuoteExpired && (
             <BannerAlert
               marginInline={4}
@@ -835,7 +867,7 @@ const PrepareBridgePage = () => {
                 onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
               />
             )}
-          {isEstimatedReturnLow && isLowReturnBannerOpen && (
+          {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
             <BannerAlert
               ref={insufficientBalanceBannerRef}
               marginInline={4}
@@ -893,26 +925,6 @@ const PrepareBridgePage = () => {
               ])}
               textAlign={TextAlign.Left}
               onClose={() => setIsLowReturnBannerOpen(false)}
-            />
-          )}
-          {tokenAlert && isTokenAlertBannerOpen && (
-            <BannerAlert
-              ref={tokenAlertBannerRef}
-              marginInline={4}
-              marginBottom={3}
-              title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
-              severity={
-                tokenAlert.type === TokenFeatureType.MALICIOUS
-                  ? BannerAlertSeverity.Danger
-                  : BannerAlertSeverity.Warning
-              }
-              description={
-                tokenAlert.descriptionId
-                  ? t(tokenAlert.descriptionId)
-                  : tokenAlert.description
-              }
-              textAlign={TextAlign.Left}
-              onClose={() => setIsTokenAlertBannerOpen(false)}
             />
           )}
           {!isLoading &&
