@@ -60,7 +60,7 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
-import { isAccountIdInPermittedAccountIds } from '../../../../../shared/lib/multichain/chain-agnostic-permission';
+import { isAccountIdInPermittedAccountIds } from '../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
