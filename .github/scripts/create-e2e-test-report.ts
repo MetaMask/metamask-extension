@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import humanizeDuration from 'humanize-duration';
 import * as xml2js from 'xml2js';
-import { sep } from 'path';
+import path from 'path';
 
 const XML = {
   parse: new xml2js.Parser().parseStringPromise,
@@ -58,7 +58,12 @@ interface TestSuite {
 }
 
 async function main() {
-  const { OWNER, REPOSITORY, BRANCH } = process.env;
+  const {
+    OWNER = 'metamask',
+    REPOSITORY = 'metamask-extension',
+    BRANCH = 'main',
+    TEST_RESULTS_PATH = 'test/test-results/e2e',
+  } = process.env;
   let summary = '';
   const core = process.env.GITHUB_ACTIONS
     ? await import('@actions/core')
@@ -74,12 +79,12 @@ async function main() {
       };
 
   try {
-    const filenames = await fs.readdir('./test/test-results/e2e');
+    const filenames = await fs.readdir(TEST_RESULTS_PATH);
     const testSuites: TestSuite[] = [];
 
     for (const filename of filenames) {
       const file = await fs.readFile(
-        `./test/test-results/e2e/${filename}`,
+        path.join(TEST_RESULTS_PATH, filename),
         'utf8',
       );
       const results = await XML.parse(file);
@@ -87,7 +92,7 @@ async function main() {
         if (!suite.testcase) continue;
         const name = `${suite.$.name}`;
         const fullPath = `${suite.$.file}`;
-        const path = fullPath.slice(fullPath.indexOf(`test${sep}`));
+        const testPath = fullPath.slice(fullPath.indexOf(`test${path.sep}`));
         const date = new Date(suite.$.timestamp);
         const tests = +suite.$.tests;
         const time = +suite.$.time * 1000; // convert to ms
@@ -96,7 +101,7 @@ async function main() {
         const passed = tests - failed - skipped;
         const testSuite: TestSuite = {
           name,
-          path,
+          path: testPath,
           date,
           tests,
           passed,

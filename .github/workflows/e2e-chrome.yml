@@ -86,6 +86,7 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref`.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      TEST_RESULTS_PATH: test/test-results/e2e
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
