@@ -12,11 +12,8 @@ import { useConfirmContext } from '../context/confirm';
 export function useSmartAccountActions() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const {
-    id: confirmationId,
-    chainId,
-    txParams: { from } = {},
-  } = currentConfirmation ?? { txParams: {} };
+  const { id: confirmationId, chainId, txParams } = currentConfirmation ?? {};
+  const { from } = txParams ?? {};
 
   const handleRejectUpgrade = useCallback(async () => {
     if (!chainId || !from) {
