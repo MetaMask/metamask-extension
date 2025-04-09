@@ -126,6 +126,10 @@ export class LedgerOffscreenBridge
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
   ): Promise<ResponsePayload> {
+    if (!this.isDeviceConnected) {
+      throw new Error('Ledger iframe not connected');
+    }
+
     return new Promise((resolve, reject) => {
       let hasResponse = false;
 
