@@ -111,25 +111,23 @@ function transformUiState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
   return data;
 }
 
-interface MatchesSnapshotArgs {
-  data: unknown;
-  snapshot: string;
-  update?: boolean;
-}
-
 /**
  * Check that the data provided matches the snapshot.
  *
- * @param args - Function arguments.
- * @param args.data - The data to compare with the snapshot.
- * @param args.snapshot - The name of the snapshot.
- * @param args.update - Whether to update the snapshot if it doesn't match.
+ * @param {object }args - Function arguments.
+ * @param {any} args.data - The data to compare with the snapshot.
+ * @param {string} args.snapshot - The name of the snapshot.
+ * @param {boolean} [args.update] - Whether to update the snapshot if it doesn't match.
  */
 async function matchesSnapshot({
   data,
   snapshot,
   update = process.env.UPDATE_SNAPSHOTS === 'true',
-}: MatchesSnapshotArgs): Promise<void> {
+}: {
+  data: any;
+  snapshot: string;
+  update?: boolean;
+}): Promise<void> {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
@@ -164,7 +162,7 @@ async function matchesSnapshot({
  * @param object - The object to test for missing properties.
  */
 function getMissingProperties(complete: object, object: object): object {
-  const missing: Record<string, unknown> = {};
+  const missing: Record<string, any> = {};
   for (const [key, value] of Object.entries(complete)) {
     if (key in object) {
       if (isObject(value) && isObject(object[key as keyof typeof object])) {
