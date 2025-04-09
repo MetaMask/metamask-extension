@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 
+import { GroupedPositions } from '@metamask/assets-controllers';
+import { useSelector } from 'react-redux';
 import {
   TextColor,
   TextVariant,
@@ -7,7 +9,7 @@ import {
 import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
-import { GroupedPositions } from '@metamask/assets-controllers';
+import { getPreferences } from '../../../selectors';
 
 const PositionTypeLabels = {
   supply: 'supplied',
@@ -43,6 +45,8 @@ const DefiDetailsList = React.memo(
     chainId: '0x' & string;
   }) => {
     const t = useI18nContext();
+
+    const { privacyMode } = useSelector(getPreferences);
 
     const groupedTokens = useMemo(() => {
       return tokens.map((tokenGroup) => {
@@ -93,10 +97,11 @@ const DefiDetailsList = React.memo(
                       secondary: token.balance,
                       string: token.balance.toString(),
                       decimals: 10,
-                      chainId: chainId,
+                      chainId,
                     }}
-                    privacyMode={false}
+                    privacyMode={privacyMode}
                     onClick={undefined}
+                    fixCurrencyToUSD={true}
                   />
                 ))}
               </>
@@ -125,10 +130,11 @@ const DefiDetailsList = React.memo(
                       secondary: token.balance,
                       string: token.balance.toString(),
                       decimals: 10,
-                      chainId: chainId,
+                      chainId,
                     }}
-                    privacyMode={false}
+                    privacyMode={privacyMode}
                     onClick={undefined}
+                    fixCurrencyToUSD={true}
                   />
                 ))}
               </>

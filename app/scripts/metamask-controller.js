@@ -2078,7 +2078,7 @@ export default class MetamaskController extends EventEmitter {
       NftController: this.nftController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
-      DefiPositionsController: this.deFiPositionsController,
+      DeFiPositionsController: this.deFiPositionsController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2154,7 +2154,7 @@ export default class MetamaskController extends EventEmitter {
         UserOperationController: this.userOperationController,
         // Notification Controllers
         AuthenticationController: this.authenticationController,
-        DefiPositionsController: this.deFiPositionsController,
+        DeFiPositionsController: this.deFiPositionsController,
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
         QueuedRequestController: this.queuedRequestController,

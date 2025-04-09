@@ -21,10 +21,12 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
+  fixCurrencyToUSD?: boolean;
 };
 
 export const useTokenDisplayInfo = ({
   token,
+  fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = useSelector(getMultichainIsEvm);
   const tokenList = useSelector(getTokenList);
@@ -57,7 +59,7 @@ export const useTokenDisplayInfo = ({
           locale,
           {
             style: 'currency',
-            currency: currentCurrency.toUpperCase(),
+            currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
           },
         )
       : undefined;
@@ -75,7 +77,8 @@ export const useTokenDisplayInfo = ({
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
-  const isStakeable = isEvmMainnet && isEvm && token.isNative;
+  const isStakeable =
+    token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
     const tokenData = Object.values(tokenList).find(

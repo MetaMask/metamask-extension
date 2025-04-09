@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Display,
   FlexDirection,
@@ -12,25 +13,27 @@ import {
   ButtonIconSize,
   IconName,
   SensitiveText,
+  SensitiveTextLength,
   Text,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-import { useSelector } from 'react-redux';
-import { getSelectedAccount } from '../../../selectors';
+import { getPreferences, getSelectedAccount } from '../../../selectors';
+import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 import DefiDetailsList, {
   PositionTypeKeys,
   ProtocolTokenWithMarketValue,
 } from './defi-details-list';
-import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 
 const useExtractUnderlyingTokens = (
   positions?: ProtocolTokenWithMarketValue[][],
 ) =>
   useMemo(() => {
-    if (!positions) return [[]];
+    if (!positions) {
+      return [[]];
+    }
 
     return positions.map((group) =>
       group.flatMap((position) => position.tokens.map((token) => token)),
@@ -41,28 +44,22 @@ export const DeFiPage = () => {
   const { chainId, protocolId } = useParams<{
     chainId: '0x' & string;
     protocolId: string;
-  }>();
+  }>() as { chainId: '0x' & string; protocolId: string };
 
-  if (!chainId || !protocolId) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-  }
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
   const history = useHistory();
   const t = useI18nContext();
+  const { privacyMode } = useSelector(getPreferences);
 
   const protocolPosition =
     defiPositions[selectedAccount.address]?.[chainId]?.protocols[protocolId];
 
-  if (!protocolPosition) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-  }
-
   const extractedTokens = useMemo(() => {
-    return Object.keys(protocolPosition.positionTypes || {}).reduce(
+    return Object.keys(protocolPosition?.positionTypes || {}).reduce(
       (acc, positionType) => {
         acc[positionType as PositionTypeKeys] =
-          protocolPosition.positionTypes[positionType as PositionTypeKeys]
+          protocolPosition?.positionTypes[positionType as PositionTypeKeys]
             ?.positions || [];
         return acc;
       },
@@ -76,6 +73,10 @@ export const DeFiPage = () => {
     stake: useExtractUnderlyingTokens(extractedTokens.stake),
     reward: useExtractUnderlyingTokens(extractedTokens.reward),
   };
+
+  if (!protocolPosition) {
+    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+  }
 
   return (
     <Box className="main-container asset__container">
@@ -100,10 +101,11 @@ export const DeFiPage = () => {
           className="mm-box--color-text-alternative-soft"
           ellipsis
           variant={TextVariant.inherit}
-          isHidden={false}
+          isHidden={privacyMode}
+          length={SensitiveTextLength.Medium}
         >
           {'$'}
-          {protocolPosition.aggregatedMarketValue}
+          {protocolPosition.aggregatedMarketValue.toFixed(2)}
         </SensitiveText>
       </Box>
       <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>

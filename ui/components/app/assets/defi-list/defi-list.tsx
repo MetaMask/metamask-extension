@@ -16,7 +16,6 @@ import { useNetworkFilter } from '../hooks';
 import { TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
-import { getMultichainNetwork } from '../../../../selectors/multichain';
 import {
   Display,
   FlexDirection,
@@ -53,7 +52,7 @@ type DeFiProtocolPosition = TokenWithFiatAmount & {
 };
 
 function DefiList({ onClick }: DefiListProps) {
-  const currentNetwork = useSelector(getMultichainNetwork);
+  const { networkFilter } = useNetworkFilter();
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -86,8 +85,6 @@ function DefiList({ onClick }: DefiListProps) {
     );
   };
 
-  const { networkFilter } = useNetworkFilter();
-
   const sortedFilteredDefi = useMemo(() => {
     if (!defiData) {
       return [];
@@ -119,15 +116,15 @@ function DefiList({ onClick }: DefiListProps) {
     const filteredAssets = filterAssets(defiProtocolCells, [
       {
         key: 'chainId',
-        opts: { [currentNetwork.chainId]: true },
+        opts: networkFilter,
         filterCallback: 'inclusive',
       },
     ]);
 
     // sort filtered tokens based on the tokenSortConfig in state
-    return sortAssets([...filteredAssets], tokenSortConfig);
+    return sortAssets(filteredAssets, tokenSortConfig);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defiData, networkFilter, currentNetwork.chainId, tokenSortConfig]);
+  }, [defiData, networkFilter, networkFilter, tokenSortConfig]);
 
   const handleTokenClick = (token: DeFiProtocolPosition) => () => {
     onClick(token.chainId, token.protocolId);
@@ -145,9 +142,24 @@ function DefiList({ onClick }: DefiListProps) {
 
   console.log('DefiList', defiData);
 
+  console.log('sortedFilteredDefi', sortedFilteredDefi);
+
+  if (!defiData) {
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+      >
+        <PulseLoader />
+      </Box>
+    );
+  }
+
   return (
     <>
-      {'true' ? (
+      {sortedFilteredDefi.length > 0 ? (
         sortedFilteredDefi.map((token: DeFiProtocolPosition) => {
           return (
             <TokenCell
@@ -162,18 +174,30 @@ function DefiList({ onClick }: DefiListProps) {
                   members={token.iconGroup}
                 />
               )}
+              fixCurrencyToUSD={true}
             />
           );
         })
       ) : (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-        >
-          <PulseLoader />
-        </Box>
+        <TokenCell
+          key={`empty-defi-list`}
+          token={{
+            address: '0x',
+            title: 'Start earning',
+            symbol: 'Start earning',
+            tokenFiatAmount: 0,
+            image: `images/fox.png`,
+            primary: '0',
+            secondary: 0,
+            decimals: 10,
+            chainId: '0x1',
+            isStakeable: true,
+          }}
+          primaryDisplayOverride={() => <></>}
+          privacyMode={privacyMode}
+          onClick={undefined}
+          fixCurrencyToUSD={true}
+        />
       )}
     </>
   );

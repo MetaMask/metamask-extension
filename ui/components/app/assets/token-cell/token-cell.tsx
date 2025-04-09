@@ -28,7 +28,6 @@ import {
   useSafeChains,
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { TokenWithFiatAmount } from '../types';
-import { AvatarGroup } from '../../../multichain';
 import {
   TokenCellBadge,
   TokenCellTitle,
@@ -42,7 +41,8 @@ export type TokenCellProps = {
   privacyMode?: boolean;
   disableHover?: boolean;
   onClick?: () => void;
-  primaryDisplayOverride?: () => React.ReactElement<typeof AvatarGroup>;
+  primaryDisplayOverride?: () => React.ReactElement;
+  fixCurrencyToUSD?: boolean;
 };
 
 export default function TokenCell({
@@ -51,6 +51,7 @@ export default function TokenCell({
   onClick,
   disableHover = false,
   primaryDisplayOverride,
+  fixCurrencyToUSD = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -71,6 +72,7 @@ export default function TokenCell({
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
+    fixCurrencyToUSD,
   });
 
   const handleScamWarningModal = (arg: boolean) => {
