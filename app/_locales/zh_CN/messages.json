@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "此网站需要获得许可来使用您的代币。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "此网站请求切换回标准账户。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "某个网站要求您登录以证明您拥有该账户。"
   },
@@ -1111,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "撤销权限"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "重设账户"
   },
   "confirmTitleSIWESignature": {
     "message": "登录请求"
