@@ -18,7 +18,7 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
 
           .build(),

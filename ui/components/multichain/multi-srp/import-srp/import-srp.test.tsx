@@ -204,6 +204,41 @@ describe('ImportSrp', () => {
     expect(mockClearClipboard).toHaveBeenCalled();
   });
 
+  it('clears the SRP input fields and error message when Clear button is clicked', async () => {
+    const onActionComplete = jest.fn();
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={onActionComplete} />,
+      store,
+    );
+    const { getByText, queryByTestId, getByTestId } = render;
+
+    // Input an invalid SRP to trigger error
+    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
+    pasteSrpIntoFirstInput(render, invalidSRP);
+
+    // Verify error message is shown
+    const bannerAlert = await waitFor(() => getByTestId('bannerAlert'));
+    expect(bannerAlert).toBeInTheDocument();
+
+    // Click Clear button
+    const clearButton = getByText('Clear');
+    fireEvent.click(clearButton);
+
+    // Verify error message is cleared
+    expect(queryByTestId('bannerAlert')).not.toBeInTheDocument();
+
+    // Verify all input fields are cleared
+    for (let i = 0; i < 12; i++) {
+      const input = getByTestId(
+        `import-multi-srp__srp-word-${i}`,
+      ).querySelector('input');
+      expect(input).toHaveValue('');
+    }
+
+    // Verify Import wallet button is disabled
+    expect(getByText('Import wallet')).not.toBeEnabled();
+  });
+
   it('logs an error and not call onActionComplete on import failure', async () => {
     (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
@@ -228,5 +263,30 @@ describe('ImportSrp', () => {
       );
       expect(onActionComplete).not.toHaveBeenCalled();
     });
+  });
+
+  it('clears validation errors when switching to 24-word seed phrase mode', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { getByText, getByTestId } = render;
+
+    // First paste an invalid SRP to trigger validation errors
+    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
+    pasteSrpIntoFirstInput(render, invalidSRP);
+
+    // Verify that validation errors are present
+    const firstInput = getByTestId(
+      'import-multi-srp__srp-word-0',
+    ).querySelector('input');
+    expect(firstInput).toBeInvalid();
+
+    // Click the "I have a 24 word seed phrase" button
+    const switchTo24WordsButton = getByText('I have a 24 word recovery phrase');
+    fireEvent.click(switchTo24WordsButton);
+
+    // Verify that validation errors are cleared
+    expect(firstInput).not.toBeInvalid();
   });
 });

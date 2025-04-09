@@ -50,6 +50,7 @@ describe('Bridge tests', function (this: Suite) {
   ) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
+    await homePage.check_expectedBalanceIsDisplayed();
     await homePage.startBridgeFlow();
 
     const bridgePage = new BridgeQuotePage(driver);

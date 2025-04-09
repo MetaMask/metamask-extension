@@ -3,10 +3,8 @@ import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { createProjectLogger, Hex } from '@metamask/utils';
-import type {
-  QuoteMetadata,
-  QuoteResponse,
-} from '../../../../shared/types/bridge';
+import { isSolanaChainId } from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -33,8 +31,6 @@ import {
 } from '../../../../shared/types/bridge-status';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx, {
   APPROVAL_TX_ERROR,
@@ -238,8 +234,7 @@ export default function useSubmitBridgeTransaction() {
       }
       if (
         quoteResponse.quote.destAsset.address !== zeroAddress() &&
-        formatChainIdToCaip(quoteResponse.quote.destChainId) !==
-          MultichainNetworks.SOLANA
+        !isSolanaChainId(quoteResponse.quote.destChainId)
       ) {
         await addDestToken(quoteResponse);
       }

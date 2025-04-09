@@ -28,6 +28,7 @@ import {
 } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -280,8 +281,12 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = async (deviceName, path) => {
-    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
-      this.props;
+    const {
+      history,
+      mostRecentOverviewPage,
+      unlockHardwareWalletAccounts,
+      hdEntropyIndex,
+    } = this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {
@@ -321,6 +326,7 @@ class ConnectHardwareForm extends Component {
             // See comment above about `account_hardware_type`.
             account_hardware_type: deviceName,
             error: e.message,
+            hd_entropy_index: hdEntropyIndex,
           },
         });
         this.setState({ error: e.message });
@@ -458,6 +464,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
+  hdEntropyIndex: PropTypes.number,
 };
 
 const mapStateToProps = (state) => ({
@@ -468,6 +475,7 @@ const mapStateToProps = (state) => ({
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
   ledgerTransportType: state.metamask.ledgerTransportType,
+  hdEntropyIndex: getHDEntropyIndex(state),
 });
 
 const mapDispatchToProps = (dispatch) => {

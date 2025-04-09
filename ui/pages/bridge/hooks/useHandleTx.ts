@@ -9,6 +9,7 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
+import type { ChainId } from '@metamask/bridge-controller';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -21,7 +22,6 @@ import {
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {

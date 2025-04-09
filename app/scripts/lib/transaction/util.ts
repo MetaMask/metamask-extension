@@ -208,7 +208,7 @@ async function addUserOperationWithController(
   };
 }
 
-function getTransactionById(
+export function getTransactionById(
   transactionId: string,
   transactionController: TransactionController,
 ) {

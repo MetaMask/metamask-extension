@@ -30,7 +30,6 @@ describe('Confirm Transaction Selector', () => {
     it('returns transactions from all networks', () => {
       const state = {
         metamask: {
-          incomingTransactionsPreferences: true,
           transactions: [
             {
               id: 1,

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
 import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
@@ -21,6 +21,8 @@ type Hardfork =
   | 'Paris'
   | 'Shanghai'
   | 'Latest';
+
+type Hex = `0x${string}`;
 
 const defaultOptions = {
   balance: 25,
@@ -63,7 +65,7 @@ export class Anvil {
     const anvilBinaryDir = join(process.cwd(), 'node_modules', '.bin');
 
     // Prepend the anvil binary directory to the PATH environment variable
-    process.env.PATH = `${anvilBinaryDir}:${process.env.PATH}`;
+    process.env.PATH = `${anvilBinaryDir}${delimiter}${process.env.PATH}`;
 
     // Verify that the anvil binary is accessible
     try {
@@ -102,7 +104,7 @@ export class Anvil {
     return accounts;
   }
 
-  async getBalance(address: `0x${string}` | null = null): Promise<number> {
+  async getBalance(address: Hex | null = null): Promise<number> {
     const provider = this.getProvider();
 
     if (!provider) {
@@ -119,13 +121,28 @@ export class Anvil {
     }
 
     const balance = await publicClient.getBalance({
-      address: accountToUse as `0x${string}`,
+      address: accountToUse as Hex,
     });
     const balanceFormatted = Number(balance) / 10 ** 18;
 
     // Round to four decimal places, so we return the same value as ganache does
     const balanceRounded = parseFloat(balanceFormatted.toFixed(4));
     return balanceRounded;
+  }
+
+  async getCode(address: Hex): Promise<Hex | undefined> {
+    const provider = this.getProvider();
+
+    if (!provider) {
+      console.log('No provider found');
+      return;
+    }
+    const { publicClient } = provider;
+
+    const bytecode = await publicClient.getCode({
+      address,
+    });
+    return bytecode;
   }
 
   async getFiatBalance(): Promise<number> {
@@ -137,7 +154,7 @@ export class Anvil {
   }
 
   async setAccountBalance(
-    address: `0x${string}`,
+    address: Hex,
     balance: string,
   ): Promise<void> {
     const provider = this.getProvider();

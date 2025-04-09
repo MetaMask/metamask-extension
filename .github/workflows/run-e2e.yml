@@ -12,8 +12,8 @@ on:
         default: ''
         description: The build artifact to download
       build-command:
-        required: true
         type: string
+        default: ''
         description: The build command to run
       test-command:
         required: true
@@ -21,7 +21,7 @@ on:
         description: The test command to run
       test-timeout-minutes:
         type: number
-        default: 30
+        default: 40
         description: The timeout in minutes for the test command
       matrix-index:
         type: number
@@ -37,7 +37,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.13-browsers
+      image: cimg/node:22.14-browsers
     continue-on-error: true # soft launch
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,9 +70,9 @@ jobs:
           name: ${{ inputs.build-artifact }}
           path: ./dist/
 
-      # if there is no build artifact, or the specified artifact does not exist, we run the build command
+      # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}
-        if: ${{ inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure' }}
+        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -95,7 +95,7 @@ jobs:
         run: ${{ inputs.test-command }} --retries 1
 
       - name: Upload test results and artifacts
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format('-{0}', inputs.matrix-index) || '' }}

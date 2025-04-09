@@ -6,12 +6,16 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { CreateSnapAccount } from './create-snap-account';
 
 // Mock dependencies
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => {
   const mockCreateAccount = jest.fn().mockResolvedValue(true);
   return {
+    ...jest.requireActual(
+      '../../../hooks/accounts/useMultichainWalletSnapClient',
+    ),
     useMultichainWalletSnapClient: jest.fn().mockReturnValue({
       createAccount: mockCreateAccount,
     }),
@@ -137,11 +141,37 @@ describe('CreateSnapAccount', () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(mockCreateAccount).toHaveBeenCalledWith(
-        defaultProps.chainId,
-        defaultProps.selectedKeyringId,
-        '',
-      );
+      expect(mockCreateAccount).toHaveBeenCalledWith({
+        scope: defaultProps.chainId,
+        entropySource: defaultProps.selectedKeyringId,
+        accountNameSuggestion: '',
+      });
+    });
+  });
+
+  it('renders the suggested account name for a first party snap', async () => {
+    const { getByPlaceholderText } = render({
+      ...defaultProps,
+      clientType: WalletClientType.Solana,
+      chainId: MultichainNetworks.SOLANA,
+    });
+
+    await waitFor(() => {
+      const nameSuggestion = getByPlaceholderText('Solana Account 2');
+      expect(nameSuggestion).toBeInTheDocument();
+    });
+  });
+
+  it('only calls createAccount once', async () => {
+    const { getByTestId } = render();
+
+    const createButton = getByTestId('submit-add-account-with-name');
+    fireEvent.click(createButton);
+    fireEvent.click(createButton);
+    fireEvent.click(createButton);
+
+    await waitFor(() => {
+      expect(mockCreateAccount).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -195,11 +195,12 @@ export default class UnlockPage extends Component {
             as="h1"
             variant={TextVariant.headingLg}
             marginTop={1}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
           >
             {t('welcomeBack')}
           </Text>
-          <div>{t('unlockMessage')}</div>
+
+          <Text color={TextColor.textAlternative}>{t('unlockMessage')}</Text>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"

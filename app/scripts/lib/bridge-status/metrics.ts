@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
-// eslint-disable-next-line import/no-restricted-paths
-import { ActionType } from '../../../../ui/hooks/bridge/events/types';
+import { formatChainIdToHex, isEthUsdt } from '@metamask/bridge-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
@@ -22,9 +21,9 @@ import {
   StatusTypes,
   MetricsBackgroundState,
 } from '../../../../shared/types/bridge-status';
-import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
-import { formatChainIdToHex } from '../../../../shared/modules/bridge-utils/caip-formatters';
+// eslint-disable-next-line import/no-restricted-paths
+import { type ActionType } from '../../../../ui/hooks/bridge/events/types';
 import { getTokenUsdValue } from './metrics-utils';
 
 type TrackEvent = (
