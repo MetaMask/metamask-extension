@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Ένας τρίτος που είναι γνωστός για απάτες έχει πρόσβαση σε αυτόν τον ιστότοπο. Εάν προχωρήσετε, θα χάσετε περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Ο ιστότοπος μπορεί να φαίνεται ασφαλής, αλλά ένας τρίτος μπορεί να έχει πρόσβαση στις πληροφορίες του. Εάν συνδεθείτε, μπορεί να κλέψει τα περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Εάν το επιβεβαιώσετε, μπορεί να χάσετε όλα τα χρήματα και τα περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Εάν συνδεθείτε, όλα ή κάποια από τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο OpenSea βρίσκονται σε κίνδυνο."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Εάν συνδεθείτε, όλα ή κάποια από τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο Blur βρίσκονται σε κίνδυνο."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Αυτός ο ιστότοπος έχει χαρακτηριστεί ως κακόβουλος. Εάν συνδεθείτε, θα χάσετε χρήματα και περιουσιακά σας στοιχεία. Σας συνιστούμε έντονα να ακυρώσετε αυτό το αίτημα."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Εάν συνδεθείτε, μπορεί να χάσετε όλα τα περιουσιακά σας στοιχεία. Σας συνιστούμε να ακυρώσετε αυτό το αίτημα."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, ένα τρίτο μέρος που είναι γνωστό για απάτες μπορεί να πάρει όλα τα περιουσιακά σας στοιχεία."
   },
@@ -3735,9 +3714,6 @@
     "message": "1Ε",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5451,6 @@
     "message": "Κατεβάστε, εγκαταστήστε και πληκτρολογήστε τον κωδικό πρόσβασής σας για να ξεκλειδώσετε το $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Συνδέστε το OneKey σας"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Συνδέστε το OneKey απευθείας στον υπολογιστή σας και ξεκλειδώστε το. Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή φράση πρόσβασης.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Συνδέστε το Trezor σας"
   },
@@ -6173,9 +6142,6 @@
   },
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Αυτή η συναλλαγή θα σας κόστιζε επιπλέον τέλη, οπότε τη σταματήσαμε. Τα χρήματά σας βρίσκονται ακόμα στο πορτοφόλι σας."
   },
   "transactionFlowNetwork": {
     "message": "Δίκτυο"
