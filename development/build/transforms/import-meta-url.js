@@ -55,24 +55,22 @@ module.exports = function ({ types: t }) {
   }
 
   /**
-   * Checks if the relative path matches any provided patterns.
-   * - String patterns: exact match
-   * - RegExp patterns: tests against the pattern
+   * Checks if the relative path matches the provided pattern.
+   * - String pattern: exact match
+   * - RegExp pattern: tests against the pattern
    *
    * @param {string} relativePath - The path to check
-   * @param {Array<string | RegExp>} patterns - Patterns to match against
-   * @returns {boolean} True if any pattern matches
+   * @param {string | RegExp} pattern - Pattern to match against
+   * @returns {boolean} True if pattern matches
    */
-  function matchesPatterns(relativePath, patterns) {
-    return patterns.some((pattern) => {
-      if (typeof pattern === 'string') {
-        return relativePath === pattern;
-      }
-      if (pattern instanceof RegExp) {
-        return pattern.test(relativePath);
-      }
-      return false;
-    });
+  function matchesPattern(relativePath, pattern) {
+    if (typeof pattern === 'string') {
+      return relativePath === pattern;
+    }
+    if (pattern instanceof RegExp) {
+      return pattern.test(relativePath);
+    }
+    return false;
   }
 
   /**
@@ -82,10 +80,19 @@ module.exports = function ({ types: t }) {
    *
    * @param {StringLiteral | TemplateLiteral} originalArg - Original path argument
    * @param {string} rootPath - Root path variable to prepend
+   * @param {string | RegExp} pattern - Pattern to extract name from
    * @returns {StringLiteral | TemplateLiteral} New path argument
    */
-  function buildNewPathArg(originalArg, rootPath) {
+  function buildNewPathArg(originalArg, rootPath, pattern) {
     if (t.isStringLiteral(originalArg)) {
+      if (pattern instanceof RegExp) {
+        const match = originalArg.value.match(pattern);
+        if (match) {
+          const filename = match[1];
+          const ext = originalArg.value.split('.').pop();
+          return t.stringLiteral(join(rootPath, `${filename}.${ext}`));
+        }
+      }
       return t.stringLiteral(join(rootPath, originalArg.value));
     }
 
@@ -141,9 +148,9 @@ module.exports = function ({ types: t }) {
       NewExpression(path, state) {
         // Get and validate options
         /**
-         * @type { Array<string | RegExp> }
+         * @type {string | RegExp}
          */
-        const patterns = state.opts.patterns || [];
+        const pattern = state.opts.pattern || '';
         /**
          * @type {string}
          */
@@ -162,9 +169,9 @@ module.exports = function ({ types: t }) {
         const originalArg = path.node.arguments[0];
         const relativePath = getRelativePath(originalArg);
 
-        // Transform if path matches patterns
-        if (matchesPatterns(relativePath, patterns)) {
-          const pathArg = buildNewPathArg(originalArg, rootPath);
+        // Transform if path matches pattern
+        if (matchesPattern(relativePath, pattern)) {
+          const pathArg = buildNewPathArg(originalArg, rootPath, pattern);
           const baseArg = buildBaseArg();
           const newExpression = buildNewExpression(pathArg, baseArg);
           path.replaceWith(newExpression);
