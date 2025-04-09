@@ -32,7 +32,9 @@
   // This makes the import button float at the bottom of the screen.
   &__import-button {
     position: fixed;
-    bottom: 0px;
+    // This is needed to keep the button at the bottom of the screen.
+    /* stylelint-disable length-zero-no-unit */
+    bottom: 0;
     z-index: 99999;
     max-width: calc(100% - 32px);
   }
