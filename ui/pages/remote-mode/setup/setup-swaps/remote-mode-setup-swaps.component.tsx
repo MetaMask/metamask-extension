@@ -44,6 +44,14 @@ import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
 
+import {
+  InternalAccountWithBalance,
+} from '../../../../selectors/selectors.types';
+import {
+  getSelectedInternalAccount,
+  getMetaMaskAccountsOrdered,
+} from '../../../../selectors';
+
 const TOTAL_STEPS = 3;
 
 // example account
@@ -92,10 +100,22 @@ export default function RemoteModeSetupSwaps({
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
+  const [selectedAccount, setSelectedAccount] = useState<InternalAccount | null>(null);
+
+  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
+    getMetaMaskAccountsOrdered,
+  );
 
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    if (authorizedAccounts.length > 0) {
+      setSelectedAccount(authorizedAccounts[0]);
+    }
+  }, [authorizedAccounts]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -161,10 +181,14 @@ export default function RemoteModeSetupSwaps({
           <Box width={BlockSize.Full}>
             {isModalOpen && (
               <AccountListMenu
-                onClose={() => {
-                  setIsModalOpen(false);
-                }}
+                onClose={() => setIsModalOpen(false)}
                 showAccountCreation={false}
+                accountListItemProps={{
+                  onClick: (account: InternalAccount) => {
+                    setSelectedAccount(account);
+                    setIsModalOpen(false);
+                  }
+                }}
               />
             )}
             <Card
@@ -192,13 +216,15 @@ export default function RemoteModeSetupSwaps({
                   borderRadius={BorderRadius.LG}
                   borderColor={BorderColor.borderDefault}
                 >
+                {selectedAccount && (
                   <AccountPicker
-                    address="0x12C7e...q135f"
-                    name="Account #1"
+                    address={selectedAccount?.address}
+                    name={selectedAccount?.metadata.name}
                     onClick={() => {
                       setIsModalOpen(true);
                     }}
                   />
+                )}
                 </Box>
                 <Box
                   display={Display.Flex}
@@ -215,7 +241,7 @@ export default function RemoteModeSetupSwaps({
                       <Icon name={IconName.Info} size={IconSize.Sm} />
                     </Tooltip>
                   </Box>
-                  <Text>{accounts[0].metadata.name}</Text>
+                  <Text>{selectedHardwareAccount.metadata.name}</Text>
                 </Box>
               </Box>
             </Card>
@@ -371,7 +397,7 @@ export default function RemoteModeSetupSwaps({
                 <Text>Estimated changes</Text>
                 <Text>
                   Authorize Account 1 to swap from your{' '}
-                  {accounts[0].metadata.name} balance.
+                  {selectedHardwareAccount.metadata.name} balance.
                 </Text>
               </Box>
             </Card>
@@ -425,7 +451,7 @@ export default function RemoteModeSetupSwaps({
                     color={TextColor.textMuted}
                     variant={TextVariant.bodySm}
                   >
-                    Permission from {accounts[0].metadata.name}
+                    Permission from {selectedHardwareAccount.metadata.name}
                   </Text>
                 </Box>
                 <Text
@@ -457,7 +483,7 @@ export default function RemoteModeSetupSwaps({
                     color={TextColor.textMuted}
                     variant={TextVariant.bodySm}
                   >
-                    Permission from {accounts[0].metadata.name}
+                    Permission from {selectedHardwareAccount.metadata.name}
                   </Text>
                 </Box>
                 <Text
