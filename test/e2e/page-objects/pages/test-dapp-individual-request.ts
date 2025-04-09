@@ -33,18 +33,18 @@ class TestDappIndividualRequest {
    * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
    * @returns A promise that resolves when the new page is opened.
    */
-    async openTestDappIndividualPage({
-      contractAddress = null,
-      url = DAPP_URL,
-    }: {
-      contractAddress?: string | null;
-      url?: string;
-    } = {}): Promise<void> {
-      const dappUrl = contractAddress
-        ? `${url}/?contract=${contractAddress}`
-        : url;
-      await this.driver.openNewPage(dappUrl);
-    }
+  async openTestDappIndividualPage({
+    contractAddress = null,
+    url = DAPP_URL,
+  }: {
+    contractAddress?: string | null;
+    url?: string;
+  } = {}): Promise<void> {
+    const dappUrl = contractAddress
+      ? `${url}/?contract=${contractAddress}`
+      : url;
+    await this.driver.openNewPage(dappUrl);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async request(method: string, params: any[]) {
