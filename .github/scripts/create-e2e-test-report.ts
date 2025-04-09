@@ -25,12 +25,11 @@ const humanizer = humanizeDuration.humanizer({
   round: true,
 });
 
-function formatTime(seconds: number): string {
-  const miliseconds = seconds * 1000;
-  if (miliseconds < 1000) {
-    return `${Math.round(miliseconds)}ms`;
+function formatTime(ms: number): string {
+  if (ms < 1000) {
+    return `${Math.round(ms)}ms`;
   }
-  return humanizer(miliseconds);
+  return humanizer(ms);
 }
 
 interface TestSuite {
@@ -90,7 +89,7 @@ async function main() {
         const path = fullPath.slice(fullPath.indexOf('test/'));
         const date = new Date(suite.$.timestamp);
         const tests = +suite.$.tests;
-        const time = +suite.$.time;
+        const time = +suite.$.time * 1000; // convert to ms
         const failed = +suite.$.failures;
         const skipped = tests - suite.testcase.length;
         const passed = tests - failed - skipped;
@@ -108,7 +107,7 @@ async function main() {
         for (const test of suite.testcase) {
           const testCase: TestSuite['testCases'][number] = {
             name: test.$.name,
-            time: +test.$.time,
+            time: +test.$.time * 1000, // convert to ms
             status: test.failure ? 'failed' : 'passed',
             error: test.failure ? test.failure[0]._ : undefined,
           };
@@ -136,14 +135,21 @@ async function main() {
           passed: acc.passed + suite.passed,
           failed: acc.failed + suite.failed,
           skipped: acc.skipped + suite.skipped,
-          time: acc.time + suite.time,
         }),
-        { tests: 0, passed: 0, failed: 0, skipped: 0, time: 0 },
+        { tests: 0, passed: 0, failed: 0, skipped: 0 },
       );
+      const times = suites.map((suite) => {
+        const start = suite.date.getTime();
+        const duration = suite.time;
+        return { start, end: start + duration };
+      });
+      const earliestStart = Math.min(...times.map((t) => t.start));
+      const latestEnd = Math.max(...times.map((t) => t.end));
+      const executionTime = latestEnd - earliestStart;
 
       const conclusion = `**${
         total.tests
-      }** tests were completed in **${formatTime(total.time)}** with **${
+      }** tests were completed in **${formatTime(executionTime)}** with **${
         total.passed
       }** passed, **${total.failed}** failed and **${total.skipped}** skipped.`;
 
@@ -154,8 +160,8 @@ async function main() {
 
       const rows = suites.map((suite) => ({
         'Test suite': process.env.GITHUB_ACTIONS
-          ? `[${suite.name}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})`
-          : suite.name,
+          ? `[${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})`
+          : suite.path,
         Passed: suite.passed ? `${suite.passed} ✅` : '',
         Failed: suite.failed ? `${suite.failed} ❌` : '',
         Skipped: suite.skipped ? `${suite.skipped} ⏩` : '',
