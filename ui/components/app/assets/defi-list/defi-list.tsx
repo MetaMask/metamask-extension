@@ -37,8 +37,6 @@ export type DefiState = {
 export function getDefiPositions(
   state: DefiState,
 ): DeFiPositionsControllerState['allDeFiPositions'] {
-  console.log('getDefiPositions', state);
-
   return state?.metamask?.allDeFiPositions;
 }
 
@@ -89,6 +87,8 @@ function DefiList({ onClick }: DefiListProps) {
     if (!defiData) {
       return [];
     }
+
+    console.log('defiData', defiData);
 
     const defiProtocolCells: DeFiProtocolPosition[] = Object.entries(
       defiData,

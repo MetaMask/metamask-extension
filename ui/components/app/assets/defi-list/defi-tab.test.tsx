@@ -6,30 +6,18 @@ import { renderWithProvider } from '../../../../../test/jest';
 import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import useMultiPolling from '../../../../hooks/useMultiPolling';
-import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import DeFiTab from './defi-tab';
 
 // Specific to just the ETH FIAT conversion
 const CONVERSION_RATE = 1597.32;
-const ETH_BALANCE = '0x041173b2c0e57d'; // 0.0011 ETH ($1.83)
-
-const USDC_BALANCE = '199.4875'; // @ $1
-const LINK_BALANCE = '122.0005'; // @ $6.75
-const WBTC_BALANCE = '2.38'; // @ $26,601.51
-
-const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-const LINK_CONTRACT = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
-const WBTC_CONTRACT = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599';
 
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
 
-const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
+const render = (chainId = CHAIN_IDS.MAINNET) => {
   const state = {
     ...mockState,
     metamask: {
@@ -105,8 +93,15 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      // expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('import-token-button')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('multichain-token-list-item-secondary-value'),
+      ).toHaveTextContent('$20,000.00');
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
+      expect(screen.getByTestId('avatar-group')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('import-token-button'),
+      ).not.toBeInTheDocument();
     });
   });
 });
