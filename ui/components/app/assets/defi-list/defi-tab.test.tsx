@@ -104,8 +104,6 @@ describe('DefiList', () => {
       render();
     });
 
-    console.log({ screen }, 'oioi');
-
     await waitFor(() => {
       // expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
       expect(screen.getByTestId('import-token-button')).not.toBeInTheDocument();

@@ -97,7 +97,8 @@ function DefiList({ onClick }: DefiListProps) {
         const iconGroup = extractIconGroup(protocol);
         return {
           protocolId,
-          // Currently we don't have an address for a protocol - protocols have many addresses - perhaps one day the protocol's govenance contract address might make sense here
+          // Currently we don't have an address for a protocol
+          // Protocols have many addresses - perhaps one day the Protocol's Govenance Contract address might make sense here
           // Note: this is also the case for native tokens - they also dont have an address
           address: '0x',
           title: protocol.protocolDetails.name,
@@ -123,8 +124,7 @@ function DefiList({ onClick }: DefiListProps) {
 
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets(filteredAssets, tokenSortConfig);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defiData, networkFilter, networkFilter, tokenSortConfig]);
+  }, [defiData, networkFilter, tokenSortConfig]);
 
   const handleTokenClick = (token: DeFiProtocolPosition) => () => {
     onClick(token.chainId, token.protocolId);
