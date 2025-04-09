@@ -120,13 +120,13 @@ class AccountDetailsModal {
         this.holdToRevealPrivateKeyButton,
         2000,
       );
-    // Verify the private key is expected
-    await this.driver.wait(async () => {
-      const privateKey = await this.driver.findElement(this.accountPrivateKeyText);
-      const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(await privateKey.getText());
-      return displayedPrivateKey === expectedPrivateKey;
-    });
-  }
+      // Verify the private key is expected
+      await this.driver.wait(async () => {
+        const privateKey = await this.driver.findElement(this.accountPrivateKeyText);
+        const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(await privateKey.getText());
+        return displayedPrivateKey === expectedPrivateKey;
+      });
+    }
   }
 
   /**
