@@ -328,6 +328,7 @@ export const ImportSrp = ({
         width={BlockSize.Full}
         marginTop={4}
         paddingBottom={6}
+        paddingTop={2}
         backgroundColor={
           theme === ThemeType.light
             ? BackgroundColor.backgroundDefault
