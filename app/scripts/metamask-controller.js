@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
-  AssetsContractController,
   CurrencyRateController,
   TokenDetectionController,
   TokenListController,
@@ -370,6 +369,7 @@ import {
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
 import {
+  AssetsContractControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
@@ -719,25 +719,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       messenger: tokenListMessenger,
       state: initState.TokenListController,
-    });
-
-    const assetsContractControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'AssetsContractController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
-          'NetworkController:getSelectedNetworkClient',
-          'NetworkController:getState',
-        ],
-        allowedEvents: [
-          'PreferencesController:stateChange',
-          'NetworkController:networkDidChange',
-        ],
-      });
-    this.assetsContractController = new AssetsContractController({
-      messenger: assetsContractControllerMessenger,
-      chainId: this.#getGlobalChainId(),
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1293,10 +1274,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenDetectionController = new TokenDetectionController({
       messenger: tokenDetectionControllerMessenger,
-      getBalancesInSingleCall:
-        this.assetsContractController.getBalancesInSingleCall.bind(
-          this.assetsContractController,
-        ),
+      getBalancesInSingleCall: (...args) =>
+        this.assetsContractController.getBalancesInSingleCall(...args),
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -1809,6 +1788,7 @@ export default class MetamaskController extends EventEmitter {
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
       NftController: NftControllerInit,
+      AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
@@ -1852,6 +1832,7 @@ export default class MetamaskController extends EventEmitter {
     this.txController = controllersByName.TransactionController;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
+    this.assetsContractController = controllersByName.AssetsContractController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
@@ -3178,7 +3159,6 @@ export default class MetamaskController extends EventEmitter {
       tokensController,
       smartTransactionsController,
       txController,
-      assetsContractController,
       backup,
       approvalController,
       phishingController,
@@ -4026,10 +4006,8 @@ export default class MetamaskController extends EventEmitter {
         tokensController.addDetectedTokens.bind(tokensController),
       addImportedTokens: tokensController.addTokens.bind(tokensController),
       ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
-      getBalancesInSingleCall:
-        assetsContractController.getBalancesInSingleCall.bind(
-          assetsContractController,
-        ),
+      getBalancesInSingleCall: (...args) =>
+        this.assetsContractController.getBalancesInSingleCall(...args),
 
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(

@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Một bên thứ ba được biết đến với các hành vi lừa đảo có quyền truy cập vào trang web này. Nếu tiếp tục, bạn sẽ bị mất tài sản."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Trang web có thể trông an toàn, nhưng bên thứ ba có thể truy cập vào thông tin của trang web. Nếu bạn đăng nhập, tài sản của bạn có thể bị đánh cắp."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Nếu bạn xác nhận, bạn có thể mất toàn bộ tiền và tài sản của mình."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Nếu bạn đăng nhập, một phần hoặc toàn bộ tài sản mà bạn đã niêm yết trên OpenSea sẽ gặp rủi ro."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Nếu bạn đăng nhập, một phần hoặc toàn bộ tài sản mà bạn đã niêm yết trên Blur sẽ gặp rủi ro."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Trang web này được nhận diện là tên miền độc hại. Nếu bạn đăng nhập, bạn sẽ mất tiền và tài sản. Chúng tôi thật sự khuyên bạn nên hủy yêu cầu này."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Nếu bạn đăng nhập, bạn có thể mất toàn bộ tài sản. Chúng tôi khuyên bạn nên hủy yêu cầu này."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
   },
@@ -6163,9 +6142,6 @@
   },
   "transactionErrored": {
     "message": "Giao dịch đã gặp lỗi."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Giao dịch này sẽ khiến bạn tốn thêm phí, vì vậy chúng tôi đã dừng lại. Tiền của bạn vẫn còn trong ví."
   },
   "transactionFlowNetwork": {
     "message": "Mạng"
