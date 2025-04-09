@@ -1,7 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
+import  { DAPP_URL } from '../../constants'
 
 class TestDappIndividualRequest {
   private readonly driver: Driver;
