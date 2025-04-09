@@ -33,7 +33,6 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -46,7 +45,6 @@ import { GrantedPermissions } from '../types';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import {
   isKnownSessionPropertyValue,
-  isNamespaceInScopesObject,
   getAllAccountsFromScopesObjects,
   getAllScopesFromScopesObjects,
 } from '../../../../../../shared/lib/multichain/chain-agnostic-permission';
@@ -145,25 +143,6 @@ async function walletCreateSessionHandler(
       }
     };
 
-    // if solana is a requested scope but not supported, we add a promptToCreateSolanaAccount flag to request
-    const isSolanaRequested =
-      isNamespaceInScopesObject(
-        requiredScopesWithSupportedMethodsAndNotifications,
-        KnownCaipNamespace.Solana,
-      ) ||
-      isNamespaceInScopesObject(
-        optionalScopesWithSupportedMethodsAndNotifications,
-        KnownCaipNamespace.Solana,
-      );
-
-    let promptToCreateSolanaAccount = false;
-    if (isSolanaRequested) {
-      const supportedSolanaAccounts = await hooks.getNonEvmAccountAddresses(
-        MultichainNetwork.Solana,
-      );
-      promptToCreateSolanaAccount = supportedSolanaAccounts.length === 0;
-    }
-
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       requiredScopesWithSupportedMethodsAndNotifications,
       {
@@ -193,6 +172,10 @@ async function walletCreateSessionHandler(
       supportedRequiredScopes,
       supportedOptionalScopes,
     ]);
+
+    if (allSupportedRequestedCaipChainIds.length === 0) {
+      return end(new JsonRpcError(5100, 'Requested scopes are not supported'));
+    }
 
     const existingEvmAddresses = hooks
       .listAccounts()
@@ -234,40 +217,16 @@ async function walletCreateSessionHandler(
         supportedRequestedAccountAddresses,
       );
 
-    // if `promptToCreateSolanaAccount` is true and there are no other valid scopes requested,
-    // we add a `wallet` scope to the request in order to get passed the CAIP-25 caveat validator.
-    // This is very hacky but is necessary because the solana opt-in flow breaks key assumptions
-    // of the CAIP-25 permission specification -  namely that we can have valid requests with no scopes.
-    if (allSupportedRequestedCaipChainIds.length === 0) {
-      if (promptToCreateSolanaAccount) {
-        requestedCaip25CaveatValueWithSupportedAccounts.optionalScopes[
-          KnownCaipNamespace.Wallet
-        ] = {
-          accounts: [],
-        };
-      } else {
-        // if solana is not requested and there are no supported scopes, we return an error
-        return end(
-          new JsonRpcError(5100, 'Requested scopes are not supported'),
-        );
-      }
-    }
-
-    const [grantedPermissions] = await hooks.requestPermissionsForOrigin(
-      {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: requestedCaip25CaveatValueWithSupportedAccounts,
-            },
-          ],
-        },
+    const [grantedPermissions] = await hooks.requestPermissionsForOrigin({
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: requestedCaip25CaveatValueWithSupportedAccounts,
+          },
+        ],
       },
-      {
-        metadata: { promptToCreateSolanaAccount },
-      },
-    );
+    });
 
     const approvedCaip25Permission =
       grantedPermissions[Caip25EndowmentPermissionName];
