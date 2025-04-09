@@ -53,15 +53,15 @@ export function isNamespaceInScopesObject(
 export function getCaip25CaveatFromPermission(caip25Permission: {
   caveats: {
     type: string;
-    value: Caip25CaveatValue;
+    value: Caip25CaveatValue | undefined;
   }[];
 }):
   | {
       type: string;
-      value: Caip25CaveatValue;
+      value: Caip25CaveatValue | undefined;
     }
   | undefined {
-  return caip25Permission.caveats.find(
+  return caip25Permission?.caveats?.find(
     (caveat) => caveat.type === Caip25CaveatType,
   );
 }
