@@ -202,9 +202,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const supportedRequestedAccounts = requestedCaipAccountIds.reduce(
     (acc, account) => {
       const supportedRequestedAccount =
-        supportedAccountsForRequestedNamespaces.find(
-          ({ caipAccountId }) => caipAccountId === account,
-        );
+        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
+          const { namespace } = parseCaipAccountId(caipAccountId);
+          // EIP155 (EVM) addresses are not case sensitive
+          if (namespace === KnownCaipNamespace.Eip155) {
+            return isEqualCaseInsensitive(caipAccountId, account);
+          }
+          return caipAccountId === account;
+        });
       if (supportedRequestedAccount) {
         acc.push(supportedRequestedAccount);
       }
