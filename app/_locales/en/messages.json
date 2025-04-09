@@ -2891,6 +2891,12 @@
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
   },
+  "manageInstitutionalWallets": {
+    "message": "Manage Institutional Wallets"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "Turn this on to enable institutional wallets."
+  },
   "managePermissions": {
     "message": "Manage permissions"
   },

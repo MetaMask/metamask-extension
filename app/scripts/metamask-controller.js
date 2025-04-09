@@ -3417,6 +3417,11 @@ export default class MetamaskController extends EventEmitter {
         ),
       ///: END:ONLY_INCLUDE_IF
 
+      setManageInstitutionalWallets:
+        preferencesController.setManageInstitutionalWallets.bind(
+          preferencesController,
+        ),
+
       // AccountsController
       setSelectedInternalAccount: (id) => {
         const account = this.accountsController.getAccount(id);

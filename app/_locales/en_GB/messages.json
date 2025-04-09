@@ -2891,6 +2891,12 @@
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
   },
+  "manageInstitutionalWallets": {
+    "message": "Manage Institutional Wallets"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "Turn this on to enable institutional wallets."
+  },
   "managePermissions": {
     "message": "Manage permissions"
   },
@@ -5385,7 +5391,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
