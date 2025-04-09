@@ -2,16 +2,16 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/dom';
 
+import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
-import { SmartAccountUpdate } from './smart-account-update';
 import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
-import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
+import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({
   disableAccountUpgradeForChain: jest.fn(),
@@ -70,7 +70,7 @@ describe('Splash', () => {
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const { getByRole, container } = renderWithConfirmContextProvider(
+    const { getByRole } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,
       mockStore,
     );
