@@ -129,7 +129,7 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
   },
 );
 
-export const getCurrentChainSupportsSmartTransactions = (
+export const getChainSupportsSmartTransactions = (
   state: NetworkState,
   chainId?: string,
 ): boolean => {
@@ -173,7 +173,7 @@ export const getSmartTransactionsEnabled = (
   const smartTransactionsLiveness =
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
-    getCurrentChainSupportsSmartTransactions(state, chainId) &&
+    getChainSupportsSmartTransactions(state, chainId) &&
       getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
       supportedAccount &&
       smartTransactionsFeatureFlagEnabled &&

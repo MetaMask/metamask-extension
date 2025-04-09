@@ -7,7 +7,7 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import * as envModule from '../environment';
 import {
   getSmartTransactionsOptInStatusForMetrics,
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
@@ -123,12 +123,12 @@ describe('Selectors', () => {
     });
   });
 
-  describe('getCurrentChainSupportsSmartTransactions', () => {
+  describe('getChainSupportsSmartTransactions', () => {
     jestIt(
       'should return true if the chain ID is allowed for smart transactions',
       () => {
         const state = createMockState();
-        const result = getCurrentChainSupportsSmartTransactions(state);
+        const result = getChainSupportsSmartTransactions(state);
         expect(result).toBe(true);
       },
     );
@@ -144,7 +144,7 @@ describe('Selectors', () => {
             ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
           },
         };
-        const result = getCurrentChainSupportsSmartTransactions(newState);
+        const result = getChainSupportsSmartTransactions(newState);
         expect(result).toBe(false);
       },
     );
@@ -155,7 +155,7 @@ describe('Selectors', () => {
         const state = createMockState(); // Has allowed chain ID
         // Should be false for non-allowed chain ID regardless of state
         expect(
-          getCurrentChainSupportsSmartTransactions(state, CHAIN_IDS.POLYGON),
+          getChainSupportsSmartTransactions(state, CHAIN_IDS.POLYGON),
         ).toBe(false);
 
         const nonSupportedState = {
@@ -167,7 +167,7 @@ describe('Selectors', () => {
         };
         // Should be true for allowed chain ID regardless of state
         expect(
-          getCurrentChainSupportsSmartTransactions(
+          getChainSupportsSmartTransactions(
             nonSupportedState,
             CHAIN_IDS.MAINNET,
           ),

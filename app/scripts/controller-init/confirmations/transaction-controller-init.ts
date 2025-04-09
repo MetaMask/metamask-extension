@@ -10,7 +10,7 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
@@ -114,7 +114,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         const uiState = getUIState(getFlatState());
         return !(
           getSmartTransactionsPreferenceEnabled(uiState) &&
-          getCurrentChainSupportsSmartTransactions(uiState)
+          getChainSupportsSmartTransactions(uiState)
         );
       },
     },
