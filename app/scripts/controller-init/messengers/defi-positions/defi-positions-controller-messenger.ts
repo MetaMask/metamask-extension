@@ -5,11 +5,6 @@ import {
   AccountsControllerSelectedAccountChangeEvent,
 } from '@metamask/accounts-controller';
 
-import {
-  DeFiPositionsControllerGetStateAction,
-  DeFiPositionsControllerStateChangeEvent,
-} from '@metamask/assets-controllers';
-
 type Actions = AccountsControllerGetSelectedAccountAction;
 
 type Events =
@@ -32,12 +27,8 @@ export function getDeFiPositionsControllerMessenger(
 ) {
   return messenger.getRestricted({
     name: 'DeFiPositionsController',
-    allowedActions: [
-      // 'DeFiPositionsController:getState',
-      'AccountsController:getSelectedAccount',
-    ],
+    allowedActions: ['AccountsController:getSelectedAccount'],
     allowedEvents: [
-      // 'DeFiPositionsController:stateChange',
       'AccountsController:selectedAccountChange',
       'NetworkController:stateChange',
     ],
