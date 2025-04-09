@@ -148,6 +148,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
+  manageInstitutionalWallets: boolean;
   accountUpgradeDisabledChainsAddresses?: Record<Hex, Hex[]>;
 };
 
@@ -252,6 +253,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    manageInstitutionalWallets: false,
     accountUpgradeDisabledChainsAddresses: {},
   });
 
@@ -423,6 +425,7 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
   accountUpgradeDisabledChainsAddresses: { persist: true, anonymous: false },
 };
 
@@ -938,6 +941,17 @@ export class PreferencesController extends BaseController<
     this.update((state) => {
       state.overrideContentSecurityPolicyHeader =
         overrideContentSecurityPolicyHeader;
+    });
+  }
+
+  /**
+   * A setter for the user preference to manage institutional wallets
+   *
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
+   */
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
+    this.update((state) => {
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
     });
   }
 

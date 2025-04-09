@@ -921,4 +921,19 @@ describe('preferences controller', () => {
       });
     });
   });
+
+  describe('manageInstitutionalWallets', () => {
+    it('defaults manageInstitutionalWallets to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(false);
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('sets manageInstitutionalWallets to true', () => {
+      const { controller } = setupController({});
+      controller.setManageInstitutionalWallets(true);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
+    });
+  });
 });
