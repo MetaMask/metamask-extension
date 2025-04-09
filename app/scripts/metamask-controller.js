@@ -384,6 +384,7 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
+import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   MultichainAssetsControllerInit,
@@ -1842,6 +1843,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ExecutionService: ExecutionServiceInit,
+      InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
       SnapController: SnapControllerInit,
