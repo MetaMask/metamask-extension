@@ -98,11 +98,20 @@ export class MultichainWalletSnapClient {
     options: MultichainWalletSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ) {
-    return createSnapAccount(
+    // This will trigger the Snap account creation flow (+ account renaming)
+    const account = await createSnapAccount(
       this.#snapId,
-      { ...options, synchronize: true },
+      options,
       internalOptions,
     );
+
+    // NOTE: The account's balance is going to be tracked automatically on when the new account
+    // will be added to the Snap bridge keyring (see `MultichainBalancesController:#handleOnAccountAdded`).
+    // However, the balance won't be fetched right away. To workaround this, we trigger the
+    // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
+    await multichainUpdateBalance(account.id);
+    // TODO: Remove this and the above line once Snap account creation flow is async
+    await multichainUpdateTransactions(account.id);
   }
 }
 
