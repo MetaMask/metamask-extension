@@ -105,12 +105,12 @@ async function main() {
           time,
           testCases: [],
         };
-        for (const testcase of suite.testcase) {
+        for (const test of suite.testcase) {
           const testCase: TestSuite['testCases'][number] = {
-            name: testcase.$.name,
-            time: +testcase.$.time,
-            status: testcase.failure ? 'failed' : 'passed',
-            error: testcase.failure ? testcase.failure[0]._ : undefined,
+            name: test.$.name,
+            time: +test.$.time,
+            status: test.failure ? 'failed' : 'passed',
+            error: test.failure ? test.failure[0]._ : undefined,
           };
           testSuite.testCases.push(testCase);
         }
@@ -155,7 +155,7 @@ async function main() {
       const rows = suites.map((suite) => ({
         'Test suite': process.env.GITHUB_ACTIONS
           ? `[${suite.name}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})`
-          : `[${suite.name}](${suite.path})`,
+          : suite.name,
         Passed: suite.passed ? `${suite.passed} ✅` : '',
         Failed: suite.failed ? `${suite.failed} ❌` : '',
         Skipped: suite.skipped ? `${suite.skipped} ⏩` : '',
@@ -173,9 +173,30 @@ async function main() {
       core.summary.addRaw(
         `| ${columns.join(' | ')} |
 | :--- | ---: | ---: | ---: | ---: |
-${markdownTable}
+${markdownTable}\n
 `,
       );
+
+      if (total.failed > 0) {
+        core.summary.addRaw(`## ❌ Failed tests\n`);
+        console.error(`❌ Failed tests`);
+        for (const suite of suites) {
+          if (suite.failed === 0) continue;
+          core.summary.addRaw(`\n<details open>\n`);
+          core.summary.addRaw(
+            ` <summary><strong>${suite.name}</strong></summary>\n`,
+          );
+          console.error(suite.name);
+          for (const test of suite.testCases) {
+            if (test.status !== 'failed') continue;
+            core.summary.addRaw(`\n##### ${test.name}\n`);
+            console.error(`- ${test.name}`);
+            core.summary.addRaw(`\n\`\`\`js\n${test.error}\n\`\`\`\n`);
+            console.error(`  ${test.error}\n`);
+          }
+          core.summary.addRaw(`</details>\n`);
+        }
+      }
     } else {
       core.summary.addRaw('No tests found');
     }
