@@ -90,7 +90,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   Slippage,
-  isStablePair,
+  StablecoinsByChainId,
   SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/swaps';
 import {
@@ -639,13 +639,14 @@ export const fetchQuotesAndSetQuoteState = (
     const state = getState();
     const hdEntropyIndex = getHDEntropyIndex(state);
     const selectedNetwork = getSelectedNetwork(state);
+    const { chainId } = selectedNetwork.configuration;
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        selectedNetwork.configuration.chainId,
+        chainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -760,10 +761,18 @@ export const fetchQuotesAndSetQuoteState = (
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
 
-    // If the pair is a stable pair, use the stable slippage value of 0.5%.
-    const slippageForFetch = isStablePair(fromTokenSymbol, toTokenSymbol)
-      ? Slippage.stable
-      : maxSlippage;
+    // Determines if the pair is an eligible stable token pair.
+    // If the pair is a stable pair, use the lower slippage value of 0.5%.
+    const stablecoinsForChain = StablecoinsByChainId[chainId];
+    const isStableTokenPair = Boolean(
+      stablecoinsForChain &&
+        fromTokenAddress &&
+        toTokenAddress &&
+        stablecoinsForChain.has(fromTokenAddress.toLowerCase()) &&
+        stablecoinsForChain.has(toTokenAddress.toLowerCase()),
+    );
+
+    const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;
 
     trackEvent({
       event: MetaMetricsEventName.QuotesRequested,
