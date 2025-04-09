@@ -62,7 +62,10 @@ export const useCarouselManagement = ({
   );
 
   const checkSweepstakesActive = useCallback((currentDate: Date) => {
-    const isActive = getSweepstakesCampaignActive(currentDate);
+    // Due to this is a time condition,
+    // which will affect the number of slides in the carousel on e2e testing,
+    // hence, we set a `inTest` condition to by pass it for e2e test.
+    const isActive = !inTest && getSweepstakesCampaignActive(currentDate);
 
     return isActive;
   }, []);
@@ -73,10 +76,7 @@ export const useCarouselManagement = ({
       : new Date(new Date().toISOString());
     const isSweepstakesActive = checkSweepstakesActive(currentDate);
 
-    // Due to this is a time condition,
-    // which will affect the number of slides in the carousel on e2e testing,
-    // hence, we set a `inTest` condition to by pass it for e2e test.
-    if (!inTest && isSweepstakesActive) {
+    if (!isSweepstakesActive) {
       const existingSweepstakes = slides.find(
         (s: CarouselSlide) => s.id === SWEEPSTAKES_SLIDE.id,
       );
