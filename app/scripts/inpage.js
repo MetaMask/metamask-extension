@@ -67,14 +67,6 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  // this is currently equivalent to process.env.MULTICHAIN_API
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-  getMultichainClient({
-    transport: getDefaultTransport(),
-  }).then((client) => {
-    registerSolanaWalletStandard({ client });
-  });
-  ///: END:ONLY_INCLUDE_IF
   initializeProvider({
     connectionStream: metamaskStream,
     logger: log,
@@ -86,4 +78,13 @@ if (shouldInjectProvider()) {
       rdns: process.env.METAMASK_BUILD_APP_ID,
     },
   });
+
+  // this is currently equivalent to process.env.MULTICHAIN_API
+  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
+  getMultichainClient({
+    transport: getDefaultTransport(),
+  }).then((client) => {
+    registerSolanaWalletStandard({ client });
+  });
+  ///: END:ONLY_INCLUDE_IF
 }
