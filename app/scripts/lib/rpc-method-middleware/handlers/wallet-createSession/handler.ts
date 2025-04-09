@@ -216,8 +216,6 @@ async function walletCreateSessionHandler(
           return hooks
             .getNonEvmAccountAddresses(caipChainId)
             .some((existingCaipAddress) => {
-              console.log('existingCaipAddress', existingCaipAddress);
-              console.log('requestedAccountAddress', requestedAccountAddress);
               return requestedAccountAddress === existingCaipAddress;
             });
         },
