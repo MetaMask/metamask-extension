@@ -181,7 +181,48 @@ describe('<TransactionDetails />', () => {
   });
 
   describe('RecipientRow', () => {
-    it('should not be displayed when the transaction is a batch transaction', () => {
+    it('renders when address is valid', () => {
+      const contractInteraction =
+        genUnapprovedContractInteractionConfirmation();
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render when address is invalid', () => {
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        address: '0xinvalid_address',
+      });
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders SmartContractWithLogo when transaction is a batch transaction', () => {
       const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
       const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
@@ -207,13 +248,11 @@ describe('<TransactionDetails />', () => {
         },
       });
       const mockStore = configureMockStore(middleware)(state);
-      const { queryByTestId } = renderWithConfirmContextProvider(
+      const { getByText } = renderWithConfirmContextProvider(
         <TransactionDetails />,
         mockStore,
       );
-      expect(
-        queryByTestId('transaction-details-recipient-row'),
-      ).not.toBeInTheDocument();
+      expect(getByText('Smart contract')).toBeInTheDocument();
     });
   });
 });

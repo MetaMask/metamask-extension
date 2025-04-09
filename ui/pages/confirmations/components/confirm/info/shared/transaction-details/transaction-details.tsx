@@ -24,6 +24,15 @@ import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  TextColor,
+} from '../../../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../../../../components/component-library';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -55,9 +64,11 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const { from } = currentConfirmation?.txParams ?? {};
   const to = recipient ?? currentConfirmation?.txParams?.to;
   const { nestedTransactions } = currentConfirmation ?? {};
-  const isBatch = Boolean(nestedTransactions?.length) && to === from;
+  const isBatch =
+    Boolean(nestedTransactions?.length) &&
+    to?.toLowerCase() === from.toLowerCase();
 
-  if (!to || !isValidAddress(to) || isBatch) {
+  if (!to || !isValidAddress(to)) {
     return null;
   }
 
@@ -71,7 +82,11 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress address={to} chainId={chainId} />
+      {isBatch ? (
+        <SmartContractWithLogo />
+      ) : (
+        <ConfirmInfoRowAddress address={to} chainId={chainId} />
+      )}
     </ConfirmInfoAlertRow>
   );
 };
@@ -177,3 +192,24 @@ export const TransactionDetails = () => {
     </>
   );
 };
+
+function SmartContractWithLogo() {
+  const t = useI18nContext();
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      style={{
+        padding: '1px 8px 1px 4px',
+      }}
+    >
+      <img src="images/logo/metamask-fox.svg" width="16" height="16" />
+      <Text marginLeft={2} color={TextColor.inherit}>
+        {t('interactWithSmartContract')}
+      </Text>
+    </Box>
+  );
+}
