@@ -41,13 +41,13 @@ export function useMultichainTransactionDisplay(
 ) {
   const locale = useSelector(getIntlLocale);
 
-  const assetInputs = aggregateAmount(
+  const from = aggregateAmount(
     transaction.from as Movement[],
     true,
     locale,
     networkConfig.decimals,
   );
-  const assetOutputs = aggregateAmount(
+  const to = aggregateAmount(
     transaction.to as Movement[],
     transaction.type === TransactionType.Send,
     locale,
@@ -65,11 +65,15 @@ export function useMultichainTransactionDisplay(
   );
 
   return {
-    assetInputs,
-    assetOutputs,
+    ...transaction,
+    from,
+    to,
     baseFee,
     priorityFee,
-    isRedeposit: assetOutputs.length === 0,
+    isRedeposit:
+      Boolean(from) === true &&
+      Boolean(to) === false &&
+      transaction.type === TransactionType.Send,
   };
 }
 
@@ -98,10 +102,10 @@ function aggregateAmount(
     amountByAsset[assetId].amount += parseFloat(mv.asset.amount);
   }
 
-  // Convert to a proper display array.
+  // We make an assumption that there is only one asset in the transaction.
   return Object.entries(amountByAsset).map(([_, mv]) =>
     parseAsset(mv, locale, isNegative, decimals),
-  );
+  )[0];
 }
 
 function parseAsset(

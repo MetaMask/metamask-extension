@@ -726,9 +726,8 @@ const MultichainTransactionListItem = ({
   toggleShowDetails,
 }) => {
   const t = useI18nContext();
-  const { assetInputs, assetOutputs, isRedeposit } =
+  const { from, to, type, timestamp, isRedeposit } =
     useMultichainTransactionDisplay(transaction, networkConfig);
-  let title = capitalize(transaction.type);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
   // A redeposit transaction is a special case where the outputs list is emtpy because we are sending to ourselves and only pay the fees
@@ -763,7 +762,7 @@ const MultichainTransactionListItem = ({
         title={t('redeposit')}
         subtitle={
           <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
+            date={formatTimestamp(timestamp)}
             error={{}}
             status={statusKey}
             statusOnly
@@ -773,65 +772,63 @@ const MultichainTransactionListItem = ({
     );
   }
 
-  return assetOutputs.map((output, index) => {
-    let { amount, unit } = output;
+  let title = capitalize(type);
+  let { amount, unit } = to ?? {};
 
-    if (transaction.type === TransactionType.swap) {
-      title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
-      amount = assetInputs[index].amount;
-      unit = assetInputs[index].unit;
-    }
+  if (type === TransactionType.swap) {
+    title = `${t('swap')} ${from.unit} ${'to'} ${to.unit}`;
+    amount = from.amount;
+    unit = from.unit;
+  }
 
-    return (
-      <ActivityListItem
-        key={index}
-        className="custom-class"
-        data-testid="activity-list-item"
-        onClick={() => toggleShowDetails(transaction)}
-        icon={
-          <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-            display={Display.Block}
-            badge={
-              <AvatarNetwork
-                className="activity-tx__network-badge"
-                data-testid="activity-tx-network-badge"
-                size={AvatarNetworkSize.Xs}
-                name={networkConfig.id}
-                src={networkConfig.rpcPrefs?.imageUrl}
-                borderColor={BackgroundColor.backgroundDefault}
-              />
-            }
-          >
-            <TransactionIcon category={transaction.type} status={statusKey} />
-          </BadgeWrapper>
-        }
-        rightContent={
-          <Text
-            className="activity-list-item__primary-currency"
-            color="text-default"
-            data-testid="transaction-list-item-primary-currency"
-            ellipsis
-            fontWeight="medium"
-            textAlign="right"
-            title="Primary Currency"
-            variant="body-lg-medium"
-          >
-            {amount} {unit}
-          </Text>
-        }
-        title={title}
-        subtitle={
-          <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
-            error={{}}
-            status={statusKey}
-            statusOnly
-          />
-        }
-      />
-    );
-  });
+  return (
+    <ActivityListItem
+      className="custom-class"
+      data-testid="activity-list-item"
+      onClick={() => toggleShowDetails(transaction)}
+      icon={
+        <BadgeWrapper
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+          display={Display.Block}
+          badge={
+            <AvatarNetwork
+              className="activity-tx__network-badge"
+              data-testid="activity-tx-network-badge"
+              size={AvatarNetworkSize.Xs}
+              name={networkConfig.id}
+              src={networkConfig.rpcPrefs?.imageUrl}
+              borderColor={BackgroundColor.backgroundDefault}
+            />
+          }
+        >
+          <TransactionIcon category={type} status={statusKey} />
+        </BadgeWrapper>
+      }
+      rightContent={
+        <Text
+          className="activity-list-item__primary-currency"
+          color="text-default"
+          data-testid="transaction-list-item-primary-currency"
+          ellipsis
+          fontWeight="medium"
+          textAlign="right"
+          title="Primary Currency"
+          variant="body-lg-medium"
+        >
+          {amount} {unit}
+        </Text>
+      }
+      title={title}
+      subtitle={
+        <TransactionStatusLabel
+          date={formatTimestamp(transaction.timestamp)}
+          error={{}}
+          status={statusKey}
+          statusOnly
+        />
+      }
+    />
+  );
 };
 
 MultichainTransactionListItem.propTypes = {
