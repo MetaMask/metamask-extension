@@ -29,6 +29,10 @@ export enum TraceName {
   Signature = 'Signature',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  ConnectLedgerWallet = 'Connect Ledger Wallet',
+  ConnectTrezorWallet = 'Connect Trezor Wallet',
+  ConnectQRWallet = 'Connect QR Wallet',
+  ConnectLatticeWallet = 'Connect Lattice Wallet',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');

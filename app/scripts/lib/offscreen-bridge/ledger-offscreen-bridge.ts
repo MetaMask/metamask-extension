@@ -8,6 +8,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -32,6 +33,7 @@ export class LedgerOffscreenBridge
   isDeviceConnected = false;
 
   init() {
+    trace({ name: TraceName.ConnectLedgerWallet });
     chrome.runtime.onMessage.addListener((msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extension &&
@@ -39,6 +41,7 @@ export class LedgerOffscreenBridge
       ) {
         this.isDeviceConnected = true;
       }
+      endTrace({ name: TraceName.ConnectLedgerWallet });
     });
 
     return Promise.resolve();

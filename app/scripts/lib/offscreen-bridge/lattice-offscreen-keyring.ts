@@ -3,6 +3,7 @@ import {
   OffscreenCommunicationTarget,
   KnownOrigins,
 } from '../../../../shared/constants/offscreen-communication';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 
 /**
  * This keyring extends the default keyring but uses a overwritten _getCreds
@@ -43,6 +44,7 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
         password: string;
         endpoint: string;
       }>((resolve, reject) => {
+        trace({ name: TraceName.ConnectLatticeWallet });
         chrome.runtime.sendMessage(
           {
             target: OffscreenCommunicationTarget.latticeOffscreen,
@@ -54,7 +56,7 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
             if (response.error) {
               reject(response.error);
             }
-
+            endTrace({ name: TraceName.ConnectLatticeWallet });
             resolve(response.result);
           },
         );

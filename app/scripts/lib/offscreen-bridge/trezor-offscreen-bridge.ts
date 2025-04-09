@@ -16,6 +16,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../../../../shared/constants/offscreen-communication';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 
 /**
  * This class is used as a custom bridge for the Trezor connection. Every
@@ -37,6 +38,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
       manifest: Manifest;
     } & Partial<ConnectSettings>,
   ) {
+    trace({ name: TraceName.ConnectTrezorWallet });
     chrome.runtime.onMessage.addListener((msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extension &&
@@ -44,6 +46,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
       ) {
         this.model = msg.payload.model;
         this.minorVersion = msg.payload.minorVersion;
+        endTrace({ name: TraceName.ConnectTrezorWallet });
       }
     });
 
