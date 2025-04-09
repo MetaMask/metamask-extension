@@ -41,7 +41,7 @@ import { Controller as NotificationServicesPushController } from '@metamask/noti
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
-import { InstitutionalSnapController } from '../lib/transaction/institutional-snap/InstitutionalSnapController';
+import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 
 /**
  * Union of all controllers supporting or required by modular initialization.

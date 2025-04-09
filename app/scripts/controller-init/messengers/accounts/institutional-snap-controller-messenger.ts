@@ -2,7 +2,7 @@ import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
-import { InstitutionalSnapController } from '../../../lib/transaction/institutional-snap/InstitutionalSnapController';
+import { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
 
 const controllerName = 'InstitutionalSnapController';
 

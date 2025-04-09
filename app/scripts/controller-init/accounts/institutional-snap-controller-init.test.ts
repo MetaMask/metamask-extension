@@ -2,15 +2,13 @@ import { Messenger } from '@metamask/base-controller';
 import {
   InstitutionalSnapController,
   InstitutionalSnapControllerMessenger,
-} from '../../lib/transaction/institutional-snap/InstitutionalSnapController';
+} from '../../controllers/institutional-snap/InstitutionalSnapController';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import { getInstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
 import { InstitutionalSnapControllerInit } from './institutional-snap-controller-init';
 
-jest.mock(
-  '../../lib/transaction/institutional-snap/InstitutionalSnapController',
-);
+jest.mock('../../controllers/institutional-snap/InstitutionalSnapController');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<InstitutionalSnapControllerMessenger>

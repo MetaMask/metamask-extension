@@ -38,9 +38,9 @@ import {
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
-  | AccountsControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
@@ -109,8 +109,8 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
-      'InstitutionalSnapController:publishHook',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+      'InstitutionalSnapController:publishHook',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',

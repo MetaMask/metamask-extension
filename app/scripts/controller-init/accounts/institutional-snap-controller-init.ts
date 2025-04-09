@@ -1,4 +1,4 @@
-import { InstitutionalSnapController } from '../../lib/transaction/institutional-snap/InstitutionalSnapController';
+import { InstitutionalSnapController } from '../../controllers/institutional-snap/InstitutionalSnapController';
 import { InstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
 import { ControllerInitFunction } from '../types';
 
