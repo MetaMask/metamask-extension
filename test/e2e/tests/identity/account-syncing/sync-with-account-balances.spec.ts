@@ -162,11 +162,31 @@ describe('Account syncing - User already has balances on multiple accounts', fun
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            await mockInfuraAndAccountSync(
-              server,
-              userStorageMockttpController,
-              { accountsToMockBalances },
-            );
+            return [
+              await mockInfuraAndAccountSync(
+                server,
+                userStorageMockttpController,
+                { accountsToMockBalances },
+              ),
+              await server
+                .forGet(
+                  'https://nft.api.cx.metamask.io/users/0x0f205850eac507473aa0e47cc8eb528d875e7498/tokens',
+                )
+                .withQuery({
+                  limit: 50,
+                  includeTopBid: 'true',
+                  chainIds: ['1', '59144'],
+                  continuation: '',
+                })
+                .thenCallback(() => {
+                  return {
+                    statusCode: 200,
+                    json: {
+                      tokens: [],
+                    },
+                  };
+                }),
+            ];
           },
         },
         async ({ driver }) => {
