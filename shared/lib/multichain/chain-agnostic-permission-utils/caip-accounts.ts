@@ -4,7 +4,13 @@ import {
   parseScopeString,
 } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
+import {
+  CaipAccountAddress,
+  CaipAccountId,
+  CaipNamespace,
+  CaipReference,
+  parseCaipAccountId,
+} from '@metamask/utils';
 
 /**
  * Gets all accounts from an array of scopes objects
@@ -48,32 +54,33 @@ export function getCaipAccountIdsFromCaip25CaveatValue(
 }
 
 /**
- * Checks if an internal account is connected to any of the permitted accounts
- * based on scope matching
+ * Checks if an address and list of parsed scopes are connected to any of
+ * the permitted accounts based on scope matching
  *
- * @param internalAccount - The internal account to check against permitted accounts
- * @param permittedAccounts - Array of CAIP-10 account IDs that are permitted
- * @returns True if the account is connected to any permitted account
+ * @param address - The CAIP account address to check against permitted accounts
+ * @param parsedAccountScopes - The list of parsed CAIP chain ID to check against permitted accounts
+ * @param permittedAccounts - Array of CAIP account IDs that are permitted
+ * @returns True if the address and any account scope is connected to any permitted account
  */
-export function isInternalAccountInPermittedAccountIds(
-  internalAccount: InternalAccount,
+function isAddressWithParsedScopesInPermittedAccountIds(
+  address: CaipAccountAddress,
+  parsedAccountScopes: {
+    namespace?: CaipNamespace;
+    reference?: CaipReference;
+  }[],
   permittedAccounts: CaipAccountId[],
-): boolean {
-  if (!internalAccount || !permittedAccounts.length) {
+) {
+  if (!address || !parsedAccountScopes.length || !permittedAccounts.length) {
     return false;
   }
-
-  const parsedInteralAccountScopes = internalAccount.scopes.map((scope) => {
-    return parseScopeString(scope);
-  });
 
   return permittedAccounts.some((account) => {
     const parsedPermittedAccount = parseCaipAccountId(account);
 
-    return parsedInteralAccountScopes.some(({ namespace, reference }) => {
+    return parsedAccountScopes.some(({ namespace, reference }) => {
       if (
         namespace !== parsedPermittedAccount.chain.namespace ||
-        internalAccount.address !== parsedPermittedAccount.address
+        address !== parsedPermittedAccount.address
       ) {
         return false;
       }
@@ -84,4 +91,48 @@ export function isInternalAccountInPermittedAccountIds(
       );
     });
   });
+}
+
+/**
+ * Checks if an internal account is connected to any of the permitted accounts
+ * based on scope matching
+ *
+ * @param internalAccount - The internal account to check against permitted accounts
+ * @param permittedAccounts - Array of CAIP account IDs that are permitted
+ * @returns True if the account is connected to any permitted account
+ */
+export function isInternalAccountInPermittedAccountIds(
+  internalAccount: InternalAccount,
+  permittedAccounts: CaipAccountId[],
+): boolean {
+  const parsedInteralAccountScopes = internalAccount.scopes.map((scope) => {
+    return parseScopeString(scope);
+  });
+
+  return isAddressWithParsedScopesInPermittedAccountIds(
+    internalAccount.address,
+    parsedInteralAccountScopes,
+    permittedAccounts,
+  );
+}
+
+/**
+ * Checks if an CAIP account ID is connected to any of the permitted accounts
+ * based on scope matching
+ *
+ * @param accountId - The CAIP account ID to check against permitted accounts
+ * @param permittedAccounts - Array of CAIP account IDs that are permitted
+ * @returns True if the account is connected to any permitted account
+ */
+export function isAccountIdInPermittedAccountIds(
+  accountId: CaipAccountId,
+  permittedAccounts: CaipAccountId[],
+): boolean {
+  const { address, chain } = parseCaipAccountId(accountId);
+
+  return isAddressWithParsedScopesInPermittedAccountIds(
+    address,
+    [chain],
+    permittedAccounts,
+  );
 }

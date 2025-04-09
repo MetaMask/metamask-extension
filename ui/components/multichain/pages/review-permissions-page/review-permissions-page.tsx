@@ -60,6 +60,7 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { isAccountIdInPermittedAccountIds } from '../../../../../shared/lib/multichain/chain-agnostic-permission';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -205,39 +206,15 @@ export const ReviewPermissions = () => {
     // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
-    connectedAccountAddresses.forEach((connectedAddress: string) => {
-      // TODO: seems like similar logic to selector logic in ui/index.js
-      // See if we can DRY this
-      const parsedConnectedAddress = parseCaipAccountId(
-        connectedAddress as CaipAccountId,
+    connectedAccountAddresses.forEach((connectedAddress: CaipAccountId) => {
+      const includesCaipAccountId = isAccountIdInPermittedAccountIds(
+        connectedAddress,
+        caipAccountIds,
       );
-
-      const includesCaipAccountId = parsedCaipAccountIds.some(
-        (parsedAddress) => {
-          if (
-            parsedConnectedAddress.chain.namespace !==
-              parsedAddress.chain.namespace ||
-            parsedConnectedAddress.address !== parsedAddress.address
-          ) {
-            return false;
-          }
-
-          return (
-            parsedAddress.chain.reference === '0' ||
-            parsedAddress.chain.reference ===
-              parsedConnectedAddress.chain.reference
-          );
-        },
-      );
-
       if (!includesCaipAccountId) {
+        const { address } = parseCaipAccountId(connectedAddress);
         // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
-        dispatch(
-          removePermittedAccount(
-            activeTabOrigin,
-            parsedConnectedAddress.address,
-          ),
-        );
+        dispatch(removePermittedAccount(activeTabOrigin, address));
       }
     });
 
