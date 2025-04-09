@@ -3,15 +3,15 @@ import {
   TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { Delegation7702PublishHook } from './delegation-7702-publish';
 import { Messenger } from '@metamask/base-controller';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { toHex } from '@metamask/controller-utils';
-import { submitRelayTransaction } from '../transaction-relay';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
+import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { submitRelayTransaction } from '../transaction-relay';
+import { Delegation7702PublishHook } from './delegation-7702-publish';
 
 jest.mock('../transaction-relay');
 

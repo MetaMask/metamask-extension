@@ -9,6 +9,8 @@ import {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { Hex, add0x, createProjectLogger, remove0x } from '@metamask/utils';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { Interface } from '@ethersproject/abi';
 import {
   ANY_BENEFICIARY,
   Caveat,
@@ -20,8 +22,6 @@ import {
   encodeRedeemDelegations,
   signDelegation,
 } from '../delegation';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { Interface } from '@ethersproject/abi';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   RelaySubmitRequest,

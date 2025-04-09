@@ -1,8 +1,8 @@
 import { MessageParamsTypedData } from '@metamask/signature-controller';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { Interface, ParamType, defaultAbiCoder } from '@ethersproject/abi';
+import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 
 export type Caveat = {
   enforcer: Hex;

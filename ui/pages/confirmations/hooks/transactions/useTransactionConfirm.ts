@@ -1,9 +1,9 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
-import { getCustomNonceValue } from '../../../../selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
+import { getCustomNonceValue } from '../../../../selectors';
+import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';

@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 
 export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =

@@ -2,6 +2,8 @@ import {
   KeyringControllerSignTypedMessageAction,
   SignTypedDataVersion,
 } from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/base-controller';
+import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 import {
   Delegation,
   Execution,
@@ -9,8 +11,6 @@ import {
   encodeRedeemDelegations,
   signDelegation,
 } from './delegation';
-import { Messenger } from '@metamask/base-controller';
-import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 
 const FROM_MOCK = '0x123456789012345678901234567890123456789a';
 const CHAIN_ID_MOCK = '0x123';
