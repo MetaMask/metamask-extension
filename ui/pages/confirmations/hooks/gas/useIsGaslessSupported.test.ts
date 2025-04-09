@@ -6,8 +6,8 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
-jest.mock('../../../../shared/modules/selectors');
-jest.mock('../../../store/controller-actions/transaction-controller');
+jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../store/controller-actions/transaction-controller');
 
 const CHAIN_ID_MOCK = '0x5';
 
@@ -32,8 +32,11 @@ describe('useIsGaslessSupported', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
     getIsSmartTransactionMock.mockReturnValue(false);
     isAtomicBatchSupportedMock.mockResolvedValue([]);
+
+    process.env.TRANSACTION_RELAY_API_URL = 'test.com';
   });
 
   it('returns true if is smart transaction', async () => {
