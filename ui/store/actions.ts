@@ -3272,6 +3272,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setDismissSmartAccountSuggestionEnabled(value: boolean) {
+  return setPreference('dismissSmartAccountSuggestionEnabled', value);
+}
+
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
