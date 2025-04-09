@@ -106,10 +106,13 @@ const PopularNetworkList = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               onMouseLeave={handleMouseLeave}
               style={{
-                width: '326px'
+                width: '326px',
               }}
             >
-              <Text variant={TextVariant.bodyMd}> {t('popularNetworkAddToolTip')} </Text>
+              <Text variant={TextVariant.bodyMd}>
+                {' '}
+                {t('popularNetworkAddToolTip')}{' '}
+              </Text>
                 <Box key="learn-more-link">
                   <ButtonLink
                     size={ButtonLinkSize.Auto}
