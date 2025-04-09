@@ -30,11 +30,17 @@ import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import {
+  InstitutionalSnapControllerPublishHookAction,
+  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
+} from './accounts/institutional-snap-controller-messenger';
 
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
+  | InstitutionalSnapControllerPublishHookAction
+  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
   | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
@@ -103,6 +109,8 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+      'InstitutionalSnapController:publishHook',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',

@@ -22,6 +22,7 @@ import {
   Slippage,
   SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
+  isStablePair,
 } from '../../../../shared/constants/swaps';
 import {
   BannerAlert,
@@ -40,6 +41,8 @@ export default function TransactionSettings({
   maxAllowedSlippage,
   currentSlippage,
   isDirectWrappingEnabled,
+  sourceTokenSymbol,
+  destinationTokenSymbol,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -59,6 +62,8 @@ export default function TransactionSettings({
       return 1; // 3% slippage.
     } else if (currentSlippage === Slippage.default) {
       return 0; // 2% slippage.
+    } else if (currentSlippage === Slippage.stable) {
+      return 0; // 0.5% slippage for stable pairs.
     } else if (typeof currentSlippage === 'number') {
       return 2; // Custom slippage.
     }
@@ -185,10 +190,21 @@ export default function TransactionSettings({
                         setCustomValue('');
                         setEnteringCustomValue(false);
                         setActiveButtonIndex(0);
-                        setNewSlippage(Slippage.default);
+                        setNewSlippage(
+                          isStablePair(
+                            sourceTokenSymbol,
+                            destinationTokenSymbol,
+                          )
+                            ? Slippage.stable
+                            : Slippage.default,
+                        );
                       }}
                     >
-                      {t('swapSlippagePercent', [Slippage.default])}
+                      {t('swapSlippagePercent', [
+                        isStablePair(sourceTokenSymbol, destinationTokenSymbol)
+                          ? Slippage.stable
+                          : Slippage.default,
+                      ])}
                     </Button>
                     <Button
                       onClick={() => {
@@ -301,4 +317,6 @@ TransactionSettings.propTypes = {
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
   isDirectWrappingEnabled: PropTypes.bool,
+  sourceTokenSymbol: PropTypes.string,
+  destinationTokenSymbol: PropTypes.string,
 };
