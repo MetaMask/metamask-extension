@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "BlockAid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Un tiers connu pour ses activités frauduleuses a accès à ce site. Si vous continuez, vous risquez de perdre vos actifs."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Le site peut sembler sécurisé, mais un tiers pourrait avoir accès à ses informations. En vous connectant, vous risquez de vous faire voler vos actifs."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Si vous confirmez, vous risquez de perdre l’ensemble de vos fonds et actifs."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Si vous vous connectez, vous risquez de perdre une partie ou la totalité des actifs que vous avez répertoriés sur OpenSea."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Si vous vous connectez, vous risquez de perdre une partie ou la totalité des actifs que vous avez répertoriés sur Blur."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Ce site est identifié comme un domaine malveillant. En vous connectant, vous risquez de vous faire voler vos fonds et vos actifs. Nous vous recommandons vivement d’annuler cette demande."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Si vous vous connectez, vous risquez de perdre tous vos actifs. Nous vous recommandons d’annuler cette demande."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
@@ -6163,9 +6142,6 @@
   },
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Cette transaction vous aurait occasionné des frais supplémentaires, c’est pourquoi nous l’avons annulée. Votre argent est toujours dans votre portefeuille."
   },
   "transactionFlowNetwork": {
     "message": "Réseau"
