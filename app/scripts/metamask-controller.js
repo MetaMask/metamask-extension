@@ -636,8 +636,8 @@ export default class MetamaskController extends EventEmitter {
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
       getRpcServiceOptions: () => ({
-        fetch,
-        btoa,
+        fetch: globalThis.fetch.bind(globalThis),
+        btoa: globalThis.btoa.bind(globalThis),
       }),
       additionalDefaultNetworks: [ChainId['megaeth-testnet']],
     });
