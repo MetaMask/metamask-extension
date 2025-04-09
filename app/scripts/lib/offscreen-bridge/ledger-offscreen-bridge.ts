@@ -9,6 +9,10 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
+const DEFAULT_MESSAGE_TIMEOUT = 4000;
+
+const SIGNING_TIMEOUT = 20_000;
+
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
  * doesn't require any options to be passed in.
@@ -95,36 +99,46 @@ export class LedgerOffscreenBridge
     s: string;
     r: string;
   }> {
-    return this.#sendMessage({
-      target: OffscreenCommunicationTarget.ledgerOffscreen,
-      action: LedgerAction.signTransaction,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        target: OffscreenCommunicationTarget.ledgerOffscreen,
+        action: LedgerAction.signTransaction,
+        params,
+      },
+      SIGNING_TIMEOUT,
+    );
   }
 
   deviceSignMessage(params: {
     hdPath: string;
     message: string;
   }): Promise<{ v: number; s: string; r: string }> {
-    return this.#sendMessage({
-      target: OffscreenCommunicationTarget.ledgerOffscreen,
-      action: LedgerAction.signPersonalMessage,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        target: OffscreenCommunicationTarget.ledgerOffscreen,
+        action: LedgerAction.signPersonalMessage,
+        params,
+      },
+      SIGNING_TIMEOUT,
+    );
   }
 
   deviceSignTypedData(
     params: LedgerSignTypedDataParams,
   ): Promise<LedgerSignTypedDataResponse> {
-    return this.#sendMessage({
-      target: OffscreenCommunicationTarget.ledgerOffscreen,
-      action: LedgerAction.signTypedData,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        target: OffscreenCommunicationTarget.ledgerOffscreen,
+        action: LedgerAction.signTypedData,
+        params,
+      },
+      SIGNING_TIMEOUT,
+    );
   }
 
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
+    timeout = DEFAULT_MESSAGE_TIMEOUT,
   ): Promise<ResponsePayload> {
     if (!this.isDeviceConnected) {
       throw new Error('Ledger iframe not connected');
@@ -137,7 +151,7 @@ export class LedgerOffscreenBridge
         if (!hasResponse) {
           reject(new Error('Ledger iframe timeout'));
         }
-      }, 4000);
+      }, timeout);
 
       chrome.runtime.sendMessage(message, (response) => {
         hasResponse = true;
