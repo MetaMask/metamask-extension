@@ -6,20 +6,15 @@ import {
 } from '@metamask/accounts-controller';
 
 import {
-  DeFiPositionsControllerActions,
-  DeFiPositionsControllerEvents,
   DeFiPositionsControllerGetStateAction,
   DeFiPositionsControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
 
-type Actions =
-  | DeFiPositionsControllerGetStateAction
-  | AccountsControllerGetSelectedAccountAction;
+type Actions = AccountsControllerGetSelectedAccountAction;
 
 type Events =
   | NetworkControllerStateChangeEvent
-  | AccountsControllerSelectedAccountChangeEvent
-  | DeFiPositionsControllerStateChangeEvent;
+  | AccountsControllerSelectedAccountChangeEvent;
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger
