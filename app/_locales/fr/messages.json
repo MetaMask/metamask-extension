@@ -6140,9 +6140,6 @@
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Cette transaction vous aurait occasionné des frais supplémentaires, c’est pourquoi nous l’avons annulée. Votre argent est toujours dans votre portefeuille."
-  },
   "transactionFlowNetwork": {
     "message": "Réseau"
   },

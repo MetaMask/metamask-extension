@@ -6140,9 +6140,6 @@
   "transactionErrored": {
     "message": "交易出现错误。"
   },
-  "transactionFailedBannerMessage": {
-    "message": "此次交易会收取额外费用，因此我们终止了该交易。您的钱仍在您的钱包中。"
-  },
   "transactionFlowNetwork": {
     "message": "网络"
   },

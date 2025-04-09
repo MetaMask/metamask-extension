@@ -6140,9 +6140,6 @@
   "transactionErrored": {
     "message": "Nagkaroon ng error sa transaksyon."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Gagastos ka sana ng dagdag na bayad sa transaksyong ito, kaya pinigilan namin ito. Nasa wallet mo pa rin ang iyong pera."
-  },
   "transactionFlowNetwork": {
     "message": "Network"
   },

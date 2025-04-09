@@ -6140,9 +6140,6 @@
   "transactionErrored": {
     "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
   },
-  "transactionFailedBannerMessage": {
-    "message": "इस ट्रांसेक्शन पर आपको अतिरिक्त शुल्क देना पड़ता, इसलिए हमने इसे रोक दिया। आपका पैसा अभी भी आपके वॉलेट में है।"
-  },
   "transactionFlowNetwork": {
     "message": "नेटवर्क"
   },

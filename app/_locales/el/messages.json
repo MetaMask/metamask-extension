@@ -6140,9 +6140,6 @@
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Αυτή η συναλλαγή θα σας κόστιζε επιπλέον τέλη, οπότε τη σταματήσαμε. Τα χρήματά σας βρίσκονται ακόμα στο πορτοφόλι σας."
-  },
   "transactionFlowNetwork": {
     "message": "Δίκτυο"
   },

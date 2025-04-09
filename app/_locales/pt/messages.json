@@ -6140,9 +6140,6 @@
   "transactionErrored": {
     "message": "A transação encontrou um erro."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Esta transação teria lhe custado taxas extras, por isso a interrompemos. Seu dinheiro ainda está na sua carteira."
-  },
   "transactionFlowNetwork": {
     "message": "Rede"
   },
