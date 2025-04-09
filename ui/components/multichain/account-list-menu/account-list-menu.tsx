@@ -353,7 +353,7 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana,bitcoin)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
   const handleMultichainSnapAccountCreation = async (
