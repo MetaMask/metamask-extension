@@ -36,6 +36,8 @@ import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
 
+// this is currently equivalent to process.env.MULTICHAIN_API
+// which can't be used for conditional imports
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import {
   getMultichainClient,
