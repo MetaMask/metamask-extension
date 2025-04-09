@@ -2,7 +2,11 @@ import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text } from '../../components/component-library';
-import { FontWeight, TextVariant, TextColor } from '../../helpers/constants/design-system';
+import {
+  FontWeight,
+  TextVariant,
+  TextColor,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
