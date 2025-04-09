@@ -12,5 +12,6 @@
   &__inner {
     height: calc(100% - 32px);
     width: calc(100% - 32px);
+    overflow: auto;
   }
 }
