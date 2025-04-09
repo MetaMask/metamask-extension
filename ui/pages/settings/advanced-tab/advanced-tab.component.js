@@ -58,6 +58,8 @@ export default class AdvancedTab extends PureComponent {
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
     manageInstitutionalWallets: PropTypes.bool,
     setManageInstitutionalWallets: PropTypes.func.isRequired,
+    dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
+    setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -200,6 +202,46 @@ export default class AdvancedTab extends PureComponent {
               {t('clearActivityButton')}
             </Button>
           </div>
+        </div>
+      </Box>
+    );
+  }
+
+  renderToggleDismissSmartAccountSuggestion() {
+    const { t } = this.context;
+    const {
+      dismissSmartAccountSuggestionEnabled,
+      setDismissSmartAccountSuggestionEnabled,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
+          <div className="settings-page__content-description">
+            {t('dismissSmartAccountSuggestionEnabledDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={dismissSmartAccountSuggestionEnabled}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              setDismissSmartAccountSuggestionEnabled(newValue);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-dismiss-smart-account-suggestion-enabled-toggle"
+          />
         </div>
       </Box>
     );
@@ -593,6 +635,7 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
+        {this.renderToggleDismissSmartAccountSuggestion()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
