@@ -12,6 +12,7 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
+  AssetsContractController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
@@ -81,7 +82,8 @@ export type Controller =
   | UserStorageController
   | TokenRatesController
   | NftController
-  | NftDetectionController;
+  | NftDetectionController
+  | AssetsContractController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
