@@ -3,7 +3,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
