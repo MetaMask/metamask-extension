@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -108,19 +108,16 @@ export const AssetPickerModalNetwork = ({
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      networksList.reduce(
-        ([nonTestNetworksList, testNetworksList], networkInfo) => {
-          const isTest = (TEST_CHAINS as string[]).includes(
-            networkInfo.chainId,
-          );
-          (isTest ? testNetworksList : nonTestNetworksList).push(networkInfo);
+      Object.entries(allNetworks).reduce(
+        ([nonTestNetworksList, testNetworksList], [chainId, networkDetail]) => {
+          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          (isTest ? testNetworksList : nonTestNetworksList).push(networkDetail);
           return [nonTestNetworksList, testNetworksList];
         },
         [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
       ),
-    [networksList],
+    [allNetworks],
   );
-
   // Tracks the selection/checked state of each network
   // Initialized with the selectedChainIds if provided
   const [checkedChainIds, setCheckedChainIds] = useState<
@@ -153,15 +150,15 @@ export const AssetPickerModalNetwork = ({
       );
   }, [networksList, selectedChainIds]);
 
-  const handleToggleNetwork = (chainId: string) => {
+  const handleToggleNetwork = useCallback((chainId: string) => {
     setCheckedChainIds((prev) => ({
       ...prev,
       [chainId]: !prev[chainId],
     }));
-  };
+  }, []);
 
   // Toggles all networks to be checked or unchecked
-  const handleToggleAllNetworks = () => {
+  const handleToggleAllNetworks = useCallback(() => {
     setCheckedChainIds(
       Object.keys(checkedChainIds)?.reduce(
         (agg, chainId) => ({
@@ -171,7 +168,7 @@ export const AssetPickerModalNetwork = ({
         {},
       ),
     );
-  };
+  }, []);
 
   return (
     <Modal
