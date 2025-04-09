@@ -10,6 +10,12 @@ global.sentry = {
   captureMessage: sentryCaptureMessageMock,
 };
 
+type LegacyTokenType = {
+  address: string;
+  symbol: string;
+  decimals: number;
+};
+
 const oldVersion = 133;
 
 const mockStateWithNullDecimals = {
@@ -92,9 +98,9 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    const tokensControllerState = newStorage.data
-      .TokensController as TokensControllerState;
-    const { tokens } = tokensControllerState;
+    const { tokens } = newStorage.data.TokensController as {
+      tokens: LegacyTokenType[];
+    };
 
     expect(tokens).toEqual([
       { address: '0x8', symbol: 'TOKEN8', decimals: 18 },
@@ -106,9 +112,9 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    const tokensControllerState = newStorage.data
-      .TokensController as TokensControllerState;
-    const { detectedTokens } = tokensControllerState;
+    const { detectedTokens } = newStorage.data.TokensController as {
+      detectedTokens: LegacyTokenType[];
+    };
 
     expect(detectedTokens).toEqual([
       { address: '0xA', symbol: 'TOKEN10', decimals: 6 },
