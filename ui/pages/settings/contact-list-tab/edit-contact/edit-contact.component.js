@@ -47,7 +47,6 @@ const EditContact = ({
   memo = '',
   viewRoute,
   listRoute,
-  networkConfigurations,
 }) => {
   const t = useContext(I18nContext);
   const history = useHistory();
@@ -58,7 +57,7 @@ const EditContact = ({
   const [addressError, setAddressError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(contactChainId);
-console.log(networkConfigurations, networks);
+
   const validateName = (nameValue) => {
     if (nameValue === name) {
       return true;
@@ -77,7 +76,10 @@ console.log(networkConfigurations, networks);
   }
 
   return (
-    <div className="settings-page__content-row address-book__edit-contact">
+    <div
+      className="settings-page__content-row address-book__edit-contact"
+      data-testid="edit-contact"
+    >
       <Box
         className="settings-page__header address-book__header--edit"
         paddingLeft={6}
@@ -88,42 +90,57 @@ console.log(networkConfigurations, networks);
         <Box
           display={Display.Flex}
           alignItems={AlignItems.center}
+          style={{ overflow: 'hidden' }}
           paddingRight={2}
         >
           <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
           <Text
+            className="address-book__header__name"
             variant={TextVariant.bodyLgMedium}
             marginInlineStart={4}
+            style={{ overflow: 'hidden' }}
             ellipsis
           >
             {name || address}
           </Text>
         </Box>
-        <Button
-          type="link"
-          onClick={async () => {
-            await removeFromAddressBook(contactChainId, address);
-            history.push(listRoute);
-          }}
-        >
-          {t('deleteContact')}
-        </Button>
+        <Box className="settings-page__address-book-button">
+          <Button
+            type="link"
+            style={{ display: 'contents' }}
+            onClick={async () => {
+              await removeFromAddressBook(contactChainId, address);
+              history.push(listRoute);
+            }}
+            data-testid="delete-contact-button"
+          >
+            {t('deleteContact')}
+          </Button>
+        </Box>
       </Box>
       <div className="address-book__edit-contact__content">
-        <div className="address-book__view-contact__group">
+        <div
+          className="address-book__view-contact__group"
+          data-testid="edit-contact-alias"
+        >
           <div className="address-book__view-contact__group__label">
             {t('userName')}
           </div>
           <TextField
             id="nickname"
+            placeholder={t('addAlias')}
             value={contactName}
             onChange={handleNameChange}
             error={nameError}
             fullWidth
             className="text-field-root"
+            margin="dense"
           />
         </div>
-        <div className="address-book__view-contact__group">
+        <div
+          className="address-book__view-contact__group"
+          data-testid="edit-contact-address"
+        >
           <div className="address-book__view-contact__group__label">
             {t('ethereumPublicAddress')}
           </div>
@@ -135,19 +152,25 @@ console.log(networkConfigurations, networks);
             fullWidth
             multiline
             className="text-field-root"
+            margin="dense"
           />
         </div>
-        <div className="address-book__view-contact__group">
-          <div className="address-book__view-contact__group__label">
+        <div
+          className="address-book__view-contact__group"
+          data-testid="edit-contact-memo"
+        >
+          <div className="address-book__view-contact__group__label--capitalized">
             {t('memo')}
           </div>
           <TextField
             id="memo"
+            placeholder={memo}
             value={newMemo}
             onChange={(e) => setNewMemo(e.target.value)}
             fullWidth
             multiline
             className="text-field-root"
+            margin="dense"
           />
         </div>
         {process.env.REMOVE_GNS ? (
@@ -166,6 +189,8 @@ console.log(networkConfigurations, networks);
               borderRadius={BorderRadius.XL}
               onClick={() => setShowModal(true)}
               className="network-selector"
+              data-testid="network-selector"
+              marginTop={2}
             >
               <Box display={Display.Flex} gap={2}>
                 <AvatarNetwork
@@ -232,7 +257,7 @@ console.log(networkConfigurations, networks);
           isOpen
           onClose={() => setShowModal(false)}
           selectedChainId={selectedChainId}
-          onSelect={(chainname) => setSelectedChainId(chainname)}
+          onSelect={(chainId) => setSelectedChainId(chainId)}
         />
       )}
     </div>

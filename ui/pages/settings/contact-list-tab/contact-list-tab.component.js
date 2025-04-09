@@ -29,7 +29,7 @@ export default class ContactListTab extends Component {
 
   static propTypes = {
     addressBook: PropTypes.array,
-    updatedAddressBook: PropTypes.array,
+    completeAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
     history: PropTypes.object,
     selectedAddress: PropTypes.string,
@@ -60,27 +60,27 @@ export default class ContactListTab extends Component {
 
   renderAddresses() {
     const {
-      updatedAddressBook,
+      completeAddressBook,
       addressBook,
       internalAccounts,
       history,
       selectedAddress,
     } = this.props;
 
-    const rawData = process.env.REMOVE_GNS
-      ? updatedAddressBook.flatMap((ch) => Object.values(ch)).flat()
+    const updatedAddressBook = process.env.REMOVE_GNS
+      ? completeAddressBook.flatMap((add) => Object.values(add))
       : addressBook;
 
-    const contacts = rawData.filter(({ name }) => Boolean(name));
-    const nonContacts = rawData.filter(({ name }) => !name);
+    const contacts = updatedAddressBook.filter(({ name }) => Boolean(name));
+    const nonContacts = updatedAddressBook.filter(({ name }) => !name);
 
     const { t } = this.context;
 
-    if (rawData.length) {
+    if (updatedAddressBook.length) {
       return (
         <div>
           <ContactList
-            addressBook={rawData}
+            addressBook={updatedAddressBook}
             internalAccounts={internalAccounts}
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
@@ -174,11 +174,11 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, currentPath, updatedAddressBook, addressBook } =
+    const { addingContact, currentPath, completeAddressBook, addressBook } =
       this.props;
 
     const addressData = process.env.REMOVE_GNS
-      ? updatedAddressBook
+      ? completeAddressBook
       : addressBook;
 
     return (
