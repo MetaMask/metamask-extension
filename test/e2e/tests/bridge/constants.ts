@@ -1,6 +1,6 @@
 import type { FeatureFlagResponse } from '@metamask/bridge-controller';
 
-export const EXPECTED_MAINNET_ETH_BALANCE = '23.9999';
+export const EXPECTED_MAINNET_ETH_BALANCE = '23.9977';
 
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-config': {
