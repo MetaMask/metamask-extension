@@ -21,10 +21,13 @@ import {
   Display,
   FlexDirection,
   BorderRadius,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
+import { useTheme } from '../../../../hooks/useTheme';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -38,6 +41,7 @@ export const ImportSrp = ({
   onActionComplete: (completed: boolean) => void;
 }) => {
   const t = useI18nContext();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -323,6 +327,12 @@ export const ImportSrp = ({
         className="import-srp__multi-srp__import-button"
         width={BlockSize.Full}
         marginTop={4}
+        paddingBottom={6}
+        backgroundColor={
+          theme === ThemeType.light
+            ? BackgroundColor.backgroundDefault
+            : BackgroundColor.backgroundDefault
+        }
       >
         <ButtonPrimary
           width={BlockSize.Full}
