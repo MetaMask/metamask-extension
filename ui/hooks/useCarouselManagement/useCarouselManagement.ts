@@ -16,7 +16,9 @@ import {
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
   ZERO_BALANCE,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   MULTI_SRP_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
 } from './constants';
 
 type UseSlideManagementProps = {
