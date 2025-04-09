@@ -70,7 +70,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
-    enableTxParamsGasFeeUpdates: true,
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -104,6 +103,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       queryEntireHistory: false,
       updateTransactions: false,
     },
+    isAutomaticGasFeeUpdateEnabled: () => true,
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
     isSimulationEnabled: () =>
