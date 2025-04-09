@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Un tercero conocido por sus estafas tiene acceso a este sitio. Si continúa, perderá sus activos."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "El sitio puede parecer seguro, pero un tercero podría tener acceso a su información. Si inicia sesión, podrían robarle sus activos."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Si confirma, podría perder todos sus fondos y activos."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Si inicia sesión, cualquiera o todos los activos que haya registrado en OpenSea estarán en peligro."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Si inicia sesión, cualquiera o todos los activos que haya registrado en Blur estarán en peligro."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Este sitio se reconoce como un dominio malicioso. Si inicia sesión, perderá fondos y activos. Le recomendamos encarecidamente que cancele esta solicitud."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Si inicia sesión, podría perder todos sus activos. Le recomendamos cancelar esta solicitud."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por realizar estafas podría tomar todos sus activos."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Este sitio solicita permiso para gastar sus tokens."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Este sitio solicita volver a una cuenta estándar."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Un sitio quiere que inicie sesión para demostrar que es el propietario de esta cuenta."
   },
@@ -1132,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Eliminar permiso"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Restablecer cuenta"
   },
   "confirmTitleSIWESignature": {
     "message": "Solicitud de inicio de sesión"
@@ -3735,9 +3708,6 @@
     "message": "1 a",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5445,6 @@
     "message": "Descargue y configure la aplicación, e ingrese su contraseña para desbloquear $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Conecta tu OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Conecta tu OneKey directamente a tu equipo y desbloquéalo. Asegúrate de utilizar la frase de contraseña correcta.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Conecte su Trezor"
   },
@@ -6173,9 +6136,6 @@
   },
   "transactionErrored": {
     "message": "La transacción encontró un error."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Esta transacción le hubiera generado tarifas adicionales, así que la interrumpimos. Su dinero sigue en su monedero."
   },
   "transactionFlowNetwork": {
     "message": "Red"
