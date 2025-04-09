@@ -12,8 +12,7 @@ import { useConfirmContext } from '../context/confirm';
 export function useSmartAccountActions() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { id: confirmationId } = currentConfirmation ?? {};
-  const { chainId } = currentConfirmation;
+  const { id: confirmationId, chainId } = currentConfirmation ?? {};
 
   const handleRejectUpgrade = useCallback(async () => {
     const error = rpcErrors.methodNotSupported('User rejected account upgrade');

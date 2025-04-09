@@ -32,7 +32,7 @@ export function SmartAccountUpdate() {
 
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, txParams } = currentConfirmation;
+  const { chainId, txParams } = currentConfirmation ?? {};
   const { from } = txParams;
 
   const { handleRejectUpgrade } = useSmartAccountActions();
