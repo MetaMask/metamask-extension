@@ -18,12 +18,10 @@ const {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } = require('../../../../shared/constants/metametrics');
-const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 const {
   TOKENS_API_MOCK_RESULT,
   TOP_ASSETS_API_MOCK_RESULT,
   AGGREGATOR_METADATA_API_MOCK_RESULT,
-  GAS_PRICE_API_MOCK_RESULT,
   FEATURE_FLAGS_API_MOCK_RESULT,
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
