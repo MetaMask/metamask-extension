@@ -23,6 +23,19 @@ class PrivacySettings {
     tag: 'button',
   };
 
+  private readonly dataCollectionForMarketingToggle =
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
+
+  private readonly dataCollectionWarningAckButton = {
+    text: 'Okay',
+    tag: 'Button',
+  };
+
+  private readonly dataCollectionWarningMessage = {
+    text: 'You turned off data collection for our marketing purposes. This only applies to this device. ',
+    tag: 'p',
+  };
+
   private readonly privacySettingsPageTitle = {
     text: 'Security & privacy',
     tag: 'h4',
@@ -87,9 +100,6 @@ class PrivacySettings {
 
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
-
-  private readonly dataCollectionForMarketingToggle =
-    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -205,6 +215,13 @@ class PrivacySettings {
     }
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
+  }
+
+  async optOutDataCollectionForMarketing(): Promise<void> {
+    console.log('Opt out data collection for marketing on privacy settings page');
+    await this.toggleDataCollectionForMarketing();
+    await this.driver.waitForSelector(this.dataCollectionWarningMessage);
+    await this.driver.clickElementAndWaitToDisappear(this.dataCollectionWarningAckButton);
   }
 
   async toggleAutodetectNft(): Promise<void> {

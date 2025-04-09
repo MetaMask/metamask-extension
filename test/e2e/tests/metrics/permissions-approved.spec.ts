@@ -1,11 +1,10 @@
-const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  connectToDapp,
-  unlockWallet,
-  getEventPayloads,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -14,10 +13,10 @@ const FixtureBuilder = require('../../fixture-builder');
  * from the metrics constants files, because if these change we want a strong
  * indicator to our data team that the shape of data will change.
  *
- * @param {import('mockttp').Mockttp} mockServer
- * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
+ * @param mockServer - The mock server instance.
+ * @returns Array of mocked responses
  */
-async function mockSegment(mockServer) {
+async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -53,12 +52,15 @@ describe('Permissions Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await connectToDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({ publicAddress: DEFAULT_FIXTURE_ACCOUNT });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
