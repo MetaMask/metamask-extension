@@ -6,10 +6,7 @@ const glob = require('fast-glob');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
-const {
-  PREINSTALLED_SNAPS,
-} = require('../../app/scripts/snaps/preinstalled-snaps');
-const { TASKS } = require('./constants');
+const { TASKS, SNAPS, BUILD_TARGETS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
 
@@ -215,12 +212,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           },
         ]
       : []),
-    // TODO: Filter out Snaps not meant to be included in this build type.
-    ...PREINSTALLED_SNAPS.map((snap) => ({
-      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
-      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
-      pattern: '',
-    })),
   ];
 
   const copyTargetsDev = [
@@ -239,6 +230,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: EMPTY_JS_FILE,
       dest: `ui-libs.js`,
     },
+    ...SNAPS[BUILD_TARGETS.DEV].map((snap) => ({
+      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
+      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
+      pattern: '',
+    })),
   ];
 
   const copyTargetsProd = [
@@ -248,6 +244,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: EMPTY_JS_FILE,
       dest: `chromereload.js`,
     },
+    ...SNAPS[BUILD_TARGETS.PROD].map((snap) => ({
+      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
+      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
+      pattern: '',
+    })),
   ];
 
   return [copyTargetsProd, copyTargetsDev];

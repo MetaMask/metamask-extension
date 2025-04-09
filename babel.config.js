@@ -16,7 +16,10 @@ module.exports = function (api) {
       // operators 😭)
       '@babel/plugin-transform-logical-assignment-operators',
       [
-        path.resolve(__dirname, 'development/build/transforms/import-meta-url.js'),
+        path.resolve(
+          __dirname,
+          'development/build/transforms/import-meta-url.js',
+        ),
         {
           patterns: [/dist\/preinstalled-snap\.json$/u],
           rootPath: '/preinstalled-snaps/',

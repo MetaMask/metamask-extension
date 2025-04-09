@@ -75,4 +75,23 @@ const TASKS = {
   ZIP: 'zip',
 };
 
-module.exports = { BUILD_TARGETS, ENVIRONMENT, TASKS };
+const SNAPS = {
+  [BUILD_TARGETS.DEV]: [
+    '@metamask/message-signing-snap',
+    '@metamask/ens-resolver-snap',
+    '@metamask/institutional-wallet-snap',
+    '@metamask/account-watcher',
+    '@metamask/preinstalled-example-snap',
+    '@metamask/bitcoin-wallet-snap',
+    '@metamask/solana-wallet-snap',
+  ],
+  [BUILD_TARGETS.PROD]: [
+    '@metamask/message-signing-snap',
+    '@metamask/ens-resolver-snap',
+    '@metamask/institutional-wallet-snap',
+    '@metamask/account-watcher',
+    '@metamask/preinstalled-example-snap',
+  ],
+};
+
+module.exports = { BUILD_TARGETS, ENVIRONMENT, TASKS, SNAPS };

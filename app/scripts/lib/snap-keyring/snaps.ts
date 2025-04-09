@@ -3,7 +3,7 @@ import {
   getLocalizedSnapManifest,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
-import { PREINSTALLED_SNAPS } from '../../snaps/preinstalled-snaps';
+import { PREINSTALLED_SNAPS } from '../../constants/snaps';
 import { SnapKeyringBuilderMessenger } from './types';
 
 /**

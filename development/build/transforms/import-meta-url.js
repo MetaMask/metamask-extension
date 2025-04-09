@@ -12,17 +12,19 @@ const { join } = require('node:path');
 /**
  * Babel plugin to transform `new URL(relativePath, import.meta.url)` expressions
  * when they match specified patterns.
+ *
  * @param {{ types: import('@babel/types') }} babel - Babel types
- * @returns {PluginObj} - The plugin object
+ * @returns {PluginObj} The plugin object
  */
 module.exports = function ({ types: t }) {
   /**
    * Checks if the node is a `new URL(relativePath, import.meta.url)` expression.
+   *
    * @param {import('@babel/core').NodePath} path - The AST node path
-   * @returns {boolean} - True if it matches the target pattern
+   * @returns {boolean} True if it matches the target pattern
    */
   function isTargetNewURL(path) {
-    const node = path.node;
+    const { node } = path;
     return (
       t.isNewExpression(node) &&
       t.isIdentifier(node.callee, { name: 'URL' }) &&
@@ -41,8 +43,9 @@ module.exports = function ({ types: t }) {
    * Extracts the relative path from the first argument.
    * - For string literals: returns the value
    * - For template literals: joins quasis with '___'
+   *
    * @param {StringLiteral | TemplateLiteral} arg - The first argument of new URL
-   * @returns {string} - The extracted relative path
+   * @returns {string} The extracted relative path
    */
   function getRelativePath(arg) {
     if (t.isStringLiteral(arg)) {
@@ -55,9 +58,10 @@ module.exports = function ({ types: t }) {
    * Checks if the relative path matches any provided patterns.
    * - String patterns: exact match
    * - RegExp patterns: tests against the pattern
+   *
    * @param {string} relativePath - The path to check
    * @param {Array<string | RegExp>} patterns - Patterns to match against
-   * @returns {boolean} - True if any pattern matches
+   * @returns {boolean} True if any pattern matches
    */
   function matchesPatterns(relativePath, patterns) {
     return patterns.some((pattern) => {
@@ -75,9 +79,10 @@ module.exports = function ({ types: t }) {
    * Builds the new path argument by prepending rootPath.
    * - String literals: uses path.join
    * - Template literals: prepends to first quasi
+   *
    * @param {StringLiteral | TemplateLiteral} originalArg - Original path argument
    * @param {string} rootPath - Root path variable to prepend
-   * @returns {StringLiteral | TemplateLiteral} - New path argument
+   * @returns {StringLiteral | TemplateLiteral} New path argument
    */
   function buildNewPathArg(originalArg, rootPath) {
     if (t.isStringLiteral(originalArg)) {
@@ -102,7 +107,7 @@ module.exports = function ({ types: t }) {
    * Builds the base argument: self.document?.baseURI || self.location.href
    * This aligns with the way webpack's built-in handling of `import.meta.url`.
    *
-   * @returns {import('@babel/types').LogicalExpression} - The base argument
+   * @returns {import('@babel/types').LogicalExpression} The base argument
    */
   function buildBaseArg() {
     return t.logicalExpression(
@@ -122,9 +127,10 @@ module.exports = function ({ types: t }) {
 
   /**
    * Creates the transformed `new URL` expression.
+   *
    * @param {StringLiteral | TemplateLiteral} pathArg - New path argument
    * @param {import('@babel/types').LogicalExpression} baseArg - Base argument
-   * @returns {import('@babel/types').NewExpression} - Transformed expression
+   * @returns {import('@babel/types').NewExpression} Transformed expression
    */
   function buildNewExpression(pathArg, baseArg) {
     return t.newExpression(t.identifier('URL'), [pathArg, baseArg]);
@@ -148,7 +154,9 @@ module.exports = function ({ types: t }) {
         }
 
         // Check if it's our target expression
-        if (!isTargetNewURL(path)) return;
+        if (!isTargetNewURL(path)) {
+          return;
+        }
 
         // Extract and check path
         const originalArg = path.node.arguments[0];

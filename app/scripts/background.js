@@ -78,7 +78,7 @@ import rawFirstTimeState from './first-time-state';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
-import { PREINSTALLED_SNAPS } from './snaps/preinstalled-snaps';
+import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -531,7 +531,7 @@ async function initialize() {
 
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
-  const promises = PREINSTALLED_SNAPS.map(async (snap) => {
+  const promises = PREINSTALLED_SNAPS_URLS.map(async (snap) => {
     const url = new URL(`${snap}/dist/preinstalled-snap.json`, import.meta.url);
     const response = await fetchWithTimeout(url);
     return await response.json();
