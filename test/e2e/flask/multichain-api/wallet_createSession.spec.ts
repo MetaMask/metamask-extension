@@ -20,7 +20,7 @@ import {
 } from './testHelpers';
 
 describe('Multichain API', function () {
-  describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
+  describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
         {
@@ -63,7 +63,7 @@ describe('Multichain API', function () {
     });
   });
 
-  describe('Call `wallet_createSession` with EVM scopes that match the user’s enabled networks, and eip155 scoped accounts', function () {
+  describe("Call `wallet_createSession` with EVM scopes that match the user's enabled networks, and eip155 scoped accounts", function () {
     it('should ignore requested accounts that do not match accounts in the wallet and and pre-select matching requested accounts in the permission confirmation screen', async function () {
       await withFixtures(
         {
@@ -158,7 +158,11 @@ describe('Multichain API', function () {
         );
 
         for (const item of networkListItems) {
-          const network = await item.getText();
+          const networkNameDiv = await item.findElement(
+            By.css('div[data-testid]'),
+          );
+          const network = await networkNameDiv.getAttribute('data-testid');
+
           const checkbox = await item.findElement(
             By.css('input[type="checkbox"]'),
           );
@@ -183,7 +187,7 @@ describe('Multichain API', function () {
   });
 
   describe('Call `wallet_createSession`', function () {
-    describe('With requested EVM scope that match the user’s enabled networks, edit selection in wallet UI', function () {
+    describe("With requested EVM scope that match the user's enabled networks, edit selection in wallet UI", function () {
       it('should change result according to changed network & accounts', async function () {
         await withFixtures(
           {

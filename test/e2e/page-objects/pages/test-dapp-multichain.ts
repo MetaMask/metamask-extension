@@ -1,5 +1,5 @@
 import { Browser } from 'selenium-webdriver';
-import { NormalizedScopeObject } from '@metamask/multichain';
+import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
