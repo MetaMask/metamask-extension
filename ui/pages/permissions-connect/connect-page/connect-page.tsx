@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
 import { CaipChainId, parseCaipAccountId } from '@metamask/utils';
 
