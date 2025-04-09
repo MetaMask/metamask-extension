@@ -1559,6 +1559,9 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'NetworkController:findNetworkClientIdByChainId',
+        'TokenRatesController:getState',
+        'MultichainAssetsRatesController:getState',
+        'CurrencyRateController:getState',
       ],
       allowedEvents: [],
     });
