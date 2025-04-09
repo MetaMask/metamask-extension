@@ -15,10 +15,13 @@ export function useSmartAccountActions() {
   const {
     id: confirmationId,
     chainId,
-    txParams: { from },
+    txParams: { from } = {},
   } = currentConfirmation ?? {};
 
   const handleRejectUpgrade = useCallback(async () => {
+    if (!chainId || !from) {
+      return;
+    }
     const error = rpcErrors.methodNotSupported('User rejected account upgrade');
     const serializedError = serializeError(error);
 
