@@ -6,7 +6,7 @@ const glob = require('fast-glob');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
-const { TASKS, SNAPS, BUILD_TARGETS } = require('./constants');
+const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
 
@@ -212,11 +212,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           },
         ]
       : []),
-    ...SNAPS[BUILD_TARGETS.PROD].map((snap) => ({
-      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
-      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
-      pattern: '',
-    })),
   ];
 
   const copyTargetsDev = [
@@ -235,11 +230,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: EMPTY_JS_FILE,
       dest: `ui-libs.js`,
     },
-    ...SNAPS[BUILD_TARGETS.DEV].map((snap) => ({
-      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
-      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
-      pattern: '',
-    })),
   ];
 
   const copyTargetsProd = [
