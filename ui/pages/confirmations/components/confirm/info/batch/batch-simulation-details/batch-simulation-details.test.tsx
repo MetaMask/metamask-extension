@@ -14,7 +14,7 @@ import { AlertMetricsProvider } from '../../../../../../../components/app/alert-
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
-import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
@@ -26,9 +26,12 @@ jest.mock('../../hooks/useBatchApproveBalanceChanges', () => ({
   useBatchApproveBalanceChanges: jest.fn(),
 }));
 
-jest.mock('../../../../../../../store/actions/transaction-controller', () => ({
-  updateAtomicBatchData: jest.fn(),
-}));
+jest.mock(
+  '../../../../../../../store/controller-actions/transaction-controller',
+  () => ({
+    updateAtomicBatchData: jest.fn(),
+  }),
+);
 
 jest.mock('../../../../../confirm-approve/confirm-approve.util', () => ({
   getCustomTxParamsData: jest.fn(),

@@ -242,7 +242,6 @@ export const SENTRY_BACKGROUND_STATE = {
     featureFlags: true,
     forgottenPassword: true,
     identities: false,
-    incomingTransactionsPreferences: true,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     knownMethodData: false,

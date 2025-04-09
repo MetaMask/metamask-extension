@@ -91,6 +91,12 @@ export async function importTST(driver: Driver) {
     text: 'Custom token',
   });
 
+  await driver.clickElement(
+    '[data-testid="test-import-tokens-drop-down-custom-import"]',
+  );
+
+  await driver.clickElement('[data-testid="select-network-item-0x539"]');
+
   await driver.fill(
     '[data-testid="import-tokens-modal-custom-address"]',
     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',

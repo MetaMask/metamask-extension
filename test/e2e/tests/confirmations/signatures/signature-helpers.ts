@@ -14,6 +14,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -397,8 +398,9 @@ export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
+  await testDapp.check_pageIsLoaded();
   await triggerSignature(type);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
