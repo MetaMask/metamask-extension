@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Display,
   FlexDirection,
@@ -24,7 +24,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkListItem } from '../../../components/multichain';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { NetworkConfiguration } from '@metamask/network-controller';
 
 export const ContactNetworks = ({
   isOpen,
