@@ -5,12 +5,7 @@ import type {
   NetworkState,
 } from '@metamask/network-controller';
 import {
-  calcAdjustedReturn,
-  calcCost,
   calcRelayerFee,
-  calcSentAmount,
-  calcSwapRate,
-  calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
   calcSolanaTotalNetworkFee,
   calcTotalEstimatedNetworkFee,
@@ -30,6 +25,7 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
+  selectBridgeQuotesWithMetadata,
 } from '@metamask/bridge-controller';
 import { SolAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -402,17 +398,13 @@ export const getToTokenConversionRate = createDeepEqualSelector(
 );
 
 const _getQuotesWithMetadata = createSelector(
-  (state: BridgeAppState) => state.metamask.quotes,
-  getToTokenConversionRate,
-  getFromTokenConversionRate,
+  selectBridgeQuotesWithMetadata,
   getConversionRate,
   getMultichainCoinRates,
   getUSDConversionRate,
   _getBridgeFeesPerGas,
   (
     quotes,
-    toTokenExchangeRate,
-    fromTokenExchangeRate,
     nativeToDisplayCurrencyExchangeRate,
     nonEvmNativeConversionRate,
     nativeToUsdExchangeRate,
@@ -422,67 +414,62 @@ const _getQuotesWithMetadata = createSelector(
       maxFeePerGasInDecGwei,
     },
   ): (QuoteResponse & QuoteMetadata)[] => {
-    const newQuotes = quotes.map((quote: QuoteResponse & SolanaFees) => {
-      const isSolanaQuote =
-        isSolanaChainId(quote.quote.srcChainId) && quote.solanaFeesInLamports;
+    const newQuotes = quotes.map(
+      (
+        quote: QuoteResponse &
+          SolanaFees &
+          Partial<
+            Pick<QuoteMetadata, 'toTokenAmount' | 'sentAmount' | 'swapRate'>
+          >,
+      ) => {
+        const isSolanaQuote =
+          isSolanaChainId(quote.quote.srcChainId) && quote.solanaFeesInLamports;
 
-      const toTokenAmount = calcToAmount(
-        quote.quote,
-        toTokenExchangeRate.valueInCurrency,
-        toTokenExchangeRate.usd,
-      );
-      let totalEstimatedNetworkFee, gasFee, totalMaxNetworkFee;
-      if (isSolanaQuote) {
-        totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
-          quote,
-          nonEvmNativeConversionRate.sol.conversionRate,
-          nonEvmNativeConversionRate.sol.usdConversionRate,
-        );
-        gasFee = totalEstimatedNetworkFee;
-        totalMaxNetworkFee = totalEstimatedNetworkFee;
-      } else {
-        gasFee = calcEstimatedAndMaxTotalGasFee({
-          bridgeQuote: quote,
-          estimatedBaseFeeInDecGwei,
-          maxFeePerGasInDecGwei,
-          maxPriorityFeePerGasInDecGwei,
-          nativeToDisplayCurrencyExchangeRate,
-          nativeToUsdExchangeRate,
-        });
-        const relayerFee = calcRelayerFee(
-          quote,
-          nativeToDisplayCurrencyExchangeRate,
-          nativeToUsdExchangeRate,
-        );
-        totalEstimatedNetworkFee = calcTotalEstimatedNetworkFee(
+        let totalEstimatedNetworkFee, gasFee, totalMaxNetworkFee;
+        if (isSolanaQuote) {
+          totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
+            quote,
+            nonEvmNativeConversionRate.sol.conversionRate,
+            nonEvmNativeConversionRate.sol.usdConversionRate,
+          );
+          gasFee = totalEstimatedNetworkFee;
+          totalMaxNetworkFee = totalEstimatedNetworkFee;
+        } else {
+          gasFee = calcEstimatedAndMaxTotalGasFee({
+            bridgeQuote: quote,
+            estimatedBaseFeeInDecGwei,
+            maxFeePerGasInDecGwei,
+            maxPriorityFeePerGasInDecGwei,
+            nativeToDisplayCurrencyExchangeRate,
+            nativeToUsdExchangeRate,
+          });
+          const relayerFee = calcRelayerFee(
+            quote,
+            nativeToDisplayCurrencyExchangeRate,
+            nativeToUsdExchangeRate,
+          );
+          totalEstimatedNetworkFee = calcTotalEstimatedNetworkFee(
+            gasFee,
+            relayerFee,
+          );
+          totalMaxNetworkFee = calcTotalMaxNetworkFee(gasFee, relayerFee);
+        }
+
+        // const adjustedReturn = calcAdjustedReturn(
+        //   quote.toTokenAmount,
+        //   totalEstimatedNetworkFee,
+        // );
+        return {
+          ...quote,
+          // QuoteMetadata fields
+          totalNetworkFee: totalEstimatedNetworkFee,
+          totalMaxNetworkFee,
+          // adjustedReturn,
           gasFee,
-          relayerFee,
-        );
-        totalMaxNetworkFee = calcTotalMaxNetworkFee(gasFee, relayerFee);
-      }
-
-      const sentAmount = calcSentAmount(
-        quote.quote,
-        fromTokenExchangeRate.valueInCurrency,
-        fromTokenExchangeRate.usd,
-      );
-      const adjustedReturn = calcAdjustedReturn(
-        toTokenAmount,
-        totalEstimatedNetworkFee,
-      );
-      return {
-        ...quote,
-        // QuoteMetadata fields
-        toTokenAmount,
-        sentAmount,
-        totalNetworkFee: totalEstimatedNetworkFee,
-        totalMaxNetworkFee,
-        adjustedReturn,
-        gasFee,
-        swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
-        cost: calcCost(adjustedReturn, sentAmount),
-      };
-    });
+          // cost: calcCost(adjustedReturn, quote.sentAmount),
+        };
+      },
+    );
 
     return newQuotes;
   },
