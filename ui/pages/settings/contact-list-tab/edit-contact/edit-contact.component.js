@@ -38,7 +38,7 @@ import { ContactNetworks } from '../contact-networks';
 const EditContact = ({
   addressBook,
   internalAccounts,
-  networks,
+  networkConfigurations,
   addToAddressBook,
   removeFromAddressBook,
   name = '',
@@ -57,7 +57,8 @@ const EditContact = ({
   const [addressError, setAddressError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(contactChainId);
-
+  const networks = networkConfigurations;
+  console.log(networkConfigurations, networks);
   const validateName = (nameValue) => {
     if (nameValue === name) {
       return true;
@@ -196,6 +197,7 @@ const EditContact = ({
                 <AvatarNetwork
                   size={AvatarNetworkSize.Sm}
                   src={getImageForChainId(selectedChainId) || undefined}
+                  name={networks?.[selectedChainId]?.name}
                 />
                 <Text>{networks?.[selectedChainId]?.name}</Text>
               </Box>
@@ -267,7 +269,7 @@ const EditContact = ({
 EditContact.propTypes = {
   addressBook: PropTypes.array,
   internalAccounts: PropTypes.array,
-  networks: PropTypes.array,
+  networkConfigurations: PropTypes.array,
   addToAddressBook: PropTypes.func.isRequired,
   removeFromAddressBook: PropTypes.func.isRequired,
   name: PropTypes.string,

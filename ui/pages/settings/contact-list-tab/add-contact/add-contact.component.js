@@ -40,9 +40,11 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import { ContactNetworks } from '../contact-networks';
-import { getAllEnabledNetworks } from '../../../../selectors';
 
 const AddContact = ({
   addressBook,
@@ -66,7 +68,7 @@ const AddContact = ({
   const currentChainId = useSelector(getCurrentChainId);
   const [selectedChainId, setSelectedChainId] = useState(currentChainId);
   const [showModal, setShowModal] = useState(false);
-  const networks = useSelector(getAllEnabledNetworks);
+  const networks = useSelector(getNetworkConfigurationsByChainId);
 
   const validate = useCallback((value) => {
     const valid =
