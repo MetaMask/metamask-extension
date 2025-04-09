@@ -44,7 +44,9 @@ import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
 
-import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import {
+  InternalAccountWithBalance,
+} from '../../../../selectors/selectors.types';
 import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
@@ -75,8 +77,7 @@ export default function RemoteModeSetupSwaps() {
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
-  const [selectedAccount, setSelectedAccount] =
-    useState<InternalAccount | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<InternalAccount | null>(null);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -163,7 +164,7 @@ export default function RemoteModeSetupSwaps() {
                   onClick: (account: InternalAccount) => {
                     setSelectedAccount(account);
                     setIsModalOpen(false);
-                  },
+                  }
                 }}
               />
             )}
@@ -192,15 +193,15 @@ export default function RemoteModeSetupSwaps() {
                   borderRadius={BorderRadius.LG}
                   borderColor={BorderColor.borderDefault}
                 >
-                  {selectedAccount && (
-                    <AccountPicker
-                      address={selectedAccount?.address}
-                      name={selectedAccount?.metadata.name}
-                      onClick={() => {
-                        setIsModalOpen(true);
-                      }}
-                    />
-                  )}
+                {selectedAccount && (
+                  <AccountPicker
+                    address={selectedAccount?.address}
+                    name={selectedAccount?.metadata.name}
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  />
+                )}
                 </Box>
                 <Box
                   display={Display.Flex}
