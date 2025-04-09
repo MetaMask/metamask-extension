@@ -1,15 +1,36 @@
 import * as fs from 'fs/promises';
+import humanizeDuration from 'humanize-duration';
 import * as xml2js from 'xml2js';
 
 const XML = {
   parse: new xml2js.Parser().parseStringPromise,
 };
 
-function formatTime(ms: number): string {
-  if (ms > 1000) {
-    return `${Math.round(ms / 1000)}s`;
+const humanizer = humanizeDuration.humanizer({
+  language: 'shortEn',
+  languages: {
+    shortEn: {
+      y: () => 'y',
+      mo: () => 'mo',
+      w: () => 'w',
+      d: () => 'd',
+      h: () => 'h',
+      m: () => 'm',
+      s: () => 's',
+      ms: () => 'ms',
+    },
+  },
+  delimiter: ' ',
+  spacer: '',
+  round: true,
+});
+
+function formatTime(seconds: number): string {
+  const miliseconds = seconds * 1000;
+  if (miliseconds < 1000) {
+    return `${Math.round(miliseconds)}ms`;
   }
-  return `${Math.round(ms)}ms`;
+  return humanizer(miliseconds);
 }
 
 interface TestSuite {
@@ -37,6 +58,7 @@ interface TestSuite {
 }
 
 async function main() {
+  const { OWNER, REPOSITORY, BRANCH } = process.env;
   let summary = '';
   const core = process.env.GITHUB_ACTIONS
     ? await import('@actions/core')
@@ -48,7 +70,7 @@ async function main() {
           write: async () =>
             await fs.writeFile('test/test-results/summary.md', summary),
         },
-        setFailed: (msg: string) => console.error('Mock: setFailed', msg),
+        setFailed: (msg: string) => console.error(msg),
       };
 
   try {
@@ -108,13 +130,16 @@ async function main() {
     const suites = Object.values(deduped);
 
     if (suites.length) {
-      const total = {
-        tests: suites.reduce((acc, suite) => acc + suite.tests, 0),
-        passed: suites.reduce((acc, suite) => acc + suite.passed, 0),
-        failed: suites.reduce((acc, suite) => acc + suite.failed, 0),
-        skipped: suites.reduce((acc, suite) => acc + suite.skipped, 0),
-        time: suites.reduce((acc, suite) => acc + suite.time, 0),
-      };
+      const total = suites.reduce(
+        (acc, suite) => ({
+          tests: acc.tests + suite.tests,
+          passed: acc.passed + suite.passed,
+          failed: acc.failed + suite.failed,
+          skipped: acc.skipped + suite.skipped,
+          time: acc.time + suite.time,
+        }),
+        { tests: 0, passed: 0, failed: 0, skipped: 0, time: 0 },
+      );
 
       const conclusion = `**${
         total.tests
@@ -128,7 +153,9 @@ async function main() {
       core.summary.addRaw(`${conclusion}\n`);
 
       const rows = suites.map((suite) => ({
-        'Test suite': `[${suite.name}](${suite.path})`,
+        'Test suite': process.env.GITHUB_ACTIONS
+          ? `[${suite.name}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})`
+          : `[${suite.name}](${suite.path})`,
         Passed: suite.passed ? `${suite.passed} ✅` : '',
         Failed: suite.failed ? `${suite.failed} ❌` : '',
         Skipped: suite.skipped ? `${suite.skipped} ⏩` : '',

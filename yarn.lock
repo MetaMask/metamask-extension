@@ -11291,6 +11291,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/humanize-duration@npm:^3.27.4":
+  version: 3.27.4
+  resolution: "@types/humanize-duration@npm:3.27.4"
+  checksum: 10/aa7fa41af839021c846a1728d2f097b7885f80acbc5050623a9804d23fd8fee19d2654eaae331f000a4e551b88d99cd0b5f6cc97aa99f869b9205f6248066827
+  languageName: node
+  linkType: hard
+
 "@types/insert-module-globals@npm:*":
   version: 7.0.2
   resolution: "@types/insert-module-globals@npm:7.0.2"
@@ -22855,6 +22862,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"humanize-duration@npm:^3.32.1":
+  version: 3.32.1
+  resolution: "humanize-duration@npm:3.32.1"
+  checksum: 10/5909107485c33d0c025e5d15a45b2700f91c9efc1e88510867926b3d1ef24d2d0c8bf31f52abef92da53b29e69410c5acb3a4d6d72429bd8b61d82ac25739ce4
+  languageName: node
+  linkType: hard
+
 "husky@npm:^8.0.3":
   version: 8.0.3
   resolution: "husky@npm:8.0.3"
@@ -27377,6 +27391,7 @@ __metadata:
     "@types/gulp-sass": "npm:^5.0.0"
     "@types/gulp-sourcemaps": "npm:^0.0.35"
     "@types/he": "npm:^1"
+    "@types/humanize-duration": "npm:^3.27.4"
     "@types/jest": "npm:^29.5.12"
     "@types/luxon": "npm:^3.4.2"
     "@types/madge": "npm:^5.0.3"
@@ -27497,6 +27512,7 @@ __metadata:
     html-bundler-webpack-plugin: "npm:^4.4.1"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"
+    humanize-duration: "npm:^3.32.1"
     husky: "npm:^8.0.3"
     immer: "npm:^9.0.6"
     ini: "npm:^3.0.0"
