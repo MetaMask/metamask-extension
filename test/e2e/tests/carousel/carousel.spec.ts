@@ -79,7 +79,7 @@ describe('Carousel component e2e tests', () => {
         // It should be updated if the number of slides changes
         // in the carousel component.
         // Please refer to the `useCarouselManagement` hook.
-        const slideCount = 4;
+        const slideCount = 5;
         await loginWithBalanceValidation(driver);
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
