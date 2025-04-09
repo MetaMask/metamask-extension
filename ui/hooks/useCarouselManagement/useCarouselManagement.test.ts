@@ -41,6 +41,7 @@ describe('useCarouselManagement', () => {
   let slides: CarouselSlide[];
 
   beforeEach(() => {
+    delete process.env.IN_TEST;
     mockDispatch = jest.fn();
     mockUseDispatch.mockReturnValue(mockDispatch);
 
@@ -48,6 +49,10 @@ describe('useCarouselManagement', () => {
     mockUseSelector.mockImplementation(() => slides);
 
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    process.env.IN_TEST = 'true';
   });
 
   describe('getSweepstakesCampaignActive', () => {
