@@ -5623,7 +5623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^21.0.0, @metamask/keyring-controller@npm:^21.0.1":
+"@metamask/keyring-controller@npm:^21.0.1":
   version: 21.0.1
   resolution: "@metamask/keyring-controller@npm:21.0.1"
   dependencies:
@@ -6120,14 +6120,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "@metamask/profile-sync-controller@npm:10.1.0"
+"@metamask/profile-sync-controller@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "@metamask/profile-sync-controller@npm:11.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-controller": "npm:^21.0.0"
-    "@metamask/network-controller": "npm:^22.2.1"
+    "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
     "@noble/ciphers": "npm:^0.5.2"
@@ -6136,13 +6134,13 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^26.0.0
+    "@metamask/accounts-controller": ^27.0.0
     "@metamask/keyring-controller": ^21.0.0
-    "@metamask/network-controller": ^22.0.0
+    "@metamask/network-controller": ^23.0.0
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/09dfc1eb6a12c2e109b795f0b7dbd196fec5126996e7b39729f901802fbaf19fc41f1f8a7ff5ccb4f70d86a8e8e021667bbc4bcc3f8e593601376631e45419e1
+  checksum: 10/31dfb81df81593f250c7ee12141eff418864abac32358ac14a937593e25ba20e096d833085f765c733a2717cd64a53bd88be7663478fa11605d5a710a34d0497
   languageName: node
   linkType: hard
 
@@ -27310,7 +27308,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^10.1.0"
+    "@metamask/profile-sync-controller": "npm:^11.0.1"
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
