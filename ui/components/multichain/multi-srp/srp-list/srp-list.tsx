@@ -90,7 +90,6 @@ export const SrpList = ({
             flexDirection={FlexDirection.Row}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
-            paddingLeft={4}
           >
             <Box>
               <Text>{t('srpListName', [index + 1])}</Text>

@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "사기를 목적으로 하는 제삼자가 이 사이트에 접근할 수 있게 됩니다. 진행할 경우 자산을 잃을 수 있습니다."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "사이트가 안전해 보일 수 있지만 제삼자가 정보에 접근할 수 있습니다. 로그인하면 자산을 도난당할 수 있습니다."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "확인을 누르면 모든 자금과 자산을 잃을 수 있습니다."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "로그인할 경우 OpenSea에 등록한 자산 일부 또는 전부가 위험에 처할 수 있습니다."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "로그인할 경우 Blur에 등록한 자산 일부 또는 전부가 위험에 처할 수 있습니다."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "악성 도메인으로 인식된 사이트입니다. 로그인하면 자금과 자산을 잃을 수 있습니다. 요청을 취소할 것을 강력히 권장합니다."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "로그인하면 모든 자산을 잃을 수 있습니다. 요청을 취소할 것을 권장합니다."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "이 요청을 승인하면 스캠으로 알려진 타사가 회원님의 모든 자산을 가져갈 수 있습니다."
   },
@@ -6163,9 +6142,6 @@
   },
   "transactionErrored": {
     "message": "트랜잭션에 오류가 발생했습니다."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "이 트랜잭션은 추가 수수료가 발생할 가능성이 있어 중단했습니다. 자금은 여전히 지갑에 있습니다."
   },
   "transactionFlowNetwork": {
     "message": "네트워크"
