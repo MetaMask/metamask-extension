@@ -1,18 +1,12 @@
-export const PREINSTALLED_SNAPS = Object.freeze([
+export const PREINSTALLED_SNAPS = [
   '@metamask/message-signing-snap',
   '@metamask/ens-resolver-snap',
   '@metamask/institutional-wallet-snap',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   '@metamask/account-watcher',
   '@metamask/preinstalled-example-snap',
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   '@metamask/bitcoin-wallet-snap',
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   '@metamask/solana-wallet-snap',
-  ///: END:ONLY_INCLUDE_IF
-]);
+];
 
 // Needed for webpack to analyze the preinstalled snaps
 export const PREINSTALLED_SNAPS_URLS = [

@@ -212,6 +212,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           },
         ]
       : []),
+    ...SNAPS[BUILD_TARGETS.PROD].map((snap) => ({
+      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
+      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
+      pattern: '',
+    })),
   ];
 
   const copyTargetsDev = [
@@ -244,11 +249,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: EMPTY_JS_FILE,
       dest: `chromereload.js`,
     },
-    ...SNAPS[BUILD_TARGETS.PROD].map((snap) => ({
-      src: getPathInsideNodeModules(snap, 'dist/preinstalled-snap.json'),
-      dest: `preinstalled-snaps/${snap}/dist/preinstalled-snap.json`,
-      pattern: '',
-    })),
   ];
 
   return [copyTargetsProd, copyTargetsDev];

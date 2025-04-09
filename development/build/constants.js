@@ -77,20 +77,15 @@ const TASKS = {
 
 const SNAPS = {
   [BUILD_TARGETS.DEV]: [
-    '@metamask/message-signing-snap',
-    '@metamask/ens-resolver-snap',
-    '@metamask/institutional-wallet-snap',
-    '@metamask/account-watcher',
-    '@metamask/preinstalled-example-snap',
     '@metamask/bitcoin-wallet-snap',
     '@metamask/solana-wallet-snap',
+    '@metamask/preinstalled-example-snap',
+    '@metamask/account-watcher',
   ],
   [BUILD_TARGETS.PROD]: [
     '@metamask/message-signing-snap',
     '@metamask/ens-resolver-snap',
     '@metamask/institutional-wallet-snap',
-    '@metamask/account-watcher',
-    '@metamask/preinstalled-example-snap',
   ],
 };
 
