@@ -314,6 +314,8 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Ethereum account'));
+    const header = document.querySelector('header') as Element;
+    expect(header.innerHTML).toContain('Add Ethereum account');
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );

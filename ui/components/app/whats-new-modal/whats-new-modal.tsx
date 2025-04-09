@@ -113,6 +113,7 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
       isOpen={notifications.length > 0}
       isClosedOnOutsideClick
       isClosedOnEscapeKey
+      autoFocus={false}
     >
       <ModalOverlay />
 
