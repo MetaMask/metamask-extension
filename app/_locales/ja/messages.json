@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "このサイトがスタンダードアカウントへの切り替えを求めています。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "サイトがこのアカウントを所有することを証明するためにサインインを求めています。"
   },
@@ -1111,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "アクセス許可を取り消す"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "アカウントをリセット"
   },
   "confirmTitleSIWESignature": {
     "message": "サインインリクエスト"

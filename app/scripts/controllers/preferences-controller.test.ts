@@ -708,6 +708,7 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
@@ -736,6 +737,7 @@ describe('preferences controller', () => {
         petnamesEnabled: true,
         privacyMode: false,
         shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
@@ -894,6 +896,21 @@ describe('preferences controller', () => {
       expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
         CHAIN_IDS.MAINNET,
       ]);
+    });
+  });
+
+  describe('manageInstitutionalWallets', () => {
+    it('defaults manageInstitutionalWallets to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(false);
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('sets manageInstitutionalWallets to true', () => {
+      const { controller } = setupController({});
+      controller.setManageInstitutionalWallets(true);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
     });
   });
 });

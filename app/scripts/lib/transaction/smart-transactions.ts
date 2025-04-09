@@ -461,6 +461,7 @@ class SmartTransactionHook {
       signedCanceledTransactions: [],
       txParams: this.#txParams,
       transactionMeta: this.#transactionMeta,
+      networkClientId: this.#transactionMeta.networkClientId,
     });
   }
 

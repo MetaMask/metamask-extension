@@ -37,6 +37,7 @@ export const TokenCellBadge = React.memo(
           />
         }
         marginRight={4}
+        style={{ alignSelf: 'center' }}
       >
         <AvatarToken
           name={token.symbol}

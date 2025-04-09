@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
+  dismissSmartAccountSuggestionEnabled: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -148,6 +149,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
+  manageInstitutionalWallets: boolean;
   accountUpgradeDisabledChains?: string[];
 };
 
@@ -200,6 +202,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      dismissSmartAccountSuggestionEnabled: false,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
@@ -252,6 +255,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    manageInstitutionalWallets: false,
   });
 
 /**
@@ -422,6 +426,7 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
   accountUpgradeDisabledChains: { persist: true, anonymous: false },
 };
 
@@ -937,6 +942,17 @@ export class PreferencesController extends BaseController<
     this.update((state) => {
       state.overrideContentSecurityPolicyHeader =
         overrideContentSecurityPolicyHeader;
+    });
+  }
+
+  /**
+   * A setter for the user preference to manage institutional wallets
+   *
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
+   */
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
+    this.update((state) => {
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
     });
   }
 

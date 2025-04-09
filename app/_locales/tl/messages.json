@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Ang site na ito ay nais ng permiso para gamitin ang iyong mga token."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Humihiling ang site na ito na bumalik sa standard account."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Nais ng site na mag-sign in ka upang patunayan na pag-aari mo ang account na ito."
   },
@@ -1111,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Alisin ang pahintulot"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "I-reset ang account"
   },
   "confirmTitleSIWESignature": {
     "message": "Kahilingan sa pag-sign in"

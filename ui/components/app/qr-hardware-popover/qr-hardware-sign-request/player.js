@@ -13,8 +13,8 @@ import { PageContainerFooter } from '../../../ui/page-container';
 import { Text, Box } from '../../../component-library';
 
 // QR code configuration constants to help with memory optimization
-const QR_FRAGMENT_SIZE = 400;
-const QR_REFRESH_RATE = 250;
+const QR_FRAGMENT_SIZE = 200;
+const QR_REFRESH_RATE = 200;
 const QR_CODE_SIZE = 225;
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   const t = useI18nContext();

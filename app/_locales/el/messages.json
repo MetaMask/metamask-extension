@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Αυτός ο ιστότοπος ζητάει άδεια για να δαπανήσει τα tokens σας."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Αυτός ο ιστότοπος ζητά να αλλάξετε ξανά σε βασικό λογαριασμό."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Ένας ιστότοπος θέλει να συνδεθείτε για να αποδείξετε ότι είστε ο κάτοχος αυτού του λογαριασμού."
   },
@@ -1111,9 +1108,6 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Κατάργηση άδειας"
-  },
-  "confirmTitleRevokeDelegation": {
-    "message": "Επαναφορά λογαριασμού"
   },
   "confirmTitleSIWESignature": {
     "message": "Αίτημα σύνδεσης"

@@ -13,6 +13,7 @@ export const addressInput: UIComponentFactory<AddressInputElement> = ({
       disabled: element.props.disabled,
       chainId: element.props.chainId,
       form,
+      displayAvatar: element.props.displayAvatar,
     },
   };
 };
