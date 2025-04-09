@@ -4218,10 +4218,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@lavamoat/snow@npm:2.0.3"
-  checksum: 10/aace8f93fe98f357ebffbcee88d20129a541b566208f7370e79eaba9242a9bbde571d331e802bf8d58193d723d0c1ed6d7783deca46e31d96b7fd1339e1d42f9
+"@lavamoat/snow@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@lavamoat/snow@npm:2.0.4"
+  checksum: 10/6502e7dc367e65023b3ccdc69500c269dba039995fb195f7fbdd998fa26a462bb008e16c6bba75a5a7bca6ba8036c78a33191d42e5e5b04bf53ae43cdca196fc
   languageName: node
   linkType: hard
 
@@ -27215,7 +27215,7 @@ __metadata:
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.5"
-    "@lavamoat/snow": "npm:^2.0.3"
+    "@lavamoat/snow": "npm:^2.0.4"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.3.0"
