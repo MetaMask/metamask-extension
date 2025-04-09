@@ -18,6 +18,17 @@ class AlertModal {
   constructor(driver: Driver) {
     this.driver = driver;
   }
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector([
+        this.inlineAlertButton,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for inline-alert button', e);
+      throw e;
+    }
+    console.log('in-line alert is loaded');
+  }
 
   async waitForAlert(): Promise<void> {
     await this.driver.waitForSelector(this.inlineAlertButton);
@@ -29,6 +40,9 @@ class AlertModal {
 
   async clickAlertModalButton(): Promise<void> {
     await this.driver.clickElement(this.confirmAlertButton);
+  }
+  async check_AlertInsufficientBalance(): Promise<void> {
+    await this.driver.clickElement(this.insufficientFundsAlert);
   }
 }
 

@@ -33,21 +33,12 @@ describe('Alert for insufficient funds', function () {
         await mintNft(driver);
         const confirmation = new Confirmation(driver);
         const alertModal = new AlertModal(driver);
-
-        await check_AlertInsufficientBalance(confirmation, alertModal);
+        await confirmation.clickInlineAlert();
+        await alertModal.check_AlertInsufficientBalance();
       },
     );
   });
 });
-
-async function check_AlertInsufficientBalance(
-  confirmation: Confirmation,
-  alertModal: AlertModal,
-): Promise<void> {
-  await alertModal.waitForAlert();
-  await confirmation.clickInlineAlert();
-  await displayAlertForInsufficientBalance(alertModal);
-}
 
 async function mintNft(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -56,11 +47,4 @@ async function mintNft(driver: Driver) {
 
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
-async function displayAlertForInsufficientBalance(
-  alertModal: AlertModal,
-): Promise<void> {
-  await alertModal.waitForInsufficientBalanceAlert();
-  await alertModal.clickAlertModalButton();
 }
