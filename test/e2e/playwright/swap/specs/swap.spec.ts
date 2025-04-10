@@ -73,7 +73,7 @@ const testSet = [
 
 test.beforeAll(
   'Initialize extension, import wallet and add custom networks',
-  async () => {
+  async ({ page }) => {
     const extension = new ChromeExtensionPage();
     const page = await extension.initExtension();
     page.setDefaultTimeout(15000);
@@ -88,8 +88,7 @@ test.beforeAll(
   },
 );
 
-// TODO: Skipping test as it's failing in the pipeline for unknown reasons
-test(`Get quote on Mainnet Network`, async () => {
+test(`Get quote on Mainnet Network`, async ({ page }) => {
   await walletPage.selectSwapAction();
   await walletPage.page.waitForTimeout(3000);
   await swapPage.enterQuote({
@@ -104,7 +103,7 @@ test(`Get quote on Mainnet Network`, async () => {
   await swapPage.goBack();
 });
 
-test(`Add Custom Networks and import test account`, async () => {
+test(`Add Custom Networks and import test account`, async ({ page }) => {
   wallet = ethers.Wallet.createRandom();
 
   const response = await addFundsToAccount(
@@ -120,12 +119,11 @@ test(`Add Custom Networks and import test account`, async () => {
 });
 
 testSet.forEach((options) => {
-  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
+  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async ({ page }) => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
     const balance = await walletPage.getTokenBalance();
     if (balance === '0 ETH') {
-      // eslint-disable-next-line mocha/no-skipped-tests
       test.skip();
     }
     await walletPage.selectSwapAction();
@@ -149,17 +147,14 @@ testSet.forEach((options) => {
           });
         } else {
           log.error(`\tERROR: Transaction did not complete. Skipping test`);
-          // eslint-disable-next-line mocha/no-skipped-tests
           test.skip();
         }
       } else {
         log.error(`\tERROR: No quotes found on. Skipping test`);
-        // eslint-disable-next-line mocha/no-skipped-tests
         test.skip();
       }
     } else {
       log.error(`\tERROR: Error while entering the quote. Skipping test`);
-      // eslint-disable-next-line mocha/no-skipped-tests
       test.skip();
     }
   });
