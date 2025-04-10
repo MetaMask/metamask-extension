@@ -3302,7 +3302,7 @@
     "message": "Read more"
   },
   "newPrivacyPolicyNotice": {
-    "message": "We’ve updated our privacy policy"
+    "message": "We’ve changed our metrics policy. We may collect data associated with public transactions on-chain. We never sell your data and you can opt out any time."
   },
   "newRpcUrl": {
     "message": "New RPC URL"
