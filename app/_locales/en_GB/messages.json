@@ -4845,6 +4845,9 @@
   "settings": {
     "message": "Settings"
   },
+  "settingsLowercase": {
+    "message": "settings"
+  },
   "settingsOptimisedForEaseOfUseAndSecurity": {
     "message": "Settings are optimised for ease of use and security. Change these any time."
   },
