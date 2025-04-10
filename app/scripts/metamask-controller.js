@@ -3558,11 +3558,9 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       generateNewMnemonicAndAddToVault:
         this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
       // txController
@@ -4461,7 +4459,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} mnemonic
    * @returns {object} new account address
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
@@ -4536,7 +4533,6 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Create a new Vault and restore an existent keyring.
@@ -5145,12 +5141,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSeedPhrase(password, _keyringId) {
     return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(
-        password,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        _keyringId,
-        ///: END:ONLY_INCLUDE_IF
-      ),
+      await this.keyringController.exportSeedPhrase(password, _keyringId),
     );
   }
 

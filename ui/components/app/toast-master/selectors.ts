@@ -15,9 +15,7 @@ import { getIsPrivacyToastRecent } from './utils';
 type State = Omit<MetaMaskReduxState, 'appState'> & {
   appState: {
     showNftDetectionEnablementToast?: boolean;
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     showNewSrpAddedToast?: boolean;
-    ///: END:ONLY_INCLUDE_IF
   };
   metamask: {
     newPrivacyPolicyToastClickedOrClosed?: boolean;
@@ -117,8 +115,6 @@ export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
  * @param state - Redux state object.
  * @returns Boolean preference value
  */
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export function selectNewSrpAdded(state: State): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
 }
-///: END:ONLY_INCLUDE_IF

@@ -6,12 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import {
-  useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useLocation,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -20,9 +15,7 @@ import {
   SolAccountType,
   KeyringAccountType,
 } from '@metamask/keyring-api';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { CaipChainId } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
 import {
   Box,
   ButtonLink,
@@ -73,10 +66,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   getMetaMaskHdKeyrings,
-  ///: END:ONLY_INCLUDE_IF
   getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -85,13 +76,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  CONFIRMATION_V_NEXT_ROUTE,
-  SETTINGS_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../helpers/constants/routes';
+import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -131,14 +116,10 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { CreateSnapAccount } from '../create-snap-account';
-///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
-///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 // TODO: Should we use an enum for this instead?
@@ -165,16 +146,13 @@ const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   CREATE_SRP: 'create-srp',
   IMPORT_SRP: 'import-srp',
   SELECT_SRP: 'select-srp',
-  ///: END:ONLY_INCLUDE_IF
 } as const;
 
 type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 const SNAP_CLIENT_CONFIG_MAP: Record<
   string,
   { clientType: WalletClientType | null; chainId: CaipChainId | null }
@@ -192,7 +170,6 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
     chainId: MultichainNetworks.SOLANA,
   },
 };
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Gets the title for a given action mode.
@@ -226,14 +203,12 @@ export const getActionTitle = (
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     case ACTION_MODES.CREATE_SRP:
       return t('createSecretRecoveryPhrase');
     case ACTION_MODES.IMPORT_SRP:
       return t('importSecretRecoveryPhrase');
     case ACTION_MODES.SELECT_SRP:
       return t('selectSecretRecoveryPhrase');
-    ///: END:ONLY_INCLUDE_IF
     default:
       return t('selectAnAccount');
   }
@@ -282,16 +257,12 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana,bitcoin)
-  const { pathname } = useLocation();
-  ///: END:ONLY_INCLUDE_IF
+
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
   );
-  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -306,9 +277,6 @@ export const AccountListMenu = ({
   );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const multiSrpEnabled = true;
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const isAddWatchEthereumAccountEnabled = useSelector(
@@ -358,7 +326,7 @@ export const AccountListMenu = ({
 
   const handleMultichainSnapAccountCreation = async (
     client: MultichainWalletSnapClient,
-    options: MultichainWalletSnapOptions,
+    snap_nameoptions: MultichainWalletSnapOptions,
     action: ActionMode,
   ) => {
     trackEvent({
@@ -373,27 +341,9 @@ export const AccountListMenu = ({
       },
     });
 
-    if (multiSrpEnabled) {
-      return setActionMode(action);
-    }
-
-    // The account creation + renaming is handled by the Snap account bridge, so
-    // we need to close the current modal
-    onClose();
-
-    if (pathname.includes(SETTINGS_ROUTE)) {
-      // The settings route does not redirect pending confirmations. We need to redirect manually here.
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
-    }
-
-    return await client.createAccount(options, {
-      displayConfirmation: false,
-      displayAccountNameSuggestion: true,
-      setSelectedAccount: true,
-    });
+    return setActionMode(action);
   };
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 
   // Here we are getting the keyring of the last selected account
   // if it is not an hd keyring, we will use the primary keyring
@@ -401,7 +351,6 @@ export const AccountListMenu = ({
   const [selectedKeyringId, setSelectedKeyringId] = useState(
     hdKeyring.metadata.id,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const searchResults: MergedInternalAccount[] = useMemo(() => {
     let _searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
@@ -431,10 +380,8 @@ export const AccountListMenu = ({
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     } else if (actionMode === ACTION_MODES.SELECT_SRP) {
       onBack = () => setActionMode(previousActionMode);
-      ///: END:ONLY_INCLUDE_IF
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
@@ -527,7 +474,6 @@ export const AccountListMenu = ({
     [onClose, setActionMode],
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const onSelectSrp = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
@@ -541,7 +487,6 @@ export const AccountListMenu = ({
     clientType: null,
     chainId: null,
   };
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -562,28 +507,22 @@ export const AccountListMenu = ({
           <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateEthAccount
               onActionComplete={onActionComplete}
-              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               selectedKeyringId={selectedKeyringId}
               onSelectSrp={onSelectSrp}
-              ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          clientType && chainId ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateSnapAccount
-                onActionComplete={onActionComplete}
-                selectedKeyringId={selectedKeyringId}
-                onSelectSrp={onSelectSrp}
-                clientType={clientType}
-                chainId={chainId}
-              />
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {clientType && chainId ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <CreateSnapAccount
+              onActionComplete={onActionComplete}
+              selectedKeyringId={selectedKeyringId}
+              onSelectSrp={onSelectSrp}
+              clientType={clientType}
+              chainId={chainId}
+            />
+          </Box>
+        ) : null}
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -594,33 +533,25 @@ export const AccountListMenu = ({
             <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          actionMode === ACTION_MODES.IMPORT_SRP && (
-            <Box
-              paddingLeft={4}
-              paddingRight={4}
-              paddingBottom={4}
-              paddingTop={0}
-              style={{ overflowY: 'scroll' }}
-            >
-              <ImportSrp onActionComplete={onActionComplete} />
-            </Box>
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          actionMode === ACTION_MODES.SELECT_SRP && (
-            <SrpList
-              onActionComplete={(keyringId: string) => {
-                setSelectedKeyringId(keyringId);
-                setActionMode(previousActionMode);
-              }}
-            />
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {actionMode === ACTION_MODES.IMPORT_SRP && (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+            style={{ overflowY: 'scroll' }}
+          >
+            <ImportSrp onActionComplete={onActionComplete} />
+          </Box>
+        )}
+        {actionMode === ACTION_MODES.SELECT_SRP && (
+          <SrpList
+            onActionComplete={(keyringId: string) => {
+              setSelectedKeyringId(keyringId);
+              setActionMode(previousActionMode);
+            }}
+          />
+        )}
 
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
@@ -741,7 +672,6 @@ export const AccountListMenu = ({
               {t('importWalletOrAccountHeader')}
             </Text>
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               <Box marginTop={4}>
                 <ButtonLink
                   size={ButtonLinkSize.Sm}
@@ -760,7 +690,6 @@ export const AccountListMenu = ({
                   {t('secretRecoveryPhrase')}
                 </ButtonLink>
               </Box>
-              ///: END:ONLY_INCLUDE_IF
             }
 
             <Box marginTop={4}>
