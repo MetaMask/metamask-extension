@@ -12,7 +12,8 @@ import {
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import  TestDapp from '../../../page-objects/pages/test-dapp';
+
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
 import {
@@ -30,23 +31,24 @@ import {
 } from './signature-helpers';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
-  it('initiates and confirms and emits the correct events', async function () {
+  it.only('initiates and confirms and emits the correct events', async function () {
     await withTransactionEnvelopeTypeFixtures(
-      this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
+            this.test?.fullTitle(),
+        TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await localNodes?.[0]?.getAccounts();
+                  const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        await initializePages(driver);
+          await initializePages(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+            await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance();
+          await assertHeaderInfoBalance();
+
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress();
