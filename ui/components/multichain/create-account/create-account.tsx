@@ -170,6 +170,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       return (
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
+            data-testid="account-name-input"
             ref={ref}
             size={FormTextFieldSize.Lg}
             gap={2}

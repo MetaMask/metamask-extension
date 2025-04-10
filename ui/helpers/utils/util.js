@@ -704,8 +704,11 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
+const REGEX_LTR_OVERRIDE = /\u202D/giu;
+const REGEX_RTL_OVERRIDE = /\u202E/giu;
+
 /**
- * The method escape RTL character in string
+ * The method escapes LTR and RTL override unicode in the string
  *
  * @param {*} value
  * @returns {(string|*)} escaped string or original param value
@@ -717,8 +720,10 @@ export const sanitizeString = (value) => {
   if (!lodash.isString(value)) {
     return value;
   }
-  const regex = /\u202E/giu;
-  return value.replace(regex, '\\u202E');
+
+  return value
+    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
+    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
 };
 
 /**
