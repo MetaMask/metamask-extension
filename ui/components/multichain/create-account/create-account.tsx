@@ -160,7 +160,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             });
             history.push(mostRecentOverviewPage);
           } catch (error) {
-            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
             if (selectedKeyringId) {
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
@@ -184,7 +183,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 },
               });
             }
-            ///: END:ONLY_INCLUDE_IF
           }
         },
         [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
