@@ -334,6 +334,7 @@ describe('Send flow', function (this: Suite) {
         await sendSolanaPage.check_pageIsLoaded('50 SOL');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
+        // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
 
