@@ -100,6 +100,19 @@ $text-variants: (
   &--text-transform-capitalize {
     text-transform: capitalize;
   }
+
+  // Font Family Variants
+  &--font-family-default {
+    font-family: var(--font-family-default);
+  }
+
+  &--font-family-accent {
+    font-family: var(--font-family-accent);
+  }
+
+  &--font-family-hero {
+    font-family: var(--font-family-hero);
+  }
 }
 
 
