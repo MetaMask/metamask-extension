@@ -1,9 +1,10 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   TextColor,
   IconColor,
@@ -18,9 +19,16 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentNetwork,
+  getIpfsGateway,
+  getNetworkConfigurationIdByChainId,
+} from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -31,6 +39,8 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
   setNewNftAddedMessage,
+  setActiveNetworkWithError,
+  setSwitchedNetworkDetails,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
@@ -68,18 +78,30 @@ import {
 } from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import {
+  addUrlProtocolPrefix,
+  isWebUrl,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getImageForChainId } from '../../../../../selectors/multichain';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
+import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-export default function NftDetails({ nft }: { nft: Nft }) {
+export function NftDetailsComponent({
+  nft,
+  nftChainId,
+}: {
+  nft: Nft;
+  nftChainId: string;
+}) {
   const {
-    image,
+    image: _image,
     imageOriginal,
     name,
     description,
@@ -92,6 +114,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     rarityRank,
     topBid,
     attributes,
+    tokenURI,
   } = nft;
 
   const t = useI18nContext();
@@ -104,13 +127,28 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
+  const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+  const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
+  const nftChainImage = getImageForChainId(nftChainId as string);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
+
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
+
   const nftImageAlt = getNftImageAlt(nft);
-  const nftSrcUrl = imageOriginal ?? image;
+  const image = getNftImage(_image);
+  const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+
   const nftImageURL = useGetAssetImageUrl(
     imageOriginal ?? image ?? undefined,
     ipfsGateway,
@@ -240,14 +278,36 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const sendDisabled =
     standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
 
+  const setCorrectChain = async () => {
+    // If we aren't presently on the chain of the nft, change to it
+    if (nftChainId !== currentChain.chainId) {
+      try {
+        const networkConfigurationId = networks[nftChainId as Hex];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains for NFT.
+          Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
+          ${err}`);
+        throw err;
+      }
+    }
+  };
+
   const onSend = async () => {
+    await setCorrectChain();
     await dispatch(
       startNewDraftTransaction({
         type: AssetType.NFT,
         details: {
           ...nft,
-          tokenId: Number(nft.tokenId),
-          image: nft.image ?? undefined,
+          tokenId: nft.tokenId as unknown as number,
+          image: nft.image ?? imageFromTokenURI ?? undefined,
+          name: nft.name ?? nameFromTokenURI ?? undefined,
         },
       }),
     );
@@ -304,15 +364,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-
-  const renderShortTokenId = (text: string, chars: number) => {
-    if (text.length <= MAX_TOKEN_ID_LENGTH) {
-      return text;
-    }
-    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
-  };
-
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   return (
     <Page>
@@ -350,8 +402,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             <NftItem
               src={nftItemSrc as string | undefined}
               alt={nftImageAlt}
-              networkName={currentChain.nickname ?? ''}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
+              networkName={nftChainNetwork.name ?? ''}
+              networkSrc={nftChainImage}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
               detailView
@@ -364,7 +416,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
                 variant={TextVariant.headingMd}
-                fontWeight={FontWeight.Bold}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.textDefault}
                 fontStyle={FontStyle.Normal}
                 style={{ fontSize: '24px' }}
@@ -851,3 +903,11 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     </Page>
   );
 }
+
+function NftDetails({ nft }: { nft: Nft }) {
+  const { chainId } = useParams();
+
+  return <NftDetailsComponent nft={nft} nftChainId={chainId ?? ''} />;
+}
+
+export default NftDetails;

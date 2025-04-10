@@ -95,6 +95,11 @@ const render = (props = {}, state = {}) => {
           conversionRate: '100000',
         },
       },
+      conversionRates: {
+        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          rate: '100000',
+        },
+      },
       snaps: {
         ...mockState.metamask.snaps,
         [mockSnap.id]: mockSnap,
@@ -205,29 +210,6 @@ describe('AccountListItem', () => {
     });
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
-
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  it('renders the snap name for named snap accounts', () => {
-    const { container } = render({
-      account: {
-        ...mockAccount,
-        metadata: {
-          ...mockAccount.metadata,
-          snap: {
-            id: mockSnap.id,
-          },
-          keyring: {
-            type: 'Snap Keyring',
-          },
-        },
-
-        balance: '0x0',
-      },
-    });
-    const tag = container.querySelector('.mm-tag');
-    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
-  });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {

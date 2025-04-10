@@ -8,7 +8,10 @@ import { SEND_STAGES } from '../../../ducks/send';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../../../../test/stub/networks';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -35,6 +38,7 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       ...mockNetworkState(network),
+      ...mockMultichainNetworkState(),
       isUnlocked: isUnlocked ?? true,
     },
     activeTab: {

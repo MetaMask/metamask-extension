@@ -10,7 +10,7 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { debounce } = require('lodash');
+const lodash = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -22,8 +22,6 @@ const PAGES = {
   OFFSCREEN: 'offscreen',
   POPUP: 'popup',
 };
-
-const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
@@ -669,13 +667,24 @@ class Driver {
     throw new Error('Element did not stop moving within the timeout period');
   }
 
-  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
-  async takeScreenshot(title) {
-    const filepathBase = `${artifactDir(title)}/test-screenshot`;
-    await fs.mkdir(artifactDir(title), { recursive: true });
+  /**
+   * @param {string} testTitle - The title of the test
+   */
+  #getArtifactDir(testTitle) {
+    return `./test-artifacts/${this.browser}/${sanitizeTestTitle(testTitle)}`;
+  }
+
+  /**
+   * @param {string} testTitle - The title of the test
+   * @param {string} screenshotTitle - The title of the screenshot
+   * @returns {Promise<void>} Promise that resolves when the screenshot is taken
+   */
+  async takeScreenshot(testTitle, screenshotTitle) {
+    const artifactDir = this.#getArtifactDir(testTitle);
+    await fs.mkdir(artifactDir, { recursive: true });
 
     const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+    await fs.writeFile(`${artifactDir}/${screenshotTitle}.png`, screenshot, {
       encoding: 'base64',
     });
   }
@@ -794,6 +803,26 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
+  }
+
+  /**
+   * Finds the element, scrolls the page until the element is in view, and clicks it.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} Promise resolving after scrolling and clicking
+   */
+  async findScrollToAndClickElement(rawLocator) {
+    try {
+      const element = await this.findElement(rawLocator);
+      await this.scrollToElement(element);
+      await this.clickElement(rawLocator);
+    } catch (error) {
+      console.error(
+        `Error finding, scrolling to, or clicking element with selector: ${rawLocator}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
@@ -1197,7 +1226,28 @@ class Driver {
     await this.driver.close();
   }
 
-  // Close Alert Popup
+  /**
+   * Get the text of the alert popup that is currently open in the browser
+   * session.
+   *
+   * @param text - The text of the alert popup.
+   * @param options - Options for the function.
+   * @param options.timeout - The maximum time to wait for the alert to be
+   * present.
+   * @returns {Promise<string>} The text of the alert popup.
+   */
+  async waitForAlert(text, { timeout = this.timeout } = {}) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const alertText = await alert.getText();
+
+    if (text && alertText !== text) {
+      throw new Error(
+        `Expected alert text to be "${text}", but got "${alertText}".`,
+      );
+    }
+  }
+
   /**
    * Close the alert popup that is currently open in the browser session.
    *
@@ -1228,18 +1278,58 @@ class Driver {
     }
   }
 
+  /**
+   * Switches to a window by its title without using the background socket.
+   * To be used in specs that run against production builds.
+   *
+   * @param {string} title - The target window title to switch to
+   * @returns {Promise<void>}
+   * @throws {Error} Will throw an error if the target window is not found
+   */
+  async switchToWindowByTitleWithoutSocket(title) {
+    const windowHandles = await this.driver.getAllWindowHandles();
+    let targetWindowFound = false;
+
+    // Iterate through each window handle
+    for (const handle of windowHandles) {
+      await this.driver.switchTo().window(handle);
+      let currentTitle = await this.driver.getTitle();
+
+      // Wait 25 x 200ms = 5 seconds for the title to match the target title
+      for (let i = 0; i < 25; i++) {
+        if (currentTitle === title) {
+          targetWindowFound = true;
+          console.log(`Switched to ${title} window`);
+          break;
+        }
+        await this.driver.sleep(200);
+        currentTitle = await this.driver.getTitle();
+      }
+
+      // If the target window is found, break out of the outer loop
+      if (targetWindowFound) {
+        break;
+      }
+    }
+
+    // If target window is not found, throw an error
+    if (!targetWindowFound) {
+      throw new Error(`${title} window not found`);
+    }
+  }
+
   // Error handling
 
-  async verboseReportOnFailure(title, error) {
+  async verboseReportOnFailure(testTitle, error) {
     console.error(
-      `Failure on testcase: '${title}', for more information see the ${
+      `Failure on testcase: '${testTitle}', for more information see the ${
         process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);
 
-    const filepathBase = `${artifactDir(title)}/test-failure`;
-    await fs.mkdir(artifactDir(title), { recursive: true });
+    const filepathBase = `${this.#getArtifactDir(testTitle)}/test-failure`;
+    await fs.mkdir(this.#getArtifactDir(testTitle), { recursive: true });
 
     const windowHandles = await this.driver.getAllWindowHandles();
     // On occasion there may be a bug in the offscreen document which does
@@ -1251,16 +1341,10 @@ class Driver {
         await this.driver.switchTo().window(handle);
         const windowTitle = await this.driver.getTitle();
         if (windowTitle !== 'MetaMask Offscreen Page') {
-          const screenshot = await this.driver.takeScreenshot();
-          await fs.writeFile(
-            `${filepathBase}-screenshot-${
-              windowHandles.indexOf(handle) + 1
-            }.png`,
-            screenshot,
-            {
-              encoding: 'base64',
-            },
-          );
+          const screenshotTitle = `test-failure-screenshot-${
+            windowHandles.indexOf(handle) + 1
+          }`;
+          await this.takeScreenshot(testTitle, screenshotTitle);
         }
       }
     } catch (e) {
@@ -1345,7 +1429,7 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     // Flush the event processing stack 50ms after the last event is added
-    const debounceEventProcessingStack = debounce(
+    const debounceEventProcessingStack = lodash.debounce(
       this.#flushEventProcessingStack.bind(this),
       50,
     );
@@ -1469,6 +1553,20 @@ function collectMetrics() {
     ...results,
     ...window.stateHooks.getCustomTraces(),
   };
+}
+
+/**
+ * @param {string} testTitle - The title of the test
+ */
+function sanitizeTestTitle(testTitle) {
+  return testTitle
+    .toLowerCase()
+    .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
+    .trim()
+    .replace(/\s+/gu, '-') // Replace whitespace with dashes
+    .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
+    .replace(/--+/gu, '-') // Collapse multiple dashes
+    .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
 
 module.exports = { Driver, PAGES };

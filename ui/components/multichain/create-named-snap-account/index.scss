@@ -8,7 +8,7 @@
 
   width: 100%;
   flex-flow: column nowrap;
-  margin: 0 auto;
+  margin: 0 auto !important;
 
   @include design-system.screen-sm-max {
     height: $height-screen-sm-max;

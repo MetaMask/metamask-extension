@@ -1,4 +1,9 @@
-import { SnapKeyring, SnapKeyringCallbacks } from '@metamask/eth-snap-keyring';
+import {
+  getDefaultInternalOptions,
+  SnapKeyring,
+  SnapKeyringCallbacks,
+  SnapKeyringInternalOptions,
+} from '@metamask/eth-snap-keyring';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
@@ -9,14 +14,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
-import MetamaskController from '../../metamask-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
+import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
-import { SnapKeyringBuilderMessenger } from './types';
 import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
@@ -34,21 +39,6 @@ export type SnapKeyringHelpers = {
   trackEvent: MetaMetricsController['trackEvent'];
   persistKeyringHelper: () => Promise<void>;
   removeAccountHelper: (address: string) => Promise<void>;
-};
-
-/**
- * Get the addresses of the accounts managed by a given Snap.
- *
- * @param controller - Instance of the MetaMask Controller.
- * @param snapId - Snap ID to get accounts for.
- * @returns The addresses of the accounts.
- */
-export const getAccountsBySnapId = async (
-  controller: MetamaskController,
-  snapId: SnapId,
-) => {
-  const snapKeyring: SnapKeyring = await controller.getSnapKeyring();
-  return await snapKeyring.getAccountsBySnapId(snapId);
 };
 
 /**
@@ -187,19 +177,123 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     await this.#persistKeyringHelper();
   }
 
-  async addAccount(
-    address: string,
-    snapId: string,
-    handleUserInput: (accepted: boolean) => Promise<void>,
-    accountNameSuggestion: string = '',
-    displayConfirmation: boolean = false,
-  ) {
-    assertIsValidSnapId(snapId);
+  async #withApprovalFlow<Return>(
+    run: (flowId: string) => Promise<Return>,
+  ): Promise<Return> {
+    const { id: flowId } = this.#messenger.call('ApprovalController:startFlow');
+
+    try {
+      return await run(flowId);
+    } finally {
+      this.#messenger.call('ApprovalController:endFlow', {
+        id: flowId,
+      });
+    }
+  }
+
+  /**
+   * Get the account name from the user through a dialog.
+   *
+   * @param snapId - ID of the Snap that created the account.
+   * @param accountNameSuggestion - Suggested name for the account.
+   * @returns The name that should be used for the account.
+   */
+  async #getAccountNameFromDialog(
+    snapId: SnapId,
+    accountNameSuggestion: string,
+  ): Promise<{ success: boolean; accountName?: string }> {
+    const { success, name: accountName } =
+      await showAccountNameSuggestionDialog(
+        snapId,
+        this.#messenger,
+        accountNameSuggestion,
+      );
+
+    return { success, accountName };
+  }
+
+  /**
+   * Use the account name suggestion to decide the name of the account.
+   *
+   * @param accountNameSuggestion - Suggested name for the account.
+   * @returns The name that should be used for the account.
+   */
+  async #getAccountNameFromSuggestion(
+    accountNameSuggestion: string,
+  ): Promise<{ success: boolean; accountName?: string }> {
+    const accounts = await this.#messenger.call(
+      'AccountsController:listMultichainAccounts',
+    );
+    const accountName = getUniqueAccountName(accounts, accountNameSuggestion);
+    return { success: true, accountName };
+  }
+
+  async #addAccountConfirmations({
+    snapId,
+    skipConfirmationDialog,
+    skipAccountNameSuggestionDialog,
+    handleUserInput,
+    accountNameSuggestion,
+  }: {
+    snapId: SnapId;
+    skipConfirmationDialog: boolean;
+    skipAccountNameSuggestionDialog: boolean;
+    accountNameSuggestion: string;
+    handleUserInput: (accepted: boolean) => Promise<void>;
+  }): Promise<{ accountName?: string }> {
+    return await this.#withApprovalFlow(async (_) => {
+      // 1. Show the account CREATION confirmation dialog.
+      {
+        // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
+        const success =
+          skipConfirmationDialog ||
+          (await showAccountCreationDialog(snapId, this.#messenger));
+
+        if (!success) {
+          // User has cancelled account creation
+          await handleUserInput(success);
+
+          throw new Error('User denied account creation');
+        }
+      }
+
+      // 2. Show the account RENAMING confirmation dialog. Note that
+      //    pre-installed Snaps can skip this dialog.
+      {
+        const { success, accountName } = skipAccountNameSuggestionDialog
+          ? await this.#getAccountNameFromSuggestion(accountNameSuggestion)
+          : await this.#getAccountNameFromDialog(snapId, accountNameSuggestion);
+
+        await handleUserInput(success);
+
+        if (!success) {
+          throw new Error('User denied account creation');
+        }
+
+        return { accountName };
+      }
+    });
+  }
+
+  async #addAccountFinalize({
+    address,
+    snapId,
+    skipConfirmationDialog,
+    skipSetSelectedAccountStep,
+    accountName,
+    onceSaved,
+  }: {
+    address: string;
+    snapId: SnapId;
+    skipConfirmationDialog: boolean;
+    skipSetSelectedAccountStep: boolean;
+    onceSaved: Promise<string>;
+    accountName?: string;
+  }) {
+    const learnMoreLink =
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
 
     const snapName = getSnapName(snapId, this.#messenger);
-    const { id: addAccountFlowId } = this.#messenger.call(
-      'ApprovalController:startFlow',
-    );
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
       this.#trackEvent({
@@ -213,123 +307,134 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       });
     };
 
-    try {
-      const learnMoreLink =
-        'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
+    await this.#withApprovalFlow(async (_) => {
+      try {
+        // First, wait for the account to be fully saved.
+        // NOTE: This might throw, so keep this in the `try` clause.
+        const accountId = await onceSaved;
 
-      // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
-      const skipConfirmation =
-        isSnapPreinstalled(snapId) && !displayConfirmation;
-      // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
-      const accountCreationConfirmationResult =
-        skipConfirmation ||
-        (await showAccountCreationDialog(snapId, this.#messenger));
+        // From here, we know the account has been saved into the Snap keyring
+        // state, so we can safely uses this state to run post-processing.
+        // (e.g. renaming the account, select the account, etc...)
 
-      if (!accountCreationConfirmationResult) {
-        // User has cancelled account creation
-        await handleUserInput(accountCreationConfirmationResult);
-
-        throw new Error('User denied account creation');
-      }
-
-      const accountNameConfirmationResult =
-        await showAccountNameSuggestionDialog(
-          snapId,
-          this.#messenger,
-          accountNameSuggestion,
-        );
-
-      if (accountNameConfirmationResult?.success) {
-        try {
-          // Persist the account so we can rename it afterward
-          await this.#persistKeyringHelper();
-          await handleUserInput(accountNameConfirmationResult.success);
-          const account = this.#messenger.call(
-            'AccountsController:getAccountByAddress',
-            address,
-          );
-          if (!account) {
-            throw new Error(
-              `Internal account not found for address: ${address}`,
-            );
-          }
+        if (!skipSetSelectedAccountStep) {
           // Set the selected account to the new account
           this.#messenger.call(
             'AccountsController:setSelectedAccount',
-            account.id,
+            accountId,
           );
+        }
 
-          if (accountNameConfirmationResult.name) {
-            this.#messenger.call(
-              'AccountsController:setAccountName',
-              account.id,
-              accountNameConfirmationResult.name,
-            );
-          }
+        if (accountName) {
+          this.#messenger.call(
+            'AccountsController:setAccountName',
+            accountId,
+            accountName,
+          );
+        }
 
-          if (!skipConfirmation) {
-            // TODO: Add events tracking to the dialog itself, so that events are more
-            // "linked" to UI actions
-            // User should now see the "Successfuly added account" page
-            trackSnapAccountEvent(
-              MetaMetricsEventName.AddSnapAccountSuccessViewed,
-            );
-            await showSuccess(
-              this.#messenger,
-              snapId,
-              {
-                icon: IconName.UserCircleAdd,
-                title: t('snapAccountCreated'),
-              },
-              {
-                message: t('snapAccountCreatedDescription') as string,
-                address,
-                learnMoreLink,
-              },
-            );
-            // User has clicked on "OK"
-            trackSnapAccountEvent(
-              MetaMetricsEventName.AddSnapAccountSuccessClicked,
-            );
-          }
-
-          trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
-        } catch (e) {
-          // Error occurred while naming the account
-          const error = (e as Error).message;
-
-          await showError(
+        if (!skipConfirmationDialog) {
+          // TODO: Add events tracking to the dialog itself, so that events are more
+          // "linked" to UI actions
+          // User should now see the "Successfuly added account" page
+          trackSnapAccountEvent(
+            MetaMetricsEventName.AddSnapAccountSuccessViewed,
+          );
+          await showSuccess(
             this.#messenger,
             snapId,
             {
               icon: IconName.UserCircleAdd,
-              title: t('snapAccountCreationFailed'),
+              title: t('snapAccountCreated'),
             },
             {
-              message: t(
-                'snapAccountCreationFailedDescription',
-                snapName,
-              ) as string,
+              message: t('snapAccountCreatedDescription') as string,
+              address,
               learnMoreLink,
-              error,
             },
           );
-
-          throw new Error(
-            `Error occurred while creating snap account: ${error}`,
+          // User has clicked on "OK"
+          trackSnapAccountEvent(
+            MetaMetricsEventName.AddSnapAccountSuccessClicked,
           );
         }
-      } else {
-        // User has cancelled account creation so remove the account from the keyring
-        await handleUserInput(accountNameConfirmationResult?.success);
 
-        throw new Error('User denied account creation');
+        trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
+      } catch (e) {
+        // Error occurred while naming the account
+        const error = (e as Error).message;
+
+        await showError(
+          this.#messenger,
+          snapId,
+          {
+            icon: IconName.UserCircleAdd,
+            title: t('snapAccountCreationFailed'),
+          },
+          {
+            message: t(
+              'snapAccountCreationFailedDescription',
+              snapName,
+            ) as string,
+            learnMoreLink,
+            error,
+          },
+        );
+
+        // This part of the flow is not awaited, so we just log the error for now:
+        console.error('Error occurred while creating snap account:', error);
       }
-    } finally {
-      this.#messenger.call('ApprovalController:endFlow', {
-        id: addAccountFlowId,
-      });
-    }
+    });
+  }
+
+  async addAccount(
+    address: string,
+    snapId: string,
+    handleUserInput: (accepted: boolean) => Promise<void>,
+    onceSaved: Promise<string>,
+    accountNameSuggestion: string = '',
+    {
+      displayConfirmation,
+      displayAccountNameSuggestion,
+      setSelectedAccount,
+    }: SnapKeyringInternalOptions = getDefaultInternalOptions(),
+  ) {
+    assertIsValidSnapId(snapId);
+
+    // If Snap is preinstalled and does not request confirmation, skip the confirmation dialog.
+    const skipConfirmationDialog =
+      isSnapPreinstalled(snapId) && !displayConfirmation;
+
+    // Only pre-installed Snaps can skip the account name suggestion dialog.
+    const skipAccountNameSuggestionDialog =
+      isSnapPreinstalled(snapId) && !displayAccountNameSuggestion;
+
+    // Only pre-installed Snaps can skip the account from being selected.
+    const skipSetSelectedAccountStep =
+      isSnapPreinstalled(snapId) && !setSelectedAccount;
+
+    // First part of the flow, which includes confirmation dialogs (if not skipped).
+    // Once confirmed, we resume the Snap execution.
+    const { accountName } = await this.#addAccountConfirmations({
+      snapId,
+      skipConfirmationDialog,
+      skipAccountNameSuggestionDialog,
+      accountNameSuggestion,
+      handleUserInput,
+    });
+
+    // The second part is about selecting the newly created account and showing some other
+    // confirmation dialogs (or error dialogs if anything goes wrong while persisting the account
+    // into the state.
+    // eslint-disable-next-line no-void
+    void this.#addAccountFinalize({
+      address,
+      snapId,
+      skipConfirmationDialog,
+      skipSetSelectedAccountStep,
+      accountName,
+      onceSaved,
+    });
   }
 
   async removeAccount(

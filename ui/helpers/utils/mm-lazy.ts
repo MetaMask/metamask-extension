@@ -1,6 +1,5 @@
 import React from 'react';
-// eslint-disable-next-line import/no-restricted-paths
-import { getManifestFlags } from '../../../app/scripts/lib/manifestFlags';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
 type DynamicImportType = () => Promise<{ default: React.ComponentType }>;

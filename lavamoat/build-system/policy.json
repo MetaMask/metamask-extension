@@ -1309,7 +1309,7 @@
     "chokidar>anymatch": {
       "packages": {
         "chokidar>anymatch>normalize-path": true,
-        "chokidar>anymatch>picomatch": true
+        "micromatch>picomatch": true
       }
     },
     "gulp>glob-watcher>anymatch": {
@@ -1559,6 +1559,9 @@
       }
     },
     "chokidar>braces": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "chokidar>braces>fill-range": true
       }
@@ -3083,7 +3086,7 @@
         "eslint>@nodelib/fs.walk": true,
         "eslint>glob-parent": true,
         "globby>merge2": true,
-        "fast-glob>micromatch": true
+        "micromatch": true
       }
     },
     "eslint>@nodelib/fs.walk>fastq": {
@@ -4563,6 +4566,15 @@
         "process.nextTick": true
       }
     },
+    "micromatch": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "chokidar>braces": true,
+        "micromatch>picomatch": true
+      }
+    },
     "gulp>glob-watcher>anymatch>micromatch": {
       "builtin": {
         "path.basename": true,
@@ -4609,15 +4621,6 @@
         "gulp-watch>anymatch>micromatch>object.omit": true,
         "gulp-watch>anymatch>micromatch>parse-glob": true,
         "gulp-watch>anymatch>micromatch>regex-cache": true
-      }
-    },
-    "fast-glob>micromatch": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "chokidar>braces": true,
-        "chokidar>anymatch>picomatch": true
       }
     },
     "eslint>minimatch": {
@@ -5119,7 +5122,7 @@
         "process.platform": true
       }
     },
-    "chokidar>anymatch>picomatch": {
+    "micromatch>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
@@ -6277,7 +6280,7 @@
         "gulp>vinyl-fs>pumpify>pump": true
       }
     },
-    "mockttp>express>qs": {
+    "mockttp>body-parser>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -7062,7 +7065,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "chokidar>anymatch>picomatch": true
+        "micromatch>picomatch": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": {
@@ -8234,7 +8237,7 @@
         "lodash": true,
         "mocha>log-symbols": true,
         "stylelint>mathml-tag-names": true,
-        "fast-glob>micromatch": true,
+        "micromatch": true,
         "stylelint>normalize-selector": true,
         "stylelint>postcss-html": true,
         "stylelint>postcss-less": true,
@@ -8634,7 +8637,7 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "mockttp>express>qs": true
+        "mockttp>body-parser>qs": true
       }
     },
     "gulp>vinyl-fs>glob-stream>to-absolute-glob": {

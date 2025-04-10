@@ -8,8 +8,13 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
+import {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../shared/constants/metametrics';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -25,7 +30,11 @@ export type ControllerByName = {
  * e.g. `{ TransactionController: { transactions: [] } }`.
  */
 export type ControllerPersistedState = Partial<{
-  [name in ControllerName]: Partial<ControllerByName[name]['state']>;
+  [name in ControllerName]: Partial<
+    ControllerByName[name] extends { state: unknown }
+      ? ControllerByName[name]['state']
+      : never
+  >;
 }>;
 
 /** Generic controller messenger using base template types. */
@@ -114,6 +123,13 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * Function to update account balance for network of the transaction
+   */
+  updateAccountBalanceForTransactionNetwork(
+    transactionMeta: TransactionMeta,
+  ): void;
+
+  /**
    * A promise that resolves when the offscreen document is ready.
    */
   offscreenPromise: Promise<void>;
@@ -161,6 +177,22 @@ export type ControllerInitRequest<
     message: string,
     url?: string,
   ) => Promise<void>;
+
+  /**
+   * Get the MetaMetrics ID.
+   */
+  getMetaMetricsId: () => string;
+
+  /**
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   *
+   * @param payload - details of the event
+   * @param options - options for handling/routing the event
+   */
+  trackEvent: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => void;
 
   /**
    * Required initialization messenger instance.

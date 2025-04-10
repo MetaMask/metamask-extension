@@ -7,6 +7,13 @@ jobs:
   build-beta:
     name: Build beta
     runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,17 +23,11 @@ jobs:
           # However, we need the head commit (the latest commit pushed to the source branch)
           # because in the workflow, we would like to parse the latest commit message.
           # Specifying `ref` ensures that the head commit is checked out directly.
-          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
-          # For a `push` event, the head commit hash is `github.sha`.
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ env.HEAD_COMMIT_HASH }}
 
       - name: Needs beta build
-        # For a `pull_request` event, the branch is `github.head_ref``.
-        # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ (github.head_ref || github.ref_name) != 'master' }}
+        if: ${{ env.BRANCH != 'master' }}
         id: needs-beta-build
-        env:
-          BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           version="${BRANCH/Version-v/}"
           commit_message=$(git show -s --format=%s HEAD)
@@ -40,16 +41,21 @@ jobs:
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Setup environment
+      - name: Checkout and setup high risk environment
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: true
+          ref: ${{ env.HEAD_COMMIT_HASH }}
+          skip-allow-scripts: true
 
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         env:
-          INFURA_PROJECT_ID: 00000000000
-          INFURA_BETA_PROJECT_ID: 00000000000
+          INFURA_PROJECT_ID: ${{ vars.INFURA_PROJECT_ID }}
+          INFURA_BETA_PROJECT_ID: ${{ vars.INFURA_BETA_PROJECT_ID }}
           SEGMENT_BETA_WRITE_KEY: 00000000000
+          SENTRY_DSN: https://fake@sentry.io/0000000
           ENABLE_MV3: true
         run: |
           yarn build --build-type beta --platform='chrome' dist
@@ -60,7 +66,7 @@ jobs:
         run: yarn validate-source-maps
 
       - name: Upload 'dist-beta' to S3
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -69,7 +75,7 @@ jobs:
           path: dist
 
       - name: Upload 'builds-beta' to S3
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}

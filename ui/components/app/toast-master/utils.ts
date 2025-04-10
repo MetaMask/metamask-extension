@@ -1,6 +1,11 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
-import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  SET_SHOW_NEW_SRP_ADDED_TOAST,
+  ///: END:ONLY_INCLUDE_IF
+  SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+} from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
@@ -67,3 +72,12 @@ export function submitRequestToBackgroundAndCatch(
     console.error('Error caught in submitRequestToBackground', error);
   });
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export function setShowNewSrpAddedToast(value: boolean) {
+  return {
+    type: SET_SHOW_NEW_SRP_ADDED_TOAST,
+    payload: value,
+  };
+}
+///: END:ONLY_INCLUDE_IF

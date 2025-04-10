@@ -131,7 +131,11 @@ const plugins: WebpackPluginInstance[] = [
     version: version.version,
     versionName: version.versionName,
     browsers: args.browser,
-    transform: transformManifest(args),
+    transform: transformManifest(
+      args,
+      isDevelopment,
+      variables.get('MANIFEST_OVERRIDES') as string | undefined,
+    ),
     zip: args.zip,
     ...(args.zip
       ? {

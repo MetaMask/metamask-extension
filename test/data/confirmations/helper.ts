@@ -81,6 +81,7 @@ export const getMockPersonalSignConfirmState = (
       [unapprovedPersonalSignMsg.id]: {
         id: unapprovedPersonalSignMsg.id,
         type: ApprovalType.PersonalSign,
+        origin: 'https://metamask.github.io',
       },
     },
     unapprovedPersonalMsgs: {

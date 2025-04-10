@@ -46,13 +46,17 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
+import {
+  ADD_POPULAR_CUSTOM_NETWORK,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  REVEAL_SRP_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import MetametricsToggle from './metametrics-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
@@ -74,9 +78,6 @@ export default class SecurityTab extends PureComponent {
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
-    incomingTransactionsPreferences: PropTypes.object.isRequired,
-    networkConfigurations: PropTypes.object.isRequired,
-    setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
     setUse4ByteResolution: PropTypes.func.isRequired,
@@ -102,9 +103,13 @@ export default class SecurityTab extends PureComponent {
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
-    toggleExternalServices: PropTypes.func.isRequired,
+    toggleExternalServices: PropTypes.func,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hdEntropyIndex: PropTypes.number,
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    hasMultipleHdKeyrings: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -165,6 +170,9 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    const { history, hasMultipleHdKeyrings } = this.props;
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <>
@@ -187,6 +195,7 @@ export default class SecurityTab extends PureComponent {
                 properties: {
                   key_type: MetaMetricsEventKeyType.Srp,
                   location: 'Settings',
+                  hd_entropy_index: this.props.hdEntropyIndex,
                 },
               });
               this.context.trackEvent({
@@ -197,6 +206,14 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              if (hasMultipleHdKeyrings) {
+                history.push({
+                  pathname: REVEAL_SRP_LIST_ROUTE,
+                });
+                return;
+              }
+              ///: END:ONLY_INCLUDE_IF
               this.setState({ srpQuizModalVisible: true });
             }}
           >
@@ -261,23 +278,6 @@ export default class SecurityTab extends PureComponent {
           </Box>
         </div>
       </>
-    );
-  }
-
-  renderIncomingTransactionsOptIn() {
-    const {
-      incomingTransactionsPreferences,
-      networkConfigurations,
-      setIncomingTransactionsPreferences,
-    } = this.props;
-
-    return (
-      <IncomingTransactionToggle
-        wrapperRef={this.settingsRefs[2]}
-        networkConfigurations={networkConfigurations}
-        setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
-        incomingTransactionsPreferences={incomingTransactionsPreferences}
-      />
     );
   }
 
@@ -1163,7 +1163,11 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('privacy')}
         </span>
 
-        <div className="settings-page__content-padded">
+        <div
+          ref={this.settingsRefs[21]}
+          className="settings-page__content-padded"
+          data-testid="profile-sync"
+        >
           <ProfileSyncToggle />
         </div>
 
@@ -1190,7 +1194,6 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
-          {this.renderIncomingTransactionsOptIn()}
           {this.renderSimulationsToggle()}
         </div>
 

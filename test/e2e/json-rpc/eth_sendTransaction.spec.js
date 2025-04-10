@@ -1,10 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  generateGanacheOptions,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_sendTransaction', function () {
@@ -18,11 +13,7 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: generateGanacheOptions({
-          hardfork: 'london',
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-        }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -68,11 +59,7 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: generateGanacheOptions({
-          hardfork: 'london',
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-        }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -1,8 +1,4 @@
-import {
-  withFixtures,
-  WINDOW_TITLES,
-  generateGanacheOptions,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
@@ -23,9 +19,18 @@ describe('Dapp interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: generateGanacheOptions({
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        }),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

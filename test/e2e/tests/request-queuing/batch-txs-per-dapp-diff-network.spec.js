@@ -1,4 +1,5 @@
 const { By } = require('selenium-webdriver');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -7,7 +8,6 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
 
@@ -19,19 +19,21 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 
@@ -101,11 +103,17 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Reject all',
-          tag: 'button',
-        });
-
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
         // Wait for confirmation to close
         await driver.delay(2000);
 

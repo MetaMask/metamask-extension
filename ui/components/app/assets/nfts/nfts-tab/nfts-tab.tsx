@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
   Display,
@@ -19,6 +19,7 @@ import {
   getUseNftDetection,
   getNftIsStillFetchingIndication,
   getPreferences,
+  getAllChainsToPoll,
 } from '../../../../../selectors';
 import {
   Box,
@@ -53,6 +54,7 @@ import NftGrid from '../nft-grid/nft-grid';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 import { sortAssets } from '../../util/sort';
+import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 
 export default function NftsTab() {
   const history = useHistory();
@@ -65,11 +67,6 @@ export default function NftsTab() {
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
-  const currentChain = useSelector(getCurrentNetwork) as {
-    chainId: Hex;
-    nickname: string;
-    rpcPrefs?: { imageUrl: string };
-  };
 
   const { nftsLoading, collections } = useNftsCollections();
 
@@ -79,6 +76,7 @@ export default function NftsTab() {
   const showNftBanner = hasAnyNfts === false;
   const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   useEffect(() => {
     if (nftsLoading || !showNftBanner) {
@@ -111,7 +109,7 @@ export default function NftsTab() {
 
   const handleNftClick = (nft: NFT) => {
     history.push(
-      `${ASSET_ROUTE}/${currentChain.chainId}/${nft.address}/${nft.tokenId}`,
+      `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
     );
   };
 
@@ -121,7 +119,7 @@ export default function NftsTab() {
 
   const onRefresh = () => {
     if (isMainnet) {
-      dispatch(detectNfts());
+      dispatch(detectNfts(allChainIds));
     }
     checkAndUpdateAllNftsOwnershipStatus();
   };
@@ -134,7 +132,13 @@ export default function NftsTab() {
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
-      <Box className="nfts-tab__loading">
+      <Box
+        className="nfts-tab__loading"
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        display={Display.Flex}
+        marginTop={4}
+      >
         <Spinner
           color="var(--color-warning-default)"
           className="loading-overlay__spinner"
@@ -145,6 +149,13 @@ export default function NftsTab() {
 
   return (
     <>
+      <Box marginTop={2}>
+        <AssetListControlBar
+          showTokensLinks={false}
+          showTokenFiatBalance={false}
+        />
+      </Box>
+
       <Box className="nfts-tab">
         {isMainnet && !useNftDetection ? (
           <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
@@ -217,11 +228,9 @@ export default function NftsTab() {
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
             >
-              <Box justifyContent={JustifyContent.center}>
-                <img src="./images/no-nfts.svg" />
-              </Box>
               <Box
-                marginTop={4}
+                paddingTop={6}
+                marginTop={12}
                 marginBottom={12}
                 display={Display.Flex}
                 justifyContent={JustifyContent.center}
@@ -230,10 +239,9 @@ export default function NftsTab() {
                 className="nfts-tab__link"
               >
                 <Text
-                  color={TextColor.textMuted}
-                  variant={TextVariant.headingSm}
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodyMdMedium}
                   textAlign={TextAlign.Center}
-                  as="h4"
                 >
                   {t('noNFTs')}
                 </Text>

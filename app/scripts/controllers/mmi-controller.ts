@@ -226,7 +226,8 @@ export class MMIController {
   async addKeyringIfNotExists(type: KeyringTypes) {
     let keyring = await this.keyringController.getKeyringsByType(type)[0];
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(type);
+      await this.keyringController.addNewKeyring(type);
+      [keyring] = await this.keyringController.getKeyringsByType(type);
     }
     return keyring;
   }

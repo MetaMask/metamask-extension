@@ -1,78 +1,63 @@
 import { DateTime } from 'luxon';
 import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import {
   formatDateWithYearContext,
   shortenAddress,
 } from '../../../helpers/utils/util';
+import {
+  formatBlockExplorerAddressUrl,
+  formatBlockExplorerTransactionUrl,
+} from '../../../../shared/lib/multichain/networks';
 
 /**
  * Creates a transaction URL for block explorer based on network type
  * Different networks have different URL patterns:
- * Bitcoin Mainnet: https://blockstream.info/tx/{txId}
- * Bitcoin Testnet: https://blockstream.info/testnet/tx/{txId}
- * Solana Mainnet: https://explorer.solana.com/tx/{txId}
- * Solana Devnet: https://explorer.solana.com/tx/{txId}?cluster=devnet
+ * Bitcoin Mainnet: https://mempool.space/tx/{txId}
+ * Bitcoin Testnet: https://mempool.space/testnet/tx/{txId}
+ * Solana Mainnet: https://solscan.io/tx/{txId}
+ * Solana Devnet: https://solscan.io/tx/{txId}?cluster=devnet
  *
  * @param txId - Transaction ID
  * @param chainId - Network chain ID
  * @returns Full URL to transaction in block explorer, or empty string if no explorer URL
  */
 export const getTransactionUrl = (txId: string, chainId: string): string => {
-  const explorerBaseUrl =
-    MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[chainId as MultichainNetworks];
-  if (!explorerBaseUrl) {
+  const explorerUrls =
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+      chainId as MultichainNetworks
+    ];
+  if (!explorerUrls) {
     return '';
   }
 
-  // Change address URL to transaction URL for Bitcoin
-  if (chainId.startsWith('bip122:')) {
-    return `${explorerBaseUrl.replace('/address', '/tx')}/${txId}`;
-  }
-
-  const baseUrl = explorerBaseUrl.split('?')[0];
-  if (chainId === MultichainNetworks.SOLANA) {
-    return `${baseUrl}tx/${txId}`;
-  }
-  if (chainId === MultichainNetworks.SOLANA_DEVNET) {
-    return `${baseUrl}tx/${txId}?cluster=devnet`;
-  }
-
-  return '';
+  return formatBlockExplorerTransactionUrl(explorerUrls, txId);
 };
 
 /**
  * Creates an address URL for block explorer based on network type
  * Different networks have different URL patterns:
- * Bitcoin Mainnet: https://blockstream.info/address/{address}
- * Bitcoin Testnet: https://blockstream.info/testnet/address/{address}
- * Solana Mainnet: https://explorer.solana.com/address/{address}
- * Solana Devnet: https://explorer.solana.com/address/{address}?cluster=devnet
+ * Bitcoin Mainnet: https://mempool.space/address/{address}
+ * Bitcoin Testnet: https://mempool.space/testnet/address/{address}
+ * Solana Mainnet: https://solscan.io/account/{address}
+ * Solana Devnet: https://solscan.io/account/{address}?cluster=devnet
  *
  * @param address - Wallet address
  * @param chainId - Network chain ID
  * @returns Full URL to address in block explorer, or empty string if no explorer URL
  */
 export const getAddressUrl = (address: string, chainId: string): string => {
-  const explorerBaseUrl =
-    MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[chainId as MultichainNetworks];
-
-  if (!explorerBaseUrl) {
+  const explorerUrls =
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+      chainId as MultichainNetworks
+    ];
+  if (!explorerUrls) {
     return '';
   }
 
-  const baseUrl = explorerBaseUrl.split('?')[0];
-  if (chainId === MultichainNetworks.SOLANA) {
-    return `${baseUrl}address/${address}`;
-  }
-  if (chainId === MultichainNetworks.SOLANA_DEVNET) {
-    return `${baseUrl}address/${address}?cluster=devnet`;
-  }
-
-  // Bitcoin networks already have the correct address URL format
-  return `${explorerBaseUrl}/${address}`;
+  return formatBlockExplorerAddressUrl(explorerUrls, address);
 };
 
 /**

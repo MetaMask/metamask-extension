@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
+import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
@@ -127,6 +128,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
@@ -205,6 +210,22 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    */
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
@@ -249,16 +270,24 @@ class HomePage {
   }
 
   async check_localNodeBalanceIsDisplayed(
-    localNode?: Ganache,
+    localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
       expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
-      expectedBalance = '0';
+      expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
   }
 }
 

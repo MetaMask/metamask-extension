@@ -125,8 +125,8 @@ describe('MetaMask Responsive UI', function () {
         driverOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction

@@ -64,7 +64,7 @@
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
-      "metaMetricsId": "fake-metrics-id",
+      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
@@ -104,12 +104,12 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
+        "petnamesEnabled": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
-        "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
         "tokenNetworkFilter": {},
@@ -139,15 +139,14 @@
       }
     },
     "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionConfig": {
-            "support": "boolean",
-            "chains": {
-              "0x1": "object",
-              "0xa": "object",
-              "0xe708": "object"
-            }
+      "bridgeFeatureFlags": {
+        "mobileConfig": "object",
+        "extensionConfig": {
+          "support": "boolean",
+          "chains": {
+            "eip155:1": "object",
+            "eip155:10": "object",
+            "eip155:59144": "object"
           }
         }
       }

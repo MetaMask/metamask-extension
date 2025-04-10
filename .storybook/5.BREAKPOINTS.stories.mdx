@@ -34,7 +34,7 @@ $screen-lg-min /* 1280px */
 ### Mixins
 
 ```css
-@use "design-system";
+@use 'design-system';
 
 /* Max screen size */
 @include design-system.screen-sm-max {
@@ -62,7 +62,7 @@ $screen-lg-min /* 1280px */
 Migrating from the old sass variables to the new mixins looks like this
 
 ```css
-@use "design-system";
+@use 'design-system';
 
 /* Max width */
 /* Instead of the media query and sass variable */
@@ -117,7 +117,7 @@ Don't use static media queries in your code.
 Do use the provided Sass mixins
 
 ```css
-@use "design-system";
+@use 'design-system';
 
 .account-menu {
   @include design-system.screen-md-min {

@@ -1,6 +1,7 @@
 import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import FixtureBuilder from '../../fixture-builder';
 import {
   createDappTransaction,
@@ -43,15 +44,6 @@ import {
 } from './mock-request-send-eth';
 import { MockRequestResponse } from './types';
 
-const TX_SENTINEL_URL =
-  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/';
-
-const mockNetworkRequest = async (mockServer: Mockttp) => {
-  await mockServer.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
-    '1': { name: 'Mainnet', confirmations: true },
-  });
-};
-
 async function withFixturesForSimulationDetails(
   {
     title,
@@ -64,17 +56,13 @@ async function withFixturesForSimulationDetails(
   },
   test: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
 ) {
-  const testSpecificMock = async (mockServer: MockttpServer) => {
-    await mockNetworkRequest(mockServer);
-    await mockRequests(mockServer);
-  };
   await withFixtures(
     {
       fixtures: new FixtureBuilder({ inputChainId })
         .withPermissionControllerConnectedToTestDapp()
         .build(),
       title,
-      testSpecificMock,
+      testSpecificMock: mockRequests,
       dapp: true,
       localNodeOptions: {
         hardfork: 'london',

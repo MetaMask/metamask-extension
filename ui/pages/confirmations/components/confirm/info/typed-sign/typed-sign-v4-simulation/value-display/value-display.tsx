@@ -128,7 +128,14 @@ const PermitSimulationValueDisplay: React.FC<
           canDisplayValueAsUnlimited &&
           (showUnlimitedDueToPermitValue || showUnlimitedDueToDAIContract),
       };
-    }, [tokenDecimals, tokenId, value]);
+    }, [
+      canDisplayValueAsUnlimited,
+      message?.allowed,
+      tokenDecimals,
+      tokenContract,
+      tokenId,
+      value,
+    ]);
 
   /** Temporary error capturing as we are building out Permit Simulations */
   if (!tokenContract) {

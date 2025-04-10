@@ -130,11 +130,13 @@ export const mapTextToTemplate = (
  */
 export const FIELD_ELEMENT_TYPES = [
   'FileInput',
+  'AddressInput',
   'Input',
   'Dropdown',
   'RadioGroup',
   'Checkbox',
   'Selector',
+  'AssetSelector',
 ];
 
 /**

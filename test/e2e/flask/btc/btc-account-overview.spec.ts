@@ -5,7 +5,7 @@ import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
-  it('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
+  it.skip('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {

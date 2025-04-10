@@ -11,6 +11,8 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { mockEmptyPrices } from '../tokens/utils/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 async function mockApis(mockServer: Mockttp) {
   return [
@@ -39,6 +41,26 @@ async function mockApis(mockServer: Mockttp) {
           },
         };
       }),
+
+    await mockServer
+      .forGet(
+        'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
+      )
+      .withQuery({
+        limit: 50,
+        includeTopBid: 'true',
+        chainIds: ['1', '59144'],
+        continuation: '',
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            tokens: [],
+          },
+        };
+      }),
+    await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
   ];
 }
 

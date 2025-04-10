@@ -1,11 +1,14 @@
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import {
+  getDefaultBridgeControllerState,
+  BRIDGE_PREFERRED_GAS_ESTIMATE,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
-import { DEFAULT_BRIDGE_STATE } from '../../app/scripts/controllers/bridge/constants';
 import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
-import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
 import { mockTokenData } from '../data/bridge/mock-token-data';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
@@ -267,6 +270,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -280,6 +284,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
@@ -293,6 +298,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -306,6 +312,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '36eb02e0-7925-47f0-859f-076608f09b69': {
             address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe6',
@@ -323,6 +330,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -363,6 +371,16 @@ export const createSwapsMockStore = () => {
         {
           type: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
+        },
+      ],
+      keyringsMetadata: [
+        {
+          id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+          name: '',
+        },
+        {
+          id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+          name: '',
         },
       ],
       ...mockNetworkState({
@@ -762,20 +780,34 @@ export const createBridgeMockStore = (
           },
         },
       },
+      slides: [],
       ...mockTokenData,
       ...metamaskStateOverrides,
-      bridgeState: {
-        ...DEFAULT_BRIDGE_STATE,
+      ...{
+        ...getDefaultBridgeControllerState(),
         bridgeFeatureFlags: {
           ...featureFlagOverrides,
           extensionConfig: {
             support: false,
-            chains: {},
-            ...featureFlagOverrides.extensionConfig,
+            ...featureFlagOverrides?.extensionConfig,
+            chains: {
+              [formatChainIdToCaip('0x1')]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+              ...Object.fromEntries(
+                Object.entries(
+                  featureFlagOverrides?.extensionConfig?.chains ?? {},
+                ).map(([chainId, config]) => [
+                  formatChainIdToCaip(chainId),
+                  config,
+                ]),
+              ),
+            },
           },
         },
-        ...bridgeStateOverrides,
       },
+      ...bridgeStateOverrides,
       bridgeStatusState: {
         ...DEFAULT_BRIDGE_STATUS_STATE,
         ...bridgeStatusStateOverrides,

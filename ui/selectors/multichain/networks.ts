@@ -2,16 +2,18 @@ import {
   type MultichainNetworkControllerState as InternalMultichainNetworkState,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
-  toMultichainNetworkConfigurationsByChainId,
+  toMultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
-import { type CaipChainId, BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
+  MultichainNetworkConfigurationsByChainIdState,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
@@ -35,19 +37,6 @@ export type SelectedNetworkChainIdState = {
 
 export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
-};
-
-export type MultichainNetworkConfigurationsByChainIdState = {
-  metamask: {
-    multichainNetworkConfigurationsByChainId: Record<
-      string,
-      InternalMultichainNetworkConfiguration
-    >;
-    networkConfigurationsByChainId: Record<
-      string,
-      InternalNetworkConfiguration
-    >;
-  };
 };
 
 /**
@@ -80,11 +69,14 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
     let bitcoinEnabled = isBitcoinEnabled;
     let solanaEnabled = isSolanaEnabled;
 
+    // The scopes have been set to optional because the first time
+    // they're used we can't guarantee that the scopes will be set
+    // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
-      if (scopes.includes(BtcScope.Mainnet)) {
+      if (scopes?.includes(BtcScope.Mainnet)) {
         bitcoinEnabled = true;
       }
-      if (scopes.includes(SolScope.Mainnet)) {
+      if (scopes?.includes(SolScope.Mainnet)) {
         solanaEnabled = true;
       }
       if (bitcoinEnabled && solanaEnabled) {
@@ -98,14 +90,22 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
 
 export const getMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
-    getNonEvmMultichainNetworkConfigurationsByChainId,
-    getNetworkConfigurationsByChainId,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     getIsNonEvmNetworksEnabled,
+    getNonEvmMultichainNetworkConfigurationsByChainId,
+    ///: END:ONLY_INCLUDE_IF
+    getNetworkConfigurationsByChainId,
     (
-      nonEvmNetworkConfigurationsByChainId,
-      networkConfigurationsByChainId,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       isNonEvmNetworksEnabled,
-    ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+      nonEvmNetworkConfigurationsByChainId,
+      ///: END:ONLY_INCLUDE_IF
+      networkConfigurationsByChainId,
+    ): [
+      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+      Record<Hex, InternalNetworkConfiguration>,
+    ] => {
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
         InternalMultichainNetworkConfiguration
@@ -123,15 +123,32 @@ export const getMultichainNetworkConfigurationsByChainId =
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
+      ///: END:ONLY_INCLUDE_IF
+
+      // There's a fallback for EVM network names/nicknames, in case the network
+      // does not have a name/nickname the fallback is the first rpc endpoint url.
+      // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
+      const evmNetworks = Object.entries(networkConfigurationsByChainId).reduce(
+        (acc, [, network]) => ({
+          ...acc,
+          [toEvmCaipChainId(network.chainId)]: {
+            ...toMultichainNetworkConfiguration(network),
+            name:
+              network.name ||
+              network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+          },
+        }),
+        {},
+      );
 
       const networks = {
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         ...filteredNonEvmNetworkConfigurationsByChainId,
-        ...toMultichainNetworkConfigurationsByChainId(
-          networkConfigurationsByChainId,
-        ),
+        ///: END:ONLY_INCLUDE_IF
+        ...evmNetworks,
       };
 
-      return networks;
+      return [networks, networkConfigurationsByChainId];
     },
   );
 
@@ -154,7 +171,7 @@ export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
   const chainId = getSelectedMultichainNetworkChainId(state);
-  const networkConfigurationsByChainId =
+  const [networkConfigurationsByChainId] =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
