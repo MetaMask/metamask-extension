@@ -2194,9 +2194,9 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/snaps-rpc-methods>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true,
+        "@metamask/snaps-rpc-methods>@noble/hashes": true,
         "luxon": true
       }
     },
@@ -2207,7 +2207,7 @@
       },
       "packages": {
         "@metamask/rpc-errors": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/snaps-sdk>@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
@@ -2232,9 +2232,9 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/snaps-utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
         "@metamask/snaps-utils>cron-parser": true,
@@ -2580,7 +2580,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@noble/hashes": true
+        "viem>webauthn-p256>@noble/curves>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2590,6 +2590,24 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "viem>webauthn-p256>@noble/curves>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4738,7 +4756,7 @@
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
-    "string.prototype.matchall>es-abstract>object-inspect": {
+    "string.prototype.matchall>side-channel>object-inspect": {
       "globals": {
         "HTMLElement": true,
         "WeakRef": true
@@ -4913,7 +4931,7 @@
         "react": true
       }
     },
-    "mockttp>body-parser>qs": {
+    "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5316,11 +5334,8 @@
     "extension-port-stream>readable-stream": {
       "globals": {
         "AbortController": true,
-        "AbortSignal": true,
         "AggregateError": true,
-        "Blob": true,
-        "ERR_INVALID_ARG_TYPE": true,
-        "queueMicrotask": true
+        "Blob": true
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream>abort-controller": true,
@@ -5333,11 +5348,8 @@
     "@metamask/providers>extension-port-stream>readable-stream": {
       "globals": {
         "AbortController": true,
-        "AbortSignal": true,
         "AggregateError": true,
-        "Blob": true,
-        "ERR_INVALID_ARG_TYPE": true,
-        "queueMicrotask": true
+        "Blob": true
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream>abort-controller": true,
@@ -5503,7 +5515,7 @@
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
         "string.prototype.matchall>call-bind>es-errors": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true
+        "string.prototype.matchall>side-channel>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
@@ -5511,7 +5523,7 @@
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
         "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true
+        "string.prototype.matchall>side-channel>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
@@ -5519,14 +5531,14 @@
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
         "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
       }
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
         "string.prototype.matchall>call-bind>es-errors": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
@@ -5716,7 +5728,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "mockttp>body-parser>qs": true
+        "browserify>url>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {
