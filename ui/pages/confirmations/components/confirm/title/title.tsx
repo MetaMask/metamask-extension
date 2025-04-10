@@ -25,6 +25,7 @@ import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
+import { NestedTransactionTag } from '../info/batch/nested-transaction-tag';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -282,6 +283,7 @@ const ConfirmTitle: React.FC = memo(() => {
           {title}
         </Text>
       )}
+      <NestedTransactionTag />
       {description !== '' && (
         <Text
           paddingBottom={4}

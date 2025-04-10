@@ -5,13 +5,13 @@ import {
 } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { Box } from '../../../../../../../components/component-library';
-import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
 import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useNestedTransactionLabel } from '../../hooks/useNestedTransactionLabel';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -43,9 +43,9 @@ function NestedTransaction({
 }) {
   const t = useI18nContext();
   const { data, to } = nestedTransaction;
-  const methodData = useFourByte({ data, to });
-
-  const functionName = methodData?.name;
+  const { functionName } = useNestedTransactionLabel({
+    nestedTransaction,
+  });
 
   const label =
     functionName ?? t('confirmNestedTransactionTitle', [String(index + 1)]);
