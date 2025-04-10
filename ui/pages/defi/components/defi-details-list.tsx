@@ -10,6 +10,7 @@ import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { getPreferences } from '../../../selectors';
+import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 
 const PositionTypeLabels = {
   supply: 'supplied',
@@ -67,80 +68,80 @@ const DefiDetailsList = React.memo(
       });
     }, [tokens]);
 
+    const mapTokenToCell = (
+      token: UnderlyingWithMarketValue,
+    ): TokenWithFiatAmount => {
+      return {
+        address: token.address as '0x' & string,
+        title: token.symbol,
+        symbol: token.name,
+        tokenFiatAmount: token.marketValue,
+        image: token.iconUrl,
+        primary: token.marketValue?.toString() || '0',
+        secondary: token.balance,
+        string: token.balance.toString(),
+        decimals: 10,
+        chainId,
+      };
+    };
+
     return (
       <>
-        {groupedTokens.map(({ underlying, underlyingRewards }, index) => (
-          <Box key={index}>
-            {underlying.length > 0 && (
-              <>
-                <Text
-                  variant={TextVariant.bodySm}
-                  paddingLeft={4}
-                  color={TextColor.textAlternativeSoft}
-                  paddingBottom={4}
-                >
-                  {t(
-                    PositionTypeLabels[positionType as PositionTypeKeys] ||
-                      positionType,
-                  )}
-                </Text>
-                {underlying.map((token) => (
-                  <TokenCell
-                    key={`${chainId}-${token.address}`}
-                    token={{
-                      address: token.address as '0x' & string,
-                      title: token.symbol,
-                      symbol: token.name,
-                      tokenFiatAmount: token.marketValue,
-                      image: token.iconUrl,
-                      primary: token.marketValue?.toString() || '0',
-                      secondary: token.balance,
-                      string: token.balance.toString(),
-                      decimals: 10,
-                      chainId,
-                    }}
-                    privacyMode={privacyMode}
-                    onClick={undefined}
-                    fixCurrencyToUSD={true}
-                  />
-                ))}
-              </>
-            )}
+        {groupedTokens.map(({ underlying, underlyingRewards }, index) => {
+          const tokenGroups = [
+            { type: 'underlying', tokenGroup: underlying },
+            { type: 'underlyingRewards', tokenGroup: underlyingRewards },
+          ];
 
-            {underlyingRewards.length > 0 && (
-              <>
-                <Text
-                  variant={TextVariant.bodySm}
-                  paddingLeft={4}
-                  paddingBottom={4}
-                  color={TextColor.textAlternativeSoft}
-                >
-                  {t('reward')}
-                </Text>
-                {underlyingRewards.map((token) => (
-                  <TokenCell
-                    key={`${chainId}-${token.address}`}
-                    token={{
-                      address: token.address as '0x' & string,
-                      title: token.symbol,
-                      symbol: token.name,
-                      tokenFiatAmount: token.marketValue,
-                      image: token.iconUrl,
-                      primary: token.marketValue?.toString() || '0',
-                      secondary: token.balance,
-                      string: token.balance.toString(),
-                      decimals: 10,
-                      chainId,
+          return (
+            <Box key={index}>
+              {tokenGroups.map(({ type, tokenGroup }) => {
+                if (!tokenGroup || tokenGroup.length === 0) {
+                  return null;
+                }
+
+                const label =
+                  type === 'underlying'
+                    ? t(
+                        PositionTypeLabels[positionType as PositionTypeKeys] ||
+                          positionType,
+                      )
+                    : t('reward');
+
+                return (
+                  <Box key={type}>
+                    <Text
+                      variant={TextVariant.bodyMdMedium}
+                      paddingLeft={4}
+                      color={TextColor.textAlternativeSoft}
+                    >
+                      {label}
+                    </Text>
+                    {tokenGroup.map((token) => (
+                      <TokenCell
+                        key={`${chainId}-${token.address}`}
+                        token={mapTokenToCell(token)}
+                        privacyMode={privacyMode}
+                        onClick={undefined}
+                        fixCurrencyToUSD
+                      />
+                    ))}
+                  </Box>
+                );
+              })}
+
+              {index !== groupedTokens.length - 1 && (
+                <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>
+                  <hr
+                    style={{
+                      border: '1px solid var(--border-muted, #858B9A33)',
                     }}
-                    privacyMode={privacyMode}
-                    onClick={undefined}
-                    fixCurrencyToUSD={true}
                   />
-                ))}
-              </>
-            )}
-          </Box>
-        ))}
+                </Box>
+              )}
+            </Box>
+          );
+        })}
       </>
     );
   },
