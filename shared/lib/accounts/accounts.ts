@@ -67,6 +67,7 @@ export async function addDiscoveredSolanaAccounts(
           entropySource,
         };
 
+        // TODO: Use `withKeyring` instead of using the keyring directly.
         await snapKeyring.createAccount(snapId, options, {
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
