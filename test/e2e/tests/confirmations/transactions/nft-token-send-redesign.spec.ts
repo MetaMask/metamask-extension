@@ -27,7 +27,7 @@ const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 describe('Confirmation Redesign Token Send', function () {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
   describe('ERC721', function () {
-    describe('Wallet initiated', async function () {
+    describe('Wallet initiated', function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
@@ -59,7 +59,7 @@ describe('Confirmation Redesign Token Send', function () {
       });
     });
 
-    describe('dApp initiated', async function () {
+    describe('dApp initiated', function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
@@ -93,7 +93,7 @@ describe('Confirmation Redesign Token Send', function () {
   });
 
   describe('ERC1155', function () {
-    describe('Wallet initiated', async function () {
+    describe('Wallet initiated', function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
