@@ -1,6 +1,5 @@
 import React from 'react';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { screen } from '@testing-library/dom';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';

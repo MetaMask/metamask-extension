@@ -44,7 +44,7 @@ export function NestedTransactionTag() {
   const label = t('transactionIncludesTypes', [functionNames.join(', ')]);
 
   return (
-    <Box paddingBottom={4} textAlign={TextAlign.Center} >
+    <Box paddingBottom={4} textAlign={TextAlign.Center}>
       <Tooltip title={label} position="bottom">
         <Tag
           label={t('includesXTransactions', [nestedTransactions?.length])}
