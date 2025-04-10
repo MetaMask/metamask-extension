@@ -43,6 +43,7 @@ export function useEIP7702Account({
             type: TransactionEnvelopeType.setCode,
           },
           {
+            networkClientId: globalNetworkClientId,
             type: TransactionType.revokeDelegation,
           },
         ),
@@ -50,7 +51,7 @@ export function useEIP7702Account({
 
       setTransactionId(transactionMeta?.id);
     },
-    [dispatch],
+    [dispatch, globalNetworkClientId],
   );
 
   const isUpgraded = useCallback(

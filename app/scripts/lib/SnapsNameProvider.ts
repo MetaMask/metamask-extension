@@ -124,7 +124,7 @@ export class SnapsNameProvider implements NameProvider {
         'SnapController:handleRequest',
         {
           snapId: snap.id,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
             jsonrpc: '2.0',

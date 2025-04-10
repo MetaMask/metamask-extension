@@ -4,7 +4,10 @@ import { Switch, Route } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
-import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import {
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
