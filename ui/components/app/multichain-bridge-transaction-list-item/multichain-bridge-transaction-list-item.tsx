@@ -49,7 +49,7 @@ import type {
   BridgeOriginatedItem,
 } from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 
-type SolanaBridgeTransactionListItemProps = {
+type MultichainBridgeTransactionListItemProps = {
   transaction: ExtendedTransaction | BridgeOriginatedItem;
   toggleShowDetails: (
     transaction: ExtendedTransaction | BridgeOriginatedItem,
@@ -64,8 +64,8 @@ type SolanaBridgeTransactionListItemProps = {
  * @param options0.transaction - The transaction data to display
  * @param options0.toggleShowDetails - Function to call when the item is clicked
  */
-const SolanaBridgeTransactionListItem: React.FC<
-  SolanaBridgeTransactionListItemProps
+const MultichainBridgeTransactionListItem: React.FC<
+  MultichainBridgeTransactionListItemProps
 > = ({ transaction, toggleShowDetails }) => {
   const t = useI18nContext();
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
@@ -229,4 +229,4 @@ const SolanaBridgeTransactionListItem: React.FC<
   );
 };
 
-export default SolanaBridgeTransactionListItem;
+export default MultichainBridgeTransactionListItem;

@@ -5,20 +5,21 @@ import {
   TransactionStatus as KeyringTransactionStatus,
 } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { isCaipChainId, type CaipChainId } from '@metamask/utils';
 import {
-  isCaipChainId,
-  type CaipChainId,
-  type CaipAssetType,
-} from '@metamask/utils';
+  BridgeAsset,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { Numeric, NumericValue } from '../../../shared/modules/Numeric';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../shared/constants/multichain/networks';
-import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
+import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 
 /**
  * Defines the structure for additional bridge-related information added to transactions.
@@ -63,7 +64,7 @@ export type BridgeOriginatedItem = {
   from: {
     address: string;
     asset: {
-      type: CaipAssetType;
+      type: BridgeAsset;
       amount: string;
       unit: string;
       fungible: boolean;
@@ -86,10 +87,6 @@ type MixedTransactionsData = {
   next: string | null;
   lastUpdated: number;
 };
-
-// Define a type for the bridge history items (replace 'any' with a specific type if available)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BridgeHistoryItem = any;
 
 /**
  * Hook that takes a list of non-EVM transactions and enhances them with information
@@ -128,7 +125,7 @@ export default function useSolanaBridgeTransactionMapping(
    */
   const getNetworkName = (chainId: NumericValue | undefined): string => {
     if (chainId === undefined || chainId === null) {
-      return 'Unknown Network';
+      return '';
     }
     const chainIdStr = chainId.toString();
 
@@ -140,8 +137,11 @@ export default function useSolanaBridgeTransactionMapping(
     if (!networkName && !isNaN(Number(chainId))) {
       try {
         const hexChainId = new Numeric(chainId, 10).toPrefixedHexString();
-        // @ts-expect-error WIP: Need to fix type for indexing NETWORK_TO_NAME_MAP with string
-        networkName = NETWORK_TO_NAME_MAP[hexChainId];
+        networkName =
+          NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+            hexChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+          ] ??
+          NETWORK_TO_NAME_MAP[hexChainId as keyof typeof NETWORK_TO_NAME_MAP];
       } catch (e) {
         console.error('Error converting chain ID', e);
       }
@@ -197,13 +197,8 @@ export default function useSolanaBridgeTransactionMapping(
             ? rawChainId
             : MultichainNetworks.SOLANA;
 
-          const assetType: CaipAssetType =
-            ((
-              MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 as Record<
-                CaipChainId,
-                string
-              >
-            )[chainId] as CaipAssetType) ?? 'eip155:1/slip44:60';
+          const assetType: BridgeAsset =
+            getNativeAssetForChainId(chainId) ?? 'eip155:1/slip44:60';
 
           // Create the item with only the fields available from bridge history.
           const bridgeOriginatedTx: BridgeOriginatedItem = {
@@ -221,14 +216,14 @@ export default function useSolanaBridgeTransactionMapping(
                     Number(bridgeTx.quote?.srcTokenAmount ?? 0) /
                     10 ** (bridgeTx.quote?.srcAsset?.decimals ?? 9)
                   ).toString(),
-                  unit: bridgeTx.quote?.srcAsset?.symbol ?? 'Unknown',
+                  unit: bridgeTx.quote?.srcAsset?.symbol ?? '',
                   fungible: true,
                 },
               },
             ],
             isBridgeOriginated: true,
             bridgeStatus: bridgeTx.status?.status ?? 'PENDING',
-            network: bridgeTx.quote?.srcChainId?.toString() ?? 'unknown',
+            network: bridgeTx.quote?.srcChainId?.toString() ?? '',
             isBridgeTx: true,
             bridgeInfo: undefined,
             isSourceTxConfirmed: false,

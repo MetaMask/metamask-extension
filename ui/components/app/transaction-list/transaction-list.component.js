@@ -32,8 +32,8 @@ import {
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
-import SolanaBridgeTransactionListItem from '../solana-bridge-transaction-list-item/solana-bridge-transaction-list-item';
-import SolanaBridgeTransactionDetailsModal from '../solana-bridge-transaction-details-modal/solana-bridge-transaction-details-modal';
+import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
+import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
 ///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
@@ -515,7 +515,7 @@ export default function TransactionList({
       <>
         {selectedTransaction &&
           (selectedTransaction.isBridgeTx && selectedTransaction.bridgeInfo ? (
-            <SolanaBridgeTransactionDetailsModal
+            <MultichainBridgeTransactionDetailsModal
               transaction={selectedTransaction}
               onClose={() => toggleShowDetails(null)}
             />
@@ -546,22 +546,15 @@ export default function TransactionList({
                     >
                       {dateGroup.date}
                     </Text>
-                    {dateGroup.transactionGroups.map((transaction, index) => {
-                      // Type Guard for bridge-originated items
-                      if (transaction.isBridgeOriginated) {
+                    {dateGroup.transactionGroups.map((transaction) => {
+                      // Check for bridging transactions
+                      if (
+                        transaction.isBridgeOriginated ||
+                        (transaction.isBridgeTx && transaction.bridgeInfo)
+                      ) {
                         return (
-                          <SolanaBridgeTransactionListItem
-                            key={`bridge-originated-${transaction.id}`}
-                            transaction={transaction}
-                            toggleShowDetails={toggleShowDetails}
-                          />
-                        );
-                      }
-                      // Check for regular bridge transactions (non-originated)
-                      if (transaction.isBridgeTx && transaction.bridgeInfo) {
-                        return (
-                          <SolanaBridgeTransactionListItem
-                            key={`bridge-${transaction.account}:${index}`}
+                          <MultichainBridgeTransactionListItem
+                            key={`bridge-${transaction.id}`}
                             transaction={transaction}
                             toggleShowDetails={toggleShowDetails}
                           />

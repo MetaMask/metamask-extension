@@ -63,15 +63,15 @@ import {
   BridgeOriginatedItem,
 } from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 
-type SolanaBridgeTransactionDetailsModalProps = {
+type MultichainBridgeTransactionDetailsModalProps = {
   transaction: ExtendedTransaction | BridgeOriginatedItem;
   onClose: () => void;
 };
 
-function SolanaBridgeTransactionDetailsModal({
+function MultichainBridgeTransactionDetailsModal({
   transaction,
   onClose,
-}: SolanaBridgeTransactionDetailsModalProps): JSX.Element {
+}: MultichainBridgeTransactionDetailsModalProps): JSX.Element {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -565,4 +565,4 @@ function SolanaBridgeTransactionDetailsModal({
   );
 }
 
-export default SolanaBridgeTransactionDetailsModal;
+export default MultichainBridgeTransactionDetailsModal;
