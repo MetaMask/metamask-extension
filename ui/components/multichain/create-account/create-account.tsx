@@ -9,6 +9,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { KeyringTypes } from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF
@@ -41,7 +42,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
-import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
 ///: END:ONLY_INCLUDE_IF
