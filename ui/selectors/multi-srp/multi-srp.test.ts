@@ -4,7 +4,10 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockDefaultState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
-import { getShouldShowSeedPhraseReminder } from './multi-srp';
+import {
+  getFirstPartySnapAccountsByKeyringId,
+  getShouldShowSeedPhraseReminder,
+} from './multi-srp';
 
 const mockGetSelectedAccountTokensAcrossChains = jest.fn();
 const mockGetCrossChainMetaMaskCachedBalances = jest.fn();
@@ -285,5 +288,24 @@ describe('Multi SRP Selectors', () => {
 
       expect(result).toBe(false);
     });
+  });
+
+  describe('getFirstPartySnapAccountsByKeyringId', () => {
+    it('returns the correct accounts', () => {
+      const mockState = generateMockState({
+        account: mockThirdPartySnapAccount,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getFirstPartySnapAccountsByKeyringId(
+        mockState,
+        mockKeyringId,
+      );
+
+      expect(result).toBe([mockSnapAccount]);
+    });
+
+    it("returns an empty array if there aren't any first party snap accounts", () => {});
   });
 });

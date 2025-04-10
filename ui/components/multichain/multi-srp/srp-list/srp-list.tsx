@@ -18,10 +18,7 @@ import {
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  getMetaMaskAccounts,
-  getMetaMaskHdKeyrings,
-} from '../../../../selectors/selectors';
+import { getMetaMaskAccounts } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -29,9 +26,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useHdKeyringsWithSnapAccounts } from '../../../../hooks/multi-srp/useHdKeyringsWithSnapAccounts';
 import { SrpListItem } from './srp-list-item';
-
-type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
 export const SrpList = ({
   onActionComplete,
@@ -42,16 +38,15 @@ export const SrpList = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const hdKeyrings: KeyringObjectWithMetadata[] = useSelector(
-    getMetaMaskHdKeyrings,
-  );
+  const hdKeyringsWithSnapAccounts = useHdKeyringsWithSnapAccounts();
+
   // This selector will return accounts with nonEVM balances as well.
   const accountsWithBalances: Record<string, InternalAccountWithBalance> =
     useSelector(getMetaMaskAccounts);
 
   const showAccountsInitState = useMemo(
-    () => new Array(hdKeyrings.length).fill(hideShowAccounts),
-    [hdKeyrings, hideShowAccounts],
+    () => new Array(hdKeyringsWithSnapAccounts.length).fill(hideShowAccounts),
+    [hdKeyringsWithSnapAccounts, hideShowAccounts],
   );
 
   const [showAccounts, setShowAccounts] = useState<boolean[]>(
@@ -71,7 +66,7 @@ export const SrpList = ({
 
   return (
     <Box className="srp-list__container" padding={4} data-testid="srp-list">
-      {hdKeyrings.map((keyring, index) => (
+      {hdKeyringsWithSnapAccounts.map((keyring, index) => (
         <Card
           key={`srp-${keyring.metadata.id}`}
           data-testid={`hd-keyring-${keyring.metadata.id}`}

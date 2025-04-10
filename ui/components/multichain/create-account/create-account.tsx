@@ -44,6 +44,7 @@ import { Display } from '../../../helpers/constants/design-system';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
+import { getFirstPartySnapAccountsByKeyringId } from '../../../selectors/multi-srp/multi-srp';
 ///: END:ONLY_INCLUDE_IF
 
 type Props = {
@@ -131,6 +132,10 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const selectedKeyring = useSelector((state) =>
         getSelectedKeyringByIdOrDefault(state, selectedKeyringId),
       );
+      const firstPartySnapAccounts = useSelector((state) =>
+        getFirstPartySnapAccountsByKeyringId(state, selectedKeyringId),
+      );
+
       const selectedHdKeyringIndex = useSelector((state) =>
         getHdKeyringIndexByIdOrDefault(state, selectedKeyringId),
       );
@@ -164,7 +169,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             });
           }
         },
-        [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
+        [
+          onCreateAccount,
+          trimmedAccountName,
+          defaultAccountName,
+          trackEvent,
+          hdEntropyIndex,
+          history,
+          mostRecentOverviewPage,
+        ],
       );
 
       return (
@@ -198,7 +211,10 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                   srpName={t('secretRecoveryPhrasePlusNumber', [
                     selectedHdKeyringIndex + 1,
                   ])}
-                  srpAccounts={selectedKeyring.accounts.length}
+                  srpAccounts={
+                    selectedKeyring.accounts.length +
+                    firstPartySnapAccounts.length
+                  }
                 />
               </Box>
             ) : null

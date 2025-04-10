@@ -5,6 +5,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
   getMetaMaskHdKeyrings,
+  getInternalAccounts,
 } from '..';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getMultichainAggregatedBalance } from '../assets';
@@ -99,5 +100,16 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
       dismissSeedBackUpReminder === false;
 
     return showMessage;
+  },
+);
+
+export const getFirstPartySnapAccountsByKeyringId = createDeepEqualSelector(
+  getInternalAccounts,
+  (_state, keyringId) => keyringId,
+  (accounts, keyringId) => {
+    return accounts.filter(
+      (account: InternalAccount) =>
+        account.options?.entropySource === keyringId,
+    );
   },
 );
