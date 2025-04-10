@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Bu site token'lerinizi harcamak için izin istiyor."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Bu site standart bir hesaba dönmeyi talep ediyor."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Bir site bu hesabın sahibi olduğunuzu kanıtlamak için giriş yapmanızı istiyor."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "İzni kaldır"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Hesabı sıfırla"
-  },
   "confirmTitleSIWESignature": {
     "message": "Giriş talebi"
   },
@@ -1126,9 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "İşlem talebi"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Bu talebi onaylarsanız hesabınız akıllı bir hesaba güncellenecektir."
   },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "İşlemi iptal et"
