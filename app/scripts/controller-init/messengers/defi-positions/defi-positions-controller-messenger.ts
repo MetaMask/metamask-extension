@@ -1,15 +1,8 @@
 import { Messenger } from '@metamask/base-controller';
-import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
 import {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerSelectedAccountChangeEvent,
-} from '@metamask/accounts-controller';
-
-type Actions = AccountsControllerGetSelectedAccountAction;
-
-type Events =
-  | NetworkControllerStateChangeEvent
-  | AccountsControllerSelectedAccountChangeEvent;
+  DeFiPositionsControllerAllowedActions,
+  DeFiPositionsControllerAllowedEvents,
+} from '@metamask/assets-controllers';
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger
@@ -23,14 +16,19 @@ export type DefiPositionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getDeFiPositionsControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: Messenger<
+    DeFiPositionsControllerAllowedActions,
+    DeFiPositionsControllerAllowedEvents
+  >,
 ) {
   return messenger.getRestricted({
     name: 'DeFiPositionsController',
-    allowedActions: ['AccountsController:getSelectedAccount'],
+    allowedActions: ['AccountsController:listAccounts'],
     allowedEvents: [
-      'AccountsController:selectedAccountChange',
-      'NetworkController:stateChange',
+      'KeyringController:unlock',
+      'KeyringController:lock',
+      'TransactionController:transactionConfirmed',
+      'AccountsController:accountAdded',
     ],
   });
 }
