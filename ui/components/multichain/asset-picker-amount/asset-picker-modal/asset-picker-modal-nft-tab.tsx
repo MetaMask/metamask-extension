@@ -65,7 +65,9 @@ export function AssetPickerModalNftTab({
     getNftIsStillFetchingIndication,
   );
 
-  const { currentlyOwnedNfts } = useNfts();
+  const { currentlyOwnedNfts } = useNfts({
+    overridePopularNetworkFilter: true,
+  });
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
