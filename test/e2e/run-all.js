@@ -161,9 +161,6 @@ function runningOnGitHubActions(testPaths) {
   // Write the list to a file similar to CircleCI
   fs.writeFileSync('test/test-results/myTestList.txt', myTestList.join(' '));
 
-  // Set an environment variable so that mocha-junit-reporter can pick it up and add to the XML
-  process.env.PROPERTIES = `JOB_NAME:${process.env.JOB_NAME}`;
-
   return { fullTestList: myTestList, changedOrNewTests };
 }
 

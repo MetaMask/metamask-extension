@@ -35,6 +35,10 @@ function formatTime(ms: number): string {
 
 interface TestSuite {
   name: string;
+  job: {
+    name: string | null;
+    id: string | null;
+  };
   path: string;
   date: Date;
   tests: number;
@@ -63,6 +67,8 @@ async function main() {
     REPOSITORY = 'metamask-extension',
     BRANCH = 'main',
     TEST_RESULTS_PATH = 'test/test-results/e2e',
+    RUN_ID,
+    PR_NUMBER,
   } = process.env;
   let summary = '';
   const core = process.env.GITHUB_ACTIONS
@@ -102,6 +108,10 @@ async function main() {
         const testSuite: TestSuite = {
           name,
           path: testPath,
+          job: {
+            name: suite.properties?.[0].property?.[0]?.$.value || null,
+            id: suite.properties?.[0].property?.[1]?.$.value || null,
+          },
           date,
           tests,
           passed,
@@ -207,6 +217,15 @@ ${markdownTable}\n
           core.summary.addRaw(
             `<summary><strong>${suite.path}</strong></summary>\n`,
           );
+          if (suite.job.name && suite.job.id && RUN_ID) {
+            core.summary.addRaw(
+              `\n##### Job: [${
+                suite.job.name
+              }](https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}/job/${
+                suite.job.id
+              }${PR_NUMBER ? `?pr=${PR_NUMBER}` : ''})\n`,
+            );
+          }
           console.error(suite.name);
           for (const test of suite.testCases) {
             if (test.status !== 'failed') continue;
