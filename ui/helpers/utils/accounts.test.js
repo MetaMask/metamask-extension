@@ -8,6 +8,7 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
+// eslint-disable-next-line import/no-restricted-paths
 import * as snapModule from '../../../app/scripts/lib/snap-keyring/snaps';
 import mockState from '../../../test/data/mock-state.json';
 import {
