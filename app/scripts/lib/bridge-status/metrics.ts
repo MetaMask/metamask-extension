@@ -36,14 +36,9 @@ export const handleBridgeTransactionComplete = async (
   {
     backgroundState,
     trackEvent,
-    getRemoteFeatureFlags,
   }: {
     backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
-    getRemoteFeatureFlags: () => {
-      transactionsTxHashInAnalytics?: boolean;
-      [key: string]: boolean | undefined;
-    };
   },
 ) => {
   const { bridgeHistoryItem } = payload;
@@ -112,14 +107,6 @@ export const handleBridgeTransactionComplete = async (
     source_transaction,
     destination_transaction,
   };
-
-  if (
-    getRemoteFeatureFlags().transactionsTxHashInAnalytics &&
-    bridgeHistoryItem.status.srcChain.txHash
-  ) {
-    // Note: getParticipateInMetrics() check happens in metametrics-controller.ts#submitEvent
-    properties.transaction_hash = bridgeHistoryItem.status.srcChain.txHash;
-  }
 
   trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
