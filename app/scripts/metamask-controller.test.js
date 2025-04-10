@@ -3314,7 +3314,7 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'FOO',
+          symbol: 'DAI',
         };
 
         await metamaskController.tokensController.addTokens([
