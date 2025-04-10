@@ -201,12 +201,13 @@ function validateCapabilities(sendCalls: SendCalls) {
 
 function validateUserDisabled(
   sendCalls: SendCalls,
-  disabledChains: Record<Hex, Hex[]>,
+  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   const { from } = sendCalls;
-  const isDisabled = disabledChains[dappChainId]?.includes(from);
+  const isDisabled =
+    disabledUpgradeAccountsByChain[dappChainId]?.includes(from);
 
   if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw rpcErrors.methodNotSupported(

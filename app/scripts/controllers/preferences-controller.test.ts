@@ -862,14 +862,11 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('disableAccountUpgradeForChainAndAddress', () => {
+  describe('disableAccountUpgrade', () => {
     it('adds chain ID, address to disabledAccountUpgrades if empty', () => {
       const { controller } = setupController({});
 
-      controller.disableAccountUpgradeForChainAndAddress(
-        CHAIN_IDS.GOERLI,
-        '0x0',
-      );
+      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x0');
 
       expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
         [CHAIN_IDS.GOERLI]: ['0x0'],
@@ -885,10 +882,7 @@ describe('preferences controller', () => {
         },
       });
 
-      controller.disableAccountUpgradeForChainAndAddress(
-        CHAIN_IDS.GOERLI,
-        '0x1',
-      );
+      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x1');
 
       expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
         [CHAIN_IDS.MAINNET]: ['0x0'],
@@ -905,10 +899,7 @@ describe('preferences controller', () => {
         },
       });
 
-      controller.disableAccountUpgradeForChainAndAddress(
-        CHAIN_IDS.MAINNET,
-        '0x0',
-      );
+      controller.disableAccountUpgrade(CHAIN_IDS.MAINNET, '0x0');
 
       expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
         [CHAIN_IDS.MAINNET]: ['0x0'],

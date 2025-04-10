@@ -967,7 +967,7 @@ export class PreferencesController extends BaseController<
     return this.state.disabledUpgradeAccountsByChain ?? {};
   }
 
-  disableAccountUpgradeForChainAndAddress(chainId: Hex, address: Hex): void {
+  disableAccountUpgrade(chainId: Hex, address: Hex): void {
     this.update((state) => {
       const { disabledUpgradeAccountsByChain = {} } = state;
 
