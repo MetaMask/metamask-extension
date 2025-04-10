@@ -56,6 +56,7 @@ import {
   calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
   calcSolanaTotalNetworkFee,
+  isQuoteExpired as isQuoteExpiredUtil,
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import {
@@ -77,6 +78,7 @@ import {
   exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
+
 import type { BridgeState } from './bridge';
 
 export type BridgeAppState = {
@@ -689,6 +691,13 @@ export const getValidationErrors = createDeepEqualSelector(
           : false,
     };
   },
+);
+
+export const getIsQuoteExpired = createSelector(
+  getQuoteRefreshRate,
+  getBridgeQuotes,
+  (refreshRate, { isQuoteGoingToRefresh, quotesLastFetchedMs }) =>
+    isQuoteExpiredUtil(isQuoteGoingToRefresh, refreshRate, quotesLastFetchedMs),
 );
 
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {

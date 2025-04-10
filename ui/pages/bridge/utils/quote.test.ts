@@ -8,6 +8,7 @@ import {
   calcEstimatedAndMaxTotalGasFee,
   calcRelayerFee,
   formatEtaInMinutes,
+  calcSlippagePercentage,
 } from './quote';
 
 const ERC20_TOKEN = {
@@ -421,6 +422,67 @@ describe('Bridge quote utils', () => {
     (_: string, estimatedProcessingTimeInSeconds: number, minutes: string) => {
       const result = formatEtaInMinutes(estimatedProcessingTimeInSeconds);
       expect(result).toStrictEqual(minutes);
+    },
+  );
+
+  it.only.each([
+    [
+      new BigNumber('100'),
+      new BigNumber('100'),
+      new BigNumber('100'),
+      new BigNumber('100'),
+      0,
+      0,
+    ],
+    [
+      new BigNumber('95'),
+      new BigNumber('95'),
+      new BigNumber('100'),
+      new BigNumber('100'),
+      5,
+      5,
+    ],
+    [
+      new BigNumber('98.3'),
+      new BigNumber('98.3'),
+      new BigNumber('100'),
+      new BigNumber('100'),
+      1.7,
+      1.7,
+    ],
+    [null, null, new BigNumber('100'), new BigNumber('100'), null, null],
+    [
+      new BigNumber('105'),
+      new BigNumber('105'),
+      new BigNumber('100'),
+      new BigNumber('100'),
+      5,
+      5,
+    ],
+  ])(
+    'calcSlippagePercentage: calculate slippage absolute value for received amount %p, usd %p, sent amount %p, usd %p to expected amount %p, usd %p',
+    (
+      returnValueInCurrency: BigNumber | null,
+      returnUsd: BigNumber | null,
+      sentValueInCurrency: BigNumber | null,
+      sentUsd: BigNumber | null,
+      expectedValueInCurrency: number | null,
+      expectedUsd: number | null,
+    ) => {
+      const result = calcSlippagePercentage(
+        {
+          valueInCurrency: returnValueInCurrency,
+          usd: returnUsd,
+        },
+        {
+          valueInCurrency: sentValueInCurrency,
+          usd: sentUsd,
+        },
+      );
+      expect(result.percentageInCurrency).toStrictEqual(
+        expectedValueInCurrency,
+      );
+      expect(result.percentageInUsd).toStrictEqual(expectedUsd);
     },
   );
 });

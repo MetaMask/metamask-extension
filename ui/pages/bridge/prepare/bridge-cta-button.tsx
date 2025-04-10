@@ -15,7 +15,7 @@ import {
   getBridgeQuotes,
   getValidationErrors,
   getWasTxDeclined,
-  getQuoteRefreshRate,
+  getIsQuoteExpired,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -35,14 +35,16 @@ import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRe
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
-import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
+import useQuotePriceImpact from '../hooks/usePriceImpactAlert';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
+  priceImpactAcknowledged = false,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
+  priceImpactAcknowledged: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -53,14 +55,14 @@ export const BridgeCTAButton = ({
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
-    useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+
+  const isQuoteExpired = useSelector(getIsQuoteExpired);
+
+  const { displayPriceImpactAlert } = useQuotePriceImpact();
+
+  const requiresAcknowledgment =
+    displayPriceImpactAlert && !priceImpactAcknowledged;
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,6 +161,13 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
+  const primaryButtonDisabled =
+    !isTxSubmittable ||
+    isQuoteExpired ||
+    isSubmitting ||
+    needsDestinationAddress ||
+    requiresAcknowledgment;
+
   return activeQuote && !secondaryButtonLabel ? (
     <ButtonPrimary
       width={BlockSize.Full}
@@ -191,12 +200,7 @@ export const BridgeCTAButton = ({
         }
       }}
       loading={isSubmitting}
-      disabled={
-        !isTxSubmittable ||
-        isQuoteExpired ||
-        isSubmitting ||
-        needsDestinationAddress
-      }
+      disabled={primaryButtonDisabled}
     >
       {label ? t(label) : ''}
     </ButtonPrimary>
