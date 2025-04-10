@@ -59,14 +59,14 @@ export async function processSendCalls(
     networkClientId,
   ).configuration.chainId;
 
-  const disabledChainsAddresses = getDisabledUpgradeAccountsByChain();
+  const disabledUpgradeAccountsByChain = getDisabledUpgradeAccountsByChain();
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
 
   validateSendCalls(
     params,
     dappChainId,
-    disabledChainsAddresses,
+    disabledUpgradeAccountsByChain,
     dismissSmartAccountSuggestionEnabled,
   );
 
@@ -135,7 +135,7 @@ export async function getCapabilities(_address: Hex, _chainIds?: Hex[]) {
 function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
-  disabledChainsAddresses: Record<Hex, Hex[]>,
+  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   validateSendCallsVersion(sendCalls);
@@ -143,7 +143,7 @@ function validateSendCalls(
   validateCapabilities(sendCalls);
   validateUserDisabled(
     sendCalls,
-    disabledChainsAddresses,
+    disabledUpgradeAccountsByChain,
     dappChainId,
     dismissSmartAccountSuggestionEnabled,
   );
