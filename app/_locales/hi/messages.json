@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "यह साइट मानक अकाउंट पर वापस स्विच करने का अनुरोध कर रही है।"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "अनुमति हटाएं"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "अकाउंट रीसेट करें"
-  },
   "confirmTitleSIWESignature": {
     "message": "साइन-इन अनुरोध"
   },
@@ -1126,9 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आपका अकाउंट स्मार्ट अकाउंट में अपडेट हो जाएगा।"
   },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "ट्रांसेक्शन कैंसिल करें"

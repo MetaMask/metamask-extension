@@ -97,7 +97,7 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.revokeDelegation:
-      return t('confirmTitleRevokeDelegation');
+      return t('confirmTitleDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
@@ -160,7 +160,7 @@ const getDescription = (
       }
       return t('confirmTitleDescSign');
     case TransactionType.revokeDelegation:
-      return t('confirmTitleDescRevokeDelegation');
+      return t('confirmTitleDescDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {
