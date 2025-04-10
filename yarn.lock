@@ -4798,42 +4798,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-private/delegation-abis@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@metamask-private/delegation-abis@npm:0.7.1"
-  checksum: 10/2b5f53a119f106ee647854072af284114e86fa245f071e62ca8522c89741cf7a04307d00563149c15d345246e9243eb996407161e215905a391d96a32f16fbb3
+"@metamask-private/delegation-abis@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@metamask-private/delegation-abis@npm:0.8.1"
+  checksum: 10/4d19a333c3eb1549380de86ed7b37d84d1521e9e438241ec6fdf8442e0f948c58ccdde2b74876d3c210a79b787e25b4757248f654b1c413e955e15b9e11e2e72
   languageName: node
   linkType: hard
 
-"@metamask-private/delegation-deployments@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@metamask-private/delegation-deployments@npm:0.7.1"
-  checksum: 10/12ffbfe1505eb8b6015777ca9a9cd959eea2da330e1bafb3664d57c4d0963e89afce36eb7e9f854be95bfb43efe942420ced86e58c82e8add1859af300c28be1
+"@metamask-private/delegation-deployments@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@metamask-private/delegation-deployments@npm:0.8.1"
+  checksum: 10/ee27f186f99e6eb78f808877cd13c3bfd7701890907c1fd36ff1be9cbcc674db9537cd01d16a02e1dde84ae099fa25c1754e406310c28c423757f75643e3f36d
   languageName: node
   linkType: hard
 
-"@metamask-private/delegation-utils@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@metamask-private/delegation-utils@npm:0.7.1"
+"@metamask-private/delegation-utils@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@metamask-private/delegation-utils@npm:0.8.1"
   dependencies:
-    "@metamask-private/delegation-abis": "npm:^0.7.1"
-    "@metamask-private/delegation-deployments": "npm:^0.7.1"
+    "@metamask-private/delegation-abis": "npm:^0.8.1"
+    "@metamask-private/delegation-deployments": "npm:^0.8.1"
     buffer: "npm:^6.0.3"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/1cb0b3b07a95ed29bc7877bcdbee2673de85aeb5c7c5a3e27b1fb8a272ec8cc7d164ee754b4f92da8725ad15f4e738b3f2f5ebf552411cfaede67cc2b4868f93
+  checksum: 10/8f6891e483d27df8823dfa2cac19a42edb16d261d564ca08cdfd2158e90fe8eb3193d1e333fa1d9122a3ba1e70f8e225d08de995e9b3246de91aced641fe57b9
   languageName: node
   linkType: hard
 
-"@metamask-private/delegator-core-viem@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@metamask-private/delegator-core-viem@npm:0.7.1"
+"@metamask-private/delegator-core-viem@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@metamask-private/delegator-core-viem@npm:0.8.1"
   dependencies:
-    "@metamask-private/delegation-utils": "npm:^0.7.1"
+    "@metamask-private/delegation-utils": "npm:^0.8.1"
     webauthn-p256: "npm:^0.0.5"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/f18ef4b667485e91b5f554ebb75c9a65ef710d309623693fd3213ddec9c7c6596e40c6a319801c9330162c57b3404c79530537b7045446336762276c57088380
+  checksum: 10/766c8b6fabe33173acf903143e8551d5879c4b538d71968de427211e19d5c5540ddcb315988a25c5e8f2c025f7cd7bea4e7ff559e8c9e2484758e79ddbacbb00
   languageName: node
   linkType: hard
 
@@ -5201,16 +5201,16 @@ __metadata:
 
 "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.1.0
-  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=d8afae&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=9c0aba&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask-private/delegator-core-viem": "npm:^0.7.1"
+    "@metamask-private/delegator-core-viem": "npm:^0.8.1"
     "@metamask/accounts-controller": "npm:^27.0.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-controller": "npm:^21.0.1"
     "@metamask/utils": "npm:^11.3.0"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/d5d65dd0fbca06e2ea1dd2082074bd5fb937bde34bf1caae0e755d32005f35d6a300c496ccb63ac024ae1ab197e52f93a62ae46c640077a731871ab6b0095820
+  checksum: 10/10b183e83928d0fb1030125366f78c8d1615b263d7c01f26197914f20e3eb67a169e2bc05e4b6ace99750da0f6cc8ba635d12faa535ca65a3c22c782d563b7ab
   languageName: node
   linkType: hard
 

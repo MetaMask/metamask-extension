@@ -1,14 +1,17 @@
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { Messenger } from '@metamask/base-controller';
-import {
-  DelegationControllerMessenger,
-  type AllowedActions,
-} from '@metamask/delegation-controller';
+import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
+import { type KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 
 export { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 
 export type DelegationControllerInitMessenger = ReturnType<
   typeof getDelegationControllerMessenger
 >;
+
+type AllowedActions =
+  | KeyringControllerSignTypedMessageAction
+  | AccountsControllerGetSelectedAccountAction;
 
 type AllowedEvents = never;
 
