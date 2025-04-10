@@ -40,19 +40,6 @@ export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
-export type MultichainNetworkConfigurationsByChainIdState = {
-  metamask: {
-    multichainNetworkConfigurationsByChainId: Record<
-      string,
-      InternalMultichainNetworkConfiguration
-    >;
-    networkConfigurationsByChainId: Record<
-      string,
-      InternalNetworkConfiguration
-    >;
-  };
-};
-
 export type NetworksWithTransactionActivityByAccountsState = {
   metamask: {
     networksWithTransactionActivity: ActiveNetworksByAddress;
