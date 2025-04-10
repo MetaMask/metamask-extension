@@ -25,7 +25,7 @@ export function useSmartAccountActions() {
     await disableAccountUpgradeForChainAndAddress(chainId as string, from);
 
     dispatch(rejectPendingApproval(confirmationId, serializedError));
-  }, [dispatch, confirmationId, chainId]);
+  }, [dispatch, confirmationId, chainId, from]);
 
   return { handleRejectUpgrade };
 }

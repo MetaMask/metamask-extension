@@ -37,6 +37,7 @@ export async function processSendCalls(
       request: ValidateSecurityRequest,
       chainId: Hex,
     ) => Promise<void>;
+    getDismissSmartAccountSuggestionEnabled: () => boolean;
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
@@ -46,6 +47,7 @@ export async function processSendCalls(
     addTransactionBatch,
     getDisabledAccountUpgradeChainsAddresses,
     validateSecurity: validateSecurityHook,
+    getDismissSmartAccountSuggestionEnabled,
   } = hooks;
 
   const { calls, from } = params;
@@ -58,8 +60,15 @@ export async function processSendCalls(
   ).configuration.chainId;
 
   const disabledChainsAddresses = getDisabledAccountUpgradeChainsAddresses();
+  const dismissSmartAccountSuggestionEnabled =
+    getDismissSmartAccountSuggestionEnabled();
 
-  validateSendCalls(params, dappChainId, disabledChainsAddresses);
+  validateSendCalls(
+    params,
+    dappChainId,
+    disabledChainsAddresses,
+    dismissSmartAccountSuggestionEnabled,
+  );
 
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
@@ -127,11 +136,17 @@ function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
   disabledChainsAddresses: Record<Hex, Hex[]>,
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
-  validateUserDisabled(sendCalls, disabledChainsAddresses, dappChainId);
+  validateUserDisabled(
+    sendCalls,
+    disabledChainsAddresses,
+    dappChainId,
+    dismissSmartAccountSuggestionEnabled,
+  );
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -188,11 +203,12 @@ function validateUserDisabled(
   sendCalls: SendCalls,
   disabledChains: Record<Hex, Hex[]>,
   dappChainId: Hex,
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   const { from } = sendCalls;
   const isDisabled = disabledChains[dappChainId]?.includes(from);
 
-  if (isDisabled) {
+  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw rpcErrors.methodNotSupported(
       `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );

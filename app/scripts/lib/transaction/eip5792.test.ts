@@ -92,6 +92,8 @@ describe('EIP-5792', () => {
     Parameters<typeof processSendCalls>[0]['validateSecurity']
   >;
 
+  let getDismissSmartAccountSuggestionEnabledMock: jest.MockedFn<() => boolean>;
+
   let messenger: EIP5792Messenger;
 
   beforeEach(() => {
@@ -102,6 +104,7 @@ describe('EIP-5792', () => {
     getNetworkClientByIdMock = jest.fn();
     getDisabledAccountUpgradeChainsAddressesMock = jest.fn();
     validateSecurityMock = jest.fn();
+    getDismissSmartAccountSuggestionEnabledMock = jest.fn();
 
     messenger = new Messenger();
 
@@ -136,6 +139,8 @@ describe('EIP-5792', () => {
           getDisabledAccountUpgradeChainsAddresses:
             getDisabledAccountUpgradeChainsAddressesMock,
           validateSecurity: validateSecurityMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
         },
         messenger,
         SEND_CALLS_MOCK,
@@ -160,6 +165,8 @@ describe('EIP-5792', () => {
             getDisabledAccountUpgradeChainsAddresses:
               getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           SEND_CALLS_MOCK,
@@ -176,6 +183,8 @@ describe('EIP-5792', () => {
             getDisabledAccountUpgradeChainsAddresses:
               getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           { ...SEND_CALLS_MOCK, version: '2.0' },
@@ -192,6 +201,8 @@ describe('EIP-5792', () => {
             getDisabledAccountUpgradeChainsAddresses:
               getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           { ...SEND_CALLS_MOCK, chainId: CHAIN_ID_2_MOCK },
@@ -214,6 +225,30 @@ describe('EIP-5792', () => {
             getDisabledAccountUpgradeChainsAddresses:
               getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
+          },
+          messenger,
+          SEND_CALLS_MOCK,
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(
+        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
+      );
+    });
+
+    it('throws if user enabled preference to dismiss option to upgrade account', async () => {
+      getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
+
+      await expect(
+        processSendCalls(
+          {
+            addTransactionBatch: addTransactionBatchMock,
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+            validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           SEND_CALLS_MOCK,
@@ -232,6 +267,8 @@ describe('EIP-5792', () => {
             getDisabledAccountUpgradeChainsAddresses:
               getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           {
@@ -255,6 +292,8 @@ describe('EIP-5792', () => {
             getDisabledAccountUpgradeChainsAddresses:
               getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           {
