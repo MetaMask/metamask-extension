@@ -4798,6 +4798,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-private/delegation-abis@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@metamask-private/delegation-abis@npm:0.7.1"
+  checksum: 10/2b5f53a119f106ee647854072af284114e86fa245f071e62ca8522c89741cf7a04307d00563149c15d345246e9243eb996407161e215905a391d96a32f16fbb3
+  languageName: node
+  linkType: hard
+
+"@metamask-private/delegation-deployments@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@metamask-private/delegation-deployments@npm:0.7.1"
+  checksum: 10/12ffbfe1505eb8b6015777ca9a9cd959eea2da330e1bafb3664d57c4d0963e89afce36eb7e9f854be95bfb43efe942420ced86e58c82e8add1859af300c28be1
+  languageName: node
+  linkType: hard
+
+"@metamask-private/delegation-utils@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@metamask-private/delegation-utils@npm:0.7.1"
+  dependencies:
+    "@metamask-private/delegation-abis": "npm:^0.7.1"
+    "@metamask-private/delegation-deployments": "npm:^0.7.1"
+    buffer: "npm:^6.0.3"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/1cb0b3b07a95ed29bc7877bcdbee2673de85aeb5c7c5a3e27b1fb8a272ec8cc7d164ee754b4f92da8725ad15f4e738b3f2f5ebf552411cfaede67cc2b4868f93
+  languageName: node
+  linkType: hard
+
+"@metamask-private/delegator-core-viem@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@metamask-private/delegator-core-viem@npm:0.7.1"
+  dependencies:
+    "@metamask-private/delegation-utils": "npm:^0.7.1"
+    webauthn-p256: "npm:^0.0.5"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/f18ef4b667485e91b5f554ebb75c9a65ef710d309623693fd3213ddec9c7c6596e40c6a319801c9330162c57b3404c79530537b7045446336762276c57088380
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -4850,6 +4889,33 @@ __metadata:
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/6b2c7d638cc335b0de62042ff62d65fec7c317b3a5dda2e8e8bb5db61c6ec428df322d2f214fa94863186ffcba0291542cb5930a0ee0b240a6aca4d785ba29d1
+  languageName: node
+  linkType: hard
+
+"@metamask/accounts-controller@npm:^27.0.0":
+  version: 27.0.0
+  resolution: "@metamask/accounts-controller@npm:27.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/eth-snap-keyring": "npm:^12.0.0"
+    "@metamask/keyring-api": "npm:^17.2.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.0"
+    "@metamask/keyring-utils": "npm:^3.0.0"
+    "@metamask/snaps-sdk": "npm:^6.17.1"
+    "@metamask/snaps-utils": "npm:^8.10.0"
+    "@metamask/utils": "npm:^11.2.0"
+    deepmerge: "npm:^4.2.2"
+    ethereum-cryptography: "npm:^2.1.2"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/providers": ^18.1.0
+    "@metamask/snaps-controllers": ^9.19.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/b56c67bad0f454458b8c8d1bf85bfa25514570bb45d53f6d17c98b5b1bdf3477b49c49c015c6d261bcd3bc89909e8f00afde2c4981e0a03adba23ac2f41df07f
   languageName: node
   linkType: hard
 
@@ -5130,6 +5196,21 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/68e5c91d9f8a4362b6e67c15cf2887ed00b7c8903ba201b6e0262d4f57bdc0c82d356ec4a34b96d562436f7193696d20c510af035053b9860b4a764a8d3b064f
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller::locator=metamask-crx%40workspace%3A.":
+  version: 0.1.0
+  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=d8afae&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask-private/delegator-core-viem": "npm:^0.7.1"
+    "@metamask/accounts-controller": "npm:^27.0.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/keyring-controller": "npm:^21.0.1"
+    "@metamask/utils": "npm:^11.3.0"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/d5d65dd0fbca06e2ea1dd2082074bd5fb937bde34bf1caae0e755d32005f35d6a300c496ccb63ac024ae1ab197e52f93a62ae46c640077a731871ab6b0095820
   languageName: node
   linkType: hard
 
@@ -6710,6 +6791,23 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/9cc2cb6af4627085e72a310ba9b8921c69757d94e2992d4664627e5a0d99b1f2f7f8069c6f22262515135e1172bd66b82d00512d90ea2ec6da4e768f3d7d4ae2
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.3.0":
+  version: 11.4.0
+  resolution: "@metamask/utils@npm:11.4.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/7c976268e944b542b5e936bae89f58a50eef58501bd3512944995c6d416cb1a7dd3f712aec8c7ca0969dcee889ab963b815fbc3e863dc80ccf16e9258eaec3ff
   languageName: node
   linkType: hard
 
@@ -38169,7 +38267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webauthn-p256@npm:0.0.5":
+"webauthn-p256@npm:0.0.5, webauthn-p256@npm:^0.0.5":
   version: 0.0.5
   resolution: "webauthn-p256@npm:0.0.5"
   dependencies:
