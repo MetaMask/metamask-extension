@@ -41,7 +41,6 @@ import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
-import { UpgradeCancelModal } from './upgrade-cancel-modal';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -167,7 +166,6 @@ const Footer = () => {
   const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const [isUpgradeCancelModalOpen, setUpgradeCancelModalOpen] = useState(false);
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -218,20 +216,10 @@ const Footer = () => {
         return;
       }
 
-      if (isUpgradeTransaction) {
-        setUpgradeCancelModalOpen(true);
-        return;
-      }
-
       rejectApproval({ location });
       resetTransactionState();
     },
-    [
-      currentConfirmation,
-      isUpgradeTransaction,
-      rejectApproval,
-      resetTransactionState,
-    ],
+    [currentConfirmation, rejectApproval, resetTransactionState],
   );
 
   const onTransactionSubmit = useCallback(() => {
@@ -298,11 +286,6 @@ const Footer = () => {
       <OriginThrottleModal
         isOpen={showOriginThrottleModal}
         onConfirmationCancel={onCancel}
-      />
-      <UpgradeCancelModal
-        isOpen={isUpgradeCancelModalOpen}
-        onClose={() => setUpgradeCancelModalOpen(false)}
-        onReject={rejectApproval}
       />
       <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
         <Button
