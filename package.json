@@ -279,7 +279,7 @@
     "@metamask/eth-trezor-keyring": "^8.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.3",
-    "@metamask/institutional-wallet-snap": "1.2.0",
+    "@metamask/institutional-wallet-snap": "1.3.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
