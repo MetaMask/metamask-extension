@@ -29,33 +29,38 @@ type Movement = {
   address?: string;
 };
 
+type AggregatedMovement = {
+  address?: string;
+  unit: string;
+  amount: number;
+};
+
 export function useMultichainTransactionDisplay(
   transaction: Transaction,
   networkConfig: MultichainProviderConfig,
 ) {
   const locale = useSelector(getIntlLocale);
-  const isNegative = transaction.type === TransactionType.Send;
 
   const assetInputs = aggregateAmount(
     transaction.from as Movement[],
-    isNegative,
+    true,
     locale,
     networkConfig.decimals,
   );
   const assetOutputs = aggregateAmount(
     transaction.to as Movement[],
-    isNegative,
+    transaction.type === TransactionType.Send,
     locale,
     networkConfig.decimals,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
-    isNegative,
+    true,
     locale,
   );
   const priorityFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
-    isNegative,
+    true,
     locale,
   );
 
@@ -74,7 +79,7 @@ function aggregateAmount(
   locale: string,
   decimals?: number,
 ) {
-  const amountByAsset: Record<string, Movement> = {};
+  const amountByAsset: Record<string, AggregatedMovement> = {};
 
   for (const mv of movement) {
     if (!mv?.asset.fungible) {
@@ -82,11 +87,15 @@ function aggregateAmount(
     }
     const assetId = mv.asset.type;
     if (!amountByAsset[assetId]) {
-      amountByAsset[assetId] = mv;
+      amountByAsset[assetId] = {
+        amount: parseFloat(mv.asset.amount),
+        address: mv.address,
+        unit: mv.asset.unit,
+      };
       continue;
     }
 
-    amountByAsset[assetId].asset.amount += Number(mv.asset.amount || 0);
+    amountByAsset[assetId].amount += parseFloat(mv.asset.amount);
   }
 
   // Convert to a proper display array.
@@ -96,14 +105,15 @@ function aggregateAmount(
 }
 
 function parseAsset(
-  movement: Movement,
+  movement: AggregatedMovement,
   locale: string,
   isNegative: boolean,
   decimals?: number,
 ) {
+  const threshold = 1 / 10 ** (decimals || 8); // Smallest unit to display given the decimals.
   const displayAmount = formatWithThreshold(
-    Number(movement.asset.amount),
-    0.00000001,
+    movement.amount,
+    threshold,
     locale,
     {
       minimumFractionDigits: 0,
@@ -112,14 +122,12 @@ function parseAsset(
   );
 
   let finalAmount = displayAmount;
-  if (isNegative && !displayAmount.startsWith('<')) {
+  if (isNegative) {
     finalAmount = `-${displayAmount}`;
   }
 
   return {
+    ...movement,
     amount: finalAmount,
-    unit: movement.asset.unit,
-    // It is not strictly correct to use the address here but we do not support sending multiple assets to multiple addresses
-    address: movement.address,
   };
 }

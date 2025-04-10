@@ -54,7 +54,16 @@ const mockTransaction = {
       asset: {
         fungible: true as const,
         type: 'native' as CaipAssetType,
-        amount: '1.2',
+        amount: '1.1',
+        unit: 'BTC',
+      },
+    },
+    {
+      address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      asset: {
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
+        amount: '0.1',
         unit: 'BTC',
       },
     },
@@ -310,7 +319,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
     expect(screen.getByText('Swap')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '100 USDC',
+      '-2.5 SOL',
     );
 
     const addressStart = userAddress.substring(0, 6);
