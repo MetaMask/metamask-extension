@@ -125,11 +125,9 @@ export const ConnectedSitePopover = ({
               if (isConnected) {
                 onClick();
               } else {
-                window.open(
-                  'https://portfolio.metamask.io/explore/dapps',
-                  '_blank',
-                  'noopener,noreferrer',
-                );
+                global.platform.openTab({
+                  url: 'https://portfolio.metamask.io/explore/dapps',
+                });
               }
             }}
           >
