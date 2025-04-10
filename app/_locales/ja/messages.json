@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "続きを表示"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "プライバシーポリシーが更新されました"
-  },
   "newRpcUrl": {
     "message": "新しいRPC URL"
   },

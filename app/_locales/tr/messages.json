@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "Daha fazlasını oku"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Gizlilik politikamızı güncelledik"
-  },
   "newRpcUrl": {
     "message": "Yeni RPC URL adresi"
   },

@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "了解更多"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "我们已经更新了隐私政策"
-  },
   "newRpcUrl": {
     "message": "新的 RPC（远程过程调用） URL"
   },

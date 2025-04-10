@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "자세히 보기"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "개인정보 처리방침이 개정되었습니다"
-  },
   "newRpcUrl": {
     "message": "새 RPC URL"
   },

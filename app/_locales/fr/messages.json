@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "En savoir plus"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Nous avons mis à jour notre politique de confidentialité"
-  },
   "newRpcUrl": {
     "message": "Nouvelle URL de RPC"
   },

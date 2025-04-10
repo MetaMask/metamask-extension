@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "और पढ़ें"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "हमने अपनी गोपनीयता नीति अपडेट कर दी है"
-  },
   "newRpcUrl": {
     "message": "नया RPC URL"
   },

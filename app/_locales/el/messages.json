@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "Διαβάστε περισσότερα"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Ενημερώσαμε την πολιτική απορρήτου μας"
-  },
   "newRpcUrl": {
     "message": "Νέα διεύθυνση URL του RPC"
   },

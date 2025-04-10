@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "Đọc thêm"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Chúng tôi đã cập nhật chính sách quyền riêng tư"
-  },
   "newRpcUrl": {
     "message": "URL RPC mới"
   },

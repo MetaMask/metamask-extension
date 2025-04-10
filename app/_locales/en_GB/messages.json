@@ -3301,7 +3301,7 @@
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
   },
-  "newPrivacyPolicyTitle": {
+  "newPrivacyPolicyNotice": {
     "message": "We’ve updated our privacy policy"
   },
   "newRpcUrl": {

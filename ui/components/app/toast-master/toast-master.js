@@ -255,7 +255,7 @@ function PrivacyPolicyToast() {
         startAdornment={
           <Icon name={IconName.Info} color={IconColor.iconDefault} />
         }
-        text={t('newPrivacyPolicyTitle')}
+        text={t('newPrivacyPolicyNotice')}
         actionText={t('newPrivacyPolicyActionButton')}
         onActionClick={handleReadMore}
         onClose={handleClose}
