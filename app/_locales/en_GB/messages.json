@@ -1713,6 +1713,12 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "dismissSmartAccountSuggestionEnabledDescription": {
+    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
+  },
+  "dismissSmartAccountSuggestionEnabledTitle": {
+    "message": "Dismiss \"Switch to Smart Account\" suggestion"
+  },
   "displayNftMedia": {
     "message": "Display NFT media"
   },
