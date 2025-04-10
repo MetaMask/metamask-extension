@@ -15,7 +15,9 @@ import {
   SolAccountType,
   KeyringAccountType,
 } from '@metamask/keyring-api';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CaipChainId } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IF
 import {
   Box,
   ButtonLink,
@@ -67,7 +69,9 @@ import {
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
   getMetaMaskHdKeyrings,
+  ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
 } from '../../../selectors';
@@ -117,7 +121,9 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSnapAccount } from '../create-snap-account';
+///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
 import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
