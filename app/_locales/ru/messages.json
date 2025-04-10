@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Если вы подтвердите этот запрос, ваш счет будет обновлен до смарт-счета."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Отменить транзакцию"
   },
