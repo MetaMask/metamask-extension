@@ -43,7 +43,6 @@ import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 import OriginThrottleModal from './origin-throttle-modal';
-import { Acknowledge } from './acknowledge';
 
 export type OnCancelHandler = ({
   location,
@@ -187,13 +186,10 @@ const Footer = () => {
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isUpgradeTransaction = useIsUpgradeTransaction();
-  const [isAcknowledged, setIsAcknowledged] = useState(false);
-  const isAcknowledgeRequired = isUpgradeTransaction;
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
-    hardwareWalletRequiresConnection ||
-    (isAcknowledgeRequired && !isAcknowledged);
+    hardwareWalletRequiresConnection;
 
   const rejectApproval = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
@@ -307,10 +303,6 @@ const Footer = () => {
         isOpen={isUpgradeCancelModalOpen}
         onClose={() => setUpgradeCancelModalOpen(false)}
         onReject={rejectApproval}
-      />
-      <Acknowledge
-        isAcknowledged={isAcknowledged}
-        onAcknowledgeToggle={setIsAcknowledged}
       />
       <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
         <Button

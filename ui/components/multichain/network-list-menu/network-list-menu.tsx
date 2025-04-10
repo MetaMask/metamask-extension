@@ -61,8 +61,8 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
-  getPermittedChainsForSelectedTab,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -80,7 +80,6 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -170,11 +169,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
 
   const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -313,7 +312,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // the network changes.
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-    } else if (process.env.PORTFOLIO_VIEW) {
+    } else {
       const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
         return acc;
@@ -333,7 +332,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
 
     if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, hexChainId));
+      dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
       }
@@ -792,11 +791,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           paddingTop: 0,
           paddingBottom: 0,
         }}
-        height={
-          actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT
-            ? BlockSize.TwoFifths
-            : BlockSize.Screen
-        }
       >
         <ModalHeader
           paddingTop={4}

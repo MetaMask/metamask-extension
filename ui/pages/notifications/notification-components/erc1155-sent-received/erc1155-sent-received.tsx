@@ -199,7 +199,6 @@ export const components: NotificationComponent<ERC1155Notification> = {
           notification={notification}
           chainId={notification.chain_id}
           txHash={notification.tx_hash}
-          id={notification.id}
         />
       );
     },

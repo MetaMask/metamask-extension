@@ -90,6 +90,20 @@ export const useSnapAssetSelectorData = ({
     });
 
   /**
+   * Formats an asset balance.
+   *
+   * @param balance - The balance to format.
+   * @returns The formatted balance.
+   */
+  const formatAssetBalance = (balance: string) => {
+    const parsedBalance = parseFloat(balance);
+    return formatWithThreshold(parsedBalance, 0.00001, locale, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 5,
+    });
+  };
+
+  /**
    * Formats a non-EVM asset for the SnapUIAssetSelector.
    *
    * @param asset - The asset to format.
@@ -105,7 +119,7 @@ export const useSnapAssetSelectorData = ({
       icon: asset.image,
       symbol: asset.symbol,
       name: asset.title,
-      balance: asset.primary,
+      balance: formatAssetBalance(asset.primary),
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
       fiat: formatFiatBalance(asset.secondary),
