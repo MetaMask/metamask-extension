@@ -9,9 +9,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
-const DEFAULT_MESSAGE_TIMEOUT = 4000;
-
-const SIGNING_TIMEOUT = 20_000;
+const MESSAGE_TIMEOUT = 4000;
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -67,16 +65,22 @@ export class LedgerOffscreenBridge
   }
 
   attemptMakeApp(): Promise<boolean> {
-    return this.#sendMessage({
-      action: LedgerAction.makeApp,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.makeApp,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
   }
 
   updateTransportMethod(transportType: string): Promise<boolean> {
-    return this.#sendMessage({
-      action: LedgerAction.updateTransport,
-      params: { transportType },
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.updateTransport,
+        params: { transportType },
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
   }
 
   getPublicKey(params: { hdPath: string }): Promise<{
@@ -95,52 +99,45 @@ export class LedgerOffscreenBridge
     s: string;
     r: string;
   }> {
-    return this.#sendMessage(
-      {
-        action: LedgerAction.signTransaction,
-        params,
-      },
-      SIGNING_TIMEOUT,
-    );
+    return this.#sendMessage({
+      action: LedgerAction.signTransaction,
+      params,
+    });
   }
 
   deviceSignMessage(params: {
     hdPath: string;
     message: string;
   }): Promise<{ v: number; s: string; r: string }> {
-    return this.#sendMessage(
-      {
-        action: LedgerAction.signPersonalMessage,
-        params,
-      },
-      SIGNING_TIMEOUT,
-    );
+    return this.#sendMessage({
+      action: LedgerAction.signPersonalMessage,
+      params,
+    });
   }
 
   deviceSignTypedData(
     params: LedgerSignTypedDataParams,
   ): Promise<LedgerSignTypedDataResponse> {
-    return this.#sendMessage(
-      {
-        action: LedgerAction.signTypedData,
-        params,
-      },
-      SIGNING_TIMEOUT,
-    );
+    return this.#sendMessage({
+      action: LedgerAction.signTypedData,
+      params,
+    });
   }
 
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
-    timeout = DEFAULT_MESSAGE_TIMEOUT,
+    { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
     return new Promise((resolve, reject) => {
       let hasResponse = false;
 
-      setTimeout(() => {
-        if (!hasResponse) {
-          reject(new Error('Ledger iframe timeout'));
-        }
-      }, timeout);
+      if (timeout) {
+        setTimeout(() => {
+          if (!hasResponse) {
+            reject(new Error('Ledger iframe timeout'));
+          }
+        }, timeout);
+      }
 
       chrome.runtime.sendMessage(
         {
@@ -149,7 +146,7 @@ export class LedgerOffscreenBridge
         },
         (response) => {
           hasResponse = true;
-          if (response.success) {
+          if (response?.success) {
             resolve(response.payload);
           } else {
             reject(response?.payload?.error || 'Unknown Ledger error');
