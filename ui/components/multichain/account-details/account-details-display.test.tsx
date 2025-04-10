@@ -23,9 +23,6 @@ function renderComponent() {
       onExportClick={() => {
         // Intentionally empty
       }}
-      onClose={() => {
-        // Intentionally empty
-      }}
     />,
     configureStore(mockState),
   );
