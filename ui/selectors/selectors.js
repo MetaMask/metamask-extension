@@ -861,9 +861,10 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
-}
+export const getAllTokens = createSelector(
+  (state) => state,
+  (state) => state.metamask.allTokens,
+);
 
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.

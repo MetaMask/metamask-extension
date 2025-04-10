@@ -4177,13 +4177,12 @@ export default class MetamaskController extends EventEmitter {
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
     const currentChainId = this.#getGlobalChainId();
-    const selectedAccount = this.accountsController.getSelectedAccount();
 
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
     const { allTokens } = this.tokensController.state;
 
-    const tokens = allTokens?.[currentChainId]?.[selectedAccount.address] || [];
+    const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
     const staticTokenListDetails =
       STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
