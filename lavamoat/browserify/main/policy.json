@@ -1336,7 +1336,8 @@
         "document.createElement": true,
         "document.head.appendChild": true,
         "fetch": true,
-        "removeEventListener": true
+        "removeEventListener": true,
+        "setTimeout": true
       },
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
