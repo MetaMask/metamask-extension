@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "요청을 확인하면 계정이 스마트 계정으로 업데이트됩니다."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "트랜잭션 취소"
   },
