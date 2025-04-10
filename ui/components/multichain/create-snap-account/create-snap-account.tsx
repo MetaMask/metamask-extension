@@ -54,13 +54,18 @@ export const CreateSnapAccount = ({
 
       try {
         isCreatingAccount.current = true;
-        await snapClient.createAccount({
-          scope: chainId,
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          entropySource: selectedKeyringId,
-          accountNameSuggestion: _accountNameSuggestion,
-          ///: END:ONLY_INCLUDE_IF(multi-srp)
-        });
+        await snapClient.createAccount(
+          {
+            scope: chainId,
+            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+            entropySource: selectedKeyringId,
+            accountNameSuggestion: _accountNameSuggestion,
+            ///: END:ONLY_INCLUDE_IF(multi-srp)
+          },
+          {
+            displayAccountNameSuggestion: false, // This will skip the naming dialog.
+          },
+        );
         onActionComplete(true);
       } catch (error) {
         onActionComplete(false);
