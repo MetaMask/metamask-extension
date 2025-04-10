@@ -149,6 +149,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
                 hd_entropy_index: hdEntropyIndex,
+                is_suggested_name:
+                  !trimmedAccountName ||
+                  trimmedAccountName === defaultAccountName,
               },
             });
             history.push(mostRecentOverviewPage);
