@@ -31,6 +31,10 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  STATE_CORRUPTION_ERRORS,
+  displayStateCorruptionError,
+} from './lib/state-corruption-errors';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -99,6 +103,16 @@ async function start() {
     const method = message?.data?.method;
 
     if (method !== METHOD_START_UI_SYNC) {
+      const error = message.error ? JSON.parse(message.error) : null;
+      if (STATE_CORRUPTION_ERRORS.has(error?.message)) {
+        displayStateCorruptionError(
+          container,
+          extensionPort,
+          error,
+          JSON.parse(message.metamaskState ?? ''),
+        );
+      }
+
       return;
     }
 
