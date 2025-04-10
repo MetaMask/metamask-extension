@@ -153,6 +153,7 @@ const ACTION_MODES = {
 
 type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 const SNAP_CLIENT_CONFIG_MAP: Record<
   string,
   { clientType: WalletClientType | null; chainId: CaipChainId | null }
@@ -170,6 +171,7 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
     chainId: MultichainNetworks.SOLANA,
   },
 };
+///: END:ONLY_INCLUDE_IF(multichain)
 
 /**
  * Gets the title for a given action mode.
@@ -326,7 +328,7 @@ export const AccountListMenu = ({
 
   const handleMultichainSnapAccountCreation = async (
     client: MultichainWalletSnapClient,
-    snap_nameoptions: MultichainWalletSnapOptions,
+    _options: MultichainWalletSnapOptions,
     action: ActionMode,
   ) => {
     trackEvent({
@@ -483,10 +485,12 @@ export const AccountListMenu = ({
     setActionMode(ACTION_MODES.SELECT_SRP);
   }, [setActionMode, actionMode, trackEvent]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
     clientType: null,
     chainId: null,
   };
+  ///: END:ONLY_INCLUDE_IF(multichain)
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -512,17 +516,21 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {clientType && chainId ? (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-            <CreateSnapAccount
-              onActionComplete={onActionComplete}
-              selectedKeyringId={selectedKeyringId}
-              onSelectSrp={onSelectSrp}
-              clientType={clientType}
-              chainId={chainId}
-            />
-          </Box>
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+          clientType && chainId ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateSnapAccount
+                onActionComplete={onActionComplete}
+                selectedKeyringId={selectedKeyringId}
+                onSelectSrp={onSelectSrp}
+                clientType={clientType}
+                chainId={chainId}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF(multichain)
+        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
