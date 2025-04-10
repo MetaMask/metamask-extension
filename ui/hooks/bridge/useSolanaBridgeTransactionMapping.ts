@@ -301,8 +301,11 @@ export default function useSolanaBridgeTransactionMapping(
         status: matchingBridgeTx.status?.status ?? 'PENDING',
         destTxHash: matchingBridgeTx.status?.destChain?.txHash,
         srcTxHash: matchingBridgeTx.status?.srcChain?.txHash,
+        // TODO: update controller types for these 2 problematic lines.
+        // @ts-expect-error: need to update controller types.
         provider: matchingBridgeTx.quote?.provider,
         destBlockExplorerUrl:
+          // @ts-expect-error: need to update controller types.
           matchingBridgeTx.quote?.destChain?.blockExplorerUrl,
       };
 
