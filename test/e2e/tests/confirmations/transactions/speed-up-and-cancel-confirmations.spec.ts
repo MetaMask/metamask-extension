@@ -36,8 +36,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           // Create initial stuck transaction
           await createDappTransaction(driver, {
             value: ethInHexWei(0.1),
-            maxFeePerGas: decimalToPrefixedHex(1),
-            maxPriorityFeePerGas: decimalToPrefixedHex(1),
+            maxFeePerGas: '0x22ae4b8bcb',
+            maxPriorityFeePerGas: '0x59682f04',
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
@@ -92,8 +92,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           // Create initial stuck transaction
           await createDappTransaction(driver, {
             value: ethInHexWei(0.1),
-            maxFeePerGas: decimalToPrefixedHex(1),
-            maxPriorityFeePerGas: decimalToPrefixedHex(1),
+            maxFeePerGas: '0x22ae4b8bcb',
+            maxPriorityFeePerGas: '0x59682f04',
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
