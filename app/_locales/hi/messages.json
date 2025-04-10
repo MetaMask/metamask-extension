@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "मैं सहमत हूं"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "निजी:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 हम किसी सामान्य स्थान (जैसे आपका देश या क्षेत्र) का पता लगाने के लिए अस्थायी रूप से आपके आईपी ​​एड्रेस का उपयोग करते हैं, लेकिन इसे कभी स्टोर नहीं किया जाता है।",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

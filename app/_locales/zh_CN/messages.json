@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "我同意"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "私密："
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 我们暂时使用您的 IP 地址来检测一般位置（如您的国家或地区），但从来不会进行存储。",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Tôi đồng ý"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Riêng tư:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 chúng tôi tạm thời sử dụng địa chỉ IP của bạn để xác định vị trí tổng quan (chẳng hạn như quốc gia hoặc khu vực của bạn), nhưng dữ liệu này sẽ không bao giờ được lưu trữ.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

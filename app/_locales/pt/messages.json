@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Concordo"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privadas:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 usamos temporariamente o seu endereço IP para detectar uma localização geral (como seu país ou região), mas ele nunca é armazenado.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "同意します"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "非公開:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 大まかな位置情報 (国や地域など) の検出にユーザーのIPアドレスが一時的に使用されますが、保存されることはありません。",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

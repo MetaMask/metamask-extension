@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Я согласен(-на)"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Приватными:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 мы временно используем ваш IP-адрес для определения общего местоположения (например, вашей страны или региона), но он никогда не сохраняется.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

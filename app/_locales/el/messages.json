@@ -3607,19 +3607,12 @@
   "onboardingMetametricsAgree": {
     "message": "Συμφωνώ"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Ιδιωτικές:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 χρησιμοποιούμε προσωρινά τη διεύθυνση IP σας για να εντοπίσουμε τη γενική τοποθεσία (όπως η χώρα ή η περιοχή σας), αλλά δεν αποθηκεύεται ποτέ.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Γενικές:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 εσείς αποφασίζετε αν θέλετε να κοινοποιήσετε ή να διαγράψετε τα δεδομένα χρήσης σας μέσω των ρυθμίσεων ανά πάσα στιγμή.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"

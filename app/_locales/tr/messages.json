@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Kabul ediyorum"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Özel:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 genel bir konumu (ülkeniz veya bölgeniz gibi) algılamak için geçici olarak IP adresinizi kullanırız ancak bu bilgi asla saklanmaz.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

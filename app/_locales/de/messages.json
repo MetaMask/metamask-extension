@@ -3607,19 +3607,12 @@
   "onboardingMetametricsAgree": {
     "message": "Ich stimme zu"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privat:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 wir verwenden Ihre IP-Adresse vorübergehend, um einen allgemeinen Standort zu ermitteln (z. B. Ihr Land oder Ihre Region), aber er wird niemals gespeichert.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Allgemein:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Sie können jederzeit über die Einstellungen entscheiden, ob Sie Ihre Nutzungsdaten freigeben oder löschen möchten.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"

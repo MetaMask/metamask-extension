@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Saya setuju"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Pribadi:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 kami menggunakan alamat IP sementara waktu untuk mendeteksi lokasi umum (seperti negara atau wilayah Anda), tetapi alamat tersebut tidak pernah disimpan.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

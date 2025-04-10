@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "동의함"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "개인 정보:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 MetaMask는 사용자의 국가나 지역과 같은 일반적인 위치를 찾기 위해 일시적으로 사용자의 IP 주소를 사용하지만, 이 정보는 저장되지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

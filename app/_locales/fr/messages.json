@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "J’accepte"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privé :"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 nous utilisons votre adresse IP de temps en temps pour détecter votre emplacement général (comme votre pays ou votre région), mais nous ne l’enregistrons pas.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

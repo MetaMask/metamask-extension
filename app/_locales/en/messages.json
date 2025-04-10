@@ -3678,9 +3678,6 @@
   "onboardingMetametricsDescriptionNew": {
     "message": "We gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Private:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"

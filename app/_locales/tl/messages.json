@@ -3607,9 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Sumasang-ayon ako"
   },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Pribado:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 pansamantala naming ginamit ang iyong IP address upang malaman ang pangkalahatang lokasyon (tulad ng iyong bansa o rehiyon), ngunit hindi ito iniimbak.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
