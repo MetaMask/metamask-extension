@@ -2051,8 +2051,8 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledAccountUpgradeChains:
-            this.preferencesController.getDisabledAccountUpgradeChains.bind(
+          getDisabledUpgradeAccountsByChain:
+            this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
               this.preferencesController,
             ),
           validateSecurity: (securityAlertId, request, chainId) =>
@@ -3609,10 +3609,9 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      disableAccountUpgradeForChain:
-        preferencesController.disableAccountUpgradeForChain.bind(
-          preferencesController,
-        ),
+      disableAccountUpgrade: preferencesController.disableAccountUpgrade.bind(
+        preferencesController,
+      ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
