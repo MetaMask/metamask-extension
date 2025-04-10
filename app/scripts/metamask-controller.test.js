@@ -3995,11 +3995,8 @@ describe('MetaMaskController', () => {
 
         const mockDiscoverAccounts = jest
           .fn()
-          .mockResolvedValueOnce([
-            { derivationPath: "m/44'/501'/0'/0'" },
-            { derivationPath: "m/44'/501'/1'/0'" },
-          ])
-          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/2'/0'" }])
+          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/0'/0'" }])
+          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/1'/0'" }])
           .mockResolvedValueOnce([]); // Return empty array on third call to stop the discovery loop
 
         jest
@@ -4036,27 +4033,27 @@ describe('MetaMaskController', () => {
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
         // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(3);
+        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
 
-        // Check the first createAccount call
+        // All calls should use the solana snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
           expect.stringContaining('solana-wallet'),
         );
+        // First call should use derivation path on index 0
         expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
         });
+        // All calls should use the same internal options
         expect(mockCreateAccount.mock.calls[0][2]).toStrictEqual({
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
           setSelectedAccount: false,
         });
 
-        expect(mockCreateAccount.mock.calls[2][0]).toStrictEqual(
-          expect.stringContaining('solana-wallet'),
-        );
-        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
-          derivationPath: "m/44'/501'/2'/0'",
+        // Second call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
         });
       });
