@@ -1161,18 +1161,6 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancel transaction"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancel update & transaction"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "If you don't want to update your account, you can cancel it here.\n\nTo finish this transaction without an update, you'll need to make this request again on the site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancel transaction"
-  },
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
   },
@@ -5065,9 +5053,6 @@
   },
   "smartAccountBetterTransactionDescription": {
     "message": "Save time and money by processing transactions together."
-  },
-  "smartAccountFeatures": {
-    "message": "Same account, smarter features"
   },
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."

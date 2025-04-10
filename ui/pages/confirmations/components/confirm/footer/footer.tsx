@@ -39,7 +39,6 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
 import OriginThrottleModal from './origin-throttle-modal';
 
@@ -183,7 +182,6 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-  const isUpgradeTransaction = useIsUpgradeTransaction();
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -294,7 +292,6 @@ const Footer = () => {
           onClick={handleFooterCancel}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Secondary}
-          endIconName={isUpgradeTransaction ? IconName.ArrowDown : undefined}
         >
           {t('cancel')}
         </Button>
