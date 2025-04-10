@@ -12,7 +12,7 @@ export const accountSelector: UIComponentFactory<AccountSelectorElement> = ({
       name: element.props.name,
       hideExternalAccounts: element.props.hideExternalAccounts,
       chainIds: element.props.chainIds,
-      switchSelectedAccount: element.props.switchSelectedAccount,
+      switchGlobalAccount: element.props.switchGlobalAccount,
       form,
     },
   };
