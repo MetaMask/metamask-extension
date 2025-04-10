@@ -1,6 +1,6 @@
 /* eslint-disable import/no-restricted-paths */
 /** Circular dependencies in this file should have no impact at build time and runtime, ås all imports/exports are types that will be stripped by tsc */
-import {
+import type {
   CurrencyRateState,
   TokenListState,
   TokensControllerState,
@@ -12,64 +12,64 @@ import {
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
 } from '@metamask/assets-controllers';
-import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
-import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { KeyringControllerState } from '@metamask/keyring-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
-import { ApprovalControllerState } from '@metamask/approval-controller';
-import { EnsControllerState } from '@metamask/ens-controller';
-import { AnnouncementControllerState } from '@metamask/announcement-controller';
-import { NetworkState } from '@metamask/network-controller';
-import { GasFeeState } from '@metamask/gas-fee-controller';
-import {
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
+import type { AddressBookControllerState } from '@metamask/address-book-controller';
+import type { ApprovalControllerState } from '@metamask/approval-controller';
+import type { EnsControllerState } from '@metamask/ens-controller';
+import type { AnnouncementControllerState } from '@metamask/announcement-controller';
+import type { NetworkState } from '@metamask/network-controller';
+import type { GasFeeState } from '@metamask/gas-fee-controller';
+import type {
   PermissionConstraint,
   PermissionControllerState,
   SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
-import { LoggingControllerState } from '@metamask/logging-controller';
-import { PermissionLogControllerState } from '@metamask/permission-log-controller';
-import {
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
+import type { LoggingControllerState } from '@metamask/logging-controller';
+import type { PermissionLogControllerState } from '@metamask/permission-log-controller';
+import type {
   SnapControllerState,
   CronjobControllerState,
   SnapsRegistryState,
   SnapInterfaceControllerState,
   SnapInsightsControllerState,
 } from '@metamask/snaps-controllers';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { SignatureControllerState } from '@metamask/signature-controller';
-import { PPOMState } from '@metamask/ppom-validator';
-import { NameControllerState } from '@metamask/name-controller';
-import { QueuedRequestControllerState } from '@metamask/queued-request-controller';
-import { UserOperationControllerState } from '@metamask/user-operation-controller';
-import { TransactionControllerState } from '@metamask/transaction-controller';
-import {
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { SignatureControllerState } from '@metamask/signature-controller';
+import type { PPOMState } from '@metamask/ppom-validator';
+import type { NameControllerState } from '@metamask/name-controller';
+import type { QueuedRequestControllerState } from '@metamask/queued-request-controller';
+import type { UserOperationControllerState } from '@metamask/user-operation-controller';
+import type { TransactionControllerState } from '@metamask/transaction-controller';
+import type {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
-import {
+import type {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
-import { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
+import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 
-import { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
-import { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
-import { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
-import { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
-import { AppStateControllerState } from '../../app/scripts/controllers/app-state-controller';
-import { AlertControllerState } from '../../app/scripts/controllers/alert-controller';
-import { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
-import { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
-import { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
-import { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
-import { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
-import { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
-import { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
+import type { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
+import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
+import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
+import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
+import type { AppStateControllerState } from '../../app/scripts/controllers/app-state-controller';
+import type { AlertControllerState } from '../../app/scripts/controllers/alert-controller';
+import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
+import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
+import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
+import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
+import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
+import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
+import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 
-import { BridgeControllerState } from './bridge';
-import { BridgeStatusControllerState } from './bridge-status';
+import type { BridgeControllerState } from './bridge';
+import type { BridgeStatusControllerState } from './bridge-status';
 
 export type FlattenedBackgroundStateProxy = {
   isInitialized: boolean;
