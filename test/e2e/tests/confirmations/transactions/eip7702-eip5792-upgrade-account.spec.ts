@@ -45,7 +45,11 @@ describe('Upgrade Account', function (this: Suite) {
         await testDapp.clickSendCalls();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
+
+        // acknowledge splash page
+        await upgradeAndBatchTxConfirmation.tickSplashUpgradeButton();
 
         await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
           'Smart account',
@@ -59,7 +63,6 @@ describe('Upgrade Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.check_batchTxListIsPresent();
 
         // Confirm upgrade and batch tx
-        await upgradeAndBatchTxConfirmation.tickUpgradeCheckbox();
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(

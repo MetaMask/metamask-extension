@@ -1,0 +1,17 @@
+.smart-account-update {
+  &__wrapper {
+    font-size: 12px;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 10;
+  }
+
+  &__inner {
+    height: calc(100% - 32px);
+    width: calc(100% - 32px);
+    overflow: auto;
+  }
+}

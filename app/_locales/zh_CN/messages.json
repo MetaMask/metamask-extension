@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "交易请求"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "如果您确认此请求，您的账户将升级为智能账户。"
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "取消交易"
   },

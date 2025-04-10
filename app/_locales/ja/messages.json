@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "この要求を確定すると、アカウントがスマートアカウントに更新されます。"
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "トランザクションをキャンセル"
   },

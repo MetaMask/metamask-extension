@@ -42,6 +42,7 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -69,7 +70,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
-    enableTxParamsGasFeeUpdates: true,
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -103,6 +103,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       queryEntireHistory: false,
       updateTransactions: false,
     },
+    isAutomaticGasFeeUpdateEnabled: () => true,
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
     isSimulationEnabled: () =>
@@ -139,16 +140,15 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
       // @ts-expect-error Controller type does not support undefined return value
-      publish: (transactionMeta, rawTx: Hex) =>
-        publishSmartTransactionHook(
-          controller,
-          smartTransactionsController(),
-          // Init messenger cannot yet be further restricted so is a superset of what is needed
-          initMessenger as SmartTransactionHookMessenger,
-          getFlatState(),
+      publish: (transactionMeta, signedTx) =>
+        publishHook({
+          flatState: getFlatState(),
+          initMessenger,
+          signedTx,
+          smartTransactionsController: smartTransactionsController(),
+          transactionController: controller,
           transactionMeta,
-          rawTx,
-        ),
+        }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
         await publishBatchSmartTransactionHook({
           transactionController: controller,
@@ -183,6 +183,7 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
     updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateBatchTransactions:
       controller.updateBatchTransactions.bind(controller),
@@ -239,7 +240,45 @@ function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
   };
 }
 
-function publishSmartTransactionHook(
+async function publishHook({
+  flatState,
+  initMessenger,
+  signedTx,
+  smartTransactionsController,
+  transactionController,
+  transactionMeta,
+}: {
+  flatState: ControllerFlatState;
+  initMessenger: TransactionControllerInitMessenger;
+  signedTx: string;
+  smartTransactionsController: SmartTransactionsController;
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta;
+}) {
+  const result = await publishSmartTransactionHook(
+    transactionController,
+    smartTransactionsController,
+    initMessenger,
+    flatState,
+    transactionMeta,
+    signedTx as Hex,
+  );
+
+  if (result?.transactionHash) {
+    return result;
+  }
+
+  const hook = new Delegation7702PublishHook({
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
+    messenger: initMessenger,
+  }).getHook();
+
+  return await hook(transactionMeta, signedTx);
+}
+
+async function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
   hookControllerMessenger: SmartTransactionHookMessenger,
@@ -255,7 +294,7 @@ function publishSmartTransactionHook(
     return { transactionHash: undefined };
   }
 
-  return submitSmartTransactionHook({
+  return await submitSmartTransactionHook({
     transactionMeta,
     signedTransactionInHex,
     transactionController,
