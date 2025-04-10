@@ -30,3 +30,34 @@ jobs:
       test-command: yarn test:e2e:firefox:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-report:
+    needs:
+      - test-e2e-firefox
+      - test-e2e-firefox-flask
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      # For a `pull_request` event, the branch is `github.head_ref`.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      TEST_RESULTS_PATH: test/test-results/e2e
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-firefox*
+          merge-multiple: true
+
+      - name: Create Test Report
+        run: yarn tsx .github/scripts/create-e2e-test-report.ts
