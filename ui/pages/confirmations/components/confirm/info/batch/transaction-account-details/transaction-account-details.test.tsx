@@ -9,6 +9,15 @@ import { TransactionAccountDetails } from './transaction-account-details';
 const FROM_MOCK = '0x1234567890123456789012345678901234567890';
 const DELEGATION_MOCK = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef';
 
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 function render({
   authorizationList,
 }: {
