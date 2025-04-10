@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Beta] Add Solana support features to the Beta build. ([#30613](https://github.com/MetaMask/metamask-extension/pull/30613))
 
 ### Changed
+- Update manifest to be compatible with more platforms ([#31812](https://github.com/MetaMask/metamask-extension/pull/31812))
 - Update NFT network badge styling for better visibility. ([#30888](https://github.com/MetaMask/metamask-extension/pull/30888))
 - Update styling for the empty NFT tab placeholder for a cleaner look. ([#30892](https://github.com/MetaMask/metamask-extension/pull/30892))
 - Update text color on the Unlock Page for improved readability. ([#30890](https://github.com/MetaMask/metamask-extension/pull/30890))
