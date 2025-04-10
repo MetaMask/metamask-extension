@@ -57,7 +57,7 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list mm-box--display-flex"
+            class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -132,7 +132,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list mm-box--display-flex"
+            class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -302,7 +302,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list mm-box--display-flex"
+            class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
