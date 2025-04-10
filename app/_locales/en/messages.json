@@ -3678,13 +3678,6 @@
   "onboardingMetametricsDescriptionNew": {
     "message": "We gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
-  "onboardingMetametricsTerms": {
-    "message": "We’ll let you know if we ever plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
-    "description": "$1 represents `onboardingMetametricsNotice`"
-  },
-  "onboardingMetametricsNotice": {
-    "message": "Privacy Notice"
-  },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Private:"
   },
@@ -3695,12 +3688,19 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
+  "onboardingMetametricsNeverSellDataEmphasis": {
+    "message": "Optional:"
+  },
   "onboardingMetametricsNeverSellDataWithLink": {
     "message": "$1 you decide if you want to share or delete your usage data via $2 any time.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`, $2 represents `settingsLowercase`."
   },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Optional:"
+  "onboardingMetametricsNotice": {
+    "message": "Privacy Notice"
+  },
+  "onboardingMetametricsTerms": {
+    "message": "We’ll let you know if we ever plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
+    "description": "$1 represents `onboardingMetametricsNotice`"
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
