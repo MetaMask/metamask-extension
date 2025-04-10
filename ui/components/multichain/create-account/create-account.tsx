@@ -44,7 +44,7 @@ import { Display } from '../../../helpers/constants/design-system';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
-import { getFirstPartySnapAccountsByKeyringId } from '../../../selectors/multi-srp/multi-srp';
+import { getSnapAccountsByKeyringId } from '../../../selectors/multi-srp/multi-srp';
 ///: END:ONLY_INCLUDE_IF
 
 type Props = {
@@ -133,7 +133,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         getSelectedKeyringByIdOrDefault(state, selectedKeyringId),
       );
       const firstPartySnapAccounts = useSelector((state) =>
-        getFirstPartySnapAccountsByKeyringId(state, selectedKeyringId),
+        getSnapAccountsByKeyringId(state, selectedKeyringId),
       );
 
       const selectedHdKeyringIndex = useSelector((state) =>

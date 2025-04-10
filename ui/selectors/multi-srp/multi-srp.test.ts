@@ -5,7 +5,7 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockDefaultState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import {
-  getFirstPartySnapAccountsByKeyringId,
+  getSnapAccountsByKeyringId,
   getShouldShowSeedPhraseReminder,
 } from './multi-srp';
 
@@ -298,10 +298,7 @@ describe('Multi SRP Selectors', () => {
         dismissSeedBackUpReminder: false,
       });
 
-      const result = getFirstPartySnapAccountsByKeyringId(
-        mockState,
-        mockKeyringId,
-      );
+      const result = getSnapAccountsByKeyringId(mockState, mockKeyringId);
 
       expect(result).toStrictEqual([mockSnapAccount]);
     });
@@ -313,7 +310,7 @@ describe('Multi SRP Selectors', () => {
         dismissSeedBackUpReminder: false,
       });
 
-      const result = getFirstPartySnapAccountsByKeyringId(
+      const result = getSnapAccountsByKeyringId(
         mockState,
         'mock-id-with-no-snap-accounts',
       );

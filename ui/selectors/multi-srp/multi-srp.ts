@@ -103,7 +103,7 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
   },
 );
 
-export const getFirstPartySnapAccountsByKeyringId = createDeepEqualSelector(
+export const getSnapAccountsByKeyringId = createDeepEqualSelector(
   getInternalAccounts,
   (_state, keyringId) => keyringId,
   (accounts, keyringId) => {
