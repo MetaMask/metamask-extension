@@ -14,6 +14,7 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import  TestDapp from '../../../page-objects/pages/test-dapp';
 
+
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
 import {
@@ -45,6 +46,9 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           await initializePages(driver);
 
             await openDappAndTriggerSignature(driver, SignatureType.Permit);
+
+            console.log("BREAKING LINT!!")
+
 
         await clickHeaderInfoBtn(driver);
           await assertHeaderInfoBalance();
