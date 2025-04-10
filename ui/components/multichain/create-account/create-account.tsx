@@ -169,15 +169,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             });
           }
         },
-        [
-          onCreateAccount,
-          trimmedAccountName,
-          defaultAccountName,
-          trackEvent,
-          hdEntropyIndex,
-          history,
-          mostRecentOverviewPage,
-        ],
+        [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
       );
 
       return (
