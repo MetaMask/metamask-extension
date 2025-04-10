@@ -53,6 +53,8 @@ describe('Transaction activity list', function (this: Suite) {
     );
   });
 });
+
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Transaction activity list', function (this: Suite) {
   // https://consensyssoftware.atlassian.net/browse/SOL-202
   it('user can see activity list and a failed transaction details', async function () {

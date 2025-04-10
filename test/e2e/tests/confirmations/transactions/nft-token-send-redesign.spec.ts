@@ -135,7 +135,7 @@ async function erc1155Mocks(server: Mockttp) {
   return [await mockedERC11554BytesNFTTokenSend(server)];
 }
 
-export async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
+async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .withQuery({ hex_signature: '0x23b872dd' })
@@ -159,7 +159,7 @@ export async function mockedERC7214BytesNFTTokenSend(mockServer: Mockttp) {
     }));
 }
 
-export async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
+async function mockedERC11554BytesNFTTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .withQuery({ hex_signature: '0xf242432a' })

@@ -13,7 +13,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/rede
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockSmartTransactionRequests } from './mocks';
 
-export async function withFixturesForSmartTransactions(
+async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,

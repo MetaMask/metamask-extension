@@ -125,6 +125,7 @@ testSet.forEach((options) => {
     await networkController.selectNetwork(options.network);
     const balance = await walletPage.getTokenBalance();
     if (balance === '0 ETH') {
+      // eslint-disable-next-line mocha/no-skipped-tests
       test.skip();
     }
     await walletPage.selectSwapAction();
@@ -148,14 +149,17 @@ testSet.forEach((options) => {
           });
         } else {
           log.error(`\tERROR: Transaction did not complete. Skipping test`);
+          // eslint-disable-next-line mocha/no-skipped-tests
           test.skip();
         }
       } else {
         log.error(`\tERROR: No quotes found on. Skipping test`);
+        // eslint-disable-next-line mocha/no-skipped-tests
         test.skip();
       }
     } else {
       log.error(`\tERROR: Error while entering the quote. Skipping test`);
+      // eslint-disable-next-line mocha/no-skipped-tests
       test.skip();
     }
   });
