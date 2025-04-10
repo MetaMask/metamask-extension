@@ -876,11 +876,11 @@ export const AccountListMenu = ({
                 </Text>
               ) : null}
               {accountListItems}
+              {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
+              {hiddenAddresses.length > 0 ? (
+                <HiddenAccountList onClose={onClose} />
+              ) : null}
             </Box>
-            {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
-            {hiddenAddresses.length > 0 ? (
-              <HiddenAccountList onClose={onClose} />
-            ) : null}
             {/* Add / Import / Hardware button */}
             {showAccountCreation ? (
               <Box

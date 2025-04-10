@@ -4764,6 +4764,13 @@ export default class MetamaskController extends EventEmitter {
       // Clear snap state
       this.snapController.clearState();
 
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.accountOrderController.updateHiddenAccountsList([]);
+
       // clear accounts in AccountTrackerController
       this.accountTrackerController.clearAccounts();
 
