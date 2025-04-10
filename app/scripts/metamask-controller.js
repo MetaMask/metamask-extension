@@ -674,6 +674,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getRpcServiceOptions: () => ({
+        fetch: globalThis.fetch.bind(globalThis),
+        btoa: globalThis.btoa.bind(globalThis),
+      }),
     });
     this.networkController.initializeProvider();
 
