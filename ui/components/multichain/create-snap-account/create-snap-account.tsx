@@ -105,6 +105,7 @@ export const CreateSnapAccount = ({
       onActionComplete={onActionComplete}
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAccountName}
+      scope={chainId}
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}

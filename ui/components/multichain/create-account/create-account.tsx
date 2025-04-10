@@ -41,7 +41,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
-
+import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
 ///: END:ONLY_INCLUDE_IF
@@ -61,6 +61,11 @@ type Props = {
    * Callback called once the account has been created
    */
   onActionComplete: (completed: boolean) => Promise<void>;
+
+  /**
+   * The scope of the account
+   */
+  scope?: CaipChainId;
 
   /**
    * Callback to select the SRP
@@ -89,6 +94,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         selectedKeyringId,
         ///: END:ONLY_INCLUDE_IF
         onActionComplete,
+        scope,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
     ) => {
@@ -149,19 +155,36 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
                 hd_entropy_index: hdEntropyIndex,
+                chain_id_caip: scope,
               },
             });
             history.push(mostRecentOverviewPage);
           } catch (error) {
-            trackEvent({
-              category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.AccountAddFailed,
-              properties: {
-                account_type: MetaMetricsEventAccountType.Default,
-                error: (error as Error).message,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
+            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+            if (selectedKeyringId) {
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.AccountImportFailed,
+                properties: {
+                  account_type: MetaMetricsEventAccountType.Imported,
+                  error: (error as Error).message,
+                  hd_entropy_index: hdEntropyIndex,
+                  chain_id_caip: scope,
+                },
+              });
+            } else {
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.AccountAddFailed,
+                properties: {
+                  account_type: MetaMetricsEventAccountType.Default,
+                  error: (error as Error).message,
+                  hd_entropy_index: hdEntropyIndex,
+                  chain_id_caip: scope,
+                },
+              });
+            }
+            ///: END:ONLY_INCLUDE_IF
           }
         },
         [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
