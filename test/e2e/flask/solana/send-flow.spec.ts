@@ -59,9 +59,8 @@ describe('Send flow', function (this: Suite) {
       },
     );
   });
-});
-describe('Send full flow of USD', function (this: Suite) {
-  it('with a positive balance account', async function () {
+
+  it('full flow of USD with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -191,9 +190,8 @@ describe('Send full flow of USD', function (this: Suite) {
       },
     );
   });
-});
-describe('Send full flow of SOL', function (this: Suite) {
-  it('with a positive balance account', async function () {
+
+  it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -317,7 +315,7 @@ describe('Send full flow of SOL', function (this: Suite) {
     );
   });
 
-  it('and Transaction fails', async function () {
+  it('and transaction fails', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -336,7 +334,6 @@ describe('Send full flow of SOL', function (this: Suite) {
         await sendSolanaPage.check_pageIsLoaded('50 SOL');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
-        // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
 
@@ -381,8 +378,8 @@ describe('Send full flow of SOL', function (this: Suite) {
     );
   });
 
-  it('and Transaction Simulation fails', async function () {
-    this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
+  it('and transaction simulation fails', async function () {
+    this.timeout(120000);
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
