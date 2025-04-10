@@ -74,8 +74,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
+  getAllChainsToPoll,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import { detectNfts, setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -260,6 +261,7 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
+  const allChainIds = useSelector(getAllChainsToPoll);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(
     getConnectedSubjectsForAllAddresses,
@@ -292,6 +294,7 @@ export const AccountListMenu = ({
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
+
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -420,8 +423,16 @@ export const AccountListMenu = ({
         ],
       });
       dispatch(setSelectedAccount(account.address));
+      dispatch(detectNfts(allChainIds));
     },
-    [dispatch, onClose, trackEvent, defaultHomeActiveTabName, hdEntropyIndex],
+    [
+      dispatch,
+      onClose,
+      trackEvent,
+      defaultHomeActiveTabName,
+      hdEntropyIndex,
+      allChainIds,
+    ],
   );
 
   const accountListItems = useMemo(() => {
