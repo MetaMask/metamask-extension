@@ -81,6 +81,7 @@ export function MultichainTransactionDetailsModal({
     type,
     timestamp,
     id,
+    title,
   } = useMultichainTransactionDisplay(transaction, networkConfig);
 
   const getStatusColor = (txStatus: string) => {
@@ -97,11 +98,11 @@ export function MultichainTransactionDetailsModal({
   };
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
-  const accountComponent = (title: string, address?: string) =>
+  const accountComponent = (label: string, address?: string) =>
     address ? (
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-          {title}
+          {label}
         </Text>
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <ButtonLink
@@ -138,7 +139,7 @@ export function MultichainTransactionDetailsModal({
           unit: string;
         }
       | undefined,
-    title: string,
+    label: string,
     dataTestId: string,
   ) => {
     if (!asset) {
@@ -148,7 +149,7 @@ export function MultichainTransactionDetailsModal({
     return (
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-          {title}
+          {label}
         </Text>
         <Box
           display={Display.Flex}
@@ -181,7 +182,7 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(isRedeposit ? t('redeposit') : type)}
+            {capitalize(isRedeposit ? t('redeposit') : title)}
           </Text>
           <Text
             variant={TextVariant.bodyMd}

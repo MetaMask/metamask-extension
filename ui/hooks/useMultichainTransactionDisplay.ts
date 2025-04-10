@@ -9,6 +9,7 @@ import { formatWithThreshold } from '../components/app/assets/util/formatWithThr
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
 import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
+import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
@@ -40,6 +41,7 @@ export function useMultichainTransactionDisplay(
   networkConfig: MultichainProviderConfig,
 ) {
   const locale = useSelector(getIntlLocale);
+  const t = useI18nContext();
 
   const from = aggregateAmount(
     transaction.from as Movement[],
@@ -64,8 +66,19 @@ export function useMultichainTransactionDisplay(
     locale,
   );
 
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('send'),
+    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Swap]: `${t('swap')} ${from?.unit} ${t(
+      'to',
+    ).toLowerCase()} ${to?.unit}`,
+    [TransactionType.Unknown]: t('interaction'),
+  };
+
   return {
     ...transaction,
+    title: typeToTitle[transaction.type],
     from,
     to,
     baseFee,

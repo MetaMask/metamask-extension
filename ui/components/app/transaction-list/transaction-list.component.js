@@ -12,8 +12,10 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { capitalize } from 'lodash';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  TransactionType as KeyringTransactionType,
+} from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -726,7 +728,7 @@ const MultichainTransactionListItem = ({
   toggleShowDetails,
 }) => {
   const t = useI18nContext();
-  const { from, to, type, timestamp, isRedeposit } =
+  const { from, to, type, timestamp, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction, networkConfig);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
@@ -772,13 +774,15 @@ const MultichainTransactionListItem = ({
     );
   }
 
-  let title = capitalize(type);
   let { amount, unit } = to ?? {};
-
-  if (type === TransactionType.swap) {
-    title = `${t('swap')} ${from.unit} ${'to'} ${to.unit}`;
+  let category = type;
+  if (type === KeyringTransactionType.Swap) {
     amount = from.amount;
     unit = from.unit;
+  }
+
+  if (type === KeyringTransactionType.Unknown) {
+    category = TransactionGroupCategory.interaction;
   }
 
   return (
@@ -801,7 +805,7 @@ const MultichainTransactionListItem = ({
             />
           }
         >
-          <TransactionIcon category={type} status={statusKey} />
+          <TransactionIcon category={category} status={statusKey} />
         </BadgeWrapper>
       }
       rightContent={
