@@ -183,7 +183,7 @@ async function main() {
 
       const rows = suites.map((suite) => ({
         'Test suite': process.env.GITHUB_ACTIONS
-          ? `[${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})`
+          ? `[${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path}) - ${suite.job.name}`
           : suite.path,
         Passed: suite.passed ? `${suite.passed} ✅` : '',
         Failed: suite.failed ? `${suite.failed} ❌` : '',
