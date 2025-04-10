@@ -1,4 +1,5 @@
-import { withFixtures, WALLET_PASSWORD } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { Suite } from 'mocha';
@@ -8,23 +9,7 @@ import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboardin
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
-import TestDapp from '../../page-objects/pages/test-dapp';
-
-/**
- * Sends ETH to the current account from the dapp send-eth-with-private-key-test
- * This dapp is only used in this test spec, so we keep the function here
- * TODO: migrate this function to follow page object modal pattern when this dapp is used in other tests
- */
-async function sendEthWithPrivateKey(driver: Driver) {
-  const sendEthWithPrivateKeyButton = '#send';
-  await driver.waitForSelector(sendEthWithPrivateKeyButton);
-  await driver.pasteFromClipboardIntoField('#address');
-  await driver.clickElement(sendEthWithPrivateKeyButton);
-  await driver.waitForSelector(
-    { css: '#success', text: 'Success' },
-    { timeout: 15000 },
-  );
-}
+import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 
 describe('Incremental Security', function (this: Suite) {
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
@@ -76,9 +61,10 @@ describe('Incremental Security', function (this: Suite) {
         // switched to Dapp and send eth to the current account
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        await sendEthWithPrivateKey(driver);
+        const testDapp = new TestDappSendEthWithPrivateKey(driver);
+        await testDapp.openTestDappSendEthWithPrivateKey();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.pasteAddressAndSendEthWithPrivateKey();
 
         // switch back to extension and check the balance is updated
         await driver.switchToWindow(extension);

@@ -1,7 +1,7 @@
 import { tEn } from '../../../../lib/i18n-helpers';
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { Driver } from '../../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../../helpers';
+import { WALLET_PASSWORD } from '../../../constants';
 
 class AccountDetailsModal {
   private driver: Driver;
