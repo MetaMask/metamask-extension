@@ -53,10 +53,12 @@ export type Controller =
   | GasFeeController
   | JsonSnapsRegistry
   | KeyringController
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
   | MultichainTransactionsController
+  ///: END:ONLY_INCLUDE_IF
   | MultichainNetworkController
   | NetworkController
   | NotificationServicesController
@@ -74,6 +76,7 @@ export type Controller =
   | SnapInterfaceController
   | SnapInsightsController
   | TransactionController
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
@@ -95,10 +98,12 @@ export type ControllerFlatState = AccountsController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
+  ///: END:ONLY_INCLUDE_IF
   MultichainNetworkController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
