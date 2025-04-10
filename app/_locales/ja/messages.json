@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "このサイトがスタンダードアカウントへの切り替えを求めています。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "サイトがこのアカウントを所有することを証明するためにサインインを求めています。"
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "アクセス許可を取り消す"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "アカウントをリセット"
-  },
   "confirmTitleSIWESignature": {
     "message": "サインインリクエスト"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "この要求を確定すると、アカウントがスマートアカウントに更新されます。"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "トランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "更新とトランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "アカウントを更新しない場合は、こちらからキャンセルできます。\n\n更新せずにこのトランザクションを完了させるには、サイトでこの要求をもう一度行う必要があります。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "トランザクションのキャンセル"
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
