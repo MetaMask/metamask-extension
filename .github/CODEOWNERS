@@ -111,7 +111,7 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/snaps/**                          @MetaMask/snaps-devs
 shared/constants/permissions.ts      @MetaMask/snaps-devs
 ui/helpers/utils/permission.js       @MetaMask/snaps-devs
-app/scripts/contants/snaps.ts        @MetaMask/snaps-devs
+app/scripts/constants/snaps.ts        @MetaMask/snaps-devs
 
 # Co-owned by Confirmations and Snaps
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
