@@ -113,7 +113,7 @@ async function mockRequest(
 }
 
 describe('Simulation Details', function () {
-  it('renders send eth transaction', async function (this: Mocha.Context) {
+  it('renders send eth transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
@@ -128,7 +128,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('renders buy ERC20 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC20 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC20_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC20_REQUEST_2_MOCK);
@@ -145,7 +145,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('renders buy ERC721 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC721 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC721_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC721_REQUEST_2_MOCK);
@@ -168,7 +168,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('renders buy ERC1155 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC1155 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC1155_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC1155_REQUEST_2_MOCK);
@@ -191,7 +191,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('renders no changes transaction', async function (this: Mocha.Context) {
+  it('renders no changes transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, NO_CHANGES_REQUEST_MOCK);
     };
@@ -209,7 +209,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('displays error message if transaction will fail or revert', async function (this: Mocha.Context) {
+  it('displays error message if transaction will fail or revert', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, INSUFFICIENT_GAS_REQUEST_MOCK);
     };
@@ -227,7 +227,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('does not display if chain is not supported', async function (this: Mocha.Context) {
+  it('does not display if chain is not supported', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
@@ -249,7 +249,7 @@ describe('Simulation Details', function () {
     );
   });
 
-  it('displays generic error message', async function (this: Mocha.Context) {
+  it('displays generic error message', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, MALFORMED_TRANSACTION_REQUEST_MOCK);
     };
