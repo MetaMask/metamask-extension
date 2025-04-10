@@ -342,7 +342,13 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.POLYGON },
+            {
+              chainId: CHAIN_IDS.BSC,
+              rpcUrl: 'https://bsc-dataseed.binance.org/',
+            },
+          ),
         },
       };
       expect(getSmartTransactionsEnabled(polygonState, CHAIN_IDS.BSC)).toBe(
@@ -517,7 +523,13 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.POLYGON },
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.infura.io/v3/',
+            },
+          ),
         },
       };
 

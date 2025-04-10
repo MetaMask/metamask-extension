@@ -4,9 +4,9 @@ import {
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
 import {
-  getCurrentNetwork,
   accountSupportsSmartTx,
   getPreferences,
+  selectDefaultRpcEndpointByChainId,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
@@ -149,15 +149,20 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   ) {
     return true;
   }
-  const rpcUrl = getCurrentNetwork(state)?.rpcUrl;
-  if (!rpcUrl) {
-    return false;
-  }
-  const { hostname } = new URL(rpcUrl);
-  if (!hostname) {
-    return false;
-  }
-  return hostname.endsWith('.infura.io') || hostname.endsWith('.binance.org');
+
+  // Get the default RPC endpoint directly for this chain ID
+  const defaultRpcEndpoint = selectDefaultRpcEndpointByChainId(
+    state,
+    effectiveChainId,
+  );
+  const rpcUrl = defaultRpcEndpoint?.url;
+  const hostname = rpcUrl && new URL(rpcUrl).hostname;
+
+  return (
+    hostname?.endsWith('.infura.io') ||
+    hostname?.endsWith('.binance.org') ||
+    false
+  );
 };
 
 export const getSmartTransactionsEnabled = (
