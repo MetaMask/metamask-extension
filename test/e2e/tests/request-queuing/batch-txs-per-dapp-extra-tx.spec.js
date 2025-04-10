@@ -1,4 +1,5 @@
 const { By } = require('selenium-webdriver');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
@@ -18,7 +19,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -127,10 +128,17 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         );
 
         // Reject All Transactions
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Reject all',
-          tag: 'button',
-        });
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -149,12 +157,18 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           css: 'p',
           text: 'Localhost 8546',
         });
-
         // Reject All Transactions
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Reject all',
-          tag: 'button',
-        });
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
 
         // Wait for new confirmations queued from second dapp to open
         // We need a big delay to make sure dialog is not invalidated

@@ -32,7 +32,6 @@ describe('isBlockedUrl', () => {
     },
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['http://metamask.io', false],
     ['https://metamask.io', false],

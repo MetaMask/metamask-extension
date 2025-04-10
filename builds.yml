@@ -27,7 +27,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.1.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EVM_MULTICHAIN_ENABLED: false
     # Main build uses the default browser manifest
@@ -55,7 +55,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.1.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EVM_MULTICHAIN_ENABLED: false
     # Modifies how the version is displayed.
@@ -83,7 +83,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.1.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -109,7 +109,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.1.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://support.metamask-institutional.io
       - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
@@ -145,14 +145,28 @@ features:
       - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
-      - src: ./app/build-types/flask/images/
-        dest: images
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
+      - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
+        dest: snaps/preinstalled-example-snap.json
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
+      - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
+        dest: snaps/message-signing-snap.json
+      - src: ./node_modules/@metamask/ens-resolver-snap/dist/preinstalled-snap.json
+        dest: snaps/ens-resolver-snap.json
+      - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/institutional-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
+    assets:
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/bitcoin-wallet-snap.json
   solana:
+    assets:
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
@@ -351,4 +365,4 @@ env:
   ###
   # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
   ###
-  - EIP_7702_PUBLIC_KEY: null
+  - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'

@@ -18,15 +18,10 @@ import {
   BtcAccountType,
   EthAccountType,
   SolAccountType,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   KeyringAccountType,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import {
-  BITCOIN_WALLET_NAME,
-  BITCOIN_WALLET_SNAP_ID,
-} from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { CaipChainId } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import {
   Box,
@@ -65,6 +60,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsWatchEthereumAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -77,11 +74,10 @@ import {
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
+  getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getHdKeyringOfSelectedAccountOrPrimaryKeyring,
-  ///: END:ONLY_INCLUDE_IF
+  getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -107,6 +103,8 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
@@ -116,6 +114,8 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
+  MultichainWalletSnapClient,
+  MultichainWalletSnapOptions,
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
@@ -131,19 +131,17 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
-import { ImportAccount } from '../import-account';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-import {
-  SOLANA_WALLET_NAME,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../../../shared/lib/accounts/solana-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { CreateSnapAccount } from '../create-snap-account';
 ///: END:ONLY_INCLUDE_IF
+import { ImportAccount } from '../import-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
+// TODO: Should we use an enum for this instead?
 const ACTION_MODES = {
   // Displays the search box and account list
   LIST: '',
@@ -154,10 +152,16 @@ const ACTION_MODES = {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
   // Same but for testnet
   ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  // Displays the add account form controls (for solana account)
+  ADD_SOLANA: 'add-solana',
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
@@ -166,7 +170,29 @@ const ACTION_MODES = {
   IMPORT_SRP: 'import-srp',
   SELECT_SRP: 'select-srp',
   ///: END:ONLY_INCLUDE_IF
+} as const;
+
+type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+const SNAP_CLIENT_CONFIG_MAP: Record<
+  string,
+  { clientType: WalletClientType | null; chainId: CaipChainId | null }
+> = {
+  [ACTION_MODES.ADD_BITCOIN]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN,
+  },
+  [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_TESTNET,
+  },
+  [ACTION_MODES.ADD_SOLANA]: {
+    clientType: WalletClientType.Solana,
+    chainId: MultichainNetworks.SOLANA,
+  },
 };
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Gets the title for a given action mode.
@@ -177,7 +203,7 @@ const ACTION_MODES = {
  */
 export const getActionTitle = (
   t: (text: string) => string,
-  actionMode: string,
+  actionMode: ActionMode,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
@@ -185,9 +211,16 @@ export const getActionTitle = (
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
+      return t('addAccount');
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccount');
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
+      return t('addAccount');
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    case ACTION_MODES.ADD_SOLANA:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
@@ -227,6 +260,7 @@ export const AccountListMenu = ({
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
@@ -247,11 +281,16 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana,bitcoin)
   const { pathname } = useLocation();
   ///: END:ONLY_INCLUDE_IF
   const [searchQuery, setSearchQuery] = useState('');
-  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
+    ACTION_MODES.LIST,
+  );
+  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -267,6 +306,9 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const multiSrpEnabled = true;
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
@@ -280,13 +322,19 @@ export const AccountListMenu = ({
         snap_id: ACCOUNT_WATCHER_SNAP_ID,
         snap_name: ACCOUNT_WATCHER_NAME,
         location: 'Main Menu',
+        hd_entropy_index: hdEntropyIndex,
       },
     });
     onClose();
     history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
   }, [trackEvent, onClose, history]);
+  ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
+  const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Bitcoin,
+  );
   const bitcoinTestnetSupportEnabled = useSelector(
     getIsBitcoinTestnetSupportEnabled,
   );
@@ -296,22 +344,6 @@ export const AccountListMenu = ({
   const isBtcTestnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcTestnetAccount,
   );
-
-  const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
-    WalletClientType.Bitcoin,
-  );
-  const handleAccountCreation = async (network: MultichainNetworks) => {
-    // The account creation + renaming is handled by the Snap account bridge, so
-    // we need to close the current modal
-    onClose();
-    if (pathname.includes(SETTINGS_ROUTE)) {
-      // The settings route does not redirect pending confirmations. We need to redirect manually here.
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
-    }
-
-    // TODO: Forward the `primaryKeyring.metadata.id` to Bitcoin once supported.
-    await bitcoinWalletSnapClient.createAccount(network);
-  };
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -320,8 +352,45 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana,bitcoin)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+
+  const handleMultichainSnapAccountCreation = async (
+    client: MultichainWalletSnapClient,
+    options: MultichainWalletSnapOptions,
+    action: ActionMode,
+  ) => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: client.getSnapId(),
+        snap_name: client.getSnapName(),
+        location: 'Main Menu',
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+
+    if (multiSrpEnabled) {
+      return setActionMode(action);
+    }
+
+    // The account creation + renaming is handled by the Snap account bridge, so
+    // we need to close the current modal
+    onClose();
+
+    if (pathname.includes(SETTINGS_ROUTE)) {
+      // The settings route does not redirect pending confirmations. We need to redirect manually here.
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    }
+
+    return await client.createAccount(options, {
+      displayConfirmation: false,
+      displayAccountNameSuggestion: true,
+      setSelectedAccount: true,
+    });
+  };
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 
@@ -363,7 +432,7 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.LIST);
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     } else if (actionMode === ACTION_MODES.SELECT_SRP) {
-      onBack = () => setActionMode(ACTION_MODES.ADD);
+      onBack = () => setActionMode(previousActionMode);
       ///: END:ONLY_INCLUDE_IF
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
@@ -378,6 +447,7 @@ export const AccountListMenu = ({
         event: MetaMetricsEventName.NavAccountSwitched,
         properties: {
           location: 'Main Menu',
+          hd_entropy_index: hdEntropyIndex,
         },
       });
       endTrace({
@@ -392,7 +462,7 @@ export const AccountListMenu = ({
       });
       dispatch(setSelectedAccount(account.address));
     },
-    [dispatch, onClose, trackEvent, defaultHomeActiveTabName],
+    [dispatch, onClose, trackEvent, defaultHomeActiveTabName, hdEntropyIndex],
   );
 
   const accountListItems = useMemo(() => {
@@ -445,6 +515,33 @@ export const AccountListMenu = ({
     searchQuery,
   ]);
 
+  const onActionComplete = useCallback(
+    async (confirmed: boolean) => {
+      if (confirmed) {
+        onClose();
+      } else {
+        setActionMode(ACTION_MODES.LIST);
+      }
+    },
+    [onClose, setActionMode],
+  );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const onSelectSrp = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+    });
+    setPreviousActionMode(actionMode);
+    setActionMode(ACTION_MODES.SELECT_SRP);
+  }, [setActionMode, actionMode, trackEvent]);
+
+  const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
+    clientType: null,
+    chainId: null,
+  };
+  ///: END:ONLY_INCLUDE_IF
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -463,20 +560,29 @@ export const AccountListMenu = ({
         {actionMode === ACTION_MODES.ADD ? (
           <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateEthAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
+              onActionComplete={onActionComplete}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               selectedKeyringId={selectedKeyringId}
-              onSelectSrp={() => setActionMode(ACTION_MODES.SELECT_SRP)}
+              onSelectSrp={onSelectSrp}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          clientType && chainId ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateSnapAccount
+                onActionComplete={onActionComplete}
+                selectedKeyringId={selectedKeyringId}
+                onSelectSrp={onSelectSrp}
+                clientType={clientType}
+                chainId={chainId}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -484,15 +590,7 @@ export const AccountListMenu = ({
             paddingBottom={4}
             paddingTop={0}
           >
-            <ImportAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
+            <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
         {
@@ -505,15 +603,7 @@ export const AccountListMenu = ({
               paddingTop={0}
               style={{ overflowY: 'scroll' }}
             >
-              <ImportSrp
-                onActionComplete={(confirmed: boolean) => {
-                  if (confirmed) {
-                    onClose();
-                  } else {
-                    setActionMode(ACTION_MODES.LIST);
-                  }
-                }}
-              />
+              <ImportSrp onActionComplete={onActionComplete} />
             </Box>
           )
           ///: END:ONLY_INCLUDE_IF
@@ -524,7 +614,7 @@ export const AccountListMenu = ({
             <SrpList
               onActionComplete={(keyringId: string) => {
                 setSelectedKeyringId(keyringId);
-                setActionMode(ACTION_MODES.ADD);
+                setActionMode(previousActionMode);
               }}
             />
           )
@@ -553,6 +643,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Default,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   setActionMode(ACTION_MODES.ADD);
@@ -571,25 +662,13 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
                     onClick={async () => {
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.AccountAddSelected,
-                        properties: {
-                          account_type: MetaMetricsEventAccountType.Snap,
-                          snap_id: SOLANA_WALLET_SNAP_ID,
-                          snap_name: SOLANA_WALLET_NAME,
-                          location: 'Main Menu',
+                      return await handleMultichainSnapAccountCreation(
+                        solanaWalletSnapClient,
+                        {
+                          scope: MultichainNetworks.SOLANA,
+                          entropySource: primaryKeyring.metadata.id,
                         },
-                      });
-
-                      // The account creation + renaming is handled by the
-                      // Snap account bridge, so we need to close the current
-                      // modal
-                      onClose();
-
-                      await solanaWalletSnapClient.createAccount(
-                        MultichainNetworks.SOLANA,
-                        primaryKeyring.metadata.id,
+                        ACTION_MODES.ADD_SOLANA,
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
@@ -601,7 +680,7 @@ export const AccountListMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
               bitcoinSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
@@ -610,18 +689,13 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
                     onClick={async () => {
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.AccountAddSelected,
-                        properties: {
-                          account_type: MetaMetricsEventAccountType.Snap,
-                          snap_id: BITCOIN_WALLET_SNAP_ID,
-                          snap_name: BITCOIN_WALLET_NAME,
-                          location: 'Main Menu',
+                      return await handleMultichainSnapAccountCreation(
+                        bitcoinWalletSnapClient,
+                        {
+                          scope: MultichainNetworks.BITCOIN,
                         },
-                      });
-
-                      await handleAccountCreation(MultichainNetworks.BITCOIN);
+                        ACTION_MODES.ADD_BITCOIN,
+                      );
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
@@ -632,7 +706,7 @@ export const AccountListMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
               bitcoinTestnetSupportEnabled ? (
                 <Box marginTop={4}>
                   <ButtonLink
@@ -641,8 +715,12 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
                     onClick={async () => {
-                      await handleAccountCreation(
-                        MultichainNetworks.BITCOIN_TESTNET,
+                      return await handleMultichainSnapAccountCreation(
+                        bitcoinWalletSnapClient,
+                        {
+                          scope: MultichainNetworks.BITCOIN_TESTNET,
+                        },
+                        ACTION_MODES.ADD_BITCOIN_TESTNET,
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account-testnet"
@@ -669,6 +747,11 @@ export const AccountListMenu = ({
                   startIconName={IconName.Wallet}
                   startIconProps={{ size: IconSize.Md }}
                   onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+                    });
                     setActionMode(ACTION_MODES.IMPORT_SRP);
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
@@ -692,6 +775,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Imported,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   setActionMode(ACTION_MODES.IMPORT);
@@ -721,6 +805,7 @@ export const AccountListMenu = ({
                     properties: {
                       account_type: MetaMetricsEventAccountType.Hardware,
                       location: 'Main Menu',
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -751,6 +836,7 @@ export const AccountListMenu = ({
                         properties: {
                           account_type: MetaMetricsEventAccountType.Snap,
                           location: 'Main Menu',
+                          hd_entropy_index: hdEntropyIndex,
                         },
                       });
                       global.platform.openTab({

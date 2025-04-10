@@ -4,6 +4,7 @@ exports[`Bridge renders the component with initial props 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container bridge__container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -78,6 +79,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               </div>
               <button
                 class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                data-testid="bridge-source-button"
                 style="padding: 8px 11px 8px 8px; min-width: fit-content;"
               >
                 <div
@@ -139,6 +141,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
+                style="cursor: default; text-decoration: none;"
               />
             </div>
           </div>
@@ -188,6 +191,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                 </div>
                 <button
                   class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+                  data-testid="bridge-destination-button"
                   data-theme="light"
                   style="white-space: nowrap;"
                 >
@@ -206,6 +210,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                 </div>
                 <a
                   class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
+                  style="cursor: pointer; text-decoration: underline;"
                 />
               </div>
             </div>

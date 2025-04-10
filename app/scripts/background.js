@@ -47,6 +47,7 @@ import {
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -77,6 +78,7 @@ import rawFirstTimeState from './first-time-state';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -141,22 +143,35 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-if (isFirefox) {
-  browser.runtime.onInstalled.addListener(function (details) {
+if (!isManifestV3) {
+  /**
+   * `onInstalled` event handler.
+   *
+   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+   * is never called.
+   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
+   *
+   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
+   */
+  const onInstalledListener = (details) => {
     if (details.reason === 'install') {
-      browser.storage.session.set({ isFirstTimeInstall: true });
-    } else if (details.reason === 'update') {
-      browser.storage.session.set({ isFirstTimeInstall: false });
+      onInstall();
+      browser.runtime.onInstalled.removeListener(onInstalledListener);
     }
-  });
-} else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === 'install') {
-      global.sessionStorage.setItem('isFirstTimeInstall', true);
-    } else if (details.reason === 'update') {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-  });
+  };
+
+  browser.runtime.onInstalled.addListener(onInstalledListener);
+
+  // This condition is for when the `onInstalled` listener in `app-init` was called before
+  // `background.js` was loaded.
+} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
+  onInstall();
+  // Delete just to clean up global namespace
+  delete globalThis.stateHooks.metamaskWasJustInstalled;
+  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+  // called.
+} else {
+  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
 /**
@@ -487,6 +502,8 @@ async function initialize() {
         }
       : {};
 
+    const preinstalledSnaps = await loadPreinstalledSnaps();
+
     setupController(
       initState,
       initLangCode,
@@ -494,6 +511,7 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
+      preinstalledSnaps,
     );
 
     // `setupController` sets up the `controller` object, so we can use it now:
@@ -505,16 +523,20 @@ async function initialize() {
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
 
-    if (isManifestV3 || isFirefox) {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    } else {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
   }
+}
+
+async function loadPreinstalledSnaps() {
+  const fetchWithTimeout = getFetchWithTimeout();
+  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
+    const response = await fetchWithTimeout(url);
+    return await response.json();
+  });
+
+  return Promise.all(promises);
 }
 
 /**
@@ -770,6 +792,7 @@ function trackAppOpened(environment) {
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
+ * @param preinstalledSnaps
  */
 export function setupController(
   initState,
@@ -778,6 +801,7 @@ export function setupController(
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
+  preinstalledSnaps,
 ) {
   //
   // MetaMask Controller
@@ -806,6 +830,7 @@ export function setupController(
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
+    preinstalledSnaps,
   });
 
   setupEnsIpfsResolver({
@@ -1049,10 +1074,12 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-    updateBadge,
-  );
+  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
+    controller.controllerMessenger.subscribe(
+      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
+      updateBadge,
+    );
+  }
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
@@ -1284,24 +1311,15 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-// On first install, open a new tab with MetaMask
-async function onInstall() {
-  const sessionData =
-    isManifestV3 || isFirefox
-      ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.sessionStorage.getItem('isFirstTimeInstall');
-
-  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
-
-  if (process.env.IN_TEST) {
-    addAppInstalledEvent();
-  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
-    // If storeAlreadyExisted is true then this is a fresh installation
-    // and an app installed event should be tracked.
-    addAppInstalledEvent();
+/**
+ * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
+ */
+function onInstall() {
+  log.debug('First install detected');
+  addAppInstalledEvent();
+  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  onNavigateToTab();
 }
 
 function onNavigateToTab() {
@@ -1332,7 +1350,7 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  await onInstall();
+  onNavigateToTab();
   try {
     await initialize();
     if (process.env.IN_TEST) {

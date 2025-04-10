@@ -7,6 +7,7 @@ import {
   TransactionMeta,
   TransactionReceipt,
   TransactionStatus,
+  ValidateSecurityRequest,
 } from '@metamask/transaction-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
@@ -16,6 +17,7 @@ import {
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
+import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -30,12 +32,22 @@ export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
     getDisabledAccountUpgradeChains: () => Hex[];
+    validateSecurity: (
+      securityAlertId: string,
+      request: ValidateSecurityRequest,
+      chainId: Hex,
+    ) => Promise<void>;
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
   req: JsonRpcRequest & { networkClientId: string; origin?: string },
 ): Promise<SendCallsResult> {
-  const { addTransactionBatch, getDisabledAccountUpgradeChains } = hooks;
+  const {
+    addTransactionBatch,
+    getDisabledAccountUpgradeChains,
+    validateSecurity: validateSecurityHook,
+  } = hooks;
+
   const { calls, from } = params;
   const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
@@ -49,11 +61,16 @@ export async function processSendCalls(
 
   validateSendCalls(params, dappChainId, disabledChains);
 
+  const securityAlertId = generateSecurityAlertId();
+  const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
+
   const { batchId: id } = await addTransactionBatch({
     from,
     networkClientId,
     origin,
+    securityAlertId,
     transactions,
+    validateSecurity,
   });
 
   return { id };

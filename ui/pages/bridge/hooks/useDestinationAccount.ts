@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   getSelectedInternalAccount,
   getSelectedEvmInternalAccount,
@@ -10,9 +11,7 @@ import {
   getMultichainIsEvm,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { DestinationAccount } from '../prepare/types';
+import type { DestinationAccount } from '../prepare/types';
 
 export const useDestinationAccount = (isSwap = false) => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =
@@ -29,9 +28,7 @@ export const useDestinationAccount = (isSwap = false) => {
     : selectedMultichainAccount;
 
   const toChain = useSelector(getToChain);
-  const isDestinationSolana =
-    toChain &&
-    formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+  const isDestinationSolana = toChain && isSolanaChainId(toChain.chainId);
 
   // Auto-select most recently used account when toChain or account changes
   useEffect(() => {

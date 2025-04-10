@@ -88,11 +88,6 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
 export const incomingTxListSelectorAllChains = createDeepEqualSelector(
   (state) => {
-    const { incomingTransactionsPreferences } = state.metamask;
-    if (!incomingTransactionsPreferences) {
-      return [];
-    }
-
     const allNetworkTransactions = getAllNetworkTransactions(state);
     const { address: selectedAddress } = getSelectedInternalAccount(state);
 
@@ -107,8 +102,8 @@ export const incomingTxListSelectorAllChains = createDeepEqualSelector(
 
 export const getUnapprovedTransactions = createDeepEqualSelector(
   (state) => {
-    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    return filterAndShapeUnapprovedTransactions(currentNetworkTransactions);
+    const transactions = getTransactions(state);
+    return filterAndShapeUnapprovedTransactions(transactions);
   },
   (transactions) => transactions,
 );
@@ -148,11 +143,6 @@ export const getApprovedAndSignedTransactions = createDeepEqualSelector(
 
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
-    const { incomingTransactionsPreferences } = state.metamask;
-    if (!incomingTransactionsPreferences) {
-      return [];
-    }
-
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
     const { address: selectedAddress } = getSelectedInternalAccount(state);
 

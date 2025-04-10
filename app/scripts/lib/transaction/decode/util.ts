@@ -121,7 +121,7 @@ function normalizeDecodedParamValue(value: any): any {
   const hexValue = value._hex;
 
   if (hexValue) {
-    return parseInt(hexValue, 16);
+    return BigInt(hexValue).toString();
   }
 
   return value;

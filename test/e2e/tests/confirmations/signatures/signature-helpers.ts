@@ -14,6 +14,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -61,6 +62,7 @@ type SignatureEventProperty = {
   decoding_description?: string | null;
   ui_customizations?: string[];
   location?: string;
+  hd_entropy_index?: number;
 };
 
 const signatureAnonProperties = {
@@ -112,6 +114,7 @@ function getSignatureEventProperty(
     security_alert_response: securityAlertResponse,
     security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
+    hd_entropy_index: 0,
   };
 
   if (primaryType !== '') {
@@ -232,6 +235,7 @@ export async function assertSignatureRejectedMetrics({
   assertEventPropertiesMatch(events, 'Signature Rejected', {
     ...signatureEventProperty,
     location,
+    hd_entropy_index: 0,
     ...expectedProps,
   });
 
@@ -258,6 +262,7 @@ export async function assertAccountDetailsMetrics(
     locale: 'en',
     chain_id: '0x539',
     environment_type: 'notification',
+    hd_entropy_index: 0,
   });
 }
 
@@ -393,8 +398,9 @@ export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
+  await testDapp.check_pageIsLoaded();
   await triggerSignature(type);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }

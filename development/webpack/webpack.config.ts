@@ -260,6 +260,12 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
+      // snaps
+      {
+        test: /\.json$/u,
+        dependency: 'url',
+        type: 'asset/resource',
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,

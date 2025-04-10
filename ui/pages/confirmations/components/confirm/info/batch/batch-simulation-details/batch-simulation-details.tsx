@@ -13,7 +13,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();

@@ -60,6 +60,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
+    "assetId": "eip155:1/erc20:0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -75,6 +76,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -89,6 +91,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
   {
     "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 6,
@@ -101,11 +104,12 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
     "type": "TOKEN",
   },
   {
-    "address": null,
+    "address": "",
+    "assetId": "eip155:1/slip44:60",
     "balance": "0",
     "chainId": "0x1",
     "decimals": 18,
-    "iconUrl": "./images/eth_logo.svg",
+    "iconUrl": "",
     "image": "./images/eth_logo.svg",
     "name": "Ether",
     "string": "0",
@@ -115,6 +119,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
   {
     "address": "0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -189,6 +194,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -204,6 +210,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -218,6 +225,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 6,
@@ -230,11 +238,12 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "type": "TOKEN",
   },
   {
-    "address": null,
+    "address": "",
+    "assetId": "eip155:1/slip44:60",
     "balance": "0",
     "chainId": "0x1",
     "decimals": 18,
-    "iconUrl": "./images/eth_logo.svg",
+    "iconUrl": "",
     "image": "./images/eth_logo.svg",
     "name": "Ether",
     "string": "0",
@@ -244,6 +253,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -263,6 +273,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
+    "assetId": "eip155:1/erc20:0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -278,6 +289,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -292,6 +304,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 6,
@@ -304,11 +317,12 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "type": "TOKEN",
   },
   {
-    "address": null,
+    "address": "",
+    "assetId": "eip155:1/slip44:60",
     "balance": "0",
     "chainId": "0x89",
     "decimals": 18,
-    "iconUrl": "./images/eth_logo.svg",
+    "iconUrl": "",
     "image": "./images/pol-token.svg",
     "name": "Ether",
     "string": "0",
@@ -318,6 +332,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -332,6 +347,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0xb50721bcf8d664c30412cfbc6cf7a15145234ad1",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -346,6 +362,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x4d0528598f916fd1d8dc80e5f54a8feedcfd4b18",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -360,6 +377,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x57b946008913b82e4df85f501cbaed910e58d26c",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -374,6 +392,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x5eed99d066a8caf10f3e4327c1b3d8b673485eed",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 18,
@@ -388,6 +407,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x487d62468282bd04ddf976631c23128a425555ee",
     "aggregators": [],
+    "assetId": undefined,
     "balance": "",
     "chainId": "0x89",
     "decimals": 5,

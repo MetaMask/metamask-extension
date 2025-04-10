@@ -14,6 +14,8 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
@@ -293,19 +295,6 @@ describe('Selectors', () => {
           },
         }),
       ).toStrictEqual(2);
-    });
-  });
-
-  describe('#getShouldShowSeedPhraseReminder', () => {
-    it('returns true if the account is a native account', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          seedPhraseBackedUp: false,
-        },
-      };
-      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
     });
   });
 
@@ -1192,45 +1181,14 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  describe('#getPetnamesEnabled', () => {
-    function createMockStateWithPetnamesEnabled(petnamesEnabled) {
-      return { metamask: { preferences: { petnamesEnabled } } };
-    }
-
-    describe('usePetnamesEnabled', () => {
-      const tests = [
-        {
-          petnamesEnabled: true,
-          expectedResult: true,
-        },
-        {
-          petnamesEnabled: false,
-          expectedResult: false,
-        },
-        {
-          // Petnames is enabled by default.
-          petnamesEnabled: undefined,
-          expectedResult: true,
-        },
-      ];
-
-      tests.forEach(({ petnamesEnabled, expectedResult }) => {
-        it(`should return ${String(
-          expectedResult,
-        )} when petnames preference is ${String(petnamesEnabled)}`, () => {
-          const result = selectors.getPetnamesEnabled(
-            createMockStateWithPetnamesEnabled(petnamesEnabled),
-          );
-          expect(result).toBe(expectedResult);
-        });
-      });
-    });
-  });
-
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isOptimismSupported).toBeTruthy();
@@ -1238,9 +1196,27 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isFantomSupported).toBeFalsy();
+
+    const isSolanaSupported = selectors.getIsBridgeChain({
+      metamask: {
+        ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: {
+            '0xabc': { metadata: { keyring: {} } },
+            type: 'solana',
+          },
+        },
+      },
+    });
+    expect(isSolanaSupported).toBeTruthy();
   });
 
   it('returns proper values for snaps privacy warning shown status', () => {
@@ -2371,89 +2347,28 @@ describe('#getConnectedSitesList', () => {
       expect(result1 === result2).toBe(true);
     });
   });
-});
 
-describe('getShouldShowSeedPhraseReminder', () => {
-  const mockAccount = createMockInternalAccount();
-  const mockAccount2 = createMockInternalAccount({ address: 'mockAddress2' });
-
-  it('shows reminder for seed phrase if the primary srp is not backed up', () => {
-    const state = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          accounts: {
-            [mockAccount.id]: mockAccount,
-          },
-          selectedAccount: mockAccount.id,
-        },
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [mockAccount.address],
-          },
-        ],
-        accounts: {
-          [mockAccount.address]: {
-            address: mockAccount.address,
-            balance: '0x1',
+  describe('getMetaMaskAccounts', () => {
+    it('return balance from cachedBalances if chainId passed is different from currentChainId', () => {
+      const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const BALANCE = '38D7EA4C680000';
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          accountsByChainId: {
+            ...mockState.metamask.accountsByChainId,
+            '0x1': {
+              [ACCOUNT_ADDRESS]: {
+                balance: BALANCE,
+              },
+            },
           },
         },
-        keyringsMetadata: [{ id: 'mockid', name: '' }],
-        seedPhraseBackedUp: false,
-        isUnlocked: true,
-        dismissSeedBackUpReminder: false,
-      },
-    };
-
-    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
-  });
-
-  it('does not show reminder for imported srps', () => {
-    const state = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          accounts: {
-            [mockAccount.id]: mockAccount,
-            [mockAccount2.id]: mockAccount2,
-          },
-          selectedAccount: mockAccount.id,
-        },
-        keyrings: [
-          // primary srp
-          {
-            type: 'HD Key Tree',
-            accounts: [mockAccount2.address],
-          },
-          // secondary srp
-          {
-            type: 'HD Key Tree',
-            accounts: [mockAccount.address],
-          },
-        ],
-        accounts: {
-          [mockAccount.address]: {
-            address: mockAccount.address,
-            balance: '0x1',
-          },
-          [mockAccount2.address]: {
-            address: mockAccount2.address,
-            balance: '0x1',
-          },
-        },
-        keyringsMetadata: [
-          { id: 'mockid1', name: '' },
-          { id: 'mockid2', name: '' },
-        ],
-        seedPhraseBackedUp: false,
-        isUnlocked: true,
-        dismissSeedBackUpReminder: false,
-      },
-    };
-
-    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
+      };
+      expect(
+        selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
+      ).toStrictEqual(BALANCE);
+    });
   });
 });

@@ -87,7 +87,6 @@ describe('revokePermissionsHandler', () => {
     );
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   describe.each([
     [RestrictedMethods.eth_accounts],
     [PermissionNames.permittedChains],
