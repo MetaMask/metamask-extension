@@ -81,7 +81,6 @@ export function MultichainTransactionDetailsModal({
     type,
     timestamp,
     id,
-    title,
   } = useMultichainTransactionDisplay(transaction, networkConfig);
 
   const getStatusColor = (txStatus: string) => {
@@ -164,6 +163,14 @@ export function MultichainTransactionDetailsModal({
     );
   };
 
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('send'),
+    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Swap]: t('swap'),
+    [TransactionType.Unknown]: t('interaction'),
+  };
+
   return (
     <Modal
       onClose={onClose}
@@ -182,7 +189,7 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(isRedeposit ? t('redeposit') : title)}
+            {capitalize(isRedeposit ? t('redeposit') : typeToTitle[type])}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
