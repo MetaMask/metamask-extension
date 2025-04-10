@@ -106,6 +106,10 @@ export default function UpdateSnapPermissionList({
     minApprovedPermissionsToShow,
   );
 
+  const hasMorePermissionsToShow =
+    filteredApprovedWeightedPermissions.length >
+    approvedWeightedPermissions.length;
+
   const onShowAllPermissions = () => {
     showAllPermissions();
     setShowAll(true);
@@ -137,7 +141,7 @@ export default function UpdateSnapPermissionList({
         targetSubjectsMetadata={targetSubjectsMetadata}
         approved
       />
-      {showAll ? null : (
+      {showAll || !hasMorePermissionsToShow ? null : (
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
