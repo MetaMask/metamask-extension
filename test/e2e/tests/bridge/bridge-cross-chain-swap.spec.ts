@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
@@ -13,7 +14,7 @@ import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
 describe('Bridge tests', function (this: Suite) {
-  it('Execute various bridge transactions', async function () {
+  it('Execute multiple bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
@@ -30,6 +31,7 @@ describe('Bridge tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed();
         // disable smart transactions
+
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openSettingsPage();
@@ -50,19 +52,25 @@ describe('Bridge tests', function (this: Suite) {
             tokenTo: 'ETH',
             fromChain: 'Ethereum',
             toChain: 'Linea',
+            unapproved: true,
           },
           2,
           '24.9998',
         );
+
+        // Switch to Linea Mainnet to set it as the selected network
+        // in the network-controller
+        await switchToNetworkFlow(driver, 'Linea Mainnet');
+        await driver.delay(1000);
 
         await bridgeTransaction(
           driver,
           {
             amount: '1',
             tokenFrom: 'ETH',
-            tokenTo: 'DAI',
+            tokenTo: 'USDC',
             fromChain: 'Ethereum',
-            toChain: 'Linea',
+            toChain: 'Arbitrum One',
           },
           3,
           '23.9997',
@@ -80,6 +88,11 @@ describe('Bridge tests', function (this: Suite) {
           4,
           '22.9997',
         );
+
+        // Switch to Linea Mainnet to set it as the selected network
+        // in the network-controller
+        await switchToNetworkFlow(driver, 'Linea Mainnet');
+        await driver.delay(1000);
 
         await bridgeTransaction(
           driver,
@@ -120,10 +133,11 @@ describe('Bridge tests', function (this: Suite) {
     );
 
     if (quote.unapproved) {
+      await activityList.check_txAction(`Bridge to ${quote.toChain}`);
       await activityList.check_txAction(
         `Approve ${quote.tokenFrom} for bridge`,
+        2,
       );
-      await activityList.check_txAction(`Bridge to ${quote.toChain}`, 2);
     } else {
       await activityList.check_txAction(`Bridge to ${quote.toChain}`);
     }

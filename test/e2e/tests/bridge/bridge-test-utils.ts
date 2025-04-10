@@ -14,9 +14,10 @@ import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
-  MOCK_TOKEN_API,
+  MOCK_TOKENS_API,
+  MOCK_GET_TOKEN_API,
   MOCK_BRIDGE_ETH_TO_ETH_LINEA,
-  MOCK_BRIDGE_ETH_TO_DAI_LINEA,
+  MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
   MOCK_BRIDGE_DAI_TO_ETH_LINEA,
   MOCK_BRIDGE_DAI_TO_USDT_LINEA,
 } from './constants';
@@ -150,13 +151,25 @@ async function mockTopAssets(mockServer: Mockttp) {
   });
 }
 
-async function mockTokenApi(mockServer: Mockttp) {
+async function mockTokensApi(mockServer: Mockttp) {
   return await mockServer.forGet(/tokens/u).thenCallback(() => {
     return {
       statusCode: 200,
-      json: MOCK_TOKEN_API,
+      json: MOCK_TOKENS_API,
     };
   });
+}
+
+async function mockGetTokenApi(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getTokens/u)
+    .withQuery({ chainId: 42161 })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_GET_TOKEN_API,
+      };
+    });
 }
 
 async function mockETHtoETH(mockServer: Mockttp) {
@@ -175,18 +188,18 @@ async function mockETHtoETH(mockServer: Mockttp) {
     });
 }
 
-async function mockETHtoDAI(mockServer: Mockttp) {
+async function mockETHtoUSDC(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuote/u)
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
-      destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      destTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     })
     .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_BRIDGE_ETH_TO_DAI_LINEA,
+        json: MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
       };
     });
 }
@@ -260,9 +273,10 @@ export const getBridgeFixtures = (
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssets(mockServer),
-      await mockTokenApi(mockServer),
+      await mockTokensApi(mockServer),
+      await mockGetTokenApi(mockServer),
       await mockETHtoETH(mockServer),
-      await mockETHtoDAI(mockServer),
+      await mockETHtoUSDC(mockServer),
       await mockDAItoETH(mockServer),
       await mockDAItoUSDT(mockServer),
     ],
