@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Kung kukumpirmahin mo ang kahilingang ito, magiging smart account ang account mo."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Kanselahin ang transaksyon"
   },

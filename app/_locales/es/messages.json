@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Solicitud de transacción"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Si confirma esta solicitud, su cuenta se actualizará a una cuenta inteligente."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Cancelar transacción"
   },

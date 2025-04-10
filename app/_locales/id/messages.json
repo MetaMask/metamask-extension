@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Jika Anda mengonfirmasi permintaan ini, akun akan diperbarui menjadi akun cerdas."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Batalkan transaksi"
   },

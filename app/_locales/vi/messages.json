@@ -1121,9 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Nếu bạn xác nhận yêu cầu này, tài khoản của bạn sẽ được cập nhật thành tài khoản thông minh."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Hủy giao dịch"
   },
