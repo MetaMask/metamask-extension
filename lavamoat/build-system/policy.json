@@ -15,7 +15,8 @@
         "process": true
       },
       "packages": {
-        "lavamoat>@babel/highlight": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true,
         "postcss>picocolors": true
       }
     },
@@ -200,7 +201,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -246,17 +247,6 @@
       "packages": {
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true
-      }
-    },
-    "lavamoat>@babel/highlight": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "loose-envify>js-tokens": true,
-        "postcss>picocolors": true
       }
     },
     "@babel/preset-env>@babel/plugin-bugfix-firefox-class-in-computed-class-key": {
@@ -482,7 +472,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -812,7 +802,7 @@
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+        "@babel/code-frame>@babel/helper-validator-identifier": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
@@ -1306,19 +1296,14 @@
         "chalk>ansi-styles>color-convert": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-livereload>chalk>ansi-styles>color-convert": true
       }
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
       }
     },
     "chokidar>anymatch": {
@@ -1762,17 +1747,6 @@
         "chalk>supports-color": true
       }
     },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true
-      }
-    },
     "gulp-livereload>chalk": {
       "globals": {
         "process.env.TERM": true,
@@ -1836,7 +1810,6 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -1976,9 +1949,14 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/jazzicon>color>color-convert": {
+    "gulp-livereload>chalk>ansi-styles>color-convert": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
+        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
+      "packages": {
+        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
       }
     },
     "fancy-log>color-support": {
@@ -3402,13 +3380,6 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
-    "tsx>fsevents": {
-      "globals": {
-        "console.assert": true,
-        "process.platform": true
-      },
-      "native": true
-    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
         "util.format": true
@@ -3807,11 +3778,6 @@
         "process.argv": true
       }
     },
-    "mocha>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
     "postcss-discard-font-face>postcss>supports-color>has-flag": {
       "globals": {
         "process.argv": true
@@ -4012,14 +3978,6 @@
       }
     },
     "depcheck>is-core-module": {
-      "globals": {
-        "process.versions": true
-      },
-      "packages": {
-        "depcheck>is-core-module>hasown": true
-      }
-    },
-    "depcheck>resolve>is-core-module": {
       "globals": {
         "process.versions": true
       },
@@ -4844,15 +4802,6 @@
       }
     },
     "string.prototype.matchall>es-abstract>object-inspect": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      }
-    },
-    "string.prototype.matchall>side-channel>object-inspect": {
       "builtin": {
         "util.inspect": true
       },
@@ -6323,7 +6272,7 @@
         "gulp>vinyl-fs>pumpify>pump": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>body-parser>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -7355,7 +7304,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "depcheck>resolve>is-core-module": true,
+        "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
     },
@@ -7798,7 +7747,7 @@
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
         "string.prototype.matchall>call-bind>es-errors": true,
-        "string.prototype.matchall>side-channel>object-inspect": true
+        "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
@@ -7806,7 +7755,7 @@
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
         "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>side-channel>object-inspect": true
+        "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
@@ -7814,14 +7763,14 @@
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
         "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>side-channel>object-inspect": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
       }
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
         "string.prototype.matchall>call-bind>es-errors": true,
-        "string.prototype.matchall>side-channel>object-inspect": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
@@ -8329,21 +8278,6 @@
         "chalk>supports-color>has-flag": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
-      }
-    },
     "gulp-livereload>chalk>supports-color": {
       "builtin": {
         "os.release": true
@@ -8377,7 +8311,7 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "chalk>supports-color>has-flag": true
       }
     },
     "postcss-discard-font-face>postcss>supports-color": {
@@ -8695,7 +8629,7 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "browserify>url>qs": true
+        "mockttp>body-parser>qs": true
       }
     },
     "gulp>vinyl-fs>glob-stream>to-absolute-glob": {
