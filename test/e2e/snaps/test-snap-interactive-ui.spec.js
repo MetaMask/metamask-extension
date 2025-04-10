@@ -97,7 +97,7 @@ describe('Test Snap Interactive UI', function () {
         await driver.clickElement({ tag: 'span', text: 'Checkbox' });
 
         // try to click approve
-        await driver.clickElement('#submit');
+        await driver.clickElement({ tag: 'span', text: 'Submit' });
 
         // check for returned values
         await driver.waitForSelector({ text: 'foo bar', tag: 'p' });
@@ -106,16 +106,17 @@ describe('Test Snap Interactive UI', function () {
         await driver.waitForSelector({ text: 'true', tag: 'p' });
 
         // click on approve and wait for window to close
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirmation-submit-button"]',
-        );
+        await driver.clickElementAndWaitForWindowToClose({
+          tag: 'span',
+          text: 'OK',
+        });
 
         // switch to test snaps tab
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
-        // look for returned true
+        // look for returned null
         await driver.waitForSelector({
-          text: 'true',
+          text: 'null',
           css: '#interactiveUIResult',
         });
       },
