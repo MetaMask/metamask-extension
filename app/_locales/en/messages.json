@@ -1161,9 +1161,6 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "If you confirm this request, your account will be updated to a smart account."
-  },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Cancel transaction"
   },
@@ -5059,6 +5056,36 @@
   },
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
+  },
+  "smartAccountAccept": {
+    "message": "Use smart account"
+  },
+  "smartAccountBetterTransaction": {
+    "message": "Faster transactions, lower fees"
+  },
+  "smartAccountBetterTransactionDescription": {
+    "message": "Save time and money by processing transactions together."
+  },
+  "smartAccountFeatures": {
+    "message": "Same account, smarter features"
+  },
+  "smartAccountFeaturesDescription": {
+    "message": "Keep the same account address, and you can switch back anytime."
+  },
+  "smartAccountPayToken": {
+    "message": "Pay with any token, any time"
+  },
+  "smartAccountPayTokenDescription": {
+    "message": "Use the tokens you already have to cover network fees."
+  },
+  "smartAccountReject": {
+    "message": "Don’t use smart account"
+  },
+  "smartAccountRequestFor": {
+    "message": "Request for"
+  },
+  "smartAccountSplashTitle": {
+    "message": "Use smart account?"
   },
   "smartContracts": {
     "message": "Smart contracts"
