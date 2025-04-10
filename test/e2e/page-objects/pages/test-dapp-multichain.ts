@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -17,15 +18,11 @@ class TestDappMultichain {
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
 
-  private readonly walletCreateSessionButton = {
-    text: 'wallet_createSession',
-    tag: 'span',
-  };
+  private readonly walletCreateSessionButton = '#create-session-btn';
 
-  private readonly walletGetSessionButton = {
-    text: 'wallet_getSession',
-    tag: 'span',
-  };
+  private readonly walletGetSessionButton = '#get-session-btn';
+
+  private readonly walletRevokeSessionButton = '#revoke-session-btn';
 
   private readonly resultSummary = '.result-summary';
 
@@ -67,6 +64,10 @@ class TestDappMultichain {
     await this.driver.clickElement(this.walletGetSessionButton);
   }
 
+  async clickWalletRevokeSessionButton() {
+    await this.driver.clickElement(this.walletRevokeSessionButton);
+  }
+
   async fillExtensionIdInput(extensionId: string) {
     await this.driver.fill(this.extensionIdInput, extensionId);
   }
@@ -93,7 +94,11 @@ class TestDappMultichain {
    */
   async connectExternallyConnectable(extensionId: string) {
     console.log('Connect multichain test dapp to Multichain API');
-    await this.fillExtensionIdInput(extensionId);
+    await this.fillExtensionIdInput(
+      process.env.SELENIUM_BROWSER === Browser.FIREFOX
+        ? 'window.postMessage'
+        : extensionId,
+    );
     await this.clickConnectExternallyConnectableButton();
     await this.driver.delay(largeDelayMs);
   }
@@ -150,6 +155,13 @@ class TestDappMultichain {
       this.firstSessionMethodResult,
     );
     return JSON.parse(await getSessionRawResult.getText());
+  }
+
+  /**
+   * Revokes permitted session.
+   */
+  async revokeSession(): Promise<void> {
+    await this.clickWalletRevokeSessionButton();
   }
 }
 
