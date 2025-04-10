@@ -1093,6 +1093,15 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getAccountBalance,
   );
 
+  if (
+    transactionMetricsRequest.getRemoteFeatureFlags?.()
+      ?.transactionsTxHashInAnalytics &&
+    transactionMeta?.hash
+  ) {
+    // Note: getParticipateInMetrics() check happens in metametrics-controller.ts#submitEvent
+    properties.transaction_hash = transactionMeta.hash;
+  }
+
   return { properties, sensitiveProperties };
 }
 

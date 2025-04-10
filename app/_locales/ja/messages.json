@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "続きを表示"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "プライバシーポリシーが更新されました"
-  },
   "newRpcUrl": {
     "message": "新しいRPC URL"
   },
@@ -3610,26 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "同意します"
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMaskの改善を目的に、基本的な使用状況および診断データを収集したいと思います。ここで提供されるデータが販売されることはありません。"
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "指標を収集する際、常に次の条件が適用されます..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "このデータを他の目的に使用する際は、お知らせします。詳細は当社の$1をご覧ください。設定でいつでもオプトアウトできます。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 アプリのクリックやビューは保存されますが、その他の詳細 (ユーザーのパブリックアドレスなど) は保存されません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "非公開:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 大まかな位置情報 (国や地域など) の検出にユーザーのIPアドレスが一時的に使用されますが、保存されることはありません。",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
@@ -3637,15 +3614,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "一般:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 使用状況データを共有するか削除するかは、設定でいつでも指定できます。",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "任意:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "当社がプロファイル用に使用状況データを収集しつつ、どのようにユーザーのプライバシーを守るのかご覧ください。"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"

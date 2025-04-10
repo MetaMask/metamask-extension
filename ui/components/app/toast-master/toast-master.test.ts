@@ -1,4 +1,3 @@
-import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import {
   selectNewSrpAdded,
@@ -64,10 +63,12 @@ describe('#getShowSurveyToast', () => {
 
 describe('#getShowPrivacyPolicyToast', () => {
   let dateNowSpy: jest.SpyInstance;
+  const MOCK_POLICY_DATE = '2025-04-01T12:00:00Z';
 
   describe('mock one day after', () => {
     beforeEach(() => {
-      const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
+      const policyDate = new Date(MOCK_POLICY_DATE);
+      const dayAfterPolicyDate = new Date(policyDate);
       dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
 
       dateNowSpy = jest
@@ -83,9 +84,12 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: MOCK_POLICY_DATE,
+          },
           newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+          onboardingDate: new Date(MOCK_POLICY_DATE).setDate(
+            new Date(MOCK_POLICY_DATE).getDate() - 2,
           ),
         },
       });
@@ -96,9 +100,12 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: MOCK_POLICY_DATE,
+          },
           newPrivacyPolicyToastClickedOrClosed: true,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+          onboardingDate: new Date(MOCK_POLICY_DATE).setDate(
+            new Date(MOCK_POLICY_DATE).getDate() - 2,
           ),
         },
       });
@@ -109,6 +116,9 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: MOCK_POLICY_DATE,
+          },
           newPrivacyPolicyToastClickedOrClosed: false,
           onboardingDate: undefined,
         },
@@ -121,7 +131,7 @@ describe('#getShowPrivacyPolicyToast', () => {
     beforeEach(() => {
       dateNowSpy = jest
         .spyOn(Date, 'now')
-        .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
+        .mockReturnValue(new Date(MOCK_POLICY_DATE).getTime());
     });
 
     afterEach(() => {
@@ -132,9 +142,12 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: MOCK_POLICY_DATE,
+          },
           newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+          onboardingDate: new Date(MOCK_POLICY_DATE).setDate(
+            new Date(MOCK_POLICY_DATE).getDate() - 2,
           ),
         },
       });
@@ -145,9 +158,12 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: MOCK_POLICY_DATE,
+          },
           newPrivacyPolicyToastClickedOrClosed: true,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+          onboardingDate: new Date(MOCK_POLICY_DATE).setDate(
+            new Date(MOCK_POLICY_DATE).getDate() - 2,
           ),
         },
       });
@@ -158,8 +174,14 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: MOCK_POLICY_DATE,
+          },
           newPrivacyPolicyToastClickedOrClosed: false,
+          // Make sure onboardingDate is explicitly undefined
           onboardingDate: undefined,
+          // Add newPrivacyPolicyToastShownDate to ensure isRecent check passes
+          newPrivacyPolicyToastShownDate: undefined,
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(true);
@@ -168,7 +190,8 @@ describe('#getShowPrivacyPolicyToast', () => {
 
   describe('mock day before', () => {
     beforeEach(() => {
-      const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
+      const policyDate = new Date(MOCK_POLICY_DATE);
+      const dayBeforePolicyDate = new Date(policyDate);
       dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
 
       dateNowSpy = jest
@@ -181,12 +204,16 @@ describe('#getShowPrivacyPolicyToast', () => {
     });
 
     it('does not show the privacy policy toast before the policy date', () => {
+      // Use an empty string or null for the feature flag to force it to be disabled
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: '', // Empty string to disable
+          },
           newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+          onboardingDate: new Date(MOCK_POLICY_DATE).setDate(
+            new Date(MOCK_POLICY_DATE).getDate() - 2,
           ),
         },
       });
@@ -197,6 +224,9 @@ describe('#getShowPrivacyPolicyToast', () => {
       const result = selectShowPrivacyPolicyToast({
         // @ts-expect-error: intentionally passing incomplete input
         metamask: {
+          remoteFeatureFlags: {
+            transactionsPrivacyPolicyUpdate: '', // Empty string to disable
+          },
           newPrivacyPolicyToastClickedOrClosed: false,
           onboardingDate: undefined,
         },

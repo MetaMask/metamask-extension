@@ -3236,9 +3236,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "Διαβάστε περισσότερα"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Ενημερώσαμε την πολιτική απορρήτου μας"
-  },
   "newRpcUrl": {
     "message": "Νέα διεύθυνση URL του RPC"
   },
@@ -3610,26 +3607,6 @@
   "onboardingMetametricsAgree": {
     "message": "Συμφωνώ"
   },
-  "onboardingMetametricsDescription": {
-    "message": "Θέλουμε να συλλέξουμε βασικά δεδομένα χρήσης και διάγνωσης για να βελτιώσουμε το MetaMask. Λάβετε υπόψη ότι δεν πουλάμε ποτέ τα δεδομένα που μας παρέχετε εδώ."
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Πολιτική Απορρήτου"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 τα κλικ και οι προβολές στην εφαρμογή αποθηκεύονται, ωστόσο άλλα στοιχεία (όπως η δημόσια διεύθυνσή σας) όχι.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Ιδιωτικές:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 χρησιμοποιούμε προσωρινά τη διεύθυνση IP σας για να εντοπίσουμε τη γενική τοποθεσία (όπως η χώρα ή η περιοχή σας), αλλά δεν αποθηκεύεται ποτέ.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
@@ -3637,15 +3614,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Γενικές:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 εσείς αποφασίζετε αν θέλετε να κοινοποιήσετε ή να διαγράψετε τα δεδομένα χρήσης σας μέσω των ρυθμίσεων ανά πάσα στιγμή.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας ενώ συλλέγουμε δεδομένα χρήσης για το προφίλ σας."
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"

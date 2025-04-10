@@ -66,6 +66,10 @@ export type TransactionMetricsRequest = {
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
+  getRemoteFeatureFlags: () => {
+    transactionsTxHashInAnalytics?: boolean;
+    [key: string]: boolean | undefined;
+  };
 };
 
 export type TransactionEventPayload = {
