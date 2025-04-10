@@ -68,7 +68,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   getMetaMaskHdKeyrings,
-  ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
 } from '../../../selectors';
@@ -350,8 +349,6 @@ export const AccountListMenu = ({
   };
   ///: END:ONLY_INCLUDE_IF
   const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 
   // Here we are getting the keyring of the last selected account
   // if it is not an hd keyring, we will use the primary keyring
