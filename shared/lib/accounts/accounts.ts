@@ -1,4 +1,13 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { SolScope } from '@metamask/keyring-api';
+import {
+  KeyringInternalSnapClient,
+  KeyringInternalSnapClientMessenger,
+} from '@metamask/keyring-internal-snap-client';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
+import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the next available account name based on the suggestion and the list of
@@ -25,3 +34,46 @@ export function getUniqueAccountName(
 
   return candidateName;
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export async function addDiscoveredSolanaAccounts(
+  controllerMessenger: KeyringInternalSnapClientMessenger,
+  entropySource: string,
+  snapKeyring: SnapKeyring,
+) {
+  const snapId = SOLANA_WALLET_SNAP_ID;
+  const scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
+  const client = new KeyringInternalSnapClient({
+    messenger: controllerMessenger,
+    snapId,
+  });
+
+  for (let index = 0; ; index++) {
+    const discovered = await client.discoverAccounts(
+      scopes,
+      entropySource,
+      index,
+    );
+
+    // We stop discovering accounts if none got discovered for that index.
+    if (discovered.length === 0) {
+      break;
+    }
+
+    await Promise.allSettled(
+      discovered.map(async (discoveredAccount) => {
+        const options = {
+          derivationPath: discoveredAccount.derivationPath,
+          entropySource,
+        };
+
+        await snapKeyring.createAccount(snapId, options, {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        });
+      }),
+    );
+  }
+}
+///: END:ONLY_INCLUDE_IF
