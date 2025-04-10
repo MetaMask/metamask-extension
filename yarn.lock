@@ -27451,6 +27451,7 @@ __metadata:
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/delegation-controller": "file:.yalc/@metamask/delegation-controller"
     "@metamask/design-tokens": "npm:^7.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
