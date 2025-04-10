@@ -67,9 +67,8 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
-
-import type { BridgeControllerState } from './bridge';
-import type { BridgeStatusControllerState } from './bridge-status';
+import { BridgeState } from '../../ui/ducks/bridge/bridge';
+import { BridgeStatusState } from './bridge-status';
 
 export type FlattenedBackgroundStateProxy = {
   isInitialized: boolean;
@@ -139,8 +138,8 @@ export type FlattenedBackgroundStateProxy = {
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
   selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
-  bridgeState: BridgeControllerState['bridgeState'];
-  bridgeStatusState: BridgeStatusControllerState['bridgeStatusState'];
+  bridgeState: BridgeState;
+  bridgeStatusState: BridgeStatusState;
   events: CronjobControllerState['events'];
   jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
@@ -175,7 +174,6 @@ export type FlattenedBackgroundStateProxy = {
   fragments: MetaMetricsControllerState['fragments'];
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
   participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
-  previousUserTraits: MetaMetricsControllerState['previousUserTraits'];
   segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
@@ -208,7 +206,6 @@ export type FlattenedBackgroundStateProxy = {
   featureFlags: PreferencesControllerState['featureFlags'];
   forgottenPassword: PreferencesControllerState['forgottenPassword'];
   identities: PreferencesControllerState['identities'];
-  incomingTransactionsPreferences: PreferencesControllerState['incomingTransactionsPreferences'];
   isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
   isMultiAccountBalancesEnabled: PreferencesControllerState['isMultiAccountBalancesEnabled'];
@@ -240,7 +237,6 @@ export type FlattenedBackgroundStateProxy = {
   bitcoinTestnetSupportEnabled: PreferencesControllerState['bitcoinTestnetSupportEnabled'];
   addSnapAccountEnabled: PreferencesControllerState['addSnapAccountEnabled'];
   snapsAddSnapAccountModalDismissed: PreferencesControllerState['snapsAddSnapAccountModalDismissed'];
-  // solanaSupportEnabled: PreferencesControllerState['solanaSupportEnabled'];
   remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'];
   cacheTimestamp: RemoteFeatureFlagControllerState['cacheTimestamp'];
   fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
