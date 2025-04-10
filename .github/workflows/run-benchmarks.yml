@@ -28,6 +28,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download artifact ${{ env.ARTIFACT_NAME }}
         uses: actions/download-artifact@v4
@@ -42,6 +43,7 @@ jobs:
         run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
 
       - name: Upload '${{ env.OUTPUT_NAME }}' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}

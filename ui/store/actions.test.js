@@ -3094,4 +3094,20 @@ describe('Actions', () => {
       );
     });
   });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('calls setManageInstitutionalWallets in the background', async () => {
+      const store = mockStore();
+      const setManageInstitutionalWalletsStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      background.getApi.returns({
+        setManageInstitutionalWallets: setManageInstitutionalWalletsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setManageInstitutionalWallets(true));
+      expect(setManageInstitutionalWalletsStub.calledOnceWith(true)).toBe(true);
+    });
+  });
 });

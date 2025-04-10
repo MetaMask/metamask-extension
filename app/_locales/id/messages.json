@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Pihak ketiga yang dikenal melakukan penipuan memiliki akses ke situs ini. Jika dilanjutkan, Anda akan kehilangan aset."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Situs tersebut mungkin terlihat aman, tetapi pihak ketiga mungkin memiliki akses ke informasinya. Jika masuk, aset Anda dapat dicuri."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Jika mengonfirmasi, Anda bisa kehilangan semua dana dan aset Anda."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Jika masuk, sebagian atau semua aset yang Anda daftarkan di OpenSea berpotensi hilang."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Jika masuk, sebagian atau semua aset yang Anda daftarkan di Blur berpotensi hilang."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Situs ini dikenali sebagai domain berbahaya. Jika masuk, Anda akan kehilangan dana dan aset. Kami sangat menyarankan agar Anda membatalkan permintaan ini."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Jika masuk, Anda dapat kehilangan semua aset. Sebaiknya, batalkan permintaan ini."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Situs ini meminta izin untuk menggunakan token Anda."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Situs ini meminta untuk beralih kembali ke akun standar."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Sebuah situs ingin Anda masuk untuk membuktikan Anda pemilik akun ini."
   },
@@ -1133,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Hapus izin"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset akun"
-  },
   "confirmTitleSIWESignature": {
     "message": "Permintaan masuk"
   },
@@ -1147,9 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Jika Anda mengonfirmasi permintaan ini, akun akan diperbarui menjadi akun cerdas."
   },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Batalkan transaksi"
@@ -3735,9 +3705,6 @@
     "message": "1T",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5442,6 @@
     "message": "Unduh, atur, dan masukkan kata sandi Anda untuk membuka $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Hubungkan OneKey Anda"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Pasang OneKey langsung ke komputer dan buka. Pastikan Anda menggunakan passphrase yang benar.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Hubungkan Trezor Anda"
   },
@@ -6173,9 +6133,6 @@
   },
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Transaksi ini akan dikenakan biaya tambahan, jadi kami menghentikannya. Uang Anda masih ada di dompet."
   },
   "transactionFlowNetwork": {
     "message": "Jaringan"
