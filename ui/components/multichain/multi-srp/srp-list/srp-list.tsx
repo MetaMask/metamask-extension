@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import Card from '../../../ui/card';
 import {
   Box,
