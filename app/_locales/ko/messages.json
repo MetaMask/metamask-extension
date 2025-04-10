@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "해당 사이트에서 토큰 사용 승인을 요청합니다."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "이 사이트에서 일반 계정으로의 전환을 요청하고 있습니다."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "회원님이 이 계정을 소유하고 있음을 확인하기 위해 로그인을 요청하는 사이트가 있습니다."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "권한 제거"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "계정 초기화"
-  },
   "confirmTitleSIWESignature": {
     "message": "로그인 요청"
   },
@@ -1126,9 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "요청을 확인하면 계정이 스마트 계정으로 업데이트됩니다."
   },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "트랜잭션 취소"

@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Situs ini meminta izin untuk menggunakan token Anda."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Situs ini meminta untuk beralih kembali ke akun standar."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Sebuah situs ingin Anda masuk untuk membuktikan Anda pemilik akun ini."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Hapus izin"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset akun"
-  },
   "confirmTitleSIWESignature": {
     "message": "Permintaan masuk"
   },
@@ -1126,9 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Jika Anda mengonfirmasi permintaan ini, akun akan diperbarui menjadi akun cerdas."
   },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Batalkan transaksi"

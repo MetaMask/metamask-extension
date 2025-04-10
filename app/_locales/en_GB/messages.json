@@ -161,6 +161,10 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountFromNetwork": {
+    "message": "Add $1 account",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
   },
@@ -1131,11 +1135,17 @@
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
   },
+  "confirmTitleDelegationRevoke": {
+    "message": "Account update"
+  },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
   },
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
+  },
+  "confirmTitleDescDelegationRevoke": {
+    "message": "You're switching back to a standard account (EOA)."
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -1145,9 +1155,6 @@
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
-  },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "This site is requesting to switch back to a standard account."
   },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
@@ -1161,9 +1168,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remove permission"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset account"
-  },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
@@ -1175,9 +1179,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "If you confirm this request, your account will be updated to a smart account."
   },
   "confirmUpgradeCancelModalButtonCancelTransaction": {
     "message": "Cancel transaction"
@@ -1734,6 +1735,12 @@
   },
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
+  },
+  "dismissSmartAccountSuggestionEnabledDescription": {
+    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
+  },
+  "dismissSmartAccountSuggestionEnabledTitle": {
+    "message": "Dismiss \"Switch to Smart Account\" suggestion"
   },
   "displayNftMedia": {
     "message": "Display NFT media"
@@ -2297,6 +2304,15 @@
     "message": "(legacy)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "Be sure your $1 is plugged in and to select the Ethereum app."
+  },
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your $1 device."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "Prior to clicking Submit:"
+  },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
   },
@@ -2587,6 +2603,9 @@
   },
   "insufficientTokens": {
     "message": "Insufficient tokens."
+  },
+  "interactWithSmartContract": {
+    "message": "Smart contract"
   },
   "interactingWith": {
     "message": "Interacting with"
@@ -2900,6 +2919,12 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "manageInstitutionalWallets": {
+    "message": "Manage Institutional Wallets"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "Turn this on to enable institutional wallets."
   },
   "managePermissions": {
     "message": "Manage permissions"
@@ -5046,11 +5071,47 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode is here!"
+  },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
   },
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
+  },
+  "smartAccountAccept": {
+    "message": "Use smart account"
+  },
+  "smartAccountBetterTransaction": {
+    "message": "Faster transactions, lower fees"
+  },
+  "smartAccountBetterTransactionDescription": {
+    "message": "Save time and money by processing transactions together."
+  },
+  "smartAccountFeatures": {
+    "message": "Same account, smarter features"
+  },
+  "smartAccountFeaturesDescription": {
+    "message": "Keep the same account address, and you can switch back anytime."
+  },
+  "smartAccountPayToken": {
+    "message": "Pay with any token, any time"
+  },
+  "smartAccountPayTokenDescription": {
+    "message": "Use the tokens you already have to cover network fees."
+  },
+  "smartAccountReject": {
+    "message": "Don’t use smart account"
+  },
+  "smartAccountRequestFor": {
+    "message": "Request for"
+  },
+  "smartAccountSplashTitle": {
+    "message": "Use smart account?"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5389,7 +5450,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
