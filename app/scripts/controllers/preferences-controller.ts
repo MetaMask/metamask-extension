@@ -970,12 +970,15 @@ export class PreferencesController extends BaseController<
   disableAccountUpgrade(chainId: Hex, address: Hex): void {
     this.update((state) => {
       const { disabledUpgradeAccountsByChain = {} } = state;
+      const addressLowerCase = address.toLowerCase() as Hex;
 
-      if (!disabledUpgradeAccountsByChain[chainId]?.includes(address)) {
+      if (
+        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
+      ) {
         if (!disabledUpgradeAccountsByChain[chainId]) {
           disabledUpgradeAccountsByChain[chainId] = [];
         }
-        disabledUpgradeAccountsByChain[chainId].push(address);
+        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
       }
     });
   }

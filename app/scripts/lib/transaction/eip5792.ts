@@ -206,8 +206,9 @@ function validateUserDisabled(
   dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   const { from } = sendCalls;
+  const addressLowerCase = from.toLowerCase() as Hex;
   const isDisabled =
-    disabledUpgradeAccountsByChain[dappChainId]?.includes(from);
+    disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
 
   if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw rpcErrors.methodNotSupported(
