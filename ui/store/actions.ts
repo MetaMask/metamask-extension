@@ -1646,28 +1646,6 @@ export function unlockSucceeded(message?: string) {
   };
 }
 
-export function updateBackgroundState(
-  patches: Patch[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch, getState) => {
-    const state = getState();
-    const { background: currentState } = state;
-
-    if (!patches?.length) {
-      return currentState;
-    }
-
-    const newState = applyPatches(currentState, patches);
-
-    dispatch({
-      type: actionConstants.UPDATE_METAMASK_STATE,
-      value: newState,
-    });
-
-    return newState;
-  };
-}
-
 export function updateMetamaskState(
   patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

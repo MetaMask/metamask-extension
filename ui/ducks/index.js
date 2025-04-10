@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import { AlertTypes } from '../../shared/constants/alerts';
 import metamaskReducer from './metamask/metamask';
-import backgroundReducer from './background/background';
 import localeMessagesReducer from './locale/locale';
 import sendReducer from './send/send';
 import domainReducer from './domains';
@@ -19,7 +18,6 @@ export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
   [AlertTypes.unconnectedAccount]: unconnectedAccount,
   activeTab: (s) => (s === undefined ? null : s),
-  background: backgroundReducer,
   metamask: metamaskReducer,
   appState: appStateReducer,
   DNS: domainReducer,
