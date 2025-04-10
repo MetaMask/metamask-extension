@@ -13,6 +13,7 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
+  DeFiPositionsController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,

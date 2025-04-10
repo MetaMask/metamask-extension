@@ -88,8 +88,6 @@ function DefiList({ onClick }: DefiListProps) {
       return [];
     }
 
-    console.log('defiData', defiData);
-
     const defiProtocolCells: DeFiProtocolPosition[] = Object.entries(
       defiData,
     ).flatMap(([chainId, chainData]) =>
