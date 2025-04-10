@@ -41,7 +41,6 @@ type ReduxState = {
     origin: string;
   };
   metamask: FlattenedBackgroundStateProxy;
-  background: BackgroundSliceState['background'];
   appState: AppSliceState['appState'];
 } & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
