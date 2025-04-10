@@ -5344,9 +5344,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.0"
+"@metamask/eth-ledger-bridge-keyring@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.2"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5354,7 +5354,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/7f6ed01ee083e7fb7d01520b15cf20e70e51e397134023d7577c7a7b6256b207b999992109e706348b507193def075437f80b6889f10b58a31e877124b9ffb20
+  checksum: 10/a6b655367a342c4b2f2052fce25157665404ff4f20084e299325fb215b6f0d4574541230bba459a2c38a48e4264318cebb4afb431e16cc531229ca4c5260b0e3
   languageName: node
   linkType: hard
 
@@ -5641,7 +5641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^17.0.0, @metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.4.0":
+"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.4.0":
   version: 17.4.0
   resolution: "@metamask/keyring-api@npm:17.4.0"
   dependencies:
@@ -5795,17 +5795,17 @@ __metadata:
   linkType: hard
 
 "@metamask/multichain-network-controller@npm:^0.1.0":
-  version: 0.1.1
-  resolution: "@metamask/multichain-network-controller@npm:0.1.1"
+  version: 0.1.2
+  resolution: "@metamask/multichain-network-controller@npm:0.1.2"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.0.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/keyring-api": "npm:^17.2.0"
+    "@metamask/utils": "npm:^11.2.0"
     "@solana/addresses": "npm:^2.0.0"
   peerDependencies:
     "@metamask/accounts-controller": ^24.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/0753831d802d84d154dbdfacac8ad8f7277d25957a3ec369a5fa588bee219656c4b6b0992699191eafa965ef2b43d1d4c827c0c7e417b82d94bf244040ca8451
+  checksum: 10/4f5423a6de319db540a13e5dc5d637b5e55cf7af901cbe040353912c4aaba640a9454abcecb93fa53ca397f5c40d097835b001f40963f8624c02961dbf29931a
   languageName: node
   linkType: hard
 
@@ -6564,10 +6564,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.18.0":
-  version: 1.18.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.18.0"
-  checksum: 10/0374bf63c29df24985b8c109af4ada9e7524a52015a84a4683db888deb9a515b4294e05ef8cd4007e787f601fe806aa7f460836a7a421c3c46f1a507f1649817
+"@metamask/solana-wallet-snap@npm:^1.18.1":
+  version: 1.18.1
+  resolution: "@metamask/solana-wallet-snap@npm:1.18.1"
+  checksum: 10/f67d7aec765b744283f766897e138d48b00003645fcb90c0fad604a13c0088b576760c4ef55b909e42e04b7574866d486e559803d617410170ab2dff8b125e08
   languageName: node
   linkType: hard
 
@@ -6622,9 +6622,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^53.0.0":
-  version: 53.0.0
-  resolution: "@metamask/transaction-controller@npm:53.0.0"
+"@metamask/transaction-controller@npm:^54.0.0":
+  version: 54.0.0
+  resolution: "@metamask/transaction-controller@npm:54.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6654,7 +6654,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/da03881c02ee22cfa6b806d3bbdfcd127c1c1f43cbaae0edd1ca82df2aefe8e950804a627ef3a16444cd3efdbd01ff7382f2f9557e1990f74990bb26012576f8
+  checksum: 10/879b66ba5d1df1799bc03ac4b9c30d77dd5d2cc2839315afa0cfb18e4121b60b5fee7283494c13263e5d4d6fc4fd701eecc9cf447ff554d4e261be4730055a23
   languageName: node
   linkType: hard
 
@@ -15428,9 +15428,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001599, caniuse-lite@npm:^1.0.30001669":
-  version: 1.0.30001669
-  resolution: "caniuse-lite@npm:1.0.30001669"
-  checksum: 10/cd0b481bb997703cb7651e55666b4aa4e7b4ecf9784796e2393179a15e55c71a6abc6ff865c922bbd3bbfa4a4bf0530d8da13989b97ff8c7850c8a5bd4e00491
+  version: 1.0.30001707
+  resolution: "caniuse-lite@npm:1.0.30001707"
+  checksum: 10/5c5f9aad651f4d957cc59c8b4ac22bb7ac3a1c86c26ee7d5c59b00062bdc1c421980513179da1f5e20cade2da8d7f3c41d482ce7d4a8d9f411e4a827fe092d29
   languageName: node
   linkType: hard
 
@@ -27326,7 +27326,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^12.1.1"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
@@ -27380,11 +27380,11 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^12.1.0"
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/solana-wallet-snap": "npm:^1.18.0"
+    "@metamask/solana-wallet-snap": "npm:^1.18.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^53.0.0"
+    "@metamask/transaction-controller": "npm:^54.0.0"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
