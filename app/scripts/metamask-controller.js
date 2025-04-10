@@ -2073,15 +2073,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities: getCapabilities.bind(null, {
-        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-          this.txController,
-        ),
-        getDisabledAccountUpgradeChains:
-          this.preferencesController.getDisabledAccountUpgradeChains.bind(
-            this.preferencesController,
-          ),
-      }),
+      getCapabilities,
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
