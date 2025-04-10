@@ -109,3 +109,6 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
     value: 'valueA',
   },
 };
+
+/* The password for the wallet used in e2e tests*/
+export const WALLET_PASSWORD = 'correct horse battery staple';
