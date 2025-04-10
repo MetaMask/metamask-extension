@@ -18,33 +18,7 @@ import {
 import { setSelectedInternalAccount } from '../../../../store/actions';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
-
-function createChainIdList(
-  accountScopes: CaipChainId[],
-  requestedChainIds?: CaipChainId[],
-) {
-  return accountScopes.reduce((acc, scope) => {
-    if (scope === EthScope.Eoa && requestedChainIds) {
-      const targetChainIds = requestedChainIds.filter((chainId) => {
-        const { namespace } = parseCaipChainId(chainId);
-
-        return namespace === KnownCaipNamespace.Eip155;
-      });
-
-      return [...acc, ...targetChainIds];
-    }
-
-    if (requestedChainIds?.includes(scope)) {
-      return [...acc, scope];
-    }
-
-    if (!requestedChainIds) {
-      return [...acc, scope];
-    }
-
-    return acc;
-  }, [] as CaipChainId[]);
-}
+import { createChainIdList } from '@metamask/snaps-utils';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -52,14 +26,27 @@ export type SnapUIAccountSelectorProps = {
   form?: string;
   hideExternalAccounts?: boolean;
   chainIds?: CaipChainId[];
-  switchSelectedAccount?: boolean;
+  switchGlobalAccount?: boolean;
   error?: string;
   disabled?: boolean;
 };
 
+/**
+ * The SnapUIAccountSelector component.
+ * @param props - The component props.
+ * @param props.name - The name of the selector.
+ * @param props.label - The label of the selector.
+ * @param props.form - The form the selector belongs to.
+ * @param props.hideExternalAccounts - Whether to hide external accounts.
+ * @param props.chainIds - The chainIds to filter the accounts by.
+ * @param props.switchGlobalAccount - Whether to switch the global account.
+ * @param props.error - The error message to display.
+ * @param props.disabled - Whether the selector is disabled.
+ * @returns The AccountSelector component.
+ */
 export const SnapUIAccountSelector: FunctionComponent<
   SnapUIAccountSelectorProps
-> = ({ chainIds, switchSelectedAccount, hideExternalAccounts, ...props }) => {
+> = ({ chainIds, switchGlobalAccount, hideExternalAccounts, ...props }) => {
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();
   const accounts: InternalAccountWithBalance[] = useSelector(
@@ -95,7 +82,7 @@ export const SnapUIAccountSelector: FunctionComponent<
   ));
 
   const handleSelect = (value: State) => {
-    if (switchSelectedAccount) {
+    if (switchGlobalAccount) {
       dispatch(
         setSelectedInternalAccount((value as AccountSelectorState).accountId),
       );
