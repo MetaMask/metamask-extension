@@ -174,7 +174,7 @@ const ACTION_MODES = {
 
 type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 const SNAP_CLIENT_CONFIG_MAP: Record<
   string,
   { clientType: WalletClientType | null; chainId: CaipChainId | null }
@@ -536,7 +536,9 @@ export const AccountListMenu = ({
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
   }, [setActionMode, actionMode, trackEvent]);
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
 
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
     clientType: null,
     chainId: null,
@@ -570,7 +572,7 @@ export const AccountListMenu = ({
           </Box>
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          ///: BEGIN:ONLY_INCLUDE_IF(multichain)
           clientType && chainId ? (
             <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
               <CreateSnapAccount
