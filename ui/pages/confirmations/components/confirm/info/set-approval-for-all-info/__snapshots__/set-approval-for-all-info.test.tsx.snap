@@ -279,6 +279,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
           </p>
           <div
             class="mm-box mm-box--padding-inline-2 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
             style="cursor: default;"
           >
             <div
