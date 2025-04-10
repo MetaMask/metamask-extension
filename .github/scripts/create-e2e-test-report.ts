@@ -192,20 +192,16 @@ async function main() {
       }));
 
       const columns = Object.keys(rows[0]);
-
-      const markdownTable = rows
+      const header = `| ${columns.join(' | ')} |`;
+      const alignment = '| :--- | ---: | ---: | ---: | ---: |';
+      const body = rows
         .map((row) => `| ${Object.values(row).join(' | ')} |`)
         .join('\n');
+      const table = [header, alignment, body].join('\n');
 
       console.table(rows);
 
-      core.summary.addRaw(
-        `\n| ${columns.join(' | ')} |
-| :--- | ---: | ---: | ---: | ---: |
-${markdownTable}\n
-`,
-      );
-
+      core.summary.addRaw(`\n${table}\n`);
       core.summary.addRaw(`</details>\n`);
 
       if (total.failed > 0) {
