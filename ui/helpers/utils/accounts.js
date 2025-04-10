@@ -11,6 +11,7 @@ import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../app/scripts/translate';
+// eslint-disable-next-line import/no-restricted-paths
 import { isSnapPreinstalled } from '../../../app/scripts/lib/snap-keyring/snaps';
 
 export function getAccountNameErrorMessage(
