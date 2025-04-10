@@ -84,6 +84,7 @@ export type FlattenedBackgroundStateProxy = {
   web3ShimUsageOrigins: AlertControllerState['web3ShimUsageOrigins'];
   announcements: AnnouncementControllerState['announcements'];
   isSignedIn: AuthenticationController.AuthenticationControllerState['isSignedIn'];
+  sessionData: AuthenticationController.AuthenticationControllerState['sessionData'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
   pinnedAccountList: AccountOrderControllerState['pinnedAccountList'];
   hiddenAccountList: AccountOrderControllerState['hiddenAccountList'];
@@ -102,6 +103,7 @@ export type FlattenedBackgroundStateProxy = {
   defaultHomeActiveTabName: AppStateControllerState['defaultHomeActiveTabName'];
   fullScreenGasPollTokens: AppStateControllerState['fullScreenGasPollTokens'];
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
+  lastInteractedConfirmationInfo: AppStateControllerState['lastInteractedConfirmationInfo'];
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
   nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
@@ -125,6 +127,8 @@ export type FlattenedBackgroundStateProxy = {
   termsOfUseLastAgreed: AppStateControllerState['termsOfUseLastAgreed'];
   timeoutMinutes: AppStateControllerState['timeoutMinutes'];
   trezorModel: AppStateControllerState['trezorModel'];
+  isRampCardClosed: AppStateControllerState['isRampCardClosed'];
+  throttledOrigins: AppStateControllerState['throttledOrigins'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
   balances: MultichainBalancesControllerState['balances'];
@@ -137,6 +141,7 @@ export type FlattenedBackgroundStateProxy = {
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
   bridgeState: BridgeControllerState['bridgeState'];
   bridgeStatusState: BridgeStatusControllerState['bridgeStatusState'];
+  events: CronjobControllerState['events'];
   jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
   currencyRates: CurrencyRateState['currencyRates'];
@@ -152,6 +157,7 @@ export type FlattenedBackgroundStateProxy = {
   gasFeeEstimatesByChainId: GasFeeState['gasFeeEstimatesByChainId'];
   nonRPCGasFeeApisDisabled: GasFeeState['nonRPCGasFeeApisDisabled'];
   isUnlocked: KeyringControllerState['isUnlocked'];
+  vault: KeyringControllerState['vault'];
   keyrings: KeyringControllerState['keyrings'];
   keyringsMetadata: KeyringControllerState['keyringsMetadata'];
   logs: LoggingControllerState['logs'];
@@ -205,6 +211,7 @@ export type FlattenedBackgroundStateProxy = {
   incomingTransactionsPreferences: PreferencesControllerState['incomingTransactionsPreferences'];
   isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
+  isMultiAccountBalancesEnabled: PreferencesControllerState['isMultiAccountBalancesEnabled'];
   knownMethodData: PreferencesControllerState['knownMethodData'];
   ledgerTransportType: PreferencesControllerState['ledgerTransportType'];
   lostIdentities: PreferencesControllerState['lostIdentities'];
@@ -214,6 +221,7 @@ export type FlattenedBackgroundStateProxy = {
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   selectedAddress: PreferencesControllerState['selectedAddress'];
   snapRegistryList: PreferencesControllerState['snapRegistryList'];
+  showIncomingTransactions: PreferencesControllerState['showIncomingTransactions'];
   theme: PreferencesControllerState['theme'];
   use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
   useAddressBarEnsResolution: PreferencesControllerState['useAddressBarEnsResolution'];
@@ -232,6 +240,7 @@ export type FlattenedBackgroundStateProxy = {
   bitcoinTestnetSupportEnabled: PreferencesControllerState['bitcoinTestnetSupportEnabled'];
   addSnapAccountEnabled: PreferencesControllerState['addSnapAccountEnabled'];
   snapsAddSnapAccountModalDismissed: PreferencesControllerState['snapsAddSnapAccountModalDismissed'];
+  // solanaSupportEnabled: PreferencesControllerState['solanaSupportEnabled'];
   remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'];
   cacheTimestamp: RemoteFeatureFlagControllerState['cacheTimestamp'];
   fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
@@ -244,8 +253,11 @@ export type FlattenedBackgroundStateProxy = {
   unapprovedPersonalMsgs: SignatureControllerState['unapprovedPersonalMsgs'];
   unapprovedTypedMessages: SignatureControllerState['unapprovedTypedMessages'];
   unapprovedTypedMessagesCount: SignatureControllerState['unapprovedTypedMessagesCount'];
+  signatureRequests: SignatureControllerState['signatureRequests'];
   smartTransactionsState: SmartTransactionsControllerState['smartTransactionsState'];
   snaps: SnapControllerState['snaps'];
+  snapStates: SnapControllerState['snapStates'];
+  unencryptedSnapStates: SnapControllerState['unencryptedSnapStates'];
   interfaces: SnapInterfaceControllerState['interfaces'];
   insights: SnapInsightsControllerState['insights'];
   database: SnapsRegistryState['database'];
@@ -267,9 +279,11 @@ export type FlattenedBackgroundStateProxy = {
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
+  submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
   isProfileSyncingEnabled: UserStorageController.UserStorageControllerState['isProfileSyncingEnabled'];
   isProfileSyncingUpdateLoading: UserStorageController.UserStorageControllerState['isProfileSyncingUpdateLoading'];
   hasAccountSyncingSyncedAtLeastOnce: UserStorageController.UserStorageControllerState['hasAccountSyncingSyncedAtLeastOnce'];
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
+  isAccountSyncingInProgress: UserStorageController.UserStorageControllerState['isAccountSyncingInProgress'];
 };
