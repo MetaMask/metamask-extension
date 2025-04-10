@@ -20,7 +20,7 @@ import {
   SolAccountType,
   KeyringAccountType,
 } from '@metamask/keyring-api';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CaipChainId } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -75,6 +75,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
   getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
@@ -132,7 +134,7 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSnapAccount } from '../create-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
@@ -176,7 +178,7 @@ const ACTION_MODES = {
 
 type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 const SNAP_CLIENT_CONFIG_MAP: Record<
   string,
   { clientType: WalletClientType | null; chainId: CaipChainId | null }
@@ -284,12 +286,12 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana,bitcoin)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
   const { pathname } = useLocation();
   ///: END:ONLY_INCLUDE_IF
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
   );
@@ -309,7 +311,7 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multiSrpEnabled = true;
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -355,7 +357,7 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana,bitcoin)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
   const handleMultichainSnapAccountCreation = async (
@@ -532,6 +534,7 @@ export const AccountListMenu = ({
   );
 
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+
   const onSelectSrp = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
@@ -540,6 +543,9 @@ export const AccountListMenu = ({
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
   }, [setActionMode, actionMode, trackEvent]);
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 
   const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
     clientType: null,
@@ -574,7 +580,7 @@ export const AccountListMenu = ({
           </Box>
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          ///: BEGIN:ONLY_INCLUDE_IF(multichain)
           clientType && chainId ? (
             <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
               <CreateSnapAccount
