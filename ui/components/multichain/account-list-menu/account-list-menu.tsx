@@ -75,7 +75,10 @@ import {
   getManageInstitutionalWallets,
   getHDEntropyIndex,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  setSelectedAccount,
+  getNetworksWithTransactionActivityByAccounts,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -292,6 +295,7 @@ export const AccountListMenu = ({
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
+
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -500,6 +504,20 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
+
+  const fetchAccountsWithActivity = useCallback(async () => {
+    try {
+      await dispatch(getNetworksWithTransactionActivityByAccounts());
+    } catch (error) {
+      console.error('Failed to fetch accounts with activity:', error);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (filteredAccounts.length > 0) {
+      fetchAccountsWithActivity();
+    }
+  }, [fetchAccountsWithActivity, filteredAccounts]);
 
   return (
     <Modal isOpen onClose={onClose}>
