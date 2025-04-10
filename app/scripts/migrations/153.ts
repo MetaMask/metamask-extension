@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 152;
+export const version = 153;
 
 /**
  * This migration removes the `tokens` property from the TokensController state.
