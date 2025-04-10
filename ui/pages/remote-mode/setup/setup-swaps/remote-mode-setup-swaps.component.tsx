@@ -396,7 +396,7 @@ export default function RemoteModeSetupSwaps({
               <Box>
                 <Text>Estimated changes</Text>
                 <Text>
-                  Authorize Account 1 to swap from your{' '}
+                  Authorize {selectedAccount?.metadata.name} to swap from your{' '}
                   {selectedHardwareAccount.metadata.name} balance.
                 </Text>
               </Box>
