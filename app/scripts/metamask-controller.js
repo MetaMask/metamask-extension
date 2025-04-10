@@ -2051,8 +2051,8 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledAccountUpgradeChainsAddresses:
-            this.preferencesController.getDisabledAccountUpgradeChainsAddresses.bind(
+          getDisabledUpgradeAccountsByChain:
+            this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
               this.preferencesController,
             ),
           validateSecurity: (securityAlertId, request, chainId) =>

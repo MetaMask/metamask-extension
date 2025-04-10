@@ -150,7 +150,7 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   textDirection?: string;
   manageInstitutionalWallets: boolean;
-  accountUpgradeDisabledChainsAddresses?: Record<Hex, Hex[]>;
+  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -256,7 +256,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
     manageInstitutionalWallets: false,
-    accountUpgradeDisabledChainsAddresses: {},
+    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -428,7 +428,7 @@ const controllerMetadata = {
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
   manageInstitutionalWallets: { persist: true, anonymous: false },
-  accountUpgradeDisabledChainsAddresses: { persist: true, anonymous: false },
+  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -963,19 +963,19 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  getDisabledAccountUpgradeChainsAddresses(): Record<Hex, Hex[]> {
-    return this.state.accountUpgradeDisabledChainsAddresses ?? {};
+  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
+    return this.state.disabledUpgradeAccountsByChain ?? {};
   }
 
   disableAccountUpgradeForChainAndAddress(chainId: Hex, address: Hex): void {
     this.update((state) => {
-      const { accountUpgradeDisabledChainsAddresses = {} } = state;
+      const { disabledUpgradeAccountsByChain = {} } = state;
 
-      if (!accountUpgradeDisabledChainsAddresses[chainId]?.includes(address)) {
-        if (!accountUpgradeDisabledChainsAddresses[chainId]) {
-          accountUpgradeDisabledChainsAddresses[chainId] = [];
+      if (!disabledUpgradeAccountsByChain[chainId]?.includes(address)) {
+        if (!disabledUpgradeAccountsByChain[chainId]) {
+          disabledUpgradeAccountsByChain[chainId] = [];
         }
-        accountUpgradeDisabledChainsAddresses[chainId].push(address);
+        disabledUpgradeAccountsByChain[chainId].push(address);
       }
     });
   }

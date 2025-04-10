@@ -839,12 +839,10 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('getDisabledAccountUpgradeChainsAddresses', () => {
+  describe('getDisabledUpgradeAccountsByChain', () => {
     it('returns empty object if disabledAccountUpgradeChainsAddresses is empty', () => {
       const { controller } = setupController({});
-      expect(
-        controller.getDisabledAccountUpgradeChainsAddresses(),
-      ).toStrictEqual({});
+      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual({});
     });
 
     it('returns disabledAccountUpgrades state', () => {
@@ -854,13 +852,13 @@ describe('preferences controller', () => {
       };
       const { controller } = setupController({
         state: {
-          accountUpgradeDisabledChainsAddresses: mockStateObject,
+          disabledUpgradeAccountsByChain: mockStateObject,
         },
       });
 
-      expect(
-        controller.getDisabledAccountUpgradeChainsAddresses(),
-      ).toStrictEqual(mockStateObject);
+      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual(
+        mockStateObject,
+      );
     });
   });
 
@@ -873,9 +871,7 @@ describe('preferences controller', () => {
         '0x0',
       );
 
-      expect(
-        controller.state.accountUpgradeDisabledChainsAddresses,
-      ).toStrictEqual({
+      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
         [CHAIN_IDS.GOERLI]: ['0x0'],
       });
     });
@@ -883,7 +879,7 @@ describe('preferences controller', () => {
     it('adds chain ID, address to disabledAccountUpgrades if not empty', () => {
       const { controller } = setupController({
         state: {
-          accountUpgradeDisabledChainsAddresses: {
+          disabledUpgradeAccountsByChain: {
             [CHAIN_IDS.MAINNET]: ['0x0'],
           },
         },
@@ -894,9 +890,7 @@ describe('preferences controller', () => {
         '0x1',
       );
 
-      expect(
-        controller.state.accountUpgradeDisabledChainsAddresses,
-      ).toStrictEqual({
+      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
         [CHAIN_IDS.MAINNET]: ['0x0'],
         [CHAIN_IDS.GOERLI]: ['0x1'],
       });
@@ -905,7 +899,7 @@ describe('preferences controller', () => {
     it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
       const { controller } = setupController({
         state: {
-          accountUpgradeDisabledChainsAddresses: {
+          disabledUpgradeAccountsByChain: {
             [CHAIN_IDS.MAINNET]: ['0x0'],
           },
         },
@@ -916,9 +910,7 @@ describe('preferences controller', () => {
         '0x0',
       );
 
-      expect(
-        controller.state.accountUpgradeDisabledChainsAddresses,
-      ).toStrictEqual({
+      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
         [CHAIN_IDS.MAINNET]: ['0x0'],
       });
     });

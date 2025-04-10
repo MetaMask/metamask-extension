@@ -31,7 +31,7 @@ const VERSION_GET_CALLS_STATUS = '1.0';
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
-    getDisabledAccountUpgradeChainsAddresses: () => Record<Hex, Hex[]>;
+    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     validateSecurity: (
       securityAlertId: string,
       request: ValidateSecurityRequest,
@@ -45,7 +45,7 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
-    getDisabledAccountUpgradeChainsAddresses,
+    getDisabledUpgradeAccountsByChain,
     validateSecurity: validateSecurityHook,
     getDismissSmartAccountSuggestionEnabled,
   } = hooks;
@@ -59,7 +59,7 @@ export async function processSendCalls(
     networkClientId,
   ).configuration.chainId;
 
-  const disabledChainsAddresses = getDisabledAccountUpgradeChainsAddresses();
+  const disabledChainsAddresses = getDisabledUpgradeAccountsByChain();
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
 

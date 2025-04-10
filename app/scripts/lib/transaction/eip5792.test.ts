@@ -84,7 +84,7 @@ describe('EIP-5792', () => {
     TransactionControllerGetStateAction['handler']
   >;
 
-  let getDisabledAccountUpgradeChainsAddressesMock: jest.MockedFn<
+  let getDisabledUpgradeAccountsByChainMock: jest.MockedFn<
     () => Record<Hex, Hex[]>
   >;
 
@@ -102,7 +102,7 @@ describe('EIP-5792', () => {
     addTransactionBatchMock = jest.fn();
     getTransactionControllerStateMock = jest.fn();
     getNetworkClientByIdMock = jest.fn();
-    getDisabledAccountUpgradeChainsAddressesMock = jest.fn();
+    getDisabledUpgradeAccountsByChainMock = jest.fn();
     validateSecurityMock = jest.fn();
     getDismissSmartAccountSuggestionEnabledMock = jest.fn();
 
@@ -128,7 +128,7 @@ describe('EIP-5792', () => {
       batchId: BATCH_ID_MOCK,
     });
 
-    getDisabledAccountUpgradeChainsAddressesMock.mockReturnValue({});
+    getDisabledUpgradeAccountsByChainMock.mockReturnValue({});
   });
 
   describe('processSendCalls', () => {
@@ -136,8 +136,8 @@ describe('EIP-5792', () => {
       await processSendCalls(
         {
           addTransactionBatch: addTransactionBatchMock,
-          getDisabledAccountUpgradeChainsAddresses:
-            getDisabledAccountUpgradeChainsAddressesMock,
+          getDisabledUpgradeAccountsByChain:
+            getDisabledUpgradeAccountsByChainMock,
           validateSecurity: validateSecurityMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
@@ -162,8 +162,8 @@ describe('EIP-5792', () => {
         await processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
@@ -180,8 +180,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
@@ -198,8 +198,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
@@ -214,7 +214,7 @@ describe('EIP-5792', () => {
     });
 
     it('throws if disabled preference for chain', async () => {
-      getDisabledAccountUpgradeChainsAddressesMock.mockReturnValue({
+      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
         [CHAIN_ID_MOCK]: [FROM_MOCK],
       });
 
@@ -222,8 +222,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
@@ -244,8 +244,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
@@ -264,8 +264,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
@@ -289,8 +289,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChainsAddresses:
-              getDisabledAccountUpgradeChainsAddressesMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
