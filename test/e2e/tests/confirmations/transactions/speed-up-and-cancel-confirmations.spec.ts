@@ -25,7 +25,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             .build(),
           localNodeOptions: {
             hardfork: 'london',
-            blockBaseFeePerGas: 0,
             noMining: true,
           },
           title: this.test?.fullTitle(),
@@ -81,7 +80,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             .build(),
           localNodeOptions: {
             hardfork: 'london',
-            blockBaseFeePerGas: 0,
             noMining: true,
           },
           title: this.test?.fullTitle(),
