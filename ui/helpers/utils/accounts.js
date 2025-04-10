@@ -11,6 +11,7 @@ import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../app/scripts/translate';
+import { isSnapPreinstalled } from '../../../app/scripts/lib/snap-keyring/snaps';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -73,7 +74,14 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(type, account) {
+export function getAccountLabel(
+  type,
+  account,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  snapName,
+  snapId,
+  ///: END:ONLY_INCLUDE_IF
+) {
   if (!account) {
     return null;
   }
@@ -92,6 +100,16 @@ export function getAccountLabel(type, account) {
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    case KeyringType.snap:
+      if (isSnapPreinstalled(snapId)) {
+        return null;
+      }
+      if (snapName) {
+        return `${snapName} (${t('beta')})`;
+      }
+      return `${t('snaps')} (${t('beta')})`;
+    ///: END:ONLY_INCLUDE_IF
     default:
       return null;
   }

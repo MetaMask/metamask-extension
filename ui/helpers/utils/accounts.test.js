@@ -8,6 +8,7 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
+import * as snapModule from '../../../app/scripts/lib/snap-keyring/snaps';
 import mockState from '../../../test/data/mock-state.json';
 import {
   getAccountLabel,
@@ -166,6 +167,67 @@ describe('Accounts', () => {
     it('should handle unhandled account types', () => {
       mockAccount.metadata.keyring.type = 'unknown';
       expect(getAccountLabel('unknown', mockAccount)).toBeNull();
+    });
+
+    describe('Snap Account Label', () => {
+      const mockSnapName = 'Test Snap Name';
+      const mockSnapId = 'test-snap-id';
+      const mockSnapAccountWithName = {
+        ...mockAccount,
+        metadata: {
+          ...mockAccount.metadata,
+          type: KeyringType.snap,
+          snap: { name: mockSnapName },
+        },
+      };
+      const mockSnapAccountWithoutName = {
+        ...mockAccount,
+        metadata: {
+          ...mockAccount.metadata,
+          type: KeyringType.snap,
+        },
+      };
+
+      it('should return snap name with beta tag if snap name is provided', () => {
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            mockSnapName,
+            mockSnapId,
+          ),
+        ).toBe('Test Snap Name (Beta)');
+      });
+
+      it('should return generic snap label with beta tag if snap name is not provided', () => {
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithoutName,
+            null,
+            mockSnapId,
+          ),
+        ).toBe('Snaps (Beta)');
+      });
+
+      it('should return null if snap is preinstalled', () => {
+        const spy = jest
+          .spyOn(snapModule, 'isSnapPreinstalled')
+          .mockReturnValue(true);
+
+        const preinstalledSnapId = 'preinstalled-snap-id';
+
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            mockSnapName,
+            preinstalledSnapId,
+          ),
+        ).toBeNull();
+
+        spy.mockRestore();
+      });
     });
   });
 });

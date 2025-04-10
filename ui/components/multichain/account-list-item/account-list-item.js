@@ -118,8 +118,9 @@ const AccountListItem = ({
     account.metadata.keyring.type,
     account,
     account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+      ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
       : null,
+    account.metadata?.snap?.id,
   );
 
   const useBlockie = useSelector(getUseBlockie);
