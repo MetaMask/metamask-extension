@@ -33,7 +33,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             >
               Optional:
             </span>
-             you decide if you want to share or delete your usage data via settings any time.
+             you decide if you want to share or delete your usage data via 
+            <a
+              href="https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              settings
+            </a>
+             any time.
              
           </span>
         </div>
@@ -150,7 +158,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             >
               Optional:
             </span>
-             you decide if you want to share or delete your usage data via settings any time.
+             you decide if you want to share or delete your usage data via 
+            <a
+              href="https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              settings
+            </a>
+             any time.
              
           </span>
         </div>
