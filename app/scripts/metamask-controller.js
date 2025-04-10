@@ -1919,6 +1919,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
+    this.delegationController = controllersByName.DelegationController;
     this.notificationServicesController =
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
@@ -3385,6 +3386,7 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       authenticationController,
       userStorageController,
+      delegationController,
       notificationServicesController,
       notificationServicesPushController,
     } = this;
@@ -4255,6 +4257,19 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
         ),
+
+      // DelegationController
+      signDelegation: delegationController.sign.bind(delegationController),
+      storeDelegationEntry:
+        delegationController.store.bind(delegationController),
+      listDelegationEntries:
+        delegationController.list.bind(delegationController),
+      getDelegationEntry:
+        delegationController.retrieve.bind(delegationController),
+      getDelegationEntryChain:
+        delegationController.chain.bind(delegationController),
+      deleteDelegationEntry:
+        delegationController.delete.bind(delegationController),
 
       // NotificationServicesController
       checkAccountsPresence:

@@ -6178,18 +6178,36 @@ export function setTransactionActive(
   };
 }
 
-export const storeDelegation = async (delegation: Delegation) => {
-  return await submitRequestToBackground('storeDelegation', [delegation]);
-};
-
-export const signDelegation = async (delegation: Delegation) => {
+export const signDelegation = async (
+  delegation: Delegation,
+): Promise<string> => {
   return await submitRequestToBackground('signDelegation', [delegation]);
 };
 
-export const retrieveDelegation = async (filter: DelegationFilter) => {
-  return await submitRequestToBackground('retrieveDelegation', [filter]);
+export const storeDelegationEntry = async (
+  entry: DelegationEntry,
+): Promise<void> => {
+  return await submitRequestToBackground('storeDelegationEntry', [entry]);
 };
 
-export const deleteDelegation = async (filter: DelegationFilter) => {
-  return await submitRequestToBackground('deleteDelegation', [filter]);
+export const listDelegationEntries = async (
+  filter: DelegationFilter,
+): Promise<DelegationEntry[]> => {
+  return await submitRequestToBackground('listDelegationEntries', [filter]);
+};
+
+export const getDelegationEntry = async (
+  hash: Hex,
+): Promise<DelegationEntry> => {
+  return await submitRequestToBackground('getDelegationEntry', [hash]);
+};
+
+export const getDelegationEntryChain = async (
+  hash: Hex,
+): Promise<DelegationEntry[]> => {
+  return await submitRequestToBackground('getDelegationEntryChain', [hash]);
+};
+
+export const deleteDelegationEntry = async (hash: Hex) => {
+  return await submitRequestToBackground('deleteDelegationEntry', [hash]);
 };
