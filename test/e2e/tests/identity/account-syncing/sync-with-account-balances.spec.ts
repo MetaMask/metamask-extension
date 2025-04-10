@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { unlockWallet, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
-import { mockInfuraAndAccountSync } from '../mocks';
+import { mockInfuraAndAccountSync, mockNftApiCall } from '../mocks';
 import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
@@ -168,24 +168,10 @@ describe('Account syncing - User already has balances on multiple accounts', fun
                 userStorageMockttpController,
                 { accountsToMockBalances },
               ),
-              await server
-                .forGet(
-                  'https://nft.api.cx.metamask.io/users/0x0f205850eac507473aa0e47cc8eb528d875e7498/tokens',
-                )
-                .withQuery({
-                  limit: 50,
-                  includeTopBid: 'true',
-                  chainIds: ['1', '59144'],
-                  continuation: '',
-                })
-                .thenCallback(() => {
-                  return {
-                    statusCode: 200,
-                    json: {
-                      tokens: [],
-                    },
-                  };
-                }),
+              await mockNftApiCall(
+                server,
+                '0x0f205850eac507473aa0e47cc8eb528d875e7498',
+              ),
             ];
           },
         },
