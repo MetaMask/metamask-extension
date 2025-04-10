@@ -26,5 +26,5 @@ export const useHdKeyringsWithSnapAccounts = () => {
         accounts: [...keyring.accounts, ...firstPartySnapAccounts],
       };
     });
-  }, [hdKeyrings]);
+  }, [hdKeyrings, internalAccounts]);
 };
