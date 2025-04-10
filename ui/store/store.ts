@@ -3,7 +3,6 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
 import { AppSliceState } from '../ducks/app/app';
-import { BackgroundSliceState } from '../ducks/background/background';
 import { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
