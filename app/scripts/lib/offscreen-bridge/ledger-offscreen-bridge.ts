@@ -21,7 +21,6 @@ type LedgerOffscreenBridgeOptions = Record<never, never>;
 
 type IFrameMessage<TAction extends LedgerAction> = {
   action: TAction;
-  target: string;
   params?: Readonly<Record<string, unknown>>;
 };
 
@@ -69,14 +68,12 @@ export class LedgerOffscreenBridge
 
   attemptMakeApp(): Promise<boolean> {
     return this.#sendMessage({
-      target: OffscreenCommunicationTarget.ledgerOffscreen,
       action: LedgerAction.makeApp,
     });
   }
 
   updateTransportMethod(transportType: string): Promise<boolean> {
     return this.#sendMessage({
-      target: OffscreenCommunicationTarget.ledgerOffscreen,
       action: LedgerAction.updateTransport,
       params: { transportType },
     });
@@ -88,7 +85,6 @@ export class LedgerOffscreenBridge
     chainCode?: string;
   }> {
     return this.#sendMessage({
-      target: OffscreenCommunicationTarget.ledgerOffscreen,
       action: LedgerAction.getPublicKey,
       params,
     });
@@ -101,7 +97,6 @@ export class LedgerOffscreenBridge
   }> {
     return this.#sendMessage(
       {
-        target: OffscreenCommunicationTarget.ledgerOffscreen,
         action: LedgerAction.signTransaction,
         params,
       },
@@ -115,7 +110,6 @@ export class LedgerOffscreenBridge
   }): Promise<{ v: number; s: string; r: string }> {
     return this.#sendMessage(
       {
-        target: OffscreenCommunicationTarget.ledgerOffscreen,
         action: LedgerAction.signPersonalMessage,
         params,
       },
@@ -128,7 +122,6 @@ export class LedgerOffscreenBridge
   ): Promise<LedgerSignTypedDataResponse> {
     return this.#sendMessage(
       {
-        target: OffscreenCommunicationTarget.ledgerOffscreen,
         action: LedgerAction.signTypedData,
         params,
       },
@@ -140,10 +133,6 @@ export class LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     timeout = DEFAULT_MESSAGE_TIMEOUT,
   ): Promise<ResponsePayload> {
-    if (!this.isDeviceConnected) {
-      throw new Error('Ledger iframe not connected');
-    }
-
     return new Promise((resolve, reject) => {
       let hasResponse = false;
 
@@ -153,14 +142,20 @@ export class LedgerOffscreenBridge
         }
       }, timeout);
 
-      chrome.runtime.sendMessage(message, (response) => {
-        hasResponse = true;
-        if (response.success) {
-          resolve(response.payload);
-        } else {
-          reject(response.payload.error);
-        }
-      });
+      chrome.runtime.sendMessage(
+        {
+          ...message,
+          target: OffscreenCommunicationTarget.ledgerOffscreen,
+        },
+        (response) => {
+          hasResponse = true;
+          if (response.success) {
+            resolve(response.payload);
+          } else {
+            reject(response?.payload?.error || 'Unknown Ledger error');
+          }
+        },
+      );
     });
   }
 }
