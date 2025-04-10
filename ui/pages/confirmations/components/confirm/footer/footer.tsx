@@ -22,24 +22,18 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  doesAddressRequireLedgerHidConnection,
-  getCustomNonceValue,
-} from '../../../../../selectors';
+import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNextNonce,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  updateAndApproveTx,
-  ///: END:ONLY_INCLUDE_IF
   updateCustomNonce,
 } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
+import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -163,8 +157,7 @@ const ConfirmButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const customNonceValue = useSelector(getCustomNonceValue);
-  const selectedGasFeeToken = useSelectedGasFeeToken();
+  const { onTransactionConfirm } = useTransactionConfirm();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -220,32 +213,6 @@ const Footer = () => {
     [currentConfirmation, rejectApproval, resetTransactionState],
   );
 
-  const onTransactionSubmit = useCallback(() => {
-    const transactionMeta = currentConfirmation as TransactionMeta;
-
-    const finalTransactionMeta: TransactionMeta = {
-      ...transactionMeta,
-      batchTransactions: selectedGasFeeToken
-        ? [selectedGasFeeToken.transferTransaction]
-        : undefined,
-      customNonceValue,
-      txParams: {
-        ...transactionMeta.txParams,
-        ...(selectedGasFeeToken
-          ? {
-              gas: selectedGasFeeToken.gas,
-              maxFeePerGas: selectedGasFeeToken.maxFeePerGas,
-              maxPriorityFeePerGas: selectedGasFeeToken.maxPriorityFeePerGas,
-            }
-          : {}),
-      },
-    };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    dispatch(updateAndApproveTx(finalTransactionMeta, true, ''));
-    ///: END:ONLY_INCLUDE_IF
-  }, [currentConfirmation, customNonceValue, dispatch, selectedGasFeeToken]);
-
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
       return;
@@ -256,7 +223,7 @@ const Footer = () => {
     );
 
     if (isTransactionConfirmation) {
-      onTransactionSubmit();
+      onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
@@ -264,7 +231,7 @@ const Footer = () => {
   }, [
     currentConfirmation,
     dispatch,
-    onTransactionSubmit,
+    onTransactionConfirm,
     resetTransactionState,
   ]);
 
