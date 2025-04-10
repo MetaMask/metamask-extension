@@ -245,11 +245,15 @@ export const AssetPickerAmount = ({
                   network: currentNetwork as unknown as NetworkOption,
                   networks: Object.values(allNetworks) as NetworkOption[],
                   onNetworkChange: (networkConfig) => {
+                    const rpcEndpoint =
+                      networkConfig.rpcEndpoints[
+                        networkConfig.defaultRpcEndpointIndex
+                      ];
                     dispatch(
                       setActiveNetworkWithError(
-                        networkConfig.rpcEndpoints[
-                          networkConfig.defaultRpcEndpointIndex
-                        ].networkClientId || networkConfig.chainId,
+                        'networkClientId' in rpcEndpoint
+                          ? rpcEndpoint.networkClientId
+                          : networkConfig.chainId,
                       ),
                     );
                   },
