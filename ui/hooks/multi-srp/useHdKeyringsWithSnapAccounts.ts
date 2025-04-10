@@ -5,6 +5,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getInternalAccounts } from '../../selectors/accounts';
 import { getMetaMaskHdKeyrings } from '../../selectors';
 
+// TODO: Move this data type to the @metamask/keyring-controller module
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
 export const useHdKeyringsWithSnapAccounts = () => {
