@@ -244,8 +244,8 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledAccountUpgradeChainsAddresses:
+              getDisabledAccountUpgradeChainsAddressesMock,
             validateSecurity: validateSecurityMock,
             getDismissSmartAccountSuggestionEnabled:
               getDismissSmartAccountSuggestionEnabledMock,
