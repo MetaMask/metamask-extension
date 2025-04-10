@@ -15,34 +15,6 @@ on:
   merge_group:
 
 jobs:
-  get-job-id:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get job id
-        id: get-job-id
-        uses: actions/github-script@v7
-        env:
-          JOB_NAME: prep-deps
-        with:
-          result-encoding: string
-          script: |
-            const { JOB_NAME, GITHUB_RUN_ATTEMPT } = process.env
-            const jobs = await github.paginate(
-              github.rest.actions.listJobsForWorkflowRunAttempt,
-              {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                run_id: context.runId,
-                attempt_number: GITHUB_RUN_ATTEMPT,
-              },
-            );
-            const job = jobs.find((job) => job.name.endsWith(JOB_NAME));
-            if (!job) {
-              throw new Error(`Job with name '${JOB_NAME}' not found`);
-            }
-            console.log(`The job id for '${JOB_NAME}' is '${job.id}'`)
-            return job.id;
-
   prep-deps:
     runs-on: ubuntu-latest
     steps:

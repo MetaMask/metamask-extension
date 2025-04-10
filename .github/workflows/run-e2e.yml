@@ -97,14 +97,14 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const { JOB_NAME } = process.env
+            const { JOB_NAME, GITHUB_RUN_ATTEMPT } = process.env
             const jobs = await github.paginate(
               github.rest.actions.listJobsForWorkflowRunAttempt,
               {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 run_id: context.runId,
-                attempt_number: context.runAttempt,
+                attempt_number: GITHUB_RUN_ATTEMPT,
               },
             );
             const job = jobs.find((job) => job.name.endsWith(JOB_NAME));
