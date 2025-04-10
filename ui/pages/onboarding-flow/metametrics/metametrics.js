@@ -142,6 +142,14 @@ export default function OnboardingMetametrics() {
               >
                 {t('onboardingMetametricsNeverSellDataEmphasis')}
               </Text>,
+              <a
+                href="https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/"
+                target="_blank"
+                rel="noopener noreferrer"
+                key="settings-link"
+              >
+                {t('settingsLowercase')}
+              </a>,
             ])}
           </Box>
         </li>

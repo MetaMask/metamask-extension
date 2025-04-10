@@ -3698,9 +3698,9 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
+  "onboardingMetametricsNeverSellDataWithLink": {
+    "message": "$1 you decide if you want to share or delete your usage data via $2 any time.",
+    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`, $2 represents `settingsLowercase`."
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
