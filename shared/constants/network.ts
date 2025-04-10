@@ -176,6 +176,7 @@ export const CHAIN_IDS = {
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
   ASSET_HUB: '0x190f1b43',
+  ASSET_HUB_KSM: '0x190f1b42',
   ASSET_HUB_WESTEND: '0x190f1b45',
 } as const;
 
