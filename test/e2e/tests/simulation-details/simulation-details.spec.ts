@@ -54,7 +54,7 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  test: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
+  runTestWithFixtures: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -71,7 +71,7 @@ async function withFixturesForSimulationDetails(
     },
     async ({ driver, mockServer }) => {
       await unlockWallet(driver);
-      await test({ driver, mockServer });
+      await runTestWithFixtures({ driver, mockServer });
     },
   );
 }

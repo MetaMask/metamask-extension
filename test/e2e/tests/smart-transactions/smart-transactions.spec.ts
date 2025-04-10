@@ -21,7 +21,7 @@ async function withFixturesForSmartTransactions(
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
   },
-  test: (args: { driver: Driver }) => Promise<void>,
+  runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -39,12 +39,12 @@ async function withFixturesForSmartTransactions(
     },
     async ({ driver }) => {
       await unlockWallet(driver);
-      await test({ driver });
+      await runTestWithFixtures({ driver });
     },
   );
 }
 
-export const waitForTransactionToComplete = async (
+const waitForTransactionToComplete = async (
   driver: Driver,
   options: { tokenName: string },
 ) => {

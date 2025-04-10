@@ -1,3 +1,7 @@
+/* eslint-disable */
+// This file is a Playwright test, which differs significantly from our regular e2e tests.
+// The structure of this test includes nested tests and multiple global tests, which violate our linting rules.
+
 import { ethers } from 'ethers';
 import { test, expect } from '@playwright/test';
 import log from 'loglevel';
@@ -73,7 +77,7 @@ const testSet = [
 
 test.beforeAll(
   'Initialize extension, import wallet and add custom networks',
-  async ({ page }) => {
+  async () => {
     const extension = new ChromeExtensionPage();
     const page = await extension.initExtension();
     page.setDefaultTimeout(15000);
@@ -88,7 +92,7 @@ test.beforeAll(
   },
 );
 
-test(`Get quote on Mainnet Network`, async ({ page }) => {
+test(`Get quote on Mainnet Network`, async () => {
   await walletPage.selectSwapAction();
   await walletPage.page.waitForTimeout(3000);
   await swapPage.enterQuote({
@@ -103,7 +107,7 @@ test(`Get quote on Mainnet Network`, async ({ page }) => {
   await swapPage.goBack();
 });
 
-test(`Add Custom Networks and import test account`, async ({ page }) => {
+test(`Add Custom Networks and import test account`, async () => {
   wallet = ethers.Wallet.createRandom();
 
   const response = await addFundsToAccount(
@@ -119,7 +123,7 @@ test(`Add Custom Networks and import test account`, async ({ page }) => {
 });
 
 testSet.forEach((options) => {
-  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async ({ page }) => {
+  test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
     const balance = await walletPage.getTokenBalance();
