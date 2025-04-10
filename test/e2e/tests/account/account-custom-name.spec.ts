@@ -19,7 +19,6 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        throw new Error('Fail');
         await loginWithBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);

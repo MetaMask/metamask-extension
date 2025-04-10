@@ -95,7 +95,7 @@ async function main() {
       );
       const results = await XML.parse(file);
       for (const suite of results.testsuites.testsuite || []) {
-        if (!suite.testcase) continue;
+        if (!suite.testcase || !suite.$.file) continue;
         const name = `${suite.$.name}`;
         const fullPath = `${suite.$.file}`;
         const testPath = fullPath.slice(fullPath.indexOf(`test${path.sep}`));
@@ -183,7 +183,7 @@ async function main() {
 
       const rows = suites.map((suite) => ({
         'Test suite': process.env.GITHUB_ACTIONS
-          ? `[${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path}) - ${suite.job.name}`
+          ? `[${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})`
           : suite.path,
         Passed: suite.passed ? `${suite.passed} ✅` : '',
         Failed: suite.failed ? `${suite.failed} ❌` : '',
