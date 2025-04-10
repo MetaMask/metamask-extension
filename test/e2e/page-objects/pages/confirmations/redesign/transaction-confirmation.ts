@@ -63,6 +63,20 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async check_gasFeeFiat(amountFiat: string) {
+    await this.driver.findElement({
+      css: '[data-testid="native-currency"]',
+      text: amountFiat,
+    });
+  }
+
+  async check_gasFeeToken(amountToken: string) {
+    await this.driver.findElement({
+      css: '[data-testid="first-gas-field"]',
+      text: amountToken,
+    });
+  }
+
   async clickAdvancedDetailsButton() {
     await this.driver.clickElement(this.advancedDetailsButton);
   }
