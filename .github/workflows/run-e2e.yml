@@ -46,6 +46,7 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
+      JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     steps:
       - name: Install dependencies
         run: |
@@ -98,7 +99,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format('-{0}', inputs.matrix-index) || '' }}
+          name: ${{ env.JOB_NAME }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e
