@@ -66,7 +66,6 @@ const mockNfts = {
 const mockStore = configureStore([thunk]);
 
 describe('AssetPickerModalNftTab', () => {
-  // Add at the top of describe block
   beforeEach(() => {
     nock('https://mock.api')
       .get('/token/1')
