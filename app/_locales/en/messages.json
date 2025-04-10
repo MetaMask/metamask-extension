@@ -2569,6 +2569,9 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
+  "interactWithSmartContract": {
+    "message": "Smart contract"
+  },
   "interactingWith": {
     "message": "Interacting with"
   },
