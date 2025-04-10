@@ -2370,6 +2370,7 @@
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
+        "luxon": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "semver": true,
