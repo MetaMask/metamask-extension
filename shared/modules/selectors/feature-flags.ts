@@ -1,20 +1,33 @@
 import { getNetworkNameByChainId } from '../feature-flags';
 import { ProviderConfigState, getCurrentChainId } from './networks';
 
+type NetworkFeatureFlag = {
+  extensionActive: boolean;
+  mobileActive: boolean;
+  smartTransactions?: {
+    mobileActive?: boolean;
+    extensionActive?: boolean;
+    expectedDeadline?: number;
+    maxDeadline?: number;
+    extensionReturnTxHashAsap?: boolean;
+  };
+};
+
+type SmartTransactionsFeatureFlag = {
+  mobileActive: boolean;
+  extensionActive: boolean;
+  extensionReturnTxHashAsap: boolean;
+};
+
+export type SwapsFeatureFlags = {
+  [networkName: string]: NetworkFeatureFlag;
+  smartTransactions: SmartTransactionsFeatureFlag;
+};
+
 type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
-      swapsFeatureFlags: {
-        [key: string]: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-      };
+      swapsFeatureFlags: SwapsFeatureFlags;
     };
   };
 };

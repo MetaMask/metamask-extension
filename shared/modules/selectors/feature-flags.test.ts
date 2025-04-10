@@ -2,10 +2,12 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../constants/network';
 // Import the module to spy on
 import * as featureFlags from '../feature-flags';
-import { getFeatureFlagsByChainId } from './feature-flags';
+import {
+  getFeatureFlagsByChainId,
+  type SwapsFeatureFlags,
+} from './feature-flags';
 import { ProviderConfigState } from './networks';
 
-// Type definition for state matching ProviderConfigState & FeatureFlagsMetaMaskState
 type MockState = ProviderConfigState & {
   metamask: {
     networkConfigurationsByChainId: Record<
@@ -29,17 +31,7 @@ type MockState = ProviderConfigState & {
       [clientId: string]: { status: string };
     };
     swapsState: {
-      swapsFeatureFlags: {
-        [network: string]: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-      };
+      swapsFeatureFlags: SwapsFeatureFlags;
     };
   };
 };
@@ -93,15 +85,11 @@ describe('Feature Flags Selectors', () => {
               },
             },
             smartTransactions: {
+              mobileActive: true,
               extensionActive: true,
-              mobileActive: false,
-              smartTransactions: {
-                expectedDeadline: 0,
-                maxDeadline: 0,
-                extensionReturnTxHashAsap: false,
-              },
+              extensionReturnTxHashAsap: false,
             },
-          },
+          } as SwapsFeatureFlags,
         },
       },
     };
@@ -135,8 +123,8 @@ describe('Feature Flags Selectors', () => {
 
       expect(result).toStrictEqual({
         smartTransactions: {
+          mobileActive: true,
           extensionActive: true,
-          mobileActive: false,
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
@@ -166,7 +154,7 @@ describe('Feature Flags Selectors', () => {
       expect(result).toStrictEqual({
         smartTransactions: {
           extensionActive: true,
-          mobileActive: false,
+          mobileActive: true,
           expectedDeadline: 60,
           maxDeadline: 180,
           extensionReturnTxHashAsap: true,
@@ -181,7 +169,7 @@ describe('Feature Flags Selectors', () => {
       expect(result).toStrictEqual({
         smartTransactions: {
           extensionActive: true,
-          mobileActive: false,
+          mobileActive: true,
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
