@@ -56,9 +56,8 @@ import {
   getTemplateState,
 } from './templates';
 
+const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
-const SNAP_ERROR_KEY_RESULT = 'snapAccountErrorMessage';
-const SNAP_MSG_KEY_RESULT_SUCCESS = 'snapAccountSuccessMessage';
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -301,27 +300,10 @@ export default function ConfirmationPage({
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
 
-  const pendingConfirmationHeaderKey =
-    pendingConfirmation?.requestData?.header?.[0]?.key;
-  const pendingConfirmationMessageKey =
-    pendingConfirmation?.requestData?.message?.key;
-
-  /**
-   * FIXME: This header <> padding solution isn't ideal. It's a hack to remove the content padding
-   * where we render the header inside of confirmation-page__content. It would be great to remove
-   * this while applying consistent padding for all confirmation-page__content instances.
-   */
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
     isSnapCustomUIDialog ||
-    pendingConfirmation?.key === 'snapHeader' ||
-    pendingConfirmationHeaderKey === 'snapHeader' ||
-    // checking pendingConfirmationHeaderKey based on storybook test data. I'm unsure of the data structure here.
-    // I found the same key value in pendingConfirmationMessageKey on the local, non-storybook build.
-    pendingConfirmationHeaderKey === SNAP_MSG_KEY_RESULT_SUCCESS ||
-    pendingConfirmationHeaderKey === SNAP_ERROR_KEY_RESULT ||
-    pendingConfirmationMessageKey === SNAP_MSG_KEY_RESULT_SUCCESS ||
-    pendingConfirmationMessageKey === SNAP_ERROR_KEY_RESULT;
+    CONFIRMATION_TYPES_WITH_HEADER.includes(pendingConfirmation?.type);
 
   const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
 
