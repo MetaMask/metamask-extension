@@ -3,7 +3,6 @@ import { BigNumber } from 'bignumber.js';
 import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
 
-
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
 
@@ -121,7 +120,7 @@ export function areDappSuggestedAndTxParamGasFeesTheSame(
     gasPrice: dappGasPrice,
     maxFeePerGas: dappMaxFeePerGas,
     maxPriorityFeePerGas: dappMaxPriorityFeePerGas,
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   } = dappSuggestedGasFees || {};
 
   const txParamsDoesNotHaveFeeProperties =

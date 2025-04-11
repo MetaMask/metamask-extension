@@ -4,11 +4,10 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { IconName, BadgeWrapperPosition } from '../../component-library';
-import type {
-  BadgeProps} from './notification-list-item-icon';
+import type { BadgeProps } from './notification-list-item-icon';
 import {
   NotificationListItemIcon,
-  NotificationListItemIconType
+  NotificationListItemIconType,
 } from './notification-list-item-icon';
 
 describe('NotificationListItemIcon', () => {

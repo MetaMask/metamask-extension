@@ -1,6 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,

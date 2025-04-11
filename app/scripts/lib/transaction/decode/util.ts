@@ -1,14 +1,13 @@
 import type { Provider } from '@metamask/network-controller';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { createProjectLogger } from '@metamask/utils';
 
 import type {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam,
-  DecodedTransactionDataResponse} from '../../../../../shared/types/transaction-decode';
-import {
-  DecodedTransactionDataSource,
+  DecodedTransactionDataResponse,
 } from '../../../../../shared/types/transaction-decode';
+import { DecodedTransactionDataSource } from '../../../../../shared/types/transaction-decode';
 import { decodeTransactionDataWithFourByte } from './four-byte';
 import { getContractProxyAddress } from './proxy';
 import { decodeTransactionDataWithSourcify } from './sourcify';

@@ -18,8 +18,7 @@ import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
-import type {
-  IconName} from '../../component-library';
+import type { IconName } from '../../component-library';
 import {
   AvatarIcon,
   AvatarIconSize,

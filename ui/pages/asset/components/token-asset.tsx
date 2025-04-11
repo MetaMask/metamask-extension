@@ -1,7 +1,7 @@
 import type { Token } from '@metamask/assets-controllers';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import type { CaipAssetType, Hex} from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

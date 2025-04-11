@@ -38,7 +38,7 @@ import { ModalHeader } from '../../../component-library/modal-header/deprecated'
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import QuizContent from '../QuizContent';
-import type { JSXDict} from '../types';
+import type { JSXDict } from '../types';
 import { QuizStage } from '../types';
 
 const wrongAnswerIcon = (

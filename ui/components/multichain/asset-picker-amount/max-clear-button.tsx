@@ -7,8 +7,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type {
-  Asset} from '../../../ducks/send';
+import type { Asset } from '../../../ducks/send';
 import {
   getSendAnalyticProperties,
   getSendMaxModeState,

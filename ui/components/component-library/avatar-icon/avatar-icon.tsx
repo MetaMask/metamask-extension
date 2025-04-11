@@ -16,12 +16,8 @@ import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
 import type { PolymorphicRef } from '../box';
 import { Icon } from '../icon';
-import type { AvatarIconComponent ,
-  AvatarIconProps} from './avatar-icon.types';
-import {
-  AvatarIconSize,
-  avatarIconSizeToIconSize,
-} from './avatar-icon.types';
+import type { AvatarIconComponent, AvatarIconProps } from './avatar-icon.types';
+import { AvatarIconSize, avatarIconSizeToIconSize } from './avatar-icon.types';
 
 export const AvatarIcon: AvatarIconComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

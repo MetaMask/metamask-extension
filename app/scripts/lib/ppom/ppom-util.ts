@@ -3,10 +3,9 @@ import type { PPOMController } from '@metamask/ppom-validator';
 import type { SignatureController } from '@metamask/signature-controller';
 import type {
   TransactionController,
-  TransactionParams} from '@metamask/transaction-controller';
-import {
-  normalizeTransactionParams,
+  TransactionParams,
 } from '@metamask/transaction-controller';
+import { normalizeTransactionParams } from '@metamask/transaction-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 
@@ -20,13 +19,15 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import type { AppStateController } from '../../controllers/app-state-controller';
-import type {
-  SecurityAlertsAPIRequest} from './security-alerts-api';
+import type { SecurityAlertsAPIRequest } from './security-alerts-api';
 import {
   isSecurityAlertsAPIEnabled,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
-import type { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
+import type {
+  SecurityAlertResponse,
+  UpdateSecurityAlertResponse,
+} from './types';
 
 const { sentry } = global;
 

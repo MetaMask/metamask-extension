@@ -1,5 +1,5 @@
 import { normalize as normalizeEthAddress } from '@metamask/eth-sig-util';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { isValidHexAddress } from '@metamask/utils';
 
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';

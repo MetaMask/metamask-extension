@@ -26,8 +26,28 @@ import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  BackgroundColor,
+  Display,
+  ///: END:ONLY_INCLUDE_IF
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  KEYRING_TRANSACTION_STATUS_KEY,
+  useMultichainTransactionDisplay,
+} from '../../../hooks/useMultichainTransactionDisplay';
 import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -44,7 +64,6 @@ import {
 } from '../../../selectors/transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 ///: END:ONLY_INCLUDE_IF
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   Button,
@@ -59,12 +78,14 @@ import {
   BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
 import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
 import TransactionIcon from '../transaction-icon';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getMultichainNetwork,
@@ -77,32 +98,11 @@ import {
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  BackgroundColor,
-  Display,
-  ///: END:ONLY_INCLUDE_IF
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import {
-  RAMPS_CARD_VARIANT_TYPES,
-  RampsCard,
-} from '../../multichain/ramps-card/ramps-card';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  KEYRING_TRANSACTION_STATUS_KEY,
-  useMultichainTransactionDisplay,
-} from '../../../hooks/useMultichainTransactionDisplay';
 ///: END:ONLY_INCLUDE_IF
 
 // eslint-disable-next-line import/no-restricted-paths

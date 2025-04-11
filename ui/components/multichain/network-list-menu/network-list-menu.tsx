@@ -22,13 +22,8 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import type {
-  DropResult} from 'react-beautiful-dnd';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable
-} from 'react-beautiful-dnd';
+import type { DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -69,22 +64,8 @@ import {
 import { openWindow } from '../../../helpers/utils/window';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  hideNetworkBanner,
-  setActiveNetwork,
-  setShowTestNetworks,
-  showModal,
-  toggleNetworkMenu,
-  updateNetworksList,
-  setNetworkClientIdForDomain,
-  setEditedNetwork,
-  showPermittedNetworkToast,
-  updateCustomNonce,
-  setNextNonce,
-  addPermittedChain,
-  setTokenNetworkFilter,
-  detectNfts,
-} from '../../../store/actions';
+import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
+import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -103,9 +84,24 @@ import {
   getIsPortfolioDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
+import {
+  hideNetworkBanner,
+  setActiveNetwork,
+  setShowTestNetworks,
+  showModal,
+  toggleNetworkMenu,
+  updateNetworksList,
+  setNetworkClientIdForDomain,
+  setEditedNetwork,
+  showPermittedNetworkToast,
+  updateCustomNonce,
+  setNextNonce,
+  addPermittedChain,
+  setTokenNetworkFilter,
+  detectNfts,
+} from '../../../store/actions';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import ToggleButton from '../../ui/toggle-button';
 import {
   Box,
   ButtonSecondary,
@@ -119,10 +115,9 @@ import {
   ModalHeader,
   AvatarNetworkSize,
 } from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
-import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { NetworkListItem } from '../network-list-item';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -349,10 +344,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
     } else {
-      const allOpts = Object.keys(evmNetworks).reduce<Record<string, boolean>>((acc, id) => {
-        acc[id] = true;
-        return acc;
-      }, {});
+      const allOpts = Object.keys(evmNetworks).reduce<Record<string, boolean>>(
+        (acc, id) => {
+          acc[id] = true;
+          return acc;
+        },
+        {},
+      );
       dispatch(setTokenNetworkFilter(allOpts));
     }
 

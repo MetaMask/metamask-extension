@@ -10,11 +10,8 @@ import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import type {
-  CreateNamedSnapAccountProps} from './create-named-snap-account';
-import {
-  CreateNamedSnapAccount
-} from './create-named-snap-account';
+import type { CreateNamedSnapAccountProps } from './create-named-snap-account';
+import { CreateNamedSnapAccount } from './create-named-snap-account';
 
 const mockSnapSuggestedAccountName = 'Suggested Account Name';
 

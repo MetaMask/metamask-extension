@@ -1,10 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import type {
   TransactionMeta,
-  TransactionParams} from '@metamask/transaction-controller';
-import {
-  TransactionType,
+  TransactionParams,
 } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';

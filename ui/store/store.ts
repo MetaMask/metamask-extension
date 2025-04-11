@@ -3,7 +3,10 @@ import type {
   NftControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import type { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
+import type {
+  GasEstimateType,
+  GasFeeEstimates,
+} from '@metamask/gas-fee-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
 import type { TransactionMeta } from '@metamask/transaction-controller';

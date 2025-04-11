@@ -1,8 +1,5 @@
-import type {
-  DecodingDataStateChanges} from '@metamask/signature-controller';
-import {
-  DecodingDataChangeType
-} from '@metamask/signature-controller';
+import type { DecodingDataStateChanges } from '@metamask/signature-controller';
+import { DecodingDataChangeType } from '@metamask/signature-controller';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';

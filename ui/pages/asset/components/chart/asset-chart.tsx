@@ -7,12 +7,10 @@ import {
   LinearScale,
   PointElement,
   Filler,
-  Decimation
+  Decimation,
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
-import type {
-  ChartOptions,
-  Point} from 'chart.js';
+import type { ChartOptions, Point } from 'chart.js';
 import classnames from 'classnames';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -35,7 +33,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
-import type { TimeRange} from '../../useHistoricalPrices';
+import type { TimeRange } from '../../useHistoricalPrices';
 import { useHistoricalPrices } from '../../useHistoricalPrices';
 import { loadingOpacity } from '../../util';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

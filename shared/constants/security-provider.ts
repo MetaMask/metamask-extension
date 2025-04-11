@@ -1,8 +1,5 @@
-import type {
-  SecurityAlertResponse} from '@metamask/transaction-controller';
-import {
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { SecurityAlertResponse } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 
 export enum SecurityProvider {
   Blockaid = 'blockaid',

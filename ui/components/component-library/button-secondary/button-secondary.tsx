@@ -7,11 +7,11 @@ import { Color } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import type { ButtonBaseProps } from '../button-base';
 import { ButtonBase } from '../button-base';
-import type { ButtonSecondaryProps ,
-  ButtonSecondaryComponent} from './button-secondary.types';
-import {
-  ButtonSecondarySize
+import type {
+  ButtonSecondaryProps,
+  ButtonSecondaryComponent,
 } from './button-secondary.types';
+import { ButtonSecondarySize } from './button-secondary.types';
 
 export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

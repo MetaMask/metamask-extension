@@ -11,45 +11,31 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-
-
-import {
-  SECURITY_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import {
-  isValidHexAddress,
-  toChecksumHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../../shared/constants/metametrics';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import {
-  checkExistingAddresses,
-  getURLHostName,
-  fetchTokenExchangeRates,
-} from '../../../helpers/utils/util';
-import { tokenInfoGetter } from '../../../helpers/utils/token-util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsTokenEventSource,
-} from '../../../../shared/constants/metametrics';
-import { NetworkFilterImportToken } from '../../app/import-token/network-filter-import-token';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../../shared/modules/hexstring-utils';
 import {
   getCurrentChainId,
   getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
   BlockSize,
@@ -62,6 +48,17 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  SECURITY_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { tokenInfoGetter } from '../../../helpers/utils/token-util';
+import {
+  checkExistingAddresses,
+  getURLHostName,
+  fetchTokenExchangeRates,
+} from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
@@ -90,6 +87,7 @@ import {
   setConfirmationExchangeRates,
   getTokenStandardAndDetailsByChain,
 } from '../../../store/actions';
+import { NetworkFilterImportToken } from '../../app/import-token/network-filter-import-token';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import TokenList from '../../app/import-token/token-list';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';

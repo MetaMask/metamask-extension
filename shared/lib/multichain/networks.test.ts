@@ -1,8 +1,7 @@
-import type {
-  MultichainBlockExplorerFormatUrls} from './networks';
+import type { MultichainBlockExplorerFormatUrls } from './networks';
 import {
   formatBlockExplorerUrl,
-  formatBlockExplorerAddressUrl
+  formatBlockExplorerAddressUrl,
 } from './networks';
 
 describe('multichain - networks', () => {

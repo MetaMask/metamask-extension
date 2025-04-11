@@ -1,23 +1,18 @@
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionStatus,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 
-import type {
-  AllowedBridgeChainIds} from '../../../../shared/constants/bridge';
-import {
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import type { AllowedBridgeChainIds } from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import type {
   BridgeHistoryItem,
-  Step} from '../../../../shared/types/bridge-status';
+  Step,
+} from '../../../../shared/types/bridge-status';
 import {
   ActionTypes,
   StatusTypes,

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';

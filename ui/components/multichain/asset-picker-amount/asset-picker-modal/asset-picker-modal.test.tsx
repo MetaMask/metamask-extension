@@ -1,8 +1,5 @@
-import type {
-  NetworkConfiguration} from '@metamask/network-controller';
-import {
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { screen, fireEvent } from '@testing-library/react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

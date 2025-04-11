@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import * as ethersProviders from '@ethersproject/providers';
-import type { ChainId} from '@metamask/controller-utils';
+import type { ChainId } from '@metamask/controller-utils';
 import { InfuraNetworkType } from '@metamask/controller-utils';
 import type { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
 import type { NetworkClientId } from '@metamask/network-controller';

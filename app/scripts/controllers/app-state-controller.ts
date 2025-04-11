@@ -2,13 +2,12 @@ import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import {
-  BaseController
-} from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
+  RestrictedMessenger,
+} from '@metamask/base-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import type { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import type { Json } from '@metamask/utils';

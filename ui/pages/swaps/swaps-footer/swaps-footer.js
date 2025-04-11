@@ -5,7 +5,6 @@ import React, { useContext } from 'react';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import { I18nContext } from '../../../contexts/i18n';
 
-
 export default function SwapsFooter({
   onCancel,
   hideCancel,

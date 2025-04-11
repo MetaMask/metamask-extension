@@ -1,11 +1,8 @@
 import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 
-import type {
-  MultichainAssetsRatesControllerMessenger} from '../messengers/multichain';
-import {
-  getMultichainAssetsRatesControllerMessenger
-} from '../messengers/multichain';
+import type { MultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
+import { getMultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { MultichainAssetsRatesControllerInit } from './multichain-rates-assets-controller-init';

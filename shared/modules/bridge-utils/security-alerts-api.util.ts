@@ -5,10 +5,9 @@ import { MultichainNetworks } from '../../constants/multichain/networks';
 import type {
   ScanTokenRequest,
   TokenFeature,
-  TokenAlertWithLabelIds} from '../../types/security-alerts-api';
-import {
-  TokenFeatureType
+  TokenAlertWithLabelIds,
 } from '../../types/security-alerts-api';
+import { TokenFeatureType } from '../../types/security-alerts-api';
 
 const DOMAIN = 'https://metamask.io';
 

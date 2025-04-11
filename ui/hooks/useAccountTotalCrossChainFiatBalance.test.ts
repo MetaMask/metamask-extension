@@ -12,11 +12,8 @@ import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
 } from '../selectors';
-import type {
-  FormattedTokensWithBalances} from './useAccountTotalCrossChainFiatBalance';
-import {
-  useAccountTotalCrossChainFiatBalance,
-} from './useAccountTotalCrossChainFiatBalance';
+import type { FormattedTokensWithBalances } from './useAccountTotalCrossChainFiatBalance';
+import { useAccountTotalCrossChainFiatBalance } from './useAccountTotalCrossChainFiatBalance';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),

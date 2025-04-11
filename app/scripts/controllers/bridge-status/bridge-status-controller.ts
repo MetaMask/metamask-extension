@@ -7,10 +7,9 @@ import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.util
 import type {
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
-  BridgeStatusState} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes
+  BridgeStatusState,
 } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_STATE,
@@ -344,7 +343,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
   // Wipes the bridge status for the given address and chainId
   // Will match only source chainId to the selectedChainId
-  readonly #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
+  readonly #wipeBridgeStatusByChainId = (
+    address: string,
+    selectedChainId: Hex,
+  ) => {
     const sourceTxMetaIdsToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
     ).filter((txMetaId) => {

@@ -6,10 +6,9 @@ import type {
 import type {
   NameController,
   NameStateChange,
-  SetNameRequest} from '@metamask/name-controller';
-import {
-  NameType
+  SetNameRequest,
 } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {

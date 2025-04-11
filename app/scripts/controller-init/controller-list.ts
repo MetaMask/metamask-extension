@@ -31,7 +31,6 @@ import type {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import type SmartTransactionsController from '@metamask/smart-transactions-controller';
-import type { TransactionController } from '@metamask/transaction-controller';
 import type {
   CronjobController,
   ExecutionService,
@@ -40,6 +39,7 @@ import type {
   SnapInsightsController,
   SnapInterfaceController,
 } from '@metamask/snaps-controllers';
+import type { TransactionController } from '@metamask/transaction-controller';
 
 import type { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

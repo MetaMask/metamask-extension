@@ -1,6 +1,5 @@
 import type { ContractMarketData } from '@metamask/assets-controllers';
-import type {
-  ChainId} from '@metamask/bridge-controller';
+import type { ChainId } from '@metamask/bridge-controller';
 import {
   isSolanaChainId,
   type TxData,
@@ -109,13 +108,12 @@ const fetchTokenExchangeRates = async (
       functionName: 'fetchSolanaTokenExchangeRates',
     })) as Record<string, { price: number }>;
 
-    exchangeRates = Object.entries(tokenV3PriceResponse).reduce<Record<string, number>>(
-      (acc, [k, curr]) => {
-        acc[k] = curr.price;
-        return acc;
-      },
-      {},
-    );
+    exchangeRates = Object.entries(tokenV3PriceResponse).reduce<
+      Record<string, number>
+    >((acc, [k, curr]) => {
+      acc[k] = curr.price;
+      return acc;
+    }, {});
   } else {
     exchangeRates = await fetchTokenExchangeRatesUtil(
       currency,

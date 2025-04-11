@@ -1,11 +1,10 @@
 import type {
   Caip25CaveatValue,
-  InternalScopesObject} from '@metamask/chain-agnostic-permission';
-import {
-  parseScopeString,
+  InternalScopesObject,
 } from '@metamask/chain-agnostic-permission';
+import { parseScopeString } from '@metamask/chain-agnostic-permission';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { CaipAccountId} from '@metamask/utils';
+import type { CaipAccountId } from '@metamask/utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
 /**

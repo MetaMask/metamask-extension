@@ -9,8 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tippy';
 
-
-import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import {
   MetaMetricsEventCategory,
@@ -23,6 +21,7 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { I18nContext } from '../../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SEND_STAGES,
   getCurrentDraftTransaction,

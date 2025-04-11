@@ -1,8 +1,5 @@
-import type {
-  PPOMControllerMessenger} from '@metamask/ppom-validator';
-import {
-  PPOMController
-} from '@metamask/ppom-validator';
+import type { PPOMControllerMessenger } from '@metamask/ppom-validator';
+import { PPOMController } from '@metamask/ppom-validator';
 
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

@@ -5,8 +5,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import type {
-  BannerAlertSeverity} from '../../../components/component-library';
+import type { BannerAlertSeverity } from '../../../components/component-library';
 import {
   Button,
   ButtonPrimary,

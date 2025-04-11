@@ -6,11 +6,8 @@ import { Provider } from 'react-redux';
 import type { Store } from 'redux';
 import configureStore from 'redux-mock-store';
 
-import type {
-  NotificationDetailCollectionProps} from './notification-detail-collection';
-import {
-  NotificationDetailCollection
-} from './notification-detail-collection';
+import type { NotificationDetailCollectionProps } from './notification-detail-collection';
+import { NotificationDetailCollection } from './notification-detail-collection';
 
 const mockStore = configureStore([]);
 

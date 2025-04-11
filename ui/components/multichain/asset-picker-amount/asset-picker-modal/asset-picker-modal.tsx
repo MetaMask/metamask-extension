@@ -17,24 +17,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 
-
-import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
-import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { useAsyncResult } from '../../../../hooks/useAsync';
-import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import {
-  getMultichainConversionRate,
-  getMultichainCurrencyImage,
-  getImageForChainId,
-  getMultichainCurrentChainId,
-  getMultichainCurrentCurrency,
-  getMultichainNativeCurrency,
-  getMultichainNetworkConfigurationsByChainId,
-  getMultichainSelectedAccountCachedBalance,
-  getMultichainIsEvm,
-} from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
@@ -51,8 +34,12 @@ import {
   Display,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
+import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
+import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import {
   getAllTokens,
   getSelectedEvmInternalAccount,
@@ -64,6 +51,17 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 import {
+  getMultichainConversionRate,
+  getMultichainCurrencyImage,
+  getImageForChainId,
+  getMultichainCurrentChainId,
+  getMultichainCurrentCurrency,
+  getMultichainNativeCurrency,
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainSelectedAccountCachedBalance,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
+import {
   Modal,
   ModalContent,
   ModalOverlay,
@@ -74,6 +72,7 @@ import {
   Text,
   PickerNetwork,
 } from '../../../component-library';
+import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { Toast, ToastContainer } from '../../toast';
 import type { AssetPickerModalNetwork } from './asset-picker-modal-network';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
@@ -180,8 +179,7 @@ export function AssetPickerModal({
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const selectedNetwork =
-    network ??
-    (currentChainId && allNetworks[currentChainId]);
+    network ?? (currentChainId && allNetworks[currentChainId]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   // This indicates whether tokens in the wallet's active network are displayed
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;

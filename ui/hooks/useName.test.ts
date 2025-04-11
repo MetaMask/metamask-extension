@@ -1,6 +1,4 @@
-import type {
-  NameControllerState,
-  NameEntry} from '@metamask/name-controller';
+import type { NameControllerState, NameEntry } from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
   NameOrigin,

@@ -54,17 +54,17 @@ import {
 } from '../../../../component-library';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import Spinner from '../../../../ui/spinner';
 import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-import NftGrid from '../nft-grid/nft-grid';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-///: END:ONLY_INCLUDE_IF
-import { sortAssets } from '../../util/sort';
+import Spinner from '../../../../ui/spinner';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
+import { sortAssets } from '../../util/sort';
+import NftGrid from '../nft-grid/nft-grid';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: END:ONLY_INCLUDE_IF
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';

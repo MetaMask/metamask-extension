@@ -10,7 +10,8 @@ import type {
   AlertControllerMessenger,
   AlertControllerGetStateAction,
   AlertControllerStateChangeEvent,
-  AlertControllerOptions} from './alert-controller';
+  AlertControllerOptions,
+} from './alert-controller';
 import {
   AlertController,
   getDefaultAlertControllerState,

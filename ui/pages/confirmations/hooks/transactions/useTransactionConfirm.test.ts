@@ -1,5 +1,8 @@
 import { toHex } from '@metamask/controller-utils';
-import type { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import type {
+  GasFeeToken,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';

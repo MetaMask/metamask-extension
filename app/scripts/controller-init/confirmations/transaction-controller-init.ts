@@ -4,12 +4,13 @@ import type SmartTransactionsController from '@metamask/smart-transactions-contr
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import type {
   TransactionControllerMessenger,
-  TransactionMeta} from '@metamask/transaction-controller';
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   CHAIN_IDS,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
-  TransactionController
+  TransactionController,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
@@ -33,8 +34,7 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
 } from '../../lib/transaction/metrics';
-import type {
-  SmartTransactionHookMessenger} from '../../lib/transaction/smart-transactions';
+import type { SmartTransactionHookMessenger } from '../../lib/transaction/smart-transactions';
 import {
   submitSmartTransactionHook,
   submitBatchSmartTransactionHook,
@@ -139,7 +139,9 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
 
-      beforeCheckPendingTransactions: async (transactionMeta: TransactionMeta) => {
+      beforeCheckPendingTransactions: async (
+        transactionMeta: TransactionMeta,
+      ) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:beforeCheckPendingTransactionHook',
           transactionMeta,

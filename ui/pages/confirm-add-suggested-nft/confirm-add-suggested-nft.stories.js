@@ -7,8 +7,6 @@ import ConfirmAddSuggestedNFT from '.';
 import mockState from '../../../.storybook/test-data';
 import configureStore from '../../store/store';
 
-
-
 const pendingNftApprovals = {
   1: {
     id: '1',

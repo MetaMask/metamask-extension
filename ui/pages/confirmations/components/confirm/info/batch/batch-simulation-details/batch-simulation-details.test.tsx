@@ -17,11 +17,8 @@ import configureStore from '../../../../../../../store/store';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import type { Confirmation } from '../../../../../types/confirm';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
-import {
-  useBatchApproveBalanceChanges,
-} from '../../hooks/useBatchApproveBalanceChanges';
-import type {
-  ApprovalBalanceChange} from '../../hooks/useBatchApproveBalanceChanges';
+import { useBatchApproveBalanceChanges } from '../../hooks/useBatchApproveBalanceChanges';
+import type { ApprovalBalanceChange } from '../../hooks/useBatchApproveBalanceChanges';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({

@@ -10,10 +10,9 @@ import type { UniswapPathPool } from '../../../../../../../../app/scripts/lib/tr
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import type {
   DecodedTransactionDataMethod,
-  DecodedTransactionDataParam} from '../../../../../../../../shared/types/transaction-decode';
-import {
-  DecodedTransactionDataSource,
+  DecodedTransactionDataParam,
 } from '../../../../../../../../shared/types/transaction-decode';
+import { DecodedTransactionDataSource } from '../../../../../../../../shared/types/transaction-decode';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import {
   ConfirmInfoRow,
@@ -24,6 +23,7 @@ import {
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { Box } from '../../../../../../../components/component-library';
+import Preloader from '../../../../../../../components/ui/icon/preloader';
 import {
   Display,
   FlexWrap,
@@ -32,7 +32,6 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import Preloader from '../../../../../../../components/ui/icon/preloader';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { useConfirmContext } from '../../../../../context/confirm';

@@ -1,5 +1,4 @@
-import type {
-  I18NMessageDict} from '../../shared/modules/i18n';
+import type { I18NMessageDict } from '../../shared/modules/i18n';
 import {
   FALLBACK_LOCALE,
   fetchLocale,

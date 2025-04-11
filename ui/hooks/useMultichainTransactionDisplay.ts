@@ -1,5 +1,4 @@
-import type {
-  Transaction} from '@metamask/keyring-api';
+import type { Transaction } from '@metamask/keyring-api';
 import {
   TransactionStatus as KeyringTransactionStatus,
   TransactionType,

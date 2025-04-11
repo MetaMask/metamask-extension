@@ -1,10 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
-import type {
-  KeyringAccountType} from '@metamask/keyring-api';
-import {
-  BtcAccountType,
-  EthAccountType
-} from '@metamask/keyring-api';
+import type { KeyringAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { merge } from 'lodash';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

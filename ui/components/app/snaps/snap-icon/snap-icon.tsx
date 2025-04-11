@@ -4,8 +4,7 @@ import type { FunctionComponent } from 'react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import type {
-  BackgroundColor} from '../../../../helpers/constants/design-system';
+import type { BackgroundColor } from '../../../../helpers/constants/design-system';
 import {
   AlignItems,
   Display,
@@ -20,7 +19,8 @@ import {
 import type {
   AvatarBaseSize,
   AvatarFaviconProps,
-  AvatarFaviconSize} from '../../../component-library';
+  AvatarFaviconSize,
+} from '../../../component-library';
 import {
   AvatarBase,
   AvatarFavicon,

@@ -8,13 +8,12 @@ import {
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 
-import type {
-  MultichainNetworkConfigurationsByChainIdState} from '../../../shared/modules/selectors/networks';
+import type { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
   getProviderConfig,
-  getNetworkConfigurationsByChainId
+  getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getInternalAccounts } from '../accounts';

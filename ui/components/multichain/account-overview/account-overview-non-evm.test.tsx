@@ -7,11 +7,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import configureStore from '../../../store/store';
-import type {
-  AccountOverviewNonEvmProps} from './account-overview-non-evm';
-import {
-  AccountOverviewNonEvm
-} from './account-overview-non-evm';
+import type { AccountOverviewNonEvmProps } from './account-overview-non-evm';
+import { AccountOverviewNonEvm } from './account-overview-non-evm';
 
 jest.mock('../../../store/actions', () => ({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),

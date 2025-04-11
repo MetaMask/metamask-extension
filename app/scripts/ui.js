@@ -12,7 +12,6 @@ import '../../development/wdyr';
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
 
-
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import { StreamProvider } from '@metamask/providers';
 import PortStream from 'extension-port-stream';

@@ -3,7 +3,7 @@ import type {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { hexToNumber } from '@metamask/utils';
 import { capitalize, pick } from 'lodash';
 

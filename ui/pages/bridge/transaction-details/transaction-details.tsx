@@ -8,11 +8,8 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
 
-import type {
-  AllowedBridgeChainIds} from '../../../../shared/constants/bridge';
-import {
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP
-} from '../../../../shared/constants/bridge';
+import type { AllowedBridgeChainIds } from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import {
   MetaMetricsContextProp,
@@ -22,12 +19,12 @@ import {
 import { MINUTE } from '../../../../shared/constants/time';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import type {
-  BridgeHistoryItem} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
+import type { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
+import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
+import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -43,14 +40,9 @@ import {
   Text,
 } from '../../../components/component-library';
 import { Content, Header } from '../../../components/multichain/pages/page';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
-import type { MetaMaskReduxState } from '../../../store/store';
-// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
@@ -65,15 +57,17 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
-import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
-import { getIntlLocale } from '../../../ducks/locale/locale';
+import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
+import { getImageForChainId } from '../../../selectors/multichain';
+import type { MetaMaskReduxState } from '../../../store/store';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import TransactionActivityLog from '../../../components/app/transaction-activity-log';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import BridgeExplorerLinks from './bridge-explorer-links';

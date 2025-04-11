@@ -14,12 +14,8 @@ import {
 import type { BoxProps, PolymorphicRef } from '../box';
 import { Box } from '../box';
 import { Icon, IconSize } from '../icon';
-import type {
-  ButtonIconProps,
-  ButtonIconComponent} from './button-icon.types';
-import {
-  ButtonIconSize
-} from './button-icon.types';
+import type { ButtonIconProps, ButtonIconComponent } from './button-icon.types';
+import { ButtonIconSize } from './button-icon.types';
 
 const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
   [ButtonIconSize.Sm]: IconSize.Sm,

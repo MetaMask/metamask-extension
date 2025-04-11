@@ -25,11 +25,8 @@ import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
 import { getSnapsMetadata } from '../../../../selectors';
 import { isOfTypeNodeGuard } from '../node-guard';
-import type {
-  NotificationComponent} from '../types/notifications/notifications';
-import {
-  NotificationComponentType,
-} from '../types/notifications/notifications';
+import type { NotificationComponent } from '../types/notifications/notifications';
+import { NotificationComponentType } from '../types/notifications/notifications';
 import { SnapFooterButton } from './snap-footer-button';
 import type { DetailedViewData, SnapNotification } from './types';
 
@@ -78,9 +75,7 @@ export const components: NotificationComponent<SnapNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
-        title={
-          (notification.data as DetailedViewData).detailedView.title
-        }
+        title={(notification.data as DetailedViewData).detailedView.title}
         date={formatIsoDateString(notification.createdAt)}
       />
     ),

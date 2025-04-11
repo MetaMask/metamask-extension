@@ -31,16 +31,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { setEditedNetwork } from '../../../store/actions';
-import type {
-  SafeChain} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  useSafeChains,
-} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { SafeChain } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { getMarketData, getCurrencyRates } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { setEditedNetwork } from '../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -291,9 +288,7 @@ export const TokenListItemComponent = ({
             {showScamWarning ? (
               <ButtonIcon
                 iconName={IconName.Danger}
-                onClick={(
-                  e: React.MouseEvent<HTMLButtonElement>,
-                ) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setShowScamWarningModal(true);

@@ -10,34 +10,34 @@ import type {
   Nft,
   Token,
 } from '@metamask/assets-controllers';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { GasFeeController } from '@metamask/gas-fee-controller';
-import type { PermissionsRequest } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/controller-utils';
+import type { GasFeeController } from '@metamask/gas-fee-controller';
+import type { KeyringTypes } from '@metamask/keyring-controller';
 import type {
   SetNameRequest,
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import type {
-  TransactionMeta,
-  TransactionParams,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import type {
   AddNetworkFields,
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import type { InterfaceState } from '@metamask/snaps-sdk';
-import type { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { PermissionsRequest } from '@metamask/permission-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import type { InterfaceState } from '@metamask/snaps-sdk';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
+import type {
+  TransactionMeta,
+  TransactionParams,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { captureException } from '@sentry/browser';
 import type { Patch } from 'immer';
 import { capitalize, isEqual } from 'lodash';
@@ -56,24 +56,16 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../shared/constants/metametrics';
-import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from '../../shared/modules/i18n';
-import { decimalToHex } from '../../shared/modules/conversion.utils';
 import type { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
@@ -81,23 +73,31 @@ import type {
   MetaMetricsPageObject,
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
-  MetaMetricsReferrerObject} from '../../shared/constants/metametrics';
+  MetaMetricsReferrerObject,
+} from '../../shared/constants/metametrics';
+import type { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import type { ThemeType } from '../../shared/constants/preferences';
+import { getMethodDataAsync } from '../../shared/lib/four-byte';
+import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import switchDirection from '../../shared/lib/switch-direction';
+import type { EndTraceRequest } from '../../shared/lib/trace';
+import { decimalToHex } from '../../shared/modules/conversion.utils';
 import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
-import type { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import type { ThemeType } from '../../shared/constants/preferences';
-import { getMethodDataAsync } from '../../shared/lib/four-byte';
-import type { EndTraceRequest } from '../../shared/lib/trace';
-import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import switchDirection from '../../shared/lib/switch-direction';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../../shared/modules/i18n';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
 } from '../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import type { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import type { SortCriteria } from '../components/app/assets/util/sort';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -112,9 +112,11 @@ import type {
   // NOTE: Until the send duck is typescript that this is importing a typedef
   // that does not have an explicit export statement. lets see if it breaks the
   // compiler
-  DraftTransaction} from '../ducks/send';
+  DraftTransaction,
+} from '../ducks/send';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import type { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
+import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import {
   getMetaMaskAccounts,
   hasTransactionPendingApprovals,
@@ -1769,9 +1771,7 @@ export function updateMetamaskState(
     }
 
     // track when gasFeeEstimates change
-    if (
-      !isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates)
-    ) {
+    if (!isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates)) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
         payload: {

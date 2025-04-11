@@ -1,6 +1,10 @@
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { invalidParams } from '@metamask/permission-controller';
-import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';

@@ -1,4 +1,3 @@
-
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -6,7 +5,6 @@ import { toChecksumAddress } from 'ethereumjs-util';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -125,8 +123,7 @@ export const AggregatedPercentageOverviewCrossChains = () => {
 
   let formattedAmountChangeCrossChains = '';
   if (isValidAmount(amountChangeCrossChains)) {
-    formattedAmountChangeCrossChains =
-      (amountChangeCrossChains) >= 0 ? '+' : '';
+    formattedAmountChangeCrossChains = amountChangeCrossChains >= 0 ? '+' : '';
 
     const options = {
       notation: 'compact',
@@ -154,9 +151,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   let color = TextColor.textDefault;
 
   if (!privacyMode && isValidAmount(amountChangeCrossChains)) {
-    if ((amountChangeCrossChains) === 0) {
+    if (amountChangeCrossChains === 0) {
       color = TextColor.textDefault;
-    } else if ((amountChangeCrossChains) > 0) {
+    } else if (amountChangeCrossChains > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;

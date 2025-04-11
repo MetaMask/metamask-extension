@@ -1,8 +1,5 @@
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import {

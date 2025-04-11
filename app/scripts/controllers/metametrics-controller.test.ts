@@ -8,7 +8,7 @@ import { Messenger } from '@metamask/base-controller';
 import { toHex } from '@metamask/controller-utils';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { NameType } from '@metamask/name-controller';
-import type { NameEntry} from '@metamask/name-controller';
+import type { NameEntry } from '@metamask/name-controller';
 import type {
   NetworkClientId,
   NetworkState,
@@ -22,10 +22,9 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  MetaMetricsUserTrait
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-import type {
-  MetaMetricsUserTraits} from '../../../shared/constants/metametrics';
+import type { MetaMetricsUserTraits } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -41,11 +40,8 @@ import type {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import MetaMetricsController from './metametrics-controller';
-import type {
-  PreferencesControllerState} from './preferences-controller';
-import {
-  getDefaultPreferencesControllerState
-} from './preferences-controller';
+import type { PreferencesControllerState } from './preferences-controller';
+import { getDefaultPreferencesControllerState } from './preferences-controller';
 
 const segmentMock = createSegmentMock(2);
 

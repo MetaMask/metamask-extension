@@ -5,11 +5,10 @@ import type { Hex } from '@metamask/utils';
 
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-import type {
-  MultichainProviderConfig} from '../../shared/constants/multichain/networks';
+import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
-  MultichainNetworks
+  MultichainNetworks,
 } from '../../shared/constants/multichain/networks';
 import {
   CHAIN_IDS,
@@ -29,8 +28,7 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import type { AccountsState } from './accounts';
-import type {
-  MultichainState} from './multichain';
+import type { MultichainState } from './multichain';
 import {
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,

@@ -5,7 +5,7 @@ import React from 'react';
 
 import { IconColor, Display } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
-import type { PolymorphicRef , BoxProps } from '../box';
+import type { PolymorphicRef, BoxProps } from '../box';
 import type { IconProps, IconComponent } from './icon.types';
 import { IconSize } from './icon.types';
 

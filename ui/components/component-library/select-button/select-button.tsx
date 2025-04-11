@@ -23,10 +23,9 @@ import { Text } from '../text';
 import type { TextProps } from '../text';
 import type {
   SelectButtonProps,
-  SelectButtonComponent} from './select-button.types';
-import {
-  SelectButtonSize,
+  SelectButtonComponent,
 } from './select-button.types';
+import { SelectButtonSize } from './select-button.types';
 
 // Utility function to check for plain objects
 const isPlainObject = (obj: unknown) => {
@@ -78,7 +77,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       uncontrolledValue = '',
       defaultValue = '',
       placeholder = '',
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     } = selectContext || {};
 
     const contentToRender =

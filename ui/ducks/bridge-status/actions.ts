@@ -1,8 +1,5 @@
-import type {
-  StartPollingForBridgeTxStatusArgsSerialized} from '../../../shared/types/bridge-status';
-import {
-  BridgeStatusAction
-} from '../../../shared/types/bridge-status';
+import type { StartPollingForBridgeTxStatusArgsSerialized } from '../../../shared/types/bridge-status';
+import { BridgeStatusAction } from '../../../shared/types/bridge-status';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';

@@ -15,11 +15,8 @@ import {
   serializeQuoteMetadata,
 } from '../../../../shared/lib/bridge-status/utils';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import type {
-  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
+import type { MetricsBackgroundState } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { getQuoteRequest } from '../../../ducks/bridge/selectors';
@@ -144,14 +141,14 @@ export default function useSubmitBridgeTransaction() {
 
       // Get tx statuses
       const allowanceResetTransaction = isAllowanceResetError(e)
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        ? { allowance_reset_transaction: StatusTypes.FAILED }
+        ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { allowance_reset_transaction: StatusTypes.FAILED }
         : undefined;
       const approvalTransaction = isApprovalTxError(e)
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        ? { approval_transaction: StatusTypes.FAILED }
+        ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { approval_transaction: StatusTypes.FAILED }
         : undefined;
 
       trackCrossChainSwapsEvent({

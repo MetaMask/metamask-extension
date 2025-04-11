@@ -6,7 +6,7 @@ import swcLoader, {
   type SwcLoaderOptions,
   type SwcConfig,
 } from '../utils/loaders/swcLoader';
-import type { Combination} from './helpers';
+import type { Combination } from './helpers';
 import { generateCases } from './helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
@@ -110,8 +110,8 @@ describe('swcLoader', () => {
         delete require.cache[require.resolve('../utils/loaders/swcLoader')];
         const {
           getSwcLoader,
-        // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31862
-        }: typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
+        }: // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31862
+        typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
 
         // note: this test isn't exhaustive of all possible `swcConfig`
         // properties; it is mostly intended as sanity check.

@@ -29,7 +29,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-
 export default function SwapsBannerAlert({
   swapsErrorKey,
   showTransactionSettingsLink,

@@ -18,7 +18,6 @@ import Identicon from '../identicon/identicon.component';
 import { ChipWithInput } from './chip-with-input';
 import README from './README.mdx';
 
-
 export default {
   title: 'Components/UI/Chip',
 

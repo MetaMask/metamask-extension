@@ -49,15 +49,11 @@ describe('confirm util', () => {
 
   describe('isPermitSignatureRequest', () => {
     it('returns true for permit signature requests', () => {
-      const result = isPermitSignatureRequest(
-        permitSignatureMsg,
-      );
+      const result = isPermitSignatureRequest(permitSignatureMsg);
       expect(result).toStrictEqual(true);
     });
     it('returns false for request not of type permit signature', () => {
-      const result = isPermitSignatureRequest(
-        unapprovedTypedSignMsgV4,
-      );
+      const result = isPermitSignatureRequest(unapprovedTypedSignMsgV4);
       expect(result).toStrictEqual(false);
     });
   });
@@ -71,9 +67,7 @@ describe('confirm util', () => {
     });
 
     it('returns false for request not of type permit signature', () => {
-      const result = isOrderSignatureRequest(
-        unapprovedTypedSignMsgV4,
-      );
+      const result = isOrderSignatureRequest(unapprovedTypedSignMsgV4);
       expect(result).toStrictEqual(false);
     });
   });

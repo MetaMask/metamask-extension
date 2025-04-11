@@ -1,9 +1,8 @@
 import type {
   TransactionMeta,
-  TransactionParams} from '@metamask/transaction-controller';
-import {
-  UserFeeLevel,
+  TransactionParams,
 } from '@metamask/transaction-controller';
+import { UserFeeLevel } from '@metamask/transaction-controller';
 
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';

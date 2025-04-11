@@ -13,7 +13,10 @@ import {
 import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
 import type { PolymorphicRef } from '../box';
-import type { AvatarTokenComponent , AvatarTokenProps} from './avatar-token.types';
+import type {
+  AvatarTokenComponent,
+  AvatarTokenProps,
+} from './avatar-token.types';
 import { AvatarTokenSize } from './avatar-token.types';
 
 export const AvatarToken: AvatarTokenComponent = React.forwardRef(

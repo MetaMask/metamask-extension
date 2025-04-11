@@ -3,8 +3,7 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import type { AbstractMessage } from '@metamask/message-manager';
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,

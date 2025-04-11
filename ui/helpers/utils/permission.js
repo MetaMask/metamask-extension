@@ -9,7 +9,6 @@ import {
 import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
-
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import {
   RestrictedMethods,

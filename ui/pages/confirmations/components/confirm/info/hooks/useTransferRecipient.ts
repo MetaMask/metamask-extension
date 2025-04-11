@@ -1,8 +1,5 @@
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTokenTransactionData } from './useTokenTransactionData';

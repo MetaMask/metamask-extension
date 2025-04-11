@@ -73,6 +73,9 @@ import {
   getQuoteRefreshRate,
   getHardwareWalletName,
 } from '../../../ducks/bridge/selectors';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   BackgroundColor,
   BlockSize,
@@ -84,6 +87,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
+import type { CrossChainSwapsEventProperties } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -99,25 +109,13 @@ import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
-import type {
-  CrossChainSwapsEventProperties} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import {
-  useCrossChainSwapsEventTracker,
-} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
@@ -129,7 +127,6 @@ import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-car
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
-import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { BridgeInputGroup } from './bridge-input-group';
 import { DestinationAccountPicker } from './components/destination-account-picker';

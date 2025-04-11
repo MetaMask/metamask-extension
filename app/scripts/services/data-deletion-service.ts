@@ -226,21 +226,22 @@ export class DataDeletionService {
   async createDataDeletionRegulationTask(
     metaMetricsId: string,
   ): Promise<string> {
-    const response = await this.#createDataDeletionTaskPolicy.execute(async () =>
-      this.#fetchWithTimeout(
-        `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
-          this.#analyticsDataDeletionSourceId
-        }`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
-          body: JSON.stringify({
-            regulationType: 'DELETE_ONLY',
-            subjectType: 'USER_ID',
-            subjectIds: [metaMetricsId],
-          }),
-        },
-      ),
+    const response = await this.#createDataDeletionTaskPolicy.execute(
+      async () =>
+        this.#fetchWithTimeout(
+          `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
+            this.#analyticsDataDeletionSourceId
+          }`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
+            body: JSON.stringify({
+              regulationType: 'DELETE_ONLY',
+              subjectType: 'USER_ID',
+              subjectIds: [metaMetricsId],
+            }),
+          },
+        ),
     );
     if (!response.ok) {
       throw new Error(

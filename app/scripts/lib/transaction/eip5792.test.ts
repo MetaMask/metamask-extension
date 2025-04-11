@@ -1,10 +1,9 @@
 import { Messenger } from '@metamask/base-controller';
 import type {
   SendCalls,
-  SendCallsParams} from '@metamask/eth-json-rpc-middleware';
-import {
-  GetCallsStatusCode
+  SendCallsParams,
 } from '@metamask/eth-json-rpc-middleware';
+import { GetCallsStatusCode } from '@metamask/eth-json-rpc-middleware';
 import type {
   AutoManagedNetworkClient,
   CustomNetworkClientConfiguration,
@@ -13,19 +12,13 @@ import type {
 import type {
   TransactionController,
   TransactionControllerGetStateAction,
-  TransactionControllerState} from '@metamask/transaction-controller';
-import {
-  TransactionStatus,
+  TransactionControllerState,
 } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
 
-import type {
-  EIP5792Messenger} from './eip5792';
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-} from './eip5792';
+import type { EIP5792Messenger } from './eip5792';
+import { getCallsStatus, getCapabilities, processSendCalls } from './eip5792';
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';

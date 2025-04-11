@@ -5,7 +5,6 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
-import { useAdvancedGasFeePopoverContext } from '../../context';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import Box from '../../../../../../components/ui/box';
@@ -19,6 +18,7 @@ import { getAdvancedGasFeeValues } from '../../../../../../selectors';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send/send.constants';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { useAdvancedGasFeePopoverContext } from '../../context';
 
 const validateBaseFee = (
   value,

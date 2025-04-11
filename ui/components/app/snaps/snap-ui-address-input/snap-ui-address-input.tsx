@@ -1,21 +1,10 @@
-import type {
-  CaipAccountId,
-  CaipChainId} from '@metamask/utils';
-import {
-  parseCaipAccountId,
-  parseCaipChainId,
-} from '@metamask/utils';
+import type { CaipAccountId, CaipChainId } from '@metamask/utils';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
-import type {
-  ChangeEvent,
-  FunctionComponent} from 'react';
+import type { ChangeEvent, FunctionComponent } from 'react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
@@ -30,8 +19,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
-import type {
-  FormTextFieldProps} from '../../../component-library';
+import type { FormTextFieldProps } from '../../../component-library';
 import {
   Box,
   FormTextField,

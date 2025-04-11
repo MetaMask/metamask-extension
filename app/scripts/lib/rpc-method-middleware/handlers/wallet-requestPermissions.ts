@@ -1,5 +1,4 @@
-import type {
-  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
+import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -13,12 +12,14 @@ import type {
 import type {
   Caveat,
   RequestedPermissions,
-  ValidPermission} from '@metamask/permission-controller';
-import {
-  invalidParams,
-  MethodNames
+  ValidPermission,
 } from '@metamask/permission-controller';
-import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import { invalidParams, MethodNames } from '@metamask/permission-controller';
+import type {
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import { pick } from 'lodash';
 
 import {

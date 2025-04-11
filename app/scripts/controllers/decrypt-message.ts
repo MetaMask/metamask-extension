@@ -11,18 +11,16 @@ import type {
   DecryptMessageManagerMessenger,
   DecryptMessageManagerState,
   DecryptMessageManagerUnapprovedMessageAddedEvent,
-
   AbstractMessage,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   MessageManagerState,
   OriginalRequest,
   DecryptMessageParams,
-  DecryptMessageParamsMetamask} from '@metamask/message-manager';
-import {
-  DecryptMessageManager
+  DecryptMessageParamsMetamask,
 } from '@metamask/message-manager';
-import type { Eip1024EncryptedData} from '@metamask/utils';
+import { DecryptMessageManager } from '@metamask/message-manager';
+import type { Eip1024EncryptedData } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 import type { Patch } from 'immer';
 import log from 'loglevel';

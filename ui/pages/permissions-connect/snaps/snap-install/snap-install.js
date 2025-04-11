@@ -32,8 +32,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapInstallWarnings } from '../util';
 

@@ -9,12 +9,9 @@ import type { Transaction } from '@metamask/keyring-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
-import type {
-  NetworkConfiguration} from '@metamask/network-controller';
-import {
-  RpcEndpointType,
-} from '@metamask/network-controller';
-import type { CaipChainId, Hex} from '@metamask/utils';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -23,13 +20,12 @@ import { createSelector } from 'reselect';
 
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import type {
-  MultichainProviderConfig} from '../../shared/constants/multichain/networks';
+import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
   MULTICHAIN_TOKEN_IMAGE_MAP,
-  MultichainNetworks
+  MultichainNetworks,
 } from '../../shared/constants/multichain/networks';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -39,12 +35,11 @@ import {
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
-import type {
-  NetworkState} from '../../shared/modules/selectors/networks';
+import type { NetworkState } from '../../shared/modules/selectors/networks';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-  getProviderConfig
+  getProviderConfig,
 } from '../../shared/modules/selectors/networks';
 // eslint-disable-next-line import/no-restricted-paths
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -54,8 +49,7 @@ import {
   getCurrentCurrency,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-import type {
-  AccountsState} from './accounts';
+import type { AccountsState } from './accounts';
 import {
   getInternalAccounts,
   getSelectedInternalAccount,

@@ -14,11 +14,27 @@ import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors'
 import { getIntlLocale } from '../ducks/locale/locale';
 import { getNfts } from '../ducks/metamask/metamask';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import {
+  PENDING_STATUS_HASH,
+  TOKEN_CATEGORY_HASH,
+} from '../helpers/constants/transactions';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
+import {
+  getAssetDetails,
+  getTokenAddressParam,
+  getTokenIdParam,
+} from '../helpers/utils/token-util';
 import {
   getStatusKey,
   getTransactionTypeTitle,
 } from '../helpers/utils/transactions.util';
+import {
+  formatDateWithYearContext,
+  shortenAddress,
+  stripHttpSchemes,
+} from '../helpers/utils/util';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
+import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import {
   getAllDetectedTokens,
   getAllTokens,
@@ -26,23 +42,7 @@ import {
   getSelectedAddress,
   selectERC20TokensByChain,
 } from '../selectors/selectors';
-import {
-  getAssetDetails,
-  getTokenAddressParam,
-  getTokenIdParam,
-} from '../helpers/utils/token-util';
-import {
-  formatDateWithYearContext,
-  shortenAddress,
-  stripHttpSchemes,
-} from '../helpers/utils/util';
-import {
-  PENDING_STATUS_HASH,
-  TOKEN_CATEGORY_HASH,
-} from '../helpers/constants/transactions';
 import { captureSingleException } from '../store/actions';
-import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
-import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import useBridgeChainInfo from './bridge/useBridgeChainInfo';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useCurrentAsset } from './useCurrentAsset';

@@ -7,10 +7,9 @@ import type {
 } from '@metamask/signature-controller';
 import type {
   TransactionController,
-  TransactionParams} from '@metamask/transaction-controller';
-import {
-  normalizeTransactionParams,
+  TransactionParams,
 } from '@metamask/transaction-controller';
+import { normalizeTransactionParams } from '@metamask/transaction-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
 
 import {

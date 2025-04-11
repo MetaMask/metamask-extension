@@ -4,11 +4,8 @@ import {
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 
-import type {
-  ExecutionServiceMessenger} from '../messengers/snaps';
-import {
-  getExecutionServiceMessenger,
-} from '../messengers/snaps';
+import type { ExecutionServiceMessenger } from '../messengers/snaps';
+import { getExecutionServiceMessenger } from '../messengers/snaps';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { ExecutionServiceInit } from './execution-service-init';

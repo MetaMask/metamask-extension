@@ -1,17 +1,11 @@
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionStatus,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
-import type {
-  BridgeHistoryItem} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
+import type { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { Box, Text } from '../../../components/component-library';
 import {
   BlockSize,

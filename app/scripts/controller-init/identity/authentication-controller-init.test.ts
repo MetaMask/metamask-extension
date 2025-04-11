@@ -1,11 +1,8 @@
 import { Messenger } from '@metamask/base-controller';
 import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
 
-import type {
-  AuthenticationControllerMessenger} from '../messengers/identity';
-import {
-  getAuthenticationControllerMessenger
-} from '../messengers/identity';
+import type { AuthenticationControllerMessenger } from '../messengers/identity';
+import { getAuthenticationControllerMessenger } from '../messengers/identity';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { AuthenticationControllerInit } from './authentication-controller-init';

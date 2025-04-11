@@ -1,4 +1,4 @@
-import type { Dir} from 'fs';
+import type { Dir } from 'fs';
 import { readFileSync } from 'fs';
 import fs from 'fs/promises';
 import nock from 'nock';

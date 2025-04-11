@@ -1,7 +1,7 @@
 import { Interface, ParamType, defaultAbiCoder } from '@ethersproject/abi';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import type { MessageParamsTypedData } from '@metamask/signature-controller';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { hexToNumber } from '@metamask/utils';
 
 import type { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';

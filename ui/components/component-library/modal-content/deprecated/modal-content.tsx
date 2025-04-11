@@ -12,15 +12,14 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { Box } from '../../box';
-import type { PolymorphicRef , BoxProps } from '../../box';
+import type { PolymorphicRef, BoxProps } from '../../box';
 import { ModalFocus } from '../../modal-focus';
 import { useModalContext } from '../../modal/modal.context';
 import type {
   ModalContentProps,
-  ModalContentComponent} from '../modal-content.types';
-import {
-  ModalContentSize
+  ModalContentComponent,
 } from '../modal-content.types';
+import { ModalContentSize } from '../modal-content.types';
 
 /**
  * @deprecated This version of `ModalContent` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-content/modal-content.tsx

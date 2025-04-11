@@ -35,8 +35,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 ///: END:ONLY_INCLUDE_IF
 
-
-
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 ///: END:ONLY_INCLUDE_IF
 

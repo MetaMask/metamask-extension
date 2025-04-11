@@ -1,8 +1,5 @@
-import type {
-  TokenRatesControllerMessenger} from '@metamask/assets-controllers';
-import {
-  TokenRatesController
-} from '@metamask/assets-controllers';
+import type { TokenRatesControllerMessenger } from '@metamask/assets-controllers';
+import { TokenRatesController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 
 import { getTokenRatesControllerMessenger } from '../messengers/assets';

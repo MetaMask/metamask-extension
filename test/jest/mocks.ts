@@ -17,8 +17,7 @@ import type { Json } from '@metamask/utils';
 import { v4 as uuidv4 } from 'uuid';
 
 import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
-import type {
-  DraftTransaction} from '../../ui/ducks/send';
+import type { DraftTransaction } from '../../ui/ducks/send';
 import {
   draftTransactionInitialState,
   initialState,

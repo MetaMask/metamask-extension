@@ -25,6 +25,7 @@ import {
   GasFeeContextProvider,
   useGasFeeContext,
 } from '../../../contexts/gasFee';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TransactionModalContextProvider,
   useTransactionModalContext,
@@ -38,13 +39,19 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import {
+  useBridgeTxHistoryData,
+  FINAL_NON_CONFIRMED_STATUSES,
+} from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import CancelSpeedupPopover from '../cancel-speedup-popover';
-import TransactionIcon from '../transaction-icon';
-import TransactionListItemDetails from '../transaction-list-item-details';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
-import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
+import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
+import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
+import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -53,22 +60,15 @@ import {
   Box,
   Text,
 } from '../../component-library';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import CancelSpeedupPopover from '../cancel-speedup-popover';
+import TransactionIcon from '../transaction-icon';
+import TransactionListItemDetails from '../transaction-list-item-details';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import Button from '../../ui/button';
-import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
-import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
 import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
-import {
-  useBridgeTxHistoryData,
-  FINAL_NON_CONFIRMED_STATUSES,
-} from '../../../hooks/bridge/useBridgeTxHistoryData';
-import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 
 function TransactionListItemInner({
   transactionGroup,

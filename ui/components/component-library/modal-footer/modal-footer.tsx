@@ -12,7 +12,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { type PolymorphicRef, type BoxProps, Box } from '../box';
 import { Button, ButtonSize, ButtonVariant, type ButtonProps } from '../button';
 import { Container, ContainerMaxWidth } from '../container';
-import type { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
+import type {
+  ModalFooterProps,
+  ModalFooterComponent,
+} from './modal-footer.types';
 
 export const ModalFooter: ModalFooterComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

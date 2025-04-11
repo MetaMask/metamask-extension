@@ -8,17 +8,19 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
-import type { BoxProps , PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '../box';
 import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 import { TextField } from '../text-field';
-import type { TextFieldProps, TextFieldSize } from '../text-field/text-field.types';
+import type {
+  TextFieldProps,
+  TextFieldSize,
+} from '../text-field/text-field.types';
 import type {
   FormTextFieldProps,
-  FormTextFieldComponent} from './form-text-field.types';
-import {
-  FormTextFieldSize
+  FormTextFieldComponent,
 } from './form-text-field.types';
+import { FormTextFieldSize } from './form-text-field.types';
 
 export const FormTextField: FormTextFieldComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

@@ -7,11 +7,8 @@ import {
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../../../shared/constants/first-party-contracts';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import type {
-  TxParams} from './tx-verification-middleware';
-import {
-  createTxVerificationMiddleware
-} from './tx-verification-middleware';
+import type { TxParams } from './tx-verification-middleware';
+import { createTxVerificationMiddleware } from './tx-verification-middleware';
 
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
   ({ state: mockNetworkState({ chainId }) } as NetworkController);

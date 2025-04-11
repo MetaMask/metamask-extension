@@ -1,10 +1,7 @@
 import { DateTime } from 'luxon';
 
-import type {
-  MultichainNetworks} from '../../../../shared/constants/multichain/networks';
-import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP
-} from '../../../../shared/constants/multichain/networks';
+import type { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import {
   formatBlockExplorerAddressUrl,
   formatBlockExplorerTransactionUrl,

@@ -18,8 +18,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { getHideSnapBranding } from '../../../../selectors';
-import type {
-  ButtonProps} from '../../../component-library';
+import type { ButtonProps } from '../../../component-library';
 import {
   Button,
   ButtonSize,

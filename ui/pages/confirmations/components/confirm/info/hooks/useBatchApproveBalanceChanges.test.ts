@@ -1,9 +1,6 @@
 import { toHex } from '@metamask/controller-utils';
-import type {
-  BatchTransactionParams} from '@metamask/transaction-controller';
-import {
-  SimulationTokenStandard,
-} from '@metamask/transaction-controller';
+import type { BatchTransactionParams } from '@metamask/transaction-controller';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 

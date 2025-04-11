@@ -1,9 +1,6 @@
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import type {
-  RateLimitedApiMap} from '@metamask/rate-limit-controller';
-import {
-  RateLimitController
-} from '@metamask/rate-limit-controller';
+import type { RateLimitedApiMap } from '@metamask/rate-limit-controller';
+import { RateLimitController } from '@metamask/rate-limit-controller';
 import log from 'loglevel';
 
 import type {

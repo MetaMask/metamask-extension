@@ -13,14 +13,13 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
-import type {
-  BoxProps} from '../../component-library';
+import type { BoxProps } from '../../component-library';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
   BadgeWrapper,
-  Box
+  Box,
 } from '../../component-library';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

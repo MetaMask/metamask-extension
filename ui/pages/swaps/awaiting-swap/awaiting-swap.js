@@ -55,7 +55,6 @@ import {
   getFullTxData,
 } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-
 import {
   stopPollingForQuotes,
   setDefaultHomeActiveTabName,

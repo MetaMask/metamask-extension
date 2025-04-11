@@ -6,23 +6,21 @@ import type {
   AcceptRequest,
 } from '@metamask/approval-controller';
 import type { RestrictedMessenger } from '@metamask/base-controller';
-import type {
-  SmartTransactionsControllerSmartTransactionEvent,
-} from '@metamask/smart-transactions-controller';
+import type { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import type SmartTransactionsController from '@metamask/smart-transactions-controller';
 import type {
   Fee,
   Fees,
-  SmartTransaction} from '@metamask/smart-transactions-controller/dist/types';
-import {
-  SmartTransactionStatuses
+  SmartTransaction,
 } from '@metamask/smart-transactions-controller/dist/types';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import type {
   TransactionController,
   TransactionMeta,
-  TransactionParams} from '@metamask/transaction-controller';
+  TransactionParams,
+} from '@metamask/transaction-controller';
 import {
   TransactionType,
   type PublishBatchHookTransaction,
@@ -417,7 +415,11 @@ class SmartTransactionHook {
     );
   }
 
-  async #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
+  async #waitForTransactionHash({
+    uuid,
+  }: {
+    uuid: string;
+  }): Promise<string | null> {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',

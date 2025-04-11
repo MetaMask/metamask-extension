@@ -7,7 +7,6 @@
  * on each new block.
  */
 
-
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import type {
@@ -17,10 +16,9 @@ import type {
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
-import {
-  BaseController
+  RestrictedMessenger,
 } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {

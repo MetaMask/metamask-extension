@@ -7,10 +7,9 @@ import React from 'react';
 
 import type {
   BridgeHistoryItem,
-  Step} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes
+  Step,
 } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { Box } from '../../../components/component-library';
 import { formatDate } from '../../../helpers/utils/util';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

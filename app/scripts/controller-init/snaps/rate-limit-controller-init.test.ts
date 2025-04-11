@@ -3,10 +3,11 @@ import { RateLimitController } from '@metamask/rate-limit-controller';
 
 import type {
   RateLimitControllerInitMessenger,
-  RateLimitControllerMessenger} from '../messengers/snaps';
+  RateLimitControllerMessenger,
+} from '../messengers/snaps';
 import {
   getRateLimitControllerInitMessenger,
-  getRateLimitControllerMessenger
+  getRateLimitControllerMessenger,
 } from '../messengers/snaps';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';

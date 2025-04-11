@@ -5,7 +5,6 @@ import { ReceiveModal } from '.';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 
-
 const store = configureStore(testData);
 
 export default {

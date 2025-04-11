@@ -9,7 +9,11 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { ButtonVariant } from '../../../../component-library';
 import { button as buttonFn } from './button';
-import type { UIComponent, UIComponentFactory, UIComponentParams } from './types';
+import type {
+  UIComponent,
+  UIComponentFactory,
+  UIComponentParams,
+} from './types';
 
 export const DEFAULT_FOOTER = {
   element: 'Box',

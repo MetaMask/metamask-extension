@@ -8,11 +8,8 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { IconName } from '../../component-library';
-import type {
-  NotificationDetailInfoProps} from './notification-detail-info';
-import {
-  NotificationDetailInfo
-} from './notification-detail-info';
+import type { NotificationDetailInfoProps } from './notification-detail-info';
+import { NotificationDetailInfo } from './notification-detail-info';
 
 describe('NotificationDetailInfo', () => {
   const defaultProps: NotificationDetailInfoProps = {

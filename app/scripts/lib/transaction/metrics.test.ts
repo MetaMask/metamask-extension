@@ -7,7 +7,8 @@ import {
 } from '@metamask/transaction-controller';
 import type {
   GasFeeToken,
-  TransactionMeta} from '@metamask/transaction-controller';
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 
 import {
   MESSAGE_TYPE,
@@ -1518,7 +1519,10 @@ describe('Transaction metrics', () => {
     ['if submitted', handleTransactionSubmitted],
     [
       'if confirmed',
-      async (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+      async (
+        request: TransactionMetricsRequest,
+        args: TransactionEventPayload,
+      ) =>
         handleTransactionConfirmed(
           request,
           args.transactionMeta as TransactionMetaEventPayload,

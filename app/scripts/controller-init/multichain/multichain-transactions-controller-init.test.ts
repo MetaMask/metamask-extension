@@ -1,11 +1,8 @@
 import { Messenger } from '@metamask/base-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 
-import type {
-  MultichainTransactionsControllerMessenger} from '../messengers/multichain';
-import {
-  getMultichainTransactionsControllerMessenger
-} from '../messengers/multichain';
+import type { MultichainTransactionsControllerMessenger } from '../messengers/multichain';
+import { getMultichainTransactionsControllerMessenger } from '../messengers/multichain';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { MultichainTransactionsControllerInit } from './multichain-transactions-controller-init';

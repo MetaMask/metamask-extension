@@ -3,11 +3,8 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
-import type {
-  ApprovalsMetaMaskState} from '../../../../selectors';
-import {
-  getApprovalsByOrigin,
-} from '../../../../selectors';
+import type { ApprovalsMetaMaskState } from '../../../../selectors';
+import { getApprovalsByOrigin } from '../../../../selectors';
 import { useConfirmationNavigation } from '../../hooks/useConfirmationNavigation';
 
 export const useAlertsActions = (

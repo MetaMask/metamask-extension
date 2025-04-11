@@ -28,15 +28,6 @@ import {
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
-  isHardwareWallet,
-  getHardwareWalletType,
-  getRpcPrefsForCurrentProvider,
-} from '../../../selectors';
-import {
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
   BLOCK_SIZES,
   TextVariant,
   JustifyContent,
@@ -45,6 +36,15 @@ import {
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import {
+  DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+  getRpcPrefsForCurrentProvider,
+} from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   stopPollingForQuotes,

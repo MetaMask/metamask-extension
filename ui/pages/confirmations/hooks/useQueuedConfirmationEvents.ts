@@ -1,11 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import type {
-  QueueType} from '../../../../shared/constants/metametrics';
+import type { QueueType } from '../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

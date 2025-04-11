@@ -1,6 +1,6 @@
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { sortBalanceChanges } from './sortBalanceChanges';
-import type { BalanceChange} from './types';
+import type { BalanceChange } from './types';
 import { FIAT_UNAVAILABLE } from './types';
 
 describe('sortBalanceChanges', () => {

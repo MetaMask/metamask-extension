@@ -13,13 +13,8 @@ import type { BoxProps, PolymorphicRef } from '../box';
 import { Box } from '../box';
 import type { InputProps } from '../input';
 import { Input } from '../input';
-import type {
-  TextFieldComponent,
-  TextFieldProps} from './text-field.types';
-import {
-  TextFieldSize,
-  TextFieldType,
-} from './text-field.types';
+import type { TextFieldComponent, TextFieldProps } from './text-field.types';
+import { TextFieldSize, TextFieldType } from './text-field.types';
 
 export const TextField: TextFieldComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

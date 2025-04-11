@@ -3,7 +3,10 @@ import { Web3Provider } from '@ethersproject/providers';
 import type { StateMetadata } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
-import type { NetworkClient, NetworkClientId } from '@metamask/network-controller';
+import type {
+  NetworkClient,
+  NetworkClientId,
+} from '@metamask/network-controller';
 import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';

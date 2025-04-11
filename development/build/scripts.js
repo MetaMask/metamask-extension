@@ -7,22 +7,22 @@ const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const watch = require('gulp-watch');
+const labeledStreamSplicer = require('labeled-stream-splicer').obj;
+const lavamoatBrowserify = require('lavamoat-browserify');
 const envify = require('loose-envify/custom');
 const path = require('path');
+const pify = require('pify');
+const through = require('through2');
 const { callbackify } = require('util');
 const Vinyl = require('vinyl');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const watchify = require('watchify');
-const pify = require('pify');
-const through = require('through2');
 const finished = pify(require('readable-stream').finished);
-const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const { Eta } = require('eta');
 const lavapack = require('@lavamoat/lavapack');
-const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -49,7 +49,6 @@ const {
   getBuildName,
   makeSelfInjecting,
 } = require('./utils');
-
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {

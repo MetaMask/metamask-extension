@@ -44,11 +44,23 @@ import {
   getSelectedNetworkClientId,
   getProviderConfig,
 } from '../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   getTokenAddressParam,
   getTokenMetadata,
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
+import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
+import {
+  checkExistingAddresses,
+  isOriginContractAddress,
+} from '../../helpers/utils/util';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
@@ -63,12 +75,12 @@ import {
   SWAPS_QUOTES_ERROR,
   INVALID_HEX_DATA_ERROR,
 } from '../../pages/confirmations/send/send.constants';
-
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
 } from '../../pages/confirmations/send/send.utils';
+import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
 import {
   getAdvancedInlineGasShown,
   getGasPriceInHexWei,
@@ -118,29 +130,16 @@ import {
   setDefaultHomeActiveTabName,
   rejectPendingApproval,
 } from '../../store/actions';
+import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
+import { resetDomainResolution } from '../domains';
 import { setCustomGasLimit } from '../gas/gas.duck';
-import {
-  checkExistingAddresses,
-  isOriginContractAddress,
-} from '../../helpers/utils/util';
 import {
   getGasEstimateType,
   getNativeCurrency,
   getTokens,
 } from '../metamask/metamask';
-import { resetDomainResolution } from '../domains';
-import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
-import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 // used for typing
 // eslint-disable-next-line no-unused-vars
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../helpers/constants/routes';
-import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,

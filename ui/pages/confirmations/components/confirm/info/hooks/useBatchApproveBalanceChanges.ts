@@ -1,10 +1,9 @@
 import type {
   BatchTransactionParams,
   SimulationTokenBalanceChange,
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  SimulationTokenStandard
+  TransactionMeta,
 } from '@metamask/transaction-controller';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import { add0x } from '@metamask/utils';
 
 import { parseApprovalTransactionData } from '../../../../../../../shared/modules/transaction.utils';

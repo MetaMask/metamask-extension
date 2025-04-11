@@ -1,7 +1,5 @@
 import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
-import type {
-  CaipAccountId,
-  CaipChainId} from '@metamask/utils';
+import type { CaipAccountId, CaipChainId } from '@metamask/utils';
 import {
   KnownCaipNamespace,
   parseCaipAccountId,
@@ -48,8 +46,8 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
+import { Tab, Tabs } from '../../../components/ui/tabs';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -61,27 +59,23 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getMultichainNetwork } from '../../../selectors/multichain';
-import { Tab, Tabs } from '../../../components/ui/tabs';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   getAvatarFallbackLetter,
   isIpAddress,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
-import type {
-  PermissionsRequest} from './utils';
-import {
-  getRequestedCaip25CaveatValue,
-  getDefaultAccounts,
-} from './utils';
+import type { PermissionsRequest } from './utils';
+import { getRequestedCaip25CaveatValue, getDefaultAccounts } from './utils';
 
 export type ConnectPageRequest = {
   id: string;
@@ -207,26 +201,25 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   // all requested accounts that are found in the wallet
-  const supportedRequestedAccounts = requestedCaipAccountIds.reduce<MergedInternalAccountWithCaipAccountId[]>(
-    (acc, account) => {
-      const supportedRequestedAccount =
-        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
-          const {
-            chain: { namespace },
-          } = parseCaipAccountId(caipAccountId);
-          // EIP155 (EVM) addresses are not case sensitive
-          if (namespace === KnownCaipNamespace.Eip155) {
-            return isEqualCaseInsensitive(caipAccountId, account);
-          }
-          return caipAccountId === account;
-        });
-      if (supportedRequestedAccount) {
-        acc.push(supportedRequestedAccount);
-      }
-      return acc;
-    },
-    [],
-  );
+  const supportedRequestedAccounts = requestedCaipAccountIds.reduce<
+    MergedInternalAccountWithCaipAccountId[]
+  >((acc, account) => {
+    const supportedRequestedAccount =
+      supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
+        const {
+          chain: { namespace },
+        } = parseCaipAccountId(caipAccountId);
+        // EIP155 (EVM) addresses are not case sensitive
+        if (namespace === KnownCaipNamespace.Eip155) {
+          return isEqualCaseInsensitive(caipAccountId, account);
+        }
+        return caipAccountId === account;
+      });
+    if (supportedRequestedAccount) {
+      acc.push(supportedRequestedAccount);
+    }
+    return acc;
+  }, []);
 
   const defaultAccounts = getDefaultAccounts(
     requestedNamespaces,

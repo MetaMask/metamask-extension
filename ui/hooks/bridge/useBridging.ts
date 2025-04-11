@@ -23,8 +23,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import type {
-  SwapsEthToken} from '../../selectors';
+import type { SwapsEthToken } from '../../selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
@@ -32,7 +31,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getUseExternalServices
+  getUseExternalServices,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

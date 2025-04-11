@@ -1,8 +1,5 @@
-import type {
-  NftDetectionControllerMessenger} from '@metamask/assets-controllers';
-import {
-  NftDetectionController
-} from '@metamask/assets-controllers';
+import type { NftDetectionControllerMessenger } from '@metamask/assets-controllers';
+import { NftDetectionController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 import type { PreferencesController } from '@metamask/preferences-controller';
 

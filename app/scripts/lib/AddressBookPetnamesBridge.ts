@@ -3,22 +3,16 @@ import type {
   AddressBookControllerStateChangeEvent,
   AddressBookControllerActions,
 } from '@metamask/address-book-controller';
-import type {
-  NameController} from '@metamask/name-controller';
-import {
-  NameType,
-  NameOrigin,
-} from '@metamask/name-controller';
-import type { Hex} from '@metamask/utils';
+import type { NameController } from '@metamask/name-controller';
+import { NameType, NameOrigin } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import { isStrictHexString } from '@metamask/utils';
 
 import type {
   PetnamesBridgeMessenger,
-  PetnameEntry} from './AbstractPetnamesBridge';
-import {
-  AbstractPetnamesBridge,
-  ChangeType
+  PetnameEntry,
 } from './AbstractPetnamesBridge';
+import { AbstractPetnamesBridge, ChangeType } from './AbstractPetnamesBridge';
 
 export type AddressBookPetnamesBridgeEvens =
   AddressBookControllerStateChangeEvent;

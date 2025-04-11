@@ -8,11 +8,8 @@ import { AlertActionKey } from '../../../../components/app/confirm/info/row/cons
 import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type {
-  ApprovalsMetaMaskState} from '../../../../selectors';
-import {
-  getApprovalsByOrigin,
-} from '../../../../selectors';
+import type { ApprovalsMetaMaskState } from '../../../../selectors';
+import { getApprovalsByOrigin } from '../../../../selectors';
 
 const VALIDATED_APPROVAL_TYPES = [
   ApprovalType.AddEthereumChain,
@@ -36,8 +33,8 @@ export function useUpdateEthereumChainAlerts(
       (!VALIDATED_APPROVAL_TYPES.includes(
         pendingConfirmation.type as ApprovalType,
       ) &&
-        !((pendingConfirmation?.requestData?.metadata as Record<string, boolean>)
-          ?.isSwitchEthereumChain))
+        !(pendingConfirmation?.requestData?.metadata as Record<string, boolean>)
+          ?.isSwitchEthereumChain)
     ) {
       return [];
     }

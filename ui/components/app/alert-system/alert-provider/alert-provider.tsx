@@ -2,13 +2,9 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
-import type {
-  SecurityProvider} from '../../../../../shared/constants/security-provider';
-import {
-  SECURITY_PROVIDER_CONFIG
-} from '../../../../../shared/constants/security-provider';
-import type {
-  TextAlign} from '../../../../helpers/constants/design-system';
+import type { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import { SECURITY_PROVIDER_CONFIG } from '../../../../../shared/constants/security-provider';
+import type { TextAlign } from '../../../../helpers/constants/design-system';
 import {
   AlignItems,
   Display,

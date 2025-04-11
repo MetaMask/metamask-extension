@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React, { memo, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import {
   AlignItems,

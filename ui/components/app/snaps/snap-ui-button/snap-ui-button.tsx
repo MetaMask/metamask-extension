@@ -10,13 +10,8 @@ import {
   FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import type {
-  ButtonLinkProps} from '../../../component-library';
-import {
-  Icon,
-  IconName,
-  Text,
-} from '../../../component-library';
+import type { ButtonLinkProps } from '../../../component-library';
+import { Icon, IconName, Text } from '../../../component-library';
 
 export type SnapUIButtonProps = {
   name?: string;

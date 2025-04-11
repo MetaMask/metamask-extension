@@ -4,12 +4,12 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   getSendAnalyticProperties,
   updateSendAsset,

@@ -6,20 +6,18 @@ import type { TransactionControllerTransactionFailedEvent } from '@metamask/tran
 // eslint-disable-next-line import/no-restricted-paths
 import type {
   MetaMetricsEventOptions,
-  MetaMetricsEventPayload} from '../../../../shared/constants/metametrics';
+  MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
-import {
-  StatusTypes
-} from '../../../../shared/types/bridge-status';
-import type {
-  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
+import type { MetricsBackgroundState } from '../../../../shared/types/bridge-status';
 // eslint-disable-next-line import/no-restricted-paths
 import { type ActionType } from '../../../../ui/hooks/bridge/events/types';
 import type { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
@@ -106,14 +104,14 @@ export const handleBridgeTransactionComplete = async (
 
   const allowanceResetTransaction =
     isEthUsdtTx && hasApprovalTx
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      ? { allowance_reset_transaction: StatusTypes.COMPLETE }
+      ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { allowance_reset_transaction: StatusTypes.COMPLETE }
       : undefined;
   const approvalTransaction = hasApprovalTx
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ? { approval_transaction: StatusTypes.COMPLETE }
+    ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { approval_transaction: StatusTypes.COMPLETE }
     : undefined;
 
   const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionCompleted] & {
@@ -273,14 +271,14 @@ export const handleTransactionFailedTypeBridge = async (
   );
   const allowanceResetTransaction =
     isEthUsdtTx && hasApprovalTx
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      ? { allowance_reset_transaction: StatusTypes.COMPLETE }
+      ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { allowance_reset_transaction: StatusTypes.COMPLETE }
       : undefined;
   const approvalTransaction = hasApprovalTx
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ? { approval_transaction: StatusTypes.COMPLETE }
+    ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { approval_transaction: StatusTypes.COMPLETE }
     : undefined;
 
   const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =

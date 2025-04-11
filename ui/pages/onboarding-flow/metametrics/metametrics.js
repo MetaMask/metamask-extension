@@ -41,8 +41,6 @@ import {
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 
-
-
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();

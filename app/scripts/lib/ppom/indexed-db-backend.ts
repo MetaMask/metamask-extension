@@ -105,7 +105,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     const event = await this.objectStoreAction('get', [key.name, key.chainId]);
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = (event.target)?.result?.data;
+    const data = event.target?.result?.data;
     await validateChecksum(key, data, checksum);
     return data;
   }
@@ -131,7 +131,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     const event = await this.objectStoreAction('getAllKeys');
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (event.target)?.result.map(([name, chainId]: string[]) => ({
+    return event.target?.result.map(([name, chainId]: string[]) => ({
       name,
       chainId,
     }));

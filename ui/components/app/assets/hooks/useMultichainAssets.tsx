@@ -13,11 +13,8 @@ import { getMultiChainAssets } from '../../../../selectors/assets';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 import type { TokenWithFiatAmount } from '../types';
 import { formatWithThreshold } from '../util/formatWithThreshold';
-import type {
-  TranslateFunction} from '../util/networkTitleOverrides';
-import {
-  networkTitleOverrides,
-} from '../util/networkTitleOverrides';
+import type { TranslateFunction } from '../util/networkTitleOverrides';
+import { networkTitleOverrides } from '../util/networkTitleOverrides';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();

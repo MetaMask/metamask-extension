@@ -1,5 +1,4 @@
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -41,14 +40,11 @@ function runHook({
   };
 
   const state = currentConfirmation
-    ? getMockConfirmStateForTransaction(
-        currentConfirmation,
-        {
-          metamask: {
-            internalAccounts,
-          },
+    ? getMockConfirmStateForTransaction(currentConfirmation, {
+        metamask: {
+          internalAccounts,
         },
-      )
+      })
     : {};
 
   const response = renderHookWithConfirmContextProvider(

@@ -2,7 +2,8 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type {
   NameController,
-  NameControllerState} from '@metamask/name-controller';
+  NameControllerState,
+} from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
   NameType,
@@ -18,10 +19,9 @@ import type {
 import type {
   AccountIdentitiesPetnamesBridgeActions,
   AccountIdentitiesPetnamesBridgeEvents,
-  AccountIdentitiesPetnamesBridgeMessenger} from './AccountIdentitiesPetnamesBridge';
-import {
-  AccountIdentitiesPetnamesBridge
+  AccountIdentitiesPetnamesBridgeMessenger,
 } from './AccountIdentitiesPetnamesBridge';
+import { AccountIdentitiesPetnamesBridge } from './AccountIdentitiesPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'Account 1';

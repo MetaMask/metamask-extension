@@ -1,7 +1,8 @@
 import type {
   Caip25Authorization,
   NormalizedScopesObject,
-  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
+  Caip25CaveatValue,
+} from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -18,11 +19,8 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import type { NetworkController } from '@metamask/network-controller';
-import type {
-  RequestedPermissions} from '@metamask/permission-controller';
-import {
-  invalidParams
-} from '@metamask/permission-controller';
+import type { RequestedPermissions } from '@metamask/permission-controller';
+import { invalidParams } from '@metamask/permission-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import type {
   CaipAccountId,
@@ -30,7 +28,8 @@ import type {
   Hex,
   Json,
   JsonRpcRequest,
-  JsonRpcSuccess} from '@metamask/utils';
+  JsonRpcSuccess,
+} from '@metamask/utils';
 import {
   isPlainObject,
   KnownCaipNamespace,
@@ -40,10 +39,11 @@ import {
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import type {
   MetaMetricsEventOptions,
-  MetaMetricsEventPayload} from '../../../../../../shared/constants/metametrics';
+  MetaMetricsEventPayload,
+} from '../../../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName
+  MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';

@@ -12,7 +12,7 @@ import type {
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import type { TraceContext} from '../../../../shared/lib/trace';
+import type { TraceContext } from '../../../../shared/lib/trace';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import type { AppStateController } from '../../controllers/app-state-controller';
@@ -22,7 +22,10 @@ import {
   handlePPOMError,
   validateRequestWithPPOM,
 } from './ppom-util';
-import type { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
+import type {
+  SecurityAlertResponse,
+  UpdateSecurityAlertResponse,
+} from './types';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',

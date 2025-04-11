@@ -1,12 +1,13 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import type {
   NestedTransactionMetadata,
-  TransactionMeta} from '@metamask/transaction-controller';
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { Json} from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { add0x } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
@@ -1354,7 +1355,9 @@ async function getNestedMethodNames(
     .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
     .map((tx) => tx.data as Hex);
 
-  const results = await Promise.all(allData.map(async (data) => getMethodData(data)));
+  const results = await Promise.all(
+    allData.map(async (data) => getMethodData(data)),
+  );
 
   const names = results
     .map((result) => result?.name)

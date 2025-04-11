@@ -4,10 +4,9 @@ import type {
   NameProviderMetadata,
   NameProviderRequest,
   NameProviderResult,
-  NameProviderSourceResult} from '@metamask/name-controller';
-import {
-  NameType,
+  NameProviderSourceResult,
 } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 import type { GetPermissionControllerState } from '@metamask/permission-controller';
 import type {
   GetAllSnaps,

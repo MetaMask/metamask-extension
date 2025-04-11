@@ -11,7 +11,6 @@ import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import * as UpdateEthereumChainAlerts from './useUpdateEthereumChainAlerts';
 
-
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),

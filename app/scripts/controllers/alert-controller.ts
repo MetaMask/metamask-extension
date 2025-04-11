@@ -5,10 +5,9 @@ import type {
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
-import {
-  BaseController
+  RestrictedMessenger,
 } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 
 import {
   TOGGLEABLE_ALERT_TYPES,

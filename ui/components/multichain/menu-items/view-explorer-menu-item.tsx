@@ -6,14 +6,14 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-
 import type {
   MetaMetricsEventOptions,
-  MetaMetricsEventPayload} from '../../../../shared/constants/metametrics';
+  MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
-  MetaMetricsEventName
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';

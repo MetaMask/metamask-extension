@@ -2,10 +2,9 @@ import type { ContractExchangeRates } from '@metamask/assets-controllers';
 import type {
   SimulationBalanceChange,
   SimulationData,
-  SimulationTokenBalanceChange} from '@metamask/transaction-controller';
-import {
-  SimulationTokenStandard,
+  SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
@@ -19,10 +18,9 @@ import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 import type {
   BalanceChange,
   NativeAssetIdentifier,
-  TokenAssetIdentifier} from './types';
-import {
-  FIAT_UNAVAILABLE
+  TokenAssetIdentifier,
 } from './types';
+import { FIAT_UNAVAILABLE } from './types';
 
 const NATIVE_DECIMALS = 18;
 

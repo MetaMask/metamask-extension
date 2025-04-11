@@ -45,6 +45,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../ui/tooltip';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import type {
   AssetWithDisplayData,
@@ -55,7 +56,6 @@ import type {
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
-import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -140,8 +140,7 @@ export function AssetPicker({
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   // These 2 have similar data but different types
-  const currentNetworkConfiguration =
-    allNetworks[currentChainId];
+  const currentNetworkConfiguration = allNetworks[currentChainId];
   const currentNetworkProviderConfig = useMultichainSelector(
     getMultichainCurrentNetwork,
   );

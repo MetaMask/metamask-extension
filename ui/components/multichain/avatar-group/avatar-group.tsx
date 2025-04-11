@@ -33,7 +33,7 @@ import {
 } from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
 import { Text } from '../../component-library/text';
-import type { AvatarGroupProps} from './avatar-group.types';
+import type { AvatarGroupProps } from './avatar-group.types';
 import { AvatarType } from './avatar-group.types';
 
 export const AvatarGroup: React.FC<AvatarGroupProps> = ({

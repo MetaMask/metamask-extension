@@ -30,16 +30,7 @@ import SiteOrigin from '../../components/ui/site-origin/site-origin';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import {
-  getRpcPrefsForCurrentProvider,
-  getSuggestedNfts,
-  getIpfsGateway,
-  getNetworkIdentifier,
-  getSelectedInternalAccount,
-  getSelectedAccountCachedBalance,
-  getAddressBookEntryOrAccountName,
-} from '../../selectors';
-import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
+import { PRIMARY } from '../../helpers/constants/common';
 import {
   AlignItems,
   BorderRadius,
@@ -53,10 +44,19 @@ import {
   BlockSize,
   TextColor,
 } from '../../helpers/constants/design-system';
-import { PRIMARY } from '../../helpers/constants/common';
-import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
+import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
+import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
+import {
+  getRpcPrefsForCurrentProvider,
+  getSuggestedNfts,
+  getIpfsGateway,
+  getNetworkIdentifier,
+  getSelectedInternalAccount,
+  getSelectedAccountCachedBalance,
+  getAddressBookEntryOrAccountName,
+} from '../../selectors';
 import {
   resolvePendingApproval,
   rejectPendingApproval,

@@ -6,11 +6,11 @@ import {
   TokenListController,
 } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import {
   BtcAccountType,

@@ -2,21 +2,14 @@ import type {
   File as FileObject,
   FormState,
   InterfaceState,
-  State} from '@metamask/snaps-sdk';
-import {
-  UserInputEventType,
+  State,
 } from '@metamask/snaps-sdk';
+import { UserInputEventType } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
-import type {
-  FunctionComponent} from 'react';
+import type { FunctionComponent } from 'react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {

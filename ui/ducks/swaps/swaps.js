@@ -5,8 +5,6 @@ import { captureMessage } from '@sentry/browser';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
-
-
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { EtherDenomination } from '../../../shared/constants/common';
 import {
@@ -14,11 +12,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  getSmartTransactionsEnabled,
-  getSmartTransactionsOptInStatusForMetrics,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../shared/modules/selectors';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -34,13 +27,11 @@ import {
   IN_PROGRESS_TRANSACTION_STATUSES,
   SmartTransactionStatus,
 } from '../../../shared/constants/transaction';
-import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
+import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -48,6 +39,12 @@ import {
   getValueFromWeiHex,
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+  getSmartTransactionsPreferenceEnabled,
+} from '../../../shared/modules/selectors';
 import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getCurrentChainId,
@@ -108,6 +105,7 @@ import {
   cancelSmartTransaction,
   getTransactions,
 } from '../../store/actions';
+import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
 
 const debugLog = createProjectLogger('swaps');
 

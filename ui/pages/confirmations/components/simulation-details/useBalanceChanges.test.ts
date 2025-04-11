@@ -1,8 +1,5 @@
-import type {
-  SimulationData} from '@metamask/transaction-controller';
-import {
-  SimulationTokenStandard,
-} from '@metamask/transaction-controller';
+import type { SimulationData } from '@metamask/transaction-controller';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react-hooks';
 import { BigNumber } from 'bignumber.js';

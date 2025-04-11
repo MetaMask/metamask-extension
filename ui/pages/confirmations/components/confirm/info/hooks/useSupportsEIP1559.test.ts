@@ -1,8 +1,5 @@
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionEnvelopeType
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,

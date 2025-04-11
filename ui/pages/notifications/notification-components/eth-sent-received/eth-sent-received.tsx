@@ -41,7 +41,6 @@ import {
   type NotificationComponent,
 } from '../types/notifications/notifications';
 
-
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type ETHNotification = ExtractedNotification<

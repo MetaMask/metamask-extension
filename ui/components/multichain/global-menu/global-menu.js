@@ -34,17 +34,24 @@ import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
 } from '../../../hooks/metamask-notifications/useCounter';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
-  lockMetamask,
-  showConfirmTurnOnMetamaskNotifications,
-} from '../../../store/actions';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+  getSelectedInternalAccount,
+  getUnapprovedTransactions,
+  getAnySnapUpdateAvailable,
+  getThirdPartyNotifySnaps,
+  getUseExternalServices,
+} from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import {
+  lockMetamask,
+  showConfirmTurnOnMetamaskNotifications,
+} from '../../../store/actions';
 import {
   Box,
   IconName,
@@ -57,13 +64,6 @@ import { MenuItem } from '../../ui/menu';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
 
-import {
-  getSelectedInternalAccount,
-  getUnapprovedTransactions,
-  getAnySnapUpdateAvailable,
-  getThirdPartyNotifySnaps,
-  getUseExternalServices,
-} from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 
 const METRICS_LOCATION = 'Global Menu';

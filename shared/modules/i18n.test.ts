@@ -1,7 +1,6 @@
 import log from 'loglevel';
 
-import type {
-  I18NMessageDict} from './i18n';
+import type { I18NMessageDict } from './i18n';
 import {
   FALLBACK_LOCALE,
   clearCaches,

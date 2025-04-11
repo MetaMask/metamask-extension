@@ -6,11 +6,11 @@ import {
   abiFiatTokenV2,
 } from '@metamask/metamask-eth-abis';
 import type { Provider } from '@metamask/network-controller';
-import {
-  TransactionType,
+import { TransactionType } from '@metamask/transaction-controller';
+import type {
+  TransactionParams,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { TransactionParams ,
-  TransactionMeta} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';

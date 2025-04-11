@@ -14,11 +14,12 @@ import { AvatarBase } from '../avatar-base';
 import type { PolymorphicRef } from '../box';
 import type {
   AvatarAccountComponent,
-  AvatarAccountProps} from './avatar-account.types';
+  AvatarAccountProps,
+} from './avatar-account.types';
 import {
   AvatarAccountDiameter,
   AvatarAccountVariant,
-  AvatarAccountSize
+  AvatarAccountSize,
 } from './avatar-account.types';
 
 export const AvatarAccount: AvatarAccountComponent = React.forwardRef(

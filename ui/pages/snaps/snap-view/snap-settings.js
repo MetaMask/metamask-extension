@@ -29,6 +29,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
+import { DelineatorType } from '../../../helpers/constants/snaps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 ///: END:ONLY_INCLUDE_IF
@@ -51,8 +53,6 @@ import {
   getSnapAccountsById,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
-import { DelineatorType } from '../../../helpers/constants/snaps';
-import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF

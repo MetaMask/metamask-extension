@@ -8,10 +8,9 @@ import React from 'react';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import type {
   I18NMessageDict,
-  I18NSubstitution} from '../../../shared/modules/i18n';
-import {
-  getMessage as getMessageShared,
+  I18NSubstitution,
 } from '../../../shared/modules/i18n';
+import { getMessage as getMessageShared } from '../../../shared/modules/i18n';
 
 /**
  * Returns a localized message for the given key

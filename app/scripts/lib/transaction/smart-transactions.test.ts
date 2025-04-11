@@ -1,8 +1,6 @@
 import { Messenger } from '@metamask/base-controller';
 import type { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
-import type {
-  SmartTransactionsControllerMessenger,
-} from '@metamask/smart-transactions-controller';
+import type { SmartTransactionsControllerMessenger } from '@metamask/smart-transactions-controller';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -10,10 +8,9 @@ import type { SmartTransaction } from '@metamask/smart-transactions-controller/d
 import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import {
   TransactionType,
-  TransactionStatus
+  TransactionStatus,
 } from '@metamask/transaction-controller';
-import type {
-  TransactionController} from '@metamask/transaction-controller';
+import type { TransactionController } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {

@@ -25,7 +25,9 @@ import {
   MAX_ALLOWED_SLIPPAGE,
   SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../../shared/constants/swaps';
+import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import { fetchTokenBalance } from '../../../../shared/lib/token-util';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -36,14 +38,27 @@ import {
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
+import {
+  Icon,
+  IconName,
+  IconSize,
+  ButtonLink,
+  ButtonLinkSize,
+  Modal,
+  ModalOverlay,
+  BannerAlert,
+  Text,
+  TextField,
+  TextFieldSize,
+  BannerAlertSeverity,
+} from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import Box from '../../../components/ui/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  useTokensToSearch,
-  getRenderableTokenData,
-} from '../../../hooks/useTokensToSearch';
-import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import {
   getTokens,
   getConversionRate,
@@ -60,6 +75,11 @@ import {
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import {
+  useTokensToSearch,
+  getRenderableTokenData,
+} from '../../../hooks/useTokensToSearch';
 import {
   fetchQuotesAndSetQuoteState,
   setSwapsFromToken,
@@ -103,7 +123,6 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   resetSwapsPostFetchState,
@@ -126,25 +145,6 @@ import {
   formatSwapsValueForDisplay,
   getClassNameForCharLength,
 } from '../swaps.util';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  ButtonLink,
-  ButtonLinkSize,
-  Modal,
-  ModalOverlay,
-  BannerAlert,
-  Text,
-  TextField,
-  TextFieldSize,
-  BannerAlertSeverity,
-} from '../../../components/component-library';
-import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import TransactionSettings from '../transaction-settings/transaction-settings';
 import useBridging from '../../../hooks/bridge/useBridging';

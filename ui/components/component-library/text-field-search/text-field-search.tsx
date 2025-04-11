@@ -9,7 +9,7 @@ import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { Icon, IconName, IconSize } from '../icon';
 import { TextField } from '../text-field';
 import { TextFieldType } from '../text-field/text-field.types';
-import type { TextFieldProps} from '../text-field/text-field.types';
+import type { TextFieldProps } from '../text-field/text-field.types';
 import type {
   TextFieldSearchProps,
   TextFieldSearchComponent,

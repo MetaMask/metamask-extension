@@ -1,11 +1,8 @@
 import { MultichainBalancesController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 
-import type {
-  MultichainBalancesControllerMessenger} from '../messengers/multichain';
-import {
-  getMultichainBalancesControllerMessenger
-} from '../messengers/multichain';
+import type { MultichainBalancesControllerMessenger } from '../messengers/multichain';
+import { getMultichainBalancesControllerMessenger } from '../messengers/multichain';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { MultichainBalancesControllerInit } from './multichain-balances-controller-init';

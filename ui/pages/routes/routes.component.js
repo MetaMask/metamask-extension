@@ -21,11 +21,10 @@ import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-im
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
-import Alert from '../../components/ui/alert';
-import Loading from '../../components/ui/loading-screen';
-import Authenticated from '../../helpers/higher-order-components/authenticated';
-import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
+import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
+import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { ToastMaster } from '../../components/app/toast-master/toast-master';
+import { Box } from '../../components/component-library';
 import {
   AppHeader,
   AccountListMenu,
@@ -34,7 +33,11 @@ import {
   ImportNftsModal,
   ImportTokensModal,
 } from '../../components/multichain';
-import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
+import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
+import Alert from '../../components/ui/alert';
+import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
+import Loading from '../../components/ui/loading-screen';
 import {
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -62,19 +65,16 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
+import Authenticated from '../../helpers/higher-order-components/authenticated';
+import Initialized from '../../helpers/higher-order-components/initialized';
+import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
+import PermissionsConnect from '../permissions-connect';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import QRHardwarePopover from '../../components/app/qr-hardware-popover';
-import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
-import { Box } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
-import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
-import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {

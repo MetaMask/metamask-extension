@@ -4,19 +4,17 @@ import type {
 } from '@metamask/assets-controllers';
 import type { CaipAssetId } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  CaipAssetType,
-  CaipChainId,
-  Hex} from '@metamask/utils';
-import {
-  parseCaipAssetType,
-} from '@metamask/utils';
+import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import type { Token, TokenWithFiatAmount } from '../components/app/assets/types';
+import type {
+  Token,
+  TokenWithFiatAmount,
+} from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { getTokenBalances } from '../ducks/metamask/metamask';
@@ -126,7 +124,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({

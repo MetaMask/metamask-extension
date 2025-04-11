@@ -13,6 +13,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
@@ -22,10 +24,8 @@ import { Text } from '../../../component-library';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import CurrencyDisplay from '../../../ui/currency-display';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import type { TokenWithBalance } from '../asset-picker-modal/types';
 import { getIsFiatPrimary } from '../utils';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type AssetBalanceTextProps = {
   asset: Asset;

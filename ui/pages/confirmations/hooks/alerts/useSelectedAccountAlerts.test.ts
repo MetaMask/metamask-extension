@@ -48,9 +48,7 @@ describe('useSelectedAccountAlerts', () => {
   it('does not returns an alert for signature if signing account is same as selected account', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useSelectedAccountAlerts(),
-      getMockPersonalSignConfirmStateForRequest(
-        unapprovedPersonalSignMsg,
-      ),
+      getMockPersonalSignConfirmStateForRequest(unapprovedPersonalSignMsg),
     );
     expect(result.current).toEqual([]);
   });

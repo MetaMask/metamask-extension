@@ -1,7 +1,6 @@
 import type { UserOperationMetadata } from '@metamask/user-operation-controller';
 
-import type {
-  AccountAbstractionState} from './account-abstraction';
+import type { AccountAbstractionState } from './account-abstraction';
 import {
   getIsUsingPaymaster,
   getUserOperation,

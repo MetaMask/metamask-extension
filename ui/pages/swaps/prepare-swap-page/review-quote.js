@@ -14,49 +14,6 @@ import React, {
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import {
-  getSmartTransactionsOptInStatusForMetrics,
-  getSmartTransactionsEnabled,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
-import {
-  getNativeCurrency,
-  getTokens,
-  getCurrentCurrency,
-} from '../../../ducks/metamask/metamask';
-import {
-  setCustomApproveTxData,
-  showModal,
-  setSwapsQuotesPollingLimitEnabled,
-  getLayer1GasFee,
-} from '../../../store/actions';
-import {
-  ASSET_ROUTE,
-  DEFAULT_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
-  decimalToHex,
-  decWEIToDecETH,
-  sumHexes,
-  hexToDecimal,
-} from '../../../../shared/modules/conversion.utils';
-import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
-import {
-  quotesToRenderableData,
-  getRenderableNetworkFeesForQuote,
-  getFeeForSmartTransaction,
-  formatSwapsValueForDisplay,
-  getSwap1559GasFeeEstimates,
-} from '../swaps.util';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import {
-  SLIPPAGE_HIGH_ERROR,
-  SLIPPAGE_LOW_ERROR,
-  MAX_ALLOWED_SLIPPAGE,
-} from '../../../../shared/constants/swaps';
-import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import Box from '../../../components/ui/box';
@@ -95,18 +52,38 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
+} from '../../../../shared/constants/swaps';
 import {
   calcTokenValue,
   calculateMaxGasLimit,
 } from '../../../../shared/lib/swaps-utils';
-import ExchangeRateDisplay from '../exchange-rate-display';
-import InfoTooltip from '../../../components/ui/info-tooltip';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import {
+  decimalToHex,
+  decWEIToDecETH,
+  sumHexes,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import {
+  getSmartTransactionsOptInStatusForMetrics,
+  getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+} from '../../../../shared/modules/selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import InfoTooltip from '../../../components/ui/info-tooltip';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getNativeCurrency,
+  getTokens,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import {
   getQuotes,
   getApproveTxParams,
@@ -133,12 +110,20 @@ import {
   getCurrentSmartTransactionsEnabled,
   getIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
+import {
+  ASSET_ROUTE,
+  DEFAULT_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { usePrevious } from '../../../hooks/usePrevious';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
   conversionRateSelector,
   getSelectedAccount,
@@ -150,7 +135,22 @@ import {
   getUSDConversionRate,
 } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import {
+  setCustomApproveTxData,
+  showModal,
+  setSwapsQuotesPollingLimitEnabled,
+  getLayer1GasFee,
+} from '../../../store/actions';
+import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
+import ExchangeRateDisplay from '../exchange-rate-display';
 import SelectQuotePopover from '../select-quote-popover';
+import {
+  quotesToRenderableData,
+  getRenderableNetworkFeesForQuote,
+  getFeeForSmartTransaction,
+  formatSwapsValueForDisplay,
+  getSwap1559GasFeeEstimates,
+} from '../swaps.util';
 import SlippageNotificationModal from './slippage-notification-modal';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 

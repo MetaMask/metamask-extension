@@ -3,20 +3,18 @@ import { useCallback, useContext } from 'react';
 
 import type {
   MetaMetricsEventName,
-  MetaMetricsSwapsEventSource} from '../../../shared/constants/metametrics';
-import {
-  MetaMetricsEventCategory
+  MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import type {
   RequestParams,
   RequestMetadata,
   TradeData,
   QuoteFetchData,
-  TxStatusData} from './events/types';
-import {
-  ActionType
+  TxStatusData,
 } from './events/types';
+import { ActionType } from './events/types';
 
 export type CrossChainSwapsEventProperties = {
   [MetaMetricsEventName.ActionOpened]: RequestParams & {

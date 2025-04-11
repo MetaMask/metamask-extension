@@ -1,5 +1,4 @@
-import type {
-  ChainId} from '@metamask/bridge-controller';
+import type { ChainId } from '@metamask/bridge-controller';
 import {
   type BridgeToken,
   type QuoteMetadata,

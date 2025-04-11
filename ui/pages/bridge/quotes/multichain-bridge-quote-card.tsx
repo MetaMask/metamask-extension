@@ -34,23 +34,23 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
 import {
   BackgroundColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Row, Column, Tooltip } from '../layout';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+  formatEtaInMinutes,
+} from '../utils/quote';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = () => {

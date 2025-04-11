@@ -7,7 +7,6 @@ import { fireEvent, renderWithProvider, screen } from '../../../../test/jest';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import configureStore from '../../../store/store';
 
-
 describe('DetectedTokensBanner', () => {
   let setShowDetectedTokensSpy;
 

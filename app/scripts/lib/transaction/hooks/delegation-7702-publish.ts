@@ -10,7 +10,7 @@ import type {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { add0x, createProjectLogger, remove0x } from '@metamask/utils';
 
 import type { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
@@ -18,7 +18,8 @@ import type {
   Caveat,
   Delegation,
   Execution,
-  UnsignedDelegation} from '../delegation';
+  UnsignedDelegation,
+} from '../delegation';
 import {
   ANY_BENEFICIARY,
   ExecutionMode,
@@ -26,11 +27,8 @@ import {
   encodeRedeemDelegations,
   signDelegation,
 } from '../delegation';
-import type {
-  RelaySubmitRequest} from '../transaction-relay';
-import {
-  submitRelayTransaction,
-} from '../transaction-relay';
+import type { RelaySubmitRequest } from '../transaction-relay';
+import { submitRelayTransaction } from '../transaction-relay';
 
 const EMPTY_HEX = '0x';
 

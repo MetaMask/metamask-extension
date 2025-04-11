@@ -33,7 +33,6 @@ import Callout from '../../../components/ui/callout';
 import Loading from '../../../components/ui/loading-screen';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMemoizedUnapprovedTemplatedConfirmations,
@@ -47,6 +46,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 ///: END:ONLY_INCLUDE_IF
 import { Nav } from '../components/confirm/nav';
+import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
 import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';

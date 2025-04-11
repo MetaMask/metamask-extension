@@ -18,11 +18,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type {
-  SafeChain} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import type { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { setEditedNetwork } from '../../../../store/actions';
 import {

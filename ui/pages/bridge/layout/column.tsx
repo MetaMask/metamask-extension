@@ -2,11 +2,8 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
-import type {
-  ContainerProps} from '../../../components/component-library';
-import {
-  Container
-} from '../../../components/component-library';
+import type { ContainerProps } from '../../../components/component-library';
+import { Container } from '../../../components/component-library';
 import {
   BlockSize,
   Display,

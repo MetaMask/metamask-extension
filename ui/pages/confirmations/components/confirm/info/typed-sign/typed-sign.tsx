@@ -4,7 +4,6 @@ import { isValidAddress } from 'ethereumjs-util';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
-
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
 import {
   ConfirmInfoRow,

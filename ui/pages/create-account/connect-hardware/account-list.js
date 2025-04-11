@@ -9,7 +9,6 @@ import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
-
 class AccountList extends Component {
   state = {
     pathValue: null,

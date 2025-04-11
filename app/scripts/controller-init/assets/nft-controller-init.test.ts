@@ -1,8 +1,5 @@
-import type {
-  NftControllerMessenger} from '@metamask/assets-controllers';
-import {
-  NftController
-} from '@metamask/assets-controllers';
+import type { NftControllerMessenger } from '@metamask/assets-controllers';
+import { NftController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 
 import { getNftControllerMessenger } from '../messengers/assets';

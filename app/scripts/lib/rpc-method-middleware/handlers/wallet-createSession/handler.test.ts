@@ -1,6 +1,7 @@
 import type {
   Caip25Authorization,
-  NormalizedScopesObject} from '@metamask/chain-agnostic-permission';
+  NormalizedScopesObject,
+} from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,

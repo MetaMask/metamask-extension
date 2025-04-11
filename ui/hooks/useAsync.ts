@@ -1,11 +1,5 @@
-import type {
-  DependencyList} from 'react';
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from 'react';
+import type { DependencyList } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 type Status = 'idle' | 'pending' | 'success' | 'error';
 

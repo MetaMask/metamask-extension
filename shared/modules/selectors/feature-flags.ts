@@ -1,5 +1,5 @@
 import { getNetworkNameByChainId } from '../feature-flags';
-import type { ProviderConfigState} from './networks';
+import type { ProviderConfigState } from './networks';
 import { getCurrentChainId } from './networks';
 
 type FeatureFlagsMetaMaskState = {

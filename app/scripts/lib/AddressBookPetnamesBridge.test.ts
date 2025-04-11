@@ -5,20 +5,17 @@ import type {
 import type {
   NameController,
   NameControllerState,
-  SetNameRequest} from '@metamask/name-controller';
-import {
-  NameOrigin,
-  NameType
+  SetNameRequest,
 } from '@metamask/name-controller';
+import { NameOrigin, NameType } from '@metamask/name-controller';
 
 import type { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
 import type {
   AddressBookPetnamesBridgeActions,
   AddressBookPetnamesBridgeEvens,
-  AddressBookPetnamesBridgeMessenger} from './AddressBookPetnamesBridge';
-import {
-  AddressBookPetnamesBridge
+  AddressBookPetnamesBridgeMessenger,
 } from './AddressBookPetnamesBridge';
+import { AddressBookPetnamesBridge } from './AddressBookPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'testName';

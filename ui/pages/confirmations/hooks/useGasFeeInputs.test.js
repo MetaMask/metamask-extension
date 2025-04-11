@@ -23,7 +23,6 @@ import {
 } from './test-utils';
 import { useGasFeeInputs } from './useGasFeeInputs';
 
-
 jest.mock('../../../hooks/useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),
 }));

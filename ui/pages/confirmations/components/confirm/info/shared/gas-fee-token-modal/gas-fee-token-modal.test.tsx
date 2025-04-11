@@ -1,4 +1,3 @@
-
 import { toHex } from '@metamask/controller-utils';
 import type { GasFeeToken } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';

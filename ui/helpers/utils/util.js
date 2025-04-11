@@ -11,11 +11,11 @@ import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
-import abi from 'human-standard-token-abi';
-import punycode from 'punycode/punycode';
-import { DateTime } from 'luxon';
-import * as lodash from 'lodash';
 import bowser from 'bowser';
+import abi from 'human-standard-token-abi';
+import * as lodash from 'lodash';
+import { DateTime } from 'luxon';
+import punycode from 'punycode/punycode';
 
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import {

@@ -1,9 +1,8 @@
 import type {
   UserStorageControllerMessenger,
-  UserStorageControllerState} from '@metamask/profile-sync-controller/user-storage';
-import {
-  Controller as UserStorageController,
+  UserStorageControllerState,
 } from '@metamask/profile-sync-controller/user-storage';
+import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { captureException } from '@sentry/browser';
 
 import {

@@ -23,7 +23,6 @@ import RejectTransactions from './reject-transactions';
 import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 import TransactionConfirmed from './transaction-confirmed';
 
-
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 

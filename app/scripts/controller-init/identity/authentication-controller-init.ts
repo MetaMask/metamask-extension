@@ -1,8 +1,5 @@
-import type {
-  AuthenticationControllerState} from '@metamask/profile-sync-controller/auth';
-import {
-  Controller as AuthenticationController,
-} from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
 
 import type { AuthenticationControllerMessenger } from '../messengers/identity';

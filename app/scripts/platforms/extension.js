@@ -1,4 +1,3 @@
-
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { startCase, toLower } from 'lodash';

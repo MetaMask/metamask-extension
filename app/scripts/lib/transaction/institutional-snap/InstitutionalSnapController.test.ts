@@ -6,19 +6,17 @@ import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/pr
 import { HandlerType } from '@metamask/snaps-utils';
 import type {
   TransactionEnvelopeType,
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionStatus
+  TransactionMeta,
 } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 import type {
   InstitutionalSnapControllerMessenger,
   AllowedActions,
   InstitutionalSnapControllerPublishHookAction,
-  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction} from './InstitutionalSnapController';
-import {
-  InstitutionalSnapController
+  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
 } from './InstitutionalSnapController';
+import { InstitutionalSnapController } from './InstitutionalSnapController';
 
 describe('InstitutionalSnapController', () => {
   let controller: InstitutionalSnapController;

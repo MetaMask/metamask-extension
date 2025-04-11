@@ -5,7 +5,7 @@ import { getSelectedNetworkClientId } from '../../shared/modules/selectors/netwo
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { mockNetworkState } from '../../test/stub/networks';
-import type { MultichainState} from '../selectors/multichain';
+import type { MultichainState } from '../selectors/multichain';
 import { getMultichainIsEvm } from '../selectors/multichain';
 import { useMultichainSelector } from './useMultichainSelector';
 

@@ -12,8 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import type {
-  TextAlign} from '../../../../helpers/constants/design-system';
+import type { TextAlign } from '../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getShouldShowFiat } from '../../../../selectors';

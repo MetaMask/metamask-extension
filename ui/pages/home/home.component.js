@@ -12,20 +12,22 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 
-import {
-  FontWeight,
-  Display,
-  TextColor,
-  TextVariant,
-  FlexDirection,
-  BlockSize,
-  AlignItems,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: END:ONLY_INCLUDE_IF
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  SUPPORT_LINK,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../shared/lib/ui-utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import HomeNotification from '../../components/app/home-notification';
+import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
+import MultipleNotifications from '../../components/app/multiple-notifications';
+import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
+import WhatsNewModal from '../../components/app/whats-new-modal';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -40,9 +42,22 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
-///: END:ONLY_INCLUDE_IF
+import { AccountOverview } from '../../components/multichain/account-overview';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import Button from '../../components/ui/button';
+import Popover from '../../components/ui/popover';
+import Typography from '../../components/ui/typography/typography';
+import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
+import {
+  FontWeight,
+  Display,
+  TextColor,
+  TextVariant,
+  FlexDirection,
+  BlockSize,
+  AlignItems,
+  JustifyContent,
+} from '../../helpers/constants/design-system';
 import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
@@ -55,21 +70,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  SUPPORT_LINK,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/lib/ui-utils';
-import HomeNotification from '../../components/app/home-notification';
-import MultipleNotifications from '../../components/app/multiple-notifications';
-import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
-import WhatsNewModal from '../../components/app/whats-new-modal';
-import { AccountOverview } from '../../components/multichain/account-overview';
-import Button from '../../components/ui/button';
-import Popover from '../../components/ui/popover';
-import Typography from '../../components/ui/typography/typography';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import ConnectedAccounts from '../connected-accounts';

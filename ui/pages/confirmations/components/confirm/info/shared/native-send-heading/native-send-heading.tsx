@@ -77,9 +77,7 @@ const NativeSendHeading = () => {
   const transferValue = nativeAssetTransferValue.toFixed();
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
-  const isTestnet = TEST_CHAINS.includes(
-    transactionMeta.chainId,
-  );
+  const isTestnet = TEST_CHAINS.includes(transactionMeta.chainId);
   const { showFiatInTestnets } = useSelector(getPreferences);
 
   const NetworkImage = (

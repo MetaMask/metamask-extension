@@ -1,16 +1,9 @@
 import type { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  ChangeEvent,
-  KeyboardEvent} from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
@@ -37,12 +30,13 @@ import {
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import type {
   PolymorphicComponentPropWithRef,
-  PolymorphicRef} from '../../component-library';
+  PolymorphicRef,
+} from '../../component-library';
 import {
   Box,
   ButtonPrimary,
   ButtonSecondary,
-  FormTextFieldSize
+  FormTextFieldSize,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/form-text-field';
 

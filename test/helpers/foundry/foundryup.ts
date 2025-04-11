@@ -1,7 +1,7 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
 import { createHash } from 'node:crypto';
-import type { Dir} from 'node:fs';
+import type { Dir } from 'node:fs';
 import { readFileSync } from 'node:fs';
 import { copyFile, opendir, rm, symlink, unlink } from 'node:fs/promises';
 import { homedir } from 'node:os';
@@ -11,7 +11,7 @@ import { parse as parseYaml } from 'yaml';
 
 import { extractFrom } from './extract';
 import { parseArgs, printBanner } from './options';
-import type { Architecture, Binary, Checksums} from './types';
+import type { Architecture, Binary, Checksums } from './types';
 import { Extension, Platform } from './types';
 import {
   getVersion,

@@ -6,7 +6,6 @@ import {
 } from './gas-action-constants';
 import GasReducer, { setCustomGasPrice, setCustomGasLimit } from './gas.duck';
 
-
 describe('Gas Duck', () => {
   let tempDateNow;
   beforeEach(() => {

@@ -8,8 +8,7 @@ import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
 } from '../../../../shared/lib/confirmation.utils';
-import type {
-  ApprovalsMetaMaskState} from '../../../selectors';
+import type { ApprovalsMetaMaskState } from '../../../selectors';
 import {
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,

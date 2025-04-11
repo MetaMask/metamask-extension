@@ -3,10 +3,11 @@ import { SnapController } from '@metamask/snaps-controllers';
 
 import type {
   SnapControllerInitMessenger,
-  SnapControllerMessenger} from '../messengers/snaps';
+  SnapControllerMessenger,
+} from '../messengers/snaps';
 import {
   getSnapControllerInitMessenger,
-  getSnapControllerMessenger
+  getSnapControllerMessenger,
 } from '../messengers/snaps';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';

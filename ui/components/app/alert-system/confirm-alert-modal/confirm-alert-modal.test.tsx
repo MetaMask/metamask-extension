@@ -6,11 +6,8 @@ import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
-import type {
-  ConfirmAlertModalProps} from './confirm-alert-modal';
-import {
-  ConfirmAlertModal,
-} from './confirm-alert-modal';
+import type { ConfirmAlertModalProps } from './confirm-alert-modal';
+import { ConfirmAlertModal } from './confirm-alert-modal';
 
 jest.mock('../contexts/alertMetricsContext', () => ({
   useAlertMetrics: jest.fn(() => ({

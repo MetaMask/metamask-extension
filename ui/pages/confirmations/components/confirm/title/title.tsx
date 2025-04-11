@@ -1,8 +1,5 @@
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionType,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { memo, useMemo } from 'react';
@@ -24,7 +21,10 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
-import type { Confirmation, SignatureRequestType } from '../../../types/confirm';
+import type {
+  Confirmation,
+  SignatureRequestType,
+} from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';

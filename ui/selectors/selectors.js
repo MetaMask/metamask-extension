@@ -1,19 +1,19 @@
-import { RpcEndpointType } from '@metamask/network-controller';
-import {
-  SnapEndowments,
-  WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/snaps-rpc-methods';
+import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
 import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { NameType } from '@metamask/name-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import {
+  SnapEndowments,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/snaps-rpc-methods';
 import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
@@ -29,29 +29,6 @@ import semver from 'semver';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
-import { DAY } from '../../shared/constants/time';
-import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
-import {
-  getConversionRate,
-  isNotEIP1559Network,
-  isEIP1559Network,
-  getLedgerTransportType,
-  isAddressLedger,
-  getIsUnlocked,
-  getCompletedOnboarding,
-} from '../ducks/metamask/metamask';
-import {
-  getLedgerWebHidConnectedStatus,
-  getLedgerTransportStatus,
-} from '../ducks/app/app';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../shared/modules/conversion.utils';
-import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import {
@@ -97,11 +74,17 @@ import {
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
+import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
+import { DAY } from '../../shared/constants/time';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { AssetType } from '../../shared/constants/transaction';
 import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   getCurrentChainId,
@@ -110,7 +93,23 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
+import {
+  getLedgerWebHidConnectedStatus,
+  getLedgerTransportStatus,
+} from '../ducks/app/app';
+import {
+  getConversionRate,
+  isNotEIP1559Network,
+  isEIP1559Network,
+  getLedgerTransportType,
+  isAddressLedger,
+  getIsUnlocked,
+  getCompletedOnboarding,
+} from '../ducks/metamask/metamask';
+import { BackgroundColor } from '../helpers/constants/design-system';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   shortenAddress,
@@ -118,6 +117,7 @@ import {
   getURLHostName,
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 // eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import { getApprovalRequestsByType } from './approvals';

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import browser from 'webextension-polyfill';
 
-
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -32,7 +31,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getSelectedInternalAccount,
+  getTestNetworkBackgroundColor,
+  getOriginOfCurrentTab,
+} from '../../../selectors';
+import { toggleAccountMenu } from '../../../store/actions';
+import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import {
   Box,
   ButtonBase,
@@ -47,22 +54,14 @@ import {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../ui/tooltip';
-import { toggleAccountMenu } from '../../../store/actions';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
-import {
-  getSelectedInternalAccount,
-  getTestNetworkBackgroundColor,
-  getOriginOfCurrentTab,
-} from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 
 type AppHeaderUnlockedContentProps = {

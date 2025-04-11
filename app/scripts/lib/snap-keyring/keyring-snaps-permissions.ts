@@ -1,9 +1,6 @@
 import { KeyringRpcMethod } from '@metamask/keyring-api';
-import type {
-  SubjectMetadataController} from '@metamask/permission-controller';
-import {
-  SubjectType
-} from '@metamask/permission-controller';
+import type { SubjectMetadataController } from '@metamask/permission-controller';
+import { SubjectType } from '@metamask/permission-controller';
 
 /**
  * The origins of the Portfolio dapp.

@@ -4,7 +4,6 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 
-
 export enum InputType {
   Text = 'text',
   // eslint-disable-next-line @typescript-eslint/no-shadow

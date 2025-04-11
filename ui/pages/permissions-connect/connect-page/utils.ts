@@ -1,12 +1,11 @@
-import type {
-  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
+import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import type { CaipNamespace, Hex} from '@metamask/utils';
+import type { CaipNamespace, Hex } from '@metamask/utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
 import { sortSelectedInternalAccounts } from '../../../helpers/utils/util';

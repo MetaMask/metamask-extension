@@ -42,7 +42,6 @@ import {
   type NotificationComponent,
 } from '../types/notifications/notifications';
 
-
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type ERC20Notification = ExtractedNotification<

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 
-
 import { I18nContext } from '../../../../../.storybook/i18n';
 import {
   MetaMetricsEventCategory,

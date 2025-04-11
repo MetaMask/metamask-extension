@@ -7,11 +7,8 @@ import type {
 } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
 
-import type {
-  SnapsNameProviderMessenger} from './SnapsNameProvider';
-import {
-  SnapsNameProvider
-} from './SnapsNameProvider';
+import type { SnapsNameProviderMessenger } from './SnapsNameProvider';
+import { SnapsNameProvider } from './SnapsNameProvider';
 
 const VALUE_MOCK = 'TestValue';
 const CHAIN_ID_MOCK = '0x1';

@@ -46,19 +46,25 @@ import {
   TextAlign,
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import {
-  getCurrentNetwork,
-  getIpfsGateway,
-  getNetworkConfigurationIdByChainId,
-} from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
+import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { usePrevious } from '../../../../../hooks/usePrevious';
+import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
+import {
+  getCurrentNetwork,
+  getIpfsGateway,
+  getNetworkConfigurationIdByChainId,
+} from '../../../../../selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
@@ -70,12 +76,8 @@ import {
 } from '../../../../../store/actions';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import NftOptions from '../nft-options/nft-options';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import InfoTooltip from '../../../../ui/info-tooltip';
-import { usePrevious } from '../../../../../hooks/usePrevious';
-import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import {
   ButtonIcon,
   IconName,
@@ -88,11 +90,9 @@ import {
 } from '../../../../component-library';
 import { NftItem } from '../../../../multichain/nft-item';
 import { Content, Footer, Page } from '../../../../multichain/pages/page';
-import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
-import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
+import InfoTooltip from '../../../../ui/info-tooltip';
+import NftOptions from '../nft-options/nft-options';
 // TODO: Remove restricted import
-import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import NftDetailDescription from './nft-detail-description';

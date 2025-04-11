@@ -2,7 +2,7 @@
 
 import type { FunctionFragment, ParamType } from '@ethersproject/abi';
 import { Interface } from '@ethersproject/abi';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { createProjectLogger } from '@metamask/utils';
 
 import type {

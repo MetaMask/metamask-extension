@@ -5,11 +5,9 @@ import * as React from 'react';
 
 import type {
   IconProps,
-  PolymorphicRef} from '../../../components/component-library';
-import {
-  Box,
-  IconSize
+  PolymorphicRef,
 } from '../../../components/component-library';
+import { Box, IconSize } from '../../../components/component-library';
 import {
   BackgroundColor,
   Display,

@@ -3,10 +3,11 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   ///: END:ONLY_INCLUDE_IF
-  CaipChainId} from '@metamask/utils';
+  CaipChainId,
+} from '@metamask/utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isCaipChainId
+  isCaipChainId,
 } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -54,10 +55,13 @@ import {
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import useBridging from '../../../hooks/bridge/useBridging';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import type {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  SwapsEthToken} from '../../../selectors';
+  SwapsEthToken,
+} from '../../../selectors';
 import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
@@ -67,26 +71,24 @@ import {
 } from '../../../selectors';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import Tooltip from '../../ui/tooltip';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-///: END:ONLY_INCLUDE_IF
-import { Box, Icon, IconName, IconSize } from '../../component-library';
-// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-import IconButton from '../../ui/icon-button';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
-import { ReceiveModal } from '../../multichain/receive-modal';
-import {
-  setSwitchedNetworkDetails,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
+} from '../../../store/actions';
+import { Box, Icon, IconName, IconSize } from '../../component-library';
+import { ReceiveModal } from '../../multichain/receive-modal';
+import IconButton from '../../ui/icon-button';
+import Tooltip from '../../ui/tooltip';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: END:ONLY_INCLUDE_IF
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -213,8 +215,8 @@ const CoinButtons = ({
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:

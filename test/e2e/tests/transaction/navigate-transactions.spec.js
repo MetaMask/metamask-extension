@@ -13,7 +13,6 @@ const {
   default: Confirmation,
 } = require('../../page-objects/pages/confirmations/redesign/confirmation');
 
-
 const TRANSACTION_COUNT = 4;
 
 describe('Navigate transactions', function () {

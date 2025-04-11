@@ -2,8 +2,7 @@ import type { ApprovalRequest } from '@metamask/approval-controller';
 import { useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
-import type {
-  Alert} from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   clearAlerts,
   updateAlerts,

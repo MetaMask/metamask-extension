@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import type { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
-import type { AsyncResult} from '../../../../../../hooks/useAsync';
+import type { AsyncResult } from '../../../../../../hooks/useAsync';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { use4ByteResolutionSelector } from '../../../../../../selectors';
 import { decodeTransactionData } from '../../../../../../store/actions';

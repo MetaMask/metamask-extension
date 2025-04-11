@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 
 import type {
   PolymorphicRef,
-  PopoverProps} from '../../../components/component-library';
+  PopoverProps,
+} from '../../../components/component-library';
 import {
   Box,
   Icon,

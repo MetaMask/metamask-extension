@@ -16,10 +16,10 @@ import Disclosure from '../../ui/disclosure';
 import Popover from '../../ui/popover';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
-import TransactionActivityLog from '../transaction-activity-log';
-import TransactionBreakdown from '../transaction-breakdown';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
+import TransactionActivityLog from '../transaction-activity-log';
+import TransactionBreakdown from '../transaction-breakdown';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {

@@ -5,7 +5,6 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -92,7 +91,7 @@ export const AggregatedPercentageOverview = () => {
 
   let formattedAmountChange = '';
   if (isValidAmount(amountChange)) {
-    formattedAmountChange = (amountChange) >= 0 ? '+' : '';
+    formattedAmountChange = amountChange >= 0 ? '+' : '';
 
     const options = {
       notation: 'compact',
@@ -120,9 +119,9 @@ export const AggregatedPercentageOverview = () => {
   let color = TextColor.textAlternative;
 
   if (!privacyMode && isValidAmount(amountChange)) {
-    if ((amountChange) === 0) {
+    if (amountChange === 0) {
       color = TextColor.textAlternative;
-    } else if ((amountChange) > 0) {
+    } else if (amountChange > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;

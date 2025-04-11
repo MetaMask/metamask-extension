@@ -3,7 +3,6 @@ import classnames from 'classnames';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
-
 import {
   AlignItems,
   BackgroundColor,

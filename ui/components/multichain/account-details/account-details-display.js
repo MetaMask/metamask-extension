@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,

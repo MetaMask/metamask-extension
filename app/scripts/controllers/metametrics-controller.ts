@@ -8,11 +8,10 @@ import type {
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
-import {
-  BaseController
+  RestrictedMessenger,
 } from '@metamask/base-controller';
-import type { NameControllerState} from '@metamask/name-controller';
+import { BaseController } from '@metamask/base-controller';
+import type { NameControllerState } from '@metamask/name-controller';
 import { NameType } from '@metamask/name-controller';
 import type {
   NetworkClientId,
@@ -21,8 +20,14 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import type {
-  Hex} from '@metamask/utils';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import type { Hex } from '@metamask/utils';
+import {
+  getErrorMessage,
+  isErrorWithMessage,
+  isErrorWithStack,
+} from '@metamask/utils';
+import type { captureException as sentryCaptureException } from '@sentry/browser';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import {
   isEqual,
@@ -35,14 +40,7 @@ import {
   sum,
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  getErrorMessage,
-  isErrorWithMessage,
-  isErrorWithStack,
-} from '@metamask/utils';
 import type { Browser } from 'webextension-polyfill';
-import type { captureException as sentryCaptureException } from '@sentry/browser';
-import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
@@ -59,13 +57,14 @@ import type {
   MetaMetricsPagePayload,
   MetaMetricsPageOptions,
   MetaMetricsPageObject,
-  MetaMetricsReferrerObject} from '../../../shared/constants/metametrics';
+  MetaMetricsReferrerObject,
+} from '../../../shared/constants/metametrics';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsUserTrait
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -1330,11 +1329,13 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param allNfts
    */
-  readonly #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
-    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
+  readonly #getAllNFTsFlattened = memoize(
+    (allNfts: MetaMaskState['allNfts'] = {}) => {
+      return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
+        return result.concat(...Object.values(chainNFTs));
+      }, []);
+    },
+  );
 
   /**
    * Returns the number of unique NFT addresses the user
@@ -1464,7 +1465,7 @@ export default class MetaMetricsController extends BaseController<
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     } = options || {};
     let idType: 'userId' | 'anonymousId' = 'userId';
     let idValue = this.state.metaMetricsId;

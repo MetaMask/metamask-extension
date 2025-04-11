@@ -3,11 +3,8 @@
 import React, { useMemo } from 'react';
 
 import { Text } from '../text';
-import type {
-  SensitiveTextProps} from './sensitive-text.types';
-import {
-  SensitiveTextLength,
-} from './sensitive-text.types';
+import type { SensitiveTextProps } from './sensitive-text.types';
+import { SensitiveTextLength } from './sensitive-text.types';
 
 export const SensitiveText = React.forwardRef<
   HTMLParagraphElement,

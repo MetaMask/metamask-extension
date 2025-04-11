@@ -11,12 +11,8 @@ import {
 import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
 import { Text } from '../text';
-import type {
-  TextareaComponent,
-  TextareaProps} from './textarea.types';
-import {
-  TextareaResize,
-} from './textarea.types';
+import type { TextareaComponent, TextareaProps } from './textarea.types';
+import { TextareaResize } from './textarea.types';
 
 export const Textarea: TextareaComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

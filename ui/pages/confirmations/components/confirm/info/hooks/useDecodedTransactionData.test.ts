@@ -1,5 +1,4 @@
-import type {
-  TransactionParams} from '@metamask/transaction-controller';
+import type { TransactionParams } from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,

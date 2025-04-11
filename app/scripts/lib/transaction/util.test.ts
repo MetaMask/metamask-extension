@@ -2,10 +2,9 @@ import type { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   TransactionController,
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionType,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 
@@ -22,11 +21,9 @@ import {
 import type {
   AddDappTransactionRequest,
   AddTransactionOptions,
-  AddTransactionRequest} from './util';
-import {
-  addDappTransaction,
-  addTransaction,
+  AddTransactionRequest,
 } from './util';
+import { addDappTransaction, addTransaction } from './util';
 
 jest.mock('../ppom/ppom-util');
 

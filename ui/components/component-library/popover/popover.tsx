@@ -15,13 +15,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
 import type { BoxProps, PolymorphicRef } from '../box';
-import type {
-  PopoverProps,
-  PopoverComponent} from './popover.types';
-import {
-  PopoverPosition,
-  PopoverRole,
-} from './popover.types';
+import type { PopoverProps, PopoverComponent } from './popover.types';
+import { PopoverPosition, PopoverRole } from './popover.types';
 
 export const Popover: PopoverComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

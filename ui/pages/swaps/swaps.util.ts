@@ -8,8 +8,7 @@ import { BigNumber } from 'bignumber.js';
 
 import { EtherDenomination } from '../../../shared/constants/common';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import type {
-  SwapsTokenObject} from '../../../shared/constants/swaps';
+import type { SwapsTokenObject } from '../../../shared/constants/swaps';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
@@ -25,7 +24,7 @@ import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL
+  SWAPS_DEV_API_V2_BASE_URL,
 } from '../../../shared/constants/swaps';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import {

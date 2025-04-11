@@ -1,9 +1,10 @@
 import type {
   SnapKeyringCallbacks,
-  SnapKeyringInternalOptions} from '@metamask/eth-snap-keyring';
+  SnapKeyringInternalOptions,
+} from '@metamask/eth-snap-keyring';
 import {
   getDefaultInternalOptions,
-  SnapKeyring
+  SnapKeyring,
 } from '@metamask/eth-snap-keyring';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';

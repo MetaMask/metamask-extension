@@ -2,7 +2,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-
 import {
   BackgroundColor,
   TextColor,

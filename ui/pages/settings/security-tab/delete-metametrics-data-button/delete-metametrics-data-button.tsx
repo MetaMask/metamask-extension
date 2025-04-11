@@ -13,7 +13,8 @@ import ClearMetametricsData from '../../../../components/app/clear-metametrics-d
 import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
 import type {
   PolymorphicComponentPropWithRef,
-  PolymorphicRef} from '../../../../components/component-library';
+  PolymorphicRef,
+} from '../../../../components/component-library';
 import {
   Box,
   ButtonPrimary,

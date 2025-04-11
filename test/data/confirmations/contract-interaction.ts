@@ -3,7 +3,8 @@ import type {
   BatchTransactionParams,
   GasFeeToken,
   SimulationData,
-  TransactionMeta} from '@metamask/transaction-controller';
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   CHAIN_IDS,
   TransactionStatus,

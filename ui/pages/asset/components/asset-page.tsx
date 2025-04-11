@@ -1,9 +1,9 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
-import type { CaipAssetType, Hex} from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo } from 'react';

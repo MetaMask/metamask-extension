@@ -27,7 +27,6 @@ import {
 } from '../../component-library';
 import Box from '../box';
 
-
 const defaultHeaderProps = {
   padding: [6, 4, 4],
   display: 'flex',

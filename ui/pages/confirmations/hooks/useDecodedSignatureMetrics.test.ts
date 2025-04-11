@@ -1,8 +1,5 @@
-import type {
-  DecodingData} from '@metamask/signature-controller';
-import {
-  DecodingDataChangeType,
-} from '@metamask/signature-controller';
+import type { DecodingData } from '@metamask/signature-controller';
+import { DecodingDataChangeType } from '@metamask/signature-controller';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { permitSignatureMsg } from '../../../../test/data/confirmations/typed_sign';

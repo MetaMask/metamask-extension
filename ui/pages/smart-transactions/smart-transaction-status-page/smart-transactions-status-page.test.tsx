@@ -1,8 +1,5 @@
-import type {
-  SmartTransaction} from '@metamask/smart-transactions-controller/dist/types';
-import {
-  SmartTransactionStatuses,
-} from '@metamask/smart-transactions-controller/dist/types';
+import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { fireEvent } from '@testing-library/react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -15,11 +12,8 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import type {
-  RequestState} from './smart-transaction-status-page';
-import {
-  SmartTransactionStatusPage
-} from './smart-transaction-status-page';
+import type { RequestState } from './smart-transaction-status-page';
+import { SmartTransactionStatusPage } from './smart-transaction-status-page';
 
 // Mock the SmartTransactionStatusAnimation component and capture props
 jest.mock('./smart-transaction-status-animation', () => ({

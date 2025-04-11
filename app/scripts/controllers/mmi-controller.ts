@@ -1,10 +1,9 @@
 import type { CustodyController } from '@metamask-institutional/custody-controller';
 import type {
   CustodyKeyring,
-  MmiConfigurationController} from '@metamask-institutional/custody-keyring';
-import {
-  CUSTODIAN_TYPES
+  MmiConfigurationController,
 } from '@metamask-institutional/custody-keyring';
+import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
   custodianEventHandlerFactory,
@@ -106,11 +105,16 @@ export class MMIController {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly extension: any;
 
-  private readonly updateTransactionHash: (txId: string, txHash: string) => void;
+  private readonly updateTransactionHash: (
+    txId: string,
+    txHash: string,
+  ) => void;
 
   private readonly setChannelId: (channelId: string) => void;
 
-  private readonly setConnectionRequest: (payload: ConnectionRequest | null) => void;
+  private readonly setConnectionRequest: (
+    payload: ConnectionRequest | null,
+  ) => void;
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },

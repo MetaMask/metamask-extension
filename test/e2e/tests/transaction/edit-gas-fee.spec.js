@@ -7,7 +7,6 @@ const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-
 const PREFERENCES_STATE_MOCK = {
   preferences: {
     showFiatInTestnets: true,

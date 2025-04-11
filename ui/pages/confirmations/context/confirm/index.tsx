@@ -1,13 +1,7 @@
-import type {
-  ReactElement} from 'react';
+import type { ReactElement } from 'react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 
 import syncConfirmPath from '../../hooks/syncConfirmPath';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';

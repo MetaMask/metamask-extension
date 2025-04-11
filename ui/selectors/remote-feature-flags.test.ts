@@ -1,9 +1,6 @@
 import * as manifestFlags from '../../shared/lib/manifestFlags';
-import type {
-  RemoteFeatureFlagsState} from './remote-feature-flags';
-import {
-  getRemoteFeatureFlags
-} from './remote-feature-flags';
+import type { RemoteFeatureFlagsState } from './remote-feature-flags';
+import { getRemoteFeatureFlags } from './remote-feature-flags';
 
 const MOCK_DATA = {
   manifestFlags: {

@@ -24,11 +24,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { removeSlide } from '../../../store/actions';
-import type {
-  AccountOverviewTabsProps} from './account-overview-tabs';
-import {
-  AccountOverviewTabs,
-} from './account-overview-tabs';
+import type { AccountOverviewTabsProps } from './account-overview-tabs';
+import { AccountOverviewTabs } from './account-overview-tabs';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;

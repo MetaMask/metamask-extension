@@ -14,11 +14,8 @@ import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../ui/tooltip';
 import type { TokenFiatDisplayInfo } from '../../types';
-import type {
-  TranslateFunction} from '../../util/networkTitleOverrides';
-import {
-  networkTitleOverrides,
-} from '../../util/networkTitleOverrides';
+import type { TranslateFunction } from '../../util/networkTitleOverrides';
+import { networkTitleOverrides } from '../../util/networkTitleOverrides';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;

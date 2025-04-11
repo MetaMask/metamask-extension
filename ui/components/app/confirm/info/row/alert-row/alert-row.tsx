@@ -13,12 +13,8 @@ import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsC
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
-import type {
-  ConfirmInfoRowProps} from '../row';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowVariant,
-} from '../row';
+import type { ConfirmInfoRowProps } from '../row';
+import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../row';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;

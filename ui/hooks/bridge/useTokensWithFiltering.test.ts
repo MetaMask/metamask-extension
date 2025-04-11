@@ -1,8 +1,5 @@
-import type {
-  BridgeToken} from '@metamask/bridge-controller';
-import {
-  getNativeAssetForChainId,
-} from '@metamask/bridge-controller';
+import type { BridgeToken } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';

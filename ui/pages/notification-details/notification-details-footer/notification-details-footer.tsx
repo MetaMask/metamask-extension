@@ -9,8 +9,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import type {
-  Notification} from '../../notifications/notification-components/types/notifications/notifications';
+import type { Notification } from '../../notifications/notification-components/types/notifications/notifications';
 import {
   NotificationComponentType,
   type NotificationComponent,

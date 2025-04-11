@@ -36,7 +36,12 @@ import LoadingScreen from '../../../ui/loading-screen';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetComponent from './Asset';
-import type { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
+import type {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NFT,
+  NativeAsset,
+} from './types';
 
 type AssetListProps = {
   handleAssetChange: (

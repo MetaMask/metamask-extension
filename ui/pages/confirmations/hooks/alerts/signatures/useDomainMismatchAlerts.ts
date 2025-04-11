@@ -1,8 +1,5 @@
-import type {
-  WrappedSIWERequest} from '@metamask/controller-utils';
-import {
-  isValidSIWEOrigin
-} from '@metamask/controller-utils';
+import type { WrappedSIWERequest } from '@metamask/controller-utils';
+import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';

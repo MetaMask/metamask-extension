@@ -3,10 +3,9 @@
 import type {
   NameControllerState,
   NameEntry,
-  UpdateProposedNamesResult} from '@metamask/name-controller';
-import {
-  NameType
+  UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { isEqual } from 'lodash';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
@@ -58,9 +57,7 @@ import {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import FormComboField from '../../../ui/form-combo-field/form-combo-field';
-import type {
-  FormComboFieldOption,
-} from '../../../ui/form-combo-field/form-combo-field';
+import type { FormComboFieldOption } from '../../../ui/form-combo-field/form-combo-field';
 import { usePetnamesMetrics } from './metrics';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

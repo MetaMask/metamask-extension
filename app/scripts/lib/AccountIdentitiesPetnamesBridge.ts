@@ -3,8 +3,7 @@ import type {
   AccountsControllerListAccountsAction,
 } from '@metamask/accounts-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  NameController} from '@metamask/name-controller';
+import type { NameController } from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
   NameType,
@@ -13,10 +12,9 @@ import {
 
 import type {
   PetnameEntry,
-  PetnamesBridgeMessenger} from './AbstractPetnamesBridge';
-import {
-  AbstractPetnamesBridge
+  PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
+import { AbstractPetnamesBridge } from './AbstractPetnamesBridge';
 
 export type AccountIdentitiesPetnamesBridgeEvents =
   AccountsControllerChangeEvent;

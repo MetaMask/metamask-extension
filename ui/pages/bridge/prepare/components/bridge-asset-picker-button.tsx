@@ -11,11 +11,8 @@ import {
   SelectButton,
   Text,
 } from '../../../../components/component-library';
-import type {
-  SelectButtonProps} from '../../../../components/component-library/select-button/select-button.types';
-import {
-  SelectButtonSize,
-} from '../../../../components/component-library/select-button/select-button.types';
+import type { SelectButtonProps } from '../../../../components/component-library/select-button/select-button.types';
+import { SelectButtonSize } from '../../../../components/component-library/select-button/select-button.types';
 import type { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import {
   AlignItems,

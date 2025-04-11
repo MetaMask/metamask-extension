@@ -5,20 +5,18 @@ import type {
 } from '@metamask/approval-controller';
 import type { RestrictedMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import {
-  EncryptionPublicKeyManager
-} from '@metamask/message-manager';
+import { EncryptionPublicKeyManager } from '@metamask/message-manager';
 import type {
   EncryptionPublicKeyManagerMessenger,
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
-
   EncryptionPublicKeyParamsMetamask,
   AbstractMessage,
   MessageManagerState,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
-  OriginalRequest} from '@metamask/message-manager';
+  OriginalRequest,
+} from '@metamask/message-manager';
 import type { Patch } from 'immer';
 import log from 'loglevel';
 
@@ -114,7 +112,9 @@ export default class EncryptionPublicKeyController extends BaseController<
   EncryptionPublicKeyControllerState,
   EncryptionPublicKeyControllerMessenger
 > {
-  private readonly _getEncryptionPublicKey: (address: string) => Promise<string>;
+  private readonly _getEncryptionPublicKey: (
+    address: string,
+  ) => Promise<string>;
 
   private readonly _getAccountKeyringType: (account: string) => Promise<string>;
 

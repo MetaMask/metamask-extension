@@ -1,9 +1,5 @@
-import type {
-  Transaction} from '@metamask/keyring-api';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/keyring-api';
+import type { Transaction } from '@metamask/keyring-api';
+import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import { capitalize } from 'lodash';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

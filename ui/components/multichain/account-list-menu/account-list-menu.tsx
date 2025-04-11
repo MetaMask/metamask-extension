@@ -1,9 +1,8 @@
-import type {
-  KeyringAccountType} from '@metamask/keyring-api';
+import type { KeyringAccountType } from '@metamask/keyring-api';
 import {
   BtcAccountType,
   EthAccountType,
-  SolAccountType
+  SolAccountType,
 } from '@metamask/keyring-api';
 import type { CaipChainId } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
@@ -39,17 +38,15 @@ import {
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import type {
-  AccountOverviewTabKey} from '../../../../shared/constants/app-state';
-import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
-} from '../../../../shared/constants/app-state';
+import type { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
+import { ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP } from '../../../../shared/constants/app-state';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -62,23 +59,20 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-  IconName,
-  IconSize,
-  Modal,
-  ModalOverlay,
-  Text,
-} from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header';
-import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import { AccountListItem } from '../account-list-item';
-import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
-
+  CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
+  SETTINGS_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../helpers/constants/routes';
+import type {
+  MultichainWalletSnapClient,
+  MultichainWalletSnapOptions,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getConnectedSubjectsForAllAddresses,
@@ -108,39 +102,43 @@ import {
   getManageInstitutionalWallets,
   getHDEntropyIndex,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
-import {
-  CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  CONFIRMATION_V_NEXT_ROUTE,
-  SETTINGS_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../helpers/constants/routes';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
-///: END:ONLY_INCLUDE_IF
-
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import type {
-  MultichainWalletSnapClient,
-  MultichainWalletSnapOptions} from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import {
-  WalletClientType,
-  useMultichainWalletSnapClient,
-} from '../../../hooks/accounts/useMultichainWalletSnapClient';
-///: END:ONLY_INCLUDE_IF
 import type {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import { setSelectedAccount } from '../../../store/actions';
+import {
+  Box,
+  ButtonLink,
+  ButtonLinkSize,
+  ButtonSecondary,
+  ButtonSecondarySize,
+  IconName,
+  IconSize,
+  Modal,
+  ModalOverlay,
+  Text,
+} from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header';
+import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
+import { AccountListItem } from '../account-list-item';
+import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+///: END:ONLY_INCLUDE_IF
 import { CreateEthAccount } from '../create-eth-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { CreateSnapAccount } from '../create-snap-account';
@@ -150,7 +148,6 @@ import { ImportAccount } from '../import-account';
 import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 ///: END:ONLY_INCLUDE_IF
-import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 // TODO: Should we use an enum for this instead?

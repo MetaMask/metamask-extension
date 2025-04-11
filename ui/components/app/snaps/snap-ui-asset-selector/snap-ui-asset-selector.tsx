@@ -24,7 +24,7 @@ import {
   AvatarNetworkSize,
 } from '../../../component-library';
 import { SnapUISelector } from '../snap-ui-selector';
-import type { SnapUIAsset} from './useSnapAssetDisplay';
+import type { SnapUIAsset } from './useSnapAssetDisplay';
 import { useSnapAssetSelectorData } from './useSnapAssetDisplay';
 
 /**

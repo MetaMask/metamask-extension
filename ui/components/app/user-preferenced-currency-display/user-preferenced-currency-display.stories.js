@@ -4,7 +4,6 @@ import UserPreferencedCurrencyDisplay from '.';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
-
 export default {
   title: 'Components/App/UserPreferencedCurrencyDisplay',
 

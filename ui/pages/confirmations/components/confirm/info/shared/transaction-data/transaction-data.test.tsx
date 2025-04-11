@@ -1,5 +1,4 @@
-import type {
-  BatchTransactionParams} from '@metamask/transaction-controller';
+import type { BatchTransactionParams } from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,

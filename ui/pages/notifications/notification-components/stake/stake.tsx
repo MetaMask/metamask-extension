@@ -41,7 +41,6 @@ import {
   type NotificationComponent,
 } from '../types/notifications/notifications';
 
-
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type StakeNotification = ExtractedNotification<
@@ -184,10 +183,10 @@ export const components: NotificationComponent<StakeNotification> = {
             }}
             label={
               direction === 'staked'
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-                ? t('notificationItemStaked') || ''
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-                : t('notificationItemUnStaked') || ''
+                ? // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                  t('notificationItemStaked') || ''
+                : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                  t('notificationItemUnStaked') || ''
             }
             detail={notification.data.stake_in.symbol}
             fiatValue={`$${getUsdAmount(

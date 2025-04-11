@@ -2,10 +2,9 @@ import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 
 import type {
   QuoteMetadataSerialized,
-  StatusRequest} from '../../types/bridge-status';
-import {
-  StatusTypes,
+  StatusRequest,
 } from '../../types/bridge-status';
+import { StatusTypes } from '../../types/bridge-status';
 
 export const serializeQuoteMetadata = (
   quoteResponse: QuoteResponse & QuoteMetadata,

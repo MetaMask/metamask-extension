@@ -2,7 +2,7 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import type { Hex} from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { isStrictHexString } from '@metamask/utils';
 import log from 'loglevel';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

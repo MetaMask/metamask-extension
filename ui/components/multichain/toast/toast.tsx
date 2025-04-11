@@ -5,10 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import type {
   BorderRadius,
-  TextVariant} from '../../../helpers/constants/design-system';
-import {
-  Display
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Display } from '../../../helpers/constants/design-system';
 import { BannerBase, Box, ButtonLink, Text } from '../../component-library';
 
 export const ToastContainer = ({

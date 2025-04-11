@@ -4,7 +4,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import mockState from '../../../../../test/data/mock-state.json';

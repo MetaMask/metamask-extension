@@ -3,10 +3,9 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import type { LoaderContext } from 'webpack';
 
-import type {
-  CodeFenceLoaderOptions} from '../utils/loaders/codeFenceLoader';
+import type { CodeFenceLoaderOptions } from '../utils/loaders/codeFenceLoader';
 import codeFenceLoader, {
-  getCodeFenceLoader
+  getCodeFenceLoader,
 } from '../utils/loaders/codeFenceLoader';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878

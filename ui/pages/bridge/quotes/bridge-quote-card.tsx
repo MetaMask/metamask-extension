@@ -42,13 +42,13 @@ import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRe
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getImageForChainId } from '../../../selectors/multichain';
+import { Row, Column, Tooltip } from '../layout';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
-import { Row, Column, Tooltip } from '../layout';
-import { getImageForChainId } from '../../../selectors/multichain';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {

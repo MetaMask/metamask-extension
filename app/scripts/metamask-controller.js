@@ -1,21 +1,3 @@
-import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
-import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
-
-import { Mutex } from 'await-semaphore';
-import log from 'loglevel';
-import {
-  OneKeyKeyring,
-  TrezorConnectBridge,
-  TrezorKeyring,
-} from '@metamask/eth-trezor-keyring';
-import {
-  LedgerKeyring,
-  LedgerIframeBridge,
-} from '@metamask/eth-ledger-bridge-keyring';
-import LatticeKeyring from 'eth-lattice-keyring';
-import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -115,6 +97,7 @@ import {
 import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import {
   CurrencyRateController,
   TokenDetectionController,
@@ -124,7 +107,6 @@ import {
   fetchMultiExchangeRate,
   TokenBalancesController,
 } from '@metamask/assets-controllers';
-import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
   hasProperty,
   hexToBigInt,
@@ -156,7 +138,18 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
+import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
+import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import {
+  LedgerKeyring,
+  LedgerIframeBridge,
+} from '@metamask/eth-ledger-bridge-keyring';
+import {
+  OneKeyKeyring,
+  TrezorConnectBridge,
+  TrezorKeyring,
+} from '@metamask/eth-trezor-keyring';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
@@ -165,8 +158,13 @@ import {
   KeyringTypes,
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
+import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
+import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import { Mutex } from 'await-semaphore';
+import { rawChainData } from 'eth-chainlist';
+import LatticeKeyring from 'eth-lattice-keyring';
 import EventEmitter from 'events';
 import {
   debounce,
@@ -177,39 +175,12 @@ import {
   cloneDeep,
   uniq,
 } from 'lodash';
+import log from 'loglevel';
 import { finished, pipeline } from 'readable-stream';
-
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 ///: END:ONLY_INCLUDE_IF
 
-
-import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
-import {
-  ORIGIN_METAMASK,
-  POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-} from '../../shared/constants/app';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../shared/constants/metametrics';
-import { LOG_EVENT } from '../../shared/constants/logs';
-
-import {
-  getStorageItem,
-  setStorageItem,
-} from '../../shared/lib/storage-helpers';
-import {
-  getTokenIdParam,
-  fetchTokenBalance,
-  fetchERC1155Balance,
-} from '../../shared/lib/token-util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
@@ -225,8 +196,13 @@ import {
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
+import {
+  ORIGIN_METAMASK,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../shared/constants/app';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import {
   HardwareDeviceNames,
@@ -234,11 +210,17 @@ import {
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import { LOG_EVENT } from '../../shared/constants/logs';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
   methodsThatShouldBeEnqueued,
 } from '../../shared/constants/methods-tags';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
@@ -260,8 +242,22 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
+import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { TokenStandard } from '../../shared/constants/transaction';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../shared/lib/storage-helpers';
+import {
+  getTokenIdParam,
+  fetchTokenBalance,
+  fetchERC1155Balance,
+} from '../../shared/lib/token-util';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -269,22 +265,6 @@ import { BridgeStatusAction } from '../../shared/types/bridge-status';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 ///: END:ONLY_INCLUDE_IF
-import AccountTrackerController from './controllers/account-tracker-controller';
-import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
-import createLoggerMiddleware from './lib/createLoggerMiddleware';
-import {
-  createEthAccountsMethodMiddleware,
-  createEip1193MethodMiddleware,
-  createUnsupportedMethodMiddleware,
-  createMultichainMethodMiddleware,
-  makeMethodMiddlewareMaker,
-} from './lib/rpc-method-middleware';
-import createOriginMiddleware from './lib/createOriginMiddleware';
-import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
-import createTabIdMiddleware from './lib/createTabIdMiddleware';
-import { NetworkOrderController } from './controllers/network-order';
-import { AccountOrderController } from './controllers/account-order';
-import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { PreferencesController } from './controllers/preferences-controller';
 import { AppStateController } from './controllers/app-state-controller';
@@ -403,7 +383,10 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { AccountOrderController } from './controllers/account-order';
+import AccountTrackerController from './controllers/account-tracker-controller';
 import { MMIController } from './controllers/mmi-controller';
+import { NetworkOrderController } from './controllers/network-order';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -411,7 +394,20 @@ import {
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import ComposableObservableStore from './lib/ComposableObservableStore';
+import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
+import createLoggerMiddleware from './lib/createLoggerMiddleware';
+import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
+import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
+import createOriginMiddleware from './lib/createOriginMiddleware';
+import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import {
+  createEthAccountsMethodMiddleware,
+  createEip1193MethodMiddleware,
+  createUnsupportedMethodMiddleware,
+  createMultichainMethodMiddleware,
+  makeMethodMiddlewareMaker,
+} from './lib/rpc-method-middleware';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import {

@@ -1,9 +1,6 @@
 import { NameType } from '@metamask/name-controller';
-import type {
-  SimulationData} from '@metamask/transaction-controller';
-import {
-  SimulationErrorCode,
-} from '@metamask/transaction-controller';
+import type { SimulationData } from '@metamask/transaction-controller';
+import { SimulationErrorCode } from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 
 import {
@@ -14,10 +11,9 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import type {
   UseDisplayNameRequest,
-  UseDisplayNameResponse} from '../../../../hooks/useDisplayName';
-import {
-  useDisplayNames,
+  UseDisplayNameResponse,
 } from '../../../../hooks/useDisplayName';
+import { useDisplayNames } from '../../../../hooks/useDisplayName';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { calculateTotalFiat } from './fiat-display';
 import type { BalanceChange } from './types';
@@ -82,7 +78,9 @@ export function useSimulationMetrics({
 
   const displayNames = useDisplayNames(displayNameRequests);
 
-  const displayNamesByAddress = displayNames.reduce<{ [address: string]: UseDisplayNameResponse }>(
+  const displayNamesByAddress = displayNames.reduce<{
+    [address: string]: UseDisplayNameResponse;
+  }>(
     (acc, displayNameResponse, index) => ({
       ...acc,
       [balanceChanges[index].asset.address ?? '']: displayNameResponse,

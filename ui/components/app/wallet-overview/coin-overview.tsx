@@ -1,4 +1,3 @@
-
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { Hex } from '@metamask/utils';
@@ -35,14 +34,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
-import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
+import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useTheme } from '../../../hooks/useTheme';
-import type {
-  SwapsEthToken} from '../../../selectors';
+import type { SwapsEthToken } from '../../../selectors';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
@@ -54,7 +51,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
   getMetaMetricsId,
-  getParticipateInMetaMetrics
+  getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {

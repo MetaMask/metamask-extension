@@ -22,8 +22,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getSendHexDataFeatureFlagState,
 } from '../../../../../ducks/metamask/metamask';
-import type {
-  Asset} from '../../../../../ducks/send';
+import type { Asset } from '../../../../../ducks/send';
 import {
   acknowledgeRecipientWarning,
   getBestQuote,

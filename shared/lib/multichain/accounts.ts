@@ -1,7 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  CaipNamespace} from '@metamask/utils';
+import type { CaipNamespace } from '@metamask/utils';
 import {
   isCaipChainId,
   KnownCaipNamespace,

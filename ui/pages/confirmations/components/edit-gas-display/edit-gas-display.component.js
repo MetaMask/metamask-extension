@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef } from 'react';
 
-
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import { BannerAlert, Text } from '../../../../components/component-library';
 import Button from '../../../../components/ui/button';

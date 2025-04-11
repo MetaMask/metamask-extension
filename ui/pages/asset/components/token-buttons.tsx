@@ -31,6 +31,13 @@ import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { startNewDraftTransaction } from '../../../ducks/send';
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
+import {
+  Display,
+  IconColor,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -39,10 +46,10 @@ import {
 } from '../../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 ///: END:ONLY_INCLUDE_IF
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getIsSwapsChain,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -55,7 +62,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
 
-import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import {
   getMultichainIsEvm,
   getMultichainNetwork,
@@ -65,14 +71,8 @@ import {
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
 } from '../../../store/actions';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 ///: END:ONLY_INCLUDE_IF

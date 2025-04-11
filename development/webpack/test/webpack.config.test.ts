@@ -3,13 +3,8 @@ import fs from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import { describe, it, afterEach, before, after, mock } from 'node:test';
-import type {
-  Compiler,
-  WebpackPluginInstance} from 'webpack';
-import {
-  type Configuration,
-  webpack
-} from 'webpack';
+import type { Compiler, WebpackPluginInstance } from 'webpack';
+import { type Configuration, webpack } from 'webpack';
 
 import { getLatestCommit } from '../utils/git';
 import { noop } from '../utils/helpers';

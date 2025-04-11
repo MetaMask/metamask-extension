@@ -1,12 +1,9 @@
 import type { AccessList } from '@ethereumjs/tx';
 import type { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import type { Provider } from '@metamask/network-controller';
-import type {
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionEnvelopeType
-} from '@metamask/transaction-controller';
-import type { CaipAssetType} from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import type { CaipAssetType } from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

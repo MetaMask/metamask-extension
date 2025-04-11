@@ -13,15 +13,14 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
-import type { PolymorphicRef , BoxProps } from '../box';
+import type { PolymorphicRef, BoxProps } from '../box';
 import { ModalFocus } from '../modal-focus';
 import { useModalContext } from '../modal/modal.context';
 import type {
   ModalContentProps,
-  ModalContentComponent} from './modal-content.types';
-import {
-  ModalContentSize
+  ModalContentComponent,
 } from './modal-content.types';
+import { ModalContentSize } from './modal-content.types';
 
 export const ModalContent: ModalContentComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

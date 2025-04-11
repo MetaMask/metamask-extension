@@ -16,12 +16,8 @@ import {
 import type { PolymorphicRef } from '../box';
 import { Text } from '../text';
 import type { TextProps } from '../text';
-import type {
-  AvatarBaseComponent,
-  AvatarBaseProps} from './avatar-base.types';
-import {
-  AvatarBaseSize,
-} from './avatar-base.types';
+import type { AvatarBaseComponent, AvatarBaseProps } from './avatar-base.types';
+import { AvatarBaseSize } from './avatar-base.types';
 
 export const AvatarBase: AvatarBaseComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

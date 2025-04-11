@@ -1,6 +1,5 @@
 import { SubjectType } from '@metamask/permission-controller';
-import type {
-  AbstractExecutionService} from '@metamask/snaps-controllers';
+import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
   IframeExecutionService,
   OffscreenExecutionService,

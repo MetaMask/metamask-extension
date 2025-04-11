@@ -1,6 +1,7 @@
 import type {
   NameController,
-  NameControllerState} from '@metamask/name-controller';
+  NameControllerState,
+} from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
   NameOrigin,
@@ -9,11 +10,9 @@ import {
 
 import type {
   PetnameEntry,
-  PetnamesBridgeMessenger} from './AbstractPetnamesBridge';
-import {
-  AbstractPetnamesBridge,
-  ChangeType
+  PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
+import { AbstractPetnamesBridge, ChangeType } from './AbstractPetnamesBridge';
 
 const ADDRESS_MIXEDCASE_MOCK = '0xAbc';
 const ADDRESS_LOWERCASE_MOCK = ADDRESS_MIXEDCASE_MOCK.toLowerCase();

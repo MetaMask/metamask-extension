@@ -13,10 +13,9 @@ import type { PolymorphicRef } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
 import type {
   BannerAlertComponent,
-  BannerAlertProps} from './banner-alert.types';
-import {
-  BannerAlertSeverity,
+  BannerAlertProps,
 } from './banner-alert.types';
+import { BannerAlertSeverity } from './banner-alert.types';
 
 export const BannerAlert: BannerAlertComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

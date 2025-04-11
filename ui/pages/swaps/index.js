@@ -16,9 +16,6 @@ import {
   Redirect,
 } from 'react-router-dom';
 
-
-
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -30,7 +27,6 @@ import {
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../shared/constants/swaps';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   getSmartTransactionsEnabled,
@@ -40,6 +36,7 @@ import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { Icon, IconName, IconSize } from '../../components/component-library';
 import Box from '../../components/ui/box';
 import { I18nContext } from '../../contexts/i18n';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   getQuotes,
   clearSwapsState,
@@ -76,6 +73,7 @@ import {
   PREPARE_SWAP_ROUTE,
   SWAPS_NOTIFICATION_ROUTE,
 } from '../../helpers/constants/routes';
+import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { getCurrentNetworkTransactions } from '../../selectors';
 import {

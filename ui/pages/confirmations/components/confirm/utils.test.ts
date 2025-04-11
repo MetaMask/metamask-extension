@@ -22,9 +22,7 @@ describe('confirm - utils', () => {
     });
 
     test("returns the sender address from a transaction if it's passed", () => {
-      const { from } = getConfirmationSender(
-        unapprovedPersonalSignMsg,
-      );
+      const { from } = getConfirmationSender(unapprovedPersonalSignMsg);
 
       expect(from).toEqual(PERSONAL_SIGN_SENDER_ADDRESS);
     });

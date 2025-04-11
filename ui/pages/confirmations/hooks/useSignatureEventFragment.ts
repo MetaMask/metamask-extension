@@ -7,7 +7,6 @@ import { useConfirmContext } from '../context/confirm';
 import type { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 
-
 /**
  * When a signature has been requested, there should be an event fragment created for it in
  * {@see {@link app/scripts/lib/createRPCMethodTrackingMiddleware.js}.

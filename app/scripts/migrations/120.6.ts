@@ -1,4 +1,4 @@
-import type { RuntimeObject} from '@metamask/utils';
+import type { RuntimeObject } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';

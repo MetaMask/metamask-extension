@@ -1,8 +1,5 @@
-import type {
-  TokenFeature} from '../../types/security-alerts-api';
-import {
-  TokenFeatureType,
-} from '../../types/security-alerts-api';
+import type { TokenFeature } from '../../types/security-alerts-api';
+import { TokenFeatureType } from '../../types/security-alerts-api';
 import { getTokenFeatureTitleDescriptionIds } from './security-alerts-api.util';
 
 describe('Security alerts utils', () => {

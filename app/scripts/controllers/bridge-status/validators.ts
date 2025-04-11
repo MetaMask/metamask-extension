@@ -3,10 +3,9 @@ import type {
   BridgeId,
   DestChainStatus,
   SrcChainStatus,
-  Asset} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes,
+  Asset,
 } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 type Validator<ExpectedResponse, DataToValidate> = {

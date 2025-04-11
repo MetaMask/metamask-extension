@@ -50,11 +50,11 @@ import {
   FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
 } from '../../../hooks/identity/useProfileSyncing';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getUseExternalNameSources,

@@ -32,9 +32,31 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
+import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  isAccountConnectedToCurrentTab,
+  getUseBlockie,
+  getShouldHideZeroBalanceTokens,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getShowFiatInTestnets,
+  getChainIdsToPoll,
+  getSnapsMetadata,
+} from '../../../selectors';
+import { getMultichainAggregatedBalance } from '../../../selectors/assets';
+import {
+  getMultichainIsTestnet,
+  getMultichainNativeCurrency,
+  getMultichainNativeCurrencyImage,
+  getMultichainNetwork,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -48,41 +70,18 @@ import {
   Tag,
   Text,
 } from '../../component-library';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
-import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import Tooltip from '../../ui/tooltip/tooltip';
-import {
-  isAccountConnectedToCurrentTab,
-  getUseBlockie,
-  getShouldHideZeroBalanceTokens,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getShowFiatInTestnets,
-  getChainIdsToPoll,
-  getSnapsMetadata,
-} from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 ///: END:ONLY_INCLUDE_IF
-import {
-  getMultichainIsTestnet,
-  getMultichainNativeCurrency,
-  getMultichainNativeCurrencyImage,
-  getMultichainNetwork,
-  getMultichainShouldShowFiat,
-} from '../../../selectors/multichain';
-import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
 

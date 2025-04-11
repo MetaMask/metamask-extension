@@ -1,9 +1,8 @@
 import type {
   SimulationData,
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  SimulationErrorCode
+  TransactionMeta,
 } from '@metamask/transaction-controller';
+import { SimulationErrorCode } from '@metamask/transaction-controller';
 import { screen } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

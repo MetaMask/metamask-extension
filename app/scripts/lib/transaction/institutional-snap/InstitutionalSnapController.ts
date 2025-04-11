@@ -7,10 +7,9 @@ import { HandlerType } from '@metamask/snaps-utils';
 import type {
   TransactionControllerUpdateCustodialTransactionAction,
   TransactionEnvelopeType,
-  TransactionMeta} from '@metamask/transaction-controller';
-import {
-  TransactionStatus,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/institutional-wallet-snap';
 import type {

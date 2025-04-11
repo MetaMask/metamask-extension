@@ -12,7 +12,7 @@ import {
   TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import type { IconName} from '../../component-library';
+import type { IconName } from '../../component-library';
 import { Box, Icon, IconSize, Text } from '../../component-library';
 
 export type NotificationsSettingsTypeProps = {

@@ -1,5 +1,4 @@
-import type {
-  Span} from '@sentry/browser';
+import type { Span } from '@sentry/browser';
 import {
   setMeasurement,
   startSpan,

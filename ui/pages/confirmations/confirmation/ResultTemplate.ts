@@ -18,13 +18,8 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import type { resolvePendingApproval } from '../../../store/actions';
-import type {
-  TemplateRendererComponent} from './util';
-import {
-  processError,
-  processHeader,
-  processString
-} from './util';
+import type { TemplateRendererComponent } from './util';
+import { processError, processHeader, processString } from './util';
 
 export type ResultTemplateActions = {
   resolvePendingApproval: typeof resolvePendingApproval;

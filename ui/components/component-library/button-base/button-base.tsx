@@ -17,12 +17,8 @@ import type { PolymorphicRef } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
 import { Text } from '../text';
 import type { TextProps } from '../text';
-import type {
-  ButtonBaseProps,
-  ButtonBaseComponent} from './button-base.types';
-import {
-  ButtonBaseSize
-} from './button-base.types';
+import type { ButtonBaseProps, ButtonBaseComponent } from './button-base.types';
+import { ButtonBaseSize } from './button-base.types';
 
 export const ButtonBase: ButtonBaseComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

@@ -10,7 +10,7 @@ import {
 import type { PolymorphicRef } from '../box';
 import { ButtonBase, type ButtonBaseProps } from '../button-base';
 import { IconSize } from '../icon';
-import type { ButtonLinkProps , ButtonLinkComponent } from './button-link.types';
+import type { ButtonLinkProps, ButtonLinkComponent } from './button-link.types';
 import { ButtonLinkSize } from './button-link.types';
 
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(

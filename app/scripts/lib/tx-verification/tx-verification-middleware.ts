@@ -11,7 +11,8 @@ import type {
   JsonRpcParams,
   JsonRpcResponse,
   Hex,
- JsonRpcRequest } from '@metamask/utils';
+  JsonRpcRequest,
+} from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';

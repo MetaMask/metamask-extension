@@ -1,9 +1,8 @@
 import type {
   TransactionMeta,
-  TransactionError} from '@metamask/transaction-controller';
-import {
-  TransactionStatus
+  TransactionError,
 } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {

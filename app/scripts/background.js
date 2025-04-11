@@ -54,6 +54,7 @@ import { generateWalletState } from './fixtures/generate-wallet-state';
 import createStreamSink from './lib/createStreamSink';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
+import getObjStructure from './lib/getObjStructure';
 import Migrator from './lib/migrator';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
@@ -61,21 +62,19 @@ import NotificationManager, {
 import ExtensionStore from './lib/stores/extension-store';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
-import MetamaskController, {
-  METAMASK_CONTROLLER_EVENTS,
-} from './metamask-controller';
-import migrations from './migrations';
-import ExtensionPlatform from './platforms/extension';
-import getObjStructure from './lib/getObjStructure';
 import {
   deferredPromise,
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import MetamaskController, {
+  METAMASK_CONTROLLER_EVENTS,
+} from './metamask-controller';
+import migrations from './migrations';
 import { createOffscreen } from './offscreen';
+import ExtensionPlatform from './platforms/extension';
 
 /* eslint-enable import/first */
-
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';

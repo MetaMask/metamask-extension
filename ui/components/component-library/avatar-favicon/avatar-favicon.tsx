@@ -17,10 +17,9 @@ import type { PolymorphicRef } from '../box';
 import { IconName, Icon, IconSize } from '../icon';
 import type {
   AvatarFaviconComponent,
-  AvatarFaviconProps} from './avatar-favicon.types';
-import {
-  AvatarFaviconSize,
+  AvatarFaviconProps,
 } from './avatar-favicon.types';
+import { AvatarFaviconSize } from './avatar-favicon.types';
 
 export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

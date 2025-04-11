@@ -7,7 +7,6 @@ import { pendingTokenApprovals as mockPendingTokenApprovals } from '../../../.st
 import mockState from '../../../.storybook/test-data';
 import configureStore from '../../store/store';
 
-
 const store = configureStore({
   metamask: {
     ...mockState.metamask,

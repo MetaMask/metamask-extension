@@ -15,7 +15,10 @@ import {
 import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
 import type { PolymorphicRef } from '../box';
-import type { AvatarNetworkComponent , AvatarNetworkProps} from './avatar-network.types';
+import type {
+  AvatarNetworkComponent,
+  AvatarNetworkProps,
+} from './avatar-network.types';
 import { AvatarNetworkSize } from './avatar-network.types';
 
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
