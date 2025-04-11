@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Este sitio solicita permiso para gastar sus tokens."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Este sitio solicita volver a una cuenta estándar."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Un sitio quiere que inicie sesión para demostrar que es el propietario de esta cuenta."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Eliminar permiso"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Restablecer cuenta"
-  },
   "confirmTitleSIWESignature": {
     "message": "Solicitud de inicio de sesión"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Solicitud de transacción"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Si confirma esta solicitud, su cuenta se actualizará a una cuenta inteligente."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancelar transacción"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancelar actualización y transacción"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Si no desea actualizar su cuenta, puede cancelarla aquí.\n\nPara finalizar esta transacción sin una actualización, deberá realizar esta solicitud nuevamente en el sitio. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancelar transacción"
   },
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."

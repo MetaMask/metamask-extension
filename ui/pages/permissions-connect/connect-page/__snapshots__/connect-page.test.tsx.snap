@@ -461,7 +461,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                     >
                       <div>
                         <div
-                          aria-describedby="tippy-tooltip-34"
+                          aria-describedby="static-tooltip-id"
                           class=""
                           data-original-title="Not connected"
                           data-tooltipped=""
