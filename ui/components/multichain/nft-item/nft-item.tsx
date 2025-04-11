@@ -58,6 +58,7 @@ export const NftItem = ({
   clickable,
   privacyMode,
   isIpfsURL,
+  name,
 }: NftItemProps) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
@@ -155,7 +156,7 @@ export const NftItem = ({
             <>
               <span>{nft?.name}</span>
               <br />
-              <span>{nft.collection?.name}</span>
+              <span>{nft?.collection?.name || name}</span>
             </>
           }
           disabled={!isLongName && !isLongCollection}
@@ -172,7 +173,7 @@ export const NftItem = ({
             color={TextColor.textAlternative}
             ellipsis
           >
-            {nft?.collection?.name}
+            {nft?.collection?.name || name}
           </Text>
         </Tooltip>
       )}

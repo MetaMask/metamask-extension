@@ -81,6 +81,17 @@ exports[`NFT full image should match snapshot 1`] = `
                     </div>
                   </div>
                 </button>
+<<<<<<< HEAD
+=======
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+                />
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+                >
+                  Punk #4
+                </p>
+>>>>>>> main
               </div>
             </div>
           </div>
