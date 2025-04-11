@@ -1,5 +1,10 @@
 import { CaipChainId } from '@metamask/utils';
-import { BtcAccountType, SolAccountType, BtcScope, SolScope } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  SolAccountType,
+  BtcScope,
+  SolScope,
+} from '@metamask/keyring-api';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
@@ -43,6 +48,7 @@ export enum MultichainNetworks {
   SOLANA_TESTNET = SolScope.Testnet,
 }
 
+// TODO: This data should be provided by the snap
 export const NETWORK_TO_ACCOUNT_TYPE_MAP: Record<CaipChainId, string> = {
   [BtcScope.Mainnet]: 'Bitcoin',
   [BtcScope.Testnet]: 'Bitcoin testnet',
@@ -65,6 +71,7 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
 };
 
+// TODO: This data should be provided by the snap
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_TOKEN_IMAGE_URL =
   './images/bitcoin-testnet-logo.svg';

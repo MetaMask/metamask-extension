@@ -11,10 +11,9 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
 } from '../../../../selectors';
+import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
 import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainNativeAssetType } from '../../../../selectors/assets';
 
 /**
  * Use this hook to trigger the send flow for non-EVM accounts.
@@ -26,7 +25,11 @@ import { getMultichainNativeAssetType } from '../../../../selectors/assets';
  * @returns A function that triggers the send flow for non-EVM accounts.
  */
 export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
-  const nativeAssetType = useMultichainSelector(getMultichainNativeAssetType);
+  // update selector to use testnet native asset
+  const selectedNetwork = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
+  const { nativeCurrency: nativeAssetType } = selectedNetwork;
 
   const account = useSelector(getSelectedInternalAccount);
   const history = useHistory();
