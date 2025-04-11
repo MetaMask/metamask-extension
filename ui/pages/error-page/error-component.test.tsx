@@ -151,6 +151,7 @@ describe('ErrorPage', () => {
     );
     const tryAgainButton = getByTestId('error-page-try-again-button');
     fireEvent.click(tryAgainButton);
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(browser.runtime.reload).toHaveBeenCalled();
   });
 

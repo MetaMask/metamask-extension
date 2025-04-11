@@ -151,7 +151,9 @@ describe('AddressBookPetnamesBridge', () => {
       const listener = messenger.subscribe.mock.calls[1][1] as () => void;
       listener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledWith({
         value: ADDRESS_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
@@ -184,7 +186,9 @@ describe('AddressBookPetnamesBridge', () => {
       const listener = messenger.subscribe.mock.calls[1][1] as () => void;
       listener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledWith({
         value: ADDRESS_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
@@ -213,7 +217,9 @@ describe('AddressBookPetnamesBridge', () => {
       const listener = messenger.subscribe.mock.calls[1][1] as () => void;
       listener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledWith({
         value: ADDRESS_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
@@ -241,7 +247,9 @@ describe('AddressBookPetnamesBridge', () => {
       const listener = messenger.subscribe.mock.calls[0][1] as () => void;
       listener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(addressBookController.set).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(addressBookController.set).toHaveBeenCalledWith(
         ADDRESS_MOCK,
         NAME_MOCK,
@@ -267,7 +275,9 @@ describe('AddressBookPetnamesBridge', () => {
       const listener = messenger.subscribe.mock.calls[0][1] as () => void;
       listener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(addressBookController.set).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(addressBookController.set).toHaveBeenCalledWith(
         ADDRESS_MOCK,
         NAME_2_MOCK,
@@ -293,7 +303,9 @@ describe('AddressBookPetnamesBridge', () => {
       const listener = messenger.subscribe.mock.calls[0][1] as () => void;
       listener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(addressBookController.delete).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(addressBookController.delete).toHaveBeenCalledWith(
         CHAIN_ID_MOCK,
         ADDRESS_MOCK,

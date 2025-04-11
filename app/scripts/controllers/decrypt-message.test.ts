@@ -139,9 +139,11 @@ describe('DecryptMessageController', () => {
       undefined as any,
     );
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.addUnapprovedMessageAsync).toBeCalledTimes(
       1,
     );
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.addUnapprovedMessageAsync).toBeCalledWith(
       messageMock,
       undefined,
@@ -169,7 +171,9 @@ describe('DecryptMessageController', () => {
       messageToDecrypt,
     );
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.approveMessage).toBeCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.approveMessage).toBeCalledWith(
       messageToDecrypt,
     );
@@ -178,9 +182,11 @@ describe('DecryptMessageController', () => {
       'KeyringController:decryptMessage',
       messageToDecrypt,
     );
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.setMessageStatusAndResult).toBeCalledTimes(
       1,
     );
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.setMessageStatusAndResult).toBeCalledWith(
       messageIdMock,
       'decryptedMessage',
@@ -239,7 +245,9 @@ describe('DecryptMessageController', () => {
       messageToDecrypt,
     );
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.setResult).toBeCalledWith(
       messageMock.metamaskId,
       'decryptedMessage',
@@ -268,7 +276,9 @@ describe('DecryptMessageController', () => {
       messageIdMock,
     );
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
       messageIdMock,
     );
@@ -284,7 +294,9 @@ describe('DecryptMessageController', () => {
 
     await decryptMessageController.rejectUnapproved('reason to cancel');
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
       messageIdMock,
     );

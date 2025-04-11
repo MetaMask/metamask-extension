@@ -115,6 +115,7 @@ describe('AbstractPetnamesBridge', () => {
       });
       bridge.init();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.subscribe).toHaveBeenCalledWith(
         'NameController:stateChange',
         expect.any(Function),
@@ -130,6 +131,7 @@ describe('AbstractPetnamesBridge', () => {
       });
       bridge.init();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.subscribe).not.toHaveBeenCalled();
     });
   });
@@ -153,7 +155,9 @@ describe('AbstractPetnamesBridge', () => {
       const sourceListener = bridge.onSourceChange.mock.calls[0][0];
       sourceListener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledWith(PETNAME_ENTRY);
     });
 
@@ -177,7 +181,9 @@ describe('AbstractPetnamesBridge', () => {
       const sourceListener = bridge.onSourceChange.mock.calls[0][0];
       sourceListener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledWith(
         UPDATED_PETNAME_ENTRY,
       );
@@ -199,7 +205,9 @@ describe('AbstractPetnamesBridge', () => {
       const sourceListener = bridge.onSourceChange.mock.calls[0][0];
       sourceListener();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).toHaveBeenCalledWith({
         value: ADDRESS_LOWERCASE_MOCK,
         variation: CHAIN_ID_MOCK,
@@ -231,6 +239,7 @@ describe('AbstractPetnamesBridge', () => {
 
       // No change should be made because the lower-case and mixed-case addresses
       // should be considered equal.
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(nameController.setName).not.toHaveBeenCalled();
     });
 
@@ -273,7 +282,9 @@ describe('AbstractPetnamesBridge', () => {
         sourceListener();
 
         // Only the entry with the PARTICIPANT_ORIGIN_MOCK should be deleted.
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
         expect(nameController.setName).toHaveBeenCalledTimes(1);
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
         expect(nameController.setName).toHaveBeenCalledWith({
           value: ADDRESS_LOWERCASE_MOCK,
           variation: FALLBACK_VARIATION,

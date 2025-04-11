@@ -329,6 +329,7 @@ describe('submitSmartTransactionHook', () => {
         expect(result).toEqual({ transactionHash: txHash });
         const { txParams } = request.transactionMeta || {};
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.smartTransactionsController.submitSignedTransactions,
         ).toHaveBeenCalledWith({
           signedTransactions: [request.signedTransactionInHex],
@@ -413,6 +414,7 @@ describe('submitSmartTransactionHook', () => {
         expect(result).toEqual({ transactionHash: txHash });
         const { txParams, chainId } = request.transactionMeta || {};
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.approveTransactionsWithSameNonce,
         ).toHaveBeenCalledWith(
           [
@@ -426,6 +428,7 @@ describe('submitSmartTransactionHook', () => {
           { hasNonce: true },
         );
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.smartTransactionsController.submitSignedTransactions,
         ).toHaveBeenCalledWith({
           signedTransactions: [createSignedTransaction()],
@@ -506,9 +509,11 @@ describe('submitSmartTransactionHook', () => {
         expect(result).toEqual({ transactionHash: txHash });
         const { txParams } = request.transactionMeta || {};
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.approveTransactionsWithSameNonce,
         ).not.toHaveBeenCalled();
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.smartTransactionsController.submitSignedTransactions,
         ).toHaveBeenCalledWith({
           signedTransactions: [request.signedTransactionInHex],
@@ -733,6 +738,7 @@ describe('submitBatchSmartTransactionHook', () => {
         });
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.smartTransactionsController.submitSignedTransactions,
         ).toHaveBeenCalledWith({
           signedTransactions: ['0x1234', '0x5678'],

@@ -65,6 +65,7 @@ describe('PersistenceManager', () => {
 
       await manager.set({ appState: { broken: true } });
       expect(captureException).toHaveBeenCalledWith(error);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,

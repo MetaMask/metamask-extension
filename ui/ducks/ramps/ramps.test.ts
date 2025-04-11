@@ -110,6 +110,7 @@ describe('rampsSlice', () => {
     it('should call RampAPI.getNetworks when the Basic Functionality Toggle is on and isFetched is false', async () => {
       // @ts-expect-error this is a valid action
       await store.dispatch(fetchBuyableChains());
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(RampAPI.getNetworks).toHaveBeenCalledTimes(1);
     });
 
@@ -120,6 +121,7 @@ describe('rampsSlice', () => {
       // @ts-expect-error this is a valid action
       await store.dispatch(fetchBuyableChains());
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(RampAPI.getNetworks).not.toHaveBeenCalled();
     });
 
@@ -131,6 +133,7 @@ describe('rampsSlice', () => {
 
       // @ts-expect-error this is a valid action
       await store.dispatch(fetchBuyableChains());
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(RampAPI.getNetworks).not.toHaveBeenCalled();
     });
 

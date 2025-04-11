@@ -16,7 +16,9 @@ export const PPOMControllerInit: ControllerInitFunction<
   const {
     controllerMessenger,
     initMessenger,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     getController,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     getGlobalChainId,
     getProvider,
     persistedState,

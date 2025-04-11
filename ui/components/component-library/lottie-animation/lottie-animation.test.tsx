@@ -53,6 +53,7 @@ describe('LottieAnimation', () => {
   it('calls lottie.loadAnimation with correct config when using data', () => {
     render(<LottieAnimation data={mockData} loop={false} autoplay={false} />);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(lottie.loadAnimation).toHaveBeenCalledWith(
       expect.objectContaining({
         animationData: mockData,
@@ -67,6 +68,7 @@ describe('LottieAnimation', () => {
   it('calls lottie.loadAnimation with correct config when using path', () => {
     render(<LottieAnimation path={mockPath} loop={true} autoplay={true} />);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
     expect(lottie.loadAnimation).toHaveBeenCalledWith(
       expect.objectContaining({
         path: mockPath,

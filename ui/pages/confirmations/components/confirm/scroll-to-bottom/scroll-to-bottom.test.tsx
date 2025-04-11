@@ -78,6 +78,7 @@ describe('ScrollToBottom', () => {
 
     it('does not scroll to the top while the confirmation id does not change', () => {
       const mockScrollTo = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
 
@@ -97,6 +98,7 @@ describe('ScrollToBottom', () => {
 
     it('scrolls to the top when the confirmation changes', () => {
       const mockScrollTo = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
 

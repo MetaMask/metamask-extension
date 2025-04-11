@@ -140,9 +140,11 @@ describe('Transaction Utils', () => {
         await addTransaction(request);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
@@ -226,9 +228,11 @@ describe('Transaction Utils', () => {
         await addTransaction(request);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
@@ -243,9 +247,11 @@ describe('Transaction Utils', () => {
         await addTransaction(request);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           userOperationController.startPollingByNetworkClientId,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           userOperationController.startPollingByNetworkClientId,
         ).toHaveBeenCalledWith(TRANSACTION_REQUEST_MOCK.networkClientId);
       });
@@ -343,9 +349,11 @@ describe('Transaction Utils', () => {
         await addTransaction(request);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledWith(
           TRANSACTION_PARAMS_MOCK,
@@ -364,9 +372,11 @@ describe('Transaction Utils', () => {
         await addTransaction(request);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledWith(
           {
@@ -388,10 +398,12 @@ describe('Transaction Utils', () => {
         });
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
@@ -411,10 +423,12 @@ describe('Transaction Utils', () => {
         });
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
           TRANSACTION_PARAMS_MOCK,
@@ -440,10 +454,12 @@ describe('Transaction Utils', () => {
         });
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
           sendRequest.transactionParams,
@@ -464,10 +480,12 @@ describe('Transaction Utils', () => {
         });
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
@@ -488,10 +506,12 @@ describe('Transaction Utils', () => {
         });
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
@@ -509,9 +529,11 @@ describe('Transaction Utils', () => {
         await addDappTransaction(dappRequest);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
@@ -548,9 +570,11 @@ describe('Transaction Utils', () => {
         await addDappTransaction(dappRequest);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           request.userOperationController.addUserOperationFromTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
@@ -565,9 +589,11 @@ describe('Transaction Utils', () => {
         await addDappTransaction(dappRequest);
 
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           userOperationController.startPollingByNetworkClientId,
         ).toHaveBeenCalledTimes(1);
         expect(
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
           userOperationController.startPollingByNetworkClientId,
         ).toHaveBeenCalledWith(TRANSACTION_REQUEST_MOCK.networkClientId);
       });

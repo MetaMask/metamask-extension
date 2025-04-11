@@ -28,6 +28,7 @@ describe('useMetametrics', () => {
 
     store.dispatch = jest.fn().mockImplementation((action) => {
       if (typeof action === 'function') {
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
         return action(store.dispatch, store.getState);
       }
       return Promise.resolve();

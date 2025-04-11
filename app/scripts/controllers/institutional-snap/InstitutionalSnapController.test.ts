@@ -132,16 +132,20 @@ describe('InstitutionalSnapController', () => {
 
   describe('constructor', () => {
     it('should initialize correctly', () => {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.registerActionHandler).toHaveBeenCalledTimes(3);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:getState',
         expect.any(Function),
       );
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:publishHook',
         expect.any(Function),
       );
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:beforeCheckPendingTransactionHook',
         expect.any(Function),
@@ -154,6 +158,7 @@ describe('InstitutionalSnapController', () => {
       const result = await controller.deferPublicationHook(mockTransactionMeta);
 
       expect(result).toBe(false);
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.call).toHaveBeenCalledWith(
         'SnapController:handleRequest',
         expect.objectContaining({
@@ -167,6 +172,7 @@ describe('InstitutionalSnapController', () => {
         }),
       );
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       expect(messenger.call).toHaveBeenCalledWith(
         'TransactionController:updateCustodialTransaction',
         expect.objectContaining({
