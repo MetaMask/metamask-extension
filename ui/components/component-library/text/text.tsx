@@ -60,6 +60,8 @@ export const Text: TextComponent = React.forwardRef(
         [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
         [`mm-text--ellipsis`]: Boolean(ellipsis),
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },

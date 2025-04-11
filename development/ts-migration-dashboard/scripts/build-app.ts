@@ -78,6 +78,8 @@ async function compileScripts(src: string, dest: string) {
   const bundleStream = bundler.bundle();
   bundleStream.pipe(fs.createWriteStream(dest));
   bundleStream.on('error', (error: unknown) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Couldn't compile scripts: ${error}`);
   });
   await pify(finished)(bundleStream);
@@ -101,6 +103,8 @@ async function compileStylesheets(src: string, dest: string): Promise<void> {
     gulp.src(src),
     sourcemaps.init(),
     gulpSass(sass)().on('error', (error: unknown) => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.error(`Couldn't compile stylesheets: ${error}`);
     }),
     autoprefixer(),

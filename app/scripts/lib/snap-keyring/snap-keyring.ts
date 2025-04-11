@@ -74,6 +74,8 @@ export async function showAccountCreationDialog(
   // eslint-disable-next-line id-length
   } catch (e) {
     throw new Error(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Error occurred while showing account creation dialog.\n${e}`,
     );
   }
@@ -108,6 +110,8 @@ export async function showAccountNameSuggestionDialog(
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
   // eslint-disable-next-line id-length
   } catch (e) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Error occurred while showing name account dialog.\n${e}`);
   }
 }

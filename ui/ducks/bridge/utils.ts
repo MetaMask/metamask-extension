@@ -97,6 +97,8 @@ const fetchTokenExchangeRates = async (
       includeMarketData: 'true',
       vsCurrency: currency,
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
     const tokenV3PriceResponse = (await fetchWithCache({
       url,

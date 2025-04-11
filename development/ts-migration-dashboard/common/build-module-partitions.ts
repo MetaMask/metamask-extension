@@ -122,6 +122,8 @@ function readFilesToConvert(): string[] {
       'Could not read or parse list of files to convert. ' +
         'Have you tried running the following command?\n\n' +
         '    yarn ts-migration:enumerate\n\n' +
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Original error: ${error}`,
     );
   }

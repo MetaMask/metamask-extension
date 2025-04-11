@@ -168,6 +168,8 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
 
   const url = `${BASE_URL}/${SWAPS_API_VERSION}/networks/${hexToDecimal(
     chainId,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   )}/quotes?${queryString}`;
 
   const tradesResponse = await fetchWithCache({

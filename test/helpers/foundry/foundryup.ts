@@ -119,6 +119,8 @@ export async function installBinaries(
       await copyFile(target, path);
     }
     // check that it works by logging the version
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     say(`installed - ${getVersion(path)}`);
   }
 }

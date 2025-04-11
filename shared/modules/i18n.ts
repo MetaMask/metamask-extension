@@ -100,6 +100,8 @@ export async function fetchLocale(
     );
     return await response.json();
   } catch (error) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     log.error(`failed to fetch ${localeCode} locale because of ${error}`);
     return {};
   }

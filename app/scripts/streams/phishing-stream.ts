@@ -164,7 +164,8 @@ const onDisconnectDestroyPhishingStreams = (): void => {
   // eslint-disable-next-line id-denylist
   if (err) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -217,7 +218,8 @@ export function redirectToPhishingWarning(): void {
 
   const querystring = new URLSearchParams({ hostname, href });
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line no-restricted-globals, @typescript-eslint/restrict-template-expressions
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

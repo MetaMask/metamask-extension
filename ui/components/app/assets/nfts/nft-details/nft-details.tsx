@@ -336,7 +336,8 @@ export function NftDetailsComponent({
         console.error(`Failed to switch chains for NFT.
           Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
           ${          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-          // eslint-disable-next-line id-denylist
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
 err}`);
         // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
         // eslint-disable-next-line id-denylist

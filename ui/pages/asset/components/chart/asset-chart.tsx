@@ -62,7 +62,11 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   fill: true,
   backgroundColor: ({ chart }) => {
     const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     gradient.addColorStop(0, `${chart.options.borderColor}60`);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     gradient.addColorStop(1, `${chart.options.borderColor}00`);
     return gradient;
   },

@@ -300,6 +300,8 @@ export class MMIController {
         const keyring = await this.addKeyringIfNotExists(type as KeyringTypes);
 
         keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           log.info(`Refresh token change event for ${type}`);
           // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           this.persistKeyringsAfterRefreshTokenChange();
@@ -309,6 +311,8 @@ export class MMIController {
         keyring.on(
           INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
           (payload: IInteractiveRefreshTokenChangeEvent) => {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             log.info(`Interactive refresh token change event for ${payload}`);
             this.appStateController.showInteractiveReplacementTokenBanner(
               payload,
@@ -354,6 +358,8 @@ export class MMIController {
         }
       } catch (error) {
         log.error(
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Error while unlocking extension with custody type ${type}`,
           error,
         );
@@ -437,6 +443,8 @@ export class MMIController {
     keyring.on(
       INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
       (payload: IInteractiveRefreshTokenChangeEvent) => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         log.info(`Interactive refresh token change event for ${payload}`);
         this.appStateController.showInteractiveReplacementTokenBanner(payload);
       },
