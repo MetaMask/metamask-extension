@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Display,
   FlexDirection,
@@ -7,6 +8,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ModalBody as BaseModalBody,
   Box,
@@ -15,7 +17,6 @@ import {
   IconSize,
   IconName,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type FeatureBlock = {
   title: string;

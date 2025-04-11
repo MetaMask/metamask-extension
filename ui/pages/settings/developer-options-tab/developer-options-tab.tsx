@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   Box,
   Button,
@@ -24,8 +26,8 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getRemoteFeatureFlags } from '../../../selectors';
 import {
   resetOnboarding,
   resetViewedNotifications,
@@ -33,12 +35,9 @@ import {
 } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
-import SentryTest from './sentry-test';
 import { ProfileSyncDevSettings } from './profile-sync';
+import SentryTest from './sentry-test';
 
 /**
  * Settings Page for Developer Options (internal-only)

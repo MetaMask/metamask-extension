@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
 const version = 66;

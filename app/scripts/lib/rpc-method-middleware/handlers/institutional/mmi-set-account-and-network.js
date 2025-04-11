@@ -1,5 +1,6 @@
 import { isAllowedRPCOrigin } from '@metamask-institutional/rpc-allowlist';
 import { rpcErrors } from '@metamask/rpc-errors';
+
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 const mmiSetAccountAndNetwork = {

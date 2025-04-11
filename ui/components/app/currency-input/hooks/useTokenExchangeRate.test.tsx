@@ -1,10 +1,11 @@
+import { waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+
 import mockState from '../../../../../test/data/mock-state.json';
-import configureStore from '../../../../store/store';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import configureStore from '../../../../store/store';
 import useTokenExchangeRate from './useTokenExchangeRate';
 
 const renderUseTokenExchangeRate = (

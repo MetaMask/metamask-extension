@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import migration64 from './064';
 

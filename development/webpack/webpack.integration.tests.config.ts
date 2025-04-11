@@ -2,17 +2,17 @@
  * @file The webpack configuration file to enable debug previewing for UI integration tests.
  */
 
+import autoprefixer from 'autoprefixer';
+import CopyPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import rtlCss from 'postcss-rtlcss';
 import {
   type Configuration,
   type WebpackPluginInstance,
   ProgressPlugin,
 } from 'webpack';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
-import rtlCss from 'postcss-rtlcss';
-import autoprefixer from 'autoprefixer';
 
 const context = join(__dirname, '../../app');
 const browsersListPath = join(context, '../.browserslistrc');

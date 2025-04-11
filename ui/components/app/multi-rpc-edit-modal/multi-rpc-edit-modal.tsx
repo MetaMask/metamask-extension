@@ -1,16 +1,10 @@
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalBody,
-  ModalFooter,
-  Box,
-  Text,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AlignItems,
   Display,
@@ -20,12 +14,19 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowMultiRpcModal } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalBody,
+  ModalFooter,
+  Box,
+  Text,
+} from '../../component-library';
 import NetworkListItem from './network-list-item/network-list-item';
 
 function MultiRpcEditModal() {

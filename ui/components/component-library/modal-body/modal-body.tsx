@@ -1,9 +1,8 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
-
 import type { ModalBodyProps, ModalBodyComponent } from './modal-body.types';
 
 export const ModalBody: ModalBodyComponent = React.forwardRef(

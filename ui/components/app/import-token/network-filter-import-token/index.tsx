@@ -1,6 +1,13 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import {
+  getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+} from '../../../../selectors';
+import { getImageForChainId } from '../../../../selectors/multichain';
 import {
   Box,
   Popover,
@@ -8,12 +15,6 @@ import {
   Label,
 } from '../../../component-library';
 import NetworkFilter from '../../assets/asset-list/network-filter';
-import {
-  getCurrentNetwork,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-} from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { getImageForChainId } from '../../../../selectors/multichain';
 import { NetworkFilterDropdown } from './network-filter-dropdown';
 
 export const NetworkFilterImportToken = ({

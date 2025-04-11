@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { GlobalMenu } from '.';
 
 export default {

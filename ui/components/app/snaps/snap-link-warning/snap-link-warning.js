@@ -1,20 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  AvatarIconSize,
-  Box,
-  Button,
-  ButtonLink,
-  ButtonSize,
-  ButtonVariant,
-  Icon,
-  IconName,
-  Modal,
-  ModalOverlay,
-  Text,
-} from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
+import React from 'react';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -31,6 +17,21 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  AvatarIconSize,
+  Box,
+  Button,
+  ButtonLink,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconName,
+  Modal,
+  ModalOverlay,
+  Text,
+} from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 
 const SnapLinkDisplay = ({ url }) => {
   const parsedUrl = new URL(url);

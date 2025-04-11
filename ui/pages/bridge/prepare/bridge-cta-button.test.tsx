@@ -1,13 +1,14 @@
-import React from 'react';
 import {
   RequestStatus,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import React from 'react';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { renderWithProvider } from '../../../../test/jest';
+import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import configureStore from '../../../store/store';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {

@@ -1,5 +1,7 @@
 const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
+
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
@@ -7,7 +9,6 @@ const {
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('Personal sign', function () {
   it('can queue multiple personal signs and confirm', async function () {

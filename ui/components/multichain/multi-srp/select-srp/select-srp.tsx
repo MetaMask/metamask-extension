@@ -1,13 +1,5 @@
 import React from 'react';
-import Card from '../../../ui/card';
-import {
-  Box,
-  IconName,
-  Icon,
-  Text,
-  IconSize,
-  Label,
-} from '../../../component-library';
+
 import {
   JustifyContent,
   Display,
@@ -17,6 +9,15 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  Box,
+  IconName,
+  Icon,
+  Text,
+  IconSize,
+  Label,
+} from '../../../component-library';
+import Card from '../../../ui/card';
 
 export type SelectSrpProps = {
   srpName: string;

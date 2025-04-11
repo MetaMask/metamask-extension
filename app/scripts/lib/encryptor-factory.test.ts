@@ -1,4 +1,5 @@
 import * as browserPassworder from '@metamask/browser-passworder';
+
 import { encryptorFactory } from './encryptor-factory';
 
 jest.mock('@metamask/browser-passworder');

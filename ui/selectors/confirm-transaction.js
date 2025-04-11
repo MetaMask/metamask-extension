@@ -1,31 +1,32 @@
-import { createSelector } from 'reselect';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import txHelper from '../helpers/utils/tx-helper';
-import {
-  getTransactionFee,
-  addFiat,
-  addEth,
-} from '../helpers/utils/confirm-tx.util';
-import {
-  getGasEstimateType,
-  getGasFeeEstimates,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+import { createSelector } from 'reselect';
+
 import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../shared/constants/gas';
-import {
-  getMaximumGasTotalInHexWei,
-  getMinimumGasTotalInHexWei,
-} from '../../shared/modules/gas.utils';
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
   subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
+import {
+  getMaximumGasTotalInHexWei,
+  getMinimumGasTotalInHexWei,
+} from '../../shared/modules/gas.utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import {
+  getGasEstimateType,
+  getGasFeeEstimates,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
+import {
+  getTransactionFee,
+  addFiat,
+  addEth,
+} from '../helpers/utils/confirm-tx.util';
+import txHelper from '../helpers/utils/tx-helper';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,

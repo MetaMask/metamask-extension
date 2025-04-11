@@ -6,6 +6,7 @@ import {
   NameOrigin,
   NameType,
 } from '@metamask/name-controller';
+
 import { getNames } from '../selectors';
 import { useName } from './useName';
 

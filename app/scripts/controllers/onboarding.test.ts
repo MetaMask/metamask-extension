@@ -1,4 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
+
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingController, {
   getDefaultOnboardingControllerState,

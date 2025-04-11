@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { useModalProps } from '../../../../../hooks/useModalProps';
+
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   ButtonSize,
@@ -15,6 +16,8 @@ import {
   IconName,
   IconSize,
 } from '../../../../../components/component-library';
+import OriginPill from '../../../../../components/ui/origin-pill/origin-pill';
+import { I18nContext } from '../../../../../contexts/i18n';
 import {
   AlignItems,
   Display,
@@ -23,10 +26,8 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../../contexts/i18n';
+import { useModalProps } from '../../../../../hooks/useModalProps';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import OriginPill from '../../../../../components/ui/origin-pill/origin-pill';
-import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
 const MultipleRequestContent = ({
   onConfirmationCancel,

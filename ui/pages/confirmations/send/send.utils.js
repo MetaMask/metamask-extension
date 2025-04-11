@@ -1,5 +1,6 @@
 import { encode } from '@metamask/abi-utils';
 import { isHexString } from '@metamask/utils';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';

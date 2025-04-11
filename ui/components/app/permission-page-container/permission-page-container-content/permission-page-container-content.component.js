@@ -1,7 +1,7 @@
+import { SubjectType } from '@metamask/permission-controller';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { SubjectType } from '@metamask/permission-controller';
-import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -14,8 +14,9 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
+import { Box, Text } from '../../../component-library';
+import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {

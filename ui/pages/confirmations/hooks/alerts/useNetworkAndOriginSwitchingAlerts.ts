@@ -1,17 +1,17 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { LastInteractedConfirmationInfo } from '../../../../../shared/types/confirm';
-import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import {
   getLastInteractedConfirmationInfo,
   setLastInteractedConfirmationInfo,
 } from '../../../../store/actions';
-import { selectNetworkConfigurationByChainId } from '../../../../selectors';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import type { SignatureRequestType } from '../../types/confirm';
 

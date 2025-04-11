@@ -1,5 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+
+import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
 import {
   Display,
   FlexDirection,
@@ -26,7 +28,6 @@ import {
   IconSize,
   ButtonSize,
 } from '../../component-library';
-import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
 
 export default function DataDeletionErrorModal() {
   const t = useI18nContext();

@@ -3,6 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -13,8 +14,8 @@ import {
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
 } from '../../../shared/constants/app';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
+import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,

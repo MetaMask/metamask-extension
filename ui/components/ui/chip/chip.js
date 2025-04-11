@@ -1,15 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { omit } from 'lodash';
-import { Text } from '../../component-library';
-import UrlIcon from '../url-icon';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   BackgroundColor,
   BorderColor,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
+import UrlIcon from '../url-icon';
 
 /**
  * @deprecated The `<Chip />` component has been deprecated in favor of the new `<Tag>` component from the component-library.

@@ -4,6 +4,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import * as Multichain from '@metamask/chain-agnostic-permission';
 import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+
 import {
   CaveatTypes,
   RestrictedMethods,

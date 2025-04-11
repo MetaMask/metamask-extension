@@ -1,19 +1,19 @@
-import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
-import TransactionIcon from '../transaction-icon';
-import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
+
 import {
   TransactionGroupStatus,
   SmartTransactionStatus,
 } from '../../../../shared/constants/transaction';
-
-import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
-import TransactionListItemDetails from '../transaction-list-item-details';
-import { ActivityListItem } from '../../multichain';
+import {
+  BackgroundColor,
+  Display,
+} from '../../../helpers/constants/design-system';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
+import { getCurrentNetwork } from '../../../selectors';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -21,11 +21,11 @@ import {
   BadgeWrapperAnchorElementShape,
   Box,
 } from '../../component-library';
-import {
-  BackgroundColor,
-  Display,
-} from '../../../helpers/constants/design-system';
-import { getCurrentNetwork } from '../../../selectors';
+import { ActivityListItem } from '../../multichain';
+import CancelButton from '../cancel-button';
+import TransactionIcon from '../transaction-icon';
+import TransactionListItemDetails from '../transaction-list-item-details';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 
 export default function SmartTransactionListItem({
   smartTransaction,

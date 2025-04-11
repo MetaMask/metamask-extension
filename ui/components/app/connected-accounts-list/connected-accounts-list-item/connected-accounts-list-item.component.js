@@ -1,17 +1,8 @@
-import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { shortenAddress } from '../../../../helpers/utils/util';
 
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Text,
-} from '../../../component-library';
-import { getUseBlockie } from '../../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,6 +12,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { getUseBlockie } from '../../../../selectors';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  Box,
+  Text,
+} from '../../../component-library';
 
 export default function ConnectedAccountsListItem({
   address,

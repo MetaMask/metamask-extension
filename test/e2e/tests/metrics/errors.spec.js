@@ -1,13 +1,15 @@
-const { resolve } = require('path');
-const { promises: fs } = require('fs');
-const { strict: assert } = require('assert');
-const { get, has, set, unset, cloneDeep } = require('lodash');
-const { Browser } = require('selenium-webdriver');
-const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
+const { strict: assert } = require('assert');
+const { promises: fs } = require('fs');
+const { get, has, set, unset, cloneDeep } = require('lodash');
+const { resolve } = require('path');
+const { format } = require('prettier');
+const { Browser } = require('selenium-webdriver');
+
 const {
   SENTRY_UI_STATE,
 } = require('../../../../app/scripts/constants/sentry-state');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   logInWithBalanceValidation,
@@ -15,7 +17,6 @@ const {
   sentryRegEx,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
-const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * Derive a UI state field from a background state field.

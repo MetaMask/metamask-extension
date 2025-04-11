@@ -1,6 +1,6 @@
-import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text } from '../../../../../component-library';
+import React from 'react';
+
 import {
   BlockSize,
   Display,
@@ -8,7 +8,7 @@ import {
   TextVariant,
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
-
+import { HeaderBase, Text } from '../../../../../component-library';
 import type { StyleUtilityProps } from '../../../../../component-library/box';
 
 // TODO: Convert to a `type` in a future major version.

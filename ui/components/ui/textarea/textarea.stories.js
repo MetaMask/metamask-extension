@@ -1,6 +1,7 @@
-import React from 'react';
 import { useArgs } from '@storybook/client-api';
+import React from 'react';
 
+import Textarea from '.';
 import {
   BorderStyle,
   BlockSize,
@@ -8,9 +9,8 @@ import {
   BorderColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import { RESIZE } from './textarea.constants';
 import README from './README.mdx';
-import Textarea from '.';
+import { RESIZE } from './textarea.constants';
 
 export default {
   title: 'Components/UI/Textarea',

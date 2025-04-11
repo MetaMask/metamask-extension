@@ -1,5 +1,5 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 
 export const AdvancedGasFeePopoverContext = createContext({});
 

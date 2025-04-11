@@ -1,7 +1,7 @@
 import React from 'react';
+
 import { Severity } from '../../../helpers/constants/design-system';
 import { BannerAlert } from '../../component-library';
-
 import IconBorder from './icon-border';
 
 export default {

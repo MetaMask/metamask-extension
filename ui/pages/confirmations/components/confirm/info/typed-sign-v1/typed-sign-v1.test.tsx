@@ -1,11 +1,12 @@
+import { isSnapId } from '@metamask/snaps-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TransactionType } from '@metamask/transaction-controller';
 
-import { isSnapId } from '@metamask/snaps-utils';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../test/data/confirmations/helper';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
+import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import TypedSignInfoV1 from './typed-sign-v1';

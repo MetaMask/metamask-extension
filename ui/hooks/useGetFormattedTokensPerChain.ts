@@ -1,11 +1,11 @@
-import { useSelector } from 'react-redux';
-import { BN } from 'bn.js';
 import type { Token } from '@metamask/assets-controllers';
-import { getAllTokens } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { BN } from 'bn.js';
+import { useSelector } from 'react-redux';
 
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import type { TokenWithBalance } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { getAllTokens } from '../selectors';
 import { stringifyBalance, useTokenBalances } from './useTokenBalances';
 
 type AddressMapping = {

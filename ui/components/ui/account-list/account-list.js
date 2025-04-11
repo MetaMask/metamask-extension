@@ -1,21 +1,10 @@
-import React, { memo, useLayoutEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Identicon from '../identicon';
-import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
+import PropTypes from 'prop-types';
+import React, { memo, useLayoutEffect, useRef } from 'react';
+
 import { PRIMARY } from '../../../helpers/constants/common';
-import Tooltip from '../tooltip';
-import {
-  Box,
-  ButtonLink,
-  Checkbox,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,6 +17,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
+import {
+  Box,
+  ButtonLink,
+  Checkbox,
+  Icon,
+  IconName,
+  Text,
+} from '../../component-library';
+import Identicon from '../identicon';
+import Tooltip from '../tooltip';
 
 const AccountList = ({
   selectNewAccountViaModal,

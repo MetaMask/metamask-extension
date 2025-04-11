@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Text,
   Modal,

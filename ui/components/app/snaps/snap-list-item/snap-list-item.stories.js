@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SnapListItem from '.';
 
 export default {

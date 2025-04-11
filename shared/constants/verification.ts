@@ -1,4 +1,5 @@
 import type { Hex } from '@metamask/utils';
+
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,

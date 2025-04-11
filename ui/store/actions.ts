@@ -3,16 +3,6 @@
 // TypeScript 5.3.3. We can't update them because we rely on an old version of
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
 // I don't want to try to figure that one out.
-import type { ReactFragment } from 'react';
-import browser from 'webextension-polyfill';
-import log from 'loglevel';
-import { captureException } from '@sentry/browser';
-import { capitalize, isEqual } from 'lodash';
-import type { ThunkAction } from 'redux-thunk';
-import type { Action, AnyAction } from 'redux';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
 import type {
   AssetsContractController,
   BalanceMap,
@@ -43,19 +33,88 @@ import type { InterfaceState } from '@metamask/snaps-sdk';
 import type { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import type { Patch } from 'immer';
+import type { DataWithOptionalCause } from '@metamask/rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
+import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
+import { captureException } from '@sentry/browser';
+import type { Patch } from 'immer';
+import { capitalize, isEqual } from 'lodash';
+import log from 'loglevel';
+import type { ReactFragment } from 'react';
+import type { Action, AnyAction } from 'redux';
+import type { ThunkAction } from 'redux-thunk';
+import browser from 'webextension-polyfill';
+
 ///: END:ONLY_INCLUDE_IF
-import switchDirection from '../../shared/lib/switch-direction';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
+import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../../shared/modules/i18n';
+import { decimalToHex } from '../../shared/modules/conversion.utils';
+import type { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  LEDGER_USB_VENDOR_ID,
+} from '../../shared/constants/hardware-wallets';
+import type {
+  MetaMetricsEventFragment,
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+  MetaMetricsPageObject,
+  MetaMetricsPageOptions,
+  MetaMetricsPagePayload,
+  MetaMetricsReferrerObject} from '../../shared/constants/metametrics';
+import {
+  getErrorMessage,
+  isErrorWithMessage,
+  logErrorWithMessage,
+} from '../../shared/modules/error';
+import type { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import type { ThemeType } from '../../shared/constants/preferences';
+import { getMethodDataAsync } from '../../shared/lib/four-byte';
+import type { EndTraceRequest } from '../../shared/lib/trace';
+import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import switchDirection from '../../shared/lib/switch-direction';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../shared/modules/selectors/networks';
+import type { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
+import type { SortCriteria } from '../components/app/assets/util/sort';
+import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  computeEstimatedGasLimit,
+  initializeSendState,
+  resetSendState,
+  SEND_STAGES,
+} from '../ducks/send';
+import type {
+  // NOTE: Until the send duck is typescript that this is importing a typedef
+  // that does not have an explicit export statement. lets see if it breaks the
+  // compiler
+  DraftTransaction} from '../ducks/send';
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import type { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import {
   getMetaMaskAccounts,
   hasTransactionPendingApprovals,
@@ -71,66 +130,7 @@ import {
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
 } from '../selectors';
-import {
-  getSelectedNetworkClientId,
-  getProviderConfig,
-} from '../../shared/modules/selectors/networks';
-import type {
-  // NOTE: Until the send duck is typescript that this is importing a typedef
-  // that does not have an explicit export statement. lets see if it breaks the
-  // compiler
-  DraftTransaction} from '../ducks/send';
-import {
-  computeEstimatedGasLimit,
-  initializeSendState,
-  resetSendState,
-  SEND_STAGES,
-} from '../ducks/send';
-import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-  LEDGER_USB_VENDOR_ID,
-} from '../../shared/constants/hardware-wallets';
-import type {
-  MetaMetricsEventFragment,
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-  MetaMetricsPageObject,
-  MetaMetricsPageOptions,
-  MetaMetricsPagePayload,
-  MetaMetricsReferrerObject} from '../../shared/constants/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../shared/constants/metametrics';
-import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from '../../shared/modules/i18n';
-import { decimalToHex } from '../../shared/modules/conversion.utils';
-import type { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import {
-  getErrorMessage,
-  isErrorWithMessage,
-  logErrorWithMessage,
-} from '../../shared/modules/error';
-import type { ThemeType } from '../../shared/constants/preferences';
-import type { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { getMethodDataAsync } from '../../shared/lib/four-byte';
-import type { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
-import type { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
-import type { EndTraceRequest } from '../../shared/lib/trace';
-import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import type { SortCriteria } from '../components/app/assets/util/sort';
-import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
-
 import {
   generateActionId,
   callBackgroundMethod,

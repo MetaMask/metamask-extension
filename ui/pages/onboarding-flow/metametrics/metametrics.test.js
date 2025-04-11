@@ -1,20 +1,21 @@
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+
 import {
   onboardingMetametricsAgree,
   noThanks,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/_locales/en/messages.json';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import {
   setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
 } from '../../../store/actions';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
 const mockPushHistory = jest.fn();

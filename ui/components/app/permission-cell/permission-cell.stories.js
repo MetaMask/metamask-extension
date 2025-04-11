@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text } from '../../component-library';
-import { FontWeight } from '../../../helpers/constants/design-system';
+
 import PermissionCell from '.';
+import { FontWeight } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
 
 export default {
   title: 'Components/App/PermissionCell',

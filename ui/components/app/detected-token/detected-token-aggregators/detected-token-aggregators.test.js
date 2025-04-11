@@ -1,11 +1,11 @@
 import * as React from 'react';
+
 import {
   renderWithProvider,
   screen,
   fireEvent,
 } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-
 import DetectedTokenAggregators from './detected-token-aggregators';
 
 describe('DetectedTokenAggregators', () => {

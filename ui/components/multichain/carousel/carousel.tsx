@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { BoxProps} from '../../component-library';
-import { Box, BannerBase } from '../../component-library';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextAlign,
   AlignItems,
@@ -10,12 +13,10 @@ import {
   FontWeight,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSweepstakesCampaignActive } from '../../../hooks/useCarouselManagement';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { BoxProps} from '../../component-library';
+import { Box, BannerBase } from '../../component-library';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {

@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
+
 import { renderControlledInput } from '../../../../test/lib/render-helpers';
 import { TextFieldSearch } from './text-field-search';
 

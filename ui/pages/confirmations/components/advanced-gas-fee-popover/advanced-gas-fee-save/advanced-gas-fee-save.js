@@ -2,12 +2,11 @@ import React from 'react';
 
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
-import { useTransactionModalContext } from '../../../../../contexts/transaction-modal';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
-import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import Button from '../../../../../components/ui/button';
-
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useTransactionModalContext } from '../../../../../contexts/transaction-modal';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useAdvancedGasFeePopoverContext } from '../context';
 
 const AdvancedGasFeeSaveButton = () => {

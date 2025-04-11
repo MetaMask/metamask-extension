@@ -1,6 +1,14 @@
+import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getInternalAccountByAddress } from '../../../selectors';
 import {
   Box,
   Modal,
@@ -9,13 +17,6 @@ import {
   ModalHeader,
 } from '../../component-library';
 import QrCodeView from '../../ui/qr-code-view';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getInternalAccountByAddress } from '../../../selectors';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
 
 export const ReceiveModal = ({ address, onClose }) => {
   const t = useI18nContext();

@@ -1,7 +1,8 @@
-import namehash from 'eth-ens-namehash';
 import contentHash from '@ensdomains/content-hash';
-import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
+import namehash from 'eth-ens-namehash';
+
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 

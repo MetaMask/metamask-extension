@@ -1,14 +1,14 @@
-import React from 'react';
-import classnames from 'classnames';
 import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
+import classnames from 'classnames';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+
+import { TokenListItem } from '../..';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { Box } from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,9 +16,9 @@ import {
   Display,
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
-import { TokenListItem } from '../..';
-import LoadingScreen from '../../../ui/loading-screen';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getMultichainCurrentCurrency,
   getMultichainCurrentChainId,
@@ -27,7 +27,8 @@ import {
   getMultichainNativeCurrency,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { Box } from '../../../component-library';
+import LoadingScreen from '../../../ui/loading-screen';
 import AssetComponent from './Asset';
 import type { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 

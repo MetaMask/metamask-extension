@@ -1,14 +1,15 @@
+import { Messenger } from '@metamask/base-controller';
 import {
   Controller as NotificationServicesPushController,
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
-import { Messenger } from '@metamask/base-controller';
-import { buildControllerInitRequestMock } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
+
 import {
   getNotificationServicesPushControllerMessenger,
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { NotificationServicesPushControllerInit } from './notification-services-push-controller-init';
 
 jest.mock('@metamask/notification-services-controller/push-services');

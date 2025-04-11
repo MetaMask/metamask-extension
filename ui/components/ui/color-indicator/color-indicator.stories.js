@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Color, Size } from '../../../helpers/constants/design-system';
 import ColorIndicator from './color-indicator';
 

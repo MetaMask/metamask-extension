@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import Box from '../../../../components/ui/box';
 import Popover from '../../../../components/ui/popover';
-
-import { AdvancedGasFeePopoverContextProvider } from './context';
-import AdvancedGasFeeInputs from './advanced-gas-fee-inputs';
-import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
-import AdvancedGasFeeSaveButton from './advanced-gas-fee-save';
+import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
+import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
+import AdvancedGasFeeInputs from './advanced-gas-fee-inputs';
+import AdvancedGasFeeSaveButton from './advanced-gas-fee-save';
+import { AdvancedGasFeePopoverContextProvider } from './context';
 
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();

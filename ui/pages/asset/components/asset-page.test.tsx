@@ -1,20 +1,21 @@
+import { EthAccountType } from '@metamask/keyring-api';
+import { fireEvent, waitFor } from '@testing-library/react';
+import nock from 'nock';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType } from '@metamask/keyring-api';
-import nock from 'nock';
+
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import AssetPage from './asset-page';
 
 jest.mock('../../../store/actions', () => ({

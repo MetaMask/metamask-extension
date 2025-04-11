@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
 import classnames from 'classnames';
+import React, { useState, useRef, useEffect } from 'react';
 
 import {
   Display,
@@ -7,7 +7,6 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-
 import type { BoxProps, PolymorphicRef } from '../box';
 import { Box } from '../box';
 import type { InputProps } from '../input';

@@ -1,12 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-// Components
-import Box from '../../ui/box';
-import Button from '../../ui/button';
-import Popover from '../../ui/popover';
-// Helpers
+
 import {
   DISPLAY,
   TextAlign,
@@ -17,7 +12,13 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+// Components
 import { Text } from '../../component-library';
+import Box from '../../ui/box';
+import Button from '../../ui/button';
+import Popover from '../../ui/popover';
+// Helpers
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();

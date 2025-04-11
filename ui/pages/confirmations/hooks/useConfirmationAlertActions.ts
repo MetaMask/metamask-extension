@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
+
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 
 const useConfirmationAlertActions = () => {
   const { openBuyCryptoInPdapp } = useRamps();

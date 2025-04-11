@@ -1,8 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
 import { fireEvent, render, act } from '@testing-library/react';
-import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
+import React from 'react';
 
+import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { Input } from './input';
 import { InputType } from './input.types';

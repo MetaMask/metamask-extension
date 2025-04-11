@@ -3,6 +3,7 @@
  */
 import { Messenger } from '@metamask/base-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
+
 import type {
   AllowedActions,
   AllowedEvents,

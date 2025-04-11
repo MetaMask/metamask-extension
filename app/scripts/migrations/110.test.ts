@@ -1,4 +1,5 @@
 import { NetworkType } from '@metamask/controller-utils';
+
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_RPC_URL_MAP,

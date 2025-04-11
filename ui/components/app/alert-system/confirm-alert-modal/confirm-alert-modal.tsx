@@ -1,5 +1,15 @@
 import React, { useCallback, useState } from 'react';
 
+import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
+import {
+  AlignItems,
+  Severity,
+  TextAlign,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import type { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
 import {
   Box,
   Button,
@@ -12,19 +22,9 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import {
-  AlignItems,
-  Severity,
-  TextAlign,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useAlerts from '../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
-import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
-import type { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
 
 export type ConfirmAlertModalProps = {
   /** Callback function that is called when the cancel button is clicked. */

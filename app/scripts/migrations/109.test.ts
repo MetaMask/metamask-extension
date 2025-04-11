@@ -3,6 +3,7 @@ import {
   NameOrigin,
   NameType,
 } from '@metamask/name-controller';
+
 import { migrate, version } from './109';
 
 const oldVersion = 108;

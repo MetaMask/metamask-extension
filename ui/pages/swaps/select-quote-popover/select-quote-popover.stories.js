@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+
+import SelectQuotePopover from '.';
 import Button from '../../../components/ui/button';
 import mockQuoteData from './mock-quote-data';
 import README from './README.mdx';
-import SelectQuotePopover from '.';
 
 export default {
   title: 'Pages/Swaps/SelectQuotePopover',

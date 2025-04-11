@@ -1,5 +1,6 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
+
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';

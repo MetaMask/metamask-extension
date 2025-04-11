@@ -1,5 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import React from 'react';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function OnboardingPinBillboard() {

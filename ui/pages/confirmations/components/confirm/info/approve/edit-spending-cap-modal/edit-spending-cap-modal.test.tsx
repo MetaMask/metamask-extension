@@ -1,8 +1,9 @@
+import type { Hex } from '@metamask/utils';
+import { act } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import type { Hex } from '@metamask/utils';
-import { act } from '@testing-library/react';
+
 import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import {

@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { withFixtures, openDapp } = require('../helpers');
+
 const FixtureBuilder = require('../fixture-builder');
+const { withFixtures, openDapp } = require('../helpers');
 
 describe('Multi injected provider interactions', function () {
   it('should check for multiple providers', async function () {

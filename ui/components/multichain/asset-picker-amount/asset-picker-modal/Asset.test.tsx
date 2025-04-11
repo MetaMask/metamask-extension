@@ -1,12 +1,13 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenList } from '../../../../selectors';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { TokenListItem } from '../../token-list-item';
+
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getTokenList } from '../../../../selectors';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
+import { TokenListItem } from '../../token-list-item';
 import Asset from './Asset';
 
 jest.mock('react-redux', () => ({

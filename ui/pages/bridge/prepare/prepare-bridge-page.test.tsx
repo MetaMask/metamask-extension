@@ -1,14 +1,15 @@
-import React from 'react';
-import { act } from '@testing-library/react';
-import * as reactRouterUtils from 'react-router-dom-v5-compat';
-import { zeroAddress } from 'ethereumjs-util';
-import userEvent from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { zeroAddress } from 'ethereumjs-util';
+import React from 'react';
+import * as reactRouterUtils from 'react-router-dom-v5-compat';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import configureStore from '../../../store/store';
 import PrepareBridgePage from './prepare-bridge-page';
 
 describe('PrepareBridgePage', () => {

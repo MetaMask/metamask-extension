@@ -1,12 +1,16 @@
+import BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import BigNumber from 'bignumber.js';
 import {
   EditGasModes,
   PriorityLevels,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../../shared/modules/conversion.utils';
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
@@ -19,10 +23,6 @@ import {
   updateSwapsUserFeeLevel,
   updateTransactionGasFees,
 } from '../../../store/actions';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-} from '../../../../shared/modules/conversion.utils';
 
 /**
  * @typedef {object} TransactionFunctionsReturnType

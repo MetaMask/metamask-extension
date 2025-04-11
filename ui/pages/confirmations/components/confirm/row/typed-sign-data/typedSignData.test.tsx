@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   rawMessageV4,
   unapprovedTypedSignMsgV4,

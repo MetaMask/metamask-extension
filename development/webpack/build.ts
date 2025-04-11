@@ -1,5 +1,6 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
+
 import { noop, logStats, __HMR_READY__ } from './utils/helpers';
 import config from './webpack.config';
 

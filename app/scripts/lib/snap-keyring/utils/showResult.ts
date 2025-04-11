@@ -2,6 +2,7 @@ import type {
   ResultComponent,
   ErrorResult,
 } from '@metamask/approval-controller';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import type { IconName } from '../../../../../ui/components/component-library/icon';

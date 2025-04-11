@@ -1,10 +1,10 @@
-import { cloneDeep } from 'lodash';
 import type {
   TransactionMeta,
   TransactionError} from '@metamask/transaction-controller';
 import {
   TransactionStatus
 } from '@metamask/transaction-controller';
+import { cloneDeep } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };

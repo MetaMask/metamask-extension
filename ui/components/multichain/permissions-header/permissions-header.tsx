@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -9,6 +10,8 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getURLHost } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -21,8 +24,6 @@ import {
   Text,
 } from '../../component-library';
 import { Header } from '../pages/page';
-import { getURLHost } from '../../../helpers/utils/util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const PermissionsHeader = ({
   securedOrigin,

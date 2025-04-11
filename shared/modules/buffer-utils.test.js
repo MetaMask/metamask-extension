@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+
 import { toBuffer } from './buffer-utils';
 
 describe('buffer utils', function () {

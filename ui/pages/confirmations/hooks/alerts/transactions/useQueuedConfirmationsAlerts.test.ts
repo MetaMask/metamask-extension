@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

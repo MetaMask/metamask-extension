@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import useProcessNewDecimalValue from './useProcessNewDecimalValue';
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import testData from '../../../../.storybook/test-data';
+
 import { AccountDetails } from '.';
+import testData from '../../../../.storybook/test-data';
 
 const UPGRADED_ACCOUNT_MOCK = '0x9d0ba4ddac06032527b140912ec808ab9451b788';
 

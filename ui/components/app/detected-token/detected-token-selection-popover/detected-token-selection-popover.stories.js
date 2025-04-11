@@ -2,9 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 import testData from '../../../../../.storybook/test-data';
-import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import configureStore from '../../../../store/store';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover';
 
 const store = configureStore({

@@ -1,17 +1,17 @@
+import nock from 'nock';
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
 
-import { setBackgroundConnection } from '../../store/background-connection';
+import CrossChainSwap from '.';
 import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
-import CrossChainSwap from '.';
+import { setBackgroundConnection } from '../../store/background-connection';
 
 const mockResetBridgeState = jest.fn();
 const middleware = [thunk];

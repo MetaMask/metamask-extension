@@ -1,6 +1,19 @@
-import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { addHexes } from '../../../../../shared/modules/conversion.utils';
+import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import {
+  Box,
+  Button,
+  ButtonVariant,
+  IconName,
+  Text,
+} from '../../../../components/component-library';
+import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -11,21 +24,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  IconName,
-  Text,
-} from '../../../../components/component-library';
-import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import { getShouldShowFiat } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
-import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import { addHexes } from '../../../../../shared/modules/conversion.utils';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { getShouldShowFiat } from '../../../../selectors';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 
 export default function FeeDetailsComponent({
   txData,

@@ -1,12 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
-
-import { useSelector } from 'react-redux';
 import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import type { CaipChainId } from '@metamask/utils';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   Display,
   FlexDirection,
@@ -16,6 +19,12 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: END:ONLY_INCLUDE_IF
+import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { getImageForChainId } from '../../../../selectors/multichain';
 import {
   ModalOverlay,
   ModalContent,
@@ -27,16 +36,7 @@ import {
   Text,
   AvatarNetworkSize,
 } from '../../../component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { getImageForChainId } from '../../../../selectors/multichain';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =

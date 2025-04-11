@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import Box from '../../../../components/ui/box/box';
-import Tooltip from '../../../../components/ui/tooltip/tooltip';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Identicon from '../../../../components/ui/identicon';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   Text,
   ButtonIcon,
   IconName,
 } from '../../../../components/component-library';
+import Box from '../../../../components/ui/box/box';
+import Identicon from '../../../../components/ui/identicon';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import {
   TextVariant,
   DISPLAY,
@@ -20,6 +20,7 @@ import {
   FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export default function ContractTokenValues({
   address,

@@ -1,29 +1,20 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { BigNumber } from 'bignumber.js';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 ///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu } from '../account-list-item-menu';
-import { AvatarGroup } from '../avatar-group';
-import { ConnectedAccountsMenu } from '../connected-accounts-menu';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import {
-  AvatarAccount,
-  AvatarAccountVariant,
-  AvatarToken,
-  AvatarTokenSize,
-  Box,
-  ButtonIcon,
-  Icon,
-  IconName,
-  IconSize,
-  Tag,
-  Text,
-} from '../../component-library';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   AlignItems,
   BackgroundColor,
@@ -39,15 +30,29 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { KeyringType } from '../../../../shared/constants/keyring';
-import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import Tooltip from '../../ui/tooltip/tooltip';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+  AvatarAccount,
+  AvatarAccountVariant,
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  ButtonIcon,
+  Icon,
+  IconName,
+  IconSize,
+  Tag,
+  Text,
+} from '../../component-library';
+import { AccountListItemMenu } from '../account-list-item-menu';
+import { AvatarGroup } from '../avatar-group';
+import { ConnectedAccountsMenu } from '../connected-accounts-menu';
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import Tooltip from '../../ui/tooltip/tooltip';
 import {
   isAccountConnectedToCurrentTab,
   getUseBlockie,
@@ -58,7 +63,6 @@ import {
   getSnapsMetadata,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { getIntlLocale } from '../../../ducks/locale/locale';
 ///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsTestnet,
@@ -72,11 +76,8 @@ import { ConnectedStatus } from '../connected-status';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF

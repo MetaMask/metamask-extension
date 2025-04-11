@@ -1,6 +1,7 @@
 import React from 'react';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
+
 import AccountList from '.';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 
 const account1 = {
   ...createMockInternalAccount({

@@ -1,14 +1,15 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSelectedInternalAccount } from '../../../selectors';
+
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
   getSendMaxModeState,
 } from '../../../ducks/send';
-import { AssetType } from '../../../../shared/constants/transaction';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getSelectedInternalAccount } from '../../../selectors';
 import { AssetPickerAmount } from './asset-picker-amount';
 import { AssetPicker } from './asset-picker/asset-picker';
 

@@ -1,8 +1,33 @@
-import React, { useState, useMemo } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
-import { useDispatch } from 'react-redux';
 import type { AddNetworkFields } from '@metamask/network-controller';
+import React, { useState, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
+} from '../../../../../shared/constants/app';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  AlignItems,
+  BackgroundColor,
+  Display,
+  JustifyContent,
+  TextColor,
+  IconColor,
+  TextVariant,
+  BorderColor,
+} from '../../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  requestUserApproval,
+  toggleNetworkMenu,
+} from '../../../../store/actions';
 import {
   Box,
   Text,
@@ -18,30 +43,6 @@ import {
   Popover,
   PopoverPosition,
 } from '../../../component-library';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ORIGIN_METAMASK,
-} from '../../../../../shared/constants/app';
-import {
-  requestUserApproval,
-  toggleNetworkMenu,
-} from '../../../../store/actions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  TextColor,
-  IconColor,
-  TextVariant,
-  BorderColor,
-} from '../../../../helpers/constants/design-system';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,

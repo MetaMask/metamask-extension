@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
 import {
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
 import UrlIcon from '../../../components/ui/url-icon';
 import { I18nContext } from '../../../contexts/i18n';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 export default function SelectedToken({
   onClick,

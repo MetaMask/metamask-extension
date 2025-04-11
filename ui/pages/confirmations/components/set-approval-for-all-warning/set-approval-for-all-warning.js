@@ -1,18 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import React from 'react';
 
-import Popover from '../../../../components/ui/popover';
-import Box from '../../../../components/ui/box';
-
-import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  JustifyContent,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import Identicon from '../../../../components/ui/identicon';
-import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   Icon,
   IconName,
@@ -20,6 +8,17 @@ import {
   BUTTON_VARIANT,
   Text,
 } from '../../../../components/component-library';
+import Box from '../../../../components/ui/box';
+import Identicon from '../../../../components/ui/identicon';
+import Popover from '../../../../components/ui/popover';
+import {
+  DISPLAY,
+  FLEX_DIRECTION,
+  JustifyContent,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const SetApproveForAllWarning = ({
   collectionName,

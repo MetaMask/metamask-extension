@@ -1,12 +1,6 @@
-import React from 'react';
 import classnames from 'classnames';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import React from 'react';
+
 import {
   AlignItems,
   BorderRadius,
@@ -16,6 +10,13 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../component-library';
 import { getSeverityBackground } from '../utils';
 
 export type InlineAlertProps = {

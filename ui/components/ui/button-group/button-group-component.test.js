@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import ButtonGroup from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 describe('ButtonGroup Component', () => {
   const props = {

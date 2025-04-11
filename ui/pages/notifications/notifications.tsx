@@ -1,37 +1,38 @@
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { useI18nContext } from '../../hooks/useI18nContext';
+
 import {
   IconName,
   ButtonIcon,
   ButtonIconSize,
   Box,
 } from '../../components/component-library';
+import { NotificationsPage } from '../../components/multichain';
+import { Content, Header } from '../../components/multichain/pages/page';
 import { Tabs, Tab } from '../../components/ui/tabs';
+import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+} from '../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import { getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
-import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
+import { NotificationsList, TAB_KEYS } from './notifications-list';
 
 export type Notification = NotificationServicesController.Types.INotification;
 

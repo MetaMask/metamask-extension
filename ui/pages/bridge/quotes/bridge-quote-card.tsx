@@ -1,6 +1,10 @@
+import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
+
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import {
   Text,
   PopoverPosition,
@@ -17,21 +21,11 @@ import {
   getToChain,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getCurrentCurrency,
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -41,10 +35,17 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+  formatEtaInMinutes,
+} from '../utils/quote';
 import { Row, Column, Tooltip } from '../layout';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 

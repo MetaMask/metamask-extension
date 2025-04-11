@@ -1,13 +1,14 @@
+import { Messenger } from '@metamask/base-controller';
 import type { GetAllSnaps } from '@metamask/snaps-controllers';
 import { CronjobController } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
-import type { ControllerInitRequest } from '../types';
-import { buildControllerInitRequestMock } from '../test/utils';
+
 import type {
   CronjobControllerMessenger} from '../messengers/snaps';
 import {
   getCronjobControllerMessenger,
 } from '../messengers/snaps';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { CronjobControllerInit } from './cronjob-controller-init';
 
 function getInitRequestMock(): jest.Mocked<

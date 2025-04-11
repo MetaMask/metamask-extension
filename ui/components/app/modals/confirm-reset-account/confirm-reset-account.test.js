@@ -1,7 +1,8 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import React from 'react';
+
 import ConfirmResetAccount from '.';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 describe('Confirm Reset Account', () => {
   const props = {

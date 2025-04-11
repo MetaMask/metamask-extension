@@ -1,16 +1,17 @@
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import mockState from '../../../test/data/mock-state.json';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import mockState from '../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { Modal } from '../../components/app/modals';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import configureStore from '../../store/store';
 import RevealSeedPage from './reveal-seed';
 

@@ -1,5 +1,10 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type {
   Asset} from '../../../ducks/send';
 import {
@@ -7,13 +12,9 @@ import {
   getSendMaxModeState,
   toggleSendMaxMode,
 } from '../../../ducks/send';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { ButtonLink } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { AssetType } from '../../../../shared/constants/transaction';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ButtonLink } from '../../component-library';
 
 // A button that updates the send amount to max balance or 0.
 export default function MaxClearButton({ asset }: { asset: Asset }) {

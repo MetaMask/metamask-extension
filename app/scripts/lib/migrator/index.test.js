@@ -1,9 +1,10 @@
 /* eslint-disable jest/no-conditional-expect */
 import fs from 'fs';
 import { cloneDeep } from 'lodash';
-import liveMigrations from '../../migrations';
-import data from '../../first-time-state';
+
 import Migrator from '.';
+import data from '../../first-time-state';
+import liveMigrations from '../../migrations';
 
 const stubMigrations = [
   {

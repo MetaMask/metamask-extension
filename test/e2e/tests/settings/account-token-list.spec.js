@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   logInWithBalanceValidation,
@@ -7,9 +9,7 @@ const {
 const {
   switchToNetworkFlow,
 } = require('../../page-objects/flows/network.flow');
-
 const { mockServerJsonRpc } = require('../ppom/mocks/mock-server-json-rpc');
-const FixtureBuilder = require('../../fixture-builder');
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';

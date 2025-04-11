@@ -1,11 +1,11 @@
-import { waitFor } from '@testing-library/react';
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
 import {
   getMockConfirmStateForTransaction,

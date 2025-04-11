@@ -1,5 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import {
   Box,
   ButtonIcon,
@@ -7,7 +9,6 @@ import {
   IconName,
 } from '../../../../../components/component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
-
 import {
   BackgroundColor,
   BlockSize,
@@ -20,7 +21,6 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 type ContentProps = {
   /**

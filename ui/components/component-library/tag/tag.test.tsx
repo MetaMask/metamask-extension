@@ -2,8 +2,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { IconName } from '../icon';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { IconName } from '../icon';
 import { Tag } from './tag';
 
 describe('Tag', () => {

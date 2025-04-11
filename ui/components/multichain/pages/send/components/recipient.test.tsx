@@ -1,12 +1,13 @@
 import React from 'react';
-import configureStore from '../../../../../store/store';
+
+import { SendPageRecipient } from '.';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import {
   CONFUSING_ENS_ERROR,
   ENS_UNKNOWN_ERROR,
 } from '../../../../../pages/confirmations/send/send.constants';
-import { SendPageRecipient } from '.';
+import configureStore from '../../../../../store/store';
 
 const render = (stateChanges = {}) => {
   const store = configureStore({

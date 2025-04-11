@@ -1,5 +1,12 @@
-import { extname, join } from 'node:path/posix';
+import {
+  type DeflateOptions,
+  Zip,
+  AsyncZipDeflate,
+  ZipPassThrough,
+} from 'fflate';
 import { readFileSync } from 'node:fs';
+import { extname, join } from 'node:path/posix';
+import { validate } from 'schema-utils';
 import {
   sources,
   ProgressPlugin,
@@ -7,13 +14,7 @@ import {
   type Compiler,
   type Asset,
 } from 'webpack';
-import { validate } from 'schema-utils';
-import {
-  type DeflateOptions,
-  Zip,
-  AsyncZipDeflate,
-  ZipPassThrough,
-} from 'fflate';
+
 import type { Browser } from '../../helpers';
 import { noop, type Manifest } from '../../helpers';
 import { schema } from './schema';

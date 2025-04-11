@@ -1,19 +1,18 @@
-import React from 'react';
-import { act, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
-
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { EditGasModes } from '../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import configureStore from '../../../../store/store';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import { act, screen } from '@testing-library/react';
+import React from 'react';
 
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { EditGasModes } from '../../../../../shared/constants/gas';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import configureStore from '../../../../store/store';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({

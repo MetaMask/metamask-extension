@@ -1,11 +1,10 @@
 import React from 'react';
-
 import { Provider } from 'react-redux';
 
+import { ReceiveModal } from '.';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 
-import { ReceiveModal } from '.';
 
 const store = configureStore(testData);
 

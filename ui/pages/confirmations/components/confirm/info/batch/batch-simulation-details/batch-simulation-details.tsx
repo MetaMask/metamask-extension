@@ -1,25 +1,26 @@
-import React, { useCallback, useState } from 'react';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import React, { useCallback, useState } from 'react';
+
+import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
+import { useConfirmContext } from '../../../../../context/confirm';
 import type {
   StaticRow} from '../../../../simulation-details/simulation-details';
 import {
   SimulationDetails
 } from '../../../../simulation-details/simulation-details';
-import type {
-  ApprovalBalanceChange} from '../../hooks/useBatchApproveBalanceChanges';
+import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import {
   useBatchApproveBalanceChanges,
 } from '../../hooks/useBatchApproveBalanceChanges';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
-import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
+import type {
+  ApprovalBalanceChange} from '../../hooks/useBatchApproveBalanceChanges';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();

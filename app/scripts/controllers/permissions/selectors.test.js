@@ -1,8 +1,9 @@
-import { cloneDeep } from 'lodash';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import { cloneDeep } from 'lodash';
+
 import {
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,

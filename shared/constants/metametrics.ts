@@ -1,4 +1,5 @@
 import type { Json } from '@metamask/utils';
+
 import type { EnvironmentType } from './app';
 import type { LedgerTransportTypes } from './hardware-wallets';
 

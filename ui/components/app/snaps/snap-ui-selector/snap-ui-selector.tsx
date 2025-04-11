@@ -1,12 +1,24 @@
+import type { State } from '@metamask/snaps-sdk';
+import { isObject } from '@metamask/utils';
+import classnames from 'classnames';
 import type {
   MouseEvent as ReactMouseEvent} from 'react';
 import React, {
   useState,
   useEffect
 } from 'react';
-import classnames from 'classnames';
-import type { State } from '@metamask/snaps-sdk';
-import { isObject } from '@metamask/utils';
+
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import {
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  IconColor,
+  TextAlign,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import {
   Box,
   ButtonBase,
@@ -22,17 +34,6 @@ import {
   ModalOverlay,
   Text,
 } from '../../../component-library';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  TextAlign,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUISelectorProps = {
   className?: string;

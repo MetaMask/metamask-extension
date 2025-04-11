@@ -1,29 +1,30 @@
+import { toHex } from '@metamask/controller-utils';
 import { fireEvent, waitFor } from '@testing-library/react';
+import copyToClipboard from 'copy-to-clipboard';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import copyToClipboard from 'copy-to-clipboard';
-import { toHex } from '@metamask/controller-utils';
-import { startNewDraftTransaction } from '../../../../../ducks/send';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+
+import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { AssetType } from '../../../../../../shared/constants/transaction';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { startNewDraftTransaction } from '../../../../../ducks/send';
 import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
-import { AssetType } from '../../../../../../shared/constants/transaction';
-import {
-  removeAndIgnoreNft,
-  setRemoveNftMessage,
-} from '../../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/stub/networks';
 import {
   getAssetImageURL,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
+import {
+  removeAndIgnoreNft,
+  setRemoveNftMessage,
+} from '../../../../../store/actions';
 import NftDetails from './nft-details';
 
 jest.mock('../../../../../helpers/utils/util', () => ({

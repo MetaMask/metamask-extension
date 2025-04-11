@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box } from '../../component-library';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { AccountOverviewCommonProps } from './common';
+import { Box } from '../../component-library';
 import { AccountOverviewLayout } from './account-overview-layout';
+import type { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewUnknownProps = AccountOverviewCommonProps;
 

@@ -1,8 +1,9 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
+import reactRouterDom from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import reactRouterDom from 'react-router-dom';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import * as Actions from '../../../store/actions';

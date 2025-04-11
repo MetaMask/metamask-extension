@@ -1,8 +1,9 @@
-const path = require('path');
-const { readFile } = require('fs/promises');
 const assert = require('assert');
 const { AssertionError } = require('assert');
+const { readFile } = require('fs/promises');
 const ini = require('ini');
+const path = require('path');
+
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');

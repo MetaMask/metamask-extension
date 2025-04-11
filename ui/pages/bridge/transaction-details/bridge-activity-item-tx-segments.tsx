@@ -1,9 +1,10 @@
-import React from 'react';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import React from 'react';
+
 import type {
   BridgeHistoryItem} from '../../../../shared/types/bridge-status';
 import {

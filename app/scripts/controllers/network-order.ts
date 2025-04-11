@@ -1,13 +1,14 @@
-import { BtcScope, SolScope } from '@metamask/keyring-api';
 import type { RestrictedMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
+
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller

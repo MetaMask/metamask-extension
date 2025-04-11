@@ -1,5 +1,6 @@
-import { Duplex, PassThrough } from 'readable-stream';
 import { createDeferredPromise } from '@metamask/utils';
+import { Duplex, PassThrough } from 'readable-stream';
+
 import { createCaipStream } from './caip-stream';
 
 const writeToStream = async (stream: Duplex, message: unknown) => {

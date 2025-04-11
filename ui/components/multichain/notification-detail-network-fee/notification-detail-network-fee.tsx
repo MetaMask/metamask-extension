@@ -1,29 +1,14 @@
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import React, { useContext, useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getNetworkFees,
-  getNetworkDetailsByChainId,
-} from '../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import type { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
-import { NotificationDetail } from '../notification-detail';
-import {
-  AvatarIcon,
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
+import type { CHAIN_IDS } from '../../../../shared/constants/network';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -36,7 +21,21 @@ import {
   IconColor,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
+import {
+  getNetworkFees,
+  getNetworkDetailsByChainId,
+} from '../../../helpers/utils/notification.util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AvatarIcon,
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../component-library';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+import { NotificationDetail } from '../notification-detail';
 
 type OnChainRawNotificationsWithNetworkFields =
   NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;

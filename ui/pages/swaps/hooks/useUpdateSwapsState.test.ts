@@ -1,24 +1,25 @@
+import { waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { waitFor } from '@testing-library/react';
-import {
-  fetchTokens,
-  fetchTopAssets,
-  fetchAggregatorMetadata,
-} from '../swaps.util';
+
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
   setAggregatorMetadata,
   setTopAssets,
 } from '../../../ducks/swaps/swaps';
-import { setSwapsTokens } from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
+import { setSwapsTokens } from '../../../store/actions';
+import {
+  fetchTokens,
+  fetchTopAssets,
+  fetchAggregatorMetadata,
+} from '../swaps.util';
 import useUpdateSwapsState from './useUpdateSwapsState';
 
 jest.mock('react-redux', () => ({

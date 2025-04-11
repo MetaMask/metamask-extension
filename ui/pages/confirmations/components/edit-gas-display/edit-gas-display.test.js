@@ -1,7 +1,8 @@
 import React from 'react';
+
+import EditGasDisplay from '.';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import EditGasDisplay from '.';
 
 jest.mock('../../../../selectors');
 jest.mock('../../../../helpers/utils/confirm-tx.util');

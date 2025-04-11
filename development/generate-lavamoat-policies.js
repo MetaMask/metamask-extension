@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 const concurrently = require('concurrently');
-const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs/yargs');
+
 const { loadBuildTypesConfig } = require('./lib/build-type');
 
 const buildTypesConfig = loadBuildTypesConfig();

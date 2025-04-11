@@ -2,6 +2,7 @@ import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,

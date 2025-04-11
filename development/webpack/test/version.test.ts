@@ -1,5 +1,6 @@
-import { describe, it, before } from 'node:test';
 import assert from 'node:assert';
+import { describe, it, before } from 'node:test';
+
 import { getExtensionVersion } from '../utils/version';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878

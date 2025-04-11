@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Box } from '../../../component-library';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   BackgroundColor,
   BlockSize,
@@ -9,7 +9,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-
+import { Box } from '../../../component-library';
 import type { StyleUtilityProps } from '../../../component-library/box';
 
 // TODO: Convert to a `type` in a future major version.

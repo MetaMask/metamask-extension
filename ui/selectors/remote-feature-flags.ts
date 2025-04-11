@@ -1,5 +1,6 @@
-import merge from 'lodash/merge';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import merge from 'lodash/merge';
+
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 
 export type RemoteFeatureFlagsState = {

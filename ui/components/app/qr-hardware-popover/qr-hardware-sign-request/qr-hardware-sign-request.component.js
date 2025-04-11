@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
+
 import { submitQRHardwareSignature } from '../../../../store/actions';
 import Player from './player';
 import Reader from './reader';

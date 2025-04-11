@@ -1,15 +1,16 @@
-import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
-import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '../../../components/ui/text-field';
-import { I18nContext } from '../../../contexts/i18n';
+import Fuse from 'fuse.js';
+import PropTypes from 'prop-types';
+import React, { useState, useContext } from 'react';
+
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
+import TextField from '../../../components/ui/text-field';
+import { I18nContext } from '../../../contexts/i18n';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 export default function SettingsSearch({

@@ -1,9 +1,14 @@
+import { isSnapId } from '@metamask/snaps-utils';
+import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { isSnapId } from '@metamask/snaps-utils';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
+import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
+import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import { Box, IconSize, Text } from '../../../../components/component-library';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import {
   FlexDirection,
   TextVariant,
@@ -16,18 +21,14 @@ import {
   OverflowWrap,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
-import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
 import { getDedupedSnaps } from '../../../../helpers/utils/util';
-import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import {
   getPermissions,
   getPreinstalledSnaps,
   getSnapMetadata,
 } from '../../../../selectors';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 
 export default function SnapsConnect({
   request,

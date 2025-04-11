@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import Alert from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 describe('Alert', () => {
   it('renders nothing with no visible boolean in state', () => {

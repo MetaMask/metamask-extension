@@ -1,6 +1,6 @@
+import { Text } from '@metamask/snaps-sdk/jsx';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { Text } from '@metamask/snaps-sdk/jsx';
 
 import {
   getMockPersonalSignConfirmState,

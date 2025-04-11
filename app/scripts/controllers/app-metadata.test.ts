@@ -1,4 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
+
 import AppMetadataController, {
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,

@@ -1,3 +1,11 @@
+import type { Messenger } from '@metamask/base-controller';
+import type {
+  GetCallsStatusResult,
+  SendCalls,
+  SendCallsResult} from '@metamask/eth-json-rpc-middleware';
+import {
+  GetCallsStatusCode
+} from '@metamask/eth-json-rpc-middleware';
 import type { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
@@ -11,14 +19,7 @@ import {
   TransactionStatus
 } from '@metamask/transaction-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
-import type { Messenger } from '@metamask/base-controller';
-import type {
-  GetCallsStatusResult,
-  SendCalls,
-  SendCallsResult} from '@metamask/eth-json-rpc-middleware';
-import {
-  GetCallsStatusCode
-} from '@metamask/eth-json-rpc-middleware';
+
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =

@@ -4,17 +4,20 @@ import React, {
   useContext,
   ///: END:ONLY_INCLUDE_IF
 } from 'react';
-import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import {
-  setCompletedOnboarding,
-  toggleExternalServices,
-} from '../../../store/actions';
+import { useHistory } from 'react-router-dom';
+
 ///: END:ONLY_INCLUDE_IF
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { Text } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextVariant,
   FontWeight,
@@ -25,18 +28,16 @@ import {
   DEFAULT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-import { Text } from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+  setCompletedOnboarding,
+  toggleExternalServices,
+} from '../../../store/actions';
 import OnboardingPinBillboard from './pin-billboard';
 ///: END:ONLY_INCLUDE_IF
 

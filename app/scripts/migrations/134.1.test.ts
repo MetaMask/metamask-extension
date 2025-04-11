@@ -1,4 +1,5 @@
 import type { NetworkConfiguration } from '@metamask/network-controller';
+
 import { migrate, version } from './134.1';
 
 describe(`Migration ${version}`, () => {

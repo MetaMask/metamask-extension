@@ -1,6 +1,6 @@
 import { fetchLocale } from '../modules/i18n';
-import { SUPPORT_LINK } from './ui-utils';
 import { getErrorHtml } from './error-utils';
+import { SUPPORT_LINK } from './ui-utils';
 
 jest.mock('../modules/i18n', () => ({
   fetchLocale: jest.fn(),

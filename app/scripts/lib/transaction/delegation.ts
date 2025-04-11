@@ -1,8 +1,9 @@
+import { Interface, ParamType, defaultAbiCoder } from '@ethersproject/abi';
+import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import type { MessageParamsTypedData } from '@metamask/signature-controller';
 import type { Hex} from '@metamask/utils';
 import { hexToNumber } from '@metamask/utils';
-import { SignTypedDataVersion } from '@metamask/keyring-controller';
-import { Interface, ParamType, defaultAbiCoder } from '@ethersproject/abi';
+
 import type { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 
 export type Caveat = {

@@ -1,18 +1,19 @@
 import { combineReducers } from 'redux';
+
 import { AlertTypes } from '../../shared/constants/alerts';
-import metamaskReducer from './metamask/metamask';
-import localeMessagesReducer from './locale/locale';
-import sendReducer from './send/send';
-import domainReducer from './domains';
-import appStateReducer from './app/app';
-import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
-import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
-import swapsReducer from './swaps/swaps';
+import appStateReducer from './app/app';
 import bridgeReducer from './bridge/bridge';
-import historyReducer from './history/history';
-import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
+import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
+import domainReducer from './domains';
+import gasReducer from './gas/gas.duck';
+import historyReducer from './history/history';
+import localeMessagesReducer from './locale/locale';
+import metamaskReducer from './metamask/metamask';
+import rampsReducer from './ramps/ramps';
+import sendReducer from './send/send';
+import swapsReducer from './swaps/swaps';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,

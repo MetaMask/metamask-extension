@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
+
 import {
   Severity,
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
-import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
+import { Box } from '../../../../../component-library';
+import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
+import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
+import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
 import type {
   ConfirmInfoRowProps} from '../row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
 } from '../row';
-import { Box } from '../../../../../component-library';
-import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
-import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;

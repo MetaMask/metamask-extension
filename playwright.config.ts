@@ -1,5 +1,6 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
+
 import { isHeadless } from './test/helpers/env';
 
 const logOutputFolder = './public/playwright/playwright-reports';

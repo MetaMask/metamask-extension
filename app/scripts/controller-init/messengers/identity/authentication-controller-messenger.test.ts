@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getAuthenticationControllerMessenger } from './authentication-controller-messenger';
 
 describe('getAuthenticationControllerMessenger', () => {

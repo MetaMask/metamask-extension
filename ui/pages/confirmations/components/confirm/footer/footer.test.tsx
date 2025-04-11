@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -25,8 +26,8 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
-import type { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import type { SignatureRequestType } from '../../../types/confirm';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({

@@ -1,5 +1,5 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   BackgroundColor,
@@ -11,7 +11,6 @@ import {
   TextVariant,
   TextTransform,
 } from '../../../helpers/constants/design-system';
-
 import type { PolymorphicRef } from '../box';
 import { Text } from '../text';
 import type { TextProps } from '../text';

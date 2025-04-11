@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import { selectMatchingFragment } from '../../../selectors';
 import {
   createTransactionEventFragment,
   updateEventFragment,
 } from '../../../store/actions';
-import { selectMatchingFragment } from '../../../selectors';
 
 export const useTransactionEventFragment = () => {
   const { transaction } = useGasFeeContext();

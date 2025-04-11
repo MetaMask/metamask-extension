@@ -1,10 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
+
 import { IconColor } from '../../../helpers/constants/design-system';
 import { IconName } from '../icon';
-import { ButtonIconSize } from './button-icon.types';
 import { ButtonIcon } from './button-icon';
+import { ButtonIconSize } from './button-icon.types';
 
 describe('ButtonIcon', () => {
   it('should render button element correctly', () => {

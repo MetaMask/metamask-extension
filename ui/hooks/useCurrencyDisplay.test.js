@@ -1,10 +1,9 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
+import React from 'react';
 import { Provider } from 'react-redux';
 
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
-
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 
 const tests = [

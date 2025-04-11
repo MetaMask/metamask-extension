@@ -1,21 +1,19 @@
-import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
+import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import {
   AlignItems,
   Display,
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
-import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import GasDetailsItem from '../../../pages/confirmations/components/gas-details-item';
-import Box from '../../ui/box';
-import InfoTooltip from '../../ui/info-tooltip';
-import AppLoadingSpinner from '../app-loading-spinner';
+import { getAppIsLoading } from '../../../selectors';
 import {
   Text,
   Button,
@@ -25,6 +23,9 @@ import {
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import Box from '../../ui/box';
+import InfoTooltip from '../../ui/info-tooltip';
+import AppLoadingSpinner from '../app-loading-spinner';
 
 const CancelSpeedupPopover = () => {
   const {

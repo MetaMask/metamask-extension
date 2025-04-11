@@ -1,7 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
+import {
+  Display,
+  IconColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
@@ -11,11 +16,6 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import {
-  Display,
-  IconColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 
 const MenuItem = React.forwardRef(
   (

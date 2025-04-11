@@ -1,4 +1,5 @@
 import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
+
 import type { RemoteFeatureFlagsState } from './remote-feature-flags';
 import { getIsRemoteModeEnabled } from './remote-mode';
 

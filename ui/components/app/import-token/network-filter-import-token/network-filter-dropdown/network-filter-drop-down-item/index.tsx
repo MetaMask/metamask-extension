@@ -1,11 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
-  Box,
-  AvatarNetwork,
-  Text,
-  AvatarNetworkSize,
-} from '../../../../../component-library';
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  FEATURED_NETWORK_CHAIN_IDS,
+} from '../../../../../../../shared/constants/network';
 import {
   TextVariant,
   BlockSize,
@@ -14,12 +13,14 @@ import {
   Display,
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_NETWORK_CHAIN_IDS,
-} from '../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../../../../../selectors';
+import {
+  Box,
+  AvatarNetwork,
+  Text,
+  AvatarNetworkSize,
+} from '../../../../../component-library';
 
 type NetworkFilterDropdownItemProps = {
   isCurrentNetwork: boolean;

@@ -1,4 +1,5 @@
 const { By } = require('selenium-webdriver');
+
 const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {

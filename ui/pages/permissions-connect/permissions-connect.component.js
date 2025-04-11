@@ -1,29 +1,30 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { SubjectType } from '@metamask/permission-controller';
-import { isSnapId } from '@metamask/snaps-utils';
 import {
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { SubjectType } from '@metamask/permission-controller';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { isSnapId } from '@metamask/snaps-utils';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Switch, Route } from 'react-router-dom';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import { Box } from '../../components/component-library';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import ChooseAccount from './choose-account';
-import PermissionsRedirect from './redirect';
-import SnapsConnect from './snaps/snaps-connect';
-import SnapInstall from './snaps/snap-install';
-import SnapUpdate from './snaps/snap-update';
-import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
 import { getRequestedCaip25CaveatValue } from './connect-page/utils';
+import PermissionsRedirect from './redirect';
+import SnapInstall from './snaps/snap-install';
+import SnapResult from './snaps/snap-result';
+import SnapUpdate from './snaps/snap-update';
+import SnapsConnect from './snaps/snaps-connect';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 

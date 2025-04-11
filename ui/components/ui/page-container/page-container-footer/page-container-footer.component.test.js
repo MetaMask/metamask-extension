@@ -1,9 +1,9 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 
+import PageFooter from '.';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Icon, IconName } from '../../../component-library';
-import PageFooter from '.';
 
 describe('Page Footer', () => {
   const props = {

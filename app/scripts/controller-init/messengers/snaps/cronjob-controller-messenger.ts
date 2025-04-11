@@ -1,4 +1,5 @@
 import type { Messenger } from '@metamask/base-controller';
+import type { GetPermissions } from '@metamask/permission-controller';
 import type {
   SnapInstalled,
   SnapUpdated,
@@ -8,7 +9,6 @@ import type {
   HandleSnapRequest,
   GetAllSnaps,
 } from '@metamask/snaps-controllers';
-import type { GetPermissions } from '@metamask/permission-controller';
 
 type Actions = GetPermissions | HandleSnapRequest | GetAllSnaps;
 

@@ -1,9 +1,10 @@
 import React from 'react';
+
+import MetaMaskTemplateRenderer from '.';
 import {
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import MetaMaskTemplateRenderer from '.';
 
 export default {
   title: 'Components/App/MetamaskTemplateRenderer',

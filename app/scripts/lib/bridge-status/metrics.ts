@@ -1,13 +1,8 @@
 /* eslint-disable camelcase */
-import type { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
 import { formatChainIdToHex, isEthUsdt } from '@metamask/bridge-controller';
+import type { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
+
 // eslint-disable-next-line import/no-restricted-paths
-import type {
-  BridgeStatusControllerBridgeTransactionCompleteEvent,
-  BridgeStatusControllerBridgeTransactionFailedEvent,
-} from '../../controllers/bridge-status/types';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
 import type {
   MetaMetricsEventOptions,
@@ -17,15 +12,21 @@ import {
   MetaMetricsEventName
 } from '../../../../shared/constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
-import type { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
-import type {
-  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
+import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   StatusTypes
 } from '../../../../shared/types/bridge-status';
-import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import type {
+  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
 // eslint-disable-next-line import/no-restricted-paths
 import { type ActionType } from '../../../../ui/hooks/bridge/events/types';
+import type { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
+import type {
+  BridgeStatusControllerBridgeTransactionCompleteEvent,
+  BridgeStatusControllerBridgeTransactionFailedEvent,
+} from '../../controllers/bridge-status/types';
 import { getTokenUsdValue } from './metrics-utils';
 
 type TrackEvent = (

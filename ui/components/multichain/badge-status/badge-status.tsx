@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
 import classNames from 'classnames';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -9,6 +10,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { getUseBlockie } from '../../../selectors';
 import type {
   BoxProps} from '../../component-library';
 import {
@@ -18,9 +20,7 @@ import {
   BadgeWrapper,
   Box
 } from '../../component-library';
-import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
-
 import type { BadgeStatusProps } from './badge-status.types';
 
 const TooltipStyle = { display: 'flex' };

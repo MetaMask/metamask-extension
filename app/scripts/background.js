@@ -8,15 +8,15 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
-import debounce from 'debounce-stream';
-import log from 'loglevel';
-import browser from 'webextension-polyfill';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
+import debounce from 'debounce-stream';
+import EventEmitter from 'events';
 import PortStream from 'extension-port-stream';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import log from 'loglevel';
+import { finished, pipeline } from 'readable-stream';
+import browser from 'webextension-polyfill';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -33,50 +33,49 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { maskObject } from '../../shared/modules/object.utils';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { PersistenceManager } from './lib/stores/persistence-manager';
-import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
-import migrations from './migrations';
-import Migrator from './lib/migrator';
-import ExtensionPlatform from './platforms/extension';
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
-
+import rawFirstTimeState from './first-time-state';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import createStreamSink from './lib/createStreamSink';
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
+import Migrator from './lib/migrator';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
+import ExtensionStore from './lib/stores/extension-store';
+import { PersistenceManager } from './lib/stores/persistence-manager';
+import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
+import migrations from './migrations';
+import ExtensionPlatform from './platforms/extension';
 import getObjStructure from './lib/getObjStructure';
-import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   deferredPromise,
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { createOffscreen } from './offscreen';
-import { generateWalletState } from './fixtures/generate-wallet-state';
-import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
-import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';

@@ -1,4 +1,5 @@
 import log from 'loglevel';
+
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import type {
   MetaMaskStorageStructure} from './base-store';

@@ -1,5 +1,5 @@
-const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap revoke permission', function () {

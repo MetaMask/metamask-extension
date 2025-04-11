@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 import { confusables } from 'unicode-confusables';
 import { v4 as uuidv4 } from 'uuid';
-import Tooltip from '../tooltip';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Text } from '../../component-library';
+import Tooltip from '../tooltip';
 
 const Confusable = ({ input, asText, confusableWrapperName = '' }) => {
   const t = useI18nContext();

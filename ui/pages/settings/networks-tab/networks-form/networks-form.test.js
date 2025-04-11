@@ -1,9 +1,9 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import nock from 'nock';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -11,6 +11,7 @@ import {
   getRpcUrl,
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
+import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import {
   addNetwork,

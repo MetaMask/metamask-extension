@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
+import React, { useEffect, useRef } from 'react';
 import { Tooltip as ReactTippy } from 'react-tippy';
+
 import type { ModulePartitionChild } from '../../common/build-module-partitions';
 import type { BoxRect } from './types';
 

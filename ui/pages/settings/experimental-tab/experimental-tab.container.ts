@@ -1,17 +1,7 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  setBitcoinSupportEnabled,
-  setBitcoinTestnetSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  setAddSnapAccountEnabled,
-  ///: END:ONLY_INCLUDE_IF
-  setFeatureNotificationsEnabled,
-  setWatchEthereumAccountEnabled,
-} from '../../../store/actions';
+import { compose } from 'redux';
+
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
@@ -23,6 +13,17 @@ import {
   getFeatureNotificationsEnabled,
   getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  setBitcoinSupportEnabled,
+  setBitcoinTestnetSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  setAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  setFeatureNotificationsEnabled,
+  setWatchEthereumAccountEnabled,
+} from '../../../store/actions';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,

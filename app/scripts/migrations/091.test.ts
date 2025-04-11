@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+
 import { migrate, version } from './091';
 
 const sentryCaptureExceptionMock = jest.fn();

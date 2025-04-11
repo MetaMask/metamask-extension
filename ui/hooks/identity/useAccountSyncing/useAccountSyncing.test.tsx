@@ -1,7 +1,8 @@
 import { waitFor } from '@testing-library/react';
+
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
-import * as actions from '../../../store/actions';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
+import * as actions from '../../../store/actions';
 import {
   useAccountSyncing,
   useDeleteAccountSyncingDataFromUserStorage,

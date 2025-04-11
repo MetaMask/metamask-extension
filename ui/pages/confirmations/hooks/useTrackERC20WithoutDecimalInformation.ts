@@ -1,5 +1,5 @@
-import { useContext, useEffect, useRef } from 'react';
 import type { Hex } from '@metamask/utils';
+import { useContext, useEffect, useRef } from 'react';
 
 import {
   MetaMetricsEventCategory,

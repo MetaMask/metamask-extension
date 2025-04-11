@@ -1,6 +1,10 @@
-import { useSelector } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { useSelector } from 'react-redux';
+
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/assets';
+import { formatCurrency } from '../helpers/utils/confirm-tx.util';
+import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getMultichainCurrencyImage,
   getMultichainBalances,
@@ -8,11 +12,8 @@ import {
   getMultichainCurrentCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/assets';
-import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { useMultichainSelector } from './useMultichainSelector';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
+import { useMultichainSelector } from './useMultichainSelector';
 
 export const EMPTY_VALUES = {
   formattedFiat: '0',

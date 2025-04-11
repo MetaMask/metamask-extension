@@ -1,4 +1,5 @@
 import type { CaipAssetType } from '@metamask/keyring-api';
+
 import { MultichainNetworks } from './networks';
 
 export const MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 = {

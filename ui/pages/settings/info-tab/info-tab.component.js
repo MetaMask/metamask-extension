@@ -1,21 +1,20 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
-import Button from '../../../components/ui/button';
-import { Tag } from '../../../components/component-library';
-
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
-import { isBeta } from '../../../helpers/utils/build-types';
-import {
-  getNumberOfSettingRoutesInTab,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+import { Tag } from '../../../components/component-library';
+import Button from '../../../components/ui/button';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { isBeta } from '../../../helpers/utils/build-types';
+import {
+  getNumberOfSettingRoutesInTab,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 
 export default class InfoTab extends PureComponent {
   state = {

@@ -1,25 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  JustifyContent,
-  AlignItems,
-  IconColor,
-  Color,
-  TextAlign,
-  FlexDirection,
-  Size,
-  Display,
-  BlockSize,
-  FlexWrap,
-  TextVariant,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
-import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
   Box,
   BannerTip,
@@ -36,7 +19,25 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
+import {
+  JustifyContent,
+  AlignItems,
+  IconColor,
+  Color,
+  TextAlign,
+  FlexDirection,
+  Size,
+  Display,
+  BlockSize,
+  FlexWrap,
+  TextVariant,
+  BackgroundColor,
+} from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import { getSnapRoute } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
 
 const SnapList = () => {
   const t = useI18nContext();

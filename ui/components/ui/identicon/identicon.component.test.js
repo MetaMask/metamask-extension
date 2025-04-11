@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
+import Identicon from '.';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getTokenList } from '../../../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../../../selectors/nft';
-import Identicon from '.';
 
 jest.mock('../../../selectors', () => ({
   ...jest.requireActual('../../../selectors'),

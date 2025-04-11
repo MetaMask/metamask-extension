@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getUserStorageControllerMessenger } from './user-storage-controller-messenger';
 
 describe('getUserStorageControllerMessenger', () => {

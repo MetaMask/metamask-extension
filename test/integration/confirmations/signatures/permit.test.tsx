@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
+
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -8,10 +9,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
-import { tEn } from '../../../lib/i18n-helpers';
 import {
   getMetamaskStateWithMaliciousPermit,
   getMetaMaskStateWithUnapprovedPermitSign,

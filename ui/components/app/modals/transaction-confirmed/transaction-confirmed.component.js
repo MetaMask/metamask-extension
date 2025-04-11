@@ -1,13 +1,14 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../modal';
-import { Icon, IconName, IconSize, Text } from '../../../component-library';
+import React, { PureComponent } from 'react';
+
 import {
   IconColor,
   TextVariant,
   TextAlign,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize, Text } from '../../../component-library';
+import Modal from '../../modal';
 
 export default class TransactionConfirmed extends PureComponent {
   static contextTypes = {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import NftInfo from './nft-info';
 
 export default {

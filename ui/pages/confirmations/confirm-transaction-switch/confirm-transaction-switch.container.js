@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
+
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import {
   getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
 } from '../../../selectors';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import ConfirmTransactionSwitch from './confirm-transaction-switch.component';
 
 const mapStateToProps = (state, ownProps) => {

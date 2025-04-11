@@ -1,4 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
+
 import migration29 from './029';
 
 const properTime = new Date().getTime();

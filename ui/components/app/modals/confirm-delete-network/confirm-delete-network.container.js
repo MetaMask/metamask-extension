@@ -1,15 +1,16 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import {
   removeNetwork,
   setActiveNetworkConfigurationId,
 } from '../../../../store/actions';
-import {
-  getNetworkConfigurationsByChainId,
-  getCurrentChainId,
-} from '../../../../../shared/modules/selectors/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {

@@ -1,9 +1,10 @@
 import React from 'react';
+
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import configureStore from '../../../store/store';
 import type {
   AccountOverviewEthProps} from './account-overview-eth';
 import {

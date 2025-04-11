@@ -1,9 +1,10 @@
-import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
+import type { Hex } from '@metamask/utils';
+
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';

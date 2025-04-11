@@ -1,19 +1,20 @@
 import React from 'react';
+
 import {
   Display,
   FontWeight,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Text } from '../../../../component-library';
-import type { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
+import Tooltip from '../../../../ui/tooltip';
+import type { TokenFiatDisplayInfo } from '../../types';
 import type {
   TranslateFunction} from '../../util/networkTitleOverrides';
 import {
   networkTitleOverrides,
 } from '../../util/networkTitleOverrides';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import Tooltip from '../../../../ui/tooltip';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;

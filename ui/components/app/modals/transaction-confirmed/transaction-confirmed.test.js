@@ -1,7 +1,8 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import React from 'react';
+
 import TransactionConfirmed from '.';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 describe('Transaction Confirmed', () => {
   it('should match snapshot', () => {

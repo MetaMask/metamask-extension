@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+
 import ExtensionStore from './extension-store';
 
 const MOCK_STATE = { data: {}, meta: { version: 1 } };

@@ -1,15 +1,14 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   TextVariant,
   BackgroundColor,
   BorderStyle,
 } from '../../../helpers/constants/design-system';
-
+import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
 import { Text } from '../text';
-import type { PolymorphicRef } from '../box';
 import type { InputProps, InputComponent } from './input.types';
 import { InputType } from './input.types';
 

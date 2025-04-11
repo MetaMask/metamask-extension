@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import CreateNewVault from '../../components/app/create-new-vault';
+import { Text } from '../../components/component-library';
+import Box from '../../components/ui/box';
+import Button from '../../components/ui/button';
+import { TextVariant, TextColor } from '../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
 } from '../../store/actions';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import CreateNewVault from '../../components/app/create-new-vault';
-import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
-import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {

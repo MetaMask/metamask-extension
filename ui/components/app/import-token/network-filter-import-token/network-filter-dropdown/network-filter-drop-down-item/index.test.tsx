@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getCurrentNetwork } from '../../../../../../selectors';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
+
 import { NetworkFilterDropdownItem } from '.';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { getCurrentNetwork } from '../../../../../../selectors';
 
 // Mock react-redux useSelector
 jest.mock('react-redux', () => {

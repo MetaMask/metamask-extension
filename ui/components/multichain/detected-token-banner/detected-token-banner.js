@@ -1,24 +1,24 @@
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
-import {
-  getDetectedTokensInCurrentNetwork,
-  getAllDetectedTokensForSelectedAddress,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-} from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokensForSelectedAddress,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+} from '../../../selectors';
 import { BannerAlert } from '../../component-library';
 
 export const DetectedTokensBanner = ({

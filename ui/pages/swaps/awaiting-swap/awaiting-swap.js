@@ -1,32 +1,37 @@
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import EventEmitter from 'events';
+import isEqual from 'lodash/isEqual';
+import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import isEqual from 'lodash/isEqual';
-import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getRpcPrefsForCurrentProvider,
-  getUSDConversionRate,
-  isHardwareWallet,
-  getHardwareWalletType,
-  getFullTxData,
-} from '../../../selectors';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+  QUOTES_EXPIRED_ERROR,
+  SWAP_FAILED_ERROR,
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
+  OFFLINE_FOR_MAINTENANCE,
+} from '../../../../shared/constants/swaps';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
-
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
+import Mascot from '../../../components/ui/mascot';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getUsedQuote,
   getFetchParams,
@@ -40,35 +45,28 @@ import {
   getFromTokenInputValue,
   getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
-import Mascot from '../../../components/ui/mascot';
-import {
-  QUOTES_EXPIRED_ERROR,
-  SWAP_FAILED_ERROR,
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  CONTRACT_DATA_DISABLED_ERROR,
-  OFFLINE_FOR_MAINTENANCE,
-} from '../../../../shared/constants/swaps';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
-import PulseLoader from '../../../components/ui/pulse-loader';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
-
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import {
+  getRpcPrefsForCurrentProvider,
+  getUSDConversionRate,
+  isHardwareWallet,
+  getHardwareWalletType,
+  getFullTxData,
+} from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+
 import {
   stopPollingForQuotes,
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
-
-import { getRenderableNetworkFeesForQuote } from '../swaps.util';
-import SwapsFooter from '../swaps-footer';
-
 import CreateNewSwap from '../create-new-swap';
+import SwapsFooter from '../swaps-footer';
+import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import QuotesTimeoutIcon from './quotes-timeout-icon';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
-import QuotesTimeoutIcon from './quotes-timeout-icon';
 
 export default function AwaitingSwap({
   swapComplete,

@@ -1,11 +1,11 @@
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {

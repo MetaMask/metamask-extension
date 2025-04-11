@@ -1,9 +1,10 @@
-const path = require('path');
-const { PassThrough, Transform } = require('stream');
 const {
   removeFencedCode,
   lintTransformedFile,
 } = require('@metamask/build-utils');
+const path = require('path');
+const { PassThrough, Transform } = require('stream');
+
 const { getESLintInstance } = require('./utils');
 
 module.exports = {

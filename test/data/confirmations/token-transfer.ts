@@ -1,5 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+
 import {
   CHAIN_ID,
   CONTRACT_INTERACTION_SENDER_ADDRESS,

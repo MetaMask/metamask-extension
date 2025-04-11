@@ -1,18 +1,20 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getInitialSendStateWithExistingTxState } from '../../../test/jest/mocks';
+import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import {
   generateERC1155TransferData,
   generateERC20TransferData,
   generateERC721TransferData,
 } from '../../pages/confirmations/send/send.utils';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getConfirmationExchangeRates,
@@ -20,7 +22,6 @@ import {
 } from '../../selectors';
 import { getGasFeeEstimates, getNativeCurrency } from '../metamask/metamask';
 import { getUsedSwapsGasPrice } from '../swaps/swaps';
-import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import {
   addAdjustedReturnToQuotes,
   calculateBestQuote,

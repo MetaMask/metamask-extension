@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 
 /**

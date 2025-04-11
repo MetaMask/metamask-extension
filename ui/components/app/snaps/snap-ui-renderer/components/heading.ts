@@ -1,4 +1,5 @@
 import type { HeadingElement } from '@metamask/snaps-sdk/jsx';
+
 import {
   OverflowWrap,
   TextVariant,

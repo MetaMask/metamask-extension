@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getTokenRatesControllerMessenger } from './token-rates-controller-messenger';
 
 describe('getTokenRatesControllerMessenger', () => {

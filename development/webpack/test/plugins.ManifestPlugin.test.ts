@@ -1,11 +1,12 @@
-import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join } from 'node:path';
+import { describe, it, afterEach } from 'node:test';
 import { type Compilation } from 'webpack';
-import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
-import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
+
 import type { Manifest } from '../utils/helpers';
+import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
+import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878

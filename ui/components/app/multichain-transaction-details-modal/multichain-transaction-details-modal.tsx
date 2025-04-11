@@ -1,11 +1,19 @@
-import React, { useContext } from 'react';
-import { capitalize } from 'lodash';
 import type {
   Transaction} from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/keyring-api';
+import { capitalize } from 'lodash';
+import React, { useContext } from 'react';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventLinkType,
+} from '../../../../shared/constants/metametrics';
+import type { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Display,
   FlexDirection,
@@ -17,7 +25,12 @@ import {
   TextColor,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  KEYRING_TRANSACTION_STATUS_KEY,
+  useMultichainTransactionDisplay,
+} from '../../../hooks/useMultichainTransactionDisplay';
 import {
   ModalOverlay,
   ModalContent,
@@ -35,19 +48,7 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../component-library';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsEventLinkType,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
-import {
-  KEYRING_TRANSACTION_STATUS_KEY,
-  useMultichainTransactionDisplay,
-} from '../../../hooks/useMultichainTransactionDisplay';
-import type { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
   formatTimestamp,
   getTransactionUrl,

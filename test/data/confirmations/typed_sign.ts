@@ -1,4 +1,5 @@
 import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
+
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import type { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 

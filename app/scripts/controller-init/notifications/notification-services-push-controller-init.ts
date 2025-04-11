@@ -7,13 +7,14 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
-import type { ControllerInitFunction } from '../types';
-import { type NotificationServicesPushControllerMessenger } from '../messengers/notifications';
+
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from '../../controllers/push-notifications';
+import { type NotificationServicesPushControllerMessenger } from '../messengers/notifications';
+import type { ControllerInitFunction } from '../types';
 
 export const NotificationServicesPushControllerInit: ControllerInitFunction<
   NotificationServicesPushController,

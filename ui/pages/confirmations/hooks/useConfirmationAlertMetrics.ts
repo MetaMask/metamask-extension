@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { validate as isUuid } from 'uuid';
 
-import useAlerts from '../../../hooks/useAlerts';
-import { isSignatureTransactionType } from '../utils';
 import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import useAlerts from '../../../hooks/useAlerts';
 import { useConfirmContext } from '../context/confirm';
+import { isSignatureTransactionType } from '../utils';
 import { AlertsName } from './alerts/constants';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
 import { useTransactionEventFragment } from './useTransactionEventFragment';

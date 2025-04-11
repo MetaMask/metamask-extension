@@ -1,17 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
-import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import {
   fetchSmartTransactionsLiveness,
   setSwapsFeatureFlags,
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
+import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import { useConfirmContext } from '../context/confirm';
 
 export function useSmartTransactionFeatureFlags() {

@@ -1,31 +1,32 @@
-import path from 'path';
-import fs from 'fs-extra';
-import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
-import chokidar from 'chokidar';
 import browserify from 'browserify';
+import chokidar from 'chokidar';
+import fg from 'fast-glob';
+import fs from 'fs-extra';
+import gulp from 'gulp';
+import autoprefixer from 'gulp-autoprefixer';
+import gulpSass from 'gulp-sass';
+import sourcemaps from 'gulp-sourcemaps';
+import path from 'path';
 import pify from 'pify';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { finished, pipeline } from 'readable-stream';
-import gulp from 'gulp';
-import gulpSass from 'gulp-sass';
 import * as sass from 'sass-embedded';
-import sourcemaps from 'gulp-sourcemaps';
-import autoprefixer from 'gulp-autoprefixer';
-import fg from 'fast-glob';
+import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs/yargs';
+
 import buildModulePartitions from '../common/build-module-partitions';
-import {
-  PARTITIONS_FILE,
-  writePartitionsFile,
-} from '../common/partitions-file';
 import {
   PROJECT_DIRECTORY_PATH,
   COMMON_DIRECTORY_PATH,
   APP_DIRECTORY_PATH,
   FINAL_BUILD_DIRECTORY_PATH,
 } from '../common/constants';
+import {
+  PARTITIONS_FILE,
+  writePartitionsFile,
+} from '../common/partitions-file';
 
 const promisifiedPipeline = pify(pipeline);
 

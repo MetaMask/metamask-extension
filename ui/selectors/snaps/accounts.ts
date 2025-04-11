@@ -1,8 +1,9 @@
-import { createSelector } from 'reselect';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import { getAccountName } from '../selectors';
-import { getInternalAccounts } from '../accounts';
+import { createSelector } from 'reselect';
+
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { getInternalAccounts } from '../accounts';
+import { getAccountName } from '../selectors';
 
 /**
  * The Metamask state for the accounts controller.

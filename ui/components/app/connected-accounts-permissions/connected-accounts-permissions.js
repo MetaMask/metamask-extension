@@ -1,18 +1,9 @@
 import classnames from 'classnames';
+import { flatten } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { flatten } from 'lodash';
 import { useSelector } from 'react-redux';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Checkbox,
-  IconName,
-  Text,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPermissionDescription } from '../../../helpers/utils/permission';
+
 import {
   BackgroundColor,
   BlockSize,
@@ -21,8 +12,18 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getPermissionDescription } from '../../../helpers/utils/permission';
 import { getSnapName } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapsMetadata } from '../../../selectors';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  Checkbox,
+  IconName,
+  Text,
+} from '../../component-library';
 
 const ConnectedAccountsPermissions = ({ permissions }) => {
   const t = useI18nContext();

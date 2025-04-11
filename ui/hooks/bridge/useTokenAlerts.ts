@@ -1,17 +1,18 @@
-import { useSelector } from 'react-redux';
 import { formatAddressToCaipReference } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
+
+import type { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
+import {
+  convertChainIdToBlockAidChainName,
+  fetchTokenAlert,
+} from '../../../shared/modules/bridge-utils/security-alerts-api.util';
+import type { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
 import {
   getFromToken,
   getFromChain,
   getToToken,
   getToChain,
 } from '../../ducks/bridge/selectors';
-import {
-  convertChainIdToBlockAidChainName,
-  fetchTokenAlert,
-} from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import type { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
-import type { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
 import { useAsyncResult } from '../useAsync';
 
 export const useTokenAlerts = () => {

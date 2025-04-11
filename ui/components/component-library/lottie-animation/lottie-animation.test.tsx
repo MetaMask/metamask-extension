@@ -1,6 +1,7 @@
-import React from 'react';
 import { render, act } from '@testing-library/react';
 import lottie from 'lottie-web/build/player/lottie_light';
+import React from 'react';
+
 import { LottieAnimation } from './lottie-animation';
 
 // Mock lottie-web

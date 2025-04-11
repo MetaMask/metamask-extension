@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { ThreeStepProgressBar, TwoStepProgressBar } from '.';
 
 export default {

@@ -1,6 +1,7 @@
 import { TransactionFactory } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { bigIntToHex, bytesToHex } from '@metamask/utils';
+
 import { Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9

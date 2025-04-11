@@ -1,17 +1,4 @@
-import type {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  NetworkConfiguration,
-  ///: END:ONLY_INCLUDE_IF
-  NetworkState,
-} from '@metamask/network-controller';
-import { SolAccountType } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import { orderBy, uniqBy } from 'lodash';
-import { createSelector } from 'reselect';
-import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { BigNumber } from 'bignumber.js';
-import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
   type L1GasFees,
@@ -29,6 +16,25 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { SolAccountType } from '@metamask/keyring-api';
+import type {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  NetworkConfiguration,
+  ///: END:ONLY_INCLUDE_IF
+  NetworkState,
+} from '@metamask/network-controller';
+import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import type { CaipChainId, Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import { orderBy, uniqBy } from 'lodash';
+import { createSelector } from 'reselect';
+
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  HardwareKeyringNames,
+  HardwareKeyringType,
+} from '../../../shared/constants/hardware-wallets';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -36,17 +42,12 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
 import {
-  getHardwareWalletType,
-  getIsBridgeEnabled,
-  getMarketData,
-  getUSDConversionRate,
-  getUSDConversionRateByChainId,
-  selectConversionRateByChainId,
-} from '../../selectors/selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  FEATURED_RPCS,
+} from '../../../shared/constants/network';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   calcAdjustedReturn,
   calcCost,
@@ -57,27 +58,27 @@ import {
   calcEstimatedAndMaxTotalGasFee,
   calcSolanaTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
+import { getAssetsRates } from '../../selectors/assets';
 import {
   getMultichainCoinRates,
   getMultichainProviderConfig,
   getImageForChainId,
 } from '../../selectors/multichain';
-import { getAssetsRates } from '../../selectors/assets';
 import {
-  HardwareKeyringNames,
-  HardwareKeyringType,
-} from '../../../shared/constants/hardware-wallets';
+  getHardwareWalletType,
+  getIsBridgeEnabled,
+  getMarketData,
+  getUSDConversionRate,
+  getUSDConversionRateByChainId,
+  selectConversionRateByChainId,
+} from '../../selectors/selectors';
+import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
+import type { BridgeState } from './bridge';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
-import type { BridgeState } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeControllerState &

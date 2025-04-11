@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
+
 const FixtureBuilder = require('../../fixture-builder');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 describe('Settings', function () {

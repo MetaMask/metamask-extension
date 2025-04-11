@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { Numeric } from '../../../../../shared/modules/Numeric';
 
 const MAX_DECIMALS_TOKEN_SECONDARY = 6;

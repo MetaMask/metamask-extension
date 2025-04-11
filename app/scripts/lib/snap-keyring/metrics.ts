@@ -1,8 +1,9 @@
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type { RestrictedMessenger } from '@metamask/base-controller';
 import type { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type { GetSnap } from '@metamask/snaps-controllers';
 import type { Snap } from '@metamask/snaps-utils';
+
 import type { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 type AllowedActions =

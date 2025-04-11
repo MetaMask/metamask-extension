@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+
 import ConnectedSitesList from '../../components/app/connected-sites-list';
-import Popover from '../../components/ui/popover/popover.component';
 import Button from '../../components/ui/button';
+import Popover from '../../components/ui/popover/popover.component';
 
 export default class ConnectedSites extends Component {
   static contextTypes = {

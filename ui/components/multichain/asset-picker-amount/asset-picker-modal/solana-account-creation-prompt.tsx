@@ -1,12 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Box,
-  Text,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-} from '../../../component-library';
+
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   Display,
   TextAlign,
@@ -16,13 +11,19 @@ import {
   JustifyContent,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { getMetaMaskKeyrings } from '../../../../selectors';
 import {
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getMetaMaskKeyrings } from '../../../../selectors';
+import {
+  Box,
+  Text,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../../component-library';
 
 export const SolanaAccountCreationPrompt = () => {
   const t = useI18nContext();

@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import { createSelector } from 'reselect';
 
 type AppState = {
   metamask: AuthenticationController.AuthenticationControllerState;

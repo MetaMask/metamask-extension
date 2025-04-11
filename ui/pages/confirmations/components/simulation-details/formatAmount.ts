@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+
 import {
   MIN_AMOUNT,
   DEFAULT_PRECISION,

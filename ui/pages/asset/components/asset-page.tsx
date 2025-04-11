@@ -7,11 +7,13 @@ import type { ReactNode} from 'react';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import useMultiChainAssets from '../../../components/app/assets/hooks/useMultichainAssets';
 import TokenCell from '../../../components/app/assets/token-cell';
+import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
 import TransactionList from '../../../components/app/transaction-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
@@ -66,7 +68,6 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { getPricePrecision, localizeLargeNumber } from '../util';
-import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 

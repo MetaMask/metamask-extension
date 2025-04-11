@@ -1,16 +1,17 @@
 import React from 'react';
-import { Box, Text } from '../../../../component-library';
-import {
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+
 import {
   formatValue,
   isValidAmount,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
+import {
+  Display,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../component-library';
 
 export const PercentageChange = ({
   value,

@@ -2,12 +2,12 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { Slippage } from '../../../../shared/constants/swaps';
 import {
   renderWithProvider,
   fireEvent,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import { Slippage } from '../../../../shared/constants/swaps';
 import TransactionSettings from './transaction-settings';
 
 jest.mock('react-redux', () => {

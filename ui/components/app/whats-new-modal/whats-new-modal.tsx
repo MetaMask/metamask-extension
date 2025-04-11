@@ -1,12 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { ModalOverlay, ModalContent, Modal } from '../../component-library';
-import { CreateSolanaAccountModal } from '../../multichain/create-solana-account-modal';
 
 import {
   MetaMetricsEventCategory,
@@ -20,8 +14,14 @@ import type {
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import { updateViewedNotifications } from '../../../store/actions';
+import { ModalOverlay, ModalContent, Modal } from '../../component-library';
+import { CreateSolanaAccountModal } from '../../multichain/create-solana-account-modal';
 import { getTranslatedUINotifications } from './notifications';
 
 type WhatsNewModalProps = {

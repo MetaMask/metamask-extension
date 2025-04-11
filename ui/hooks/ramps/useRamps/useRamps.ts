@@ -1,6 +1,7 @@
+import type { CaipChainId, Hex } from '@metamask/utils';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { CaipChainId, Hex } from '@metamask/utils';
+
 import type { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {

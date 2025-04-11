@@ -1,6 +1,7 @@
 import React from 'react';
-import { ACTIVITY_ICONS } from './transaction-activity-log-icon.component';
+
 import TransactionActivityLogIcon from '.';
+import { ACTIVITY_ICONS } from './transaction-activity-log-icon.component';
 
 export default {
   title: 'Components/App/TransactionActivityLog/TransactionActivityLogIcon',

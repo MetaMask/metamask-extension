@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+
 import { getTokenList } from '../../../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../../../selectors/nft';
 import Identicon from './identicon.component';

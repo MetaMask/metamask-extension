@@ -1,17 +1,17 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
 import type {
   DecodingDataStateChanges} from '@metamask/signature-controller';
 import {
   DecodingDataChangeType
 } from '@metamask/signature-controller';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import {
   permitSignatureMsg,
   signatureMsgPermitRevokeDAI,
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
+import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import PermitSimulation, {
   getStateChangeType,
   getStateChangeToolip,

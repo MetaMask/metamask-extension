@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTemplateAlertContext } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { Icon, IconName, IconSize } from '../../component-library';

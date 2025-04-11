@@ -1,9 +1,10 @@
-import { useSelector } from 'react-redux';
 import type { Transaction } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
+
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import type { NumericValue } from '../../../shared/modules/Numeric';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 
 /**

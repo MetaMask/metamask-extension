@@ -1,9 +1,9 @@
 #!/usr/bin/env node
+const { codeFrameColumns } = require('@babel/code-frame');
 const fs = require('fs');
 const path = require('path');
-const { SourceMapConsumer } = require('source-map');
 const pify = require('pify');
-const { codeFrameColumns } = require('@babel/code-frame');
+const { SourceMapConsumer } = require('source-map');
 
 const fsAsync = pify(fs);
 

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 

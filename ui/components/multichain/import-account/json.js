@@ -2,21 +2,22 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import FileInput from 'react-simple-file-input';
+
+import {
+  Size,
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { displayWarning } from '../../../store/actions';
 import {
   ButtonLink,
   TextFieldSize,
   TextFieldType,
   Text,
 } from '../../component-library';
-import {
-  Size,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { displayWarning } from '../../../store/actions';
 import BottomButtons from './bottom-buttons';
 
 export default function JsonImportSubview({

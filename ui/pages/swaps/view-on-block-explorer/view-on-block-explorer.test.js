@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
 import ViewOnBlockExplorer from '.';
+import { renderWithProvider, fireEvent } from '../../../../test/jest';
 
 const createProps = (customProps = {}) => {
   return {

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
+import React, { useState, useEffect } from 'react';
+
 import {
   Display,
   AlignItems,
@@ -9,9 +10,9 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
 import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
+import type { PolymorphicRef } from '../box';
 import type { AvatarNetworkComponent , AvatarNetworkProps} from './avatar-network.types';
 import { AvatarNetworkSize } from './avatar-network.types';
 

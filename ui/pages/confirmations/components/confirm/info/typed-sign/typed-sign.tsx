@@ -1,26 +1,27 @@
-import React from 'react';
-import { isValidAddress } from 'ethereumjs-util';
-
 import { isSnapId } from '@metamask/snaps-utils';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { isValidAddress } from 'ethereumjs-util';
+import React from 'react';
+
+
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import type { SignatureRequestType } from '../../../../types/confirm';
+import { useConfirmContext } from '../../../../context/confirm';
 import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
+import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
+import type { SignatureRequestType } from '../../../../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
 } from '../../../../utils';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';

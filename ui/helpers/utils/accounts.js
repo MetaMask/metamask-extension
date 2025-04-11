@@ -1,16 +1,16 @@
-import { InvisibleCharacter } from '../../components/component-library';
+import { t } from '../../../app/scripts/translate';
+import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../shared/constants/network';
+import { InvisibleCharacter } from '../../components/component-library';
 import { BackgroundColor } from '../constants/design-system';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../app/scripts/translate';
 
 export function getAccountNameErrorMessage(
   accounts,

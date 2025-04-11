@@ -7,13 +7,22 @@
  * on each new block.
  */
 
-import { v4 as random } from 'uuid';
 
-import log from 'loglevel';
-import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
-import { cloneDeep } from 'lodash';
+import { Web3Provider } from '@ethersproject/providers';
+import type {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSelectedEvmAccountChangeEvent,
+} from '@metamask/accounts-controller';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedMessenger} from '@metamask/base-controller';
+import {
+  BaseController
+} from '@metamask/base-controller';
+import type { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   BlockTracker,
   NetworkClientConfiguration,
@@ -23,19 +32,10 @@ import type {
   Provider,
 } from '@metamask/network-controller';
 import { hasProperty, type Hex, type JsonRpcParams } from '@metamask/utils';
-import type {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
-import {
-  BaseController
-} from '@metamask/base-controller';
-import type {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
-import type { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { cloneDeep } from 'lodash';
+import log from 'loglevel';
+import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
+import { v4 as random } from 'uuid';
 
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';

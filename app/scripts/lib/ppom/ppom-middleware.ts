@@ -1,22 +1,22 @@
 import type { AccountsController } from '@metamask/accounts-controller';
-import type { PPOMController } from '@metamask/ppom-validator';
+import { detectSIWE } from '@metamask/controller-utils';
 import type { NetworkController } from '@metamask/network-controller';
+import type { PPOMController } from '@metamask/ppom-validator';
 import type {
   Json,
   JsonRpcParams,
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import type { PreferencesController } from '../../controllers/preferences-controller';
-import type { AppStateController } from '../../controllers/app-state-controller';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import type { TraceContext} from '../../../../shared/lib/trace';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import type { AppStateController } from '../../controllers/app-state-controller';
+import type { PreferencesController } from '../../controllers/preferences-controller';
 import {
   generateSecurityAlertId,
   handlePPOMError,

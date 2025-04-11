@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom/extend-expect';
 import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getParticipateInMetaMetrics } from '../../selectors';
-import { getMessage } from '../../helpers/utils/i18n-helper';
-// eslint-disable-next-line import/no-restricted-paths
+
 import messages from '../../../app/_locales/en/messages.json';
+import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getMessage } from '../../helpers/utils/i18n-helper';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getParticipateInMetaMetrics } from '../../selectors';
+// eslint-disable-next-line import/no-restricted-paths
 import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({

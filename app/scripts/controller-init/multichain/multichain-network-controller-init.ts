@@ -1,6 +1,7 @@
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
-import type { ControllerInitFunction } from '../types';
+
 import type { MultichainNetworkControllerMessenger } from '../messengers/multichain';
+import type { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the Multichain Network controller.

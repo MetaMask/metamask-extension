@@ -1,9 +1,10 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+
+import { CreateEthAccount } from '.';
+import mockState from '../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { CreateEthAccount } from '.';
 
 const render = (props = { onActionComplete: () => jest.fn() }) => {
   const store = configureStore(mockState);

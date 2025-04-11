@@ -1,11 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   submitQRHardwareCryptoAccount,
   submitQRHardwareCryptoHDKey,
 } from '../../../../store/actions';
 import BaseReader from '../base-reader';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const QRHardwareWalletImporter = ({ handleCancel, setErrorTitle }) => {
   const t = useI18nContext();

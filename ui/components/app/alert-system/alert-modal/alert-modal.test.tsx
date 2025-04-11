@@ -1,6 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
 import {
   BlockaidReason,
   SecurityProvider,

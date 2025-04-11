@@ -1,6 +1,18 @@
-import React from 'react';
 import { flatten } from 'lodash';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { getPermissionDescription } from '../../../helpers/utils/permission';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getUseBlockie } from '../../../selectors';
+import PermissionCell from '../../app/permission-cell';
 import {
   ModalOverlay,
   ModalContent,
@@ -18,21 +30,10 @@ import {
   ModalBody,
   ButtonSize,
 } from '../../component-library';
-import { getUseBlockie } from '../../../selectors';
-import { shortenAddress } from '../../../helpers/utils/util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPermissionDescription } from '../../../helpers/utils/permission';
-import PermissionCell from '../../app/permission-cell';
 import type {
   Identity,
   Permission,
 } from '../connected-accounts-menu/connected-accounts-menu.types';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 
 export const PermissionDetailsModal = ({
   onClose,

@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { withFixtures, DAPP_URL, openDapp } = require('../helpers');
+
 const FixtureBuilder = require('../fixture-builder');
+const { withFixtures, DAPP_URL, openDapp } = require('../helpers');
 
 const triggerBFCache = async (driver) => {
   await driver.executeScript(`

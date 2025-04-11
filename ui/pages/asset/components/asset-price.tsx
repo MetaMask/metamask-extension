@@ -1,4 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
+
+import { Box, Text } from '../../../components/component-library';
 import {
   BackgroundColor,
   BorderRadius,
@@ -7,7 +9,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import {
   getPricePrecision,

@@ -2,6 +2,7 @@ import {
   restrictedMethodPermissionBuilders,
   endowmentPermissionBuilders,
 } from '@metamask/snaps-rpc-methods';
+
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,

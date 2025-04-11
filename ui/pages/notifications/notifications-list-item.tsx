@@ -1,12 +1,13 @@
+import { hasProperty } from '@metamask/utils';
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { hasProperty } from '@metamask/utils';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { Box } from '../../components/component-library';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   BlockSize,
   Display,

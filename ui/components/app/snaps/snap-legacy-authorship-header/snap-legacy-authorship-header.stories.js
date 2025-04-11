@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SnapLegacyAuthorshipHeader from './snap-legacy-authorship-header';
 
 export default {

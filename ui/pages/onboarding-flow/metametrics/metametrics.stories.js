@@ -1,4 +1,5 @@
 import React from 'react';
+
 import OnboardingMetametrics from './metametrics';
 
 export default {

@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
-import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   Box,
   Button,
@@ -17,6 +13,8 @@ import {
   ContainerMaxWidth,
   Text,
 } from '../../components/component-library';
+import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   TextAlign,
   BlockSize,
@@ -29,6 +27,9 @@ import {
   TextVariant,
   BorderRadius,
 } from '../../helpers/constants/design-system';
+import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 
 export const NotificationsListTurnOnNotifications = () => {
   const t = useI18nContext();

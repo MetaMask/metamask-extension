@@ -7,7 +7,6 @@ import {
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
-
 import { DataTree } from './dataTree';
 
 const CHAIN_ID_MOCK = '0x123';

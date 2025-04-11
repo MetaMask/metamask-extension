@@ -1,9 +1,10 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+import React from 'react';
+
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../test/jest';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import configureStore from '../../../../store/store';
 import SnapPermissionAdapter from './snap-permission-adapter';
 
 describe('Snap Permission Adapter', () => {

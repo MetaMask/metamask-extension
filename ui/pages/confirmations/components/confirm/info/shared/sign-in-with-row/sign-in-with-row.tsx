@@ -1,5 +1,5 @@
-import React from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import React from 'react';
 
 import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';

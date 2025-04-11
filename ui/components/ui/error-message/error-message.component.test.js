@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import ErrorMessage from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 describe('ErrorMessage Component', () => {
   it('should render a message from props.errorMessage', () => {

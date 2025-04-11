@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+import React, { useState, useCallback } from 'react';
+
 import { Box } from '../../../components/component-library';
-import { Display } from '../../../helpers/constants/design-system';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+import { Display } from '../../../helpers/constants/design-system';
 
 const ANIMATIONS_FOLDER = 'images/animations/smart-transaction-status';
 

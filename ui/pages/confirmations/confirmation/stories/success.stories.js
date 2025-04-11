@@ -1,8 +1,9 @@
-import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isArray } from 'lodash';
-import { Display } from '../../../../helpers/constants/design-system';
+import React from 'react';
+
 import { IconName } from '../../../../components/component-library';
+import { Display } from '../../../../helpers/constants/design-system';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 

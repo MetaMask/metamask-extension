@@ -1,4 +1,11 @@
 import React, { useContext } from 'react';
+
+import { I18nContext } from '../../../../contexts/i18n';
+import {
+  AlignItems,
+  FlexDirection,
+  TextAlign,
+} from '../../../../helpers/constants/design-system';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import {
   ButtonSize,
@@ -11,12 +18,6 @@ import {
   Text,
   ModalFooter,
 } from '../../../component-library';
-import {
-  AlignItems,
-  FlexDirection,
-  TextAlign,
-} from '../../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../contexts/i18n';
 
 export default function ConfirmTurnOffProfileSyncing() {
   const { props, hideModal } = useModalProps();

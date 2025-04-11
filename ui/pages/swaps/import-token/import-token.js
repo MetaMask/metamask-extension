@@ -1,14 +1,6 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../contexts/i18n';
-import {
-  TextVariant,
-  AlignItems,
-  Display,
-  Severity,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
+import React, { useContext } from 'react';
+
 
 import {
   Text,
@@ -25,6 +17,15 @@ import {
 import { FormTextField } from '../../../components/component-library/form-text-field/deprecated';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
+import { I18nContext } from '../../../contexts/i18n';
+import {
+  TextVariant,
+  AlignItems,
+  Display,
+  Severity,
+  FlexDirection,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
 
 export default function ImportToken({
   onImportTokenCloseClick,

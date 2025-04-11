@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   isSolanaChainId,
   BRIDGE_MM_FEE_RATE,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   Text,
   PopoverPosition,
@@ -22,18 +30,18 @@ import {
   getToChain,
   getIsBridgeTx,
 } from '../../../ducks/bridge/selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   BackgroundColor,
   JustifyContent,
@@ -41,13 +49,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  MULTICHAIN_TOKEN_IMAGE_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = () => {

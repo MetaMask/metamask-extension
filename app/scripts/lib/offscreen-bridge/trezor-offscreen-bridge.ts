@@ -11,6 +11,7 @@ import type {
   PROTO,
   EthereumSignTypedHash,
 } from '@trezor/connect-web';
+
 import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,

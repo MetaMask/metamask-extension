@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import BigNumber from 'bignumber.js';
 
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from '../modules/Numeric';

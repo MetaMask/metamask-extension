@@ -1,6 +1,7 @@
-import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { EthAccountType } from '@metamask/keyring-api';
+import { action } from '@storybook/addon-actions';
+import React from 'react';
+
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConnectedAccounts from './connected-accounts.component';
 

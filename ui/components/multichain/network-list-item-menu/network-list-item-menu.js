@@ -1,5 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
@@ -11,7 +13,6 @@ import {
   Text,
 } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
-import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 
 export const NetworkListItemMenu = ({
   anchorElement,

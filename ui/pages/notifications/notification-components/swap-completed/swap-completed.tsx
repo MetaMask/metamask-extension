@@ -1,15 +1,16 @@
-import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+import React from 'react';
+
+import { t } from '../../../../../app/scripts/translate';
 import type { CHAIN_IDS } from '../../../../../shared/constants/network';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
 
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import {
+  BadgeWrapperPosition,
+  IconName,
+} from '../../../../components/component-library';
 import {
   NotificationListItem,
   NotificationDetailInfo,
@@ -22,10 +23,10 @@ import {
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
-
+  TextVariant,
+  BackgroundColor,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
 import {
   createTextItems,
   getAmount,
@@ -33,12 +34,11 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

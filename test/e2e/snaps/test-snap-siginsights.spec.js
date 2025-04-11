@@ -1,10 +1,10 @@
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Signature Insights', function () {

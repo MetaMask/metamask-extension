@@ -1,4 +1,5 @@
 import React from 'react';
+
 import NftOptions from './nft-options';
 
 export default {

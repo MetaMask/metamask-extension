@@ -1,20 +1,20 @@
+import { isSnapId } from '@metamask/snaps-utils';
 import React from 'react';
 
-import { isSnapId } from '@metamask/snaps-utils';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../context/confirm';
 import type {
   SignatureRequestType,
   TypedSignDataV1Type,
 } from '../../../../types/confirm';
-import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 

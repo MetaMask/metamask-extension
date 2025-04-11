@@ -1,6 +1,12 @@
+import classnames from 'classnames';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
+
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import {
+  getCurrentCurrency,
+  getTokenBalances,
+} from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
   Display,
@@ -9,6 +15,14 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
+import {
+  getAccountAssets,
+  getMultichainAggregatedBalance,
+  getMultichainNativeTokenBalance,
+} from '../../../selectors/assets';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import {
   Box,
   ButtonIcon,
@@ -16,19 +30,6 @@ import {
   IconName,
   SensitiveText,
 } from '../../component-library';
-import {
-  getCurrentCurrency,
-  getTokenBalances,
-} from '../../../ducks/metamask/metamask';
-import {
-  getAccountAssets,
-  getMultichainAggregatedBalance,
-  getMultichainNativeTokenBalance,
-} from '../../../selectors/assets';
-import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
-import { getMultichainNetwork } from '../../../selectors/multichain';
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
 
 export const AggregatedBalance = ({

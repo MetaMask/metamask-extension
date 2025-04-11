@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
-import Modal from '../../modal';
-import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
-import Identicon from '../../../ui/identicon';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
+import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import {
   InternalAccountPropType,
   MultichainNetworkPropType,
 } from '../../../../selectors/multichain';
+import Identicon from '../../../ui/identicon';
+import Modal from '../../modal';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {

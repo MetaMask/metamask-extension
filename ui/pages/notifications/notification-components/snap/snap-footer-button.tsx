@@ -1,13 +1,14 @@
 import React, { useCallback, useContext, useState } from 'react';
-import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
-import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
-import { NotificationDetailButton } from '../../../../components/multichain';
-import { ButtonVariant } from '../../../../components/component-library';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
+import { ButtonVariant } from '../../../../components/component-library';
+import { NotificationDetailButton } from '../../../../components/multichain';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import type { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {

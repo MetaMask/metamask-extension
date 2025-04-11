@@ -1,13 +1,14 @@
+import BigNumber from 'bignumber.js';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useState, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import BigNumber from 'bignumber.js';
+
 import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.component';
-import { I18nContext } from '../../../../contexts/i18n';
-import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
+import { I18nContext } from '../../../../contexts/i18n';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
+import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants';
 
 const ToggleArrows = () => (
   <svg

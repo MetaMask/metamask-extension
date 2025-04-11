@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import type { Snap } from '@metamask/snaps-utils';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -16,16 +25,7 @@ import {
   ModalBody,
   ModalFooter,
 } from '../../../component-library';
-
-import {
-  Display,
-  FlexDirection,
-  FontWeight,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
 export default function KeyringRemovalSnapWarning({

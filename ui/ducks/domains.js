@@ -1,21 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit';
-import log from 'loglevel';
-
 import {
   getChainIdsCaveat,
   getLookupMatchersCaveat,
 } from '@metamask/snaps-rpc-methods';
+import { createSlice } from '@reduxjs/toolkit';
+import log from 'loglevel';
+
+import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send/send.constants';
 import {
   getAddressBookEntry,
   getNameLookupSnapsIds,
   getPermissionSubjects,
   getSnapMetadata,
 } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { handleSnapRequest } from '../store/actions';
-import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send/send.constants';
 import { CHAIN_CHANGED } from '../store/actionConstants';
-import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
+import { handleSnapRequest } from '../store/actions';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';

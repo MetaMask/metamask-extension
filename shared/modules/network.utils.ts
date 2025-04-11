@@ -1,3 +1,6 @@
+import { convertHexToDecimal } from '@metamask/controller-utils';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import {
   type Hex,
   type CaipChainId,
@@ -6,16 +9,13 @@ import {
   parseCaipChainId,
   add0x,
 } from '@metamask/utils';
-import { convertHexToDecimal } from '@metamask/controller-utils';
-import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import type { NetworkConfiguration } from '@metamask/network-controller';
 
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
 import {
   CHAIN_IDS,
   MAX_SAFE_CHAIN_ID,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
 
 type RpcEndpoint = {
   name?: string;

@@ -1,5 +1,5 @@
-import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -9,6 +9,7 @@ import {
   Box,
   Text,
 } from '../../../../../../../../components/component-library';
+import Tooltip from '../../../../../../../../components/ui/tooltip';
 import {
   BlockSize,
   BorderRadius,
@@ -16,15 +17,14 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
-import Tooltip from '../../../../../../../../components/ui/tooltip';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { selectConversionRateByChainId } from '../../../../../../../../selectors';
 import { AssetPill } from '../../../../../simulation-details/asset-pill';
+import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
 import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
 import { getAmountColors } from '../../../utils';
 
 const NATIVE_DECIMALS = 18;

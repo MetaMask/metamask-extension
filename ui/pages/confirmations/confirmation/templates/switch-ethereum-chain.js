@@ -1,4 +1,5 @@
 import { providerErrors } from '@metamask/rpc-errors';
+
 import {
   JustifyContent,
   SEVERITIES,

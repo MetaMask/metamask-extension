@@ -1,8 +1,9 @@
-import { cloneDeep } from 'lodash';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { cloneDeep } from 'lodash';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import migration59 from './059';
 

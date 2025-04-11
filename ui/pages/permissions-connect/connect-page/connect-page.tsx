@@ -1,5 +1,3 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
 import type {
   CaipAccountId,
@@ -9,10 +7,21 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
+import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import {
+  getAllNonWalletNamespacesFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -27,12 +36,18 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AccountListItem,
+  EditAccountsModal,
+} from '../../../components/multichain';
+import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getUpdatedAndSortedAccountsWithCaipAccountId } from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
@@ -44,34 +59,19 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
-import {
-  AccountListItem,
-  EditAccountsModal,
-} from '../../../components/multichain';
 import {
   getAvatarFallbackLetter,
   isIpAddress,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
-import {
-  getAllNonWalletNamespacesFromCaip25CaveatValue,
-  getAllScopesFromCaip25CaveatValue,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import type {
   PermissionsRequest} from './utils';
 import {

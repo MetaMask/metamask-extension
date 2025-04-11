@@ -1,8 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
+
+import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../components/component-library';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../components/multichain/pages/page';
 import { I18nContext } from '../../contexts/i18n';
+import { resetBridgeState } from '../../ducks/bridge/actions';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
+import { TextVariant } from '../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
@@ -10,33 +25,19 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
-import { resetBackgroundSwapsState } from '../../store/actions';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../components/component-library';
-import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
-import { getIsBridgeEnabled } from '../../selectors';
-import useBridging from '../../hooks/bridge/useBridging';
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../components/multichain/pages/page';
-import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState } from '../../ducks/bridge/actions';
-import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
+import useBridging from '../../hooks/bridge/useBridging';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
-import { TextVariant } from '../../helpers/constants/design-system';
-import PrepareBridgePage from './prepare/prepare-bridge-page';
-import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
+import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
+import { getIsBridgeEnabled } from '../../selectors';
+import { resetBackgroundSwapsState } from '../../store/actions';
+import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
-import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
+import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import PrepareBridgePage from './prepare/prepare-bridge-page';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);

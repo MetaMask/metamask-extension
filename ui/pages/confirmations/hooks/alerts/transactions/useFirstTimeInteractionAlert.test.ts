@@ -6,10 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import { useFirstTimeInteractionAlert } from './useFirstTimeInteractionAlert';
 
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
+import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 import {
   TextVariant,
   Color,
@@ -10,10 +10,8 @@ import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
-
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { hideBetaHeader } from '../../../store/actions';
-
 import {
   ButtonIcon,
   ButtonIconSize,

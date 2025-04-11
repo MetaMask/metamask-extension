@@ -1,13 +1,14 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import MetafoxLogo from '../../ui/metafox-logo';
-import { PickerNetwork } from '../../component-library';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getTestNetworkBackgroundColor } from '../../../selectors';
+import { useHistory } from 'react-router-dom';
+
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getTestNetworkBackgroundColor } from '../../../selectors';
+import { PickerNetwork } from '../../component-library';
+import MetafoxLogo from '../../ui/metafox-logo';
 
 type AppHeaderLockedContentProps = {
   currentNetwork: MultichainNetworkConfiguration;

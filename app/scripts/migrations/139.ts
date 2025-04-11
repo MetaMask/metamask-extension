@@ -1,3 +1,8 @@
+import type {
+  Caveat,
+  PermissionConstraint,
+  ValidPermission,
+} from '@metamask/permission-controller';
 import { hasProperty, hexToBigInt, isObject } from '@metamask/utils';
 import type {
   CaipChainId,
@@ -7,11 +12,6 @@ import type {
   NonEmptyArray,
 } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import type {
-  Caveat,
-  PermissionConstraint,
-  ValidPermission,
-} from '@metamask/permission-controller';
 
 type VersionedData = {
   meta: { version: number };

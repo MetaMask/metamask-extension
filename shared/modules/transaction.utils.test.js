@@ -1,12 +1,12 @@
 import { TransactionType } from '@metamask/transaction-controller';
-
 import BigNumber from 'bignumber.js';
-import { createTestProviderTools } from '../../test/stub/provider';
+
+import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
   buildApproveTransactionData,
   buildIncreaseAllowanceTransactionData,
 } from '../../test/data/confirmations/token-approve';
-import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
+import { createTestProviderTools } from '../../test/stub/provider';
 import {
   determineTransactionType,
   hasTransactionData,

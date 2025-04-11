@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+
 import testData from '../../../../../.storybook/test-data';
-import configureStore from '../../../../store/store';
 import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
@@ -10,6 +10,7 @@ import {
   ZK_SYNC_ERA_DISPLAY_NAME,
   ZK_SYNC_ERA_TOKEN_IMAGE_URL,
 } from '../../../../../shared/constants/network';
+import configureStore from '../../../../store/store';
 import PopularNetworkList from './popular-network-list';
 
 const customNetworkStore = configureStore({

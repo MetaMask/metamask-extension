@@ -5,6 +5,7 @@ import type {
 import {
   EncryptionPublicKeyManager
 } from '@metamask/message-manager';
+
 import { KeyringType } from '../../../shared/constants/keyring';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import type {

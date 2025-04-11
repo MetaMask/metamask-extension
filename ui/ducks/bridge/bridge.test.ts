@@ -1,18 +1,18 @@
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { setBackgroundConnection } from '../../store/background-connection';
-import * as util from '../../helpers/utils/util';
+import { zeroAddress } from 'ethereumjs-util';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import bridgeReducer from './bridge';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import * as util from '../../helpers/utils/util';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   setBridgeFeatureFlags,
   setFromToken,
@@ -26,6 +26,7 @@ import {
   setWasTxDeclined,
   setSlippage,
 } from './actions';
+import bridgeReducer from './bridge';
 
 const middleware = [thunk];
 

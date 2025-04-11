@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
+
 import { usePrevious } from './usePrevious';
 
 /**

@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { memoize } from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   AlignItems,
   BlockSize,

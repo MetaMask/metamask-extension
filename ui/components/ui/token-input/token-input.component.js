@@ -1,16 +1,17 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import UnitInput from '../unit-input';
-import CurrencyDisplay from '../currency-display';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import { getWeiHexFromDecimalValue } from '../../../../shared/modules/conversion.utils';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import CurrencyDisplay from '../currency-display';
+import UnitInput from '../unit-input';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted

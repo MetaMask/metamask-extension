@@ -1,7 +1,7 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import React from 'react';
 
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import InfoBox from './info-box.component';
 
 describe('InfoBox', () => {

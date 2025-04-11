@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useEffect, useState } from 'react';
+
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useSendingValueMetric } from './useSendingValueMetric';

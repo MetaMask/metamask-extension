@@ -1,7 +1,9 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { ButtonBase, IconName, Box } from '../../component-library';
+import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
+
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { MINUTE } from '../../../../shared/constants/time';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,14 +13,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
-import Tooltip from '../../ui/tooltip/tooltip';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
+import { ButtonBase, IconName, Box } from '../../component-library';
+import Tooltip from '../../ui/tooltip/tooltip';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 function AddressCopyButton({ address, shorten = false, wrap = false }) {
   const checksummedAddress = normalizeSafeAddress(address);

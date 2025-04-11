@@ -1,8 +1,8 @@
 import type { CSSProperties} from 'react';
 import React, { useCallback } from 'react';
 
-import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import { IconColor } from '../../../../../helpers/constants/design-system';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import {
   ButtonIcon,
   ButtonIconSize,

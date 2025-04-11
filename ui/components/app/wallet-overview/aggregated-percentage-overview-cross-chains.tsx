@@ -1,9 +1,24 @@
+
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
+import { toChecksumAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { toChecksumAddress } from 'ethereumjs-util';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import type { Hex } from '@metamask/utils';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import {
+  Display,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -11,21 +26,7 @@ import {
   getMarketData,
   getChainIdsToPoll,
 } from '../../../selectors';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
-import { getIntlLocale } from '../../../ducks/locale/locale';
-import {
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { Box, SensitiveText } from '../../component-library';
-import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
-import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import type { TokenWithBalance } from '../assets/types';
 
 export const AggregatedPercentageOverviewCrossChains = () => {

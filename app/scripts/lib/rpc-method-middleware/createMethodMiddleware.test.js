@@ -3,6 +3,7 @@ import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
 } from '@metamask/utils';
+
 import {
   createEip1193MethodMiddleware,
   createEthAccountsMethodMiddleware,

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
+
+import { getValidUrl } from '../../app/scripts/lib/util';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
   CHAIN_SPEC_URL,
 } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
+import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import {
   getMultichainIsEvm,
@@ -14,7 +16,6 @@ import {
 } from '../selectors/multichain';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getValidUrl } from '../../app/scripts/lib/util';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId,

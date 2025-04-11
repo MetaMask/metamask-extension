@@ -1,6 +1,7 @@
+import classnames from 'classnames';
 import type { FunctionComponent} from 'react';
 import React, { useEffect, useState } from 'react';
-import classnames from 'classnames';
+
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   BorderColor,

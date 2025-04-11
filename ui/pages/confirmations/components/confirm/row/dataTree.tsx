@@ -7,11 +7,6 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-
-import { sanitizeString } from '../../../../../helpers/utils/util';
-import { Box } from '../../../../../components/component-library';
-import { BlockSize } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -19,6 +14,10 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
+import { Box } from '../../../../../components/component-library';
+import { BlockSize } from '../../../../../helpers/constants/design-system';
+import { sanitizeString } from '../../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];

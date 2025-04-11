@@ -1,14 +1,15 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { setBackgroundConnection } from '../../../store/background-connection';
+
+import SmartTransactionStatusLabel from '.';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   renderWithProvider,
   createSwapsMockStore,
   fireEvent,
 } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import SmartTransactionStatusLabel from '.';
+import { setBackgroundConnection } from '../../../store/background-connection';
 
 const middleware = [thunk];
 setBackgroundConnection({

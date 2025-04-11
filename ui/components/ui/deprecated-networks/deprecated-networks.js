@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import {
+  CHAIN_IDS,
+  DEPRECATED_NETWORKS,
+} from '../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import {
   BackgroundColor,
   BorderRadius,
   Severity,
 } from '../../../helpers/constants/design-system';
-
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { BannerAlert, Box } from '../../component-library';
-import {
-  CHAIN_IDS,
-  DEPRECATED_NETWORKS,
-} from '../../../../shared/constants/network';
 import { updateNetwork } from '../../../store/actions';
+import { BannerAlert, Box } from '../../component-library';
 
 export default function DeprecatedNetworks() {
   const { chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};

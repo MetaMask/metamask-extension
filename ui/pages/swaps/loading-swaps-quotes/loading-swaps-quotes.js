@@ -1,31 +1,26 @@
 import EventEmitter from 'events';
+import { shuffle } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import isEqual from 'lodash/isEqual';
+
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+} from '../../../../shared/modules/selectors';
+import { Text } from '../../../components/component-library';
+import Mascot from '../../../components/ui/mascot';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   navigateBackToPrepareSwap,
   getFetchParams,
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
-import {
-  isHardwareWallet,
-  getHardwareWalletType,
-  getHDEntropyIndex,
-} from '../../../selectors/selectors';
-import {
-  getSmartTransactionsEnabled,
-  getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
-import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import Mascot from '../../../components/ui/mascot';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import SwapsFooter from '../swaps-footer';
-import { Text } from '../../../components/component-library';
 import {
   TextVariant,
   TextColor,
@@ -35,6 +30,12 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
+import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({

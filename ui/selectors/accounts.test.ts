@@ -1,4 +1,5 @@
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
+
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
   MOCK_ACCOUNTS,

@@ -1,4 +1,8 @@
 import type {
+  AddressBookController,
+  AddressBookControllerState,
+} from '@metamask/address-book-controller';
+import type {
   NameController,
   NameControllerState,
   SetNameRequest} from '@metamask/name-controller';
@@ -6,10 +10,8 @@ import {
   NameOrigin,
   NameType
 } from '@metamask/name-controller';
-import type {
-  AddressBookController,
-  AddressBookControllerState,
-} from '@metamask/address-book-controller';
+
+import type { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
 import type {
   AddressBookPetnamesBridgeActions,
   AddressBookPetnamesBridgeEvens,
@@ -17,7 +19,6 @@ import type {
 import {
   AddressBookPetnamesBridge
 } from './AddressBookPetnamesBridge';
-import type { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'testName';

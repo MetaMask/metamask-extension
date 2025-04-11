@@ -1,9 +1,15 @@
+import classnames from 'classnames';
 import type { ReactNode} from 'react';
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import classnames from 'classnames';
-import { Box, Text } from '../../../../component-library';
-import type { SortOrder, SortingCallbacksT } from '../../util/sort';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,17 +18,12 @@ import {
   Display,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { setTokenSortConfig } from '../../../../../store/actions';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsUserTrait,
-} from '../../../../../../shared/constants/metametrics';
-import { getTokenSortConfig } from '../../../../../selectors';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getTokenSortConfig } from '../../../../../selectors';
+import { setTokenSortConfig } from '../../../../../store/actions';
+import { Box, Text } from '../../../../component-library';
+import type { SortOrder, SortingCallbacksT } from '../../util/sort';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item

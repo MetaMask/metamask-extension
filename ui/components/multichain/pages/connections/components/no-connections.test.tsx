@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { renderWithProvider } from '../../../../../../test/jest';
 import { NoConnectionContent } from './no-connection';
 

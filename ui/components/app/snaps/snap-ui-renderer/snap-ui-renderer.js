@@ -1,15 +1,11 @@
-import React, { memo, useMemo, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
-
 import { isEqual } from 'lodash';
-import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { getMemoizedInterface } from '../../../../selectors';
-import { Box } from '../../../component-library';
+import PropTypes from 'prop-types';
+import React, { memo, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
-import PulseLoader from '../../../ui/pulse-loader';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,8 +14,12 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
+import { getMemoizedInterface } from '../../../../selectors';
+import { Box } from '../../../component-library';
+import PulseLoader from '../../../ui/pulse-loader';
+import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { COMPONENT_MAPPING } from './components';
+import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 
 // Component for tracking the number of re-renders
 // DO NOT USE IN PRODUCTION

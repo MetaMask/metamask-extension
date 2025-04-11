@@ -1,6 +1,7 @@
 import type { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
+
 import { mapToTemplate } from '../utils';
 import type { UIComponent, UIComponentFactory } from './types';
 

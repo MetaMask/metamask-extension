@@ -1,17 +1,7 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
-  Box,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -26,6 +16,17 @@ import {
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  Box,
+  Icon,
+  IconName,
+  Text,
+} from '../../component-library';
 import type { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 
 type NftItemProps = {

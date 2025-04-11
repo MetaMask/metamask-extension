@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { getNfts } from '../../../../../ducks/metamask/metamask';
+import {
+  Display,
+  IconColor,
+  JustifyContent,
+} from '../../../../../helpers/constants/design-system';
+import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 import {
   Box,
   ButtonIcon,
@@ -13,20 +25,8 @@ import {
 import { NftItem } from '../../../../multichain/nft-item';
 import { Content, Header, Page } from '../../../../multichain/pages/page';
 
-import { getNfts } from '../../../../../ducks/metamask/metamask';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
-import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 
 export default function NftFullImage() {
   const t = useI18nContext();

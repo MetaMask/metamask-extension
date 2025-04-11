@@ -1,8 +1,8 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
+
 import type { PolymorphicRef, BoxProps } from '../box';
 import { Box } from '../box';
-
 import type { ContainerProps, ContainerComponent } from './container.types';
 
 export const Container: ContainerComponent = React.forwardRef(

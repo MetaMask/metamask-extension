@@ -1,9 +1,10 @@
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
-import mockDefaultState from '../../../test/data/mock-state.json';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
+import mockDefaultState from '../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { getShouldShowSeedPhraseReminder } from './multi-srp';
 
 const mockGetSelectedAccountTokensAcrossChains = jest.fn();

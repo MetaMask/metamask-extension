@@ -1,10 +1,25 @@
+import { isSnapId } from '@metamask/snaps-utils';
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
-import { isSnapId } from '@metamask/snaps-utils';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import ConnectedSitesList from '../../../components/app/connected-sites-list';
+import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning';
+import { ShowMore } from '../../../components/app/snaps/show-more';
+import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded';
+import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
+import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
+import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning';
+import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
+import {
+  Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Text,
+} from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
@@ -14,21 +29,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded';
-import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning';
-import ConnectedSitesList from '../../../components/app/connected-sites-list';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning';
 ///: END:ONLY_INCLUDE_IF
-import {
-  removeSnap,
-  disconnectOriginFromSnap,
-  updateSnap,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  showKeyringSnapRemovalModal,
-  getSnapAccountsById,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../store/actions';
 import {
   getSnaps,
   getSubjectsWithSnapPermission,
@@ -40,18 +43,16 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Text,
-} from '../../../components/component-library';
-import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
-import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
+  removeSnap,
+  disconnectOriginFromSnap,
+  updateSnap,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  showKeyringSnapRemovalModal,
+  getSnapAccountsById,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../store/actions';
 import { DelineatorType } from '../../../helpers/constants/snaps';
-import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
-import { ShowMore } from '../../../components/app/snaps/show-more';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF

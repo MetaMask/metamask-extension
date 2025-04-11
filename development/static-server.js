@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs').promises;
 const path = require('path');
-
 const chalk = require('chalk');
 
 const createStaticServer = require('./create-static-server');

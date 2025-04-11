@@ -1,6 +1,3 @@
-import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
 import {
   type TxData,
   type QuoteResponse,
@@ -8,9 +5,13 @@ import {
   isEthUsdt,
   getEthUsdtResetData,
 } from '@metamask/bridge-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+
 import { ETH_USDT_ADDRESS } from '../../../../shared/constants/bridge';
-import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
 import useHandleTx from './useHandleTx';
 
 export const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';

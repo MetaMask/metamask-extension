@@ -1,10 +1,11 @@
 const { strict: assert } = require('assert');
+
+const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const {
   createInternalTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const { withFixtures, unlockWallet } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {

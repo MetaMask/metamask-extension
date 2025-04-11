@@ -1,5 +1,6 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
+
 import { IconName } from '../../../../component-library';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 

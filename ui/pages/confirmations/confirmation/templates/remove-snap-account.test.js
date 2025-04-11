@@ -1,14 +1,14 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor } from '@testing-library/react';
 
-import Confirmation from '../confirmation';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
-import mockState from '../../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import Confirmation from '../confirmation';
 
 const middleware = [thunk];
 

@@ -1,14 +1,15 @@
 import { connect } from 'react-redux';
+
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import * as actions from '../../../store/actions';
-import {
-  getAllEnabledNetworks,
-  getNetworkIdentifier,
-} from '../../../selectors';
 import {
   getProviderConfig,
   isNetworkLoading,
 } from '../../../../shared/modules/selectors/networks';
+import {
+  getAllEnabledNetworks,
+  getNetworkIdentifier,
+} from '../../../selectors';
+import * as actions from '../../../store/actions';
 import LoadingNetworkScreen from './loading-network-screen.component';
 
 const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];

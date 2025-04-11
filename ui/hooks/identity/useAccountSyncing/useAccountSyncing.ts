@@ -1,20 +1,21 @@
 import log from 'loglevel';
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  deleteAccountSyncingDataFromUserStorage,
-  syncInternalAccountsWithUserStorage,
-} from '../../../store/actions';
-import {
-  selectIsAccountSyncingReadyToBeDispatched,
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
-import { getUseExternalServices } from '../../../selectors';
+
 import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
+import { getUseExternalServices } from '../../../selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
+import {
+  selectIsAccountSyncingReadyToBeDispatched,
+  selectIsProfileSyncingEnabled,
+} from '../../../selectors/identity/profile-syncing';
+import {
+  deleteAccountSyncingDataFromUserStorage,
+  syncInternalAccountsWithUserStorage,
+} from '../../../store/actions';
 
 /**
  * A utility used internally to decide if account syncing should be dispatched

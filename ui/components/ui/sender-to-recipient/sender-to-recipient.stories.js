@@ -1,10 +1,11 @@
 import React from 'react';
+
+import SenderToRecipient from '.';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
-import SenderToRecipient from '.';
 
 export default {
   title: 'Components/UI/SenderToRecipient',

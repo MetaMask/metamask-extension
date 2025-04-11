@@ -1,6 +1,7 @@
 import { NetworkType, toHex } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
+
 import { version as currentStateVersion, migrate } from './092.2';
 
 const TEST_NETWORK_CONTROLLER_STATE = {

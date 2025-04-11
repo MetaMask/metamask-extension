@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import MetaFoxLogo from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 // eslint-disable-next-line react/display-name
 jest.mock('./horizontal-logo.js', () => () => {

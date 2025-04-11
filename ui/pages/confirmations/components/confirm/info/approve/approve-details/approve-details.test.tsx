@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { ApproveDetails } from './approve-details';

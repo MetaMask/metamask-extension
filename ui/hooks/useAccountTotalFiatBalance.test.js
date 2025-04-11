@@ -1,13 +1,12 @@
+import { renderHook } from '@testing-library/react-hooks';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
-
-import mockState from '../../test/data/mock-state.json';
-import configureStore from '../store/store';
 
 import { CHAIN_IDS } from '../../shared/constants/network';
+import mockState from '../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import configureStore from '../store/store';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
 
 const mockAccount = createMockInternalAccount({

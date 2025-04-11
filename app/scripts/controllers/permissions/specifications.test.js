@@ -1,8 +1,9 @@
-import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
+
 import {
   getCaveatSpecifications,
   getPermissionSpecifications,

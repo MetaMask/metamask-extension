@@ -1,10 +1,7 @@
 import { connect } from 'react-redux';
-import {
-  getOpenMetamaskTabsIds,
-  requestAccountsAndChainPermissionsWithId,
-  removePermissionsFor,
-  removePermittedAccount,
-} from '../../store/actions';
+
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { CONNECT_ROUTE } from '../../helpers/constants/routes';
 import {
   getConnectedSubjectsForSelectedAddress,
   getOriginOfCurrentTab,
@@ -12,8 +9,12 @@ import {
   getPermittedAccountsByOrigin,
   getSelectedInternalAccount,
 } from '../../selectors';
-import { CONNECT_ROUTE } from '../../helpers/constants/routes';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import {
+  getOpenMetamaskTabsIds,
+  requestAccountsAndChainPermissionsWithId,
+  removePermissionsFor,
+  removePermittedAccount,
+} from '../../store/actions';
 import ConnectedSites from './connected-sites.component';
 
 const mapStateToProps = (state) => {

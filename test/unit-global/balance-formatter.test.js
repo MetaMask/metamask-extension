@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect, jest/no-if */
 import currencyFormatter from 'currency-formatter';
+
 import availableCurrencies from '../../ui/helpers/constants/available-conversions.json';
 
 describe('currencyFormatting', function () {

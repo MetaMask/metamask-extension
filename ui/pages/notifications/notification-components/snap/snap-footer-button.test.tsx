@@ -1,9 +1,10 @@
-import React from 'react';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
-import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
-import * as SnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
+import { fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import * as SnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import { SnapFooterButton } from './snap-footer-button';
 import type { DetailedViewData, SnapNotification } from './types';
 

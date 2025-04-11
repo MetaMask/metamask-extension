@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
-import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
-import { TextVariant } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
+import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
+import { Text } from '../../../../../components/component-library';
 import Button from '../../../../../components/ui/button';
 import FormField from '../../../../../components/ui/form-field';
-
-import { useAdvancedGasFeePopoverContext } from '../context';
-import { Text } from '../../../../../components/component-library';
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { TextVariant } from '../../../../../helpers/constants/design-system';
+import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../constants';
-import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
+import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
+import { useAdvancedGasFeePopoverContext } from '../context';
 
 const validateGasLimit = (gasLimit, minGasLimit, maxGasLimit) =>
   bnLessThan(gasLimit, minGasLimit) || bnGreaterThan(gasLimit, maxGasLimit)

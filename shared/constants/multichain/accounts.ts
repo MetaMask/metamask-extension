@@ -1,4 +1,5 @@
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
+
 import { BITCOIN_WALLET_SNAP_ID } from '../../lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../lib/accounts/solana-wallet-snap';
 

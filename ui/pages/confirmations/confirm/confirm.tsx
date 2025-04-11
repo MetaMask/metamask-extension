@@ -11,16 +11,16 @@ import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
+import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
 import { LedgerInfo } from '../components/confirm/ledger-info';
-import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
+import { ConfirmNav } from '../components/confirm/nav/nav';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
+import { Splash } from '../components/confirm/splash';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
+import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
-import { ConfirmNav } from '../components/confirm/nav/nav';
-import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
-import { Splash } from '../components/confirm/splash';
 
 const EIP1559TransactionGasModal = () => {
   return (

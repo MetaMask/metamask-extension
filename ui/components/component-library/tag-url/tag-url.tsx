@@ -1,5 +1,6 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -9,12 +10,12 @@ import {
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../text';
+import { AvatarFavicon } from '../avatar-favicon';
 import type { BoxProps, PolymorphicRef } from '../box';
 import { Box } from '../box';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
-import { AvatarFavicon } from '../avatar-favicon';
 import { Icon, IconName, IconSize } from '../icon';
+import { Text } from '../text';
 import type { TagUrlComponent, TagUrlProps } from './tag-url.types';
 
 export const TagUrl: TagUrlComponent = React.forwardRef(

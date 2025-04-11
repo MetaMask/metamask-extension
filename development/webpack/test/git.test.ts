@@ -1,6 +1,7 @@
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
 import { join } from 'node:path';
+import { describe, it } from 'node:test';
+
 import { getLatestCommit } from '../utils/git';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878

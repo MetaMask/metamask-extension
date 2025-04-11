@@ -1,6 +1,7 @@
+import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
 import type { Json } from '@metamask/utils';
 import { jsonrpc2 } from '@metamask/utils';
-import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+
 import type {
   EvmMethodsToNonEvmAccountFilterMessenger,
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';

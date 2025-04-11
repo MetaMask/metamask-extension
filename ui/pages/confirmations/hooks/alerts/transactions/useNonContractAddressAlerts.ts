@@ -6,6 +6,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import { readAddressAsContract } from '../../../../../../shared/modules/contract-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -13,8 +14,8 @@ import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
 import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
+import { useConfirmContext } from '../../../context/confirm';
 import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
 
 export function useNonContractAddressAlerts(): Alert[] {

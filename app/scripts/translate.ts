@@ -1,4 +1,3 @@
-import enTranslations from '../_locales/en/messages.json';
 import type {
   I18NMessageDict} from '../../shared/modules/i18n';
 import {
@@ -6,6 +5,7 @@ import {
   fetchLocale,
   getMessage,
 } from '../../shared/modules/i18n';
+import enTranslations from '../_locales/en/messages.json';
 
 let currentLocale: string = FALLBACK_LOCALE;
 let translations: I18NMessageDict = enTranslations;

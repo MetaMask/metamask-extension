@@ -1,11 +1,12 @@
 import React from 'react';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ModalFooter as BaseModalFooter,
   Button,
   ButtonSize,
   ButtonVariant,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type ModalFooterProps = {
   onAction: () => void;

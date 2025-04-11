@@ -1,9 +1,6 @@
-import React, { useContext } from 'react';
 import classnames from 'classnames';
-import { SelectContext } from '../select-wrapper';
-import { Box, type PolymorphicRef } from '../box';
-import { Text } from '../text';
-import type { TextProps } from '../text';
+import React, { useContext } from 'react';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -16,8 +13,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Label } from '../label';
+import { Box, type PolymorphicRef } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
+import { Label } from '../label';
+import { SelectContext } from '../select-wrapper';
+import { Text } from '../text';
+import type { TextProps } from '../text';
 import type {
   SelectButtonProps,
   SelectButtonComponent} from './select-button.types';

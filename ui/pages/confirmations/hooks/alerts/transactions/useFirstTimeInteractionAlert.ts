@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Severity } from '../../../../../helpers/constants/design-system';
+
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getInternalAccounts } from '../../../../../selectors';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();

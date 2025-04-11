@@ -1,7 +1,7 @@
-import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
-import { v4 } from 'uuid';
+import { cloneDeep } from 'lodash';
 import log from 'loglevel';
+import { v4 } from 'uuid';
 
 export const version = 82;
 

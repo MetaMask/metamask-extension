@@ -1,16 +1,14 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   BorderRadius,
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-
+import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
 import { Text } from '../text';
-
-import type { PolymorphicRef } from '../box';
 import type {
   TextareaComponent,
   TextareaProps} from './textarea.types';

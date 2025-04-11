@@ -1,22 +1,23 @@
-import type { Hex} from '@metamask/utils';
-import { add0x } from '@metamask/utils';
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import type {
   BatchTransactionParams,
   GasFeeToken,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import type { Hex} from '@metamask/utils';
+import { add0x } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
-import { Interface } from '@ethersproject/abi';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
+import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import {
   selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
+import { useConfirmContext } from '../../../../context/confirm';
+import { formatAmount } from '../../../simulation-details/formatAmount';
 import { useFeeCalculations } from './useFeeCalculations';
 
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;

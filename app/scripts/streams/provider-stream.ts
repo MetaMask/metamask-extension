@@ -6,6 +6,9 @@ import PortStream from 'extension-port-stream';
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
+
+import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
@@ -18,11 +21,9 @@ import {
   PHISHING_SAFELIST,
   PHISHING_STREAM,
 } from '../constants/stream';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 import type { MessageType } from './stream-utils';
 import { logStreamDisconnectWarning } from './stream-utils';
-import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
 let legacyExtMux: ObjectMultiplex,
   legacyExtChannel: Substream,

@@ -1,13 +1,13 @@
 import React from 'react';
-import type { PolymorphicRef } from '../box';
-import { ButtonPrimary } from '../button-primary';
-import { ButtonSecondary } from '../button-secondary';
-import { ButtonLink } from '../button-link';
-import type { ButtonPrimaryProps } from '../button-primary/button-primary.types';
-import type { ButtonSecondaryProps } from '../button-secondary/button-secondary.types';
-import type { ButtonLinkProps } from '../button-link/button-link.types';
-import type { ButtonProps, ButtonComponent } from './button.types';
 
+import type { PolymorphicRef } from '../box';
+import { ButtonLink } from '../button-link';
+import type { ButtonLinkProps } from '../button-link/button-link.types';
+import { ButtonPrimary } from '../button-primary';
+import type { ButtonPrimaryProps } from '../button-primary/button-primary.types';
+import { ButtonSecondary } from '../button-secondary';
+import type { ButtonSecondaryProps } from '../button-secondary/button-secondary.types';
+import type { ButtonProps, ButtonComponent } from './button.types';
 import { ButtonVariant } from './button.types';
 
 export const Button: ButtonComponent = React.forwardRef(

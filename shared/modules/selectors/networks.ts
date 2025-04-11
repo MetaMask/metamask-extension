@@ -1,3 +1,4 @@
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   RpcEndpointType,
@@ -5,7 +6,7 @@ import {
   type NetworkConfiguration as InternalNetworkConfiguration,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
-import type { AccountsControllerState } from '@metamask/accounts-controller';
+
 import { NetworkStatus } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { createDeepEqualSelector } from './util';

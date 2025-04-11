@@ -6,8 +6,8 @@ import {
   FlexWrap,
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
-import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display/user-preferenced-currency-display.component';
 import CurrencyDisplay from '../../../../ui/currency-display/currency-display.component';
+import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display/user-preferenced-currency-display.component';
 
 export type ConfirmInfoRowCurrencyProps = {
   value: number | string;

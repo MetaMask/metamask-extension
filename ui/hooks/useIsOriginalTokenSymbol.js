@@ -5,8 +5,9 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenSymbol } from '../store/actions';
+
 import { getTokenList } from '../selectors';
+import { getTokenSymbol } from '../store/actions';
 
 /**
  * This hook determines whether a token uses the original symbol based on data not influenced by the user.

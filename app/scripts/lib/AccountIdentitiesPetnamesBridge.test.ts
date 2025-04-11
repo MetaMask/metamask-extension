@@ -1,3 +1,5 @@
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import type {
   NameController,
   NameControllerState} from '@metamask/name-controller';
@@ -7,9 +9,12 @@ import {
   NameOrigin,
 } from '@metamask/name-controller';
 import { cloneDeep } from 'lodash';
-import type { AccountsControllerState } from '@metamask/accounts-controller';
-import { KeyringTypes } from '@metamask/keyring-controller';
+
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import type {
+  PetnameEntry,
+  PetnamesBridgeMessenger,
+} from './AbstractPetnamesBridge';
 import type {
   AccountIdentitiesPetnamesBridgeActions,
   AccountIdentitiesPetnamesBridgeEvents,
@@ -17,10 +22,6 @@ import type {
 import {
   AccountIdentitiesPetnamesBridge
 } from './AccountIdentitiesPetnamesBridge';
-import type {
-  PetnameEntry,
-  PetnamesBridgeMessenger,
-} from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'Account 1';

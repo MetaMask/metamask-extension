@@ -1,11 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import Send from '../icon/send-icon.component';
-import Interaction from '../icon/interaction-icon.component';
-import Approve from '../icon/approve-icon.component';
-import Receive from '../icon/receive-icon.component';
-import Preloader from '../icon/preloader';
+import React from 'react';
+
 import Button from '../button';
+import Approve from '../icon/approve-icon.component';
+import Interaction from '../icon/interaction-icon.component';
+import Preloader from '../icon/preloader';
+import Receive from '../icon/receive-icon.component';
+import Send from '../icon/send-icon.component';
 import ListItem from './list-item.component';
 
 export default {

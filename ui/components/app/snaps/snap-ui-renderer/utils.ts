@@ -1,17 +1,18 @@
 import type { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { hasChildren } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
-import { sha256 } from '@noble/hashes/sha256';
 import type { NonEmptyArray} from '@metamask/utils';
 import { bytesToHex, remove0x } from '@metamask/utils';
+import { sha256 } from '@noble/hashes/sha256';
 import { unescape as unescapeEntities } from 'he';
+import { memoize } from 'lodash';
 import type { ChangeEvent as ReactChangeEvent } from 'react';
+
 import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import type { UIComponent } from './components/types';
 import type { COMPONENT_MAPPING } from './components';
+import type { UIComponent } from './components/types';
 
 export type MapToTemplateParams = {
   map: Record<string, number>;

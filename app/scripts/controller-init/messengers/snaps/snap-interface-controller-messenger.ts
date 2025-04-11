@@ -1,13 +1,13 @@
-import type { Messenger } from '@metamask/base-controller';
-import type { GetSnap } from '@metamask/snaps-controllers';
+import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type {
   AcceptRequest,
   HasApprovalRequest,
 } from '@metamask/approval-controller';
-import type { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
-import type { NotificationListUpdatedEvent } from '@metamask/notification-services-controller/notification-services';
-import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { MultichainAssetsControllerGetStateAction } from '@metamask/assets-controllers';
+import type { Messenger } from '@metamask/base-controller';
+import type { NotificationListUpdatedEvent } from '@metamask/notification-services-controller/notification-services';
+import type { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
+import type { GetSnap } from '@metamask/snaps-controllers';
 
 type Actions =
   | MaybeUpdateState

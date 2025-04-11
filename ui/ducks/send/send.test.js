@@ -1,9 +1,25 @@
-import createMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
+import createMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import { draftTransactionInitialState, editExistingTransaction } from '.';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
+import { KeyringType } from '../../../shared/constants/keyring';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
+import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
+import {
+  getInitialSendStateWithExistingTxState,
+  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+} from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
@@ -13,27 +29,12 @@ import {
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
 } from '../../pages/confirmations/send/send.constants';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
-import { KeyringType } from '../../../shared/constants/keyring';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
-import * as Actions from '../../store/actions';
-import { setBackgroundConnection } from '../../store/background-connection';
 import {
   generateERC20TransferData,
   generateERC721TransferData,
 } from '../../pages/confirmations/send/send.utils';
-import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
-import {
-  getInitialSendStateWithExistingTxState,
-  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-} from '../../../test/jest/mocks';
-import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../test/stub/networks';
-import * as Utils from './swap-and-send-utils';
+import * as Actions from '../../store/actions';
+import { setBackgroundConnection } from '../../store/background-connection';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -82,7 +83,7 @@ import sendReducer, {
   updateSendQuote,
   getIsSwapAndSendDisabledForNetwork,
 } from './send';
-import { draftTransactionInitialState, editExistingTransaction } from '.';
+import * as Utils from './swap-and-send-utils';
 
 const mockStore = createMockStore([thunk]);
 

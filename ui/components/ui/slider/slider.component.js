@@ -1,15 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import MaterialSlider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
-import InfoTooltip from '../info-tooltip/info-tooltip';
 import { Text } from '../../component-library';
+import InfoTooltip from '../info-tooltip/info-tooltip';
 
 const styles = {
   root: {

@@ -1,13 +1,14 @@
-import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
-import Spinner from '../spinner';
-import { Box } from '../../component-library';
+import React, { isValidElement } from 'react';
+
 import {
   AlignItems,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { Box } from '../../component-library';
+import Spinner from '../spinner';
 
 const LoadingScreen = ({
   header,

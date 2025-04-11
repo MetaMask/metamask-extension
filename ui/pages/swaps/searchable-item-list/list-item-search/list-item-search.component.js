@@ -1,15 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Fuse from 'fuse.js';
 import log from 'loglevel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '../../../../components/ui/text-field';
-import { usePrevious } from '../../../../hooks/usePrevious';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
-import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import SearchIcon from '../../../../components/ui/icon/search-icon';
+import TextField from '../../../../components/ui/text-field';
+import { usePrevious } from '../../../../hooks/usePrevious';
+import { fetchToken } from '../../swaps.util';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>

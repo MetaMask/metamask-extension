@@ -1,14 +1,8 @@
-import React from 'react';
-import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import {
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_SOLANA_MAINNET,
-} from '../../../../test/data/mock-accounts';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
+import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -19,8 +13,15 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
-import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import {
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../../../test/data/mock-accounts';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import configureStore from '../../../store/store';
 import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';

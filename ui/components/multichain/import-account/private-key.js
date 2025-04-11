@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { hideWarning } from '../../../store/actions';
 import {
   FormTextField,
   TextFieldSize,
   TextFieldType,
 } from '../../component-library';
-import { hideWarning } from '../../../store/actions';
-
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 

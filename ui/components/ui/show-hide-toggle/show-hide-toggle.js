@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import IconEye from '../icon/icon-eye';
 import IconEyeSlash from '../icon/icon-eye-slash';

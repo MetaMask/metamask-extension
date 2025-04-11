@@ -1,7 +1,7 @@
-import fs from 'node:fs';
-import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
 import { join } from 'node:path';
+import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import {
   version,
   type Chunk,
@@ -10,6 +10,7 @@ import {
   type StatsOptions,
   type StatsCompilation,
 } from 'webpack';
+
 import * as helpers from '../utils/helpers';
 import { type Combination, generateCases } from './helpers';
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import sinon from 'sinon';
+
+import AdvancedGasInputs from '.';
 import { renderWithProvider, fireEvent } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import AdvancedGasInputs from '.';
 
 describe('AdvancedGasInputs', () => {
   let clock;

@@ -18,6 +18,9 @@ import type { CaipChainId, Hex} from '@metamask/utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
+
+import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import type {
   MultichainProviderConfig} from '../../shared/constants/multichain/networks';
 import {
@@ -26,21 +29,14 @@ import {
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks
 } from '../../shared/constants/multichain/networks';
-import { Numeric } from '../../shared/modules/Numeric';
-import {
-  getCompletedOnboarding,
-  getConversionRate,
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import { Numeric } from '../../shared/modules/Numeric';
 import type {
   NetworkState} from '../../shared/modules/selectors/networks';
 import {
@@ -49,8 +45,13 @@ import {
   getProviderConfig
 } from '../../shared/modules/selectors/networks';
 // eslint-disable-next-line import/no-restricted-paths
-import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import {
+  getCompletedOnboarding,
+  getConversionRate,
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import type {
   AccountsState} from './accounts';
 import {

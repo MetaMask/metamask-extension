@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js';
 import {
   type QuoteResponse,
   type Quote,
@@ -7,14 +6,16 @@ import {
   type SolanaFees,
   isNativeAddress,
 } from '@metamask/bridge-controller';
+import { BigNumber } from 'bignumber.js';
+
+import { EtherDenomination } from '../../../../shared/constants/common';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   hexToDecimal,
   sumDecimals,
 } from '../../../../shared/modules/conversion.utils';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 

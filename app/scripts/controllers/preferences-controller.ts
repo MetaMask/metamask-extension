@@ -6,7 +6,6 @@ import type {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import type { Json } from '@metamask/utils';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
@@ -19,8 +18,10 @@ import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
   type PreferencesState,
 } from '@metamask/preferences-controller';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
+import type { Json } from '@metamask/utils';
+
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { ThemeType } from '../../../shared/constants/preferences';
 
 type AccountIdentityEntry = {

@@ -1,6 +1,5 @@
-import React from 'react';
 import classnames from 'classnames';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import React from 'react';
 
 import {
   BackgroundColor,
@@ -9,13 +8,13 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
-import { Text } from '../text';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { BoxProps, PolymorphicRef } from '../box';
 import { Box } from '../box';
-import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { IconName } from '../icon';
+import { Text } from '../text';
 import type { BannerBaseComponent, BannerBaseProps } from './banner-base.types';
 
 export const BannerBase: BannerBaseComponent = React.forwardRef(

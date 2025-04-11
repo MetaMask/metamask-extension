@@ -1,7 +1,8 @@
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Tabs from './tabs.component';
+import React from 'react';
+
 import Tab from './tab/tab.component';
+import Tabs from './tabs.component';
 
 describe('Tabs', () => {
   const renderTabs = (props = {}) => {

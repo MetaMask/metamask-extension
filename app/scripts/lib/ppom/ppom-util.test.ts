@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { PPOMController } from '@metamask/ppom-validator';
 import type { PPOM } from '@blockaid/ppom_release';
+import type { PPOMController } from '@metamask/ppom-validator';
+import type {
+  SignatureController,
+  SignatureRequest,
+} from '@metamask/signature-controller';
 import type {
   TransactionController,
   TransactionParams} from '@metamask/transaction-controller';
 import {
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import type {
-  SignatureController,
-  SignatureRequest,
-} from '@metamask/signature-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
+
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -26,8 +27,8 @@ import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
-import type { SecurityAlertResponse } from './types';
 import * as securityAlertAPI from './security-alerts-api';
+import type { SecurityAlertResponse } from './types';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),

@@ -1,10 +1,11 @@
-import * as React from 'react';
 import { screen } from '@testing-library/react';
+import * as React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+
 import SnapListItem from '.';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 describe('SnapListItem', () => {
   const args = {

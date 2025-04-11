@@ -1,19 +1,19 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import { useGasFeeContext } from '../../../../contexts/gasFee';
-import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
-import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import {
   ButtonVariant,
   Button,
   IconName,
 } from '../../../../components/component-library';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import {
   AlignItems,
   IconColor,
   Size,
 } from '../../../../helpers/constants/design-system';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 
 export default function EditGasFeeIcon({ userAcknowledgedGasMissing = false }) {
   const { hasSimulationError, estimateUsed, supportsEIP1559 } =

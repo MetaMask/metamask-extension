@@ -1,15 +1,16 @@
-import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
   getDefaultBridgeControllerState,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
-import { KeyringType } from '../../shared/constants/keyring';
-import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
-import { mockNetworkState } from '../stub/networks';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
+
 import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { KeyringType } from '../../shared/constants/keyring';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { mockTokenData } from '../data/bridge/mock-token-data';
+import { mockNetworkState } from '../stub/networks';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {

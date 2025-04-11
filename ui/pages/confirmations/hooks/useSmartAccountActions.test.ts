@@ -1,11 +1,11 @@
+import { upgradeAccountConfirmation } from '../../../../test/data/confirmations/batch-transaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
 } from '../../../store/actions';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { upgradeAccountConfirmation } from '../../../../test/data/confirmations/batch-transaction';
 import type { Confirmation } from '../types/confirm';
 import { useSmartAccountActions } from './useSmartAccountActions';
 

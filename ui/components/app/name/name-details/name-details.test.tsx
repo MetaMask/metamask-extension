@@ -4,6 +4,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

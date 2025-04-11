@@ -13,9 +13,10 @@
  */
 
 // Note: minimize non-`type` imports to decrease load time.
-import { join } from 'node:path';
 import { spawn, type StdioOptions } from 'node:child_process';
+import { join } from 'node:path';
 import parser from 'yargs-parser';
+
 import type { Child, PTY, Stdio, StdName } from './types.ts';
 
 const rawArgv = process.argv.slice(2);

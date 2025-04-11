@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { NonEvmOverview } from '../../app/wallet-overview';
 import { AccountOverviewLayout } from './account-overview-layout';
 import type { AccountOverviewCommonProps } from './common';

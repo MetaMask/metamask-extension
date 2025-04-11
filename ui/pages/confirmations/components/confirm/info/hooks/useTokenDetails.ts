@@ -1,6 +1,7 @@
 import type { TokenListMap } from '@metamask/assets-controllers';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getTokenList, getWatchedToken } from '../../../../../../selectors';
 import type { MultichainState } from '../../../../../../selectors/multichain';

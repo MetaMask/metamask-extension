@@ -1,9 +1,10 @@
 import { TransactionType } from '@metamask/transaction-controller';
+
+import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 export function getMethodName(camelCase) {

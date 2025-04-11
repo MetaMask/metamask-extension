@@ -1,6 +1,7 @@
-import { hasProperty, isObject } from '@metamask/utils';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
 import {
   allowedInfuraHosts,
   CHAIN_IDS,

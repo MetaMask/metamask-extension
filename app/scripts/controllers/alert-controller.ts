@@ -9,6 +9,7 @@ import type {
 import {
   BaseController
 } from '@metamask/base-controller';
+
 import {
   TOGGLEABLE_ALERT_TYPES,
   Web3ShimUsageAlertStates,

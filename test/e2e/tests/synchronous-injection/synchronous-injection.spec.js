@@ -1,7 +1,8 @@
 const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet, openDapp } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+
 const createStaticServer = require('../../../../development/create-static-server');
+const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, unlockWallet, openDapp } = require('../../helpers');
 
 const dappPort = 8080;
 

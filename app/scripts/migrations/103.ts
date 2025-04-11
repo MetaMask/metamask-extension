@@ -1,5 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
 export const version = 103;

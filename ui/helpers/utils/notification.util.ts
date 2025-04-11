@@ -1,7 +1,7 @@
-import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import type { TextVariant } from '../constants/design-system';
+import { BigNumber } from 'bignumber.js';
+
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
@@ -16,14 +16,15 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
-import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+import type { TextVariant } from '../constants/design-system';
+import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
+import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 
 type OnChainRawNotification =
   NotificationServicesController.Types.OnChainRawNotification;

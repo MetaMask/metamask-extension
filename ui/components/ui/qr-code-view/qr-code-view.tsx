@@ -1,14 +1,18 @@
-import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import qrCode from 'qrcode-generator';
-import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
+import PropTypes from 'prop-types';
+import qrCode from 'qrcode-generator';
+import React, { useContext } from 'react';
+import { connect } from 'react-redux';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MINUTE } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { CombinedBackgroundAndReduxState } from '../../../store/store';
 import {
   AlignItems,
   Display,
@@ -17,13 +21,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { CombinedBackgroundAndReduxState } from '../../../store/store';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 
 function mapStateToProps(state: CombinedBackgroundAndReduxState) {
   const { buyView, warning } = state.appState;

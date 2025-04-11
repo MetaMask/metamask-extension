@@ -1,5 +1,5 @@
-import { cloneDeep, isArray } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import { cloneDeep, isArray } from 'lodash';
 
 export const version = 81;
 

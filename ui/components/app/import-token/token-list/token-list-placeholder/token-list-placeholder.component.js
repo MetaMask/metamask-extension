@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-import { ButtonLink, Text, Box } from '../../../../component-library';
+import React, { Component } from 'react';
+
 import {
   Display,
   FlexDirection,
@@ -9,6 +8,8 @@ import {
   TextColor,
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+import { ButtonLink, Text, Box } from '../../../../component-library';
 
 export default class TokenListPlaceholder extends Component {
   static contextTypes = {

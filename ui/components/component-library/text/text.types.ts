@@ -1,4 +1,5 @@
 import type React from 'react';
+
 import type {
   FontWeight,
   FontStyle,
@@ -6,7 +7,6 @@ import type {
   TextTransform,
   OverflowWrap,
 } from '../../../helpers/constants/design-system';
-
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,

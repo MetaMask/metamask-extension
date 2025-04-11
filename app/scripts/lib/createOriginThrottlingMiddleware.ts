@@ -1,3 +1,7 @@
+import type {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
 import { providerErrors, errorCodes } from '@metamask/rpc-errors';
 import type {
   Json,
@@ -5,10 +9,7 @@ import type {
   JsonRpcResponse,
   JsonRpcRequest,
 } from '@metamask/utils';
-import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
+
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import type { ThrottledOrigin } from '../../../shared/types/origin-throttling';
 

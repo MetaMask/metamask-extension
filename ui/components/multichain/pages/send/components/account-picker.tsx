@@ -1,9 +1,10 @@
+import { EthAccountType } from '@metamask/keyring-api';
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { EthAccountType } from '@metamask/keyring-api';
-import { getSelectedInternalAccount } from '../../../../../selectors';
-import { Label } from '../../../../component-library';
-import { AccountPicker } from '../../../account-picker';
+
+import { AccountListMenu } from '../../..';
+import { I18nContext } from '../../../../../contexts/i18n';
+import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
 import {
   BlockSize,
   BorderColor,
@@ -11,9 +12,9 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../../contexts/i18n';
-import { AccountListMenu } from '../../..';
-import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
+import { getSelectedInternalAccount } from '../../../../../selectors';
+import { Label } from '../../../../component-library';
+import { AccountPicker } from '../../../account-picker';
 import { SendPageRow } from './send-page-row';
 
 const AccountListItemProps = { showOptions: false };

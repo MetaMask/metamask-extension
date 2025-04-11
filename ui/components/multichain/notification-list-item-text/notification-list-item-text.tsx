@@ -1,13 +1,13 @@
 import type { FC } from 'react';
 import React from 'react';
 
-import { Text } from '../../component-library';
 import {
   FontWeight,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getRandomKey } from '../../../helpers/utils/notification.util';
+import { Text } from '../../component-library';
 
 export type NotificationListItemTextItemProps = {
   text: string;

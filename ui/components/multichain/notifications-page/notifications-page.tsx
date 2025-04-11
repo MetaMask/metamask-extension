@@ -1,14 +1,14 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box } from '../../component-library';
+
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import MetafoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-
+import { Box } from '../../component-library';
+import MetafoxLogo from '../../ui/metafox-logo';
 import { Page } from '../pages/page';
 
 export type NotificationsPageProps = {

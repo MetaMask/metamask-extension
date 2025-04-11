@@ -1,5 +1,6 @@
 import type { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
+
 import type { NetworkState } from '../../shared/modules/selectors/networks';
 import { getMemoizedCurrentChainId } from './selectors';
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
 import SnapExternalPill from './snap-external-pill';
 

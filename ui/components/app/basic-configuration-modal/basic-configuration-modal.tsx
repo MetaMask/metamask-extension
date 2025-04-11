@@ -1,6 +1,16 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  hideBasicFunctionalityModal,
+  onboardingToggleBasicFunctionalityOff,
+} from '../../../ducks/app/app';
 import {
   Display,
   FlexDirection,
@@ -11,7 +21,11 @@ import {
   IconColor,
   FontWeight,
 } from '../../../helpers/constants/design-system';
+import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getUseExternalServices } from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import {
   setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
@@ -34,19 +48,6 @@ import {
   ButtonSize,
   Label,
 } from '../../component-library';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getUseExternalServices } from '../../../selectors';
-import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
-import {
-  hideBasicFunctionalityModal,
-  onboardingToggleBasicFunctionalityOff,
-} from '../../../ducks/app/app';
-import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 
 export function BasicConfigurationModal() {
   const t = useI18nContext();

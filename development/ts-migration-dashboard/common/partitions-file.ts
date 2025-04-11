@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
+
 import type { ModulePartition } from './build-module-partitions';
 import { INTERMEDIATE_BUILD_DIRECTORY_PATH } from './constants';
 

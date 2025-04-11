@@ -3,8 +3,9 @@
  */
 
 import Bowser from 'bowser';
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
+
 import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,

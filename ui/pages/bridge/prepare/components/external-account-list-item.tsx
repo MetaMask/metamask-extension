@@ -1,8 +1,8 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import type { ExternalAccount } from '../types';
-import { shortenAddress } from '../../../../helpers/utils/util';
+
+import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -21,10 +21,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import type { ExternalAccount } from '../types';
 
 type ExternalAccountListItemProps = {
   account: ExternalAccount;

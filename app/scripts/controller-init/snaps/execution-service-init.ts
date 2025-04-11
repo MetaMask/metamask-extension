@@ -1,3 +1,4 @@
+import { SubjectType } from '@metamask/permission-controller';
 import type {
   AbstractExecutionService} from '@metamask/snaps-controllers';
 import {
@@ -5,11 +6,11 @@ import {
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 import { assert } from '@metamask/utils';
-import { SubjectType } from '@metamask/permission-controller';
 import type { Duplex } from 'readable-stream';
-import type { ControllerInitFunction } from '../types';
+
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import type { ExecutionServiceMessenger } from '../messengers/snaps';
+import type { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the Snaps execution service.

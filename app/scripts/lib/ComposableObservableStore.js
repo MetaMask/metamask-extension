@@ -1,5 +1,5 @@
-import { ObservableStore } from '@metamask/obs-store';
 import { getPersistentState } from '@metamask/base-controller';
+import { ObservableStore } from '@metamask/obs-store';
 
 /**
  * @typedef {import('@metamask/base-controller').Messenger} Messenger

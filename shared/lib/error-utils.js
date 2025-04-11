@@ -1,4 +1,5 @@
 import { memoize } from 'lodash';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';

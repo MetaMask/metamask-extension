@@ -1,6 +1,6 @@
 import type { Provider } from '@metamask/network-controller';
-import { addHexPrefix, padToEven } from 'ethereumjs-util';
 import type { JsonRpcParams } from '@metamask/utils';
+import { addHexPrefix, padToEven } from 'ethereumjs-util';
 
 export type Contract = {
   contractCode: string | null;

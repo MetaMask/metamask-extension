@@ -1,12 +1,13 @@
-import log from 'loglevel';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import type { Hex} from '@metamask/utils';
 import { isStrictHexString } from '@metamask/utils';
+import log from 'loglevel';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,17 +28,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import {
-  addNetwork,
-  setEditedNetwork,
-  setTokenNetworkFilter,
-  showDeprecatedNetworkModal,
-  toggleNetworkMenu,
-  updateNetwork,
-} from '../../../../store/actions';
 import {
   Box,
   ButtonLink,
@@ -50,6 +41,15 @@ import {
   Text,
 } from '../../../../components/component-library';
 import {
+  DropdownEditor,
+  DropdownEditorStyle,
+} from '../../../../components/multichain/dropdown-editor/dropdown-editor';
+import RpcListItem, {
+  stripKeyFromInfuraUrl,
+  stripProtocol,
+} from '../../../../components/multichain/network-list-menu/rpc-list-item';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -60,17 +60,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import RpcListItem, {
-  stripKeyFromInfuraUrl,
-  stripProtocol,
-} from '../../../../components/multichain/network-list-menu/rpc-list-item';
-import {
-  DropdownEditor,
-  DropdownEditorStyle,
-} from '../../../../components/multichain/dropdown-editor/dropdown-editor';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getTokenNetworkFilter } from '../../../../selectors';
-import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
+import {
+  addNetwork,
+  setEditedNetwork,
+  setTokenNetworkFilter,
+  showDeprecatedNetworkModal,
+  toggleNetworkMenu,
+  updateNetwork,
+} from '../../../../store/actions';
 import type { useNetworkFormState } from './networks-form-state';
+import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 
 export const NetworksForm = ({
   networkFormState,

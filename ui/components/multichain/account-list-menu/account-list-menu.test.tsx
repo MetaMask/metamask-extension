@@ -1,30 +1,31 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
-import reactRouterDom from 'react-router-dom';
 import type {
   KeyringAccountType} from '@metamask/keyring-api';
 import {
   BtcAccountType,
   EthAccountType
 } from '@metamask/keyring-api';
-import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { fireEvent, waitFor } from '../../../../test/jest';
-import configureStore from '../../../store/store';
+import { merge } from 'lodash';
+import React from 'react';
+import reactRouterDom from 'react-router-dom';
+
+import { AccountListMenu } from '.';
+import messages from '../../../../app/_locales/en/messages.json';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import mockState from '../../../../test/data/mock-state.json';
+import { fireEvent, waitFor } from '../../../../test/jest';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
+///: END:ONLY_INCLUDE_IF
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
 } from '../../../helpers/constants/routes';
-///: END:ONLY_INCLUDE_IF
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { AccountListMenu } from '.';
+import configureStore from '../../../store/store';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();

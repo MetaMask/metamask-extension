@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { t } from '../../../../../app/scripts/translate';
 import {
   TextField,
   Box,
@@ -9,11 +11,6 @@ import {
   ButtonVariant,
 } from '../../../../components/component-library';
 import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  isSolanaAccount,
-} from '../../../../selectors';
-import {
   BlockSize,
   Display,
   FlexDirection,
@@ -22,12 +19,16 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+  isSolanaAccount,
+} from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
-import type { DestinationAccount } from '../types';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
-import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
+import type { DestinationAccount } from '../types';
 import DestinationAccountListItem from './destination-account-list-item';
+import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
 
 type DestinationAccountPickerProps = {

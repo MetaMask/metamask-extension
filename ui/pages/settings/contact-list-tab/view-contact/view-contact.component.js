@@ -1,8 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
-
-import Button from '../../../../components/ui/button/button.component';
 
 import {
   AvatarAccount,
@@ -13,14 +11,14 @@ import {
   IconName,
   Text,
 } from '../../../../components/component-library';
-
+import Button from '../../../../components/ui/button/button.component';
 import Tooltip from '../../../../components/ui/tooltip';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import {
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 function quadSplit(address) {
   return `0x${address

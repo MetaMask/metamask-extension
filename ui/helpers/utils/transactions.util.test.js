@@ -2,6 +2,7 @@ import {
   TransactionEnvelopeType,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 

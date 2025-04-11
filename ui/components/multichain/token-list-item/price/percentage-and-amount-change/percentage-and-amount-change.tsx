@@ -1,33 +1,34 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Text, Box } from '../../../../component-library';
-import {
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
-import {
-  getSelectedAccountCachedBalance,
-  getTokensMarketData,
-} from '../../../../../selectors';
-import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import { EtherDenomination } from '../../../../../../shared/constants/common';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../../../ducks/metamask/metamask';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
 import {
   formatValue,
   isValidAmount,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
+import { EtherDenomination } from '../../../../../../shared/constants/common';
+import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getIntlLocale } from '../../../../../ducks/locale/locale';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../../../ducks/metamask/metamask';
+import {
+  Display,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import {
+  getSelectedAccountCachedBalance,
+  getTokensMarketData,
+} from '../../../../../selectors';
+import { Text, Box } from '../../../../component-library';
 
 export const renderPercentageWithNumber = (
   value: string,

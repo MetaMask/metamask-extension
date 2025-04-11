@@ -1,14 +1,12 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
-
 import type { TextProps, TextComponent } from './text.types';
 
 const getTextElementDefault = (variant: TextVariant) => {

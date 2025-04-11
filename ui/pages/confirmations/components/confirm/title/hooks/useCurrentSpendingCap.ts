@@ -3,8 +3,9 @@ import type {
 import {
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { Confirmation } from '../../../../types/confirm';
+
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import type { Confirmation } from '../../../../types/confirm';
 import { useApproveTokenSimulation } from '../../info/approve/hooks/use-approve-token-simulation';
 
 const isTransactionMeta = (

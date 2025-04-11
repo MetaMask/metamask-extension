@@ -1,5 +1,4 @@
 import { PriorityLevels } from '../../../shared/constants/gas';
-
 import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
   formatGasFeeOrFeeRange,

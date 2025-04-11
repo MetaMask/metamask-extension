@@ -1,11 +1,12 @@
-import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Messenger } from '@metamask/base-controller';
-import { buildControllerInitRequestMock } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
+import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
+
 import {
   getNotificationServicesControllerMessenger,
   type NotificationServicesControllerMessenger,
 } from '../messengers/notifications';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { NotificationServicesControllerInit } from './notification-services-controller-init';
 
 jest.mock('@metamask/notification-services-controller/notification-services');

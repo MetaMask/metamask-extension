@@ -1,5 +1,16 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+
+import { AccountListItem } from '..';
+import {
+  Display,
+  IconColor,
+  JustifyContent,
+  TextColor,
+} from '../../../helpers/constants/design-system';
+import { getURLHost } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { addPermittedAccounts } from '../../../store/actions';
 import {
   Box,
   ButtonPrimary,
@@ -15,17 +26,7 @@ import {
   ModalOverlay,
   Text,
 } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AccountListItem } from '..';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-  TextColor,
-} from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { getURLHost } from '../../../helpers/utils/util';
-import { addPermittedAccounts } from '../../../store/actions';
 import type { ConnectAccountsListProps } from './connect-account-modal.types';
 
 export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({

@@ -1,6 +1,18 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { I18nContext } from '../../../contexts/i18n';
+import {
+  TextVariant,
+  TextAlign,
+  TextColor,
+  FontWeight,
+  Display,
+  AlignItems,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 import {
   getCurrentNetwork,
   getPendingTokens,
@@ -15,18 +27,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../component-library';
-import {
-  TextVariant,
-  TextAlign,
-  TextColor,
-  FontWeight,
-  Display,
-  AlignItems,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
 import TokenBalance from '../../ui/token-balance/token-balance';
-import { I18nContext } from '../../../contexts/i18n';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export const ImportTokensModalConfirm = ({ networkFilter }) => {
   const t = useContext(I18nContext);

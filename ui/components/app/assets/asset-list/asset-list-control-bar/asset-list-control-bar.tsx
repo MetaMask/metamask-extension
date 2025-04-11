@@ -1,12 +1,44 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  BackgroundColor,
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
 import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
   getTokenNetworkFilter,
 } from '../../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getMultichainNetwork } from '../../../../../selectors/multichain';
+import {
+  detectTokens,
+  setTokenNetworkFilter,
+  showImportTokensModal,
+} from '../../../../../store/actions';
 import {
   Box,
   ButtonBase,
@@ -17,41 +49,10 @@ import {
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
-import SortControl, { SelectableListItem } from '../sort-control/sort-control';
-import {
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import ImportControl from '../import-control';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  FEATURED_NETWORK_CHAIN_IDS,
-  TEST_CHAINS,
-} from '../../../../../../shared/constants/network';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../../../shared/constants/app';
-import NetworkFilter from '../network-filter';
-import {
-  detectTokens,
-  setTokenNetworkFilter,
-  showImportTokensModal,
-} from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
-import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../../../selectors/multichain';
+import ImportControl from '../import-control';
+import NetworkFilter from '../network-filter';
+import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;

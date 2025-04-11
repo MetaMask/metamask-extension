@@ -1,5 +1,4 @@
 const FixtureBuilder = require('../../fixture-builder');
-
 const { WINDOW_TITLES, unlockWallet, withFixtures } = require('../../helpers');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');

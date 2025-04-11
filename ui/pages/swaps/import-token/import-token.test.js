@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../test/jest';
 import ImportToken from '.';
+import { renderWithProvider } from '../../../../test/jest';
 
 const createProps = (customProps = {}) => {
   return {

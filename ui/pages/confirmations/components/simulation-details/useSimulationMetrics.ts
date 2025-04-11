@@ -1,23 +1,24 @@
+import { NameType } from '@metamask/name-controller';
 import type {
   SimulationData} from '@metamask/transaction-controller';
 import {
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
-import { NameType } from '@metamask/name-controller';
-import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import type {
   UseDisplayNameRequest,
   UseDisplayNameResponse} from '../../../../hooks/useDisplayName';
 import {
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { calculateTotalFiat } from './fiat-display';
 import type { BalanceChange } from './types';
 import { useLoadingTime } from './useLoadingTime';

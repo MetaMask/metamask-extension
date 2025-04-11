@@ -1,10 +1,11 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { useTokenValues } from './use-token-values';
 
 jest.mock('../../../../hooks/useAssetDetails', () => ({

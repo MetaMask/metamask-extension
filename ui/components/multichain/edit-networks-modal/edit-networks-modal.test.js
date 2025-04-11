@@ -1,9 +1,10 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
+import React from 'react';
+
 import { EditNetworksModal } from '.';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest/rendering';
+import configureStore from '../../../store/store';
 
 const render = (
   props = {

@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import React, { Fragment, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
+
 import { I18nContext } from '../../../../contexts/i18n';
 import Button from '../../../ui/button';
 

@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getMultichainAssetsRatesControllerMessenger } from './multichain-assets-rates-controller-messenger';
 
 describe('getMultichainAssetsRatesControllerMessenger', () => {

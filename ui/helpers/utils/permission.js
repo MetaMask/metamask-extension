@@ -1,14 +1,16 @@
-import deepFreeze from 'deep-freeze-strict';
-import React from 'react';
-
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { isNonEmptyArray } from '@metamask/controller-utils';
 import { getRpcCaveatOrigins } from '@metamask/snaps-rpc-methods';
 import {
   SnapCaveatType,
   getSlip44ProtocolName,
   getSnapDerivationPathName,
 } from '@metamask/snaps-utils';
-import { isNonEmptyArray } from '@metamask/controller-utils';
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import deepFreeze from 'deep-freeze-strict';
+import React from 'react';
+
+
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import {
   RestrictedMethods,
   EndowmentPermissions,
@@ -29,7 +31,6 @@ import {
 } from '../constants/design-system';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { getURLHost } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');

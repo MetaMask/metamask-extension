@@ -1,27 +1,28 @@
+import { toHex } from '@metamask/controller-utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { toHex } from '@metamask/controller-utils';
+
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../component-library';
-import Spinner from '../../../../ui/spinner';
 import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
-import { NftItem } from '../../../../multichain/nft-item';
-import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import {
   getIpfsGateway,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
-import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import { Box } from '../../../../component-library';
+import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import { NftItem } from '../../../../multichain/nft-item';
+import Spinner from '../../../../ui/spinner';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {

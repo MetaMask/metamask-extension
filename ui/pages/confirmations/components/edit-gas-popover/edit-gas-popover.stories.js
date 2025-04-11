@@ -1,14 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../../store/store';
+
+import EditGasPopover from '.';
 import testData from '../../../../../.storybook/test-data';
 import {
   EditGasModes,
   GasRecommendations,
 } from '../../../../../shared/constants/gas';
-
 import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
-import EditGasPopover from '.';
+import configureStore from '../../../../store/store';
 
 const store = configureStore(testData);
 

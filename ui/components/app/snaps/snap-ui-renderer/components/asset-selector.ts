@@ -1,4 +1,5 @@
 import type { AssetSelectorElement } from '@metamask/snaps-sdk/jsx';
+
 import type { UIComponentFactory } from './types';
 
 export const assetSelector: UIComponentFactory<AssetSelectorElement> = ({

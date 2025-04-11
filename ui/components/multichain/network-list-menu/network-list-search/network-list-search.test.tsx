@@ -1,5 +1,6 @@
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import NetworkListSearch from './network-list-search';
 

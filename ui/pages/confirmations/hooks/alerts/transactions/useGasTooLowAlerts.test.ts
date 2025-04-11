@@ -1,21 +1,21 @@
+import { toHex } from '@metamask/controller-utils';
 import type {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 
 import { MIN_GAS_LIMIT_HEX } from '../../../../../../shared/constants/gas';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
 import type { Confirmation } from '../../../types/confirm';
 import { useGasTooLowAlerts } from './useGasTooLowAlerts';

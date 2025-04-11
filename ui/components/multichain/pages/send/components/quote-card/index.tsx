@@ -1,6 +1,24 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, ButtonLink, Text } from '../../../../../component-library';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../../shared/constants/metametrics';
+import { SECOND } from '../../../../../../../shared/constants/time';
+import {
+  CONSENSYS_TERMS_OF_USE,
+  GAS_FEES_LEARN_MORE_URL,
+} from '../../../../../../../shared/lib/ui-utils';
+import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
+import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
+import {
+  getCurrentDraftTransaction,
+  getBestQuote,
+  updateSendQuote,
+  getSendAnalyticProperties,
+} from '../../../../../../ducks/send';
+import type { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,30 +29,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import {
-  getCurrentDraftTransaction,
-  getBestQuote,
-  updateSendQuote,
-  getSendAnalyticProperties,
-} from '../../../../../../ducks/send';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { SECOND } from '../../../../../../../shared/constants/time';
-import type { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
-import Tooltip from '../../../../../ui/tooltip';
+import { Box, ButtonLink, Text } from '../../../../../component-library';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../../shared/constants/metametrics';
-import {
-  CONSENSYS_TERMS_OF_USE,
-  GAS_FEES_LEARN_MORE_URL,
-} from '../../../../../../../shared/lib/ui-utils';
-import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
-import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
+import Tooltip from '../../../../../ui/tooltip';
 import useEthFeeData from './hooks/useEthFeeData';
-import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
+import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 
 type QuoteCardProps = {
   scrollRef: React.RefObject<HTMLDivElement>;

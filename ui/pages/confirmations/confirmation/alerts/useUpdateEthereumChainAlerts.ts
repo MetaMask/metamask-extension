@@ -4,15 +4,15 @@ import type { Json } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import type {
   ApprovalsMetaMaskState} from '../../../../selectors';
 import {
   getApprovalsByOrigin,
 } from '../../../../selectors';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const VALIDATED_APPROVAL_TYPES = [
   ApprovalType.AddEthereumChain,

@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
@@ -7,11 +5,14 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export const EIP_7702_REVOKE_ADDRESS =

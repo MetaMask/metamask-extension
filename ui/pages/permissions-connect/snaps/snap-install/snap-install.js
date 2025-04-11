@@ -1,10 +1,21 @@
+import { isSnapId } from '@metamask/snaps-utils';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isSnapId } from '@metamask/snaps-utils';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
+import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
+import {
+  AvatarIcon,
+  IconName,
+  Text,
+  Box,
+} from '../../../../components/component-library';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import {
   AlignItems,
   BackgroundColor,
@@ -19,22 +30,12 @@ import {
   Display,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import { getSnapInstallWarnings } from '../util';
-import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import {
-  AvatarIcon,
-  IconName,
-  Text,
-  Box,
-} from '../../../../components/component-library';
-import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
+import { getSnapName } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
-import { getSnapName } from '../../../../helpers/utils/util';
-import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
+import { getSnapInstallWarnings } from '../util';
 
 export default function SnapInstall({
   request,

@@ -1,9 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { BannerAlert } from '../../../../component-library';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { BannerAlert } from '../../../../component-library';
 
 type NftsDetectionNoticeImportNFTsProps = {
   onActionButtonClick: () => void;

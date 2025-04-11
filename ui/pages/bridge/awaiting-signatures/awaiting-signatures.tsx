@@ -1,12 +1,23 @@
+import isEqual from 'lodash/isEqual';
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import isEqual from 'lodash/isEqual';
 
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
-  isHardwareWallet,
-  getHardwareWalletType,
-} from '../../../selectors/selectors';
+  AvatarBase,
+  AvatarBaseSize,
+  Box,
+  Text,
+} from '../../../components/component-library';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getBridgeQuotes,
+  getFromChain,
+  getFromToken,
+  getToToken,
+  getToChain,
+} from '../../../ducks/bridge/selectors';
 import {
   TextVariant,
   JustifyContent,
@@ -16,22 +27,11 @@ import {
   FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import {
-  AvatarBase,
-  AvatarBaseSize,
-  Box,
-  Text,
-} from '../../../components/component-library';
-import {
-  getBridgeQuotes,
-  getFromChain,
-  getFromToken,
-  getToToken,
-  getToChain,
-} from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../selectors/selectors';
 
 export default function AwaitingSignatures() {
   const t = useI18nContext();

@@ -1,14 +1,9 @@
-import type { Messenger } from '@metamask/base-controller';
-import type {
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerNetworkDidChangeEvent,
-} from '@metamask/network-controller';
 import type {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerGetAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
+import type { AddApprovalRequest } from '@metamask/approval-controller';
 import type {
   AssetsContractControllerGetERC1155BalanceOfAction,
   AssetsContractControllerGetERC1155TokenURIAction,
@@ -17,7 +12,12 @@ import type {
   AssetsContractControllerGetERC721OwnerOfAction,
   AssetsContractControllerGetERC721TokenURIAction,
 } from '@metamask/assets-controllers';
-import type { AddApprovalRequest } from '@metamask/approval-controller';
+import type { Messenger } from '@metamask/base-controller';
+import type {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerNetworkDidChangeEvent,
+} from '@metamask/network-controller';
+import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 
 type Actions =
   | AddApprovalRequest

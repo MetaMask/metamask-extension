@@ -1,17 +1,18 @@
-import React from 'react';
-import { act } from '@testing-library/react';
 import { rpcErrors } from '@metamask/rpc-errors';
-import configureStore from '../../../../../../store/store';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { act } from '@testing-library/react';
+import React from 'react';
+
 import {
   CHAIN_ID,
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
+import configureStore from '../../../../../../store/store';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 
 jest.mock('../../../../../../store/actions', () => ({

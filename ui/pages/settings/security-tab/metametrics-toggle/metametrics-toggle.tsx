@@ -1,18 +1,13 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  useEnableMetametrics,
-  useDisableMetametrics,
-} from '../../../../hooks/useMetametrics';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   Display,
   FlexDirection,
@@ -20,10 +15,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  useEnableMetametrics,
+  useDisableMetametrics,
+} from '../../../../hooks/useMetametrics';
 import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
 } from '../../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,

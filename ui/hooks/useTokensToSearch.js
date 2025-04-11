@@ -1,24 +1,25 @@
-import { useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
-import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
+import { useMemo } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
+
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
+import { TokenBucketPriority } from '../../shared/constants/swaps';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
+import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
   getSwapsDefaultToken,
   getTokenList,
 } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
-import { getSwapsTokens } from '../ducks/swaps/swaps';
-import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { TokenBucketPriority } from '../../shared/constants/swaps';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(

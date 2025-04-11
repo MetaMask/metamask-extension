@@ -1,10 +1,10 @@
+const FixtureBuilder = require('../../fixture-builder');
 const {
   openMenuSafe,
   tinyDelayMs,
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';

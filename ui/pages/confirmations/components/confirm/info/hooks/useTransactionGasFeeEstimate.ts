@@ -1,6 +1,7 @@
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+
 import {
   addHexes,
   decGWEIToHexWEI,

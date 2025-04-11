@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
+import { AssetType } from '../../../../../../../../shared/constants/transaction';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../../../../../../shared/modules/Numeric';
+import { getNativeCurrency } from '../../../../../../../ducks/metamask/metamask';
 import {
   getBestQuote,
   getCurrentDraftTransaction,
 } from '../../../../../../../ducks/send';
-import { AssetType } from '../../../../../../../../shared/constants/transaction';
-import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import type { Quote } from '../../../../../../../ducks/send/swap-and-send-utils';
-import { getNativeCurrency } from '../../../../../../../ducks/metamask/metamask';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
 

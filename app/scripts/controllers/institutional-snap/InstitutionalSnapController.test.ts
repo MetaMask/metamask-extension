@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/base-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
 import { HandlerType } from '@metamask/snaps-utils';
 import type {
   TransactionEnvelopeType,
@@ -7,7 +8,7 @@ import type {
 import {
   TransactionStatus
 } from '@metamask/transaction-controller';
-import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
+
 import type {
   InstitutionalSnapControllerMessenger,
   AllowedActions,

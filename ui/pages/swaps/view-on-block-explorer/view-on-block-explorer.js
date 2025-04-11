@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import Box from '../../../components/ui/box';
-import { I18nContext } from '../../../contexts/i18n';
-import { getURLHostName } from '../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getURLHostName } from '../../../helpers/utils/util';
 
 export default function ViewOnBlockExplorer({
   blockExplorerUrl,

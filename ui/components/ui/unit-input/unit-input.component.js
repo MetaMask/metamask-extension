@@ -1,7 +1,7 @@
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Tooltip } from 'react-tippy';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
 
 const INPUT_HORIZONTAL_PADDING = 4;
 

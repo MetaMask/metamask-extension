@@ -1,5 +1,6 @@
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
+
 import {
   type MetaMaskStateType,
   type MetaMaskStorageStructure,

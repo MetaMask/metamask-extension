@@ -1,13 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import Box from '../box';
 import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
   BorderStyle,
 } from '../../../helpers/constants/design-system';
+import Box from '../box';
 
 const Card = ({
   border = true,

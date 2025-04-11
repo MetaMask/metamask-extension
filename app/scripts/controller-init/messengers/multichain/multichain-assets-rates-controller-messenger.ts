@@ -1,4 +1,3 @@
-import type { Messenger } from '@metamask/base-controller';
 import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerListMultichainAccountsAction,
@@ -9,6 +8,7 @@ import type {
   MultichainAssetsControllerStateChangeEvent,
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
+import type { Messenger } from '@metamask/base-controller';
 import type {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,

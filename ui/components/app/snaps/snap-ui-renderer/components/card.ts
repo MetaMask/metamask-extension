@@ -1,4 +1,5 @@
 import type { CardElement } from '@metamask/snaps-sdk/jsx';
+
 import { mapToTemplate } from '../utils';
 import type { UIComponentFactory } from './types';
 

@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send/send.constants';
 import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
-import { PRIMARY } from '../../../../../../helpers/constants/common';
-import { getAdvancedGasFeeValues } from '../../../../../../selectors';
-import { useCurrencyDisplay } from '../../../../../../hooks/useCurrencyDisplay';
-import { useGasFeeContext } from '../../../../../../contexts/gasFee';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useUserPreferencedCurrency } from '../../../../../../hooks/useUserPreferencedCurrency';
-import FormField from '../../../../../../components/ui/form-field';
-import Box from '../../../../../../components/ui/box';
-
 import { useAdvancedGasFeePopoverContext } from '../../context';
-import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import Box from '../../../../../../components/ui/box';
+import FormField from '../../../../../../components/ui/form-field';
+import { useGasFeeContext } from '../../../../../../contexts/gasFee';
+import { PRIMARY } from '../../../../../../helpers/constants/common';
+import { useCurrencyDisplay } from '../../../../../../hooks/useCurrencyDisplay';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useUserPreferencedCurrency } from '../../../../../../hooks/useUserPreferencedCurrency';
+import { getAdvancedGasFeeValues } from '../../../../../../selectors';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
+import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send/send.constants';
+import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 
 const validatePriorityFee = (value, gasFeeEstimates, chainId) => {
   const priorityFeeValue = new Numeric(value, 10);

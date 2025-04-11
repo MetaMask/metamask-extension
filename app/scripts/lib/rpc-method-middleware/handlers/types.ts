@@ -1,9 +1,10 @@
-import type { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import type {
   CaveatSpecificationConstraint,
   PermissionController,
   PermissionSpecificationConstraint,
 } from '@metamask/permission-controller';
+import type { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+
 import type { MessageType } from '../../../../../shared/constants/app';
 
 export type HandlerWrapper = {

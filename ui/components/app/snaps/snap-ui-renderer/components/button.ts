@@ -1,8 +1,9 @@
 import type { ButtonElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
-import { mapTextToTemplate } from '../utils';
+
 import { TextVariant } from '../../../../../helpers/constants/design-system';
+import { mapTextToTemplate } from '../utils';
 import type { UIComponentFactory } from './types';
 
 export const button: UIComponentFactory<ButtonElement> = ({

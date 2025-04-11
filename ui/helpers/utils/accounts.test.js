@@ -1,3 +1,5 @@
+import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
@@ -5,10 +7,8 @@ import {
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../shared/constants/network';
-import { BackgroundColor } from '../constants/design-system';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
+import { BackgroundColor } from '../constants/design-system';
 import {
   getAccountLabel,
   getAccountNameErrorMessage,

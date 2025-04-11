@@ -1,42 +1,43 @@
-import { v4 as uuid } from 'uuid';
-import log from 'loglevel';
-import { ApprovalType } from '@metamask/controller-utils';
-import type { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
-import type {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
-import {
-  BaseController
-} from '@metamask/base-controller';
 import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
+import {
+  BaseController
+} from '@metamask/base-controller';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedMessenger} from '@metamask/base-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import type { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import type { Json } from '@metamask/utils';
+import log from 'loglevel';
+import { v4 as uuid } from 'uuid';
 import type { Browser } from 'webextension-polyfill';
-import { MINUTE } from '../../../shared/constants/time';
+
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isBeta } from '../../../ui/helpers/utils/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import type { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
-import type { SecurityAlertResponse } from '../lib/ppom/types';
 import type {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+import { MINUTE } from '../../../shared/constants/time';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import type { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
+import { isBeta } from '../../../ui/helpers/utils/build-types';
+import type { SecurityAlertResponse } from '../lib/ppom/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,

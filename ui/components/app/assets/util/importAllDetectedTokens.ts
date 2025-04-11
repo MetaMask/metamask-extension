@@ -2,6 +2,7 @@ import type {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+
 import type { Token } from '../types';
 
 export const importAllDetectedTokens = async (

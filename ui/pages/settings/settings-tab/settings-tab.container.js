@@ -1,4 +1,12 @@
 import { connect } from 'react-redux';
+
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import {
+  getTokenList,
+  getPreferences,
+  getTheme,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import {
   setCurrentCurrency,
   setUseBlockie,
@@ -8,13 +16,6 @@ import {
   setTheme,
   setShowNativeTokenAsMainBalancePreference,
 } from '../../../store/actions';
-import {
-  getTokenList,
-  getPreferences,
-  getTheme,
-  getSelectedInternalAccount,
-} from '../../../selectors';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {

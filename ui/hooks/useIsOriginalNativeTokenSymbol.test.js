@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+
 import * as fetchWithCacheModule from '../../shared/lib/fetch-with-cache';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import { getMultichainIsEvm } from '../selectors/multichain';

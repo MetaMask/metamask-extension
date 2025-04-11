@@ -1,9 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   TextVariant,
   JustifyContent,
@@ -13,6 +11,8 @@ import {
   IconColor,
   Display,
 } from '../../../../helpers/constants/design-system';
+import { getSnapRoute } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BUTTON_SIZES,
   BUTTON_VARIANT,
@@ -22,7 +22,6 @@ import {
   IconName,
   Text,
 } from '../../../component-library';
-import { getSnapRoute } from '../../../../helpers/utils/util';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();

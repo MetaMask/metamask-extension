@@ -1,4 +1,5 @@
 import type { Hex } from '@metamask/utils';
+
 import type {
   ChainAddressMarketData,
   SymbolCurrencyRateMapping,

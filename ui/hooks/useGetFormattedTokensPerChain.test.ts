@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { getAllTokens } from '../selectors';
+
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getAllTokens } from '../selectors';
 import { useGetFormattedTokensPerChain } from './useGetFormattedTokensPerChain';
 import { stringifyBalance } from './useTokenBalances';
 

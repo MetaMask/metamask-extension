@@ -1,5 +1,6 @@
 import { EthAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { PPOMController } from '@metamask/ppom-validator';
 import type {
   TransactionController,
   TransactionMeta,
@@ -12,8 +13,12 @@ import type {
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
-import type { PPOMController } from '@metamask/ppom-validator';
 
+import {
+  LOADING_SECURITY_ALERT_RESPONSE,
+  SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
+} from '../../../../shared/constants/security-provider';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -23,11 +28,6 @@ import type {
   SecurityAlertResponse,
   UpdateSecurityAlertResponse,
 } from '../ppom/types';
-import {
-  LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
-} from '../../../../shared/constants/security-provider';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]

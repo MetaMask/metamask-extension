@@ -1,13 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSlides } from '../../store/actions';
+
+import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
-import type { CarouselSlide } from '../../../shared/constants/app-state';
-import {
-  getSweepstakesCampaignActive,
-  useCarouselManagement,
-} from './useCarouselManagement';
+import { updateSlides } from '../../store/actions';
 import {
   FUND_SLIDE,
   BRIDGE_SLIDE,
@@ -19,6 +16,10 @@ import {
   ZERO_BALANCE,
   REMOTE_MODE_SLIDE,
 } from './constants';
+import {
+  getSweepstakesCampaignActive,
+  useCarouselManagement,
+} from './useCarouselManagement';
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   { ...FUND_SLIDE, undismissable: true },

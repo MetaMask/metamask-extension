@@ -1,14 +1,15 @@
+import { KeyringTypes } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { KeyringTypes } from '@metamask/keyring-controller';
+
 import { CreateAccount } from '..';
-import { Box, ModalHeader } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getNextAvailableAccountName } from '../../../store/actions';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getNextAvailableAccountName } from '../../../store/actions';
+import { Box, ModalHeader } from '../../component-library';
 
 export type CreateNamedSnapAccountProps = {
   /**

@@ -1,13 +1,14 @@
 import {
-  caveatSpecifications as snapsCaveatsSpecifications,
-  endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
-} from '@metamask/snaps-rpc-methods';
-import {
   createCaip25Caveat,
   Caip25CaveatType,
   caip25EndowmentBuilder,
   caip25CaveatBuilder,
 } from '@metamask/chain-agnostic-permission';
+import {
+  caveatSpecifications as snapsCaveatsSpecifications,
+  endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
+} from '@metamask/snaps-rpc-methods';
+
 import {
   EndowmentTypes,
   RestrictedMethods,

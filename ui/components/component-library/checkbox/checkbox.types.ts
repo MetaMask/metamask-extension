@@ -1,8 +1,8 @@
-import type { IconProps } from '../icon';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
 } from '../box';
+import type { IconProps } from '../icon';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

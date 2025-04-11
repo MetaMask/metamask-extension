@@ -1,13 +1,14 @@
+import { SubjectType } from '@metamask/permission-controller';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import classnames from 'classnames';
-import { SubjectType } from '@metamask/permission-controller';
-import SiteOrigin from '../../ui/site-origin';
-import Box from '../../ui/box';
+
 import {
   FLEX_DIRECTION,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
+import SiteOrigin from '../../ui/site-origin';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {

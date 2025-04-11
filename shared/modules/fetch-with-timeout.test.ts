@@ -1,4 +1,5 @@
 import nock from 'nock';
+
 import { MILLISECOND, SECOND } from '../constants/time';
 import getFetchWithTimeout from './fetch-with-timeout';
 

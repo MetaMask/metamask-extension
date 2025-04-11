@@ -1,17 +1,10 @@
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { parseCaipChainId } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { parseCaipChainId } from '@metamask/utils';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  getMultichainAccountUrl,
-  getMultichainBlockExplorerUrl,
-} from '../../../helpers/utils/multichain/blockExplorer';
 
-import { MenuItem } from '../../ui/menu';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload} from '../../../../shared/constants/metametrics';
@@ -20,12 +13,19 @@ import {
   MetaMetricsEventLinkType,
   MetaMetricsEventName
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
-import { getBlockExplorerLinkText } from '../../../selectors';
-import { getURLHostName } from '../../../helpers/utils/util';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainAccountUrl,
+  getMultichainBlockExplorerUrl,
+} from '../../../helpers/utils/multichain/blockExplorer';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getBlockExplorerLinkText } from '../../../selectors';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { IconName, Text } from '../../component-library';
+import { MenuItem } from '../../ui/menu';
 
 export type ViewExplorerMenuItemProps = {
   /**

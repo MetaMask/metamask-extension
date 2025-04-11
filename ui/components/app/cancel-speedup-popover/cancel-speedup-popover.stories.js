@@ -1,17 +1,18 @@
+import BigNumber from 'bignumber.js';
 import React from 'react';
 import { Provider } from 'react-redux';
-import BigNumber from 'bignumber.js';
-import configureStore from '../../../store/store';
-import { TransactionModalContext } from '../../../contexts/transaction-modal';
-import mockEstimates from '../../../../test/data/mock-estimates.json';
-import mockState from '../../../../test/data/mock-state.json';
+
 import {
   EditGasModes,
   GasEstimateTypes,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
+import mockState from '../../../../test/data/mock-state.json';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import { TransactionModalContext } from '../../../contexts/transaction-modal';
+import configureStore from '../../../store/store';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const mockSelectedInternalAccount =

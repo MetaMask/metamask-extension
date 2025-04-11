@@ -1,11 +1,12 @@
+import { EthAccountType, EthMethod, EthScope } from '@metamask/keyring-api';
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { EthAccountType, EthMethod, EthScope } from '@metamask/keyring-api';
+
+import { PermissionDetailsModal } from '.';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { PermissionDetailsModal } from '.';
 
 describe('PermissionDetailsModal', () => {
   const mockState = {

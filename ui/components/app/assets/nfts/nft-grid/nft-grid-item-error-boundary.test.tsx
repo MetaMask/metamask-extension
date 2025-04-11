@@ -1,7 +1,8 @@
-import type { FC } from 'react';
-import React from 'react';
 import { render } from '@testing-library/react';
 import log from 'loglevel';
+import type { FC } from 'react';
+import React from 'react';
+
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 describe('NFTGridItemErrorBoundary tests', () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
+
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import Lock from './lock.component';
 

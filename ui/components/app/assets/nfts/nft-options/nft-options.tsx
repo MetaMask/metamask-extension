@@ -1,5 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
+
 import { I18nContext } from '../../../../../contexts/i18n';
+import { IconColor } from '../../../../../helpers/constants/design-system';
 import {
   Box,
   ButtonIcon,
@@ -10,7 +12,6 @@ import {
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
-import { IconColor } from '../../../../../helpers/constants/design-system';
 import { SelectableListItem } from '../../asset-list/sort-control/sort-control';
 
 type NftOptionsProps = {

@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import { shortenAddress } from '../../../helpers/utils/util';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-import Tooltip from '../../ui/tooltip';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { SECOND } from '../../../../shared/constants/time';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   IconColor,
   TextVariant,
@@ -17,7 +15,9 @@ import {
   FontWeight,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
+import Tooltip from '../../ui/tooltip';
 
 class SelectedAccount extends Component {
   state = {

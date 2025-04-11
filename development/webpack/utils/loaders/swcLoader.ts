@@ -1,8 +1,9 @@
-import type { LoaderContext } from 'webpack';
-import type { JSONSchema7 } from 'schema-utils/declarations/validate';
+import { transform, type Options } from '@swc/core';
 import type { FromSchema } from 'json-schema-to-ts';
 import { validate } from 'schema-utils';
-import { transform, type Options } from '@swc/core';
+import type { JSONSchema7 } from 'schema-utils/declarations/validate';
+import type { LoaderContext } from 'webpack';
+
 import { type Args } from '../cli';
 import { __HMR_READY__ } from '../helpers';
 

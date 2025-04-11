@@ -1,12 +1,13 @@
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getUseExternalServices } from '../../../../../selectors';
+
+import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
   fetchAssetMetadata,
   getAssetImageUrl,
 } from '../../../../../../shared/lib/asset-utils';
-import { AssetType } from '../../../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
+import { getUseExternalServices } from '../../../../../selectors';
 
 /**
  * Fetches token metadata for a single token if searchQuery is defined but filteredTokenList is empty

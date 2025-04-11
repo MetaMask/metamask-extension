@@ -1,4 +1,5 @@
 import { isAllowedRPCOrigin } from '@metamask-institutional/rpc-allowlist';
+
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 const mmiPortfolio = {

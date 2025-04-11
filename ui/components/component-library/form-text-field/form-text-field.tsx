@@ -1,15 +1,16 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
+
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
 import type { BoxProps , PolymorphicRef } from '../box';
-import type { TextFieldProps, TextFieldSize } from '../text-field/text-field.types';
+import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 import { TextField } from '../text-field';
-import { HelpText, HelpTextSeverity } from '../help-text';
+import type { TextFieldProps, TextFieldSize } from '../text-field/text-field.types';
 import type {
   FormTextFieldProps,
   FormTextFieldComponent} from './form-text-field.types';

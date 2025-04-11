@@ -1,4 +1,5 @@
 import type { CopyableElement } from '@metamask/snaps-sdk/jsx';
+
 import type { UIComponentFactory } from './types';
 
 export const copyable: UIComponentFactory<CopyableElement> = ({ element }) => ({

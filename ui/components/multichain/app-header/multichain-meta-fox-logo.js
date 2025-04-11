@@ -1,16 +1,14 @@
 import React, { useCallback } from 'react';
-
 import { useHistory } from 'react-router-dom';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { useTheme } from '../../../hooks/useTheme';
 
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useTheme } from '../../../hooks/useTheme';
 import { Box } from '../../component-library';
-
 import Logo from '../../ui/metafox-logo';
 
 export const MultichainMetaFoxLogo = () => {

@@ -1,13 +1,14 @@
 import {
-  MethodNames,
-  PermissionDoesNotExistError,
-} from '@metamask/permission-controller';
-import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+} from '@metamask/permission-controller';
+
 import * as NetworkSelectors from '../../../../shared/modules/selectors/networks';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { getPermissionBackgroundApiMethods } from './background-api';
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({

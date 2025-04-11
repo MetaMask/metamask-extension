@@ -1,5 +1,5 @@
-const util = require('util');
 const { writeFileSync } = require('fs');
+const util = require('util');
 
 const exec = util.promisify(require('node:child_process').exec);
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
 describe('CancelTransactionGasFee Component', () => {

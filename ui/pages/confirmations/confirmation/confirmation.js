@@ -1,4 +1,10 @@
 /* eslint-disable react/prop-types */
+import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { produce } from 'immer';
+import { isEqual } from 'lodash';
+import log from 'loglevel';
+import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -7,25 +13,28 @@ import React, {
   useState,
   useContext,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { isEqual } from 'lodash';
-import { produce } from 'immer';
-import log from 'loglevel';
-import { ApprovalType } from '@metamask/controller-utils';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
+import { DAY } from '../../../../shared/constants/time';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
-import ConfirmationWarningModal from '../components/confirmation-warning-modal';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
+import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
+import { Box } from '../../../components/component-library';
+import Callout from '../../../components/ui/callout';
+import Loading from '../../../components/ui/loading-screen';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import ConfirmationWarningModal from '../components/confirmation-warning-modal';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
@@ -35,16 +44,8 @@ import {
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import Callout from '../../../components/ui/callout';
-import { Box } from '../../../components/component-library';
-import Loading from '../../../components/ui/loading-screen';
-import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
-import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';

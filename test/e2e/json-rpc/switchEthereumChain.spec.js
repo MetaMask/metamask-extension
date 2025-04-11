@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
   openDapp,
@@ -8,7 +10,6 @@ const {
   switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {

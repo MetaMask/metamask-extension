@@ -1,13 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+
+import { TokenListItem } from '.';
 import testData from '../../../../.storybook/test-data';
-import configureStore from '../../../store/store';
 import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { TokenListItem } from '.';
+import configureStore from '../../../store/store';
 
 export default {
   title: 'Components/Multichain/MultichainTokenListItem',

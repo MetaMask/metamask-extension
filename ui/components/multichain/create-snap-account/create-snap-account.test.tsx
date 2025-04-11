@@ -1,12 +1,13 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
 import type { CaipChainId } from '@metamask/utils';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import React from 'react';
+
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import mockState from '../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import configureStore from '../../../store/store';
 import { CreateSnapAccount } from './create-snap-account';
 
 // Mock dependencies

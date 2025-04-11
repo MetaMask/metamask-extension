@@ -1,15 +1,15 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import mockState from '../../../../../test/data/mock-state.json';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockConfirmStateForTransaction,
   getMockPersonalSignConfirmStateForRequest,
 } from '../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
-import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { unapprovedPersonalSignMsg } from '../../../../../test/data/confirmations/personal_sign';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import type { SignatureRequestType } from '../../types/confirm';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import useConfirmationOriginAlerts from './useConfirmationOriginAlerts';
 
 const expectedAlert = [

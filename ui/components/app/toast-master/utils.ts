@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ReactFragment } from 'react';
+
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   SET_SHOW_NEW_SRP_ADDED_TOAST,

@@ -1,15 +1,16 @@
-const pify = require('pify');
-const gulp = require('gulp');
 const autoprefixer = require('autoprefixer');
+const gulp = require('gulp');
+const postcss = require('gulp-postcss');
+const gulpSass = require('gulp-sass')(sass);
+const sourcemaps = require('gulp-sourcemaps');
 const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
-const sourcemaps = require('gulp-sourcemaps');
-const rtlcss = require('postcss-rtlcss');
+const pify = require('pify');
 const discardFonts = require('postcss-discard-font-face');
-const postcss = require('gulp-postcss');
+const rtlcss = require('postcss-rtlcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
-const gulpSass = require('gulp-sass')(sass);
+
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 

@@ -1,19 +1,10 @@
 import React from 'react';
+
 import type {
   SecurityProvider} from '../../../../../shared/constants/security-provider';
 import {
   SECURITY_PROVIDER_CONFIG
 } from '../../../../../shared/constants/security-provider';
-import {
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
-import type { SizeNumber } from '../../../component-library/box/box.types';
 import type {
   TextAlign} from '../../../../helpers/constants/design-system';
 import {
@@ -24,6 +15,16 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  Box,
+  ButtonLink,
+  ButtonLinkSize,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../component-library';
+import type { SizeNumber } from '../../../component-library/box/box.types';
 
 export type AlertProviderProps = {
   provider?: SecurityProvider;

@@ -1,5 +1,6 @@
-import { ObservableStore } from '@metamask/obs-store';
 import { BaseController, Messenger } from '@metamask/base-controller';
+import { ObservableStore } from '@metamask/obs-store';
+
 import ComposableObservableStore from './ComposableObservableStore';
 
 class ExampleController extends BaseController {

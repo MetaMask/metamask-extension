@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-done-callback */
 import { obj as createThoughStream } from 'through2';
+
 import metaRPCClientFactory from './metaRPCClientFactory';
 
 describe('metaRPCClientFactory', () => {

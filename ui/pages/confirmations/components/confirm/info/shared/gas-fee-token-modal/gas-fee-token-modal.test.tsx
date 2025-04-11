@@ -1,17 +1,17 @@
+
+import { toHex } from '@metamask/controller-utils';
+import type { GasFeeToken } from '@metamask/transaction-controller';
+import { act } from '@testing-library/react';
 import React from 'react';
 
-import type { GasFeeToken } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
-import { act } from '@testing-library/react';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import configureStore from '../../../../../../../store/store';
-
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/controller-actions/transaction-controller';
+import configureStore from '../../../../../../../store/store';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 jest.mock(

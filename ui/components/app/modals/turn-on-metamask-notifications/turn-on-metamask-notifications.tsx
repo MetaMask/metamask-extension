@@ -1,22 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { I18nContext } from '../../../../contexts/i18n';
-import { useModalProps } from '../../../../hooks/useModalProps';
-import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { I18nContext } from '../../../../contexts/i18n';
+import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  AlignItems,
+  BlockSize,
+  BorderRadius,
+  FlexDirection,
+  FontWeight,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
+import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
+import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
+import { useModalProps } from '../../../../hooks/useModalProps';
+import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
-import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
-import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
-
 import {
   Box,
   Modal,
@@ -27,14 +35,6 @@ import {
   Text,
   ModalFooter,
 } from '../../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  FlexDirection,
-  FontWeight,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
 
 export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();

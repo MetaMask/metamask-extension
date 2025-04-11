@@ -1,4 +1,5 @@
 import React from 'react';
+
 import HoldToRevealButton from './hold-to-reveal-button';
 
 export default {

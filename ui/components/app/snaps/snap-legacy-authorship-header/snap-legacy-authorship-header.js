@@ -1,8 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   BackgroundColor,
   TextColor,
@@ -15,9 +16,8 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-
-import { Box, Text } from '../../../component-library';
 import { getSnapMetadata } from '../../../../selectors';
+import { Box, Text } from '../../../component-library';
 import { SnapIcon } from '../snap-icon';
 
 const SnapLegacyAuthorshipHeader = ({

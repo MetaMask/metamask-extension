@@ -4,9 +4,10 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
+
+import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import { deferredPromise } from '../../util';
 import * as Util from '../../util';
-import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
 
 jest.mock('../../util', () => ({

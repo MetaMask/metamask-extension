@@ -1,10 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import testData from '../../../../.storybook/test-data';
-import configureStore from '../../../store/store';
 
+import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import configureStore from '../../../store/store';
 import DeprecatedNetworks from './deprecated-networks';
 
 const store = (chainId, rpcUrl) =>

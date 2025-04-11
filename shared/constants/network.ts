@@ -3,9 +3,10 @@ import type {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { capitalize, pick } from 'lodash';
 import type { Hex} from '@metamask/utils';
 import { hexToNumber } from '@metamask/utils';
+import { capitalize, pick } from 'lodash';
+
 import { MultichainNetworks } from './multichain/networks';
 
 /**

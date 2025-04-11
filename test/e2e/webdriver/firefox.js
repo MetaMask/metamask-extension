@@ -8,6 +8,7 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
+
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 

@@ -1,8 +1,20 @@
+import type { TokenListMap } from '@metamask/assets-controllers';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { TokenListMap } from '@metamask/assets-controllers';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, Text } from '../../component-library';
+
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentDraftTransaction,
+  getIsNativeSendPossible,
+  getSendMaxModeState,
+  type Amount,
+  type Asset,
+} from '../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
@@ -13,35 +25,23 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import {
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
-
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
-import {
-  getCurrentDraftTransaction,
-  getIsNativeSendPossible,
-  getSendMaxModeState,
-  type Amount,
-  type Asset,
-} from '../../../ducks/send';
-import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import MaxClearButton from './max-clear-button';
+import { Box, Text } from '../../component-library';
+import { AssetBalance } from './asset-balance/asset-balance';
 import {
   AssetPicker,
   type AssetPickerProps,
 } from './asset-picker/asset-picker';
+import MaxClearButton from './max-clear-button';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
-import { AssetBalance } from './asset-balance/asset-balance';
 
 type AssetPickerAmountProps = OverridingUnion<
   AssetPickerProps,

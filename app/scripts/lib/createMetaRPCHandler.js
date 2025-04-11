@@ -1,4 +1,5 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
+
 import { isStreamWritable } from './stream-utils';
 
 const createMetaRPCHandler = (api, outStream) => {

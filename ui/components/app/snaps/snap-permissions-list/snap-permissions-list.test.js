@@ -1,7 +1,8 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+import React from 'react';
+
 import { renderWithProvider } from '../../../../../test/jest';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import configureStore from '../../../../store/store';
 import SnapPermissionsList from './snap-permissions-list';
 

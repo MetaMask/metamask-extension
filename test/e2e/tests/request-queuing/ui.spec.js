@@ -1,7 +1,12 @@
+const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
-const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
+
+const {
+  PermissionNames,
+} = require('../../../../app/scripts/controllers/permissions');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { CaveatTypes } = require('../../../../shared/constants/permissions');
 const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -16,10 +21,6 @@ const {
   DAPP_TWO_URL,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
-const {
-  PermissionNames,
-} = require('../../../../app/scripts/controllers/permissions');
-const { CaveatTypes } = require('../../../../shared/constants/permissions');
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs

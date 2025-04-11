@@ -1,26 +1,25 @@
-import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
+import { trace, endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getAllDetectedTokensForSelectedAddress,
   getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../selectors';
-
-import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
+import Popover from '../../../ui/popover';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
-import { trace, endTrace, TraceName } from '../../../../../shared/lib/trace';
 
 const DetectedTokenSelectionPopover = ({
   tokensListDetected,

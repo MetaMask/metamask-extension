@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import type { AvatarBaseProps } from '../avatar-base';
-import { AvatarBase } from '../avatar-base';
+import React, { useState, useEffect } from 'react';
+
 import {
   Display,
   AlignItems,
@@ -9,6 +8,8 @@ import {
   TextColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import type { AvatarBaseProps } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
 import type { PolymorphicRef } from '../box';
 import type { AvatarTokenComponent , AvatarTokenProps} from './avatar-token.types';
 import { AvatarTokenSize } from './avatar-token.types';

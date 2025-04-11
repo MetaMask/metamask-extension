@@ -1,5 +1,6 @@
-import { constant, times, uniq, zip } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { constant, times, uniq, zip } from 'lodash';
+
 import {
   GasRecommendations,
   EditGasModes,

@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
-import type {
-  ChartOptions,
-  Point} from 'chart.js';
+// @ts-expect-error suppress CommonJS vs ECMAScript error
+import { brandColor } from '@metamask/design-tokens';
+import type { Hex } from '@metamask/utils';
 import {
   Chart,
   LineElement,
@@ -11,12 +10,18 @@ import {
   Decimation
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
-import { Line } from 'react-chartjs-2';
+import type {
+  ChartOptions,
+  Point} from 'chart.js';
 import classnames from 'classnames';
-import { brandColor } from '@metamask/design-tokens';
-import type { Hex } from '@metamask/utils';
-import { useTheme } from '../../../../hooks/useTheme';
+import React, { useRef, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+
+import {
+  Box,
+  ButtonBase,
+  ButtonBaseSize,
+} from '../../../../components/component-library';
 import {
   BackgroundColor,
   Display,
@@ -26,12 +31,8 @@ import {
   BorderRadius,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-} from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../hooks/useTheme';
 import type { TimeRange} from '../../useHistoricalPrices';
 import { useHistoricalPrices } from '../../useHistoricalPrices';
 import { loadingOpacity } from '../../util';

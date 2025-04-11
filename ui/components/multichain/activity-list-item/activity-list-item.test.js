@@ -1,5 +1,6 @@
-import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import React from 'react';
+
 import { Icon, IconName, IconSize } from '../../component-library';
 import { ActivityListItem } from './activity-list-item';
 

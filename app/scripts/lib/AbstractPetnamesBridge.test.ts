@@ -6,6 +6,7 @@ import {
   NameOrigin,
   NameType,
 } from '@metamask/name-controller';
+
 import type {
   PetnameEntry,
   PetnamesBridgeMessenger} from './AbstractPetnamesBridge';

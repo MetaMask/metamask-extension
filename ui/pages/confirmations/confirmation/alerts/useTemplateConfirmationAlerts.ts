@@ -1,6 +1,6 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
-import { useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import type {
   Alert} from '../../../../ducks/confirm-alerts/confirm-alerts';

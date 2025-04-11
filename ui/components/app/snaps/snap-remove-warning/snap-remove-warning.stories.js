@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SnapRemoveWarning from './snap-remove-warning';
 
 export default {

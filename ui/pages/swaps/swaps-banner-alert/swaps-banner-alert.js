@@ -1,20 +1,6 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { I18nContext } from '../../../contexts/i18n';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
-import Box from '../../../components/ui/box';
-import {
-  AlignItems,
-  SEVERITIES,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../components/component-library';
 
 import {
   QUOTES_EXPIRED_ERROR,
@@ -28,7 +14,21 @@ import {
   SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  Text,
+} from '../../../components/component-library';
+import { BannerAlert } from '../../../components/component-library/banner-alert';
+import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
 import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
+import {
+  AlignItems,
+  SEVERITIES,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
 
 export default function SwapsBannerAlert({
   swapsErrorKey,

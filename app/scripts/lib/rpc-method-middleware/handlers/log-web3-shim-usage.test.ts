@@ -1,12 +1,13 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import type { HandlerRequestType as LogWeb3ShimUsageHandlerRequest } from './types';
 import type {
   GetWeb3ShimUsageState,
   SetWeb3ShimUsageRecorded,
 } from './log-web3-shim-usage';
 import logWeb3ShimUsage from './log-web3-shim-usage';
+import type { HandlerRequestType as LogWeb3ShimUsageHandlerRequest } from './types';
 
 describe('logWeb3ShimUsage', () => {
   let mockEnd: JsonRpcEngineEndCallback;

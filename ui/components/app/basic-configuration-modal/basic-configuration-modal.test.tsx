@@ -1,14 +1,15 @@
-import * as React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-import configureStore from '../../../store/store';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import * as Actions from '../../../store/actions';
 import {
   hideBasicFunctionalityModal,
   onboardingToggleBasicFunctionalityOff,
 } from '../../../ducks/app/app';
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
+import * as Actions from '../../../store/actions';
+import configureStore from '../../../store/store';
 import { BasicConfigurationModal } from './basic-configuration-modal';
 
 jest.mock('../../../store/actions', () => ({

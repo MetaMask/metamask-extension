@@ -1,5 +1,6 @@
-import React from 'react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import React from 'react';
+
 import testData from '../../../../../.storybook/test-data';
 import TokenSearch from './token-search.component';
 

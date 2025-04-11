@@ -1,32 +1,33 @@
-import { useContext, useEffect, useState } from 'react';
 import type {
   SimulationData} from '@metamask/transaction-controller';
 import {
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
 import { renderHook } from '@testing-library/react-hooks';
-import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
+import { BigNumber } from 'bignumber.js';
+import { useContext, useEffect, useState } from 'react';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import type {
   UseDisplayNameResponse} from '../../../../hooks/useDisplayName';
 import {
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import type { BalanceChange } from './types';
-import type {
-  UseSimulationMetricsProps} from './useSimulationMetrics';
+import { useLoadingTime } from './useLoadingTime';
 import {
   AssetType,
   FiatType,
   PetnameType,
   useSimulationMetrics,
 } from './useSimulationMetrics';
-import { useLoadingTime } from './useLoadingTime';
+import type {
+  UseSimulationMetricsProps} from './useSimulationMetrics';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

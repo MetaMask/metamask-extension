@@ -1,5 +1,6 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+
 import ItemList from './item-list';
 import ListItemSearch from './list-item-search';
 

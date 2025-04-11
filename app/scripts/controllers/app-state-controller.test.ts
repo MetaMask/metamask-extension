@@ -1,10 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
 import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
+import { Messenger } from '@metamask/base-controller';
 import type { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import type { Browser } from 'webextension-polyfill';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,

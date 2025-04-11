@@ -1,3 +1,6 @@
+import { toHex } from '@metamask/controller-utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import type {
   CaipAssetType,
   CaipChainId,
@@ -11,9 +14,7 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import { toHex } from '@metamask/controller-utils';
+
 import { MINUTE } from '../constants/time';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';

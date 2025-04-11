@@ -1,5 +1,3 @@
-import { type Hex, type CaipChainId } from '@metamask/utils';
-import { useMemo } from 'react';
 import type {
   ChainId} from '@metamask/bridge-controller';
 import {
@@ -9,16 +7,19 @@ import {
   formatChainIdToHex,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { getSelectedInternalAccount } from '../../selectors';
-import { useAsyncResult } from '../useAsync';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { type Hex, type CaipChainId } from '@metamask/utils';
+import { useMemo } from 'react';
+
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { useMultichainSelector } from '../useMultichainSelector';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getSelectedInternalAccount } from '../../selectors';
 import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { useAsyncResult } from '../useAsync';
+import { useMultichainSelector } from '../useMultichainSelector';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.

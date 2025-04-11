@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { useSelector } from 'react-redux';
+
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { formatProviderLabel } from '../../../pages/bridge/utils/quote';
 import { useConvertedUsdAmounts } from './useConvertedUsdAmounts';

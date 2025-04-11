@@ -1,4 +1,10 @@
-import log from 'loglevel';
+import type {
+  AcceptRequest,
+  AddApprovalRequest,
+  RejectRequest,
+} from '@metamask/approval-controller';
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import {
   EncryptionPublicKeyManager
 } from '@metamask/message-manager';
@@ -13,17 +19,12 @@ import type {
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   OriginalRequest} from '@metamask/message-manager';
-import type { RestrictedMessenger } from '@metamask/base-controller';
-import { BaseController } from '@metamask/base-controller';
 import type { Patch } from 'immer';
-import type {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
-} from '@metamask/approval-controller';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { KeyringType } from '../../../shared/constants/keyring';
+import log from 'loglevel';
+
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { KeyringType } from '../../../shared/constants/keyring';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 const controllerName = 'EncryptionPublicKeyController';
 const managerName = 'EncryptionPublicKeyManager';

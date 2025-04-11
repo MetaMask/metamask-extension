@@ -1,7 +1,6 @@
-import React from 'react';
 import classnames from 'classnames';
-import { Text } from '../text';
-import { Box, type BoxProps, type PolymorphicRef } from '../box';
+import React from 'react';
+
 
 import {
   AlignItems,
@@ -11,8 +10,9 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import { Icon, IconSize } from '../icon';
+import { Text } from '../text';
 import type { TagComponent, TagProps } from './tag.types';
 
 export const Tag: TagComponent = React.forwardRef(

@@ -1,10 +1,32 @@
-import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
-import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+  TwoStepProgressBar,
+  twoStepStages,
+} from '../../../components/app/step-progress-bar';
+import {
+  Box,
+  ButtonLink,
+  Checkbox,
+  Icon,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import Button from '../../../components/ui/button';
+import FormField from '../../../components/ui/form-field';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import {
   JustifyContent,
   AlignItems,
@@ -18,36 +40,15 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-import FormField from '../../../components/ui/form-field';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import {
-  ThreeStepProgressBar,
-  threeStepStages,
-  TwoStepProgressBar,
-  twoStepStages,
-} from '../../../components/app/step-progress-bar';
 ///: END:ONLY_INCLUDE_IF
-import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
   getCurrentKeyring,
   getMetaMetricsId,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  Box,
-  ButtonLink,
-  Checkbox,
-  Icon,
-  IconName,
-  Text,
-} from '../../../components/component-library';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function CreatePassword({
   createNewAccount,

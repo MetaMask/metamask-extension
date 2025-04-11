@@ -1,8 +1,6 @@
+import type { CaipAccountId, CaipChainId } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 import React from 'react';
-import type { CaipAccountId, CaipChainId } from '@metamask/utils';
-
-import { SnapUISelector } from '../snap-ui-selector';
 
 import {
   Display,
@@ -14,6 +12,7 @@ import {
   BackgroundColor,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
@@ -22,8 +21,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../component-library';
-
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SnapUISelector } from '../snap-ui-selector';
 import type { SnapUIAsset} from './useSnapAssetDisplay';
 import { useSnapAssetSelectorData } from './useSnapAssetDisplay';
 

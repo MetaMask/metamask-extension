@@ -1,19 +1,19 @@
-import React, { PureComponent } from 'react';
+import * as Sentry from '@sentry/browser';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { CompatRouter } from 'react-router-dom-v5-compat';
-import * as Sentry from '@sentry/browser';
+
+import { AssetPollingProvider } from '../contexts/assetPolling';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
+import { MetamaskIdentityProvider } from '../contexts/identity';
+import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import {
   MetaMetricsProvider,
   LegacyMetaMetricsProvider,
 } from '../contexts/metametrics';
-import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
-import { AssetPollingProvider } from '../contexts/assetPolling';
-import { MetamaskIdentityProvider } from '../contexts/identity';
 import ErrorPage from './error-page/error-page.component';
-
 import Routes from './routes';
 
 class Index extends PureComponent {

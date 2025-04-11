@@ -1,18 +1,19 @@
-import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
+import type { Provider } from '@metamask/network-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from 'viem';
+
+import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
+import type { HardwareKeyringType } from '../constants/hardware-wallets';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../constants/metametrics';
 import type { TokenStandard } from '../constants/transaction';
-import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (

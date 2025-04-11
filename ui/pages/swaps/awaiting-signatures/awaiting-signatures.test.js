@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import AwaitingSignatures from '.';
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import AwaitingSignatures from '.';
 
 describe('AwaitingSignatures', () => {
   it('renders the component with initial props for 1 confirmation', () => {

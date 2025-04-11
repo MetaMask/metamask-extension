@@ -1,11 +1,12 @@
-import React, { memo } from 'react';
-import classnames from 'classnames';
 import type { NameType } from '@metamask/name-controller';
-import Identicon from '../../../ui/identicon';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import classnames from 'classnames';
+import React, { memo } from 'react';
+
 import { useDisplayName } from '../../../../hooks/useDisplayName';
-import ShortenedName from './shortened-name';
+import { Icon, IconName, IconSize } from '../../../component-library';
+import Identicon from '../../../ui/identicon';
 import FormattedName from './formatted-value';
+import ShortenedName from './shortened-name';
 
 export type NameDisplayProps = {
   preferContractSymbol?: boolean;

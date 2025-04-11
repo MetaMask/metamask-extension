@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  ButtonBase,
-  ButtonBaseSize,
-  IconName,
-} from '../../../../component-library';
+
 import {
   BackgroundColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import {
+  ButtonBase,
+  ButtonBaseSize,
+  IconName,
+} from '../../../../component-library';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;

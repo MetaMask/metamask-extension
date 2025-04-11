@@ -1,12 +1,11 @@
-import React from 'react';
 import classnames from 'classnames';
-import Jazzicon from '../../ui/jazzicon/jazzicon.component';
+import React from 'react';
+
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
-
-import type { PolymorphicRef } from '../box';
-
+import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
+import type { PolymorphicRef } from '../box';
 import type {
   AvatarAccountComponent,
   AvatarAccountProps} from './avatar-account.types';

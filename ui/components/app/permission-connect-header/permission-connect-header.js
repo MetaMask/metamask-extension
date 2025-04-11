@@ -1,5 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   AlignItems,
   JustifyContent,
@@ -11,6 +12,8 @@ import {
   FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
+import { Nav } from '../../../pages/confirmations/components/confirm/nav';
 import {
   IconSize,
   Text,
@@ -18,8 +21,6 @@ import {
   AvatarFavicon,
   AvatarBase,
 } from '../../component-library';
-import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
-import { Nav } from '../../../pages/confirmations/components/confirm/nav';
 
 const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
   const transformOriginToTitle = (rawOrigin) => {

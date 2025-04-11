@@ -1,18 +1,19 @@
-import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
-import { SEND_STAGES } from '../../../ducks/send';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+import React from 'react';
+
+import { AppHeader } from '.';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   mockNetworkState,
   mockMultichainNetworkState,
 } from '../../../../test/stub/networks';
-import { AppHeader } from '.';
+import { SEND_STAGES } from '../../../ducks/send';
+import configureStore from '../../../store/store';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),

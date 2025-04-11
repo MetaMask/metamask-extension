@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { accountsWithSendEtherInfoSelector } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';

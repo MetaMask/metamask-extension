@@ -1,7 +1,8 @@
-import { MethodRegistry } from 'eth-method-registry';
 import type { Hex } from '@metamask/utils';
-import { hasTransactionData } from '../modules/transaction.utils';
+import { MethodRegistry } from 'eth-method-registry';
+
 import { stripHexPrefix } from '../modules/hexstring-utils';
+import { hasTransactionData } from '../modules/transaction.utils';
 import fetchWithCache from './fetch-with-cache';
 
 type FourByteResult = {

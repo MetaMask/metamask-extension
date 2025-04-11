@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import { I18nContext } from '../../../../contexts/i18n';
 import FormField from '../../../../components/ui/form-field';
+import { I18nContext } from '../../../../contexts/i18n';
 import { getGasFormErrorText } from '../../../../helpers/constants/gas';
 
 export default function AdvancedGasControls({

@@ -1,5 +1,6 @@
-import React from 'react';
 import { useArgs } from '@storybook/client-api';
+import React from 'react';
+
 import ShowHideToggle from '.';
 
 export default {

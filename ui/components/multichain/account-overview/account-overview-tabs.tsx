@@ -1,21 +1,20 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKey,
+} from '../../../../shared/constants/app-state';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/lib/ui-utils';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import NftsTab from '../../app/assets/nfts/nfts-tab';
-import AssetList from '../../app/assets/asset-list';
-import TransactionList from '../../app/transaction-list';
-import { Tabs, Tab } from '../../ui/tabs';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -24,7 +23,13 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IF
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAllChainsToPoll } from '../../../selectors';
+import { detectNfts } from '../../../store/actions';
+import AssetList from '../../app/assets/asset-list';
+import NftsTab from '../../app/assets/nfts/nfts-tab';
+import TransactionList from '../../app/transaction-list';
 import {
   Box,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -33,14 +38,10 @@ import {
   IconName,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
+import { Tabs, Tab } from '../../ui/tabs';
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
+///: END:ONLY_INCLUDE_IF
 
-import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
-  AccountOverviewTabKey,
-} from '../../../../shared/constants/app-state';
-import { detectNfts } from '../../../store/actions';
-import { getAllChainsToPoll } from '../../../selectors';
 import type { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {

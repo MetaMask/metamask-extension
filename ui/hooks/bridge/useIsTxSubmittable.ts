@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -9,9 +10,9 @@ import {
   getValidationErrors,
   getToToken,
 } from '../../ducks/bridge/selectors';
+import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
-import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
 import useLatestBalance from './useLatestBalance';
 
 export const useIsTxSubmittable = () => {

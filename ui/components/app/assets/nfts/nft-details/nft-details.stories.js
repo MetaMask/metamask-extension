@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { NftDetailsComponent } from './nft-details';
 
 const nft = {

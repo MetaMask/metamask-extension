@@ -1,7 +1,7 @@
-import { cloneDeep } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { hasProperty, isObject } from '@metamask/utils';
+import { cloneDeep } from 'lodash';
 
 export const version = 94;
 

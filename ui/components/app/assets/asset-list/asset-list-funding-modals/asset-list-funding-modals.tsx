@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ReceiveModal } from '../../../../multichain';
-import { FundingMethodModal } from '../../../../multichain/funding-method-modal/funding-method-modal';
+
+import { getIsNativeTokenBuyable } from '../../../../../ducks/ramps';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getSelectedAccount } from '../../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../../../selectors/multichain';
-import { getIsNativeTokenBuyable } from '../../../../../ducks/ramps';
+import { ReceiveModal } from '../../../../multichain';
+import { FundingMethodModal } from '../../../../multichain/funding-method-modal/funding-method-modal';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { RampsCard } from '../../../../multichain/ramps-card';
 import { RAMPS_CARD_VARIANT_TYPES } from '../../../../multichain/ramps-card/ramps-card';
 ///: END:ONLY_INCLUDE_IF

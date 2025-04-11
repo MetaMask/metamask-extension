@@ -1,5 +1,6 @@
-import type { CaipChainId } from '@metamask/utils';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
+import type { CaipChainId } from '@metamask/utils';
+
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,

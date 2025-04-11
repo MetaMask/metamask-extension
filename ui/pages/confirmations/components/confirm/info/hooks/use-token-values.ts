@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
+
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';

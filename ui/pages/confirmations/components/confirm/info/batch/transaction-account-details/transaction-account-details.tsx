@@ -1,17 +1,18 @@
-import React from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import React from 'react';
+
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../../context/confirm';
 import {
   useIsDowngradeTransaction,
   useIsUpgradeTransaction,
 } from '../../hooks/useIsUpgradeTransaction';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export function TransactionAccountDetails() {
   const t = useI18nContext();

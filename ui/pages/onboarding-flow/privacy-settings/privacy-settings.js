@@ -1,28 +1,27 @@
+import { ButtonVariant } from '@metamask/snaps-sdk';
+import classnames from 'classnames';
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import classnames from 'classnames';
-import { ButtonVariant } from '@metamask/snaps-sdk';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
-
-import {
-  useEnableProfileSyncing,
-  useDisableProfileSyncing,
-} from '../../../hooks/identity/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
-import Button from '../../../components/ui/button';
-
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   Box,
   Text,
@@ -34,7 +33,12 @@ import {
   IconSize,
   Icon,
 } from '../../../components/component-library';
+import Button from '../../../components/ui/button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  onboardingToggleBasicFunctionalityOn,
+  openBasicFunctionalityModal,
+} from '../../../ducks/app/app';
 import {
   Display,
   TextAlign,
@@ -46,13 +50,17 @@ import {
   FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
+import {
+  useEnableProfileSyncing,
+  useDisableProfileSyncing,
+} from '../../../hooks/identity/useProfileSyncing';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -66,15 +74,6 @@ import {
   setUseExternalNameSources,
   setEditedNetwork,
 } from '../../../store/actions';
-import {
-  onboardingToggleBasicFunctionalityOn,
-  openBasicFunctionalityModal,
-} from '../../../ducks/app/app';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../shared/constants/network';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;

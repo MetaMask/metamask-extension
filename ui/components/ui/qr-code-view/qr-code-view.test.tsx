@@ -1,9 +1,10 @@
-import React from 'react';
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
 import QRCodeView from './qr-code-view';
 
 const mockCopy = jest.fn();

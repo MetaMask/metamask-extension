@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash';
 // Note: This is the library the network controller uses for URL
 // validity / equality. Using here to ensure we match its validations.
 import * as URI from 'uri-js';
+
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   LINEA_MAINNET_DISPLAY_NAME,

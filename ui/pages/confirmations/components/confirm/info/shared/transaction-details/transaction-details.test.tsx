@@ -1,17 +1,18 @@
+import { toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { Hex } from '@metamask/utils';
-import { toHex } from '@metamask/controller-utils';
+
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
+import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
 } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { TransactionDetails } from './transaction-details';

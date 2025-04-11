@@ -1,6 +1,7 @@
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';
-import { hasProperty, isObject } from '@metamask/utils';
+
 import transformState077For082 from './077-supplements/077-supplement-for-082';
 import transformState077For084 from './077-supplements/077-supplement-for-084';
 import transformState077For086 from './077-supplements/077-supplement-for-086';

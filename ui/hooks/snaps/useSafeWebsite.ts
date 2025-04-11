@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
 import type { PhishingDetectorResult } from '@metamask/phishing-controller';
+import { useEffect, useState } from 'react';
+
 import { getPhishingResult } from '../../store/actions';
 
 /**

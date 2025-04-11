@@ -1,5 +1,5 @@
-const randomColor = require('randomcolor');
 const chalk = require('chalk');
+const randomColor = require('randomcolor');
 
 module.exports = { setupTaskDisplay, displayChart };
 

@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
 import { useGasFeeContext } from '../../../../contexts/gasFee';

@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   AlignItems,
   Color,
@@ -15,6 +16,7 @@ import {
   FlexWrap,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
+import { getRequestingNetworkInfo } from '../../../selectors';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -25,7 +27,6 @@ import {
   Box,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
-import { getRequestingNetworkInfo } from '../../../selectors';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
 

@@ -1,16 +1,17 @@
 import { NameType } from '@metamask/name-controller';
 import React, { memo, useState } from 'react';
+
 import {
   AlignItems,
   Display,
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import { Box, Text } from '../../../../component-library';
+import Identicon from '../../../../ui/identicon';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
-import { shortenAddress } from '../../../../../helpers/utils/util';
-import Identicon from '../../../../ui/identicon';
 import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {

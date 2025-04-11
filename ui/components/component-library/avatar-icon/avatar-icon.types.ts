@@ -1,8 +1,8 @@
 import type { IconColor, TextColor } from '../../../helpers/constants/design-system';
+import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
+import type { PolymorphicComponentPropWithRef } from '../box';
 import type { IconName, IconProps} from '../icon';
 import { IconSize } from '../icon';
-import type { PolymorphicComponentPropWithRef } from '../box';
-import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
 export enum AvatarIconSize {
   Xs = 'xs',

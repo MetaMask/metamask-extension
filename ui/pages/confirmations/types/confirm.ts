@@ -1,6 +1,6 @@
 import type { ApprovalControllerState } from '@metamask/approval-controller';
-import type { DecodingData } from '@metamask/signature-controller';
 import type { SIWEMessage } from '@metamask/controller-utils';
+import type { DecodingData } from '@metamask/signature-controller';
 import type {
   TransactionMeta,
   TransactionType,

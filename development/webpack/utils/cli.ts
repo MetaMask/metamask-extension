@@ -5,8 +5,10 @@
  */
 
 import type { Options as YargsOptions } from 'yargs';
-import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
+import yargs from 'yargs/yargs';
+
+import { type BuildConfig } from './config';
 import {
   Browsers,
   type Manifest,
@@ -14,7 +16,6 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { type BuildConfig } from './config';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature';

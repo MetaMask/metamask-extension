@@ -1,15 +1,19 @@
-import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useGasFeeInputs } from '../../hooks/useGasFeeInputs';
-import { txParamsAreDappSuggested } from '../../../../../shared/modules/transaction.utils';
+
 import {
   EditGasModes,
   GAS_LIMITS,
   CUSTOM_GAS_ESTIMATE,
   GasRecommendations,
 } from '../../../../../shared/constants/gas';
-
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+  hexToDecimal,
+} from '../../../../../shared/modules/conversion.utils';
+import { txParamsAreDappSuggested } from '../../../../../shared/modules/transaction.utils';
 import {
   Modal,
   ModalOverlay,
@@ -19,8 +23,7 @@ import {
 } from '../../../../components/component-library';
 import { ModalContent } from '../../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../../components/component-library/modal-header/deprecated';
-import EditGasDisplay from '../edit-gas-display';
-
+import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   createCancelTransaction,
@@ -30,13 +33,9 @@ import {
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../../../store/actions';
-import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
+import { useGasFeeInputs } from '../../hooks/useGasFeeInputs';
 import { useIncrementedGasFees } from '../../hooks/useIncrementedGasFees';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexToDecimal,
-} from '../../../../../shared/modules/conversion.utils';
+import EditGasDisplay from '../edit-gas-display';
 
 export default function EditGasPopover({
   popoverTitle = '',

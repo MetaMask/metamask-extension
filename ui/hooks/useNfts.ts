@@ -1,16 +1,17 @@
+import { isEqual } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
+
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import type { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import {
   getAllChainsToPoll,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
 } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import type { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
+import { usePrevious } from './usePrevious';
 
 export function useNfts() {
   const t = useI18nContext();

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import Button from '../button';
+
 import NicknamePopover from '.';
+import Button from '../button';
 
 export default {
   title: 'Components/UI/NicknamePopover',

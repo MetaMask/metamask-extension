@@ -1,7 +1,9 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+
+import { AssetType } from '../../../../../../shared/constants/transaction';
+import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import {
   getCurrentDraftTransaction,
   getBestQuote,
@@ -9,12 +11,11 @@ import {
   getSwapsBlockedTokens,
   acknowledgeRecipientWarning,
 } from '../../../../../ducks/send';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../../../selectors';
-import { AssetType } from '../../../../../../shared/constants/transaction';
-import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import { SendPageRecipientContent } from './recipient-content';
 
 jest.mock('reselect', () => ({

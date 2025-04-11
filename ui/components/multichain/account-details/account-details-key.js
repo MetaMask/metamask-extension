@@ -1,19 +1,9 @@
-import React, { useState } from 'react';
 import {
   LavaDome as LavaDomeReact,
   toLavaDomeToken,
 } from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
-import {
-  BannerAlert,
-  Box,
-  ButtonIcon,
-  ButtonPrimary,
-  HelpText,
-  HelpTextSeverity,
-  IconName,
-  Text,
-} from '../../component-library';
+import React, { useState } from 'react';
 
 import {
   AlignItems,
@@ -24,8 +14,18 @@ import {
   Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  BannerAlert,
+  Box,
+  ButtonIcon,
+  ButtonPrimary,
+  HelpText,
+  HelpTextSeverity,
+  IconName,
+  Text,
+} from '../../component-library';
 
 const inTest = Boolean(process.env.IN_TEST);
 

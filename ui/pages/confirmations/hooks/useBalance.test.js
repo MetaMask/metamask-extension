@@ -1,12 +1,12 @@
+import { EthAccountType } from '@metamask/keyring-api';
+import { renderHook } from '@testing-library/react-hooks';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
-import { EthAccountType } from '@metamask/keyring-api';
 
-import configureStore from '../../../store/store';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import configureStore from '../../../store/store';
 import { useBalance } from './useBalance';
 
 const renderUseBalance = (fromAddress, stateVariables = {}) => {

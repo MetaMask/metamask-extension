@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SnapExternalPill from '.';
 
 export default {

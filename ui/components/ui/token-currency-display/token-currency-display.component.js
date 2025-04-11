@@ -1,7 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import CurrencyDisplay from '../currency-display';
+import React from 'react';
+
 import { useTokenDisplayValue } from '../../../hooks/useTokenDisplayValue';
+import CurrencyDisplay from '../currency-display';
 
 export default function TokenCurrencyDisplay({
   className,

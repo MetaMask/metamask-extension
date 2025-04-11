@@ -1,6 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  AlignItems,
+  Display,
+  TextColor,
+  TextVariant,
+  FontWeight,
+  FlexDirection,
+  FlexWrap,
+  BackgroundColor,
+} from '../../../../helpers/constants/design-system';
 import {
   checkExistingAllTokens,
   checkExistingAddresses,
@@ -14,17 +26,6 @@ import {
   AvatarNetworkSize,
   Checkbox,
 } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  TextColor,
-  TextVariant,
-  FontWeight,
-  FlexDirection,
-  FlexWrap,
-  BackgroundColor,
-} from '../../../../helpers/constants/design-system';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import TokenListPlaceholder from './token-list-placeholder';
 
 export default class TokenList extends Component {

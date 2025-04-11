@@ -1,8 +1,9 @@
 import type React from 'react';
+
 import type { PolymorphicComponentPropWithRef } from '../box';
-import type { TextFieldProps } from '../text-field/text-field.types';
 import type { ButtonIconProps } from '../button-icon';
 import type { InputProps } from '../input';
+import type { TextFieldProps } from '../text-field/text-field.types';
 
 export enum TextFieldSearchSize {
   Sm = 'sm',

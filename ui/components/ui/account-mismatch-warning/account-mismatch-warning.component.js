@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import Tooltip from '../tooltip';
+
+import { Severity } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSelectedAccount } from '../../../selectors';
 import InfoIcon from '../icon/info-icon.component';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Severity } from '../../../helpers/constants/design-system';
+import Tooltip from '../tooltip';
 
 export default function AccountMismatchWarning({ address }) {
   const selectedAccount = useSelector(getSelectedAccount);

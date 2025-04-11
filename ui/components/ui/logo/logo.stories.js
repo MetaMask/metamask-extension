@@ -3,14 +3,11 @@ import React from 'react';
 
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Text, Box } from '../../component-library';
-
 import Card from '../card';
-
+import LogoLattice from './logo-lattice';
 import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';
 import LogoTrezor from './logo-trezor';
-import LogoLattice from './logo-lattice';
-
 import README from './README.mdx';
 
 export default {

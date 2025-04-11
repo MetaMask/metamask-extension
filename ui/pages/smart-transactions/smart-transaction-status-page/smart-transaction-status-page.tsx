@@ -1,11 +1,15 @@
-import React, { useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import type {
   SmartTransaction} from '@metamask/smart-transactions-controller/dist/types';
 import {
   SmartTransactionStatuses
 } from '@metamask/smart-transactions-controller/dist/types';
+import React, { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
+import { BaseUrl } from '../../../../shared/constants/urls';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   Box,
   Text,
@@ -27,14 +31,9 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getFullTxData } from '../../../selectors';
-import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
-import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
-
 import { SmartTransactionStatusAnimation } from './smart-transaction-status-animation';
 
 export type RequestState = {

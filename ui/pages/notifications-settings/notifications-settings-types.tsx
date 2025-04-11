@@ -1,14 +1,17 @@
 import React, { useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { Box, IconName, Text } from '../../components/component-library';
+import {
+  NotificationsSettingsBox,
+  NotificationsSettingsType,
+} from '../../components/multichain';
+import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   BlockSize,
   BorderColor,
@@ -19,10 +22,8 @@ import {
   TextVariant,
   TextColor,
 } from '../../helpers/constants/design-system';
-import {
-  NotificationsSettingsBox,
-  NotificationsSettingsType,
-} from '../../components/multichain';
+import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 
 export function NotificationsSettingsTypes({

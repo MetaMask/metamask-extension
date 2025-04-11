@@ -1,26 +1,15 @@
-import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import React from 'react';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 import type { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
-import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-
-import { shortenAddress } from '../../../../helpers/utils/util';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
-  createTextItems,
-  getAmount,
-  getUsdAmount,
-  formatIsoDateString,
-  getNetworkDetailsByChainId,
-} from '../../../../helpers/utils/notification.util';
-
+  BadgeWrapperPosition,
+  IconName,
+} from '../../../../components/component-library';
 import {
   NotificationListItem,
   NotificationDetailTitle,
@@ -31,15 +20,26 @@ import {
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
 } from '../../../../components/multichain';
+import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
   TextVariant,
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+  createTextItems,
+  getAmount,
+  getUsdAmount,
+  formatIsoDateString,
+  getNetworkDetailsByChainId,
+} from '../../../../helpers/utils/notification.util';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
+
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import Breadcrumbs from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 describe('Breadcrumbs Component', () => {
   it('should match snapshot with multiple breakcumbs', () => {

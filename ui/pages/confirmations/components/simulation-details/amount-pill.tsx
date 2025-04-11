@@ -1,7 +1,12 @@
-import React from 'react';
 import type { BigNumber } from 'bignumber.js';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { Box, Text } from '../../../../components/component-library';
+import Tooltip from '../../../../components/ui/tooltip';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,14 +16,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
-import Tooltip from '../../../../components/ui/tooltip';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
+import type { AssetIdentifier } from './types';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount

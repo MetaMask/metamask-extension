@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { setBackgroundConnection } from '../../../store/background-connection';
+import CreateNewSwap from '.';
 import {
   renderWithProvider,
   createSwapsMockStore,
@@ -12,7 +12,7 @@ import {
   setSwapsFromToken,
   navigateBackToPrepareSwap,
 } from '../../../ducks/swaps/swaps';
-import CreateNewSwap from '.';
+import { setBackgroundConnection } from '../../../store/background-connection';
 
 const middleware = [thunk];
 const createProps = (customProps = {}) => {

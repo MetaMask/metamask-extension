@@ -1,9 +1,10 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
+import React from 'react';
+
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import configureStore from '../../../store/store';
 import { RampsCard, RAMPS_CARD_VARIANT_TYPES } from './ramps-card';
 
 jest.mock('../../../store/background-connection', () => ({

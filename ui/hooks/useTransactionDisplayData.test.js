@@ -1,27 +1,28 @@
-import React from 'react';
-import * as reactRedux from 'react-redux';
-import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
-import sinon from 'sinon';
-import { MemoryRouter } from 'react-router-dom';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { renderHook } from '@testing-library/react-hooks';
+import React from 'react';
+import * as reactRedux from 'react-redux';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import sinon from 'sinon';
+
+import messages from '../../app/_locales/en/messages.json';
+import { KeyringType } from '../../shared/constants/keyring';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import mockState from '../../test/data/mock-state.json';
-import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import messages from '../../app/_locales/en/messages.json';
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { TransactionGroupCategory } from '../../shared/constants/transaction';
-import { KeyringType } from '../../shared/constants/keyring';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { formatDateWithYearContext } from '../helpers/utils/util';
-import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
+import { getMessage } from '../helpers/utils/i18n-helper';
+import { formatDateWithYearContext } from '../helpers/utils/util';
+import configureStore from '../store/store';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';

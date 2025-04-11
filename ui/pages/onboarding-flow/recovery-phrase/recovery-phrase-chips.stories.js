@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 // Define the stories

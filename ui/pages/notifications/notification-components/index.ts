@@ -1,15 +1,16 @@
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import type { NotificationComponent } from './types/notifications/notifications';
+
+import { components as ERC1155SentReceivedComponents } from './erc1155-sent-received/erc1155-sent-received';
 import { components as ERC20SentReceivedComponents } from './erc20-sent-received/erc20-sent-received';
 import { components as ERC721SentReceivedComponents } from './erc721-sent-received/erc721-sent-received';
-import { components as ERC1155SentReceivedComponents } from './erc1155-sent-received/erc1155-sent-received';
 import { components as EthSentReceivedComponents } from './eth-sent-received/eth-sent-received';
 import { components as FeatureAnnouncementComponents } from './feature-announcement/feature-announcement';
+import { components as LidoStakeReadyToBeWithdrawnComponents } from './lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn';
+import { components as LidoWithdrawalRequestedComponents } from './lido-withdrawal-requested/lido-withdrawal-requested';
+import { components as SnapNotificationComponents } from './snap/snap';
 import { components as StakeComponents } from './stake/stake';
 import { components as SwapCompletedComponents } from './swap-completed/swap-completed';
-import { components as LidoWithdrawalRequestedComponents } from './lido-withdrawal-requested/lido-withdrawal-requested';
-import { components as LidoStakeReadyToBeWithdrawnComponents } from './lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn';
-import { components as SnapNotificationComponents } from './snap/snap';
+import type { NotificationComponent } from './types/notifications/notifications';
 
 export const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

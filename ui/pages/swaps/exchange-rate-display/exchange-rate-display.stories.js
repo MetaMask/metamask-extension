@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {

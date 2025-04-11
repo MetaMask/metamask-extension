@@ -1,24 +1,18 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import ToggleButton from '../../../components/ui/toggle-button';
-import {
-  getNumberOfSettingRoutesInTab,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+import React, { PureComponent } from 'react';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
-
+import { SurveyUrl } from '../../../../shared/constants/urls';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Text,
   ///: END:ONLY_INCLUDE_IF
   Box,
 } from '../../../components/component-library';
-
+import ToggleButton from '../../../components/ui/toggle-button';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   TextColor,
@@ -28,9 +22,16 @@ import {
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
+import {
+  getNumberOfSettingRoutesInTab,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+///: END:ONLY_INCLUDE_IF
+
+
 
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { SurveyUrl } from '../../../../shared/constants/urls';
 ///: END:ONLY_INCLUDE_IF
 
 type ExperimentalTabProps = {

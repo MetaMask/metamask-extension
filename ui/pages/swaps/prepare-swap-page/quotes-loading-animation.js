@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import { I18nContext } from '../../../contexts/i18n';
+import { Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   DISPLAY,
   FLEX_DIRECTION,
@@ -11,7 +12,6 @@ import {
   AlignItems,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../../components/component-library';
 import MascotBackgroundAnimation from '../mascot-background-animation/mascot-background-animation';
 
 export default function QuotesLoadingAnimation(props) {

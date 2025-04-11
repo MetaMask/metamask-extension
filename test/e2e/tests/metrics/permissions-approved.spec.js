@@ -1,11 +1,12 @@
 const { strict: assert } = require('assert');
+
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   connectToDapp,
   unlockWallet,
   getEventPayloads,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to

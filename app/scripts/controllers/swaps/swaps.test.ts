@@ -1,17 +1,19 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import * as ethersProviders from '@ethersproject/providers';
 import type { ChainId} from '@metamask/controller-utils';
 import { InfuraNetworkType } from '@metamask/controller-utils';
-import BigNumberjs from 'bignumber.js';
-import { mapValues } from 'lodash';
-import * as ethersProviders from '@ethersproject/providers';
-import type { Hex } from '@metamask/utils';
 import type { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
 import type { NetworkClientId } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
+import BigNumberjs from 'bignumber.js';
+import { mapValues } from 'lodash';
+
+import SwapsController from '.';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
-import { createTestProviderTools } from '../../../../test/stub/provider';
 import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
+import { createTestProviderTools } from '../../../../test/stub/provider';
 import { getDefaultSwapsControllerState } from './swaps.constants';
 import type {
   FetchTradesInfoParams,
@@ -22,7 +24,6 @@ import type {
   SwapsControllerState,
 } from './swaps.types';
 import { getMedianEthValueQuote } from './swaps.utils';
-import SwapsController from '.';
 
 const MOCK_FETCH_PARAMS: FetchTradesInfoParams = {
   slippage: 3,

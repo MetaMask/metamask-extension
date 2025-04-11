@@ -5,6 +5,7 @@
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
 
+import type { Provider } from '@metamask/network-controller';
 import type * as Sentry from '@sentry/browser';
 import type {
   Success,
@@ -17,12 +18,12 @@ import type {
   EthereumSignMessage,
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
-import type { Provider } from '@metamask/network-controller';
+
+import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 import type {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
-import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
   openTab: (opts: { url: string }) => void;

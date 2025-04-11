@@ -1,8 +1,9 @@
 import React from 'react';
-import { BannerAlert } from '../../component-library';
-import { Severity } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
+
 import Dialog from '.';
+import { Severity } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../component-library';
+import README from './README.mdx';
 
 export default {
   title: 'Components/UI/Dialog',

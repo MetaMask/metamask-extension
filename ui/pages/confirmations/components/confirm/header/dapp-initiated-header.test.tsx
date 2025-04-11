@@ -1,5 +1,6 @@
 import React from 'react';
 import type { DefaultRootState } from 'react-redux';
+
 import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';

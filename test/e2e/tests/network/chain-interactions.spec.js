@@ -1,10 +1,10 @@
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
   WINDOW_TITLES,
   logInWithBalanceValidation,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('Chain Interactions', function () {
   const port = 8546;

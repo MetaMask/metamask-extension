@@ -1,17 +1,18 @@
+import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { TokenListItem } from '../../token-list-item';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
 } from '../../../../selectors/multichain';
 import { selectERC20TokensByChain } from '../../../../selectors/selectors';
+import { TokenListItem } from '../../token-list-item';
 import type { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {

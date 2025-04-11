@@ -1,12 +1,13 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
-import { getCustomNonceValue } from '../../../../selectors';
-import { useConfirmContext } from '../../context/confirm';
-import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
-import { updateAndApproveTx } from '../../../../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import { getCustomNonceValue } from '../../../../selectors';
+import { updateAndApproveTx } from '../../../../store/actions';
+import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
+import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();

@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
-import configureStore from '../../../store/store';
+import * as React from 'react';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { DATA_DELETION_ERROR_MODAL_CLOSE } from '../../../store/actionConstants';
-
+import configureStore from '../../../store/store';
 import DataDeletionErrorModal from './data-deletion-error-modal';
 
 const mockCloseDeleteMetaMetricsErrorModal = jest

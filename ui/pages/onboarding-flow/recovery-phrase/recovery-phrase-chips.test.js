@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 

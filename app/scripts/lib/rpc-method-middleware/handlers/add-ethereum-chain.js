@@ -1,8 +1,9 @@
-import * as URI from 'uri-js';
 import { ApprovalType } from '@metamask/controller-utils';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
+import * as URI from 'uri-js';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateAddEthereumChainParams,

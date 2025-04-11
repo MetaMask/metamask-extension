@@ -5,11 +5,17 @@ import type {
 import type { ApprovalControllerActions } from '@metamask/approval-controller';
 import type { Messenger } from '@metamask/base-controller';
 import type {
+  KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTypedMessageAction,
+} from '@metamask/keyring-controller';
+import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import type {
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
@@ -23,12 +29,7 @@ import type {
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
-import type { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
-import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import type {
-  KeyringControllerSignEip7702AuthorizationAction,
-  KeyringControllerSignTypedMessageAction,
-} from '@metamask/keyring-controller';
+
 import type {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,

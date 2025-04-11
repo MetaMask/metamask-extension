@@ -1,4 +1,5 @@
 import React from 'react';
+
 import UpdateSnapPermissionList from './update-snap-permission-list';
 
 export default {

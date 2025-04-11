@@ -1,7 +1,8 @@
-import removeSlash from 'remove-trailing-slash';
 import looselyValidate from '@segment/loosely-validate-event';
-import { isString } from 'lodash';
 import isRetryAllowed from 'is-retry-allowed';
+import { isString } from 'lodash';
+import removeSlash from 'remove-trailing-slash';
+
 import { generateRandomId } from '../util';
 
 const noop = () => ({});

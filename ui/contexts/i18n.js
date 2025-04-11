@@ -1,6 +1,7 @@
-import React, { Component, createContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component, createContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   getCurrentLocale,
   getCurrentLocaleMessages,

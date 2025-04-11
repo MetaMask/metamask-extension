@@ -1,7 +1,8 @@
+import classnames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
-import classnames from 'classnames';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -10,10 +11,8 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-
 import { Box } from '../box';
 import type { BoxProps, PolymorphicRef } from '../box';
-
 import type {
   PopoverProps,
   PopoverComponent} from './popover.types';

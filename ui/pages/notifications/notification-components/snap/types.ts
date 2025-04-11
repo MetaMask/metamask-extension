@@ -3,6 +3,7 @@ import type {
 import {
   type ExpandedView,
 } from '@metamask/notification-services-controller/notification-services';
+
 import type { ExtractedNotification } from '../node-guard';
 
 export type SnapNotification = ExtractedNotification<TRIGGER_TYPES.SNAP>;

@@ -4,6 +4,7 @@ import type {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+
 import { submitRequestToBackground } from '../../store/background-connection';
 
 export async function estimateGasFee(request: {

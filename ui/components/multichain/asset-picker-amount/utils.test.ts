@@ -1,5 +1,5 @@
-import configureStore from '../../../store/store';
 import mockSendState from '../../../../test/data/mock-send-state.json';
+import configureStore from '../../../store/store';
 import { getIsFiatPrimary } from './utils';
 
 const createStore = ({ sendInputCurrencySwitched }: Record<string, boolean>) =>

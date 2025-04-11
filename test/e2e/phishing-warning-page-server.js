@@ -1,4 +1,5 @@
 const path = require('path');
+
 const createStaticServer = require('../../development/create-static-server');
 
 const phishingWarningDirectory = path.resolve(

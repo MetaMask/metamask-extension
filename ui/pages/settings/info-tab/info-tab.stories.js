@@ -1,4 +1,5 @@
 import React from 'react';
+
 import InfoTab from '.';
 
 export default {

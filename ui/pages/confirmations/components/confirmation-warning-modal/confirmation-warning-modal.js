@@ -1,16 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-import {
-  Display,
-  FlexDirection,
-  FontWeight,
-  TextVariant,
-  AlignItems,
-  IconColor,
-  TextAlign,
-} from '../../../../helpers/constants/design-system';
+import React from 'react';
 
 import {
   Box,
@@ -26,6 +15,16 @@ import {
 } from '../../../../components/component-library';
 import { ModalContent } from '../../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../../components/component-library/modal-header/deprecated';
+import {
+  Display,
+  FlexDirection,
+  FontWeight,
+  TextVariant,
+  AlignItems,
+  IconColor,
+  TextAlign,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();

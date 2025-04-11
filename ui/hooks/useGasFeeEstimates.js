@@ -1,6 +1,8 @@
 import isEqual from 'lodash/isEqual';
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
 import {
   getGasEstimateTypeByChainId,
   getGasFeeEstimatesByChainId,
@@ -12,7 +14,6 @@ import {
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
-import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
 import usePolling from './usePolling';
 
 /**

@@ -1,6 +1,6 @@
+import { toHex } from '@metamask/controller-utils';
 import React from 'react';
 
-import { toHex } from '@metamask/controller-utils';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';

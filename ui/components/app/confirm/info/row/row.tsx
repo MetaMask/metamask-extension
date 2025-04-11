@@ -1,14 +1,5 @@
 import React, { createContext, useState } from 'react';
-import Tooltip from '../../../../ui/tooltip/tooltip';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../component-library';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -23,6 +14,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../component-library';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {

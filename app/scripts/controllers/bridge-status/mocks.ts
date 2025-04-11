@@ -1,5 +1,6 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+
 import type {
   BridgeId,
   StatusResponse,

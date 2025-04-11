@@ -1,15 +1,16 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Modal from '../../modal';
-import { Text } from '../../../component-library/text';
+import { useHistory } from 'react-router-dom';
+
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { getNfts } from '../../../../ducks/metamask/metamask';
+import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
-import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { Text } from '../../../component-library/text';
+import Modal from '../../modal';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();

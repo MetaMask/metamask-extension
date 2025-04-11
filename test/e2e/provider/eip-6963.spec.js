@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+
 const FixtureBuilder = require('../fixture-builder');
 const { withFixtures, openDapp, unlockWallet } = require('../helpers');
 

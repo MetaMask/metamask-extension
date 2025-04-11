@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
+import UserPreferencedTokenInput from '.';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import UserPreferencedTokenInput from '.';
 
 describe('UserPreferencedCurrencyInput Component', () => {
   describe('rendering', () => {

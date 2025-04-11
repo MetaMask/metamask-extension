@@ -6,15 +6,18 @@ import { parseCaipAssetType } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import {
   getURLHostName,
   roundToDecimalPlacesRemovingExtraZeroes,
 } from '../../../helpers/utils/util';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
@@ -22,13 +25,11 @@ import {
   getTokenList,
   selectERC20TokensByChain,
 } from '../../../selectors';
-import { showModal } from '../../../store/actions';
-import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainIsEvm,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
+import { showModal } from '../../../store/actions';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 

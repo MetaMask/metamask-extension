@@ -1,13 +1,13 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
 import type { BannerBaseProps } from '../banner-base';
 import { BannerBase } from '../banner-base';
+import type { PolymorphicRef } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
 import type {
   BannerAlertComponent,

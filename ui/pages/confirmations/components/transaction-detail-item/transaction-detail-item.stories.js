@@ -1,9 +1,9 @@
 import React from 'react';
-import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 
-import { Icon, IconName } from '../../../../components/component-library';
-import README from './README.mdx';
 import TransactionDetailItem from '.';
+import { Icon, IconName } from '../../../../components/component-library';
+import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
+import README from './README.mdx';
 
 export default {
   title: 'Confirmations/Components/TransactionDetailItem',

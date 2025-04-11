@@ -1,12 +1,13 @@
 import { Messenger } from '@metamask/base-controller';
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
-import type { ControllerInitRequest } from '../types';
-import { buildControllerInitRequestMock } from '../test/utils';
+
 import type {
   SnapsRegistryMessenger} from '../messengers/snaps';
 import {
   getSnapsRegistryMessenger
 } from '../messengers/snaps';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { SnapsRegistryInit } from './snaps-registry-init';
 
 jest.mock('@metamask/snaps-controllers');

@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -14,7 +15,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
+import { SnapIcon } from '../../../app/snaps/snap-icon';
 import {
   AvatarFavicon,
   Box,
@@ -23,9 +27,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { getURLHost } from '../../../../helpers/utils/util';
-import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();

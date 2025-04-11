@@ -1,7 +1,18 @@
+import type { TransactionType } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionType } from '@metamask/transaction-controller';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+import { AlertTypes } from '../../../../../shared/constants/alerts';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
+import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
+import {
+  getCurrentChainSupportsSmartTransactions,
+  getSmartTransactionsPreferenceEnabled,
+} from '../../../../../shared/modules/selectors';
+import {
+  getSmartTransactionsOptInStatusInternal,
+  getSmartTransactionsMigrationAppliedInternal,
+} from '../../../../../shared/modules/selectors/smart-transactions';
 import {
   BannerAlert,
   ButtonLink,
@@ -9,20 +20,10 @@ import {
   Text,
   BannerAlertSeverity,
 } from '../../../../components/component-library';
-import { setAlertEnabledness } from '../../../../store/actions';
-import { AlertTypes } from '../../../../../shared/constants/alerts';
-import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 import { FontWeight } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { setAlertEnabledness } from '../../../../store/actions';
 import { useConfirmContext } from '../../context/confirm';
-import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
-import {
-  getSmartTransactionsOptInStatusInternal,
-  getSmartTransactionsMigrationAppliedInternal,
-} from '../../../../../shared/modules/selectors/smart-transactions';
-import {
-  getCurrentChainSupportsSmartTransactions,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../../shared/modules/selectors';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 

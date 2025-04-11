@@ -1,9 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
+
 import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import configureStore from '../../../store/store';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const createStore = (

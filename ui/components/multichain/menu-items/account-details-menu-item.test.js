@@ -1,10 +1,11 @@
 import React from 'react';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import * as actions from '../../../store/actions';
-import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+
 import { AccountDetailsMenuItem } from '.';
+import mockState from '../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import * as actions from '../../../store/actions';
+import configureStore from '../../../store/store';
 
 const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
 

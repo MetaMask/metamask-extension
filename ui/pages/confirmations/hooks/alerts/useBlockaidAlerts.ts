@@ -1,27 +1,27 @@
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-
 import type {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import {
   BlockaidResultType,
   FALSE_POSITIVE_REPORT_BASE_URL,
   SECURITY_PROVIDER_UTM_SOURCE,
 } from '../../../../../shared/constants/security-provider';
+import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
 import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SIGNATURE_TRANSACTION_TYPES } from '../../utils';
-import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
+import { useConfirmContext } from '../../context/confirm';
 import type {
   SecurityAlertResponse,
   SignatureRequestType,
 } from '../../types/confirm';
-import { useConfirmContext } from '../../context/confirm';
+import { SIGNATURE_TRANSACTION_TYPES } from '../../utils';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
 import { normalizeProviderAlert } from './utils';
 

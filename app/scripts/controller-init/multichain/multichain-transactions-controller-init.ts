@@ -1,6 +1,7 @@
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
-import type { ControllerInitFunction } from '../types';
+
 import type { MultichainTransactionsControllerMessenger } from '../messengers/multichain';
+import type { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the Multichain Transactions controller.

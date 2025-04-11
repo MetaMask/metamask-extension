@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import mockState from '../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { shortenAddress } from '../../helpers/utils/util';
 import RemoveSnapAccount from './remove-snap-account';
 

@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {

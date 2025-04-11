@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getNotificationServicesPushControllerMessenger } from './notification-services-push-controller-messenger';
 
 describe('getAuthenticationControllerMessenger', () => {

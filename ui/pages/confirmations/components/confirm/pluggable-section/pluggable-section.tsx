@@ -1,5 +1,5 @@
-import React from 'react';
 import type { ReactComponentLike } from 'prop-types';
+import React from 'react';
 
 import { useConfirmContext } from '../../../context/confirm';
 import { SnapsSection } from '../snaps/snaps-section';

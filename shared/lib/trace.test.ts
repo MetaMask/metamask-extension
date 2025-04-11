@@ -6,6 +6,7 @@ import {
   startSpanManual,
   withIsolationScope,
 } from '@sentry/browser';
+
 import { endTrace, trace, TraceName } from './trace';
 
 jest.mock('@sentry/browser', () => ({

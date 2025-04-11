@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+
 import {
   TextVariant,
   OverflowWrap,
   TextColor,
   Display,
 } from '../../../../helpers/constants/design-system';
+import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import {
   ButtonLink,
   ButtonLinkSize,
@@ -16,7 +18,6 @@ import {
   Text,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
-import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 
 const Paragraph = (props) => (
   <Text

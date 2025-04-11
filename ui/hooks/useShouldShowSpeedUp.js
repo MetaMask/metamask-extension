@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
 import { SECOND } from '../../shared/constants/time';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 

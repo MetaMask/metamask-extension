@@ -1,10 +1,11 @@
+import type { Hex } from '@metamask/utils';
+import type { Point } from 'chart.js';
 import { useEffect, useState } from 'react';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
-import type { Point } from 'chart.js';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+
 import { MINUTE } from '../../../shared/constants/time';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { getShouldShowFiat } from '../../selectors';
 import { chainSupportsPricing } from './util';
 

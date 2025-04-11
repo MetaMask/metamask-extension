@@ -1,5 +1,6 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
+
 import {
   BorderColor,
   Display,
@@ -9,11 +10,10 @@ import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
-import { Icon } from '../icon';
-import type { PolymorphicRef } from '../box';
 import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
+import type { PolymorphicRef } from '../box';
+import { Icon } from '../icon';
 import type { AvatarIconComponent ,
   AvatarIconProps} from './avatar-icon.types';
 import {

@@ -1,6 +1,7 @@
 import { dirname, relative } from 'node:path';
-import { ModuleFilenameHelpers, Compilation, sources } from 'webpack';
 import { validate } from 'schema-utils';
+import { ModuleFilenameHelpers, Compilation, sources } from 'webpack';
+
 import { schema } from './schema';
 import type { SelfInjectPluginOptions, Source, Compiler } from './types';
 

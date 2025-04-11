@@ -1,4 +1,5 @@
 import { omit } from 'lodash';
+
 import { migrate, version } from './140';
 
 const oldVersion = 139;

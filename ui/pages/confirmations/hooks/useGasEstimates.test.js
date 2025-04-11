@@ -1,13 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
-import {
-  getMaximumGasTotalInHexWei,
-  getMinimumGasTotalInHexWei,
-} from '../../../../shared/modules/gas.utils';
+
 import {
   decGWEIToHexWEI,
   decimalToHex,
 } from '../../../../shared/modules/conversion.utils';
-
+import {
+  getMaximumGasTotalInHexWei,
+  getMinimumGasTotalInHexWei,
+} from '../../../../shared/modules/gas.utils';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,

@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+
+const FixtureBuilder = require('../../fixture-builder');
 const {
   TEST_SEED_PHRASE_TWO,
   locateAccountBalanceDOM,
@@ -6,7 +8,6 @@ const {
   openActionMenuAndStartSendFlow,
   withFixtures,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {

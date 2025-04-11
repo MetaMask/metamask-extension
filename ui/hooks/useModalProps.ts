@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
+
 import { hideModal } from '../store/actions';
 
 type ModalProps = {

@@ -5,6 +5,7 @@ import {
   SimulationErrorCode
 } from '@metamask/transaction-controller';
 import React from 'react';
+
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
@@ -30,9 +31,9 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
+import type { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
-import type { BalanceChange } from './types';
 
 export type StaticRow = {
   label: string;

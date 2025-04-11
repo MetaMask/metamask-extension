@@ -1,6 +1,9 @@
+import { EthAccountType } from '@metamask/keyring-api';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType } from '@metamask/keyring-api';
+
+import { ConnectedSiteMenu } from '.';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/jest';
 import {
   STATUS_CONNECTED,
@@ -11,8 +14,6 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { ConnectedSiteMenu } from '.';
 
 describe('Connected Site Menu', () => {
   const internalAccounts = {

@@ -1,13 +1,21 @@
-import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
-import React from 'react';
 import {
   ButtonType,
   ButtonVariant,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
-import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
+import { getHideSnapBranding } from '../../../../selectors';
 import type {
   ButtonProps} from '../../../component-library';
 import {
@@ -17,14 +25,7 @@ import {
   IconName,
   IconSize,
 } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
-import { getHideSnapBranding } from '../../../../selectors';
 
 type SnapUIFooterButtonProps = {
   name?: string;

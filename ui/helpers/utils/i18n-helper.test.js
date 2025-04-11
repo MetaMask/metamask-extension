@@ -1,5 +1,6 @@
-import React from 'react';
 import * as Sentry from '@sentry/browser';
+import React from 'react';
+
 import { getMessage as getMessageShared } from '../../../shared/modules/i18n';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { getMessage } from './i18n-helper';

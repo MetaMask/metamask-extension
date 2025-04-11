@@ -1,9 +1,10 @@
-import React, { memo } from 'react';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { NameType } from '@metamask/name-controller';
-import { Text } from '../../../component-library';
-import { shortenAddress } from '../../../../helpers/utils/util';
+import { toChecksumAddress } from 'ethereumjs-util';
+import React, { memo } from 'react';
+
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { Text } from '../../../component-library';
 
 function formatValue(value: string, type: NameType): string {
   if (!value.length) {

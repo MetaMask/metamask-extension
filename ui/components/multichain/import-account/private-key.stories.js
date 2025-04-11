@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PrivateKeyImportView from './private-key';
 
 export default {

@@ -1,6 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import React from 'react';
+
 import {
   BorderStyle,
   BorderColor,
@@ -15,6 +15,11 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import {
+  DelineatorType,
+  getDelineatorTitle,
+} from '../../../../helpers/constants/snaps';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
   AvatarIcon,
   Icon,
   AvatarIconSize,
@@ -23,10 +28,6 @@ import {
   Text,
   IconSize,
 } from '../../../component-library';
-import {
-  DelineatorType,
-  getDelineatorTitle,
-} from '../../../../helpers/constants/snaps';
 import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 
 export const SnapDelineator = ({

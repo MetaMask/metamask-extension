@@ -1,6 +1,7 @@
 import React from 'react';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
+
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
+import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { SnapDelineator } from './snap-delineator';
 
 describe('SnapDelineator', () => {

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getAccountName,

@@ -1,26 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
-import UnitInput from '../../ui/unit-input';
-import CurrencyDisplay from '../../ui/currency-display';
-import {
-  getNativeCurrency,
-  getCurrentCurrency,
-} from '../../../ducks/metamask/metamask';
+
+import { EtherDenomination } from '../../../../shared/constants/common';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import {
   getProviderConfig,
   getCurrentChainId,
 } from '../../../../shared/modules/selectors/networks';
-import { getShouldShowFiat } from '../../../selectors';
-import { EtherDenomination } from '../../../../shared/constants/common';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import {
+  getNativeCurrency,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import useTokenExchangeRate from './hooks/useTokenExchangeRate';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getShouldShowFiat } from '../../../selectors';
+import { Box } from '../../component-library';
+import CurrencyDisplay from '../../ui/currency-display';
+import UnitInput from '../../ui/unit-input';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
 import useStateWithFirstTouch from './hooks/useStateWithFirstTouch';
+import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
 const LARGE_SYMBOL_LENGTH = 7;

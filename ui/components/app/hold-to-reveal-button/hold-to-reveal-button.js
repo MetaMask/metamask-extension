@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useRef, useState } from 'react';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,

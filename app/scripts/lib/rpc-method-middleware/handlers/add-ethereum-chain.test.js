@@ -1,4 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
+
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import addEthereumChain from './add-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';

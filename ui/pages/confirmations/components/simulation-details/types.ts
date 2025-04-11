@@ -1,5 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
+
 import type { TokenStandard } from '../../../../../shared/constants/transaction';
 
 /**

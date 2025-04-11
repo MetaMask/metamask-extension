@@ -1,12 +1,13 @@
-import { createSelector } from 'reselect';
 import type { Hex } from '@metamask/utils';
+import { createSelector } from 'reselect';
+
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import type {
   BridgeHistoryItem,
   BridgeStatusAppState,
 } from '../../../shared/types/bridge-status';
 import { getSelectedAddress } from '../../selectors';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
   state.metamask.bridgeStatusState;

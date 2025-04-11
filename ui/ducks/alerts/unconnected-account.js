@@ -2,6 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { captureException } from '@sentry/browser';
 
 import { AlertTypes } from '../../../shared/constants/alerts';
+import {
+  getInternalAccount,
+  getOriginOfCurrentTab,
+  getSelectedInternalAccount,
+} from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import {
   addPermittedAccount,
@@ -9,11 +14,6 @@ import {
   setSelectedAccount,
   setSelectedInternalAccount,
 } from '../../store/actions';
-import {
-  getInternalAccount,
-  getOriginOfCurrentTab,
-  getSelectedInternalAccount,
-} from '../../selectors';
 import { ALERT_STATE } from './enums';
 
 // Constants

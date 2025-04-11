@@ -1,7 +1,8 @@
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
-import type { LoaderContext } from 'webpack';
 import type { FeatureLabels } from '@metamask/build-utils';
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+import type { LoaderContext } from 'webpack';
+
 import type {
   CodeFenceLoaderOptions} from '../utils/loaders/codeFenceLoader';
 import codeFenceLoader, {

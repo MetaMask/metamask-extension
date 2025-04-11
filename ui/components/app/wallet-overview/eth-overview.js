@@ -1,9 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import {
   isBalanceCached,
   getIsSwapsChain,
@@ -15,7 +17,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
 

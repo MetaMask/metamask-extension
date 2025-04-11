@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
 import {
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
+import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import * as usePreviousHooks from '../../../../../hooks/usePrevious';
 import ScrollToBottom from './scroll-to-bottom';

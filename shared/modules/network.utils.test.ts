@@ -5,6 +5,7 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
+
 import { MAX_SAFE_CHAIN_ID } from '../constants/network';
 import {
   isSafeChainId,

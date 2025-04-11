@@ -1,6 +1,7 @@
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
-import type { JsonRpcParams } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { JsonRpcParams } from '@metamask/utils';
+
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 
 /**

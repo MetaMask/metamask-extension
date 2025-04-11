@@ -1,16 +1,17 @@
-import { connect } from 'react-redux';
 import { findLastIndex } from 'lodash';
+import { connect } from 'react-redux';
+
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   conversionRateSelector,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import TransactionActivityLog from './transaction-activity-log.component';
-import { combineTransactionHistories } from './transaction-activity-log.util';
 import {
   TRANSACTION_RESUBMITTED_EVENT,
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
 } from './transaction-activity-log.constants';
+import { combineTransactionHistories } from './transaction-activity-log.util';
 
 const matchesEventKey =
   (matchEventKey) =>

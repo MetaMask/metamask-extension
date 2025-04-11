@@ -1,15 +1,16 @@
-import React from 'react';
-import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import type { Hex } from '@metamask/utils';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
-import Name from '../../../../components/app/name';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import configureStore from '../../../../store/store';
+import { screen } from '@testing-library/react';
+import React from 'react';
+
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import Name from '../../../../components/app/name';
+import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
+import configureStore from '../../../../store/store';
 import { AssetPill } from './asset-pill';
 import type { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 

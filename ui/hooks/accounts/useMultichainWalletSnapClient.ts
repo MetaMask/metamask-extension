@@ -1,15 +1,10 @@
+import type { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import type { Sender } from '@metamask/keyring-snap-client';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
-import type { SnapId } from '@metamask/snaps-sdk';
 import { useMemo } from 'react';
-import type { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
-import {
-  createSnapAccount,
-  handleSnapRequest,
-  multichainUpdateBalance,
-  multichainUpdateTransactions,
-} from '../../store/actions';
+
 import {
   BITCOIN_WALLET_SNAP_ID,
   BITCOIN_WALLET_NAME,
@@ -18,6 +13,12 @@ import {
   SOLANA_WALLET_SNAP_ID,
   SOLANA_WALLET_NAME,
 } from '../../../shared/lib/accounts/solana-wallet-snap';
+import {
+  createSnapAccount,
+  handleSnapRequest,
+  multichainUpdateBalance,
+  multichainUpdateTransactions,
+} from '../../store/actions';
 
 export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',

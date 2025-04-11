@@ -5,6 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import {
   ConfirmInfoRow,
@@ -16,8 +17,8 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
-import { OriginRow } from '../shared/transaction-details/transaction-details';
 import { NetworkRow } from '../shared/network-row/network-row';
+import { OriginRow } from '../shared/transaction-details/transaction-details';
 
 export const TokenDetailsSection = () => {
   const t = useI18nContext();

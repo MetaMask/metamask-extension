@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 const version = 39;

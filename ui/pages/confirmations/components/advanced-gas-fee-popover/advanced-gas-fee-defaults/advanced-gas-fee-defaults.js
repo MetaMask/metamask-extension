@@ -1,24 +1,23 @@
+import { capitalize } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { capitalize } from 'lodash';
-import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../../shared/constants/gas';
-
+import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Checkbox, Box } from '../../../../../components/component-library';
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getAdvancedGasFeeValues,
   selectNetworkIdentifierByChainId,
 } from '../../../../../selectors';
 import { setAdvancedGasFee } from '../../../../../store/actions';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useAdvancedGasFeePopoverContext } from '../context';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Checkbox, Box } from '../../../../../components/component-library';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();

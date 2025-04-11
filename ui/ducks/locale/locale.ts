@@ -1,7 +1,8 @@
 import type { Action } from 'redux'; // Import types for actions
-import * as actionConstants from '../../store/actionConstants';
+
 import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import * as actionConstants from '../../store/actionConstants';
 
 /**
  * Type for the locale messages part of the state

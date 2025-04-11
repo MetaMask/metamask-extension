@@ -1,11 +1,12 @@
-import { head, last } from 'lodash';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { head, last } from 'lodash';
+
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { mockNetworkState } from '../../test/stub/networks';
 import { nonceSortedTransactionsSelector } from './transactions';
 

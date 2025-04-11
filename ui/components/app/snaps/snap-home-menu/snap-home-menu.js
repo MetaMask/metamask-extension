@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -11,14 +20,6 @@ import {
   PopoverRole,
   Text,
 } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import { SnapMetadataModal } from '../snap-metadata-modal';
 
 export default function SnapHomeMenu({

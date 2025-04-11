@@ -1,6 +1,6 @@
+import { TransactionStatus } from '@metamask/transaction-controller';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';

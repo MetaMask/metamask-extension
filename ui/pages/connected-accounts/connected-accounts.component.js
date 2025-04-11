@@ -1,15 +1,16 @@
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
-import Popover from '../../components/ui/popover';
+
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
 import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
+import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
+import { Box, Text } from '../../components/component-library';
+import Popover from '../../components/ui/popover';
+import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 import { getURLHost } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
-import { TextColor, TextVariant } from '../../helpers/constants/design-system';
-import { Box, Text } from '../../components/component-library';
 import { getInternalAccounts } from '../../selectors';
 
 export default function ConnectedAccounts({

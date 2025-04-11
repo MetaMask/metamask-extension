@@ -1,6 +1,7 @@
-import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
+import { describe, it, afterEach } from 'node:test';
 import type { LoaderContext } from 'webpack';
+
 import swcLoader, {
   type SwcLoaderOptions,
   type SwcConfig,

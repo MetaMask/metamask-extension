@@ -1,37 +1,36 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import {
-  addImportedTokens,
-  ignoreTokens,
-  setNewTokensImported,
-} from '../../../store/actions';
-import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
-import {
-  getAllDetectedTokensForSelectedAddress,
-  getDetectedTokensInCurrentNetwork,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-} from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
-import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getAllDetectedTokensForSelectedAddress,
+  getDetectedTokensInCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+} from '../../../selectors';
+import {
+  addImportedTokens,
+  ignoreTokens,
+  setNewTokensImported,
+} from '../../../store/actions';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
+import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 
 const sortingBasedOnTokenSelection = (tokensDetected) => {
   return (

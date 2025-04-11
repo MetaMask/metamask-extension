@@ -1,16 +1,17 @@
 import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import {
   formatChainIdToCaip,
   formatChainIdToHex,
   getNativeAssetForChainId,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
-import type { BridgeHistoryItem } from '../../../shared/types/bridge-status';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
+import type { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 
 const getSourceAndDestChainIds = ({
   bridgeHistoryItem,

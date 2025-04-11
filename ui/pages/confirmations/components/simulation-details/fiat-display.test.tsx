@@ -1,12 +1,13 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
 import { merge } from 'lodash';
-import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+import React from 'react';
+import configureStore from 'redux-mock-store';
+
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 

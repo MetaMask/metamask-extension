@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
   Icon,

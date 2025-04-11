@@ -1,4 +1,5 @@
 import React from 'react';
+
 import EthOverview from './eth-overview';
 
 export default {

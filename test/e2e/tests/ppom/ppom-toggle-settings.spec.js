@@ -1,11 +1,12 @@
 const { strict: assert } = require('assert');
+
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   unlockWallet,
   openDapp,
   getWindowHandles,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('PPOM Settings', function () {
   // eslint-disable-next-line mocha/no-skipped-tests

@@ -1,6 +1,7 @@
+import log from 'loglevel';
 import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import log from 'loglevel';
+
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import { performSignIn } from '../../../store/actions';
 

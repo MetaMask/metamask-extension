@@ -1,4 +1,6 @@
 import React from 'react';
+
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -20,7 +22,6 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { SnapAccountCard } from './snap-account-card';
 
 export type RemoveSnapAccountProps = {

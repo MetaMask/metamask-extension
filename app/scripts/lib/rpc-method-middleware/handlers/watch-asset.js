@@ -1,5 +1,6 @@
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { rpcErrors } from '@metamask/rpc-errors';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const watchAsset = {

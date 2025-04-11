@@ -1,22 +1,22 @@
-import React from 'react';
 import { act, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
+import React from 'react';
 
 import {
   EditGasModes,
   GasEstimateTypes,
 } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockEstimates from '../../../../test/data/mock-estimates.json';
-import mockState from '../../../../test/data/mock-state.json';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import configureStore from '../../../store/store';
-import InfoTooltip from '../../ui/info-tooltip';
 import {
   decGWEIToHexWEI,
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
+import mockState from '../../../../test/data/mock-state.json';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import configureStore from '../../../store/store';
+import InfoTooltip from '../../ui/info-tooltip';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';

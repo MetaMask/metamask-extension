@@ -9,20 +9,20 @@ import {
   getAlertState,
   switchToAccount,
 } from '../../../../ducks/alerts/unconnected-account';
+import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedInternalAccount,
   getInternalAccounts,
 } from '../../../../selectors';
-import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
-import Popover from '../../../ui/popover';
+import { Icon, IconName, Text } from '../../../component-library';
 import Button from '../../../ui/button';
 import Checkbox from '../../../ui/check-box';
+import Popover from '../../../ui/popover';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, IconName, Text } from '../../../component-library';
 
 const { ERROR, LOADING } = ALERT_STATE;
 

@@ -1,5 +1,8 @@
 const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
+
+const { shortenAddress } = require('../../../../ui/helpers/utils/util');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   logInWithBalanceValidation,
@@ -7,8 +10,6 @@ const {
   openMenuSafe,
   unlockWallet,
 } = require('../../helpers');
-const { shortenAddress } = require('../../../../ui/helpers/utils/util');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {

@@ -1,15 +1,16 @@
 import React from 'react';
+
+import {
+  BlockSize,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   ButtonIconSize,
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../../component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
  * Renders a search component for the asset picker modal.

@@ -2,10 +2,11 @@ import { screen, waitFor } from '@testing-library/dom';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import ApproveInfo from './approve';
 
 jest.mock('../../../../../../store/actions', () => ({

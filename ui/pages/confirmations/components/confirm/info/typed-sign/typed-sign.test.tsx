@@ -1,11 +1,12 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
 
-import { isSnapId } from '@metamask/snaps-utils';
+
 import {
   getMockConfirmStateForTransaction,
   getMockTypedSignConfirmState,

@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { addHexPrefix } from 'ethereumjs-util';
 import type { ParamType } from '@ethersproject/abi';
 import { Interface } from '@ethersproject/abi';
 import type { Hex} from '@metamask/utils';
 import { createProjectLogger } from '@metamask/utils';
+import { addHexPrefix } from 'ethereumjs-util';
+
+import { getMethodFrom4Byte } from '../../../../../shared/lib/four-byte';
 import type {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam,
 } from '../../../../../shared/types/transaction-decode';
-import { getMethodFrom4Byte } from '../../../../../shared/lib/four-byte';
 
 const log = createProjectLogger('four-byte');
 

@@ -1,9 +1,10 @@
-import React from 'react';
 import { ETHSignature } from '@keystonehq/bc-ur-registry-eth';
-import * as uuid from 'uuid';
 import PropTypes from 'prop-types';
-import BaseReader from '../base-reader';
+import React from 'react';
+import * as uuid from 'uuid';
+
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import BaseReader from '../base-reader';
 
 const Reader = ({
   submitQRHardwareSignature,

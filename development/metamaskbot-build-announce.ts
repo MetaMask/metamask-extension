@@ -1,5 +1,6 @@
 import { execFileSync } from 'child_process';
 import startCase from 'lodash/startCase';
+
 import { version as VERSION } from '../package.json';
 
 start().catch(console.error);

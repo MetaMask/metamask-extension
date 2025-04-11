@@ -1,5 +1,6 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
+
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,

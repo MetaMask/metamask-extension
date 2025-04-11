@@ -1,15 +1,16 @@
+import { screen } from '@testing-library/react';
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors/selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+
 import { NetworkFilterImportToken } from '.';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors/selectors';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');

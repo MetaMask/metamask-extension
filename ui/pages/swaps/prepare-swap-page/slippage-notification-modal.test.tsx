@@ -3,15 +3,15 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import {
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
+} from '../../../../shared/constants/swaps';
+import {
   renderWithProvider,
   fireEvent,
   createSwapsMockStore,
   screen,
 } from '../../../../test/jest';
-import {
-  SLIPPAGE_HIGH_ERROR,
-  SLIPPAGE_LOW_ERROR,
-} from '../../../../shared/constants/swaps';
 import SlippageNotificationModal from './slippage-notification-modal';
 
 const middleware = [thunk];

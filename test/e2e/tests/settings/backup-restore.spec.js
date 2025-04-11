@@ -1,13 +1,13 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
 
+const FixtureBuilder = require('../../fixture-builder');
 const {
   createDownloadFolder,
   openMenuSafe,
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 

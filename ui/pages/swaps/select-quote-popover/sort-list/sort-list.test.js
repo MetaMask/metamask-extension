@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { renderWithProvider, fireEvent } from '../../../../../test/jest';
 import MockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider, fireEvent } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import SortList from './sort-list';
 

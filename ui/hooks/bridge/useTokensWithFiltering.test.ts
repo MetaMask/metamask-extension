@@ -3,11 +3,12 @@ import type {
 import {
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
+import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
 const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);

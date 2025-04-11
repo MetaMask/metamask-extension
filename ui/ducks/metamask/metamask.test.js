@@ -1,14 +1,15 @@
+import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   GasFeeEstimateType,
   TransactionStatus,
   mergeGasFeeEstimates,
 } from '@metamask/transaction-controller';
-import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
-import * as actionConstants from '../../store/actionConstants';
+
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,

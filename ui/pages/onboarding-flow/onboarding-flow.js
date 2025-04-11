@@ -1,7 +1,22 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Unlock from '../unlock-page';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import ExperimentalArea from '../../components/app/flask/experimental-area';
+import RevealSRPModal from '../../components/app/reveal-SRP-modal';
+///: END:ONLY_INCLUDE_IF
+import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
+import Button from '../../components/ui/button';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../ducks/metamask/metamask';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -19,40 +34,26 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../ducks/metamask/metamask';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
+import { getHDEntropyIndex } from '../../selectors/selectors';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
 } from '../../store/actions';
-import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import Button from '../../components/ui/button';
-import RevealSRPModal from '../../components/app/reveal-SRP-modal';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import ExperimentalArea from '../../components/app/flask/experimental-area';
-///: END:ONLY_INCLUDE_IF
-import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { getHDEntropyIndex } from '../../selectors/selectors';
-import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
+import Unlock from '../unlock-page';
 import CreatePassword from './create-password/create-password';
+import CreationSuccessful from './creation-successful/creation-successful';
+import ImportSRP from './import-srp/import-srp';
+import MetaMetricsComponent from './metametrics/metametrics';
+import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
+import OnboardingPinExtension from './pin-extension/pin-extension';
+import PrivacySettings from './privacy-settings/privacy-settings';
+import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
-import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
-import PrivacySettings from './privacy-settings/privacy-settings';
-import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
-import ImportSRP from './import-srp/import-srp';
-import OnboardingPinExtension from './pin-extension/pin-extension';
-import MetaMetricsComponent from './metametrics/metametrics';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 

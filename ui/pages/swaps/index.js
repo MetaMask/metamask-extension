@@ -1,3 +1,5 @@
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { shuffle, isEqual } from 'lodash';
 import React, {
   useEffect,
   useRef,
@@ -13,19 +15,31 @@ import {
   useHistory,
   Redirect,
 } from 'react-router-dom';
-import { shuffle, isEqual } from 'lodash';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { I18nContext } from '../../contexts/i18n';
 
+
+
+import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import {
-  getSelectedAccount,
-  getIsSwapsChain,
-  isHardwareWallet,
-  getHardwareWalletType,
-  getTokenList,
-  getHDEntropyIndex,
-} from '../../selectors/selectors';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import {
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  SWAP_FAILED_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
+  OFFLINE_FOR_MAINTENANCE,
+} from '../../../shared/constants/swaps';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+} from '../../../shared/modules/selectors';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { Icon, IconName, IconSize } from '../../components/component-library';
+import Box from '../../components/ui/box';
+import { I18nContext } from '../../contexts/i18n';
 import {
   getQuotes,
   clearSwapsState,
@@ -45,11 +59,12 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
-  getSmartTransactionsEnabled,
-  getSmartTransactionsOptInStatusForMetrics,
-} from '../../../shared/modules/selectors';
+  DISPLAY,
+  JustifyContent,
+  IconColor,
+  FRACTIONS,
+} from '../../helpers/constants/design-system';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
@@ -61,44 +76,29 @@ import {
   PREPARE_SWAP_ROUTE,
   SWAPS_NOTIFICATION_ROUTE,
 } from '../../helpers/constants/routes';
+import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
+import { getCurrentNetworkTransactions } from '../../selectors';
 import {
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  SWAP_FAILED_ERROR,
-  CONTRACT_DATA_DISABLED_ERROR,
-  OFFLINE_FOR_MAINTENANCE,
-} from '../../../shared/constants/swaps';
-
+  getSelectedAccount,
+  getIsSwapsChain,
+  isHardwareWallet,
+  getHardwareWalletType,
+  getTokenList,
+  getHDEntropyIndex,
+} from '../../selectors/selectors';
 import {
   resetBackgroundSwapsState,
   ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
-
-import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
-import { Icon, IconName, IconSize } from '../../components/component-library';
-import Box from '../../components/ui/box';
-import {
-  DISPLAY,
-  JustifyContent,
-  IconColor,
-  FRACTIONS,
-} from '../../helpers/constants/design-system';
-import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
-import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
+import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import LoadingQuote from './loading-swaps-quotes';
-import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
+import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
+import SmartTransactionStatus from './smart-transaction-status';
 
 export default function Swap() {
   const t = useContext(I18nContext);

@@ -1,20 +1,13 @@
-import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { useMemo } from 'react';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import {
-  getAllTokens,
-  getMetaMaskCachedBalances,
-  getTokenExchangeRates,
-  getConfirmationExchangeRates,
-  getNativeCurrencyImage,
-  getTokenList,
-} from '../selectors';
+import { shallowEqual, useSelector } from 'react-redux';
+
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import {
   getConversionRate,
   getNativeCurrency,
@@ -23,6 +16,14 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
+import {
+  getAllTokens,
+  getMetaMaskCachedBalances,
+  getTokenExchangeRates,
+  getConfirmationExchangeRates,
+  getNativeCurrencyImage,
+  getTokenList,
+} from '../selectors';
 import { useTokenTracker } from './useTokenBalances';
 
 export const useAccountTotalFiatBalance = (

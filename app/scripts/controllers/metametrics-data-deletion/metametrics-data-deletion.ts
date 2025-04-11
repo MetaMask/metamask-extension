@@ -1,8 +1,9 @@
 import type { RestrictedMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { PublicInterface } from '@metamask/utils';
-import type { DataDeletionService } from '../../services/data-deletion-service';
+
 import type { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
+import type { DataDeletionService } from '../../services/data-deletion-service';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
 
 // Unique name for the controller

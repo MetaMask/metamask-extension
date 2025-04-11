@@ -1,5 +1,5 @@
-import { cloneDeep, isPlainObject } from 'lodash';
 import { TransactionType } from '@metamask/transaction-controller';
+import { cloneDeep, isPlainObject } from 'lodash';
 
 const version = 64;
 

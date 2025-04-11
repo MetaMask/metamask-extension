@@ -1,4 +1,5 @@
 import log from 'loglevel';
+
 import { migrate } from './088';
 
 jest.mock('loglevel');

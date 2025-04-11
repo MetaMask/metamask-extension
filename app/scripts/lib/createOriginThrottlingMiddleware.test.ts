@@ -1,6 +1,7 @@
 import { errorCodes, providerErrors } from '@metamask/rpc-errors';
 import type { JsonRpcResponse } from '@metamask/utils';
 import type { Json } from '@metamask/utils';
+
 import type {
   ExtendedJSONRPCRequest} from './createOriginThrottlingMiddleware';
 import createOriginThrottlingMiddleware, {

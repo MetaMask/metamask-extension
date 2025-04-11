@@ -1,3 +1,8 @@
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import type {
+  AsyncJsonRpcEngineNextCallback,
+  JsonRpcEngineEndCallback,
+} from '@metamask/json-rpc-engine';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import type {
   Json,
@@ -6,11 +11,7 @@ import type {
 import {
   isNonEmptyArray
 } from '@metamask/utils';
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
-import type {
-  AsyncJsonRpcEngineNextCallback,
-  JsonRpcEngineEndCallback,
-} from '@metamask/json-rpc-engine';
+
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 

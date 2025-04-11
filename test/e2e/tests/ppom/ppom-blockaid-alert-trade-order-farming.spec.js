@@ -1,8 +1,7 @@
 const FixtureBuilder = require('../../fixture-builder');
-
 const { WINDOW_TITLES, unlockWallet, withFixtures } = require('../../helpers');
-const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
+const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const CONTRACT_ADDRESS = {
   WrappedEther: 'c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',

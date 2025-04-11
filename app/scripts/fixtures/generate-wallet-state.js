@@ -1,16 +1,17 @@
 import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
+import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
+import { withConfirmedTransactions } from './with-confirmed-transactions';
+import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
-import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
-import { withAddressBook } from './with-address-book';
-import { withConfirmedTransactions } from './with-confirmed-transactions';
 import { withUnreadNotifications } from './with-unread-notifications';
 
 const FIXTURES_CONFIG = process.env.WITH_STATE

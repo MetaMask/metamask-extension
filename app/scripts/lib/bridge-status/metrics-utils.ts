@@ -1,4 +1,5 @@
 import type { Hex } from '@metamask/utils';
+
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import type {

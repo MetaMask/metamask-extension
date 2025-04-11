@@ -4,8 +4,8 @@ This migration removes transactions that are no longer usefull down to 40 total
 
 */
 
-import { cloneDeep } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { cloneDeep } from 'lodash';
 
 const version = 23;
 

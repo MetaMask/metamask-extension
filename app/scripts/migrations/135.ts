@@ -1,7 +1,7 @@
-import { hasProperty, isObject } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { hasProperty, isObject } from '@metamask/utils';
+import { cloneDeep } from 'lodash';
 
 export type VersionedData = {
   meta: {

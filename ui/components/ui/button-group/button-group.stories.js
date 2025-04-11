@@ -1,8 +1,8 @@
 import React from 'react';
 
+import ButtonGroup from '.';
 import Button from '../button';
 import README from './README.mdx';
-import ButtonGroup from '.';
 
 export default {
   title: 'Components/UI/ButtonGroup',

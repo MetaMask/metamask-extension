@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
-import { Text } from '../../../component-library';
+
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { shortenString } from '../../../../helpers/utils/util';
+import { Text } from '../../../component-library';
 
 export type ShortenedNameProps = {
   name: string;

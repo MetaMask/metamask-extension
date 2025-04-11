@@ -1,14 +1,15 @@
-import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { useMemo } from 'react';
+
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useGasFeeLowAlerts(): Alert[] {

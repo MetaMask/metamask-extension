@@ -1,14 +1,6 @@
 import React from 'react';
 import type { FC } from 'react';
 
-import { NotificationDetail } from '../notification-detail';
-import {
-  AvatarTokenSize,
-  AvatarToken,
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  Text,
-} from '../../component-library';
 import {
   BackgroundColor,
   BorderColor,
@@ -16,6 +8,14 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import {
+  AvatarTokenSize,
+  AvatarToken,
+  BadgeWrapper,
+  BadgeWrapperPosition,
+  Text,
+} from '../../component-library';
+import { NotificationDetail } from '../notification-detail';
 
 type BadgeProps = {
   src: string;

@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
-import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
+
 import {
   getQuoteRequest,
   getFromToken,

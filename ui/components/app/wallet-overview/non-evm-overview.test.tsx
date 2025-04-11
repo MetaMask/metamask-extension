@@ -1,23 +1,24 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
-import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { fireEvent } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import useMultiPolling from '../../../hooks/useMultiPolling';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest/rendering';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
+import useMultiPolling from '../../../hooks/useMultiPolling';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import NonEvmOverview from './non-evm-overview';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.

@@ -1,9 +1,10 @@
 import EventEmitter from '@metamask/safe-event-emitter';
-import ExtensionPlatform from '../platforms/extension';
+
 import {
   NOTIFICATION_HEIGHT,
   NOTIFICATION_WIDTH,
 } from '../../../shared/constants/notifications';
+import ExtensionPlatform from '../platforms/extension';
 
 export const NOTIFICATION_MANAGER_EVENTS = {
   POPUP_CLOSED: 'onPopupClosed',

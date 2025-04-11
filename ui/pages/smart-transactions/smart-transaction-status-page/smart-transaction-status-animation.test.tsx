@@ -1,6 +1,7 @@
-import React from 'react';
-import { render, screen, act } from '@testing-library/react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+import { render, screen, act } from '@testing-library/react';
+import React from 'react';
+
 import { SmartTransactionStatusAnimation } from './smart-transaction-status-animation';
 
 // Declare a variable to store the onComplete callback

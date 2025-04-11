@@ -1,7 +1,8 @@
 import { EthAccountType } from '@metamask/keyring-api';
-import { createMockInternalAccount } from '../../test/jest/mocks';
+
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import {
   getConnectedSubjectsForSelectedAddress,

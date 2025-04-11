@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+
 const FixtureBuilder = require('../fixture-builder');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 
 describe('eth_sendTransaction', function () {
   const expectedHash =

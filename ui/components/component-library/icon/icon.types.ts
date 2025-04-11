@@ -1,7 +1,6 @@
 import type React from 'react';
 
 import type { IconColor } from '../../../helpers/constants/design-system';
-
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,

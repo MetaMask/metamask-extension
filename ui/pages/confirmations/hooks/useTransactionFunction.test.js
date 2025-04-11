@@ -1,6 +1,6 @@
+import { renderHook } from '@testing-library/react-hooks';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
 
 import {
   CUSTOM_GAS_ESTIMATE,
@@ -10,9 +10,8 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import * as Actions from '../../../store/actions';
 import configureStore from '../../../store/store';
-
-import { useGasEstimates } from './useGasEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
+import { useGasEstimates } from './useGasEstimates';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
 jest.mock('./useGasEstimates', () => ({

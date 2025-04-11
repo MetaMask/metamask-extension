@@ -1,9 +1,22 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
+
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  Display,
+  TextVariant,
+  BlockSize,
+} from '../../../../helpers/constants/design-system';
+import { openWindow } from '../../../../helpers/utils/window';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
-import { openWindow } from '../../../../helpers/utils/window';
 import {
   Modal,
   ModalOverlay,
@@ -18,18 +31,6 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
 } from '../../../component-library';
-import {
-  Display,
-  TextVariant,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;

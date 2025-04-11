@@ -1,12 +1,13 @@
-import React from 'react';
-import thunk from 'redux-thunk';
 import { waitFor, fireEvent } from '@testing-library/react';
+import React from 'react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/jest';
+import thunk from 'redux-thunk';
+
+import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/jest';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../../app/_locales/en/messages.json';
 import NewAccountModal from './new-account-modal.container';
 
 const mockOnCreateNewAccount = jest.fn();

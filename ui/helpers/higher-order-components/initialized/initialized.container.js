@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+
 import Initialized from './initialized.component';
 
 const mapStateToProps = (state) => {

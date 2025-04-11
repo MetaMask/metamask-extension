@@ -1,10 +1,10 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
 import type { Validator } from 'prop-types';
 import PropTypes from 'prop-types';
-import { fireEvent, render } from '@testing-library/react';
-import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
+import React from 'react';
 
+import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 import { Box } from '../box';
 import type { InputComponent } from '../input';
 import { TextField } from './text-field';

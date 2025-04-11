@@ -1,9 +1,10 @@
-import React from 'react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import configureStore from '../../../store/store';
+import React from 'react';
+
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import configureStore from '../../../store/store';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 const render = () => {

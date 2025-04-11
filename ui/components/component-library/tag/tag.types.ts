@@ -1,9 +1,9 @@
-import type { TextProps, ValidTagType } from '../text/text.types';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
 import type { IconName, IconProps } from '../icon';
+import type { TextProps, ValidTagType } from '../text/text.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -2,6 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
+
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';

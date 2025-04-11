@@ -1,5 +1,6 @@
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationDetailCopyButton } from './notification-detail-copy-button';
 

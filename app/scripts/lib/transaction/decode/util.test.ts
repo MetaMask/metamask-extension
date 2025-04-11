@@ -1,4 +1,5 @@
 import type { Provider } from '@metamask/network-controller';
+
 import {
   TRANSACTION_DATA_FOUR_BYTE,
   TRANSACTION_DATA_SOURCIFY,
@@ -7,11 +8,11 @@ import {
   TRANSACTION_DECODE_SOURCIFY,
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../test/data/confirmations/transaction-decode';
-import { decodeUniswapRouterTransactionData } from './uniswap';
-import { decodeTransactionData } from './util';
-import { decodeTransactionDataWithSourcify } from './sourcify';
 import { decodeTransactionDataWithFourByte } from './four-byte';
 import { getContractProxyAddress } from './proxy';
+import { decodeTransactionDataWithSourcify } from './sourcify';
+import { decodeUniswapRouterTransactionData } from './uniswap';
+import { decodeTransactionData } from './util';
 
 jest.mock('./uniswap');
 jest.mock('./sourcify');

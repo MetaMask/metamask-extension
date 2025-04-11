@@ -1,5 +1,6 @@
-import { cloneDeep, fromPairs, map } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import { cloneDeep, fromPairs, map } from 'lodash';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
 type VersionedData = {

@@ -1,14 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarTokenSize,
-  Box,
-  Text,
-} from '../../component-library';
+import React from 'react';
+
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   AlignItems,
   BlockSize,
@@ -20,12 +13,20 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Tooltip from '../../ui/tooltip';
+import { formatDate } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarTokenSize,
+  Box,
+  Text,
+} from '../../component-library';
 import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatDate } from '../../../helpers/utils/util';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import Tooltip from '../../ui/tooltip';
 
 /**
  * Renders status of the given permission. Used by PermissionCell component.

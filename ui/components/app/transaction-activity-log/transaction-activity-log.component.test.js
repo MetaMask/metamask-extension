@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import TransactionActivityLog from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 describe('TransactionActivityLog Component', () => {
   const activities = [

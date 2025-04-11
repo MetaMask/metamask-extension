@@ -1,6 +1,6 @@
-import { cloneDeep, isObject } from 'lodash';
 import { hasProperty } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
+import { cloneDeep, isObject } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };

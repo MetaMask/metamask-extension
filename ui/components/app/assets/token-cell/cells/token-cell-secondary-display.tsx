@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   BackgroundColor,
   FontWeight,
@@ -7,6 +8,8 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { getCurrencyRates } from '../../../../../selectors';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -14,8 +17,6 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { getCurrencyRates } from '../../../../../selectors';
-import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import type { TokenFiatDisplayInfo } from '../../types';
 
 type TokenCellSecondaryDisplayProps = {

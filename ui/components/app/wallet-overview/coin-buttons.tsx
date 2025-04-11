@@ -1,3 +1,13 @@
+import { toHex } from '@metamask/controller-utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type {
+  ///: END:ONLY_INCLUDE_IF
+  CaipChainId} from '@metamask/utils';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isCaipChainId
+} from '@metamask/utils';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,31 +17,42 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { toHex } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
-import type {
-  ///: END:ONLY_INCLUDE_IF
-  CaipChainId} from '@metamask/utils';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isCaipChainId
-} from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  MetaMetricsSwapsEventSource,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../../shared/constants/metametrics';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import type { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 
+import { AssetType } from '../../../../shared/constants/transaction';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { startNewDraftTransaction } from '../../../ducks/send';
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
+import {
+  Display,
+  IconColor,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import type {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken} from '../../../selectors';
@@ -44,28 +65,10 @@ import {
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 ///: END:ONLY_INCLUDE_IF
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { startNewDraftTransaction } from '../../../ducks/send';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
@@ -78,9 +81,7 @@ import {
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';

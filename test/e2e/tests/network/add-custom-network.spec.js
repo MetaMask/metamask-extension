@@ -1,5 +1,6 @@
-const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
+const { strict: assert } = require('assert');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,

@@ -1,18 +1,19 @@
-import React from 'react';
-import { act } from 'react-dom/test-utils';
-import { fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { EthAccountType } from '@metamask/keyring-api';
+import { fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+import { act } from 'react-dom/test-utils';
+
+import ConfirmAddSuggestedToken from '.';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { renderWithProvider } from '../../../test/jest/rendering';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
-import { renderWithProvider } from '../../../test/jest/rendering';
-import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import ConfirmAddSuggestedToken from '.';
 
 const PENDING_APPROVALS = {
   1: {

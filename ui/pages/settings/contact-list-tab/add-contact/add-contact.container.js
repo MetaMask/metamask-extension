@@ -1,11 +1,7 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {
-  addToAddressBook,
-  showQrScanner,
-  qrCodeDetected,
-} from '../../../../store/actions';
+import { compose } from 'redux';
+
 import { getQrCodeData } from '../../../../ducks/app/app';
 import {
   getDomainError,
@@ -13,6 +9,11 @@ import {
   resetDomainResolution,
 } from '../../../../ducks/domains';
 import { getAddressBook, getInternalAccounts } from '../../../../selectors';
+import {
+  addToAddressBook,
+  showQrScanner,
+  qrCodeDetected,
+} from '../../../../store/actions';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {

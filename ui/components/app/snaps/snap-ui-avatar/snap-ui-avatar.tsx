@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import type { CaipAccountId} from '@metamask/utils';
 import { parseCaipAccountId } from '@metamask/utils';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import { getUseBlockie } from '../../../../selectors';
 import BlockieIdenticon from '../../../ui/identicon/blockieIdenticon';
 import Jazzicon from '../../../ui/jazzicon';
-import { getUseBlockie } from '../../../../selectors';
 
 export const DIAMETERS: Record<string, number> = {
   xs: 16,

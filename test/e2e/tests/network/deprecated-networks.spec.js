@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -6,7 +8,6 @@ const {
   openDapp,
   WINDOW_TITLES,
 } = require('../../helpers');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
 
 describe('Deprecated networks', function () {
   it('User should not find goerli network when clicking on the network selector', async function () {

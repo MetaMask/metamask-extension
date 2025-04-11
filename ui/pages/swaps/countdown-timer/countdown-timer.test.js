@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import CountdownTimer from '.';
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import CountdownTimer from '.';
 
 const createProps = (customProps = {}) => {
   return {

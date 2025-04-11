@@ -1,14 +1,15 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
+
 import {
   AlignItems,
   BorderColor,
   Display,
 } from '../../../helpers/constants/design-system';
-import type { BoxProps, PolymorphicRef } from '../box';
-import { Box } from '../box';
 import type { BannerBaseProps } from '../banner-base';
 import { BannerBase } from '../banner-base';
+import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box';
 import type {
   BannerTipComponent,
   // BannerTipLogoType,

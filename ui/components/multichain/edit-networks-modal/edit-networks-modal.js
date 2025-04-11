@@ -1,5 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
+
+import { NetworkListItem } from '..';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BlockSize,
@@ -27,13 +35,6 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
-import { NetworkListItem } from '..';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export const EditNetworksModal = ({
   nonTestNetworks,

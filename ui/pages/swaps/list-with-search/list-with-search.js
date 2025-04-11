@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { filter } from 'lodash';
 import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useSelector } from 'react-redux';
 
+import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { Text } from '../../../components/component-library';
+import { TextFieldSearch } from '../../../components/component-library/text-field-search/deprecated';
 import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   Display,
   FlexDirection,
@@ -13,13 +18,8 @@ import {
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../../components/component-library';
-import { TextFieldSearch } from '../../../components/component-library/text-field-search/deprecated';
 import ItemList from '../searchable-item-list/item-list';
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { I18nContext } from '../../../contexts/i18n';
 import { fetchToken } from '../swaps.util';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 let timeoutIdForSearch;
 

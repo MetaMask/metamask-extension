@@ -1,9 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { BannerAlert } from '../../component-library';
-import { Severity } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
+import React from 'react';
+
 import IconWithFallback from '.';
+import { Severity } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../component-library';
+import README from './README.mdx';
 
 const Deprecated = ({ children }) => (
   <>

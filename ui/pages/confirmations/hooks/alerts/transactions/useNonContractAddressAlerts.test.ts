@@ -1,17 +1,18 @@
-import type { Hex } from '@metamask/utils';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
+
 import { readAddressAsContract } from '../../../../../../shared/modules/contract-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { I18nContext } from '../../../../../contexts/i18n';

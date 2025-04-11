@@ -1,17 +1,18 @@
-import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
+import React from 'react';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
-import configureStore from '../../../store/store';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest/rendering';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import { shortenAddress } from '../../../helpers/utils/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import configureStore from '../../../store/store';
 import { ConnectAccountsModal } from './connect-accounts-modal';
 
 const mockAccount = createMockInternalAccount();

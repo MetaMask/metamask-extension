@@ -1,5 +1,6 @@
-import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
+import React from 'react';
+
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 

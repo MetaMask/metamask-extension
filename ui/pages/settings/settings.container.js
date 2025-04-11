@@ -1,22 +1,17 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {
-  getAddressBookEntryOrAccountName,
-  getSettingsPageSnapsIds,
-  getSnapsMetadata,
-  getUseExternalServices,
-} from '../../selectors';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { compose } from 'redux';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import {
   isValidHexAddress,
   isBurnAddress,
 } from '../../../shared/modules/hexstring-utils';
-
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
@@ -38,10 +33,15 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { toggleNetworkMenu } from '../../store/actions';
-import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
+import { getSnapName } from '../../helpers/utils/util';
+import {
+  getAddressBookEntryOrAccountName,
+  getSettingsPageSnapsIds,
+  getSnapsMetadata,
+  getUseExternalServices,
+} from '../../selectors';
+import { toggleNetworkMenu } from '../../store/actions';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {

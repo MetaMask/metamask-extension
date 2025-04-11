@@ -1,4 +1,5 @@
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,

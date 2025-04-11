@@ -1,15 +1,15 @@
-import React, { useCallback, useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
-  Box,
-  Text,
-  ButtonBase,
-  IconName,
-  ButtonIconSize,
-  ButtonIcon,
-} from '../../component-library';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 import {
   BorderRadius,
   Display,
@@ -18,22 +18,23 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import useRamps, {
+  RampsMetaMaskEntry,
+} from '../../../hooks/ramps/useRamps/useRamps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMultichainDefaultToken,
   getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import useRamps, {
-  RampsMetaMaskEntry,
-} from '../../../hooks/ramps/useRamps/useRamps';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import {
+  Box,
+  Text,
+  ButtonBase,
+  IconName,
+  ButtonIconSize,
+  ButtonIcon,
+} from '../../component-library';
 
 const darkenGradient =
   'linear-gradient(rgba(0, 0, 0, 0.12),rgba(0, 0, 0, 0.12))';

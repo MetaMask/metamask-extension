@@ -1,10 +1,11 @@
-import React from 'react';
 import { act } from '@testing-library/react';
-import configureStore from '../../../../../store/store';
-import { renderWithProvider } from '../../../../../../test/jest';
-import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
-import { mockNetworkState } from '../../../../../../test/stub/networks';
+import React from 'react';
+
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../../test/jest';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
 import EditGasToolTip from './edit-gas-tooltip';
 
 jest.mock('../../../../../store/actions', () => ({

@@ -1,3 +1,9 @@
+import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { HandlerType } from '@metamask/snaps-utils';
 import type {
   TransactionControllerUpdateCustodialTransactionAction,
   TransactionEnvelopeType,
@@ -5,12 +11,6 @@ import type {
 import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { HandlerType } from '@metamask/snaps-utils';
-import type { RestrictedMessenger } from '@metamask/base-controller';
-import { BaseController } from '@metamask/base-controller';
-import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import type {

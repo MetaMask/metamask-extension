@@ -1,4 +1,7 @@
 import { useSelector } from 'react-redux';
+
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   getCurrentNetwork,
   getInternalAccountByAddress,
@@ -6,8 +9,6 @@ import {
   getShouldHideZeroBalanceTokens,
   getShowFiatInTestnets,
 } from '../../../selectors';
-import { TEST_NETWORKS } from '../../../../shared/constants/network';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 export const useBalance = (fromAddress) => {
   const shouldHideZeroBalanceTokens = useSelector(

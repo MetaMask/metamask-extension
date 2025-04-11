@@ -1,10 +1,10 @@
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   unlockWallet,
   openDapp,
   WINDOW_TITLES,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 const toggleFullSizeViewSetting = async (driver) => {
   await driver.clickElement('[data-testid="account-options-menu-button"]');

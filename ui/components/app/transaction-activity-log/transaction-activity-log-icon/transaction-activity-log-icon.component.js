@@ -1,7 +1,9 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
+import { Color } from '../../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize } from '../../../component-library';
 import {
   TRANSACTION_CREATED_EVENT,
   TRANSACTION_SUBMITTED_EVENT,
@@ -12,8 +14,6 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
-import { Icon, IconName, IconSize } from '../../../component-library';
-import { Color } from '../../../../helpers/constants/design-system';
 
 export const ACTIVITY_ICONS = {
   [TRANSACTION_CREATED_EVENT]: IconName.Add,

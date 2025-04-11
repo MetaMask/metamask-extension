@@ -1,11 +1,12 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import type { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { isArray } from 'lodash';
+
+import { IconName } from '../../../components/component-library';
 import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { IconName } from '../../../components/component-library';
 import type { ResultTemplateActions } from './ResultTemplate';
 import { ResultTemplate } from './ResultTemplate';
 import type { TemplateRendererComponent } from './util';

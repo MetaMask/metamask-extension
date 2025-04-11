@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import React from 'react';
+
 import { Text } from '../../../../../components/component-library';
 import {
   TextColor,

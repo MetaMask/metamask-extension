@@ -1,4 +1,5 @@
 import type { PhishingController } from '@metamask/phishing-controller';
+
 import { isProtocolAllowed } from '../keyring-snaps-permissions';
 
 /**

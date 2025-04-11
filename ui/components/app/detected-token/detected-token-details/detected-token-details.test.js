@@ -1,12 +1,12 @@
 import * as React from 'react';
+
+import testData from '../../../../../.storybook/test-data';
 import {
   renderWithProvider,
   screen,
   fireEvent,
 } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import testData from '../../../../../.storybook/test-data';
-
 import DetectedTokenDetails from './detected-token-details';
 
 describe('DetectedTokenDetails', () => {

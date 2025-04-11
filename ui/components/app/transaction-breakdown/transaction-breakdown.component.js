@@ -1,11 +1,12 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import CurrencyDisplay from '../../ui/currency-display';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import HexToDecimal from '../../ui/hex-to-decimal';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import CurrencyDisplay from '../../ui/currency-display';
+import HexToDecimal from '../../ui/hex-to-decimal';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {

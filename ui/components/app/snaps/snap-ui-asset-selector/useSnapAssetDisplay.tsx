@@ -8,22 +8,22 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
-import { getMultiChainAssets } from '../../../../selectors/assets';
-import type { TokenWithFiatAmount } from '../../assets/types';
 
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
-import {
-  getImageForChainId,
-  getMemoizedMultichainNetworkConfigurationsByChainId,
-} from '../../../../selectors/multichain';
 import type {
   AllowedBridgeChainIds} from '../../../../../shared/constants/bridge';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../shared/constants/bridge';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
+import { getMultiChainAssets } from '../../../../selectors/assets';
+import {
+  getImageForChainId,
+  getMemoizedMultichainNetworkConfigurationsByChainId,
+} from '../../../../selectors/multichain';
 import { getMemoizedCurrentCurrency } from '../../../../selectors/snaps';
+import type { TokenWithFiatAmount } from '../../assets/types';
+import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 
 /**
  * An asset for the SnapUIAssetSelector.

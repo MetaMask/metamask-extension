@@ -1,6 +1,20 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import locales from '../../../../app/_locales/index.json';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import { Text, Box } from '../../../components/component-library';
+import Dropdown from '../../../components/ui/dropdown';
+import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
+import Jazzicon from '../../../components/ui/jazzicon';
+import ToggleButton from '../../../components/ui/toggle-button';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import {
   TextVariant,
@@ -10,24 +24,10 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import Dropdown from '../../../components/ui/dropdown';
-import ToggleButton from '../../../components/ui/toggle-button';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import locales from '../../../../app/_locales/index.json';
-import Jazzicon from '../../../components/ui/jazzicon';
-import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { ThemeType } from '../../../../shared/constants/preferences';
-import { Text, Box } from '../../../components/component-library';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());

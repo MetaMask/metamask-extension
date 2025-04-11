@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
+
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getConfirmationSender } from '../../../components/confirm/utils';
+import { useConfirmContext } from '../../../context/confirm';
 import type { SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useConfirmContext } from '../../../context/confirm';
 
 /**
  * This hook returns an array of alerts when the expected address of the request

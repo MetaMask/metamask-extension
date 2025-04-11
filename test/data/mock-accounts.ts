@@ -1,5 +1,3 @@
-import { KeyringTypes } from '@metamask/keyring-controller';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthAccountType,
   BtcMethod,
@@ -10,6 +8,9 @@ import {
   SolMethod,
   SolScope,
 } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+
 import {
   ETH_EOA_METHODS,
   ETH_4337_METHODS,

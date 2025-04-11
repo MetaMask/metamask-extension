@@ -1,6 +1,7 @@
+import { Interface } from '@ethersproject/abi';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
+
 import {
   CHAIN_ID,
   CONTRACT_INTERACTION_SENDER_ADDRESS,

@@ -1,3 +1,4 @@
+import { Minipass } from 'minipass';
 import { ok } from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { createWriteStream } from 'node:fs';
@@ -6,13 +7,13 @@ import { Agent as HttpAgent } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
 import { join, basename, extname, relative } from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import { Minipass } from 'minipass';
 import { extract as extractTar } from 'tar';
 import { Open, type Source, type Entry } from 'unzipper';
-import { say, noop } from './utils';
+
 import { startDownload } from './download';
 import type { Binary } from './types';
 import { Extension } from './types';
+import { say, noop } from './utils';
 
 /**
  * Extracts the binaries from the given URL and writes them to the destination.

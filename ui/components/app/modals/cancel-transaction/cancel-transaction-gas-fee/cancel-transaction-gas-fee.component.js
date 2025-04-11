@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
+import React, { PureComponent } from 'react';
+
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
+import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 
 export default class CancelTransaction extends PureComponent {
   static propTypes = {

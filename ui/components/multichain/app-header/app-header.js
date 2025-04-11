@@ -1,18 +1,23 @@
-import React, { useCallback, useContext, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
+
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  SWAPS_ROUTE,
-} from '../../../helpers/constants/routes';
-
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getIsUnlocked } from '../../../ducks/metamask/metamask';
+import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
@@ -20,25 +25,21 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  SWAPS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getUnapprovedTransactions } from '../../../selectors';
-
-import { toggleNetworkMenu } from '../../../store/actions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getIsUnlocked } from '../../../ducks/metamask/metamask';
-import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
 } from '../../../selectors/multichain/networks';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
-import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
+import { toggleNetworkMenu } from '../../../store/actions';
+import { Box } from '../../component-library';
 import { AppHeaderContainer } from './app-header-container';
-import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
+import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
+import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);

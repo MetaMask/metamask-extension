@@ -1,5 +1,5 @@
-import { cloneDeep } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { cloneDeep } from 'lodash';
 
 export default function failTxsThat(version, reason, condition) {
   return function (originalVersionedData) {

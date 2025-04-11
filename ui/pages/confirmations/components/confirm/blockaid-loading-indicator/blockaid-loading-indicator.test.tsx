@@ -1,12 +1,12 @@
-import React from 'react';
-import configureStore from 'redux-mock-store';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import React from 'react';
+import configureStore from 'redux-mock-store';
 
-import mockState from '../../../../../../test/data/mock-state.json';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import type { SecurityAlertResponse } from '../../../types/confirm';
 import BlockaidLoadingIndicator from './blockaid-loading-indicator';

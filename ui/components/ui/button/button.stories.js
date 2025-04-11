@@ -1,12 +1,10 @@
 import React from 'react';
 
+import Button from '.';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { BannerAlert } from '../../component-library';
-
 import IconTokenSearch from '../icon/icon-token-search';
-
 import README from './README.mdx';
-import Button from '.';
 
 export default {
   title: 'Components/UI/Button',

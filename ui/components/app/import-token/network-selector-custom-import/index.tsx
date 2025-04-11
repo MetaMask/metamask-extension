@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   TextVariant,
   TextColor,
@@ -8,6 +9,7 @@ import {
   JustifyContent,
   BorderColor,
 } from '../../../../helpers/constants/design-system';
+import { getImageForChainId } from '../../../../selectors/multichain';
 import {
   ButtonIcon,
   Box,
@@ -17,7 +19,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../component-library';
-import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkSelectorCustomImport = ({
   title,

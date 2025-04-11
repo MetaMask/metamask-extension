@@ -1,28 +1,34 @@
-import { promisify } from 'util';
 import copyToClipboard from 'copy-to-clipboard';
-import log from 'loglevel';
 import { clone } from 'lodash';
+import log from 'loglevel';
 import React from 'react';
 import { render } from 'react-dom';
+import { promisify } from 'util';
 import browser from 'webextension-polyfill';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../app/scripts/lib/util';
-import { AlertTypes } from '../shared/constants/alerts';
-import { maskObject } from '../shared/modules/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
+import { getEnvironmentType } from '../app/scripts/lib/util';
+import { AlertTypes } from '../shared/constants/alerts';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
-import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { trace, TraceName } from '../shared/lib/trace';
-import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import { isInternalAccountInPermittedAccountIds } from '../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import * as actions from './store/actions';
-import configureStore from './store/store';
+import switchDirection from '../shared/lib/switch-direction';
+import { trace, TraceName } from '../shared/lib/trace';
+import { maskObject } from '../shared/modules/object.utils';
+import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { ALERT_STATE } from './ducks/alerts';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  getUnconnectedAccountAlertShown,
+} from './ducks/metamask/metamask';
+import { getStartupTraceTags } from './helpers/utils/tags';
+import txHelper from './helpers/utils/tx-helper';
+import Root from './pages';
 import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
@@ -31,15 +37,9 @@ import {
   getSwitchedNetworkDetails,
   getAllPermittedAccountsForCurrentTab,
 } from './selectors';
-import { ALERT_STATE } from './ducks/alerts';
-import {
-  getUnconnectedAccountAlertEnabledness,
-  getUnconnectedAccountAlertShown,
-} from './ducks/metamask/metamask';
-import Root from './pages';
-import txHelper from './helpers/utils/tx-helper';
+import * as actions from './store/actions';
 import { setBackgroundConnection } from './store/background-connection';
-import { getStartupTraceTags } from './helpers/utils/tags';
+import configureStore from './store/store';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 

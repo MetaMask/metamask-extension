@@ -1,10 +1,11 @@
 import React from 'react';
-import README from './README.mdx';
+
 import CheckBox, {
   CHECKED,
   INDETERMINATE,
   UNCHECKED,
 } from './check-box.component';
+import README from './README.mdx';
 
 const checkboxOptions = {
   [CHECKED]: CHECKED,

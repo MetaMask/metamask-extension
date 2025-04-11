@@ -1,18 +1,19 @@
 import { EventEmitter } from 'events';
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
-import Button from '../../components/ui/button';
-import TextField from '../../components/ui/text-field';
-import Mascot from '../../components/ui/mascot';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import React, { Component } from 'react';
+
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { Text } from '../../components/component-library';
+import Button from '../../components/ui/button';
+import Mascot from '../../components/ui/mascot';
+import TextField from '../../components/ui/text-field';
+import { TextVariant, TextColor } from '../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
 

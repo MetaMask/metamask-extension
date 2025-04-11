@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import mockState from '../../../../test/data/mock-state.json';
+
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 

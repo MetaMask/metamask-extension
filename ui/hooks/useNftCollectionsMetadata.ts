@@ -1,4 +1,5 @@
 import type { Collection } from '@metamask/assets-controllers';
+
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   getNFTContractInfo,

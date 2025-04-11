@@ -1,3 +1,5 @@
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import type {
   AuthorizationList,
   GasFeeToken,
@@ -10,8 +12,8 @@ import type {
 } from '@metamask/transaction-controller';
 import type { Hex} from '@metamask/utils';
 import { add0x, createProjectLogger, remove0x } from '@metamask/utils';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { Interface } from '@ethersproject/abi';
+
+import type { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import type {
   Caveat,
   Delegation,
@@ -24,7 +26,6 @@ import {
   encodeRedeemDelegations,
   signDelegation,
 } from '../delegation';
-import type { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import type {
   RelaySubmitRequest} from '../transaction-relay';
 import {

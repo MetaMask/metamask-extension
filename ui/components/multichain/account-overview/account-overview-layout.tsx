@@ -1,26 +1,27 @@
-import React, { useContext, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
+import React, { useContext, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide } from '../../../store/actions';
 import { Carousel } from '..';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import useBridging from '../../../hooks/bridge/useBridging';
+///: END:ONLY_INCLUDE_IF
+import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import {
   getAppIsLoading,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../shared/constants/metametrics';
-import type { CarouselSlide } from '../../../../shared/constants/app-state';
-import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
+import { removeSlide } from '../../../store/actions';
 import type {
   AccountOverviewTabsProps} from './account-overview-tabs';
 import {

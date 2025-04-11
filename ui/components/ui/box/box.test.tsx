@@ -1,5 +1,7 @@
-import * as React from 'react';
 import { render } from '@testing-library/react';
+import * as React from 'react';
+
+import Box from '.';
 import {
   BorderStyle,
   Display,
@@ -19,7 +21,6 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import Box from '.';
 
 describe('Box', () => {
   it('should render the Box without crashing', () => {

@@ -1,10 +1,11 @@
+import { ORIGIN_METAMASK } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ApprovalType } from '@metamask/controller-utils';
-import { ORIGIN_METAMASK } from '@metamask/approval-controller';
-import Popover from '../../../ui/popover';
+
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
 import { getUnapprovedConfirmations } from '../../../../selectors';
+import Popover from '../../../ui/popover';
 
 const NetworkConfirmationPopover = () => {
   const [showPopover, setShowPopover] = useState(false);

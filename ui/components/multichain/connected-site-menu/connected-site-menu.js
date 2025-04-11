@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
   STATUS_CONNECTED_TO_SNAP,
@@ -17,6 +18,13 @@ import {
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getOriginOfCurrentTab,
+  getPermittedAccountsByOrigin,
+  getSelectedInternalAccount,
+  getSubjectMetadata,
+} from '../../../selectors';
 import {
   AvatarFavicon,
   BadgeWrapper,
@@ -25,14 +33,7 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
-import {
-  getOriginOfCurrentTab,
-  getPermittedAccountsByOrigin,
-  getSelectedInternalAccount,
-  getSubjectMetadata,
-} from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ConnectedSitePopover } from '../connected-site-popover';
 
 export const ConnectedSiteMenu = ({

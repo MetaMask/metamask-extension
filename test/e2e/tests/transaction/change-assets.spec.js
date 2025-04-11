@@ -1,8 +1,9 @@
 const { strict: assert } = require('assert');
-const { withFixtures, logInWithBalanceValidation } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+
 const { tEn } = require('../../../lib/i18n-helpers');
+const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, logInWithBalanceValidation } = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 describe('Change assets', function () {
   it('sends the correct asset when switching from native currency to NFT', async function () {

@@ -1,7 +1,7 @@
-import type { LoaderContext, RuleSetRule } from 'webpack';
-import type { JSONSchema7 } from 'schema-utils/declarations/validate';
-import { validate } from 'schema-utils';
 import { removeFencedCode, type FeatureLabels } from '@metamask/build-utils';
+import { validate } from 'schema-utils';
+import type { JSONSchema7 } from 'schema-utils/declarations/validate';
+import type { LoaderContext, RuleSetRule } from 'webpack';
 
 const schema: JSONSchema7 = {
   $schema: 'http://json-schema.org/draft-07/schema#',

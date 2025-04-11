@@ -1,5 +1,5 @@
-import type { FC } from 'react';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { FC } from 'react';
 
 export type Notification = NotificationServicesController.Types.INotification;
 

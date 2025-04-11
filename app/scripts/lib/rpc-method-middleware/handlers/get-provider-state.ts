@@ -7,6 +7,7 @@ import type {
   JsonRpcParams,
   Hex,
 } from '@metamask/utils';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import type {
   HandlerWrapper,

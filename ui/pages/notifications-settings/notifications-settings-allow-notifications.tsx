@@ -6,23 +6,18 @@ import React, {
   useContext,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import {
-  useEnableNotifications,
-  useDisableNotifications,
-} from '../../hooks/metamask-notifications/useNotifications';
-import {
-  selectIsMetamaskNotificationsEnabled,
-  getIsUpdatingMetamaskNotifications,
-} from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
+import {
+  NotificationsSettingsBox,
+  NotificationsSettingsType,
+} from '../../components/multichain';
+import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   Display,
   JustifyContent,
@@ -32,9 +27,15 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import {
-  NotificationsSettingsBox,
-  NotificationsSettingsType,
-} from '../../components/multichain';
+  useEnableNotifications,
+  useDisableNotifications,
+} from '../../hooks/metamask-notifications/useNotifications';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
+import {
+  selectIsMetamaskNotificationsEnabled,
+  getIsUpdatingMetamaskNotifications,
+} from '../../selectors/metamask-notifications/metamask-notifications';
 
 export function NotificationsSettingsAllowNotifications({
   loading,

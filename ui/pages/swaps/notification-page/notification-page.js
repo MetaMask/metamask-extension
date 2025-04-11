@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
-import { I18nContext } from '../../../contexts/i18n';
-import { setSwapsErrorKey } from '../../../store/actions';
+import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
+import { Icon, IconName, Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   DISPLAY,
   AlignItems,
@@ -14,10 +15,9 @@ import {
   TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, Text } from '../../../components/component-library';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
+import { setSwapsErrorKey } from '../../../store/actions';
 import SwapsFooter from '../swaps-footer';
-import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 
 export default function NotificationPage({ notificationKey }) {
   const t = useContext(I18nContext);

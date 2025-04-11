@@ -1,11 +1,12 @@
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   EthAccountType,
   BtcAccountType,
   SolAccountType,
 } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
+
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,

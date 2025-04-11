@@ -1,30 +1,29 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { EtherDenomination } from '../../../../shared/constants/common';
 import {
   CUSTOM_GAS_ESTIMATE,
   GasRecommendations,
   EditGasModes,
   PriorityLevels,
 } from '../../../../shared/constants/gas';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
+import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-
-import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
+import { useGasEstimates } from './useGasEstimates';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
 import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
-import { useGasEstimates } from './useGasEstimates';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
 /**

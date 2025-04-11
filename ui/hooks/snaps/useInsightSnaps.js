@@ -1,5 +1,6 @@
-import { useSelector } from 'react-redux';
 import { SeverityLevel } from '@metamask/snaps-sdk';
+import { useSelector } from 'react-redux';
+
 import { getSnapInsights } from '../../selectors';
 
 export function useInsightSnaps(id) {

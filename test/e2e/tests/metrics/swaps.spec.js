@@ -1,19 +1,6 @@
-const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  withFixtures,
-  unlockWallet,
-  getEventPayloads,
-  assertInAnyOrder,
-} = require('../../helpers');
-const {
-  buildQuote,
-  reviewQuote,
-  waitForTransactionToComplete,
-  checkActivityTransaction,
-  changeExchangeRate,
-} = require('../swaps/shared');
+const { strict: assert } = require('assert');
+
 const {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -29,6 +16,20 @@ const {
   NETWORKS_2_API_MOCK_RESULT,
 } = require('../../../data/mock-data');
 const { MOCK_META_METRICS_ID } = require('../../constants');
+const FixtureBuilder = require('../../fixture-builder');
+const {
+  withFixtures,
+  unlockWallet,
+  getEventPayloads,
+  assertInAnyOrder,
+} = require('../../helpers');
+const {
+  buildQuote,
+  reviewQuote,
+  waitForTransactionToComplete,
+  checkActivityTransaction,
+  changeExchangeRate,
+} = require('../swaps/shared');
 
 const numberOfSegmentRequests = 19;
 

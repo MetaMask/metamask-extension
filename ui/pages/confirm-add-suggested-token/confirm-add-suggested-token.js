@@ -1,26 +1,8 @@
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import {
-  BannerAlert,
-  Button,
-  ButtonLinkSize,
-  ButtonVariant,
-} from '../../components/component-library';
-import Identicon from '../../components/ui/identicon';
-import TokenBalance from '../../components/ui/token-balance';
-import { PageContainerFooter } from '../../components/ui/page-container';
-import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getTokens } from '../../ducks/metamask/metamask';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import {
-  resolvePendingApproval,
-  rejectPendingApproval,
-} from '../../store/actions';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -30,8 +12,27 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
-import { getSuggestedTokens } from '../../selectors';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  BannerAlert,
+  Button,
+  ButtonLinkSize,
+  ButtonVariant,
+} from '../../components/component-library';
+import Identicon from '../../components/ui/identicon';
+import { PageContainerFooter } from '../../components/ui/page-container';
+import TokenBalance from '../../components/ui/token-balance';
+import { I18nContext } from '../../contexts/i18n';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getTokens } from '../../ducks/metamask/metamask';
 import { Severity } from '../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { getSuggestedTokens } from '../../selectors';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+} from '../../store/actions';
 import { Nav } from '../confirmations/components/confirm/nav';
 
 function getTokenName(name, symbol) {

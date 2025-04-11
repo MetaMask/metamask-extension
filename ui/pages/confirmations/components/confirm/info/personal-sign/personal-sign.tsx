@@ -1,7 +1,7 @@
+import { isSnapId } from '@metamask/snaps-utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { isSnapId } from '@metamask/snaps-utils';
 import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,

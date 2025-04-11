@@ -1,5 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
 export const version = 121.2;

@@ -2,22 +2,22 @@ import type { FunctionComponent} from 'react';
 import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { deleteInterface } from '../../../../store/actions';
-import { Box, Text } from '../../../component-library';
 import {
   BackgroundColor,
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SnapDelineator } from '../snap-delineator';
-import { getSnapMetadata } from '../../../../selectors';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { Copyable } from '../copyable';
-import { SnapUIRenderer } from '../snap-ui-renderer';
-import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
 import { decodeSnapIdFromPathname } from '../../../../helpers/utils/snaps';
+import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getSnapMetadata } from '../../../../selectors';
+import { deleteInterface } from '../../../../store/actions';
+import { Box, Text } from '../../../component-library';
+import { Copyable } from '../copyable';
+import { SnapDelineator } from '../snap-delineator';
+import { SnapUIRenderer } from '../snap-ui-renderer';
 
 type SnapSettingsRendererProps = {
   snapId: string;

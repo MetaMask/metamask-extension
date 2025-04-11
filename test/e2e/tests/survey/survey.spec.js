@@ -1,7 +1,8 @@
 const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+
 const { MOCK_META_METRICS_ID } = require('../../constants');
+const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, unlockWallet } = require('../../helpers');
 
 describe('Test Survey', function () {
   it('should show 2 surveys, and then none', async function () {

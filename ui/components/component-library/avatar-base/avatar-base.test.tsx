@@ -8,7 +8,6 @@ import {
   Color,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
 import { AvatarBase } from './avatar-base';
 import { AvatarBaseSize } from './avatar-base.types';
 

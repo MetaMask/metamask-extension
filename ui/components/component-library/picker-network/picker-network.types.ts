@@ -1,11 +1,11 @@
+import type { AvatarGroupProps } from '../../multichain/avatar-group/avatar-group.types';
+import type { AvatarNetworkProps } from '../avatar-network/avatar-network.types';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
 import type { IconProps } from '../icon/icon.types';
-import type { AvatarNetworkProps } from '../avatar-network/avatar-network.types';
 import type { TextProps } from '../text';
-import type { AvatarGroupProps } from '../../multichain/avatar-group/avatar-group.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

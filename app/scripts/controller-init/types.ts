@@ -1,20 +1,21 @@
-import type { Provider } from '@metamask/network-controller';
 import type {
   ActionConstraint,
   Messenger,
   EventConstraint,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import type { Hex } from '@metamask/utils';
-import type { Duplex } from 'readable-stream';
+import type { Provider } from '@metamask/network-controller';
 import type { SubjectType } from '@metamask/permission-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
-import type { MessageSender } from '../../../types/global';
+import type { Hex } from '@metamask/utils';
+import type { Duplex } from 'readable-stream';
+
 import type {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
+import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
+import type { MessageSender } from '../../../types/global';
 import type { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */

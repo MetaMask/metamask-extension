@@ -1,4 +1,5 @@
 import { isNumber } from 'lodash';
+
 import {
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
   SWAPS_API_V2_BASE_URL,

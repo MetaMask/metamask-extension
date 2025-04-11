@@ -1,11 +1,12 @@
-import React, { forwardRef } from 'react';
 import classnames from 'classnames';
+import React, { forwardRef } from 'react';
+
 import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../text';
 import type { PolymorphicRef } from '../box';
+import { Text } from '../text';
 import type { TextProps } from '../text';
 import {
   type HelpTextProps,

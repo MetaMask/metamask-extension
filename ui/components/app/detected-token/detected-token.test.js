@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import testData from '../../../../.storybook/test-data';
 
-import { mockNetworkState } from '../../../../test/stub/networks';
+import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import configureStore from '../../../store/store';
 import DetectedToken from './detected-token';
 
 describe('DetectedToken', () => {

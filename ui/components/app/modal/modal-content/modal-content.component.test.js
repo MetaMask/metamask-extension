@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+
 import ModalContent from '.';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 describe('ModalContent Component', () => {
   const props = {

@@ -1,8 +1,5 @@
 import { createSelector } from 'reselect';
-import {
-  getAllowedSmartTransactionsChainIds,
-  SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
-} from '../../constants/smartTransactions';
+
 import {
   getCurrentNetwork,
   accountSupportsSmartTx,
@@ -10,6 +7,10 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import {
+  getAllowedSmartTransactionsChainIds,
+  SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
+} from '../../constants/smartTransactions';
 import { isProduction } from '../environment';
 import { getFeatureFlagsByChainId } from './feature-flags';
 import type { NetworkState } from './networks';

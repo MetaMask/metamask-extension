@@ -1,20 +1,20 @@
-import { act } from 'react-dom/test-utils';
 import type {
   TransactionParams} from '@metamask/transaction-controller';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
 import type { Hex } from '@metamask/utils';
+import { act } from 'react-dom/test-utils';
+
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import {
   TRANSACTION_DATA_FOUR_BYTE,
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../../../../../../test/data/confirmations/transaction-decode';
-import { decodeTransactionData } from '../../../../../../store/actions';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { decodeTransactionData } from '../../../../../../store/actions';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({

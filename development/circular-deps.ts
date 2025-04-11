@@ -1,10 +1,10 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
-import { writeFileSync, readFileSync, existsSync } from 'node:fs';
-import { stderr } from 'node:process';
 import chalk from 'chalk';
 import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import micromatch from 'micromatch';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { stderr } from 'node:process';
 import prettier from 'prettier';
 
 /**

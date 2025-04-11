@@ -1,4 +1,5 @@
 import type { JsonRpcRequest } from '@metamask/utils';
+
 import type { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';

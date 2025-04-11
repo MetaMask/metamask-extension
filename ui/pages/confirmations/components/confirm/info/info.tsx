@@ -1,9 +1,10 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
+
 import { useConfirmContext } from '../../../context/confirm';
-import type { SignatureRequestType } from '../../../types/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
+import type { SignatureRequestType } from '../../../types/confirm';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';

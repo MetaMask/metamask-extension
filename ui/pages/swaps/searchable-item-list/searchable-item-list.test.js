@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import SearchableItemList from '.';
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import SearchableItemList from '.';
 
 const createProps = (customProps = {}) => {
   return {

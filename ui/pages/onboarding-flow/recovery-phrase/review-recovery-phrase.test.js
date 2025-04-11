@@ -1,6 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';

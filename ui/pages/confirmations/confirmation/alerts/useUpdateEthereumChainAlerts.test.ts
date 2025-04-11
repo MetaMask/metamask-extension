@@ -1,11 +1,10 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 
-import mockState from '../../../../../test/data/mock-state.json';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
+import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import type * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
-
 import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 
 jest.mock('react-redux', () => ({

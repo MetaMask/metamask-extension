@@ -10,6 +10,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+
 import type {
   Confirmation,
   SignatureRequestType,

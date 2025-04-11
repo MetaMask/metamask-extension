@@ -1,5 +1,4 @@
-import log from 'loglevel';
-import { captureException } from '@sentry/browser';
+import type { CustodyController } from '@metamask-institutional/custody-controller';
 import type {
   CustodyKeyring,
   MmiConfigurationController} from '@metamask-institutional/custody-keyring';
@@ -10,17 +9,17 @@ import {
   updateCustodianTransactions,
   custodianEventHandlerFactory,
 } from '@metamask-institutional/extension';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
   API_REQUEST_LOG_EVENT,
 } from '@metamask-institutional/sdk';
-import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
-import type { CustodyController } from '@metamask-institutional/custody-controller';
-import type { IApiCallLogEntry } from '@metamask-institutional/types';
 import type { TransactionUpdateController } from '@metamask-institutional/transaction-update';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { IApiCallLogEntry } from '@metamask-institutional/types';
+import { toHex } from '@metamask/controller-utils';
 import type { KeyringTypes } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NetworkState } from '@metamask/network-controller';
 import type {
   MessageParamsPersonal,
@@ -28,12 +27,12 @@ import type {
   OriginalRequest,
   SignatureController,
 } from '@metamask/signature-controller';
-import { toHex } from '@metamask/controller-utils';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { captureException } from '@sentry/browser';
+import log from 'loglevel';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import type {
   MMIControllerOptions,
   ISignedEvent,
@@ -43,9 +42,11 @@ import type {
   ConnectionRequest,
   MMIControllerMessenger,
 } from '../../../shared/constants/mmi-controller';
-import { getPermissionBackgroundApiMethods } from './permissions';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import type AccountTrackerController from './account-tracker-controller';
 import type { AppStateController } from './app-state-controller';
+import { getPermissionBackgroundApiMethods } from './permissions';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;

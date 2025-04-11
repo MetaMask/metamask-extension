@@ -1,11 +1,11 @@
+import type { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import type { Json } from '@metamask/utils';
+import { isEqual } from 'lodash';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ApprovalType } from '@metamask/controller-utils';
-import { isEqual } from 'lodash';
-import type { ApprovalRequest } from '@metamask/approval-controller';
-import type { Json } from '@metamask/utils';
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -16,11 +16,12 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
-import { isSignatureTransactionType } from '../utils';
 import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+import { isSignatureTransactionType } from '../utils';
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,

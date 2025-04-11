@@ -1,11 +1,12 @@
-import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import configureStore from '../../../../../store/store';
+import React from 'react';
+
+import { SendPageYourAccounts } from '.';
+import { MultichainNativeAssets } from '../../../../../../shared/constants/multichain/assets';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
-import { MultichainNativeAssets } from '../../../../../../shared/constants/multichain/assets';
-import { SendPageYourAccounts } from '.';
+import configureStore from '../../../../../store/store';
 
 const mockUpdateRecipient = jest.fn();
 const mockAddHistoryEntry = jest.fn();

@@ -1,7 +1,9 @@
 import type { StateMetadata } from '@metamask/base-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import type { Hex } from '@metamask/utils';
+
 // eslint-disable-next-line import/no-restricted-paths
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import type {
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
@@ -9,7 +11,6 @@ import type {
 import {
   StatusTypes
 } from '../../../../shared/types/bridge-status';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_STATE,

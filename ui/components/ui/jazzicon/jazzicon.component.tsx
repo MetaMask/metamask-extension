@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
 import jazzicon from '@metamask/jazzicon';
 import { KnownCaipNamespace, stringToBytes } from '@metamask/utils';
+import React, { useEffect, useRef } from 'react';
+
+import { getCaipNamespaceFromAddress } from '../../../../shared/lib/multichain/accounts';
 import iconFactoryGenerator, {
   IconFactory,
 } from '../../../helpers/utils/icon-factory';
-import { getCaipNamespaceFromAddress } from '../../../../shared/lib/multichain/accounts';
 
 /**
  * Generates a seed for Jazzicon based on the provided address.

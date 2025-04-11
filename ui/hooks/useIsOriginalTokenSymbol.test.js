@@ -1,8 +1,8 @@
 import { act } from '@testing-library/react-hooks';
-import * as actions from '../store/actions';
-import mockState from '../../test/data/mock-state.json';
 
+import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import * as actions from '../store/actions';
 import { useIsOriginalTokenSymbol } from './useIsOriginalTokenSymbol';
 
 // Mocking the getTokenSymbol function

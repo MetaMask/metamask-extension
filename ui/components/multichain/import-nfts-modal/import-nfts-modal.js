@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getErrorMessage } from '../../../../shared/modules/error';
+
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { getErrorMessage } from '../../../../shared/modules/error';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import {
@@ -21,8 +23,9 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
@@ -53,8 +56,6 @@ import { FormTextField } from '../../component-library/form-text-field/deprecate
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
-import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { checkTokenIdExists } from '../../../helpers/utils/util';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();

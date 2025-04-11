@@ -1,11 +1,12 @@
-import React from 'react';
-import { fireEvent } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
+import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
+import { ConnectedAccountsMenu } from '.';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { ConnectedAccountsMenu } from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
 
 const mockInternalAccount = createMockInternalAccount();
 

@@ -1,7 +1,12 @@
-import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import Name from '../../../../components/app/name';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -17,10 +22,6 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Name from '../../../../components/app/name';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import type { AssetIdentifier } from './types';
 
 const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {

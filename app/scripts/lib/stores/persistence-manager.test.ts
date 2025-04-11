@@ -2,9 +2,9 @@
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
-import { PersistenceManager } from './persistence-manager';
-import ExtensionStore from './extension-store';
 import type { MetaMaskStateType } from './base-store';
+import ExtensionStore from './extension-store';
+import { PersistenceManager } from './persistence-manager';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 

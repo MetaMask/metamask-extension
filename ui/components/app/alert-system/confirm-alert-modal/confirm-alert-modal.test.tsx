@@ -1,8 +1,9 @@
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-import { Severity } from '../../../../helpers/constants/design-system';
+
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { Severity } from '../../../../helpers/constants/design-system';
 import type {
   ConfirmAlertModalProps} from './confirm-alert-modal';
 import {

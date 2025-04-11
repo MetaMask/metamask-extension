@@ -1,5 +1,5 @@
-import type { Agent as HttpsAgent } from 'node:https';
 import type { Agent as HttpAgent } from 'node:http';
+import type { Agent as HttpsAgent } from 'node:https';
 import type { InferredOptionTypes, Options } from 'yargs';
 
 // #region utils

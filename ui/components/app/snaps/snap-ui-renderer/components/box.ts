@@ -1,6 +1,7 @@
 import type { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
+
 import {
   AlignItems,
   Display,

@@ -1,14 +1,15 @@
 import React from 'react';
+
 import {
   BackgroundColor,
   IconColor,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export default function SwapIcon({
   onClick,

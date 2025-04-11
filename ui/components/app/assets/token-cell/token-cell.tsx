@@ -1,13 +1,28 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { useTokenDisplayInfo } from '../hooks';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import type {
+  SafeChain} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  useSafeChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { setEditedNetwork } from '../../../../store/actions';
 import {
   Box,
   ButtonSecondary,
@@ -18,21 +33,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setEditedNetwork } from '../../../../store/actions';
-import type {
-  SafeChain} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useTokenDisplayInfo } from '../hooks';
 import type { TokenWithFiatAmount } from '../types';
 import {
   TokenCellBadge,

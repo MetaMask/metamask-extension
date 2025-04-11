@@ -1,14 +1,13 @@
-import React from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
-
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import configureStore from '../../../../store/store';
 import GasDetailsItem from './gas-details-item';
 
 jest.mock('../../../../store/actions', () => ({

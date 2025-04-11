@@ -1,8 +1,8 @@
 import { TransactionType } from '@metamask/transaction-controller';
 
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import type { SecurityAlertResponse } from '../types/confirm';
 import useCurrentSignatureSecurityAlertResponse from './useCurrentSignatureSecurityAlertResponse';
 

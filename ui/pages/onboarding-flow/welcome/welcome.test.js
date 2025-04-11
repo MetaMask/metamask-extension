@@ -1,19 +1,20 @@
-import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  setFirstTimeFlowType,
-  setTermsOfUseLastAgreed,
-} from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  setFirstTimeFlowType,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
 import OnboardingWelcome from './welcome';
 
 const mockHistoryReplace = jest.fn();

@@ -1,5 +1,6 @@
-import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
 import { getDryRunMessage, parseArgv } from '../utils/cli';
 import { getBuildTypes } from '../utils/config';
 import { Browsers } from '../utils/helpers';

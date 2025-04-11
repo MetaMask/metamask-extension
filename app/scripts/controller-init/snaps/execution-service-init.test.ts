@@ -1,15 +1,16 @@
+import { Messenger } from '@metamask/base-controller';
 import {
   IframeExecutionService,
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
-import type { ControllerInitRequest } from '../types';
-import { buildControllerInitRequestMock } from '../test/utils';
+
 import type {
   ExecutionServiceMessenger} from '../messengers/snaps';
 import {
   getExecutionServiceMessenger,
 } from '../messengers/snaps';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { ExecutionServiceInit } from './execution-service-init';
 
 jest.mock('@metamask/snaps-controllers');

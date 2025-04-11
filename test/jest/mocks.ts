@@ -1,3 +1,4 @@
+import { keyringTypeToName } from '@metamask/accounts-controller';
 import {
   EthAccountType,
   EthMethod,
@@ -10,11 +11,12 @@ import {
   SolScope,
   SolMethod,
 } from '@metamask/keyring-api';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { v4 as uuidv4 } from 'uuid';
-import { keyringTypeToName } from '@metamask/accounts-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { Json } from '@metamask/utils';
+import { v4 as uuidv4 } from 'uuid';
+
+import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
 import type {
   DraftTransaction} from '../../ui/ducks/send';
 import {
@@ -23,7 +25,6 @@ import {
 } from '../../ui/ducks/send';
 import type { MetaMaskReduxState } from '../../ui/store/store';
 import type mockState from '../data/mock-state.json';
-import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
 
 export type MockState = typeof mockState;
 

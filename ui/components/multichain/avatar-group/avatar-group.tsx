@@ -1,8 +1,7 @@
-import * as React from 'react';
 import classnames from 'classnames';
+import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { getUseBlockie } from '../../../selectors';
-import { Text } from '../../component-library/text';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -12,24 +11,26 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarTokenSize,
-  AvatarToken,
-} from '../../component-library/avatar-token';
-import { Box } from '../../component-library/box';
+import { getUseBlockie } from '../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
 } from '../../component-library/avatar-account';
 import {
+  AvatarBase,
+  AvatarBaseSize,
+} from '../../component-library/avatar-base';
+import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../component-library/avatar-network';
 import {
-  AvatarBase,
-  AvatarBaseSize,
-} from '../../component-library/avatar-base';
+  AvatarTokenSize,
+  AvatarToken,
+} from '../../component-library/avatar-token';
+import { Box } from '../../component-library/box';
+import { Text } from '../../component-library/text';
 import type { AvatarGroupProps} from './avatar-group.types';
 import { AvatarType } from './avatar-group.types';
 

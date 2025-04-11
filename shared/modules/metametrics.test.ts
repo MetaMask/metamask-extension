@@ -3,6 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+
 import { createTestProviderTools } from '../../test/stub/provider';
 import { CHAIN_IDS } from '../constants/network';
 import type { TransactionMetricsRequest } from '../types/metametrics';

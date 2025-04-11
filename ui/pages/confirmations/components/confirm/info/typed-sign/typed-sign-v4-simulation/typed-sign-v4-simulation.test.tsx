@@ -1,19 +1,19 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import { act } from 'react-dom/test-utils';
 import type {
   DecodingData} from '@metamask/signature-controller';
 import {
   DecodingDataChangeType,
 } from '@metamask/signature-controller';
 import { waitFor } from '@testing-library/dom';
+import React from 'react';
+import { act } from 'react-dom/test-utils';
+import configureMockStore from 'redux-mock-store';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import {
   permitSignatureMsg,
   seaportSignatureMsg,
 } from '../../../../../../../../test/data/confirmations/typed_sign';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
 import TypedSignV4Simulation from './typed-sign-v4-simulation';
 

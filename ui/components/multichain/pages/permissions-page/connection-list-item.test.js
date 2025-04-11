@@ -1,9 +1,10 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import configureStore from '../../../../store/store';
+import React from 'react';
+
 import mockState from '../../../../../test/data/mock-state.json';
-import { getURLHost } from '../../../../helpers/utils/util';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { getURLHost } from '../../../../helpers/utils/util';
+import configureStore from '../../../../store/store';
 import { ConnectionListItem } from './connection-list-item';
 
 describe('ConnectionListItem', () => {

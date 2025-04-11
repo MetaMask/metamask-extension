@@ -1,11 +1,12 @@
 const { strict: assert } = require('assert');
+
+const { MOCK_META_METRICS_ID } = require('../../constants');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   logInWithBalanceValidation,
   getEventPayloads,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../../constants');
 
 describe('Unlock wallet', function () {
   async function mockSegment(mockServer) {

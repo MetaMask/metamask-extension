@@ -1,8 +1,9 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-import { BalanceChangeRow } from './balance-change-row';
+import React from 'react';
+
 import { AmountPill } from './amount-pill';
 import { AssetPill } from './asset-pill';
+import { BalanceChangeRow } from './balance-change-row';
 import { IndividualFiatDisplay } from './fiat-display';
 import type { BalanceChange } from './types';
 

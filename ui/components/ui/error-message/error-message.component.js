@@ -1,7 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, IconName, IconSize } from '../../component-library';
+import React from 'react';
+
 import { IconColor } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 /**
  * @deprecated The `<ErrorMessage />` component has been deprecated in favor of the new `<BannerAlert>` component from the component-library.

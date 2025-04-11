@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
-import TransactionBreakdown from './transaction-breakdown.component';
+
 import { getTransactionBreakdownData } from './transaction-breakdown-utils';
+import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction, isTokenApprove } = ownProps;

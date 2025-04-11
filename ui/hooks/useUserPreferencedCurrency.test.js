@@ -1,11 +1,11 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
+import React from 'react';
 import { Provider } from 'react-redux';
 
-import mockState from '../../test/data/mock-state.json';
-import configureStore from '../store/store';
-import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import mockState from '../../test/data/mock-state.json';
+import { mockNetworkState } from '../../test/stub/networks';
+import configureStore from '../store/store';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
 const renderUseUserPreferencedCurrency = (state, value, restProps) => {

@@ -3,7 +3,6 @@ import React from 'react';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
-
 import { ConfirmInfoRowCurrency } from './currency';
 
 // TODO: Replace `any` with type

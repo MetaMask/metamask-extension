@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
+
 import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../shared/constants/gas';
+import { Text } from '../../../../../components/component-library';
 import {
   FontWeight,
   TextColor,
@@ -11,7 +13,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { isMetamaskSuggestedGasEstimate } from '../../../../../helpers/utils/gas';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
-import { Text } from '../../../../../components/component-library';
 
 const EditGasToolTip = ({
   editGasMode,

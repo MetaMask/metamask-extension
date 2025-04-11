@@ -1,10 +1,10 @@
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
   permitSingleSignatureMsg,
   seaportSignatureMsg,
   unapprovedTypedSignMsgV1,
 } from '../../../../test/data/confirmations/typed_sign';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { useTypesSignSimulationEnabledInfo } from './useTypesSignSimulationEnabledInfo';
 
 describe('useTypesSignSimulationEnabledInfo', () => {

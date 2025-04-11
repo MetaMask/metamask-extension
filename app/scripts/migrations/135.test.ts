@@ -1,4 +1,5 @@
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+
 import type { VersionedData } from './135';
 import { migrate } from './135';
 

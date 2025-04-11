@@ -1,11 +1,12 @@
-const path = require('path');
-const fs = require('fs');
 const { execSync } = require('child_process');
-const yargs = require('yargs/yargs');
+const fs = require('fs');
+const path = require('path');
 const { hideBin } = require('yargs/helpers');
-const { runInShell } = require('../../development/lib/run-command');
-const { exitWithError } = require('../../development/lib/exit-with-error');
+const yargs = require('yargs/yargs');
+
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
+const { exitWithError } = require('../../development/lib/exit-with-error');
+const { runInShell } = require('../../development/lib/run-command');
 const {
   filterE2eChangedFiles,
   getChangedAndNewFiles,

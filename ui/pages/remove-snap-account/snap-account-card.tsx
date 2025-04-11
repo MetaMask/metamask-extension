@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getMetaMaskAccountsOrdered } from '../../selectors';
-import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
+
 import { Box } from '../../components/component-library';
 import { AccountListItem } from '../../components/multichain/account-list-item';
+import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
+import { getMetaMaskAccountsOrdered } from '../../selectors';
 import type { MergedInternalAccount } from '../../selectors/selectors.types';
 
 // Wrapper component of AccountListItem with proper styling and auto populating information for the selected account

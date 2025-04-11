@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
-import Jazzicon from '../jazzicon';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({

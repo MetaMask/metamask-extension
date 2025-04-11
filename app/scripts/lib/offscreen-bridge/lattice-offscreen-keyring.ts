@@ -1,4 +1,5 @@
 import LatticeKeyring from 'eth-lattice-keyring';
+
 import {
   OffscreenCommunicationTarget,
   KnownOrigins,

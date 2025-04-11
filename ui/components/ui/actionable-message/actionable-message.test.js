@@ -1,8 +1,8 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 
-import { renderWithProvider } from '../../../../test/jest';
 import ActionableMessage from '.';
+import { renderWithProvider } from '../../../../test/jest';
 
 const createProps = (customProps = {}) => {
   return {

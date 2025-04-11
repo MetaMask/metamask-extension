@@ -1,6 +1,7 @@
 import React from 'react';
-import { PERMISSIONS } from '../../../../helpers/constants/routes';
+
 import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
+import { PERMISSIONS } from '../../../../helpers/constants/routes';
 import { ConnectionListItem } from './connection-list-item';
 
 export default {

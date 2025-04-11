@@ -1,5 +1,6 @@
-import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import * as React from 'react';
+
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { IconName } from '../icon';
 import { Checkbox } from './checkbox';

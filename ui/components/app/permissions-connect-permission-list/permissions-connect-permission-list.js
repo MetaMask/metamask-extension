@@ -1,12 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
 import { getWeightedPermissions } from '../../../helpers/utils/permission';
+import { getSnapName } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapsMetadata } from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
-import PermissionCell from '../permission-cell';
 import { Box } from '../../component-library';
+import PermissionCell from '../permission-cell';
 
 /**
  * Get one or more permission descriptions for a permission name.

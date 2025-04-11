@@ -1,6 +1,7 @@
-import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 /**

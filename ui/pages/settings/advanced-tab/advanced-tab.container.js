@@ -1,7 +1,13 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import {
+  displayErrorInSettings,
+  hideErrorInSettings,
+} from '../../../ducks/app/app';
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
@@ -16,11 +22,6 @@ import {
   showModal,
   setManageInstitutionalWallets,
 } from '../../../store/actions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
-import {
-  displayErrorInSettings,
-  hideErrorInSettings,
-} from '../../../ducks/app/app';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {

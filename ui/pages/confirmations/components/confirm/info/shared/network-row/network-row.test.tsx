@@ -1,13 +1,13 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import React from 'react';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
 } from '../../../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';

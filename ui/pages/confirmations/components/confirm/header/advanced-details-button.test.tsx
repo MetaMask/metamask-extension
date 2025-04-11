@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';

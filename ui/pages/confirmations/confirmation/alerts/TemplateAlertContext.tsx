@@ -8,13 +8,13 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 
-import useAlerts from '../../../../hooks/useAlerts';
 import { AlertActionHandlerProvider } from '../../../../components/app/alert-system/contexts/alertActionHandler';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import useAlerts from '../../../../hooks/useAlerts';
 import { getMemoizedUnapprovedConfirmations } from '../../../../selectors';
-import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 import { useAlertsActions } from './useAlertsActions';
+import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 
 type TemplateAlertContextType = {
   hasAlerts: boolean;

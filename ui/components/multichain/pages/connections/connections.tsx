@@ -1,7 +1,14 @@
+import type { NonEmptyArray } from '@metamask/utils';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import type { NonEmptyArray } from '@metamask/utils';
+
+import {
+  AccountListItem,
+  AccountListItemMenuTypes,
+  Toast,
+  ToastContainer,
+} from '../..';
 import {
   AlignItems,
   BackgroundColor,
@@ -27,6 +34,10 @@ import {
   getUnconnectedAccounts,
 } from '../../../../selectors';
 import {
+  requestAccountsAndChainPermissionsWithId,
+  removePermissionsFor,
+} from '../../../../store/actions';
+import {
   AvatarFavicon,
   AvatarFaviconSize,
   Box,
@@ -42,22 +53,12 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import {
-  AccountListItem,
-  AccountListItemMenuTypes,
-  Toast,
-  ToastContainer,
-} from '../..';
-import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
-import {
-  requestAccountsAndChainPermissionsWithId,
-  removePermissionsFor,
-} from '../../../../store/actions';
 import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
+import { Content, Footer, Header, Page } from '../page';
 import type {
   AccountType,
   ConnectedSites,

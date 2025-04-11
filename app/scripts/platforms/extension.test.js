@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+
 import ExtensionPlatform from './extension';
 
 const TEST_URL =

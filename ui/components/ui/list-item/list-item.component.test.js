@@ -1,5 +1,6 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Preloader from '../icon/preloader/preloader-icon.component';
 import Send from '../icon/send-icon.component';

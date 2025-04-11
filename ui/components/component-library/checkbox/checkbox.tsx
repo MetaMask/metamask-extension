@@ -1,6 +1,6 @@
+import classnames from 'classnames';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import React from 'react';
-import classnames from 'classnames';
 
 import {
   BackgroundColor,
@@ -10,10 +10,9 @@ import {
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-
 import { type PolymorphicRef, Box } from '../box';
-import { Text, type TextProps } from '../text';
 import { Icon, IconName } from '../icon';
+import { Text, type TextProps } from '../text';
 import type { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
 export const Checkbox: CheckboxComponent = React.forwardRef(

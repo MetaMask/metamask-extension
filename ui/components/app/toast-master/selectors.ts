@@ -1,5 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {

@@ -1,4 +1,5 @@
 import { SubjectType } from '@metamask/permission-controller';
+
 import migration69 from './069';
 
 describe('migration #69', () => {

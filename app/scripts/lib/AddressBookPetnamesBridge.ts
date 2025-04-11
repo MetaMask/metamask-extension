@@ -11,6 +11,7 @@ import {
 } from '@metamask/name-controller';
 import type { Hex} from '@metamask/utils';
 import { isStrictHexString } from '@metamask/utils';
+
 import type {
   PetnamesBridgeMessenger,
   PetnameEntry} from './AbstractPetnamesBridge';

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import InfoIconInverted from '../icon/info-icon-inverted.component';
-import { Severity, TextColor } from '../../../helpers/constants/design-system';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+
 import { MILLISECOND } from '../../../../shared/constants/time';
+import { Severity, TextColor } from '../../../helpers/constants/design-system';
 import { ButtonIcon, IconName, IconSize, Text } from '../../component-library';
+import InfoIconInverted from '../icon/info-icon-inverted.component';
 
 /**
  * @deprecated `<Callout />` has been deprecated in favor of the `<BannerAlert />`

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box } from '../../../../component-library';
+
 import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../component-library';
 
 export const SendPageRow = ({
   children,

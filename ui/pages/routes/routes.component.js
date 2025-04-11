@@ -1,16 +1,31 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component, Suspense } from 'react';
-import { Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
+import { Route, Switch } from 'react-router-dom';
 
-import Authenticated from '../../helpers/higher-order-components/authenticated';
-import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
-import Loading from '../../components/ui/loading-screen';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../shared/constants/app';
+import {
+  isCorrectDeveloperTransactionType,
+  isCorrectSignatureApprovalType,
+} from '../../../shared/lib/confirmation.utils';
+import Alerts from '../../components/app/alerts';
+import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
+import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
+import Loading from '../../components/ui/loading-screen';
+import Authenticated from '../../helpers/higher-order-components/authenticated';
+import Initialized from '../../helpers/higher-order-components/initialized';
+import PermissionsConnect from '../permissions-connect';
 import {
   AppHeader,
   AccountListMenu,
@@ -19,9 +34,7 @@ import {
   ImportNftsModal,
   ImportTokensModal,
 } from '../../components/multichain';
-import Alerts from '../../components/app/alerts';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-
 import {
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -49,22 +62,11 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
-
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import { Box } from '../../components/component-library';
-import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
-import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
@@ -75,10 +77,6 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
-import {
-  isCorrectDeveloperTransactionType,
-  isCorrectSignatureApprovalType,
-} from '../../../shared/lib/confirmation.utils';
 import {
   getConnectingLabel,
   hideAppHeader,

@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+
 import {
   getApprovalFlows,
   getApprovalsByOrigin,

@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../ui/button/button.component';
+import React, { Component } from 'react';
+
 import { ButtonIcon, IconName } from '../../../component-library';
+import Button from '../../../ui/button/button.component';
 
 export default class NewAccountModal extends Component {
   static contextTypes = {

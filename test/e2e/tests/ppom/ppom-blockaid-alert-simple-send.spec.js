@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -6,12 +7,11 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 const {
-  loginWithoutBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-
-const {
   mockMultiNetworkBalancePolling,
 } = require('../../mock-balance-polling/mock-balance-polling');
+const {
+  loginWithoutBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 

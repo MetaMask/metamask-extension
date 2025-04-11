@@ -1,6 +1,7 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
+import React from 'react';
+
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../confirm/info/shared/constants';

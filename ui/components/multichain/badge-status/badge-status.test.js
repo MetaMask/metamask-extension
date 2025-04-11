@@ -1,12 +1,12 @@
 import React from 'react';
-import mockState from '../../../../test/data/mock-state.json';
 
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest';
 import { BadgeStatus } from './badge-status';
 
 describe('Badge Status', () => {

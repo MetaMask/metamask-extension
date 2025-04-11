@@ -1,11 +1,12 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
-import { useMultichainWalletSnapClient } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import React from 'react';
+
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
+import { useMultichainWalletSnapClient } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import configureStore from '../../../store/store';
 import WhatsNewModal from './whats-new-modal';
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({

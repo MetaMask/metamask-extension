@@ -1,4 +1,9 @@
 import { useSelector } from 'react-redux';
+
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../ducks/metamask/metamask';
 import {
   getChainIdsToPoll,
   getUseExternalServices,
@@ -9,10 +14,6 @@ import {
   tokenListStartPolling,
   tokenListStopPollingByPollingToken,
 } from '../store/actions';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {

@@ -1,10 +1,10 @@
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Cronjob', function () {

@@ -1,3 +1,5 @@
+import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type {
   NetworkMetadata,
   NetworkState} from '@metamask/network-controller';
@@ -5,10 +7,9 @@ import {
   NetworkStatus,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { v4 as uuidv4 } from 'uuid';
 import type { Hex } from '@metamask/utils';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { v4 as uuidv4 } from 'uuid';
+
 import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,

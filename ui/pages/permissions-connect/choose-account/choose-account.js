@@ -1,9 +1,10 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { SubjectType } from '@metamask/permission-controller';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { SubjectType } from '@metamask/permission-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+import { Box, Text } from '../../../components/component-library';
 import AccountList from '../../../components/ui/account-list';
 import { PageContainerFooter } from '../../../components/ui/page-container';
 import {
@@ -15,7 +16,7 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const ChooseAccount = ({
   selectedAccountAddresses,

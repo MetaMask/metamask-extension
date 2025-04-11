@@ -1,9 +1,10 @@
+import { ApprovalType } from '@metamask/controller-utils';
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor } from '@testing-library/react';
 
-import { ApprovalType } from '@metamask/controller-utils';
+
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import Confirmation from '../confirmation';
 

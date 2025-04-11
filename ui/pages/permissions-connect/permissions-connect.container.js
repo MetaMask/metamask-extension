@@ -1,9 +1,20 @@
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { connect } from 'react-redux';
+
+import { getNativeCurrency } from '../../ducks/metamask/metamask';
+import {
+  CONNECT_ROUTE,
+  CONNECT_CONFIRM_PERMISSIONS_ROUTE,
+  CONNECT_SNAPS_CONNECT_ROUTE,
+  CONNECT_SNAP_INSTALL_ROUTE,
+  CONNECT_SNAP_UPDATE_ROUTE,
+  CONNECT_SNAP_RESULT_ROUTE,
+} from '../../helpers/constants/routes';
+import { formatDate, getURLHostName } from '../../helpers/utils/util';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -15,9 +26,6 @@ import {
   getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
-import { getNativeCurrency } from '../../ducks/metamask/metamask';
-
-import { formatDate, getURLHostName } from '../../helpers/utils/util';
 import {
   approvePermissionsRequest,
   rejectPermissionsRequest,
@@ -27,14 +35,6 @@ import {
   rejectPendingApproval,
   setSnapsInstallPrivacyWarningShownStatus,
 } from '../../store/actions';
-import {
-  CONNECT_ROUTE,
-  CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  CONNECT_SNAPS_CONNECT_ROUTE,
-  CONNECT_SNAP_INSTALL_ROUTE,
-  CONNECT_SNAP_UPDATE_ROUTE,
-  CONNECT_SNAP_RESULT_ROUTE,
-} from '../../helpers/constants/routes';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {

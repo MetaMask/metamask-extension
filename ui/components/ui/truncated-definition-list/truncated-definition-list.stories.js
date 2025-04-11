@@ -1,4 +1,5 @@
 import React from 'react';
+
 import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {

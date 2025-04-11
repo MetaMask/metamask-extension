@@ -1,9 +1,8 @@
-import React from 'react';
 import classnames from 'classnames';
 import { memoize } from 'lodash';
+import React from 'react';
 
 import { BREAKPOINTS } from '../../../helpers/constants/design-system';
-
 import type {
   BoxComponent,
   BoxProps,

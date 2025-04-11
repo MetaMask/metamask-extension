@@ -1,48 +1,48 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, forwardRef } from 'react';
-import PropTypes from 'prop-types';
-import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
+import copyToClipboard from 'copy-to-clipboard';
+import { cloneDeep } from 'lodash';
 import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, { useState, useContext, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { cloneDeep } from 'lodash';
 
-import AccountListItem from '../../components/app/account-list-item';
-import Tooltip from '../../components/ui/tooltip';
-import { PageContainerFooter } from '../../components/ui/page-container';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getNativeCurrency } from '../../ducks/metamask/metamask';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { COPY_OPTIONS } from '../../../shared/constants/copy';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
+import AccountListItem from '../../components/app/account-list-item';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
   Icon,
 } from '../../components/component-library';
-import { COPY_OPTIONS } from '../../../shared/constants/copy';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { useScrollRequired } from '../../hooks/useScrollRequired';
+import { PageContainerFooter } from '../../components/ui/page-container';
+import Tooltip from '../../components/ui/tooltip';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import {
   BackgroundColor,
   BorderRadius,
   Display,
   IconColor,
 } from '../../helpers/constants/design-system';
-import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { useScrollRequired } from '../../hooks/useScrollRequired';
+import {
+  getTargetAccountWithSendEtherInfo,
+  unconfirmedTransactionsListSelector,
+} from '../../selectors';
 import {
   decryptMsg,
   cancelDecryptMsg,
   decryptMsgInline,
 } from '../../store/actions';
-import {
-  getTargetAccountWithSendEtherInfo,
-  unconfirmedTransactionsListSelector,
-} from '../../selectors';
 import { Nav } from '../confirmations/components/confirm/nav';
 
 const Header = ({ approvalId }) => {

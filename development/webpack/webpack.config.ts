@@ -2,9 +2,15 @@
  * @file The main webpack configuration file for the browser extension.
  */
 
+import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import autoprefixer from 'autoprefixer';
+import CopyPlugin from 'copy-webpack-plugin';
+import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
+import discardFonts from 'postcss-discard-font-face';
+import rtlCss from 'postcss-rtlcss';
 import {
   ProvidePlugin,
   type Configuration,
@@ -13,13 +19,10 @@ import {
   type MemoryCacheOptions,
   type FileCacheOptions,
 } from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
-import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
-import rtlCss from 'postcss-rtlcss';
-import autoprefixer from 'autoprefixer';
-import discardFonts from 'postcss-discard-font-face';
-import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
-import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
+
+import { parseArgv, getDryRunMessage } from './utils/cli';
+import { getBuildTypes, getVariables } from './utils/config';
+import { getLatestCommit } from './utils/git';
 import {
   type Manifest,
   collectEntries,
@@ -27,13 +30,11 @@ import {
   NODE_MODULES_RE,
   __HMR_READY__,
 } from './utils/helpers';
-import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
-import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getBuildTypes, getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import { getLatestCommit } from './utils/git';
+import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
+import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 
 const buildTypes = getBuildTypes();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);

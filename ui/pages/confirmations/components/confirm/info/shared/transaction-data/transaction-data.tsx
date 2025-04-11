@@ -1,37 +1,38 @@
-import React from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
-import _ from 'lodash';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
-import {
-  Display,
-  FlexWrap,
-  JustifyContent,
-} from '../../../../../../../helpers/constants/design-system';
-import { Box } from '../../../../../../../components/component-library';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
-import Preloader from '../../../../../../../components/ui/icon/preloader';
+import _ from 'lodash';
+import React from 'react';
+
+import type { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
+import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import type {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam} from '../../../../../../../../shared/types/transaction-decode';
 import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
+import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
+  ConfirmInfoRowDivider,
+  ConfirmInfoRowText,
+} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { Box } from '../../../../../../../components/component-library';
+import {
+  Display,
+  FlexWrap,
+  JustifyContent,
+} from '../../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import Preloader from '../../../../../../../components/ui/icon/preloader';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import type { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
-import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
+import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 
 export const TransactionData = ({
   data,

@@ -1,36 +1,30 @@
+import type { ChainId } from '@metamask/bridge-controller';
+import { KeyringRpcMethod } from '@metamask/keyring-api';
 import {
   type TransactionMeta,
   type TransactionParams,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useDispatch, useSelector } from 'react-redux';
-import { KeyringRpcMethod } from '@metamask/keyring-api';
-import { useEffect } from 'react';
 import type { Hex } from '@metamask/utils';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import type { ChainId } from '@metamask/bridge-controller';
-import {
-  forceUpdateMetamaskState,
-  addTransaction,
-  updateTransaction,
-  addTransactionAndWaitForPublish,
-  setDefaultHomeActiveTabName,
-} from '../../../store/actions';
+
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   getHexMaxGasLimit,
   getTxGasEstimates,
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
-  getMultichainCurrentChainId,
-  getMultichainIsSolana,
-} from '../../../selectors/multichain';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   checkNetworkAndAccountSupports1559,
   getMemoizedUnapprovedTemplatedConfirmations,
@@ -39,9 +33,16 @@ import {
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-} from '../../../helpers/constants/routes';
+  getMultichainCurrentChainId,
+  getMultichainIsSolana,
+} from '../../../selectors/multichain';
+import {
+  forceUpdateMetamaskState,
+  addTransaction,
+  updateTransaction,
+  addTransactionAndWaitForPublish,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();

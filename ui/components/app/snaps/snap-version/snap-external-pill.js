@@ -1,5 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -9,7 +10,6 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-
 import {
   Box,
   ButtonLink,

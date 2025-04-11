@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import { isNullish } from '../../../../../helpers/utils/util';
-import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
-import { I18nContext } from '../../../../../contexts/i18n';
 import Box from '../../../../../components/ui/box';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
+import { I18nContext } from '../../../../../contexts/i18n';
+import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
+import { isNullish } from '../../../../../helpers/utils/util';
 
 function determineTrendInfo(trend, t) {
   switch (trend) {

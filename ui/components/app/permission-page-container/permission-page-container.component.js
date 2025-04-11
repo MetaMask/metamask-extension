@@ -1,32 +1,31 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { SubjectType } from '@metamask/permission-controller';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
-import { SubjectType } from '@metamask/permission-controller';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import { PermissionPageContainerContent } from '.';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
-
-import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
-import { getDedupedSnaps } from '../../../helpers/utils/util';
-
 import {
   BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
+import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+import { getDedupedSnaps } from '../../../helpers/utils/util';
+import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import {
   getRequestedCaip25CaveatValue,
   getCaip25PermissionsResponse,
 } from '../../../pages/permissions-connect/connect-page/utils';
-import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
-import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+import { Box } from '../../component-library';
+import PermissionsConnectFooter from '../permissions-connect-footer';
+import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
-import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {

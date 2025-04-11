@@ -1,11 +1,12 @@
 import type React from 'react';
+
 import type { PolymorphicComponentPropWithRef } from '../box';
+import type { HelpTextProps } from '../help-text/help-text.types';
+import type { LabelProps } from '../label/label.types';
 import type {
   TextFieldStyleUtilityProps,
   TextFieldProps,
 } from '../text-field/text-field.types';
-import type { LabelProps } from '../label/label.types';
-import type { HelpTextProps } from '../help-text/help-text.types';
 
 export enum FormTextFieldSize {
   Sm = 'sm',

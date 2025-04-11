@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+
 import type { EtherDenomination } from '../../../../shared/constants/common';
 
 export type CurrencyDisplayProps = OverridingUnion<

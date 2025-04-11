@@ -1,11 +1,13 @@
-import React, { useContext, useRef } from 'react';
-import PropTypes from 'prop-types';
-
 import BigNumber from 'bignumber.js';
+import PropTypes from 'prop-types';
+import React, { useContext, useRef } from 'react';
+
+
 import { EditGasModes } from '../../../../../shared/constants/gas';
-
+import { BannerAlert, Text } from '../../../../components/component-library';
 import Button from '../../../../components/ui/button';
-
+import InfoTooltip from '../../../../components/ui/info-tooltip';
+import { I18nContext } from '../../../../contexts/i18n';
 import {
   TextAlign,
   FontWeight,
@@ -13,13 +15,8 @@ import {
   TextVariant,
   Severity,
 } from '../../../../helpers/constants/design-system';
-import { BannerAlert, Text } from '../../../../components/component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../../helpers/utils/confirm-tx.util';
-
-import InfoTooltip from '../../../../components/ui/info-tooltip';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
-
-import { I18nContext } from '../../../../contexts/i18n';
 
 export default function EditGasDisplay({
   mode = EditGasModes.modifyInPlace,

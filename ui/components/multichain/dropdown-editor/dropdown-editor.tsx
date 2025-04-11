@@ -1,6 +1,19 @@
+import classnames from 'classnames';
 import type { ReactNode} from 'react';
 import React, { useEffect, useRef, useState } from 'react';
-import classnames from 'classnames';
+
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+  Display,
+  IconColor,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   ButtonIcon,
@@ -14,18 +27,6 @@ import {
   PopoverPosition,
   Text,
 } from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
-  Display,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
 
 export enum DropdownEditorStyle {

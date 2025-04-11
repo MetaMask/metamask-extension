@@ -1,6 +1,14 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  HardwareAffiliateLinks,
+  HardwareAffiliateTutorialLinks,
+} from '../../../../shared/constants/hardware-wallets';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   Text,
   Box,
@@ -11,20 +19,10 @@ import {
   BUTTON_SIZES,
   BUTTON_VARIANT,
 } from '../../../components/component-library';
+import LogoLattice from '../../../components/ui/logo/logo-lattice';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
-import LogoLattice from '../../../components/ui/logo/logo-lattice';
-
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-  HardwareAffiliateLinks,
-  HardwareAffiliateTutorialLinks,
-} from '../../../../shared/constants/hardware-wallets';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { openWindow } from '../../../helpers/utils/window';
 import {
   AlignItems,
   Display,
@@ -35,6 +33,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { openWindow } from '../../../helpers/utils/window';
 
 // Not all browsers have usb support. In particular, Firefox does
 // not support usb. More information on that can be found here:

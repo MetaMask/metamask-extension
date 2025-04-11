@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
 import CurrencyInput from '../currency-input';
 
 // Noticed this component is not used in codebase;

@@ -1,7 +1,8 @@
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getTokenExchangeRates, getShouldShowFiat } from '../../../selectors';
+import { connect } from 'react-redux';
+
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getTokenExchangeRates, getShouldShowFiat } from '../../../selectors';
 import TokenInput from './token-input.component';
 
 const mapStateToProps = (state) => {

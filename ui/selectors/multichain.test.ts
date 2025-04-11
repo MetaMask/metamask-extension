@@ -1,11 +1,10 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import type { Hex } from '@metamask/utils';
-import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
+
+import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import type {
   MultichainProviderConfig} from '../../shared/constants/multichain/networks';
 import {
@@ -13,19 +12,22 @@ import {
   MultichainNetworks
 } from '../../shared/constants/multichain/networks';
 import {
+  CHAIN_IDS,
+  ETH_TOKEN_IMAGE_URL,
+  MAINNET_DISPLAY_NAME,
+} from '../../shared/constants/network';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import {
   MOCK_ACCOUNTS,
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
-import {
-  CHAIN_IDS,
-  ETH_TOKEN_IMAGE_URL,
-  MAINNET_DISPLAY_NAME,
-} from '../../shared/constants/network';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import type { AccountsState } from './accounts';
 import type {
   MultichainState} from './multichain';
@@ -45,7 +47,6 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
-import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &
   AccountsState & {

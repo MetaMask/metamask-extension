@@ -1,9 +1,10 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+
+import { AccountListItemMenu } from '.';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { AccountListItemMenu } from '.';
 
 const mockShowModal = jest.fn();
 const mockAddPermittedAccount = jest.fn();

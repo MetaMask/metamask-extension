@@ -1,4 +1,5 @@
 import type Jazzicon from '@metamask/jazzicon';
+
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**

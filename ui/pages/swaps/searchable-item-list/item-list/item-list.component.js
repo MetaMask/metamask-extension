@@ -1,21 +1,22 @@
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
+
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/common';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
+import Button from '../../../../components/ui/button';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
-import Button from '../../../../components/ui/button';
-import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../../contexts/i18n';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getURLHostName } from '../../../../helpers/utils/util';
 import {
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/common';
-import { getURLHostName } from '../../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 export default function ItemList({
   results = [],

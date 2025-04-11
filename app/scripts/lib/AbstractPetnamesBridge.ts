@@ -1,15 +1,15 @@
 import type {
+  ActionConstraint,
+  EventConstraint,
+  RestrictedMessenger,
+} from '@metamask/base-controller';
+import type {
   NameController,
   NameStateChange,
   SetNameRequest} from '@metamask/name-controller';
 import {
   NameType
 } from '@metamask/name-controller';
-import type {
-  ActionConstraint,
-  EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {

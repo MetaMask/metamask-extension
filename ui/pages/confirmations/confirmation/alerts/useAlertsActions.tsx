@@ -3,12 +3,12 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
-import { useConfirmationNavigation } from '../../hooks/useConfirmationNavigation';
 import type {
   ApprovalsMetaMaskState} from '../../../../selectors';
 import {
   getApprovalsByOrigin,
 } from '../../../../selectors';
+import { useConfirmationNavigation } from '../../hooks/useConfirmationNavigation';
 
 export const useAlertsActions = (
   hideAlertModal: () => void,

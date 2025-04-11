@@ -1,11 +1,12 @@
-import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
+import { screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import configureStore from '../../../store/store';
 import AccountList from './account-list';
 
 const ONE_ETH_IN_WEI_AS_HEX = '0xde0b6b3a7640000';

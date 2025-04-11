@@ -1,7 +1,8 @@
-import BN from 'bn.js';
 import type { Hex } from '@metamask/utils';
-import { stringifyBalance } from '../../../../hooks/useTokenBalances';
+import BN from 'bn.js';
+
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 import type { AddressBalanceMapping } from '../types';
 
 type CalculateTokenBalanceParams = {

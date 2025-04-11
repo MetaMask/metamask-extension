@@ -1,13 +1,13 @@
 const { strict: assert } = require('assert');
-const { mockNetworkStateOld } = require('../../../stub/networks');
 
+const { mockNetworkStateOld } = require('../../../stub/networks');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   regularDelayMs,
   unlockWallet,
   tinyDelayMs,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 
 describe('Custom RPC history', function () {
   it(`creates first custom RPC entry`, async function () {

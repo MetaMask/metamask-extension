@@ -1,6 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
+import React, { useContext, useEffect, useState } from 'react';
+
+import { AccountListItem, CreateEthAccount } from '..';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  JustifyContent,
+  Display,
+  TextVariant,
+  TextColor,
+  IconColor,
+  FlexDirection,
+  AlignItems,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   Modal,
   ModalOverlay,
@@ -18,25 +37,6 @@ import {
   IconName,
   Icon,
 } from '../../component-library';
-import { AccountListItem, CreateEthAccount } from '..';
-
-import {
-  JustifyContent,
-  Display,
-  TextVariant,
-  TextColor,
-  IconColor,
-  FlexDirection,
-  AlignItems,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import type { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
   accounts: MergedInternalAccountWithCaipAccountId[];

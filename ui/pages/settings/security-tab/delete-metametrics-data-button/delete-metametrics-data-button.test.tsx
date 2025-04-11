@@ -1,9 +1,9 @@
+import { fireEvent } from '@testing-library/react';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
-import configureStore from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
@@ -11,7 +11,7 @@ import {
   getParticipateInMetaMetrics,
   getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
-import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
+import configureStore from '../../../../store/store';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
 
 jest.mock('react-redux', () => ({

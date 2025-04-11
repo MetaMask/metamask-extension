@@ -1,5 +1,6 @@
 import type { BannerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+
 import { mapToTemplate } from '../utils';
 import type { UIComponentFactory } from './types';
 

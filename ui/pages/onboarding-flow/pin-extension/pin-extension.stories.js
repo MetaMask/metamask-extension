@@ -1,4 +1,5 @@
 import React from 'react';
+
 import OnboardingPinExtension from './pin-extension';
 
 export default {

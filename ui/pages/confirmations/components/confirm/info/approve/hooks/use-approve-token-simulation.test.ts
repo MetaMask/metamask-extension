@@ -1,7 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { renderHookWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import {
   isSpendingCapUnlimited,

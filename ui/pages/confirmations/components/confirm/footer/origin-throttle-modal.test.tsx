@@ -1,12 +1,13 @@
+import { screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { screen, fireEvent } from '@testing-library/react';
+
 import '@testing-library/jest-dom/extend-expect';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import OriginThrottleModal from './origin-throttle-modal';
 
 const mockHideModal = jest.fn();

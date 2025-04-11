@@ -1,11 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
 import mockState from '../../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-import type { InternalAccountWithBalance } from '../../../../selectors';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import type { InternalAccountWithBalance } from '../../../../selectors';
 import { SrpListItem } from './srp-list-item';
 
 const mockTotalFiatBalance = '100';

@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
-
 import { isHexString } from '@metamask/utils';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
-import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -27,6 +26,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 
 export default class DomainInput extends Component {
   static contextTypes = {

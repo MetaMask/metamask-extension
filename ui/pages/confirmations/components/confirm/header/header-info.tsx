@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import {
@@ -20,6 +22,7 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import { AddressCopyButton } from '../../../../../components/multichain';
+import Identicon from '../../../../../components/ui/identicon';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
@@ -33,14 +36,12 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import type { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import Identicon from '../../../../../components/ui/identicon';
-import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {

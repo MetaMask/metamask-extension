@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+} from '../../ducks/bridge/bridge';
 import {
   getBridgeQuotes,
   getFromToken,
@@ -7,16 +13,11 @@ import {
   getToChain,
   getToToken,
 } from '../../ducks/bridge/selectors';
-import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import {
-  setDestTokenExchangeRates,
-  setDestTokenUsdExchangeRates,
-  setSrcTokenExchangeRates,
-} from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
-import { useMultichainSelector } from '../useMultichainSelector';
+import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
+import { useMultichainSelector } from '../useMultichainSelector';
 
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);

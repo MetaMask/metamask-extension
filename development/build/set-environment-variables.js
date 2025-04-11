@@ -1,5 +1,6 @@
-const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
+const { readFileSync } = require('node:fs');
+
 const { ENVIRONMENT } = require('./constants');
 
 /**

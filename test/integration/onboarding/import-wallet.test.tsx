@@ -1,20 +1,21 @@
-import { waitFor } from '@testing-library/react';
 import { BridgeBackgroundAction } from '@metamask/bridge-controller';
+import { waitFor } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../data/onboarding-completion-route.json';
-import { integrationTestRender } from '../../lib/render-helpers';
-import * as backgroundConnection from '../../../ui/store/background-connection';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import * as backgroundConnection from '../../../ui/store/background-connection';
+import { integrationTestRender } from '../../lib/render-helpers';
+import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import {
   clickElementById,
   createMockImplementation,
   waitForElementById,
   waitForElementByText,
 } from '../helpers';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),

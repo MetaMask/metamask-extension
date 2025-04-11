@@ -4,6 +4,7 @@ import type { Hex} from '@metamask/utils';
 import { add0x } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
 import {
   addHexes,
@@ -13,9 +14,9 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';

@@ -1,30 +1,31 @@
-import React, { useState, useMemo, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
+import React, { useState, useMemo, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
+import { Text } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextAlign,
   TextVariant,
   JustifyContent,
   FontWeight,
 } from '../../../helpers/constants/design-system';
-import {
-  ThreeStepProgressBar,
-  threeStepStages,
-} from '../../../components/app/step-progress-bar';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { setSeedPhraseBackedUp } from '../../../store/actions';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {

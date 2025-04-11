@@ -1,11 +1,12 @@
-import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { DECIMAL_REGEX } from '../../../../shared/constants/tokens';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { DECIMAL_REGEX } from '../../../../shared/constants/tokens';
 import { Text } from '../../component-library';
 
 export default function NumericInput({

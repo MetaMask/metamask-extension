@@ -1,5 +1,8 @@
 /* eslint-disable no-useless-escape */
 const { isEqual, omit } = require('lodash');
+
+const { MOCK_META_METRICS_ID } = require('../../constants');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   sendTransaction,
@@ -7,8 +10,6 @@ const {
   assertInAnyOrder,
   logInWithBalanceValidation,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to

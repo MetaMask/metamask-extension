@@ -1,17 +1,17 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
-import { addToAddressBook } from '../../../../store/actions';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getAddressBook,
   getInternalAccountByAddress,
 } from '../../../../selectors';
+import { getMultichainNetwork } from '../../../../selectors/multichain';
+import { addToAddressBook } from '../../../../store/actions';
 import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
-import { getMultichainNetwork } from '../../../../selectors/multichain';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';
 const ADD_NICKNAME_POPOVER = 'ADD_NICKNAME_POPOVER';

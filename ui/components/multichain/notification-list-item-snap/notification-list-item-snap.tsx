@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Box, Icon, IconName, Text, IconSize } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
@@ -14,11 +13,12 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
-import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
-import { SnapUIMarkdown } from '../../app/snaps/snap-ui-markdown';
 import { SnapIcon } from '../../app/snaps/snap-icon';
+import { SnapUIMarkdown } from '../../app/snaps/snap-ui-markdown';
+import { Box, Icon, IconName, Text, IconSize } from '../../component-library';
+import { NotificationListItemText } from '../notification-list-item-text';
+import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
 
 export type NotificationListItemSnapProps = {
   id: string;

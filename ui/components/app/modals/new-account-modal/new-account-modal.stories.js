@@ -1,4 +1,5 @@
 import React from 'react';
+
 import NewAccountModal from './new-account-modal.component';
 
 export default {

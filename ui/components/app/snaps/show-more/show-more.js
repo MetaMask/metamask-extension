@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-
 import classnames from 'classnames';
-import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
-import { Box, Button, ButtonVariant, Text } from '../../../component-library';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+
 import {
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Box, Button, ButtonVariant, Text } from '../../../component-library';
 
 export const ShowMore = ({ children, className = '', ...props }) => {
   const t = useI18nContext();

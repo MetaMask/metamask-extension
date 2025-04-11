@@ -1,6 +1,7 @@
 import React from 'react';
-import { Checkbox } from '../../component-library';
+
 import { NetworkListItem } from '.';
+import { Checkbox } from '../../component-library';
 
 export default {
   title: 'Components/Multichain/NetworkListItem',

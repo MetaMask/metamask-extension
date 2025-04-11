@@ -2,7 +2,6 @@
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../app/_locales/index.json';
 import testData from '../../../test/data/mock-state.json';
-
 import {
   getCurrentLocale,
   getIntlLocale,

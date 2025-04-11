@@ -1,4 +1,6 @@
 import React from 'react';
+
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -19,7 +21,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
-import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 export type CreateSnapAccountProps = {

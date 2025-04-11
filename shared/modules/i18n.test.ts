@@ -1,4 +1,5 @@
 import log from 'loglevel';
+
 import type {
   I18NMessageDict} from './i18n';
 import {

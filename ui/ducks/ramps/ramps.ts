@@ -1,11 +1,12 @@
-import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { getUseExternalServices } from '../../selectors';
-import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
-import { getMultichainIsBitcoin } from '../../selectors/multichain';
+import { createSelector } from 'reselect';
+
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
+import { getUseExternalServices } from '../../selectors';
+import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { defaultBuyableChains } from './constants';
 import type { AggregatorNetwork } from './types';
 

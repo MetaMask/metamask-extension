@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
-import React, { createRef, Component } from 'react';
 import MetaMaskLogo from '@metamask/logo';
 import { debounce } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { createRef, Component } from 'react';
 
 import { getBuildSpecificAsset } from '../../../helpers/utils/build-types';
 

@@ -1,17 +1,18 @@
-import React from 'react';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import type { Point } from 'chart.js';
+import React from 'react';
+
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import {
   Box,
   Text,
   TextDirection,
 } from '../../../../components/component-library';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import {
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { getPricePrecision } from '../../util';
 
 // A label indicating the minimum or maximum price on the chart

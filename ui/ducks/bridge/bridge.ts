@@ -1,5 +1,3 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { type Hex, type CaipChainId } from '@metamask/utils';
 import type {
   ChainId} from '@metamask/bridge-controller';
 import {
@@ -11,6 +9,9 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { type Hex, type CaipChainId } from '@metamask/utils';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {

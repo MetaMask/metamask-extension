@@ -1,7 +1,5 @@
 import React from 'react';
-import TransactionStatusLabel from '../../app/transaction-status-label';
-import TransactionIcon from '../../app/transaction-icon';
-import CancelButton from '../../app/cancel-button';
+
 import {
   BackgroundColor,
   Color,
@@ -10,6 +8,9 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import CancelButton from '../../app/cancel-button';
+import TransactionIcon from '../../app/transaction-icon';
+import TransactionStatusLabel from '../../app/transaction-status-label';
 import {
   AvatarNetwork,
   AvatarNetworkSize,

@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
 import { isEqual } from 'lodash';
+import React, { memo } from 'react';
+
 import { safeComponentList } from './safe-component-list';
 import { ValidChildren } from './section-shape';
 

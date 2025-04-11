@@ -1,19 +1,20 @@
-import React, { useContext } from 'react';
 import type { Token } from '@metamask/assets-controllers';
-import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 import type { Hex } from '@metamask/utils';
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
+
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
   getNativeCurrencyForChain,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
-import { AssetType } from '../../../../shared/constants/transaction';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { getURLHostName } from '../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 

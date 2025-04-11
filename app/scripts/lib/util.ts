@@ -1,16 +1,17 @@
-import urlLib from 'url';
 import type { AccessList } from '@ethereumjs/tx';
-import BN from 'bn.js';
-import { memoize } from 'lodash';
+import type { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
+import type { Provider } from '@metamask/network-controller';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
   TransactionEnvelopeType
 } from '@metamask/transaction-controller';
-import type { Provider } from '@metamask/network-controller';
 import type { CaipAssetType} from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
-import type { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
+import BN from 'bn.js';
+import { memoize } from 'lodash';
+import urlLib from 'url';
+
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -23,8 +24,8 @@ import {
   PLATFORM_OPERA,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}

@@ -1,5 +1,6 @@
-import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
+import { v4 as uuid } from 'uuid';
+
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { migrate } from './105';
 import type { Identity, InternalAccountV1 } from './105';

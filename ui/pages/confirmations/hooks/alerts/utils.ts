@@ -3,11 +3,11 @@ import {
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
-import { Severity } from '../../../../helpers/constants/design-system';
 import type {
   Alert,
   AlertSeverity,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../helpers/constants/design-system';
 import type { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { SecurityAlertResponse } from '../../types/confirm';
 

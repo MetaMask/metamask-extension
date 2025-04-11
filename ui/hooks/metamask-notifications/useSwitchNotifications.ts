@@ -1,6 +1,11 @@
+import log from 'loglevel';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import log from 'loglevel';
+
+import {
+  getIsUpdatingMetamaskNotificationsAccount,
+  selectIsMetamaskNotificationsEnabled,
+} from '../../selectors/metamask-notifications/metamask-notifications';
 import {
   setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
@@ -8,10 +13,6 @@ import {
   updateOnChainTriggersByAccount,
   hideLoadingIndication,
 } from '../../store/actions';
-import {
-  getIsUpdatingMetamaskNotificationsAccount,
-  selectIsMetamaskNotificationsEnabled,
-} from '../../selectors/metamask-notifications/metamask-notifications';
 
 export function useSwitchFeatureAnnouncementsChange(): {
   onChange: (state: boolean) => Promise<void>;

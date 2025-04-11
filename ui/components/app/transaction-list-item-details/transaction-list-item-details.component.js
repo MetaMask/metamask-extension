@@ -1,24 +1,25 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
+import copyToClipboard from 'copy-to-clipboard';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { SECOND } from '../../../../shared/constants/time';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { Box } from '../../component-library/box';
+import Button from '../../ui/button';
+import Disclosure from '../../ui/disclosure';
+import Popover from '../../ui/popover';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
-import Disclosure from '../../ui/disclosure';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
-import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
-import Popover from '../../ui/popover';
-import { Box } from '../../component-library/box';
-import { SECOND } from '../../../../shared/constants/time';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { getURLHostName } from '../../../helpers/utils/util';
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {

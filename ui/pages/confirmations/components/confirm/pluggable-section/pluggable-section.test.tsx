@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import PluggableSection from './pluggable-section';
 

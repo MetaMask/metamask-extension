@@ -1,7 +1,7 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useContext } from 'react';
 
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type { TokenDetailsERC20 } from '../utils/token';

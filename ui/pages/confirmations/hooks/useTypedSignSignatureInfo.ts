@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { TypedSignSignaturePrimaryTypes } from '../constants';
+import type { SignatureRequestType } from '../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
   isSignatureTransactionType,
 } from '../utils';
-import type { SignatureRequestType } from '../types/confirm';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { TypedSignSignaturePrimaryTypes } from '../constants';
 
 export const useTypedSignSignatureInfo = (
   confirmation: SignatureRequestType,

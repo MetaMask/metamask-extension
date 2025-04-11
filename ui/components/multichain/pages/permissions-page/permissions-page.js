@@ -1,16 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
-import { Content, Header, Page } from '../page';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
 import {
   BackgroundColor,
   BlockSize,
@@ -26,7 +18,16 @@ import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../component-library';
+import { Content, Header, Page } from '../page';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {

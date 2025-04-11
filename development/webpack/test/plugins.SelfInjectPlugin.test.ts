@@ -1,5 +1,6 @@
-import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
 import { SelfInjectPlugin } from '../utils/plugins/SelfInjectPlugin';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 

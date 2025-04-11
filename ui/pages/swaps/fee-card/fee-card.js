@@ -1,24 +1,25 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { I18nContext } from '../../../contexts/i18n';
-import InfoTooltip from '../../../components/ui/info-tooltip';
-import TransactionDetail from '../../confirmations/components/transaction-detail/transaction-detail.component';
-import TransactionDetailItem from '../../confirmations/components/transaction-detail-item/transaction-detail-item.component';
-import {
-  TextColor,
-  TextVariant,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { getUseCurrencyRateCheck } from '../../../selectors';
 import {
   Text,
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
+import InfoTooltip from '../../../components/ui/info-tooltip';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  TextColor,
+  TextVariant,
+  FontWeight,
+} from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getUseCurrencyRateCheck } from '../../../selectors';
+import TransactionDetailItem from '../../confirmations/components/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetail from '../../confirmations/components/transaction-detail/transaction-detail.component';
 
 export default function FeeCard({
   primaryFee,

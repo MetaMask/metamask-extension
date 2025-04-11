@@ -1,9 +1,9 @@
+import type { TextVariant } from '../../../helpers/constants/design-system';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
 } from '../box';
 
-import type { TextVariant } from '../../../helpers/constants/design-system';
 
 export enum InputType {
   Text = 'text',

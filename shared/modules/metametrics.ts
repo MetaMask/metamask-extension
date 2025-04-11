@@ -1,4 +1,5 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+
 import type { TransactionMetricsRequest } from '../types/metametrics';
 
 type SmartTransactionMetricsProperties = {

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -18,6 +19,7 @@ import {
 import { REVEAL_SEED_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getHDEntropyIndex } from '../../../../selectors/selectors';
 import {
   ButtonSize,
   ButtonVariant,
@@ -32,7 +34,6 @@ import { ModalHeader } from '../../../component-library/modal-header/deprecated'
 import QuizContent from '../QuizContent';
 import type { JSXDict} from '../types';
 import { QuizStage } from '../types';
-import { getHDEntropyIndex } from '../../../../selectors/selectors';
 
 const wrongAnswerIcon = (
   <Icon

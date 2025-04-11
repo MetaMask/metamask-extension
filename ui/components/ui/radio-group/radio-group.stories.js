@@ -1,7 +1,8 @@
 import React from 'react';
+
+import RadioGroup from '.';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import README from './README.mdx';
-import RadioGroup from '.';
 
 export default {
   title: 'Components/UI/RadioGroup',

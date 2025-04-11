@@ -1,9 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
+import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
+import {
+  AvatarIcon,
+  Box,
+  IconName,
+  Text,
+} from '../../../../components/component-library';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,21 +29,11 @@ import {
   FlexDirection,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
-
-import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
-import { getSnapInstallWarnings } from '../util';
-import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import {
-  AvatarIcon,
-  Box,
-  IconName,
-  Text,
-} from '../../../../components/component-library';
+import { getSnapName } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
-import { getSnapName } from '../../../../helpers/utils/util';
+import { getSnapInstallWarnings } from '../util';
 
 export default function SnapUpdate({
   request,

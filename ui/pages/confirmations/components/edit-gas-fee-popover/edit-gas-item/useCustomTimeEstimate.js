@@ -1,6 +1,6 @@
+import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
 
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import {

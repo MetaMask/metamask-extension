@@ -1,25 +1,26 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../shared/constants/transaction';
+import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import {
   type Asset,
   type Amount,
   getSendMaxModeState,
 } from '../../../../ducks/send';
-import { toggleCurrencySwitch } from '../../../../ducks/app/app';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../shared/constants/transaction';
-import { Box, Text } from '../../../component-library';
 import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CurrencyInput from '../../../app/currency-input';
-import { getIsFiatPrimary } from '../utils';
-import { NFTInput } from '../nft-input/nft-input';
 import useTokenExchangeRate from '../../../app/currency-input/hooks/useTokenExchangeRate';
+import { Box, Text } from '../../../component-library';
+import { NFTInput } from '../nft-input/nft-input';
+import { getIsFiatPrimary } from '../utils';
 import SwapIcon from './swap-icon';
 
 type BaseProps = {

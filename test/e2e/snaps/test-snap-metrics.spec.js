@@ -1,12 +1,13 @@
 const { strict: assert } = require('assert');
+
+const { MOCK_META_METRICS_ID } = require('../constants');
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
   unlockWallet,
   getEventPayloads,
   WINDOW_TITLES,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../constants');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 /**

@@ -6,8 +6,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useSigningOrSubmittingAlerts } from './useSigningOrSubmittingAlerts';

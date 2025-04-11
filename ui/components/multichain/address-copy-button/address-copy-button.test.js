@@ -1,13 +1,14 @@
+import { fireEvent } from '@testing-library/react';
+import copyToClipboard from 'copy-to-clipboard';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import copyToClipboard from 'copy-to-clipboard';
-import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
-import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+
 import { AddressCopyButton } from '.';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 jest.mock('copy-to-clipboard');
 

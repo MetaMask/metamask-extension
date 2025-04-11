@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { useMemo } from 'react';
 
-import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { SignatureRequestType } from '../../types/confirm';
-import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
-import { isSignatureTransactionType } from '../../utils';
 import { useConfirmContext } from '../../context/confirm';
+import type { SignatureRequestType } from '../../types/confirm';
+import { isSignatureTransactionType } from '../../utils';
+import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const useConfirmationOriginAlerts = (): Alert[] => {
   const t = useI18nContext();

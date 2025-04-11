@@ -4,9 +4,10 @@ import {
   TokenRatesController
 } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
+
+import { getTokenRatesControllerMessenger } from '../messengers/assets';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
-import { getTokenRatesControllerMessenger } from '../messengers/assets';
 import { TokenRatesControllerInit } from './token-rates-controller-init';
 
 jest.mock('@metamask/assets-controllers');

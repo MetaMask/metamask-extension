@@ -1,19 +1,7 @@
 import type { FC } from 'react';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
-import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
-import { isIpfsURL } from '../../../helpers/utils/notification.util';
 
-import { NotificationDetail } from '../notification-detail';
-import {
-  AvatarToken,
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  Box,
-  Text,
-  AvatarTokenSize,
-} from '../../component-library';
 import {
   BackgroundColor,
   BorderColor,
@@ -24,6 +12,18 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { isIpfsURL } from '../../../helpers/utils/notification.util';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
+import {
+  AvatarToken,
+  BadgeWrapper,
+  BadgeWrapperPosition,
+  Box,
+  Text,
+  AvatarTokenSize,
+} from '../../component-library';
+import { NotificationDetail } from '../notification-detail';
 
 type IconProps = {
   src: string;

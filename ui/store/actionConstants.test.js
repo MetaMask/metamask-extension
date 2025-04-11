@@ -1,4 +1,5 @@
 import freeze from 'deep-freeze-strict';
+
 import reducers from '../ducks';
 import * as actionConstants from './actionConstants';
 

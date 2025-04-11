@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+
 import type { AppSliceState } from '../../../ducks/app/app';
 
 function getSendInputCurrencySwitched(state: AppSliceState) {

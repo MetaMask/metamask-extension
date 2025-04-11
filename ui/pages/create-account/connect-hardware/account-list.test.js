@@ -1,10 +1,11 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
+import React from 'react';
+
+import { LATTICE_HD_PATHS, LEDGER_HD_PATHS, TREZOR_HD_PATHS } from '.';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
 import AccountList from './account-list';
-import { LATTICE_HD_PATHS, LEDGER_HD_PATHS, TREZOR_HD_PATHS } from '.';
 
 const render = () => {
   const store = configureStore({

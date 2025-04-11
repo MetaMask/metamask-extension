@@ -1,13 +1,13 @@
-import React from 'react';
 import { toHex } from '@metamask/controller-utils';
 import type { GasFeeToken } from '@metamask/transaction-controller';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import configureStore from '../../../../../../../store/store';
 
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import configureStore from '../../../../../../../store/store';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');

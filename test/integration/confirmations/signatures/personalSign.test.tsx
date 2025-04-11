@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,

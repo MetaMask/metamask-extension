@@ -1,6 +1,7 @@
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { fireEvent, render } from '@testing-library/react';
+
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { NFTInput } from './nft-input';

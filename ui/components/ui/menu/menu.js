@@ -1,8 +1,8 @@
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
-import classnames from 'classnames';
 
 /**
  * @deprecated The `<Menu />` component has been deprecated in favor of the new `<Popover>` component from the component-library.

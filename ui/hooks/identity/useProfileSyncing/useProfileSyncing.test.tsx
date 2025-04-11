@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react-hooks';
+
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import * as actions from '../../../store/actions';

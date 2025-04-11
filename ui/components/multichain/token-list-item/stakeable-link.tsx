@@ -1,24 +1,25 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BackgroundColor,
   FontWeight,
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 
 type StakeableLinkProps = {
   chainId: string;

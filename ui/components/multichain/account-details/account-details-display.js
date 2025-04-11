@@ -1,30 +1,15 @@
-import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import QrCodeView from '../../ui/qr-code-view';
-import EditableLabel from '../../ui/editable-label/editable-label';
 
-import { setAccountLabel } from '../../../store/actions';
 import {
-  getHardwareWalletType,
-  getInternalAccountByAddress,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getMetaMaskKeyrings,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
-import {
-  isAbleToExportAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  isAbleToRevealSrp,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../helpers/utils/util';
-import {
-  Box,
-  ButtonSecondary,
-  ButtonSecondarySize,
-  Text,
-} from '../../component-library';
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -34,17 +19,32 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+  isAbleToExportAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  isAbleToRevealSrp,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../helpers/utils/util';
 import { useAsyncResult } from '../../../hooks/useAsync';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+import {
+  getHardwareWalletType,
+  getInternalAccountByAddress,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getMetaMaskKeyrings,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { setAccountLabel } from '../../../store/actions';
+import {
+  Box,
+  ButtonSecondary,
+  ButtonSecondarySize,
+  Text,
+} from '../../component-library';
+import EditableLabel from '../../ui/editable-label/editable-label';
+import QrCodeView from '../../ui/qr-code-view';
 
 function SmartAccountPill({ address }) {
   const t = useI18nContext();

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   FlexDirection,
   AlignItems,
@@ -9,6 +10,8 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getKeyringSnapRemovalResult } from '../../../../selectors';
 import {
   Box,
   Icon,
@@ -20,8 +23,6 @@ import {
 } from '../../../component-library';
 import { ModalContent } from '../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getKeyringSnapRemovalResult } from '../../../../selectors';
 
 const KeyringSnapRemovalResult = ({
   isOpen,

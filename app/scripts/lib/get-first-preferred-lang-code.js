@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+
 import allLocales from '../../_locales/index.json';
 
 // ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code

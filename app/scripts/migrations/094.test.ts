@@ -1,5 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+
 import { migrate, version } from './094';
 
 const sentryCaptureExceptionMock = jest.fn();

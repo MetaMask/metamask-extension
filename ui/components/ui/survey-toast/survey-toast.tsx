@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { DAY } from '../../../../shared/constants/time';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
+import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { DAY } from '../../../../shared/constants/time';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getSelectedInternalAccount,
   getLastViewedUserSurvey,
@@ -14,7 +16,6 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
 

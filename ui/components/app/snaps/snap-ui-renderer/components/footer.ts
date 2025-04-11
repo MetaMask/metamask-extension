@@ -8,8 +8,8 @@ import {
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
 import { ButtonVariant } from '../../../../component-library';
-import type { UIComponent, UIComponentFactory, UIComponentParams } from './types';
 import { button as buttonFn } from './button';
+import type { UIComponent, UIComponentFactory, UIComponentParams } from './types';
 
 export const DEFAULT_FOOTER = {
   element: 'Box',

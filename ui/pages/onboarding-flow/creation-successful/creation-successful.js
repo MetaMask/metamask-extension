@@ -1,18 +1,12 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
 import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-} from '../../../components/component-library/button';
-import {
-  TextVariant,
-  Display,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   Box,
   Text,
@@ -21,19 +15,26 @@ import {
   ButtonLinkSize,
   IconSize,
 } from '../../../components/component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../../components/component-library/button';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import {
+  TextVariant,
+  Display,
+  AlignItems,
+  JustifyContent,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 

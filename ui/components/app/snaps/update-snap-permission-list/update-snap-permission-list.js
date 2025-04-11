@@ -1,27 +1,28 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, ButtonLink } from '../../../component-library';
-import {
-  getMultipleTargetsSubjectMetadata,
-  getSnapMetadata,
-  getSnapsMetadata,
-} from '../../../../selectors';
-import SnapPermissionAdapter from '../snap-permission-adapter';
-import {
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+
 import {
   MinPermissionAbstractionDisplayCount,
   PermissionWeightThreshold,
 } from '../../../../../shared/constants/permissions';
 import {
+  Display,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+import { getWeightedPermissions } from '../../../../helpers/utils/permission';
+import {
   getFilteredSnapPermissions,
   getSnapName,
 } from '../../../../helpers/utils/util';
-import { getWeightedPermissions } from '../../../../helpers/utils/permission';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  getMultipleTargetsSubjectMetadata,
+  getSnapMetadata,
+  getSnapsMetadata,
+} from '../../../../selectors';
+import { Box, ButtonLink } from '../../../component-library';
+import SnapPermissionAdapter from '../snap-permission-adapter';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,

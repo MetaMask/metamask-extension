@@ -1,17 +1,18 @@
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { getCurrentQRHardwareState } from '../../../selectors';
-import Popover from '../../ui/popover';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentQRHardwareState } from '../../../selectors';
 import {
   cancelSyncQRHardware as cancelSyncQRHardwareAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
   rejectPendingApproval,
 } from '../../../store/actions';
-import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
+import Popover from '../../ui/popover';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
+import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 
 const QRHardwarePopover = () => {
   const t = useI18nContext();

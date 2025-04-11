@@ -1,14 +1,6 @@
-import type { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import type { CustodyController } from '@metamask-institutional/custody-controller';
-import type { SignatureController } from '@metamask/signature-controller';
-import type {
-  NetworkController,
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerSetActiveNetworkAction,
-} from '@metamask/network-controller';
+import type { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
+import type { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import type {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
@@ -17,12 +9,21 @@ import type {
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import type { RestrictedMessenger } from '@metamask/base-controller';
+import type {
+  NetworkController,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+  NetworkControllerSetActiveNetworkAction,
+} from '@metamask/network-controller';
+import type { SignatureController } from '@metamask/signature-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import type { AppStateController } from '../../app/scripts/controllers/app-state-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import type AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
+import type { AppStateController } from '../../app/scripts/controllers/app-state-controller';
 import type {
   MetaMetricsControllerGetStateAction,
   // TODO: Remove restricted import

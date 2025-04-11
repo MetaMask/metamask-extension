@@ -1,15 +1,16 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {
-  getAddressBookEntry,
-  getInternalAccountByAddress,
-} from '../../../../selectors';
+import { compose } from 'redux';
+
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import {
+  getAddressBookEntry,
+  getInternalAccountByAddress,
+} from '../../../../selectors';
 import ViewContact from './view-contact.component';
 
 const mapStateToProps = (state, ownProps) => {

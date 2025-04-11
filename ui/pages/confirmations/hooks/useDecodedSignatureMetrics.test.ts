@@ -5,10 +5,10 @@ import {
 } from '@metamask/signature-controller';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../test/data/confirmations/typed_sign';
-import * as SignatureEventFragment from './useSignatureEventFragment';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { useDecodedSignatureMetrics } from './useDecodedSignatureMetrics';
+import * as SignatureEventFragment from './useSignatureEventFragment';
 
 const decodingData: DecodingData = {
   stateChanges: [

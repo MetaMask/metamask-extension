@@ -2,8 +2,9 @@ import type {
   ContractExchangeRates,
   Token,
 } from '@metamask/assets-controllers';
-import type { AnyAction, Action } from 'redux';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type { AnyAction, Action } from 'redux';
+
 import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,

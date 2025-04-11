@@ -1,10 +1,4 @@
-const {
-  default: Confirmation,
-} = require('../../page-objects/pages/confirmations/redesign/confirmation');
-const {
-  createDappTransaction,
-} = require('../../page-objects/flows/transaction');
-
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
@@ -12,7 +6,13 @@ const {
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+const {
+  createDappTransaction,
+} = require('../../page-objects/flows/transaction');
+const {
+  default: Confirmation,
+} = require('../../page-objects/pages/confirmations/redesign/confirmation');
+
 
 const TRANSACTION_COUNT = 4;
 

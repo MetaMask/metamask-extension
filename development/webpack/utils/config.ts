@@ -1,7 +1,8 @@
-import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
-import { parse as parseYaml } from 'yaml';
 import { parse } from 'dotenv';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { parse as parseYaml } from 'yaml';
+
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
 import { type Args } from './cli';

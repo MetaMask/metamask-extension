@@ -1,16 +1,15 @@
-import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
 
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
-
+import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
 import { AdvancedGasFeePopoverContextProvider } from '../context';
-import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../../store/actions', () => ({

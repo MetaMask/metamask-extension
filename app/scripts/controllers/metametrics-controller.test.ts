@@ -1,35 +1,36 @@
-import { toHex } from '@metamask/controller-utils';
-import type {
-  NetworkClientId,
-  NetworkState,
-} from '@metamask/network-controller';
-import type { NameEntry} from '@metamask/name-controller';
-import { NameType } from '@metamask/name-controller';
 import type { AddressBookEntry } from '@metamask/address-book-controller';
 import type {
   Nft,
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { Browser } from 'webextension-polyfill';
 import { Messenger } from '@metamask/base-controller';
-import { merge } from 'lodash';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
-import { createSegmentMock } from '../lib/segment';
+import { toHex } from '@metamask/controller-utils';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { NameType } from '@metamask/name-controller';
+import type { NameEntry} from '@metamask/name-controller';
 import type {
-  MetaMetricsUserTraits} from '../../../shared/constants/metametrics';
+  NetworkClientId,
+  NetworkState,
+} from '@metamask/network-controller';
+import { merge } from 'lodash';
+import type { Browser } from 'webextension-polyfill';
+
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsUserTrait
 } from '../../../shared/constants/metametrics';
+import type {
+  MetaMetricsUserTraits} from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import * as Utils from '../lib/util';
-import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import { mockNetworkState } from '../../../test/stub/networks';
+import { createSegmentMock } from '../lib/segment';
+import * as Utils from '../lib/util';
 import type {
   AllowedActions,
   AllowedEvents,

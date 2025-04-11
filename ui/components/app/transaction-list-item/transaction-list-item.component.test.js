@@ -4,6 +4,8 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+
+import TransactionListItem from '.';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
@@ -28,7 +30,6 @@ import {
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,

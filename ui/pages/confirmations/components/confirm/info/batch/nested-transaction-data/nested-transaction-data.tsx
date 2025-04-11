@@ -1,17 +1,18 @@
-import React from 'react';
 import type {
   BatchTransactionParams,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { Box } from '../../../../../../../components/component-library';
-import { useFourByte } from '../../hooks/useFourByte';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
-import { RecipientRow } from '../../shared/transaction-details/transaction-details';
-import { TransactionData } from '../../shared/transaction-data/transaction-data';
+import React from 'react';
+
 import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { Box } from '../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { useFourByte } from '../../hooks/useFourByte';
+import { TransactionData } from '../../shared/transaction-data/transaction-data';
+import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

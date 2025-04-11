@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectIsMetamaskNotificationsFeatureSeen } from '../../selectors/metamask-notifications/metamask-notifications';
+
 import { Tag } from '../../components/component-library';
 import {
   BackgroundColor,
@@ -10,6 +10,7 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { selectIsMetamaskNotificationsFeatureSeen } from '../../selectors/metamask-notifications/metamask-notifications';
 
 export function NewFeatureTag() {
   const t = useI18nContext();

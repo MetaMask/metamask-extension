@@ -1,9 +1,9 @@
 import type { DecodingDataStateChange } from '@metamask/signature-controller';
 import { useEffect } from 'react';
 
-import type { SignatureRequestType } from '../types/confirm';
-import { useConfirmContext } from '../context/confirm';
 import { useLoadingTime } from '../components/simulation-details/useLoadingTime';
+import { useConfirmContext } from '../context/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
 
 enum DecodingResponseType {

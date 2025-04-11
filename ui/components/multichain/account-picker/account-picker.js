@@ -1,16 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { trace, TraceName } from '../../../../shared/lib/trace';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import {
-  AvatarAccount,
-  AvatarAccountVariant,
-  ButtonBase,
-  ButtonBaseSize,
-  IconName,
-  Text,
-} from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,9 +15,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { getUseBlockie } from '../../../selectors';
+import {
+  AvatarAccount,
+  AvatarAccountVariant,
+  ButtonBase,
+  ButtonBaseSize,
+  IconName,
+  Text,
+} from '../../component-library';
 
 export const AccountPicker = ({
   address,

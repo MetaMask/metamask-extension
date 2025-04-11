@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';

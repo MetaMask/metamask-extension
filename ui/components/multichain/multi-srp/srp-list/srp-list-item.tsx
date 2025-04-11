@@ -1,6 +1,5 @@
 import React from 'react';
-import type { InternalAccountWithBalance } from '../../../../selectors';
-import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
+
 import {
   Display,
   FlexDirection,
@@ -10,6 +9,8 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
+import type { InternalAccountWithBalance } from '../../../../selectors';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import {
   Text,

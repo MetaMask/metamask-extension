@@ -1,12 +1,19 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import type { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
+import type { BigNumber } from 'bignumber.js';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
+import {
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
+import { MINUTE } from '../../../../shared/constants/time';
+import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import {
   Text,
   TextField,
@@ -17,10 +24,12 @@ import {
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getBridgeQuotes,
+  getValidationErrors,
+} from '../../../ducks/bridge/selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
-import { Column, Row } from '../layout';
 import {
   Display,
   FontWeight,
@@ -29,21 +38,13 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import {
-  getBridgeQuotes,
-  getValidationErrors,
-} from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MINUTE } from '../../../../shared/constants/time';
-import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
-import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
-import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import { Column, Row } from '../layout';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {

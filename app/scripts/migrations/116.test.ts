@@ -1,4 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
+
 import { migrate, version, StuckTransactionError, TARGET_DATE } from './116';
 
 const oldVersion = 115;

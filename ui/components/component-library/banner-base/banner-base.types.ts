@@ -4,10 +4,9 @@ import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
-
-import type { TextProps } from '../text';
-import type { ButtonLinkProps } from '../button-link';
 import type { ButtonIconProps } from '../button-icon';
+import type { ButtonLinkProps } from '../button-link';
+import type { TextProps } from '../text';
 
 /**
  * Makes all props optional so that if a prop object is used not ALL required props need to be passed

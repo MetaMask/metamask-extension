@@ -1,10 +1,11 @@
+import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { providerFromEngine } from '@metamask/eth-json-rpc-provider';
 import {
   JsonRpcEngine,
   createScaffoldMiddleware,
 } from '@metamask/json-rpc-engine';
-import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { providerFromEngine } from '@metamask/eth-json-rpc-provider';
 import Ganache from 'ganache';
+
 import { CHAIN_IDS } from '../../shared/constants/network';
 
 export function getTestSeed() {

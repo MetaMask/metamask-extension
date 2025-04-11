@@ -1,16 +1,17 @@
-import { nanoid } from 'nanoid';
-import {
-  MethodNames,
-  PermissionDoesNotExistError,
-} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   setPermittedChainIds,
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+} from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { nanoid } from 'nanoid';
+
 import {
   getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,

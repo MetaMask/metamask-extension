@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
+import classnames from 'classnames';
 import React, {
   useCallback,
   useContext,
@@ -7,11 +8,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
-import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
-import { FormTextField } from '../../component-library/form-text-field/deprecated';
+
 import { I18nContext } from '../../../contexts/i18n';
 import { Display, IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export type FormComboFieldOption = {
   value: string;

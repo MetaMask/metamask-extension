@@ -1,10 +1,10 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
+import React from 'react';
 
-import { TextareaResize } from './textarea.types';
+import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 import { Textarea } from './textarea';
+import { TextareaResize } from './textarea.types';
 
 describe('Textarea', () => {
   it('should render correctly', () => {

@@ -1,10 +1,11 @@
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import mockState from '../../../../test/data/mock-state.json';
+
 import InfoTab from '.';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 
 describe('InfoTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);

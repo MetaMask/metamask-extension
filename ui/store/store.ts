@@ -1,18 +1,19 @@
-import type { StoreEnhancer } from 'redux';
-import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
-import devtoolsEnhancer from 'remote-redux-devtools';
 import type { ApprovalControllerState } from '@metamask/approval-controller';
-import type { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import type {
   NftControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import type { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
+import type { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import rootReducer from '../ducks';
+import type { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
+import type { StoreEnhancer } from 'redux';
+import devtoolsEnhancer from 'remote-redux-devtools';
+
 import type { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import type { NetworkStatus } from '../../shared/constants/network';
+import rootReducer from '../ducks';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file

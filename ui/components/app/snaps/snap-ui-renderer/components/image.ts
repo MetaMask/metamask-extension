@@ -1,4 +1,5 @@
 import type { ImageElement } from '@metamask/snaps-sdk/jsx';
+
 import type { UIComponentFactory } from './types';
 
 function generateBorderRadius(

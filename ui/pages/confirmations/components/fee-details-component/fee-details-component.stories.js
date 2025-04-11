@@ -1,4 +1,5 @@
 import React from 'react';
+
 import FeeDetailsComponent from '.';
 
 export default {

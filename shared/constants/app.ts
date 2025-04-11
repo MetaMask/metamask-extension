@@ -1,4 +1,5 @@
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+
 import { RestrictedMethods } from './permissions';
 
 /**

@@ -1,26 +1,26 @@
-import { errorCodes } from '@metamask/rpc-errors';
-import { detectSIWE } from '@metamask/controller-utils';
 import { Messenger } from '@metamask/base-controller';
+import { detectSIWE } from '@metamask/controller-utils';
+import { errorCodes } from '@metamask/rpc-errors';
 
-import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { SECOND } from '../../../shared/constants/time';
 import {
   permitSignatureMsg,
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
+import MetaMetricsController from '../controllers/metametrics-controller';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
+import { createSegmentMock } from './segment';
 
 const MOCK_ID = '123';
 const expectedUniqueIdentifier = `signature-${MOCK_ID}`;

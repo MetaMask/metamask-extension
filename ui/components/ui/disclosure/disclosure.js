@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import PropTypes from 'prop-types';
+import React, { useState, useRef, useEffect } from 'react';
+
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { DisclosureVariant } from './disclosure.constants';
 
 /**

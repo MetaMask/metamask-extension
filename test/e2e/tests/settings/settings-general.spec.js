@@ -1,5 +1,5 @@
-const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 
 describe('Settings', function () {
   it('checks jazzicon and blockies icons', async function () {

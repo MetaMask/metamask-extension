@@ -1,9 +1,9 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-import { fireEvent } from '../../../../test/jest';
+import React from 'react';
 
-import { DisconnectType } from './disconnect-all-modal';
 import { DisconnectAllModal } from '.';
+import { fireEvent } from '../../../../test/jest';
+import { DisconnectType } from './disconnect-all-modal';
 
 describe('DisconnectAllModal', () => {
   const onClick = jest.fn();

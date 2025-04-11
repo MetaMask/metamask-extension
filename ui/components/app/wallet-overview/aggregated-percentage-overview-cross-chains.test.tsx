@@ -1,7 +1,11 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import '@testing-library/jest-dom';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -10,9 +14,6 @@ import {
   getAllTokens,
   getChainIdsToPoll,
 } from '../../../selectors';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 jest.mock('react-redux', () => ({

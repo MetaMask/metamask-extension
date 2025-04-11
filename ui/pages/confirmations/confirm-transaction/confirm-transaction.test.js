@@ -1,22 +1,20 @@
 import React from 'react';
+import ReactRouterDOM from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import ReactRouterDOM from 'react-router-dom';
 
-import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
-import * as Actions from '../../../store/actions';
+import ConfirmTransaction from '.';
 import _mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../store/background-connection';
-
+import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
-
-import ConfirmTransaction from '.';
+import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 
 const mockUnapprovedTx = _mockState.metamask.transactions[0];
 

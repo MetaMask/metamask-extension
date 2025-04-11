@@ -1,16 +1,16 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react-hooks';
 
-import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../helpers/constants/design-system';
+import { AlertsName } from './alerts/constants';
 import {
   useConfirmationAlertMetrics,
   ALERTS_NAME_METRICS,
 } from './useConfirmationAlertMetrics';
 import * as transactionEventFragmentHook from './useTransactionEventFragment';
-import { AlertsName } from './alerts/constants';
 
 jest.mock('./useTransactionEventFragment');
 

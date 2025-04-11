@@ -1,8 +1,9 @@
+import ObjectMultiplex from '@metamask/object-multiplex';
 import NodeStream from 'node:stream';
 import OurReadableStream from 'readable-stream';
 import ReadableStream2 from 'readable-stream-2';
 import ReadableStream3 from 'readable-stream-3';
-import ObjectMultiplex from '@metamask/object-multiplex';
+
 import { isStreamWritable } from './stream-utils';
 
 describe('Stream Utils', () => {

@@ -1,10 +1,11 @@
+import { EthAccountType } from '@metamask/keyring-api';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-import { EthAccountType } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import AccountListItem from './account-list-item';
 
 describe('AccountListItem Component', () => {

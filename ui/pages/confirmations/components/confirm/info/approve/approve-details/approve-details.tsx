@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -10,6 +11,8 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
+import { NetworkRow } from '../../shared/network-row/network-row';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 import {
   MethodDataRow,
@@ -18,8 +21,6 @@ import {
 } from '../../shared/transaction-details/transaction-details';
 import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
-import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
-import { NetworkRow } from '../../shared/network-row/network-row';
 
 const Spender = ({
   isSetApprovalForAll = false,

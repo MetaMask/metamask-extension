@@ -1,11 +1,13 @@
-import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import React from 'react';
+
+import { t } from '../../../../../app/scripts/translate';
 import type { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+  BadgeWrapperPosition,
+  IconName,
+} from '../../../../components/component-library';
 import {
   NotificationListItem,
   NotificationDetailInfo,
@@ -14,26 +16,25 @@ import {
   NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
+import {
+  TextVariant,
+  BackgroundColor,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
 import {
   createTextItems,
   formatAmount,
   formatIsoDateString,
   getNetworkDetailsByChainId,
 } from '../../../../helpers/utils/notification.util';
+import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
-import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

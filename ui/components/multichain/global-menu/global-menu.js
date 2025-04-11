@@ -1,13 +1,28 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
-  useUnreadNotificationsCounter,
-  useReadNotificationsCounter,
-} from '../../../hooks/metamask-notifications/useCounter';
-import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import {
+  AlignItems,
+  BlockSize,
+  BorderColor,
+  BorderStyle,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 import {
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
@@ -15,6 +30,11 @@ import {
   SNAPS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
+import {
+  useUnreadNotificationsCounter,
+  useReadNotificationsCounter,
+} from '../../../hooks/metamask-notifications/useCounter';
+import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   lockMetamask,
   showConfirmTurnOnMetamaskNotifications,
@@ -31,23 +51,11 @@ import {
   Popover,
   PopoverPosition,
 } from '../../component-library';
-
 import { MenuItem } from '../../ui/menu';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 ///: END:ONLY_INCLUDE_IF
-
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 import {
   getSelectedInternalAccount,
@@ -56,16 +64,7 @@ import {
   getThirdPartyNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
-import {
-  AlignItems,
-  BlockSize,
-  BorderColor,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { NotificationsTagCounter } from '../notifications-tag-counter';
 
 const METRICS_LOCATION = 'Global Menu';
 

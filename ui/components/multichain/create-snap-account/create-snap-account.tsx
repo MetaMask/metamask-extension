@@ -1,13 +1,14 @@
-import React, { useCallback, useRef } from 'react';
-import type { CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { getNextAvailableAccountName } from '../../../store/actions';
-import { CreateAccount } from '../create-account';
+import type { CaipChainId } from '@metamask/utils';
+import React, { useCallback, useRef } from 'react';
+
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { getNextAvailableAccountName } from '../../../store/actions';
+import { CreateAccount } from '../create-account';
 
 type CreateSnapAccountProps = {
   /**

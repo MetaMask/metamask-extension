@@ -1,9 +1,22 @@
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { type Hex, isStrictHexString } from '@metamask/utils';
+import classnames from 'classnames';
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import classnames from 'classnames';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { type Hex, isStrictHexString } from '@metamask/utils';
+
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  CURRENCY_SYMBOLS,
+  NON_EVM_CURRENCY_SYMBOLS,
+} from '../../../../shared/constants/network';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BackgroundColor,
   BlockSize,
@@ -16,6 +29,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { setEditedNetwork } from '../../../store/actions';
+import type {
+  SafeChain} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  useSafeChains,
+} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { getMarketData, getCurrencyRates } from '../../../selectors';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -36,29 +59,7 @@ import {
   SensitiveTextLength,
   Text,
 } from '../../component-library';
-import { getMarketData, getCurrencyRates } from '../../../selectors';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  CURRENCY_SYMBOLS,
-  NON_EVM_CURRENCY_SYMBOLS,
-} from '../../../../shared/constants/network';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { setEditedNetwork } from '../../../store/actions';
-import type {
-  SafeChain} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  useSafeChains,
-} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 

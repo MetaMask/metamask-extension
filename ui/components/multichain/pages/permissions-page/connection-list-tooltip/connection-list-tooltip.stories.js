@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { ConnectionListTooltip } from './connection-list-tooltip';
 
 export default {

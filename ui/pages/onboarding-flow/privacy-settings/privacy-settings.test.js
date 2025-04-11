@@ -1,12 +1,13 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { renderWithProvider } from '../../../../test/jest';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
+import { renderWithProvider } from '../../../../test/jest';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {

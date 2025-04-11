@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../context/confirm';
+
 import { parseStandardTokenTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { useConfirmContext } from '../../../../context/confirm';
 
 export function useTokenTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

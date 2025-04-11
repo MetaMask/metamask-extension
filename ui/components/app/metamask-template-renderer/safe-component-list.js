@@ -1,12 +1,22 @@
+import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
+import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
+import { CreateSnapAccount } from '../../../pages/create-snap-account';
+import {
+  RemoveSnapAccount,
+  SnapAccountCard,
+} from '../../../pages/remove-snap-account';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
+import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import {
   AvatarIcon,
   BannerAlert,
   FormTextField,
   Text,
 } from '../../component-library';
+import { Skeleton } from '../../component-library/skeleton';
 import { AccountListItem } from '../../multichain';
+import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
@@ -30,8 +40,11 @@ import {
 import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
 import { Copyable } from '../snaps/copyable';
+import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
+import { SnapUIAddressInput } from '../snaps/snap-ui-address-input';
+import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAvatar } from '../snaps/snap-ui-avatar';
 import { SnapUIBanner } from '../snaps/snap-ui-banner';
 import { SnapUIButton } from '../snaps/snap-ui-button';
@@ -45,24 +58,11 @@ import { SnapUIIcon } from '../snaps/snap-ui-icon';
 import { SnapUIImage } from '../snaps/snap-ui-image';
 import { SnapUIInput } from '../snaps/snap-ui-input';
 import { SnapUILink } from '../snaps/snap-ui-link';
-import { SnapUIAddressInput } from '../snaps/snap-ui-address-input';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
-import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
-import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
-import { CreateSnapAccount } from '../../../pages/create-snap-account';
-import {
-  RemoveSnapAccount,
-  SnapAccountCard,
-} from '../../../pages/remove-snap-account';
-import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
-import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
-import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
-import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
 
 export const safeComponentList = {

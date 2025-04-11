@@ -1,38 +1,39 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { zeroAddress } from 'ethereumjs-util';
-import { useHistory } from 'react-router-dom';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
-import { createProjectLogger } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { createProjectLogger } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import {
+  getInitialHistoryItem,
+  serializeQuoteMetadata,
+} from '../../../../shared/lib/bridge-status/utils';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import type {
+  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
+import {
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
+import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../store/actions';
-import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
-import { getSelectedAddress, isHardwareWallet } from '../../../selectors';
-import { getQuoteRequest } from '../../../ducks/bridge/selectors';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import {
-  getInitialHistoryItem,
-  serializeQuoteMetadata,
-} from '../../../../shared/lib/bridge-status/utils';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
-import type {
-  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
-import {
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getSelectedAddress, isHardwareWallet } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx, {
   APPROVAL_TX_ERROR,

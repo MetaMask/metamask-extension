@@ -1,14 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import Box from '../../../../../components/ui/box';
 import Tooltip from '../../../../../components/ui/tooltip';
-
 import {
   DISPLAY,
   FLEX_DIRECTION,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 const NetworkStatusTooltip = ({ children, html, title }) => (
   <Tooltip position="top" html={html} title={title}>

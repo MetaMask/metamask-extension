@@ -1,3 +1,29 @@
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AddressBookControllerState } from '@metamask/address-book-controller';
+import type {
+  Nft,
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedMessenger} from '@metamask/base-controller';
+import {
+  BaseController
+} from '@metamask/base-controller';
+import type { NameControllerState} from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
+import type {
+  NetworkClientId,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+  NetworkControllerNetworkDidChangeEvent,
+  NetworkState,
+} from '@metamask/network-controller';
+import type {
+  Hex} from '@metamask/utils';
+import { bufferToHex, keccak } from 'ethereumjs-util';
 import {
   isEqual,
   memoize,
@@ -8,42 +34,21 @@ import {
   size,
   sum,
 } from 'lodash';
-import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import type { NameControllerState} from '@metamask/name-controller';
-import { NameType } from '@metamask/name-controller';
-import type { AccountsControllerState } from '@metamask/accounts-controller';
-import type {
-  Hex} from '@metamask/utils';
 import {
   getErrorMessage,
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
-import type {
-  NetworkClientId,
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerNetworkDidChangeEvent,
-  NetworkState,
-} from '@metamask/network-controller';
 import type { Browser } from 'webextension-polyfill';
-import type {
-  Nft,
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
 import type { captureException as sentryCaptureException } from '@sentry/browser';
-import type {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedMessenger} from '@metamask/base-controller';
-import {
-  BaseController
-} from '@metamask/base-controller';
-import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+
+import { ENVIRONMENT } from '../../../development/build/constants';
+import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import type { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsUserTraits,
@@ -63,21 +68,17 @@ import {
   MetaMetricsUserTrait
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
 import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import type { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import type Analytics from '../lib/segment/analytics';
+import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
-import { KeyringType } from '../../../shared/constants/keyring';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,

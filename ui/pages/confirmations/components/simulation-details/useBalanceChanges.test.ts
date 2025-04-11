@@ -1,18 +1,19 @@
-import type { Hex } from '@metamask/utils';
-import { renderHook } from '@testing-library/react-hooks';
 import type {
   SimulationData} from '@metamask/transaction-controller';
 import {
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import { renderHook } from '@testing-library/react-hooks';
 import { BigNumber } from 'bignumber.js';
+
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { selectConversionRateByChainId } from '../../../../selectors';
-import { useBalanceChanges } from './useBalanceChanges';
+import { getTokenStandardAndDetails } from '../../../../store/actions';
+import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { FIAT_UNAVAILABLE } from './types';
+import { useBalanceChanges } from './useBalanceChanges';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),

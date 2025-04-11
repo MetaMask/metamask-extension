@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
+import log from 'loglevel';
 import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import WebcamUtils from '../../../helpers/utils/webcam-utils';
-import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SECOND } from '../../../../shared/constants/time';
+import WebcamUtils from '../../../helpers/utils/webcam-utils';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import EnhancedReader from './enhanced-reader';
 
 const READY_STATE = {

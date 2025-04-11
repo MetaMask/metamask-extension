@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Box, Text } from '../../../../component-library';
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../component-library';
 
 type NftDetailInformationFrameProps = {
   title?: string;

@@ -1,7 +1,23 @@
 import React, { useState, useContext } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
+import {
+  Box,
+  Button,
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
+  Text,
+} from '../../../components/component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextAlign,
   TextVariant,
@@ -13,24 +29,8 @@ import {
   Display,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import {
-  ThreeStepProgressBar,
-  threeStepStages,
-} from '../../../components/app/step-progress-bar';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  Box,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
-  Text,
-} from '../../../components/component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import SkipSRPBackup from './skip-srp-backup-popover';
 

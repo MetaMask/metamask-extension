@@ -1,18 +1,19 @@
+import { Messenger } from '@metamask/base-controller';
 import type {
   PPOMControllerMessenger} from '@metamask/ppom-validator';
 import {
   PPOMController
 } from '@metamask/ppom-validator';
-import { Messenger } from '@metamask/base-controller';
+
 import type { PreferencesController } from '../../controllers/preferences-controller';
-import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
 import type {
   PPOMControllerInitMessenger} from '../messengers/ppom-controller-messenger';
 import {
   getPPOMControllerInitMessenger,
   getPPOMControllerMessenger
 } from '../messengers/ppom-controller-messenger';
+import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { PPOMControllerInit } from './ppom-controller-init';
 
 type PPOMControllerOptions = ConstructorParameters<typeof PPOMController>[0];

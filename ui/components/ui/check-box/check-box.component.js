@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useLayoutEffect, useRef } from 'react';
 
 const CHECKBOX_STATE = {
   CHECKED: 'CHECKED',

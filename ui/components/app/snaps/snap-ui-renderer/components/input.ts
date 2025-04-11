@@ -1,6 +1,6 @@
 import type { InputElement, NumberInputProps } from '@metamask/snaps-sdk/jsx';
-
 import { hasProperty } from '@metamask/utils';
+
 import type { UIComponentFactory } from './types';
 
 export const constructInputProps = (props: InputElement['props']) => {

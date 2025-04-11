@@ -1,9 +1,10 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
+import React from 'react';
+
+import { ReceiveModal } from '.';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { ReceiveModal } from '.';
 
 describe('ReceiveModal', () => {
   const render = (address) =>

@@ -1,9 +1,10 @@
-import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
-import configureStore from '../../../store/store';
+import * as React from 'react';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
+import * as Actions from '../../../store/actions';
+import configureStore from '../../../store/store';
 import ClearMetaMetricsData from './clear-metametrics-data';
 
 const mockCloseDeleteMetaMetricsDataModal = jest.fn().mockImplementation(() => {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SecureYourWallet from './secure-your-wallet';
 
 export default {

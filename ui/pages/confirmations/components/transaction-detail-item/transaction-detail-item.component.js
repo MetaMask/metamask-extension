@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
+import { Text } from '../../../../components/component-library';
 import {
   Color,
   TextAlign,
@@ -10,7 +11,6 @@ import {
   FlexWrap,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../../components/component-library';
 
 export default function TransactionDetailItem({
   'data-testid': dataTestId,

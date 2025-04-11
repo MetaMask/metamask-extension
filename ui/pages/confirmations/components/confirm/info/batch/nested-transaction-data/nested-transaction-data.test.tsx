@@ -1,12 +1,13 @@
-import React from 'react';
 import type { BatchTransactionParams } from '@metamask/transaction-controller';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import configureStore from '../../../../../../../store/store';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import React from 'react';
+
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { useFourByte } from '../../hooks/useFourByte';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { RESULT_IDLE } from '../../../../../../../hooks/useAsync';
+import configureStore from '../../../../../../../store/store';
+import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { useFourByte } from '../../hooks/useFourByte';
 import { NestedTransactionData } from './nested-transaction-data';
 
 jest.mock('../../hooks/useFourByte', () => ({

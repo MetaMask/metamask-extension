@@ -1,4 +1,5 @@
 import type { SkeletonElement } from '@metamask/snaps-sdk/jsx';
+
 import { BorderRadius } from '../../../../../helpers/constants/design-system';
 import { mapSnapBorderRadiusToExtensionBorderRadius } from '../utils';
 import type { UIComponentFactory } from './types';

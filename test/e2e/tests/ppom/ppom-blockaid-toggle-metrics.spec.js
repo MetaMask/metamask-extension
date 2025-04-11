@@ -1,12 +1,12 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
 
+const { MOCK_META_METRICS_ID } = require('../../constants');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   unlockWallet,
   withFixtures,
   getEventPayloads,
 } = require('../../helpers');
-const { MOCK_META_METRICS_ID } = require('../../constants');
 
 async function mockServerCalls(mockServer) {
   return [

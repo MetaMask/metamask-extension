@@ -1,4 +1,5 @@
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import { createNotificationMessage } from './get-notification-message';
 
 const {

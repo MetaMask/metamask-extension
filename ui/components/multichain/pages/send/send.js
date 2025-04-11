@@ -8,18 +8,21 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tippy';
-import { I18nContext } from '../../../../contexts/i18n';
+
+
+import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
+import { AssetPickerAmount } from '../..';
 import {
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-  IconName,
-  Box,
-} from '../../../component-library';
-import { Content, Footer, Header, Page } from '../page';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import {
+  TokenStandard,
+  AssetType,
+  SmartTransactionStatus,
+} from '../../../../../shared/constants/transaction';
+import { I18nContext } from '../../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   SEND_STAGES,
   getCurrentDraftTransaction,
@@ -37,33 +40,31 @@ import {
   updateSendAmount,
   updateSendAsset,
 } from '../../../../ducks/send';
-
-import {
-  TokenStandard,
-  AssetType,
-  SmartTransactionStatus,
-} from '../../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  INSUFFICIENT_FUNDS_ERROR,
-  INVALID_HEX_DATA_ERROR,
-} from '../../../../pages/confirmations/send/send.constants';
-import { cancelTx, showQrScanner } from '../../../../store/actions';
+import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
-import { AssetPickerAmount } from '../..';
+  INSUFFICIENT_FUNDS_ERROR,
+  INVALID_HEX_DATA_ERROR,
+} from '../../../../pages/confirmations/send/send.constants';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
-import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
-import { TextVariant } from '../../../../helpers/constants/design-system';
+import { cancelTx, showQrScanner } from '../../../../store/actions';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonPrimary,
+  ButtonPrimarySize,
+  ButtonSecondary,
+  ButtonSecondarySize,
+  IconName,
+  Box,
+} from '../../../component-library';
+import { Content, Footer, Header, Page } from '../page';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,

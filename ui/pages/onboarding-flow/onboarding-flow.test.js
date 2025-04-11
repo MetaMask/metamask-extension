@@ -1,7 +1,10 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -19,12 +22,10 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
-import { mockNetworkState } from '../../../test/stub/networks';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({

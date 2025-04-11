@@ -1,25 +1,26 @@
-import React from 'react';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
 import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import { SendPage } from '.';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
+import { KeyringType } from '../../../../../shared/constants/keyring';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import mockSendState from '../../../../../test/data/mock-send-state.json';
 import {
   renderWithProvider,
   waitFor,
   fireEvent,
 } from '../../../../../test/jest';
-import { domainInitialState } from '../../../../ducks/domains';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
-import { AssetType } from '../../../../../shared/constants/transaction';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import mockSendState from '../../../../../test/data/mock-send-state.json';
-import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { KeyringType } from '../../../../../shared/constants/keyring';
-import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { SendPage } from '.';
+import { domainInitialState } from '../../../../ducks/domains';
+import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 
 jest.mock('@ethersproject/providers', () => {
   const originalModule = jest.requireActual('@ethersproject/providers');

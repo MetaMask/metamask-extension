@@ -1,5 +1,6 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
+import React from 'react';
+
 import { renderWithProvider } from '../../../../../test/jest';
 import SnapPrivacyWarning from './snap-privacy-warning';
 

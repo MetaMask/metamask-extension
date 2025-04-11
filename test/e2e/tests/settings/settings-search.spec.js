@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { openMenuSafe, withFixtures, unlockWallet } = require('../../helpers');
+
 const FixtureBuilder = require('../../fixture-builder');
+const { openMenuSafe, withFixtures, unlockWallet } = require('../../helpers');
 
 describe('Settings Search', function () {
   const settingsSearch = {

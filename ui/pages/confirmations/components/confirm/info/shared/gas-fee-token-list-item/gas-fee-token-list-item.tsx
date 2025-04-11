@@ -1,8 +1,9 @@
-import React from 'react';
 import type { GasFeeToken } from '@metamask/transaction-controller';
-import classnames from 'classnames';
 import type { Hex } from '@metamask/utils';
+import classnames from 'classnames';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   Box,
   Icon,
@@ -10,6 +11,7 @@ import {
   IconSize,
   Text,
 } from '../../../../../../../components/component-library';
+import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,12 +26,11 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import {
   NATIVE_TOKEN_ADDRESS,
   useGasFeeToken,
 } from '../../hooks/useGasFeeToken';
-import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
-import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
 export type GasFeeTokenListItemProps = {

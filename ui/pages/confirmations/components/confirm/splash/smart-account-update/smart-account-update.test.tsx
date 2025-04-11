@@ -1,16 +1,16 @@
+import { fireEvent } from '@testing-library/dom';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/dom';
 
-import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
+import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
-import type { Confirmation } from '../../../../types/confirm';
+import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
 import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
+import type { Confirmation } from '../../../../types/confirm';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({

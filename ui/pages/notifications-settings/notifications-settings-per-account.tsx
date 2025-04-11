@@ -1,17 +1,18 @@
-import React, { useState, useCallback, useContext } from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import React, { useState, useCallback, useContext } from 'react';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import {
   NotificationsSettingsBox,
   NotificationsSettingsAccount,
 } from '../../components/multichain';
-import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { shortenAddress } from '../../helpers/utils/util';
+import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
+import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 
 type NotificationsSettingsPerAccountProps = {
   address: string;

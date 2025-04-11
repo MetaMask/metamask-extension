@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getCurrentNetwork } from '../../../../../selectors';
 import { toggleNetworkMenu } from '../../../../../store/actions';
 import { PickerNetwork } from '../../../../component-library';

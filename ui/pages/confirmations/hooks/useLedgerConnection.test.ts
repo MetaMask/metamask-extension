@@ -2,6 +2,7 @@ import type { KeyringObject } from '@metamask/keyring-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
 import {
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,

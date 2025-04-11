@@ -1,17 +1,18 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+
 import { I18nContext } from '../../../contexts/i18n';
-import Tooltip from '../tooltip';
-import Popover from '../popover';
-import Button from '../button';
-import Identicon from '../identicon';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { ButtonIcon, IconName, IconSize } from '../../component-library';
+import Button from '../button';
+import Identicon from '../identicon';
+import Popover from '../popover';
+import Tooltip from '../tooltip';
 
 const NicknamePopover = ({
   address,

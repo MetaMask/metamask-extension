@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MaterialTextField from '@material-ui/core/TextField';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * @deprecated The `<TextField />` component has been deprecated in favor of the new `<TextField>` component from the component-library.

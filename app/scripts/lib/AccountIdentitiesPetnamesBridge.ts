@@ -1,15 +1,16 @@
 import type {
+  AccountsControllerChangeEvent,
+  AccountsControllerListAccountsAction,
+} from '@metamask/accounts-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type {
   NameController} from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  AccountsControllerChangeEvent,
-  AccountsControllerListAccountsAction,
-} from '@metamask/accounts-controller';
+
 import type {
   PetnameEntry,
   PetnamesBridgeMessenger} from './AbstractPetnamesBridge';

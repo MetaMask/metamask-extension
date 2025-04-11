@@ -1,3 +1,4 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   cloneDeep,
   concat,
@@ -6,7 +7,6 @@ import {
   pickBy,
   isPlainObject,
 } from 'lodash';
-import { TransactionType } from '@metamask/transaction-controller';
 
 const version = 59;
 

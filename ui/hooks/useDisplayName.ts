@@ -1,6 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+
 import type {
   EXPERIENCES_TYPE} from '../../shared/constants/first-party-contracts';
 import {

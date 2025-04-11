@@ -1,3 +1,4 @@
+const FixtureBuilder = require('../../fixture-builder');
 const {
   openDapp,
   switchToNotificationWindow,
@@ -5,7 +6,6 @@ const {
   unlockWallet,
   openActionMenuAndStartSendFlow,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 const {
   expectName,
   focusTestDapp,

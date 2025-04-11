@@ -1,6 +1,9 @@
 import type { ReactElement } from 'react';
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { trace, TraceName } from '../../../../shared/lib/trace';
+import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/modules/i18n';
 import {
   Box,
   Button,
@@ -10,6 +13,8 @@ import {
   IconSize,
   Text,
 } from '../../../components/component-library';
+import { ButtonSize } from '../../../components/component-library/button/button.types';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 import {
   AlignItems,
   Display,
@@ -17,15 +22,10 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { trace, TraceName } from '../../../../shared/lib/trace';
-import { ButtonSize } from '../../../components/component-library/button/button.types';
-
 import {
   forceUpdateMetamaskState,
   setCurrentLocale,
 } from '../../../store/actions';
-import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/modules/i18n';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));

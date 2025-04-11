@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react-hooks';
+
 import { useLoadingTime } from './useLoadingTime';
 
 describe('useLoadingTime', () => {

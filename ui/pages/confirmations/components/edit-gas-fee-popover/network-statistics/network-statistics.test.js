@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { renderWithProvider, screen } from '../../../../../../test/jest';
-import configureStore from '../../../../../store/store';
 import { GasFeeContext } from '../../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
 import NetworkStatistics from './network-statistics';
 
 const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {

@@ -3,6 +3,7 @@ import type {
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
+
 import {
   LedgerAction,
   OffscreenCommunicationEvents,

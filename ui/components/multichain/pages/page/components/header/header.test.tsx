@@ -1,8 +1,8 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 
-import { ButtonIcon, IconName } from '../../../../../component-library';
 import { Header } from '.';
+import { ButtonIcon, IconName } from '../../../../../component-library';
 
 const HEADER_TEXT = 'Connections';
 

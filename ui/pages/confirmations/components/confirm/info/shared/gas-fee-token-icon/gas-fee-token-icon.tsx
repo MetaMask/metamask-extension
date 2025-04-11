@@ -1,18 +1,19 @@
-import React from 'react';
-import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
-import Identicon from '../../../../../../../components/ui/identicon';
+
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarTokenSize,
   Box,
 } from '../../../../../../../components/component-library';
+import Identicon from '../../../../../../../components/ui/identicon';
 import { BackgroundColor } from '../../../../../../../helpers/constants/design-system';
+import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export enum GasFeeTokenIconSize {
   Sm = 'sm',

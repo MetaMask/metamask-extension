@@ -1,6 +1,18 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { TERMS_OF_USE_LINK } from '../../../../../shared/constants/terms';
+import {
+  AlignItems,
+  BackgroundColor,
+  Display,
+  FontWeight,
+  IconColor,
+  JustifyContent,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -14,17 +26,6 @@ import {
   ModalBody,
   ModalContent,
 } from '../../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  FontWeight,
-  IconColor,
-  JustifyContent,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { TERMS_OF_USE_LINK } from '../../../../../shared/constants/terms';
 
 export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
   const t = useI18nContext();

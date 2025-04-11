@@ -1,4 +1,5 @@
 import log from 'loglevel';
+
 import { isErrorWithMessage, logErrorWithMessage } from './error';
 
 jest.mock('loglevel');

@@ -1,14 +1,15 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import CurrencyDisplay from '../currency-display';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
-import { Text } from '../../component-library';
+import React from 'react';
+
 import {
   FontWeight,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { Text } from '../../component-library';
+import CurrencyDisplay from '../currency-display';
 
 export default function TokenBalance({
   className,

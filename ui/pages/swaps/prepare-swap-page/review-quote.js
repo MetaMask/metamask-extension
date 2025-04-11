@@ -1,3 +1,8 @@
+import { captureException } from '@sentry/browser';
+import BigNumber from 'bignumber.js';
+import classnames from 'classnames';
+import { isEqual } from 'lodash';
+import PropTypes from 'prop-types';
 import React, {
   useState,
   useContext,
@@ -8,55 +13,7 @@ import React, {
 } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import BigNumber from 'bignumber.js';
-import { isEqual } from 'lodash';
-import classnames from 'classnames';
-import { captureException } from '@sentry/browser';
-import PropTypes from 'prop-types';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { I18nContext } from '../../../contexts/i18n';
-import SelectQuotePopover from '../select-quote-popover';
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import { usePrevious } from '../../../hooks/usePrevious';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getQuotes,
-  getApproveTxParams,
-  getFetchParams,
-  setBalanceError,
-  getQuotesLastFetched,
-  getBalanceError,
-  getCustomSwapsGas, // Gas limit.
-  getDestinationTokenInfo,
-  getUsedSwapsGasPrice,
-  getTopQuote,
-  getUsedQuote,
-  signAndSendTransactions,
-  getBackgroundSwapRouteState,
-  swapsQuoteSelected,
-  getReviewSwapClickedTimestamp,
-  signAndSendSwapsSmartTransaction,
-  getSwapsNetworkConfig,
-  getSmartTransactionsError,
-  getCurrentSmartTransactionsError,
-  getSwapsSTXLoading,
-  fetchSwapsSmartTransactionFees,
-  getSmartTransactionFees,
-  getCurrentSmartTransactionsEnabled,
-  getIsEstimatedReturnLow,
-} from '../../../ducks/swaps/swaps';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import {
-  conversionRateSelector,
-  getSelectedAccount,
-  getTokenExchangeRates,
-  getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
-  checkNetworkAndAccountSupports1559,
-  getUSDConversionRate,
-} from '../../../selectors';
+
 import {
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsEnabled,
@@ -147,11 +104,55 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getQuotes,
+  getApproveTxParams,
+  getFetchParams,
+  setBalanceError,
+  getQuotesLastFetched,
+  getBalanceError,
+  getCustomSwapsGas, // Gas limit.
+  getDestinationTokenInfo,
+  getUsedSwapsGasPrice,
+  getTopQuote,
+  getUsedQuote,
+  signAndSendTransactions,
+  getBackgroundSwapRouteState,
+  swapsQuoteSelected,
+  getReviewSwapClickedTimestamp,
+  signAndSendSwapsSmartTransaction,
+  getSwapsNetworkConfig,
+  getSmartTransactionsError,
+  getCurrentSmartTransactionsError,
+  getSwapsSTXLoading,
+  fetchSwapsSmartTransactionFees,
+  getSmartTransactionFees,
+  getCurrentSmartTransactionsEnabled,
+  getIsEstimatedReturnLow,
+} from '../../../ducks/swaps/swaps';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useAsyncResult } from '../../../hooks/useAsync';
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { usePrevious } from '../../../hooks/usePrevious';
+import {
+  conversionRateSelector,
+  getSelectedAccount,
+  getTokenExchangeRates,
+  getSwapsDefaultToken,
+  isHardwareWallet,
+  getHardwareWalletType,
+  checkNetworkAndAccountSupports1559,
+  getUSDConversionRate,
+} from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import ViewQuotePriceDifference from './view-quote-price-difference';
+import SelectQuotePopover from '../select-quote-popover';
 import SlippageNotificationModal from './slippage-notification-modal';
+import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
 

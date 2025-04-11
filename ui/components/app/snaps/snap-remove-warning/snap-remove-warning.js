@@ -1,5 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import {
+  BlockSize,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Text,
@@ -12,12 +18,6 @@ import {
 } from '../../../component-library';
 import { ModalContent } from '../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
-
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
 
 export default function SnapRemoveWarning({
   isOpen,

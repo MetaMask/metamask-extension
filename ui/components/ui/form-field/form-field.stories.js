@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 
 import React, { useState } from 'react';
-import Tooltip from '../tooltip';
 
-import { Icon, IconName, Text } from '../../component-library';
-import { AlignItems } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import FormField from '.';
+import { AlignItems } from '../../../helpers/constants/design-system';
+import { Icon, IconName, Text } from '../../component-library';
+import Tooltip from '../tooltip';
+import README from './README.mdx';
 
 export default {
   title: 'Components/UI/FormField',

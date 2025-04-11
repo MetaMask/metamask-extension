@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, IconName, IconSize, Text } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MenuItem } from '../../ui/menu';
+import { useHistory } from 'react-router-dom';
+
 import {
   AlignItems,
   BlockSize,
@@ -13,10 +11,13 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
+import { getSnapRoute } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
-import { getSnapRoute } from '../../../helpers/utils/util';
+import { Box, IconName, IconSize, Text } from '../../component-library';
+import { MenuItem } from '../../ui/menu';
+import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
 import { SnapIcon } from '../snaps/snap-icon';
 
 export default function ConnectedSnaps({ connectedSubjects }) {

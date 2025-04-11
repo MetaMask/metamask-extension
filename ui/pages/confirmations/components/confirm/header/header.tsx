@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
+
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   AvatarNetwork,

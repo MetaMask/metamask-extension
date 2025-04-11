@@ -1,3 +1,4 @@
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import {
   type MultichainNetworkControllerState as InternalMultichainNetworkState,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
@@ -5,7 +6,6 @@ import {
   toMultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 
 import type {
@@ -17,11 +17,11 @@ import {
   getNetworkConfigurationsByChainId
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { getInternalAccounts } from '../accounts';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
 } from '../selectors';
-import { getInternalAccounts } from '../accounts';
 
 // Selector types
 

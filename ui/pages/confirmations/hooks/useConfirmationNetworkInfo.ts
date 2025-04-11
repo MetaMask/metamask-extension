@@ -1,14 +1,13 @@
+import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
-import type { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useConfirmContext } from '../context/confirm';
 import { selectNetworkConfigurationByChainId } from '../../../selectors';
+import { useConfirmContext } from '../context/confirm';
 
 function useConfirmationNetworkInfo() {
   const t = useI18nContext();

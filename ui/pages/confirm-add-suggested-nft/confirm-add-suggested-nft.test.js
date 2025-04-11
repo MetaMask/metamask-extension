@@ -1,18 +1,19 @@
+import { ApprovalType } from '@metamask/controller-utils';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { fireEvent, screen } from '@testing-library/react';
-import { ApprovalType } from '@metamask/controller-utils';
+
+import ConfirmAddSuggestedNFT from '.';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import mockState from '../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../test/jest/rendering';
+import { mockNetworkState } from '../../../test/stub/networks';
+import * as util from '../../helpers/utils/util';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
-import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/jest/rendering';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mockNetworkState } from '../../../test/stub/networks';
-import * as util from '../../helpers/utils/util';
-import ConfirmAddSuggestedNFT from '.';
 
 const PENDING_NFT_APPROVALS = {
   1: {

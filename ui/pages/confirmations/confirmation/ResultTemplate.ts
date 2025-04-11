@@ -1,9 +1,10 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import type {
   ApprovalRequest,
   ErrorOptions,
   SuccessOptions,
 } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+
 import { IconName, IconSize } from '../../../components/component-library';
 import {
   FontWeight,

@@ -12,6 +12,7 @@ const {
   multisigAbi,
   multisigBytecode,
 } = require('@metamask/test-dapp/dist/constants.json');
+
 const { entrypointAbi, entrypointBytecode } = require('./contracts/entrypoint');
 const {
   simpleAccountFactoryAbi,

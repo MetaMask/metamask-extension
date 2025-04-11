@@ -1,7 +1,7 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import React from 'react';
+
 import { infuraProjectId } from '../../../../shared/constants/network';
-import { Box, Text } from '../../component-library';
 import {
   Display,
   FlexDirection,
@@ -12,6 +12,7 @@ import {
   BackgroundColor,
   BlockSize,
 } from '../../../helpers/constants/design-system';
+import { Box, Text } from '../../component-library';
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
   let modifiedEndpoint = endpoint;

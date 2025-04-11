@@ -1,4 +1,12 @@
 import type {
+  CaipAccountId,
+  CaipChainId} from '@metamask/utils';
+import {
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
+import classnames from 'classnames';
+import type {
   ChangeEvent,
   FunctionComponent} from 'react';
 import React, {
@@ -6,25 +14,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
-import type {
-  CaipAccountId,
-  CaipChainId} from '@metamask/utils';
-import {
-  parseCaipAccountId,
-  parseCaipChainId,
-} from '@metamask/utils';
-import type {
-  FormTextFieldProps} from '../../../component-library';
-import {
-  Box,
-  FormTextField,
-  FormTextFieldSize,
-  Icon,
-  IconName,
-  Label,
-  Text,
-} from '../../../component-library';
+
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   AlignItems,
@@ -37,8 +27,19 @@ import {
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SnapUIAvatar } from '../snap-ui-avatar';
 import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
+import type {
+  FormTextFieldProps} from '../../../component-library';
+import {
+  Box,
+  FormTextField,
+  FormTextFieldSize,
+  Icon,
+  IconName,
+  Label,
+  Text,
+} from '../../../component-library';
+import { SnapUIAvatar } from '../snap-ui-avatar';
 
 export type SnapUIAddressInputProps = {
   name: string;

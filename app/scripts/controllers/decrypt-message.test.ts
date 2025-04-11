@@ -3,6 +3,7 @@ import {
 } from '@metamask/message-manager';
 import type { DecryptMessageManagerMessenger ,
   DecryptMessageParams} from '@metamask/message-manager';
+
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import type {
   DecryptMessageControllerMessenger,

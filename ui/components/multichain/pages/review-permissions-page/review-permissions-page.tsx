@@ -1,6 +1,3 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
 import type {
   CaipAccountId,
   CaipChainId,
@@ -10,14 +7,21 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+
+import { ToastContainer, Toast } from '../..';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   AlignItems,
   BlockSize,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllPermittedAccountsForSelectedTab,
   getAllPermittedChainsForSelectedTab,
@@ -26,6 +30,10 @@ import {
   getShowPermittedNetworkToastOpen,
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
+import type {
+  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+  MergedInternalAccountWithCaipAccountId,
+} from '../../../../selectors/selectors.types';
 import {
   addPermittedAccounts,
   addPermittedChains,
@@ -46,21 +54,14 @@ import {
   ButtonVariant,
   IconName,
 } from '../../../component-library';
-import { ToastContainer, Toast } from '../..';
-import { NoConnectionContent } from '../connections/components/no-connection';
-import { Content, Footer, Page } from '../page';
-import type { SubjectsType } from '../connections/components/connections.types';
-import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import type {
-  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
-  MergedInternalAccountWithCaipAccountId,
-} from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import type { SubjectsType } from '../connections/components/connections.types';
+import { NoConnectionContent } from '../connections/components/no-connection';
+import { Content, Footer, Page } from '../page';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {

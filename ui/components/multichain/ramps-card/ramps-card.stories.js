@@ -1,6 +1,7 @@
 import React from 'react';
-import { RAMPS_CARD_VARIANT_TYPES } from './ramps-card';
+
 import { RampsCard } from '.';
+import { RAMPS_CARD_VARIANT_TYPES } from './ramps-card';
 
 export default {
   title: 'Components/Multichain/RampsCard',

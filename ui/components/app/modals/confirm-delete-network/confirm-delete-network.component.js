@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
 import Modal, { ModalContent } from '../../modal';
 
 export default class ConfirmDeleteNetwork extends PureComponent {

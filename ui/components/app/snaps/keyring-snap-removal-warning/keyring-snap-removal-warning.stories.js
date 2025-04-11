@@ -1,4 +1,5 @@
 import React from 'react';
+
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
 export default {

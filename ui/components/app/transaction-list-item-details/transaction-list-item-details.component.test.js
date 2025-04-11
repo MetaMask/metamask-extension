@@ -1,12 +1,13 @@
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { act, waitFor } from '@testing-library/react';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+
 import TransactionListItemDetails from '.';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: () => jest.fn(),

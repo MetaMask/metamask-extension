@@ -1,6 +1,5 @@
 import React from 'react';
-import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
-import { Box, Text } from '../../component-library';
+
 import {
   BackgroundColor,
   BorderRadius,
@@ -10,6 +9,8 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
+import { Box, Text } from '../../component-library';
 
 type NotificationsTagCounterProps = {
   noLabel?: boolean;

@@ -1,6 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   IconColor,
   AlignItems,
@@ -8,6 +9,8 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getSnapMetadata } from '../../../../selectors';
 import {
   Box,
   Icon,
@@ -16,8 +19,6 @@ import {
   Text,
 } from '../../../component-library';
 import Tooltip from '../../../ui/tooltip/tooltip';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getSnapMetadata } from '../../../../selectors';
 import { SnapIcon } from '../snap-icon';
 
 export default function SnapConnectCell({ origin, snapId }) {

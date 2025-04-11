@@ -1,8 +1,9 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import reactRouterDom from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
 import { renderWithProvider } from '../../../../test/jest';
 import {
   setCompletedOnboarding,

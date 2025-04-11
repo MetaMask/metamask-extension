@@ -1,5 +1,6 @@
-const fs = require('fs');
 const { AssertionError } = require('assert');
+const fs = require('fs');
+const { uniqWith } = require('lodash');
 const path = require('path');
 const {
   object,
@@ -20,7 +21,6 @@ const {
   literal,
 } = require('superstruct');
 const yaml = require('yaml');
-const { uniqWith } = require('lodash');
 
 const BUILDS_YML_PATH = path.resolve('./builds.yml');
 

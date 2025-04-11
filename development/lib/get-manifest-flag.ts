@@ -1,10 +1,9 @@
-import path from 'node:path';
-import fs from 'node:fs/promises';
-import { promisify } from 'node:util';
-import { exec as callbackExec } from 'node:child_process';
-
 import { hasProperty } from '@metamask/utils';
 import { merge } from 'lodash';
+import { exec as callbackExec } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { promisify } from 'node:util';
 
 import type { ManifestFlags } from '../../shared/lib/manifestFlags';
 

@@ -1,13 +1,28 @@
-import { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { toChecksumAddress } from 'ethereumjs-util';
-import { isStrictHexString } from '@metamask/utils';
 import {
   formatChainIdToCaip,
   type SwapsTokenObject,
 } from '@metamask/bridge-controller';
+import { isStrictHexString } from '@metamask/utils';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { useCallback, useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
+} from '../../../shared/constants/metametrics';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../helpers/constants/routes';
+import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import type {
   SwapsEthToken} from '../../selectors';
 import {
@@ -20,22 +35,7 @@ import {
   getUseExternalServices
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsSwapsEventSource,
-} from '../../../shared/constants/metametrics';
-
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 

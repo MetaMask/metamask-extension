@@ -1,9 +1,15 @@
 import { useSelector } from 'react-redux';
 
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-
+import { EtherDenomination } from '../../../../shared/constants/common';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
+} from '../../../ducks/swaps/swaps';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getShouldShowFiat,
   txDataSelector,
@@ -13,14 +19,6 @@ import {
   selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
-
-import {
-  getCustomMaxFeePerGas,
-  getCustomMaxPriorityFeePerGas,
-} from '../../../ducks/swaps/swaps';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
   getMultichainCurrentCurrency,
   getMultichainIsEvm,

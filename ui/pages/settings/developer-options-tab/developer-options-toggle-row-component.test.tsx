@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+
 import mockState from '../../../../test/data/mock-state.json'; // Adjust the path based on your actual file location
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import ToggleRow from './developer-options-toggle-row-component';
 
 describe('ToggleFeatureRow Component', () => {

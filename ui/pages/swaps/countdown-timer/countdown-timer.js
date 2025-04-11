@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Duration } from 'luxon';
-import { I18nContext } from '../../../contexts/i18n';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
+import { SECOND } from '../../../../shared/constants/time';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   getSwapsQuoteRefreshTime,
   getSwapsQuotePrefetchingRefreshTime,
 } from '../../../ducks/swaps/swaps';
-import { SECOND } from '../../../../shared/constants/time';
 
 // Return the mm:ss start time of the countdown timer.
 // If time has elapsed between `timeStarted` the time current time,

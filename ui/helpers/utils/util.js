@@ -1,42 +1,43 @@
-import punycode from 'punycode/punycode';
-import abi from 'human-standard-token-abi';
-import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
-import { DateTime } from 'luxon';
+import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import {
   getFormattedIpfsUrl,
   fetchTokenContractExchangeRates,
   CodefiTokenPricesServiceV2,
 } from '@metamask/assets-controllers';
-import * as lodash from 'lodash';
-import bowser from 'bowser';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
-import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { logErrorWithMessage } from '../../../shared/modules/error';
-import {
-  toChecksumHexAddress,
-  stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+import BigNumber from 'bignumber.js';
+import BN from 'bn.js';
+import abi from 'human-standard-token-abi';
+import punycode from 'punycode/punycode';
+import { DateTime } from 'luxon';
+import * as lodash from 'lodash';
+import bowser from 'bowser';
+
+import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { logErrorWithMessage } from '../../../shared/modules/error';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../../shared/modules/hexstring-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
-import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {

@@ -1,15 +1,16 @@
 import { ChainId } from '@metamask/bridge-controller';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
+
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import BridgeStatusController from './bridge-status-controller';
-import type { BridgeStatusControllerMessenger } from './types';
 import { DEFAULT_BRIDGE_STATUS_STATE } from './constants';
-import * as bridgeStatusUtils from './utils';
 import {
   MockStatusResponse,
   MockTxHistory,
   getMockStartPollingForBridgeTxStatusArgs,
 } from './mocks';
+import type { BridgeStatusControllerMessenger } from './types';
+import * as bridgeStatusUtils from './utils';
 
 const EMPTY_INIT_STATE = {
   bridgeStatusState: { ...DEFAULT_BRIDGE_STATUS_STATE },

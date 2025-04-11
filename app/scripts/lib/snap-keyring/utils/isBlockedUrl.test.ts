@@ -1,5 +1,6 @@
-import { ListNames, PhishingController } from '@metamask/phishing-controller';
 import { Messenger } from '@metamask/base-controller';
+import { ListNames, PhishingController } from '@metamask/phishing-controller';
+
 import { isBlockedUrl } from './isBlockedUrl';
 
 describe('isBlockedUrl', () => {

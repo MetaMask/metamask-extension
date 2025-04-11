@@ -1,6 +1,6 @@
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { orderSignatureMsg } from '../../../../test/data/confirmations/typed_sign';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { updateEventFragment } from '../../../store/actions';
 import type { SignatureRequestType } from '../types/confirm';

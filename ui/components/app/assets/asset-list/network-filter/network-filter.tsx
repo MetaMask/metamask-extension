@@ -1,22 +1,15 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+
 import {
-  getCurrentNetwork,
-  getShouldHideZeroBalanceTokens,
-  getSelectedAccount,
-  getAllChainsToPoll,
-  getTokenNetworkFilter,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-} from '../../../../../selectors';
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  FEATURED_NETWORK_CHAIN_IDS,
+} from '../../../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../../../shared/modules/selectors/networks';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { SelectableListItem } from '../sort-control/sort-control';
-import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
   BlockSize,
@@ -25,19 +18,27 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../component-library/box/box';
+import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
+import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  getCurrentNetwork,
+  getShouldHideZeroBalanceTokens,
+  getSelectedAccount,
+  getAllChainsToPoll,
+  getTokenNetworkFilter,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+} from '../../../../../selectors';
+import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../../component-library';
-import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_NETWORK_CHAIN_IDS,
-} from '../../../../../../shared/constants/network';
-import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
-import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { Box } from '../../../../component-library/box/box';
+import { Text } from '../../../../component-library/text/text';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
+import { SelectableListItem } from '../sort-control/sort-control';
 
 type SortControlProps = {
   handleClose: () => void;

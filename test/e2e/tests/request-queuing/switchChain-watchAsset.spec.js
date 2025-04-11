@@ -1,3 +1,4 @@
+const { DAPP_URL } = require('../../constants');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   logInWithBalanceValidation,
@@ -7,7 +8,6 @@ const {
   switchToNotificationWindow,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;

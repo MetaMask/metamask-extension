@@ -1,5 +1,7 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+
 import type { AllowedBridgeChainIds } from '../../constants/bridge';
+import { MultichainNetworks } from '../../constants/multichain/networks';
 import type {
   ScanTokenRequest,
   TokenFeature,
@@ -7,7 +9,6 @@ import type {
 import {
   TokenFeatureType
 } from '../../types/security-alerts-api';
-import { MultichainNetworks } from '../../constants/multichain/networks';
 
 const DOMAIN = 'https://metamask.io';
 

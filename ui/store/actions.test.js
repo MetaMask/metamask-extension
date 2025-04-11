@@ -1,25 +1,26 @@
-import sinon from 'sinon';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import sinon from 'sinon';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
-import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../test/stub/networks';
+import { GAS_LIMITS } from '../../shared/constants/gas';
+import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import * as actions from './actions';
+import { mockNetworkState } from '../../test/stub/networks';
 import * as actionConstants from './actionConstants';
+import * as actions from './actions';
 import { setBackgroundConnection } from './background-connection';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;

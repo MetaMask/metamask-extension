@@ -1,8 +1,9 @@
-import React from 'react';
 import { EthAccountType } from '@metamask/keyring-api';
+import React from 'react';
+
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import README from './README.mdx';
 import AccountListItem from './account-list-item';
+import README from './README.mdx';
 
 export default {
   title: 'Components/App/AccountListItem',

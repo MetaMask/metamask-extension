@@ -1,13 +1,12 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-
-import Confirmation from '../confirmation';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import Confirmation from '../confirmation';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 

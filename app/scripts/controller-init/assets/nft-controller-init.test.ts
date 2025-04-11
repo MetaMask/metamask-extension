@@ -4,9 +4,10 @@ import {
   NftController
 } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
+
+import { getNftControllerMessenger } from '../messengers/assets';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
-import { getNftControllerMessenger } from '../messengers/assets';
 import { NftControllerInit } from './nft-controller-init';
 
 jest.mock('@metamask/assets-controllers');

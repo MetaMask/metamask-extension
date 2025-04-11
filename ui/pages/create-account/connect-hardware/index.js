@@ -1,34 +1,35 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+
 import {
-  getMetaMaskAccounts,
-  getRpcPrefsForCurrentProvider,
-  getMetaMaskAccountsConnected,
-} from '../../../selectors';
-import { formatBalance } from '../../../helpers/utils/util';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+} from '../../../../shared/constants/hardware-wallets';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-} from '../../../../shared/constants/hardware-wallets';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   BUTTON_VARIANT,
   BUTTON_SIZES,
   Button,
   Text,
 } from '../../../components/component-library';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { TextColor } from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { formatBalance } from '../../../helpers/utils/util';
+import {
+  getMetaMaskAccounts,
+  getRpcPrefsForCurrentProvider,
+  getMetaMaskAccountsConnected,
+} from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import * as actions from '../../../store/actions';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 

@@ -1,5 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../../shared/constants/network';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -12,10 +17,6 @@ import {
   BlockSize,
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../../shared/constants/network';
 
 const getNetworkDetails = (network) => {
   return {

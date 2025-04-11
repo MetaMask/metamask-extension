@@ -1,4 +1,5 @@
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+
 import type {
   QuoteMetadataSerialized,
   StatusRequest} from '../../types/bridge-status';

@@ -1,6 +1,7 @@
-import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
+import log from 'loglevel';
+
 import type { MetaMaskStorageStructure } from './base-store';
 import { type MetaMaskStateType } from './base-store';
 import type ExtensionStore from './extension-store';

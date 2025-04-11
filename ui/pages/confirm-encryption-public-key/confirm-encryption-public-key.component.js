@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
+import { EtherDenomination } from '../../../shared/constants/common';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { Numeric } from '../../../shared/modules/Numeric';
 import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
 import { PageContainerFooter } from '../../components/ui/page-container';
-
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import SiteOrigin from '../../components/ui/site-origin';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
 import { Nav } from '../confirmations/components/confirm/nav';
 
 export default class ConfirmEncryptionPublicKey extends Component {

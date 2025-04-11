@@ -1,5 +1,9 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
+
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import {
   Box,
@@ -14,9 +18,6 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
-import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';

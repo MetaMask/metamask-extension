@@ -1,5 +1,4 @@
 const FixtureBuilder = require('../../fixture-builder');
-
 const {
   WINDOW_TITLES,
   openDapp,

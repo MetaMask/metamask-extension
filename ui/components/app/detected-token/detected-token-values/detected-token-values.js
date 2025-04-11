@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useTokenTracker } from '../../../../hooks/useTokenBalances';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getSelectedAddress,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
 import { Box, Checkbox, Text } from '../../../component-library';
-import { useTokenTracker } from '../../../../hooks/useTokenBalances';
 
 const DetectedTokenValues = ({
   token,

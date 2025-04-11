@@ -1,6 +1,7 @@
-import { Transform } from 'readable-stream';
-import log from 'loglevel';
 import type { JsonRpcRequest } from '@metamask/utils';
+import log from 'loglevel';
+import { Transform } from 'readable-stream';
+
 import { MINUTE } from '../../../shared/constants/time';
 
 export const THREE_MINUTES = MINUTE * 3;

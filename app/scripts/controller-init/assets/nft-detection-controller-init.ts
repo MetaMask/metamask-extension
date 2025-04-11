@@ -1,6 +1,7 @@
 import { NftDetectionController } from '@metamask/assets-controllers';
-import type { ControllerInitFunction } from '../types';
+
 import type { NftDetectionControllerMessenger } from '../messengers/assets';
+import type { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the NFT detection controller.

@@ -1,15 +1,23 @@
-import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
-import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { getErrorMessage } from '../../../shared/modules/error';
+import BigNumber from 'bignumber.js';
+import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
+
+import { EtherDenomination } from '../../../shared/constants/common';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { getErrorMessage } from '../../../shared/modules/error';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import {
   addGasBuffer,
   generateERC20TransferData,
@@ -17,7 +25,6 @@ import {
   generateERC1155TransferData,
   getAssetTransferData,
 } from '../../pages/confirmations/send/send.utils';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getConfirmationExchangeRates,
@@ -25,14 +32,8 @@ import {
   getTokenExchangeRates,
 } from '../../selectors';
 import { estimateGas } from '../../store/actions';
-import { Numeric } from '../../../shared/modules/Numeric';
 import { getGasFeeEstimates, getNativeCurrency } from '../metamask/metamask';
 import { getUsedSwapsGasPrice } from '../swaps/swaps';
-import { fetchTokenExchangeRates } from '../../helpers/utils/util';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export async function estimateGasLimitForSend({
   selectedAddress,

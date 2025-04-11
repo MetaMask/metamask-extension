@@ -11,13 +11,14 @@ import type {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { TransactionParams } from '@metamask/transaction-controller';
+
+import type SwapsController from '.';
 import type {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
 import type { controllerName } from './swaps.constants';
-import type SwapsController from '.';
 
 export type SwapsControllerState = {
   swapsState: {

@@ -1,11 +1,12 @@
-import React from 'react';
-import { fireEvent } from '@testing-library/react';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import configureStore from '../../../store/store';
 import type { ConnectPageProps } from './connect-page';
 import { ConnectPage } from './connect-page';

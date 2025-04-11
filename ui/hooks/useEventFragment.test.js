@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+
 import {
   finalizeEventFragment,
   createEventFragment,

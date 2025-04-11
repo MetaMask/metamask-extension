@@ -1,11 +1,3 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-} from 'react';
-import { useSelector } from 'react-redux';
 import type {
   Token,
   TokenListMap,
@@ -14,45 +6,16 @@ import type {
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalHeader,
-  Box,
-  AvatarTokenSize,
-  AvatarToken,
-  Text,
-  PickerNetwork,
-} from '../../../component-library';
-import {
-  BorderRadius,
-  TextVariant,
-  TextAlign,
-  Display,
-  AlignItems,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Toast, ToastContainer } from '../../toast';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from 'react';
+import { useSelector } from 'react-redux';
 
-import { AssetType } from '../../../../../shared/constants/transaction';
-import {
-  getAllTokens,
-  getSelectedEvmInternalAccount,
-  getTokenExchangeRates,
-  getTokenList,
-  getUseExternalServices,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  hasCreatedSolanaAccount,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../selectors';
-import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
+
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
@@ -71,20 +34,58 @@ import {
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
+import { AssetType } from '../../../../../shared/constants/transaction';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { getSwapsBlockedTokens } from '../../../../ducks/send';
+import {
+  BorderRadius,
+  TextVariant,
+  TextAlign,
+  Display,
+  AlignItems,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
+import {
+  getAllTokens,
+  getSelectedEvmInternalAccount,
+  getTokenExchangeRates,
+  getTokenList,
+  getUseExternalServices,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  hasCreatedSolanaAccount,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../../selectors';
+import {
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  Box,
+  AvatarTokenSize,
+  AvatarToken,
+  Text,
+  PickerNetwork,
+} from '../../../component-library';
+import { Toast, ToastContainer } from '../../toast';
+import type { AssetPickerModalNetwork } from './asset-picker-modal-network';
+import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+import { Search } from './asset-picker-modal-search';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
+import AssetList from './AssetList';
 import { useAssetMetadata } from './hooks/useAssetMetadata';
+import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
 import type {
   ERC20Asset,
   NativeAsset,
   NFT,
   AssetWithDisplayData,
 } from './types';
-import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
-import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
-import AssetList from './AssetList';
-import { Search } from './asset-picker-modal-search';
-import type { AssetPickerModalNetwork } from './asset-picker-modal-network';
-import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;

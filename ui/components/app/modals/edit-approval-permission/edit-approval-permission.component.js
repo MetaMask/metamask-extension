@@ -1,11 +1,9 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import log from 'loglevel';
-import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
-import Modal from '../../modal';
-import Identicon from '../../../ui/identicon';
-import TextField from '../../../ui/text-field';
+import classnames from 'classnames';
+import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
 import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
@@ -15,6 +13,9 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../component-library';
+import Identicon from '../../../ui/identicon';
+import TextField from '../../../ui/text-field';
+import Modal from '../../modal';
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 

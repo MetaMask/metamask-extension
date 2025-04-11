@@ -1,8 +1,8 @@
 import { ApprovalType } from '@metamask/controller-utils';
-
 import { createSelector } from 'reselect';
-import { getPendingApprovals } from '../../../selectors/approvals';
+
 import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
+import { getPendingApprovals } from '../../../selectors/approvals';
 import type { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [

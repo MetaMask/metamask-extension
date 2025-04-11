@@ -1,5 +1,5 @@
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 describe('useConfirmationAlerts', () => {

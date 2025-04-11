@@ -1,10 +1,11 @@
-import fs from 'node:fs';
-import { describe, it, after, mock } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
 import { resolve } from 'node:path';
-import * as config from '../utils/config';
-import { parseArgv } from '../utils/cli';
+import { describe, it, after, mock } from 'node:test';
+
 import { version } from '../../../package.json';
+import { parseArgv } from '../utils/cli';
+import * as config from '../utils/config';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 describe('./utils/config.ts', () => {

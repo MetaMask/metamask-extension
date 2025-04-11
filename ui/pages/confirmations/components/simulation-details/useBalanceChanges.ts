@@ -1,5 +1,4 @@
-import type { Hex } from '@metamask/utils';
-import { useSelector } from 'react-redux';
+import type { ContractExchangeRates } from '@metamask/assets-controllers';
 import type {
   SimulationBalanceChange,
   SimulationData,
@@ -7,15 +6,16 @@ import type {
 import {
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import type { ContractExchangeRates } from '@metamask/assets-controllers';
-import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
+import { useSelector } from 'react-redux';
+
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { selectConversionRateByChainId } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
+import { selectConversionRateByChainId } from '../../../../selectors';
 import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
-
 import type {
   BalanceChange,
   NativeAssetIdentifier,

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Display, TextVariant } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
-import type { SnapAccountRedirectProps } from '../snap-account-redirect';
+
 import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
+import { Box, Text } from '../../../components/component-library';
+import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import UrlDisplayBox from './url-display-box';
 
 const SnapAccountRedirectMessage = ({

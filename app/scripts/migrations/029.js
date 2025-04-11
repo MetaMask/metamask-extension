@@ -1,5 +1,6 @@
 // next version number
 import { TransactionStatus } from '@metamask/transaction-controller';
+
 import failTxsThat from './fail-tx';
 
 const version = 29;

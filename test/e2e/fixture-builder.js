@@ -1,16 +1,15 @@
+const { toHex } = require('@metamask/controller-utils');
+const {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+} = require('@metamask/preferences-controller');
 const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
-const { toHex } = require('@metamask/controller-utils');
-const {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-} = require('@metamask/preferences-controller');
-const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { mockNetworkStateOld } = require('../stub/networks');
 const {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
@@ -21,6 +20,7 @@ const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 
 function onboardingFixture() {
   return {

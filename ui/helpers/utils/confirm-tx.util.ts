@@ -1,10 +1,11 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
-import { BigNumber } from 'bignumber.js';
 
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
+
 import { EtherDenomination } from '../../../shared/constants/common';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }): string {
   return new Numeric(gasLimit, 16)

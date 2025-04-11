@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, useHistory } from 'react-router-dom';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
-import * as actions from '../../../store/actions';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import * as networks from '../../../../shared/modules/selectors/networks';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
+import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import * as actions from '../../../store/actions';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('react-router-dom', () => {

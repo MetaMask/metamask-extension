@@ -1,21 +1,20 @@
 // TODO(ritave): Remove switches on hardcoded build types
-const { callbackify } = require('util');
-const path = require('path');
-const { writeFileSync, readFileSync, unlinkSync } = require('fs');
-const EventEmitter = require('events');
-const gulp = require('gulp');
-const watch = require('gulp-watch');
-const Vinyl = require('vinyl');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const log = require('fancy-log');
-const browserify = require('browserify');
-const watchify = require('watchify');
 const babelify = require('babelify');
-
-const envify = require('loose-envify/custom');
+const browserify = require('browserify');
+const EventEmitter = require('events');
+const log = require('fancy-log');
+const { writeFileSync, readFileSync, unlinkSync } = require('fs');
+const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
+const watch = require('gulp-watch');
+const envify = require('loose-envify/custom');
+const path = require('path');
+const { callbackify } = require('util');
+const Vinyl = require('vinyl');
+const buffer = require('vinyl-buffer');
+const source = require('vinyl-source-stream');
 const applySourceMap = require('vinyl-sourcemaps-apply');
+const watchify = require('watchify');
 const pify = require('pify');
 const through = require('through2');
 const finished = pify(require('readable-stream').finished);
@@ -25,14 +24,22 @@ const { Eta } = require('eta');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
-
 const bifyModuleGroups = require('bify-module-groups');
 
-const { streamFlatMap } = require('../stream-flat-map');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
-const { setEnvironmentVariables } = require('./set-environment-variables');
-const { BUILD_TARGETS } = require('./constants');
+const { streamFlatMap } = require('../stream-flat-map');
 const { getConfig } = require('./config');
+const { BUILD_TARGETS } = require('./constants');
+const { setEnvironmentVariables } = require('./set-environment-variables');
+const {
+  createTask,
+  composeParallel,
+  composeSeries,
+  runInChildProcess,
+} = require('./task');
+const {
+  createRemoveFencedCodeTransform,
+} = require('./transforms/remove-fenced-code');
 const {
   isDevBuild,
   isTestBuild,
@@ -43,15 +50,6 @@ const {
   makeSelfInjecting,
 } = require('./utils');
 
-const {
-  createTask,
-  composeParallel,
-  composeSeries,
-  runInChildProcess,
-} = require('./task');
-const {
-  createRemoveFencedCodeTransform,
-} = require('./transforms/remove-fenced-code');
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {

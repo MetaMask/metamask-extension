@@ -1,5 +1,6 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import configureStore from '../../../store/store';
 import '@testing-library/jest-dom/extend-expect';
 import mockState from '../../../../test/data/mock-state.json';

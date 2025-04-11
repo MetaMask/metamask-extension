@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   Box,
   Icon,
@@ -15,14 +17,13 @@ import {
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
-import { GasFeeTokenModal } from '../gas-fee-token-modal';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import {
   NATIVE_TOKEN_ADDRESS,
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
-import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { GasFeeTokenModal } from '../gas-fee-token-modal';
 
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);

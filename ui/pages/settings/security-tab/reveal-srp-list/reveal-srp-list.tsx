@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Box } from '../../../../components/component-library';
+
 import SRPQuizModal from '../../../../components/app/srp-quiz-modal/SRPQuiz';
+import { Box } from '../../../../components/component-library';
 import { SrpList } from '../../../../components/multichain/multi-srp/srp-list/srp-list';
 
 export const RevealSrpList = () => {

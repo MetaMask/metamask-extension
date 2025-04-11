@@ -1,4 +1,5 @@
 import type { Provider } from '@metamask/network-controller';
+
 import { getContractProxyAddress } from './proxy';
 
 const CONTRACT_ADDRESS_MOCK = '0x456';

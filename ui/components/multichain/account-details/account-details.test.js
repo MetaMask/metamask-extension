@@ -2,8 +2,10 @@ import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import mockState from '../../../../test/data/mock-state.json';
 
+import { AccountDetails } from '.';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
@@ -13,9 +15,7 @@ import {
   setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountDetailsKey } from './account-details-key';
-import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 

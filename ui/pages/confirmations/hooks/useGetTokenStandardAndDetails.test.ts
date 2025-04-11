@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 
 import * as TokenActions from '../utils/token';
 import { useGetTokenStandardAndDetails } from './useGetTokenStandardAndDetails';

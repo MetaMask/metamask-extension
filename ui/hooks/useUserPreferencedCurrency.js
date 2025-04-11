@@ -1,15 +1,15 @@
 import { shallowEqual, useSelector } from 'react-redux';
+
+import { EtherDenomination } from '../../shared/constants/common';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
+import { ETH_DEFAULT_DECIMALS } from '../constants';
+import { PRIMARY } from '../helpers/constants/common';
 import { getPreferences, getSelectedInternalAccount } from '../selectors';
 import {
   getMultichainNativeCurrency,
   getMultichainCurrentCurrency,
   getMultichainShouldShowFiat,
 } from '../selectors/multichain';
-
-import { PRIMARY } from '../helpers/constants/common';
-import { EtherDenomination } from '../../shared/constants/common';
-import { ETH_DEFAULT_DECIMALS } from '../constants';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { useMultichainSelector } from './useMultichainSelector';
 
 /**

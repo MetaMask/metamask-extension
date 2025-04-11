@@ -1,4 +1,9 @@
 import React from 'react';
+
+import {
+  BlockSize,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -6,10 +11,6 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../../component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
 
 const NetworkListSearch = ({
   searchQuery,

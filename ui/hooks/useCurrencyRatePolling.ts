@@ -1,14 +1,15 @@
 import { useSelector } from 'react-redux';
-import { getUseCurrencyRateCheck } from '../selectors';
+
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import {
-  currencyRateStartPolling,
-  currencyRateStopPollingByPollingToken,
-} from '../store/actions';
 import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { getUseCurrencyRateCheck } from '../selectors';
+import {
+  currencyRateStartPolling,
+  currencyRateStopPollingByPollingToken,
+} from '../store/actions';
 import usePolling from './usePolling';
 
 const useCurrencyRatePolling = () => {

@@ -1,24 +1,25 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchTokens,
-  fetchTopAssets,
-  fetchAggregatorMetadata,
-} from '../swaps.util';
+
+import type { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
   setAggregatorMetadata,
   setTopAssets,
 } from '../../../ducks/swaps/swaps';
-import { setSwapsTokens } from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
-import type { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
+import { setSwapsTokens } from '../../../store/actions';
+import {
+  fetchTokens,
+  fetchTopAssets,
+  fetchAggregatorMetadata,
+} from '../swaps.util';
 
 export default function useUpdateSwapsState() {
   const dispatch = useDispatch();

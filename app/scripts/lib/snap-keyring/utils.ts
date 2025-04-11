@@ -1,4 +1,5 @@
 import type { SnapId } from '@metamask/snaps-sdk';
+
 import type { GetSnapKeyring } from './types';
 
 /**

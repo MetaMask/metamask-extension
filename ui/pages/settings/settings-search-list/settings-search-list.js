@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { highlightSearchedText } from '../../../helpers/utils/settings-search';
-import { I18nContext } from '../../../contexts/i18n';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect } from 'react';
+
 import { Icon, IconName } from '../../../components/component-library';
+import { I18nContext } from '../../../contexts/i18n';
 import { Size } from '../../../helpers/constants/design-system';
+import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
   const t = useContext(I18nContext);

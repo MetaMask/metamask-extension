@@ -1,5 +1,6 @@
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject } from 'lodash';
+
 import { PRICE_API_CURRENCIES } from '../../../shared/constants/price-api-currencies';
 
 type VersionedData = {

@@ -1,15 +1,6 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../../components/ui/box';
-import {
-  DISPLAY,
-  AlignItems,
-  SEVERITIES,
-  TextVariant,
-  BLOCK_SIZES,
-} from '../../../helpers/constants/design-system';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
   BannerAlert,
@@ -17,6 +8,15 @@ import {
   ButtonLinkSize,
   Text,
 } from '../../../components/component-library';
+import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
+import {
+  DISPLAY,
+  AlignItems,
+  SEVERITIES,
+  TextVariant,
+  BLOCK_SIZES,
+} from '../../../helpers/constants/design-system';
 
 export default function ViewQuotePriceDifference(props) {
   const {

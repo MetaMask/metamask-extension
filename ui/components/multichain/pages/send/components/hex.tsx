@@ -1,18 +1,19 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Label, Text } from '../../../../component-library';
+
 import {
   getSendHexData,
   updateSendHexData,
   getSendHexDataError,
 } from '../../../../../ducks/send';
-import { Textarea } from '../../../../component-library/textarea';
-import { INVALID_HEX_DATA_ERROR } from '../../../../../pages/confirmations/send/send.constants';
 import {
   TextVariant,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { INVALID_HEX_DATA_ERROR } from '../../../../../pages/confirmations/send/send.constants';
+import { Label, Text } from '../../../../component-library';
+import { Textarea } from '../../../../component-library/textarea';
 import { SendPageRow } from './send-page-row';
 
 export const SendHexData = () => {

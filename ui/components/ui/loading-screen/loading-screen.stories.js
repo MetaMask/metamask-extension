@@ -1,4 +1,5 @@
 import React from 'react';
+
 import LoadingScreen from './loading-screen.component';
 
 export default {

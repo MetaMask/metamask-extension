@@ -6,6 +6,7 @@ import {
   BaseController
 } from '@metamask/base-controller';
 import log from 'loglevel';
+
 import type { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 // Unique name for the controller

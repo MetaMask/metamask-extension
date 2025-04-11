@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useSafeChainsListValidationSelector } from '../../../../selectors';
-import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
+import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { useSafeChainsListValidationSelector } from '../../../../selectors';
 
 export type SafeChain = {
   chainId: string;

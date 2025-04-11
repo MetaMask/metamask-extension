@@ -1,4 +1,5 @@
 import { KnownCaipNamespace } from '@metamask/utils';
+
 import {
   getCaipNamespaceFromAddress,
   isBtcMainnetAddress,

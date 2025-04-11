@@ -1,12 +1,13 @@
-import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
 import { Messenger } from '@metamask/base-controller';
-import { buildControllerInitRequestMock } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
+import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
+
 import type {
   AuthenticationControllerMessenger} from '../messengers/identity';
 import {
   getAuthenticationControllerMessenger
 } from '../messengers/identity';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { AuthenticationControllerInit } from './authentication-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/auth');

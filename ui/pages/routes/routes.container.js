@@ -1,11 +1,18 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   getCurrentChainId,
   isNetworkLoading,
   getProviderConfig,
 } from '../../../shared/modules/selectors/networks';
+import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
+import { pageChanged } from '../../ducks/history/history';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getSendStage } from '../../ducks/send';
+import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import {
   getAllAccountsOnNetworkAreEmpty,
   getNetworkIdentifier,
@@ -26,6 +33,7 @@ import {
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -44,13 +52,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   setEditedNetwork,
 } from '../../store/actions';
-import { pageChanged } from '../../ducks/history/history';
-import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
-import { getSendStage } from '../../ducks/send';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
-import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {

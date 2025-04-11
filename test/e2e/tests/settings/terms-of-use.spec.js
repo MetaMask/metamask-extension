@@ -1,5 +1,5 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, unlockWallet } = require('../../helpers');
 
 describe('Terms of use', function () {
   it('accepts the updated terms of use', async function () {

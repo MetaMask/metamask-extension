@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../store/actions';
+
 import {
   getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
+import { setTokenNetworkFilter } from '../../../../store/actions';
 
 const useNetworkFilter = () => {
   const dispatch = useDispatch();

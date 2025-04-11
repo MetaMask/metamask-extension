@@ -7,8 +7,8 @@ import React, {
   useState,
 } from 'react';
 
-import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import syncConfirmPath from '../../hooks/syncConfirmPath';
+import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import type { Confirmation } from '../../types/confirm';
 
 type ConfirmContextType = {

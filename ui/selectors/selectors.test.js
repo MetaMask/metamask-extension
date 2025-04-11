@@ -6,16 +6,16 @@ import {
 } from '@metamask/keyring-api';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
+
 import { KeyringType } from '../../shared/constants/keyring';
-import mockState from '../../test/data/mock-state.json';
+import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import * as networkSelectors from '../../shared/modules/selectors/networks';
+import mockState from '../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
-import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
-import * as networkSelectors from '../../shared/modules/selectors/networks';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({

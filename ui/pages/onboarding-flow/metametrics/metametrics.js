@@ -1,6 +1,25 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  Box,
+  Checkbox,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+} from '../../../components/component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Display,
   FlexDirection,
@@ -13,35 +32,16 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
-} from '../../../store/actions';
-import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
-
 import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Box,
-  Checkbox,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-  Button,
-  ButtonVariant,
-  ButtonSize,
-} from '../../../components/component-library';
 
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();

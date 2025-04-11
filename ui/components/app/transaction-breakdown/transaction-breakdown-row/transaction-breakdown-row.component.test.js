@@ -1,7 +1,8 @@
 import React from 'react';
+
+import TransactionBreakdownRow from '.';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import Button from '../../../ui/button';
-import TransactionBreakdownRow from '.';
 
 describe('TransactionBreakdownRow Component', () => {
   it('should match snapshot', () => {

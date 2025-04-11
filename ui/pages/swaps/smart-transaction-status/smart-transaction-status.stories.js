@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SmartTransactionStatusLabel from './smart-transaction-status';
 
 export default {

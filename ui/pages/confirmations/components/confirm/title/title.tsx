@@ -17,6 +17,8 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import type { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
@@ -24,8 +26,6 @@ import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
-import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
-import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {

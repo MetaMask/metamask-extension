@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+
 import migration50 from './050';
 
 const LEGACY_LOCAL_STORAGE_KEYS = [

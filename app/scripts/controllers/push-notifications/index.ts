@@ -3,6 +3,7 @@
 /// <reference lib="webworker" />
 
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import ExtensionPlatform from '../../platforms/extension';
 import { getNotificationImage } from './get-notification-image';
 import { createNotificationMessage } from './get-notification-message';

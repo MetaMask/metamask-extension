@@ -1,17 +1,24 @@
-import React, { useState, useContext } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import Button from '../../../components/ui/button';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import React, { useState, useContext } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
 import {
   Text,
   Icon,
   IconName,
   Box,
 } from '../../../components/component-library';
+import Button from '../../../components/ui/button';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextVariant,
   TextAlign,
@@ -19,15 +26,9 @@ import {
   FontWeight,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import {
-  ThreeStepProgressBar,
-  threeStepStages,
-} from '../../../components/app/step-progress-bar';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 

@@ -1,10 +1,11 @@
-import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+
 import '@testing-library/jest-dom';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { IconName, Text } from '../../component-library';
-import { DelineatorType } from './delineator.types';
 import { Delineator } from './delineator';
+import { DelineatorType } from './delineator.types';
 
 describe('Delineator Component', () => {
   const CONTENT_TEXT_MOCK = 'Content text';

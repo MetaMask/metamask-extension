@@ -1,11 +1,12 @@
+import { fireEvent, waitFor } from '@testing-library/react';
+import copyToClipboard from 'copy-to-clipboard';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import copyToClipboard from 'copy-to-clipboard';
-import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+
 import SelectedAccount from '.';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 const mockSelectedAccount = {
   address: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',

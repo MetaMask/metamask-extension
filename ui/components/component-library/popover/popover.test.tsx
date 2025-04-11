@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React, { useState } from 'react';
+
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.types';
 

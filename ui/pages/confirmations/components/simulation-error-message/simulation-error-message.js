@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { BannerAlert } from '../../../../components/component-library';
-import { Severity } from '../../../../helpers/constants/design-system';
+import React, { useContext, useEffect } from 'react';
+
 
 import { I18nContext } from '../../../../../.storybook/i18n';
 import {
@@ -9,7 +8,9 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../../../shared/constants/metametrics';
+import { BannerAlert } from '../../../../components/component-library';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { Severity } from '../../../../helpers/constants/design-system';
 
 export default function SimulationErrorMessage({
   userAcknowledgedGasMissing = false,

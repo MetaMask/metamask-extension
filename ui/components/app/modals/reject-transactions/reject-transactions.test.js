@@ -1,7 +1,8 @@
-import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import React from 'react';
+
 import RejectTransactionsModal from '.';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 describe('Reject Transactions Model', () => {
   const props = {

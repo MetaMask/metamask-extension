@@ -1,14 +1,15 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
-import { SECONDARY } from '../../../../helpers/constants/common';
-import { I18nContext } from '../../../../contexts/i18n';
-import { sumHexes } from '../../../../../shared/modules/conversion.utils';
+
 import { EtherDenomination } from '../../../../../shared/constants/common';
+import { sumHexes } from '../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
+import { I18nContext } from '../../../../contexts/i18n';
+import { SECONDARY } from '../../../../helpers/constants/common';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 
 export default function MultilayerFeeMessage({
   transaction,

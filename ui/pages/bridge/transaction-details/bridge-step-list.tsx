@@ -1,14 +1,15 @@
-import React from 'react';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { Box } from '../../../components/component-library';
+import React from 'react';
+
 import type {
   BridgeHistoryItem,
   Step} from '../../../../shared/types/bridge-status';
 import {
   StatusTypes
 } from '../../../../shared/types/bridge-status';
+import { Box } from '../../../components/component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
   getStepStatus,

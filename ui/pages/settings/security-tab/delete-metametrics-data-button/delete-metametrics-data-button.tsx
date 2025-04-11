@@ -1,7 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
+import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
 import type {
   PolymorphicComponentPropWithRef,
   PolymorphicRef} from '../../../../components/component-library';
@@ -13,11 +16,13 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
+import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import {
   Display,
   FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionTimestamp,
@@ -28,10 +33,6 @@ import {
   getShowDeleteMetaMetricsDataModal,
   getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
-import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
-import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
-import { formatDate } from '../../../../helpers/utils/util';
-import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 
 type DeleteMetaMetricsDataButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C>;

@@ -1,5 +1,7 @@
-const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
+const cssToXPath = require('css-to-xpath');
+const { promises: fs } = require('fs');
+const lodash = require('lodash');
 const {
   By,
   Condition,
@@ -8,11 +10,10 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
   WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
-const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const lodash = require('lodash');
-const { quoteXPathText } = require('../../helpers/quoteXPathText');
+
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { WindowHandles } = require('../background-socket/window-handles');
 
 const PAGES = {

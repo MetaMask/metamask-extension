@@ -1,8 +1,9 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import { useModalProps } from '../../../../hooks/useModalProps';
-import { useDisableProfileSyncing } from '../../../../hooks/identity/useProfileSyncing';
+import React from 'react';
+
 import { I18nContext } from '../../../../contexts/i18n';
+import { useDisableProfileSyncing } from '../../../../hooks/identity/useProfileSyncing';
+import { useModalProps } from '../../../../hooks/useModalProps';
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 
 jest.mock('../../../../hooks/useModalProps', () => ({

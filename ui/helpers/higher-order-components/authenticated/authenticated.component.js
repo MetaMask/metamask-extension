@@ -1,6 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
+
 import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
 
 const OnboardingRoute = { pathname: ONBOARDING_ROUTE };

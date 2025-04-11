@@ -2,19 +2,19 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { setBackgroundConnection } from '../../../store/background-connection';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   renderWithProvider,
   createSwapsMockStore,
   fireEvent,
 } from '../../../../test/jest';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   setSwapsFromToken,
   setSwapToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
-import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import PrepareSwapPage from './prepare-swap-page';
 
 const middleware = [thunk];

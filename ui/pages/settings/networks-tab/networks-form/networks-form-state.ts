@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
 import type {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
+import { useEffect, useState } from 'react';
+
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 /**

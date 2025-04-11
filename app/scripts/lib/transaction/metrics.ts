@@ -1,5 +1,4 @@
-import { BigNumber } from 'bignumber.js';
-import { isHexString } from 'ethereumjs-util';
+import { errorCodes } from '@metamask/rpc-errors';
 import type {
   NestedTransactionMetadata,
   TransactionMeta} from '@metamask/transaction-controller';
@@ -9,8 +8,10 @@ import {
 } from '@metamask/transaction-controller';
 import type { Json} from '@metamask/utils';
 import { add0x } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import { isHexString } from 'ethereumjs-util';
 import type { Hex } from 'viem';
-import { errorCodes } from '@metamask/rpc-errors';
+
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -30,6 +31,7 @@ import {
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
 } from '../../../../shared/constants/transaction';
+import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
@@ -41,27 +43,25 @@ import {
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import {
   determineTransactionAssetType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
+import type {
+  TransactionEventPayload,
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 import {
   getBlockaidMetricsProps,
   getSwapAndSendMetricsProps,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
-import type {
-  TransactionEventPayload,
-  TransactionMetaEventPayload,
-  TransactionMetricsRequest,
-} from '../../../../shared/types/metametrics';
-
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
-import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
-import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
-import { Numeric } from '../../../../shared/modules/Numeric';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 

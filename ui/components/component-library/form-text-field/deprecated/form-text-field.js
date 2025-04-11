@@ -1,18 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import {
   Display,
   FlexDirection,
   Size,
 } from '../../../../helpers/constants/design-system';
-
 import Box from '../../../ui/box/box';
-
-import { TextField } from '../../text-field';
 import { HelpText, HelpTextSeverity } from '../../help-text';
 import { Label } from '../../label';
+import { TextField } from '../../text-field';
 
 /**
  * @deprecated This has been deprecated in favor of the TypeScript version `<FormTextField />` component in ./ui/components/component-library/form-text-field/form-text-field.tsx

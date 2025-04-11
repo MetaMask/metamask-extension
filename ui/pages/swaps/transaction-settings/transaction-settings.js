@@ -1,23 +1,8 @@
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
 
-import { I18nContext } from '../../../contexts/i18n';
-import ButtonGroup from '../../../components/ui/button-group';
-import Button from '../../../components/ui/button';
-import InfoTooltip from '../../../components/ui/info-tooltip';
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
-import {
-  TypographyVariant,
-  AlignItems,
-  JustifyContent,
-  DISPLAY,
-  SEVERITIES,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
 import {
   Slippage,
   SLIPPAGE_VERY_HIGH_ERROR,
@@ -32,8 +17,23 @@ import {
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
-import { setSwapsErrorKey } from '../../../store/actions';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import ButtonGroup from '../../../components/ui/button-group';
+import InfoTooltip from '../../../components/ui/info-tooltip';
+import Typography from '../../../components/ui/typography';
+import { I18nContext } from '../../../contexts/i18n';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
+import {
+  TypographyVariant,
+  AlignItems,
+  JustifyContent,
+  DISPLAY,
+  SEVERITIES,
+  FlexDirection,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
+import { setSwapsErrorKey } from '../../../store/actions';
 
 export default function TransactionSettings({
   onSelect,

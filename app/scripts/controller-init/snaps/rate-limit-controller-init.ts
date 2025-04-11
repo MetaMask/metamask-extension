@@ -1,15 +1,16 @@
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import type {
   RateLimitedApiMap} from '@metamask/rate-limit-controller';
 import {
   RateLimitController
 } from '@metamask/rate-limit-controller';
 import log from 'loglevel';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import type { ControllerInitFunction } from '../types';
+
 import type {
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
 } from '../messengers/snaps';
+import type { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the rate limit controller.

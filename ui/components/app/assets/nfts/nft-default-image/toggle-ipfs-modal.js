@@ -1,6 +1,19 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useDispatch } from 'react-redux';
+
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../../../shared/constants/network';
+import {
+  Size,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  hideIpfsModal,
+  setIpfsGateway,
+  setIsIpfsGatewayEnabled,
+} from '../../../../../store/actions';
 import {
   Box,
   ButtonPrimary,
@@ -10,18 +23,6 @@ import {
 } from '../../../../component-library';
 import { ModalContent } from '../../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../../component-library/modal-header/deprecated';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  hideIpfsModal,
-  setIpfsGateway,
-  setIsIpfsGatewayEnabled,
-} from '../../../../../store/actions';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../../../shared/constants/network';
-import {
-  Size,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 
 export const ToggleIpfsModal = ({ onClose }) => {
   const t = useI18nContext();

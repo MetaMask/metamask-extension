@@ -1,5 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import { Box } from '../../component-library';
 
 export default function LoadingIndicator({

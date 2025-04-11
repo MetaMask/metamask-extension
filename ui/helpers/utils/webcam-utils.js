@@ -1,5 +1,6 @@
 'use strict';
 
+import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
@@ -7,7 +8,6 @@ import {
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util';
 
 class WebcamUtils {
   static async checkStatus() {

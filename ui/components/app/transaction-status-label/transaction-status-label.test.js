@@ -1,8 +1,9 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import TransactionStatusLabel from '.';
+import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({

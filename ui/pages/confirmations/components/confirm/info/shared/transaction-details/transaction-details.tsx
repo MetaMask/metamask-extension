@@ -3,10 +3,11 @@ import type {
 import {
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -15,17 +16,17 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
-import { HEX_ZERO } from '../constants';
+import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useFourByte } from '../../hooks/useFourByte';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
+import { HEX_ZERO } from '../constants';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 

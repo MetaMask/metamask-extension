@@ -6,6 +6,7 @@ import {
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
   Box,

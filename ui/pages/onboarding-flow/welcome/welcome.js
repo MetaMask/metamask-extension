@@ -1,31 +1,28 @@
 import EventEmitter from 'events';
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
+import { useHistory } from 'react-router-dom';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
-import Mascot from '../../../components/ui/mascot';
-import Button from '../../../components/ui/button';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
 import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import CheckBox from '../../../components/ui/check-box';
+import Mascot from '../../../components/ui/mascot';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextVariant,
   AlignItems,
   TextAlign,
   FontWeight,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  setFirstTimeFlowType,
-  setTermsOfUseLastAgreed,
-} from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_METAMETRICS,
@@ -33,9 +30,13 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
+import {
+  setFirstTimeFlowType,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();

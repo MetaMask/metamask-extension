@@ -1,5 +1,6 @@
-import * as React from 'react';
 import classnames from 'classnames';
+import * as React from 'react';
+
 import type {
   IconProps,
   PolymorphicRef} from '../../../components/component-library';

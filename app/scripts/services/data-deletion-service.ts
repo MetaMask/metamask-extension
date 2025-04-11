@@ -9,8 +9,9 @@ import {
   wrap,
   CircuitState,
 } from 'cockatiel';
-import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
+
 import type { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 const inTest = process.env.IN_TEST;
 const fallbackSourceId = 'test';

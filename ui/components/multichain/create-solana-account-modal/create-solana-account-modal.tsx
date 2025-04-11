@@ -1,5 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getMetaMaskKeyrings } from '../../../selectors';
 import {
   Box,
   Modal,
@@ -7,16 +16,8 @@ import {
   ModalContent,
   ModalHeader,
 } from '../../component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMetaMaskKeyrings } from '../../../selectors';
 import { CreateSnapAccount } from '../create-snap-account';
 import { SrpList } from '../multi-srp/srp-list';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 type CreateSolanaAccountModalProps = {
   onClose: () => void;

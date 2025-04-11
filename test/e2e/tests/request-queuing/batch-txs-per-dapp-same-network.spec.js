@@ -1,4 +1,5 @@
 const { By } = require('selenium-webdriver');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,

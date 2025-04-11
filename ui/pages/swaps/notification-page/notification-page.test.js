@@ -2,11 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import NotificationPage from './notification-page';
 
 const middleware = [thunk];

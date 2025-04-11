@@ -3,21 +3,21 @@ import type {
 import {
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getShouldShowFiat } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 
-import {
-  subtractHexes,
-  sumHexes,
-} from '../../../../shared/modules/conversion.utils';
+import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
-import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
+import {
+  subtractHexes,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
+import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getShouldShowFiat } from '../../../selectors';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
+import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
 
 export const getTransactionBreakdownData = ({
   state,

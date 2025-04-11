@@ -1,5 +1,5 @@
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { TransactionParams } from '@metamask/eth-json-rpc-middleware';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   TransactionController,
   TransactionMeta} from '@metamask/transaction-controller';
@@ -8,16 +8,17 @@ import {
 } from '@metamask/transaction-controller';
 import type { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
-import {
-  generateSecurityAlertId,
-  validateRequestWithPPOM,
-} from '../ppom/ppom-util';
+
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  generateSecurityAlertId,
+  validateRequestWithPPOM,
+} from '../ppom/ppom-util';
 import type {
   AddDappTransactionRequest,
   AddTransactionOptions,

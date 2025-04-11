@@ -1,12 +1,9 @@
 import React, { useContext, useState } from 'react';
 
-import { I18nContext } from '../../../contexts/i18n';
 import {
-  FlexDirection,
-  Display,
-  JustifyContent,
-  AlignItems,
-} from '../../../helpers/constants/design-system';
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
+} from '../../../../shared/constants/swaps';
 import {
   Modal,
   ModalOverlay,
@@ -15,10 +12,13 @@ import {
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
+import { I18nContext } from '../../../contexts/i18n';
 import {
-  SLIPPAGE_HIGH_ERROR,
-  SLIPPAGE_LOW_ERROR,
-} from '../../../../shared/constants/swaps';
+  FlexDirection,
+  Display,
+  JustifyContent,
+  AlignItems,
+} from '../../../helpers/constants/design-system';
 import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 
 type Props = {

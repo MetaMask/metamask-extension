@@ -1,7 +1,6 @@
 import nock from 'nock';
-import { MOCKS } from '../../../test/jest';
+
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
-import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   WETH_CONTRACT_ADDRESS,
@@ -18,6 +17,14 @@ import {
   LINEA,
   BASE,
 } from '../../../shared/constants/swaps';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
+import { MOCKS } from '../../../test/jest';
+import {
+  TOKENS,
+  EXPECTED_TOKENS_RESULT,
+  AGGREGATOR_METADATA,
+  TOP_ASSETS,
+} from './swaps-util-test-constants';
 import {
   fetchTokens,
   fetchAggregatorMetadata,
@@ -33,12 +40,6 @@ import {
   getSwap1559GasFeeEstimates,
 } from './swaps.util';
 import { estimateGasFee } from './swaps.util.gas';
-import {
-  TOKENS,
-  EXPECTED_TOKENS_RESULT,
-  AGGREGATOR_METADATA,
-  TOP_ASSETS,
-} from './swaps-util-test-constants';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),

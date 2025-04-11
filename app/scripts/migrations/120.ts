@@ -1,5 +1,5 @@
-import { cloneDeep } from 'lodash';
 import { hasProperty } from '@metamask/utils';
+import { cloneDeep } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };

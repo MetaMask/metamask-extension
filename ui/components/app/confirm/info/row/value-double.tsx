@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React from 'react';
-import { Box, Text } from '../../../../component-library';
+
 import {
   AlignItems,
   Display,
@@ -9,6 +9,7 @@ import {
   FlexWrap,
   Color,
 } from '../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../component-library';
 import { useRowContext } from './hook';
 import { ConfirmInfoRowVariant } from './row';
 

@@ -1,5 +1,6 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';

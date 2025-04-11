@@ -1,3 +1,4 @@
+import type { NameType } from '@metamask/name-controller';
 import React, {
   memo,
   useCallback,
@@ -5,17 +6,17 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import type { NameType } from '@metamask/name-controller';
-import { Box } from '../../component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
-import NameDisplay from './name-details/name-display';
+import { Box } from '../../component-library';
 import NameDetails from './name-details/name-details';
+import NameDisplay from './name-details/name-display';
 
 export type NameProps = {
   /**

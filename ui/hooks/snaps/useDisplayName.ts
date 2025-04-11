@@ -5,6 +5,9 @@ import {
   KnownCaipNamespace
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import type {
   AddressBookMetaMaskState,
   AccountsMetaMaskState} from '../../selectors/snaps';
@@ -12,8 +15,6 @@ import {
   getMemoizedAccountName,
   getAddressBookEntryByNetwork
 } from '../../selectors/snaps';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
 
 export type UseDisplayNameParams = {
   chain: {

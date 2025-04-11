@@ -1,10 +1,11 @@
 import React from 'react';
-import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
+
 import { Box } from '../../../../../../components/component-library';
 import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
+import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SnapInsight } from './snap-insight';
 

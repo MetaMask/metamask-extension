@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
 import type {
   NameControllerState,
   NameEntry,
@@ -14,9 +7,34 @@ import type {
 import {
   NameType
 } from '@metamask/name-controller';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { isEqual } from 'lodash';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  FlexDirection,
+  IconColor,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useName } from '../../../../hooks/useName';
+import { getNameSources } from '../../../../selectors';
+import {
+  setName as saveName,
+  updateProposedNames,
+} from '../../../../store/actions';
 import {
   Box,
   Button,
@@ -35,29 +53,12 @@ import {
   ModalFooter,
   ButtonSize,
 } from '../../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+import FormComboField from '../../../ui/form-combo-field/form-combo-field';
 import type {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
-import FormComboField from '../../../ui/form-combo-field/form-combo-field';
-import { getNameSources } from '../../../../selectors';
-import {
-  setName as saveName,
-  updateProposedNames,
-} from '../../../../store/actions';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { useName } from '../../../../hooks/useName';
-import { useDisplayName } from '../../../../hooks/useDisplayName';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
+import NameDisplay from './name-display';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 

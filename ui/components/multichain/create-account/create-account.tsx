@@ -1,3 +1,5 @@
+import type { KeyringTypes } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   ChangeEvent,
   KeyboardEvent} from 'react';
@@ -9,11 +11,28 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import type { KeyringTypes } from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF
 
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { Display } from '../../../helpers/constants/design-system';
+import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getMetaMaskAccountsOrdered,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getMetaMaskHdKeyrings,
+  getSelectedKeyringByIdOrDefault,
+  getHdKeyringIndexByIdOrDefault,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import type {
   PolymorphicComponentPropWithRef,
   PolymorphicRef} from '../../component-library';
@@ -24,25 +43,6 @@ import {
   FormTextFieldSize
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/form-text-field';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import {
-  getMetaMaskAccountsOrdered,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getMetaMaskHdKeyrings,
-  getSelectedKeyringByIdOrDefault,
-  getHdKeyringIndexByIdOrDefault,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Display } from '../../../helpers/constants/design-system';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';

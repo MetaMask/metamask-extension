@@ -1,18 +1,17 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
-import Tooltip from '../../../ui/tooltip';
 
 import {
   Display,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text, Box, ButtonLink, IconName } from '../../../component-library';
+import Tooltip from '../../../ui/tooltip';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();

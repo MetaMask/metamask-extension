@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import IconWithFallback from '../../ui/icon-with-fallback';
-import Identicon from '../../ui/identicon';
+import React, { useContext } from 'react';
+
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   Display,
   FlexDirection,
@@ -12,10 +13,10 @@ import {
   TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { I18nContext } from '../../../contexts/i18n';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { Text } from '../../component-library';
+import Box from '../../ui/box/box';
+import IconWithFallback from '../../ui/icon-with-fallback';
+import Identicon from '../../ui/identicon';
 
 export default function NetworkAccountBalanceHeader({
   networkName,

@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getSnapInterfaceControllerMessenger } from './snap-interface-controller-messenger';
 
 describe('getSnapInterfaceControllerMessenger', () => {

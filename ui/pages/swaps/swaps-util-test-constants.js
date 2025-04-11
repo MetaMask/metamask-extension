@@ -1,4 +1,5 @@
 import { lightTheme } from '@metamask/design-tokens';
+
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 
 const BASE_TOKENS = [

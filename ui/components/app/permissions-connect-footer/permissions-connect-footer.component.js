@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+
 import {
   AlignItems,
   Display,
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 
 export default class PermissionsConnectFooter extends Component {

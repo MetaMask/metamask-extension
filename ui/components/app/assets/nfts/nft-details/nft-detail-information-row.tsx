@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
 import {
-  Box,
-  Popover,
-  PopoverPosition,
-  Text,
-} from '../../../../component-library';
-import {
   BackgroundColor,
   Display,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import {
+  Box,
+  Popover,
+  PopoverPosition,
+  Text,
+} from '../../../../component-library';
 
 type NftDetailInformationRowProps = {
   title: string;

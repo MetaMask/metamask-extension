@@ -1,9 +1,10 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSlides } from '../../store/actions';
-import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+
 import type { CarouselSlide } from '../../../shared/constants/app-state';
+import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
+import { updateSlides } from '../../store/actions';
 import {
   FUND_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

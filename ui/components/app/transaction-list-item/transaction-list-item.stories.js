@@ -1,10 +1,11 @@
-import React from 'react';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import React from 'react';
+
 import TransactionListItem from '.';
+import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 
 /**
  * @typedef {(import('../../selectors/transactions').TransactionGroup} TransactionGroup

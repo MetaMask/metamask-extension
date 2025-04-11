@@ -1,6 +1,7 @@
 import React from 'react';
-import README from './README.mdx';
+
 import PulseLoader from '.';
+import README from './README.mdx';
 
 export default {
   title: 'Components/UI/PulseLoader',

@@ -3,10 +3,11 @@ import type {
 import {
   TransactionType,
 } from '@metamask/transaction-controller';
-import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { useTransferRecipient } from './useTransferRecipient';
 
 const ADDRESS_MOCK = '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B';

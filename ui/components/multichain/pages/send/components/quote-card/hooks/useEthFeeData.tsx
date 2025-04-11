@@ -1,24 +1,25 @@
+import { isHexString } from '@metamask/utils';
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isHexString } from '@metamask/utils';
+
+import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
+import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   getConversionRate,
   getGasFeeEstimates,
   getNativeCurrency,
   getCurrentCurrency,
 } from '../../../../../../../ducks/metamask/metamask';
-import { EtherDenomination } from '../../../../../../../../shared/constants/common';
-import {
-  checkNetworkAndAccountSupports1559,
-  getIsSwapsChain,
-} from '../../../../../../../selectors/selectors';
-import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   fetchAndSetSwapsGasPriceInfo,
   getUsedSwapsGasPrice,
 } from '../../../../../../../ducks/swaps/swaps';
 import { formatCurrency } from '../../../../../../../helpers/utils/confirm-tx.util';
+import {
+  checkNetworkAndAccountSupports1559,
+  getIsSwapsChain,
+} from '../../../../../../../selectors/selectors';
 import { toFixedNoTrailingZeros } from './utils';
 
 export default function useEthFeeData(gasLimit = 0) {

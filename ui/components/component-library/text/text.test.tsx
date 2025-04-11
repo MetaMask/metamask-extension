@@ -1,5 +1,6 @@
-import * as React from 'react';
 import { render } from '@testing-library/react';
+import * as React from 'react';
+
 import {
   FontStyle,
   FontWeight,
@@ -9,8 +10,8 @@ import {
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TextDirection } from './text.types';
 import { Text } from './text';
+import { TextDirection } from './text.types';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {

@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getNftDetectionControllerMessenger } from './nft-detection-controller-messenger';
 
 describe('getNftDetectionControllerMessenger', () => {

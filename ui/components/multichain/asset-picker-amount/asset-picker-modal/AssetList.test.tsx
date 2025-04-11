@@ -1,21 +1,22 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getNativeCurrency,
+  getTokenBalances,
+} from '../../../../ducks/metamask/metamask';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
   getCurrentNetwork,
   getPreferences,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
-import {
-  getNativeCurrency,
-  getTokenBalances,
-} from '../../../../ducks/metamask/metamask';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { AssetType } from '../../../../../shared/constants/transaction';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getMultichainCurrentChainId,
   getMultichainCurrentNetwork,

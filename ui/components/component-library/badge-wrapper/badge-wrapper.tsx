@@ -1,8 +1,7 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import { Display } from '../../../helpers/constants/design-system';
-
 import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import type {
   BadgeWrapperProps,

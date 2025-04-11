@@ -1,5 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetaMaskTemplateRenderer from '../metamask-template-renderer';
 import { SectionShape } from '../metamask-template-renderer/section-shape';

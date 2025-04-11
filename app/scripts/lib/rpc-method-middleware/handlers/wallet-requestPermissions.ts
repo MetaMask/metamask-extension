@@ -1,5 +1,15 @@
-import { pick } from 'lodash';
+import type {
+  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 import { isPlainObject } from '@metamask/controller-utils';
+import type {
+  AsyncJsonRpcEngineNextCallback,
+  JsonRpcEngineEndCallback,
+} from '@metamask/json-rpc-engine';
 import type {
   Caveat,
   RequestedPermissions,
@@ -8,18 +18,9 @@ import {
   invalidParams,
   MethodNames
 } from '@metamask/permission-controller';
-import type {
-  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-  getPermittedEthChainIds,
-} from '@metamask/chain-agnostic-permission';
 import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
-import type {
-  AsyncJsonRpcEngineNextCallback,
-  JsonRpcEngineEndCallback,
-} from '@metamask/json-rpc-engine';
+import { pick } from 'lodash';
+
 import {
   CaveatTypes,
   RestrictedMethods,

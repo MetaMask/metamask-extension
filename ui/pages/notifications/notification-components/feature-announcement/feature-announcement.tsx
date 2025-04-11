@@ -1,20 +1,12 @@
-import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
-import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import {
-  createTextItems,
-  formatIsoDateString,
-} from '../../../../helpers/utils/notification.util';
+import React from 'react';
+
 import { Box, Text } from '../../../../components/component-library';
 import {
   NotificationListItem,
   NotificationDetailTitle,
 } from '../../../../components/multichain';
+import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
   TextVariant,
   Display,
@@ -22,11 +14,20 @@ import {
   BorderRadius,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
-import type { FeatureAnnouncementNotification } from './types';
+import {
+  createTextItems,
+  formatIsoDateString,
+} from '../../../../helpers/utils/notification.util';
+import { isOfTypeNodeGuard } from '../node-guard';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import {
   ExtensionLinkButton,
   ExternalLinkButton,
 } from './annonucement-footer-buttons';
+import type { FeatureAnnouncementNotification } from './types';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

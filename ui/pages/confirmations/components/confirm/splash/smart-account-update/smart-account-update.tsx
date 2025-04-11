@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import React, { useState } from 'react';
 
 import { SMART_ACCOUNT_INFO_LINK } from '../../../../../../../shared/lib/ui-utils';
+import Name from '../../../../../../components/app/name';
 import {
   Box,
   Button,
@@ -23,7 +24,6 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import Name from '../../../../../../components/app/name';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 

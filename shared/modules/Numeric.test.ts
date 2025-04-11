@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { BN } from 'bn.js';
+
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from './Numeric';
 

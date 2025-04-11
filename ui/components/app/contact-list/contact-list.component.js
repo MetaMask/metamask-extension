@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { sortBy } from 'lodash';
-import Button from '../../ui/button';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
+import Button from '../../ui/button';
 import RecipientGroup from './recipient-group/recipient-group.component';
 import { hasDuplicateContacts, buildDuplicateContactMap } from './utils';
 

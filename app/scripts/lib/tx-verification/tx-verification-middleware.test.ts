@@ -1,6 +1,7 @@
 import type { NetworkController } from '@metamask/network-controller';
 import type { JsonRpcParams, Hex } from '@metamask/utils';
 import { jsonrpc2 } from '@metamask/utils';
+
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,

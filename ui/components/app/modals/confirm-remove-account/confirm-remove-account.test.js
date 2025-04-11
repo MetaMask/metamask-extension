@@ -1,14 +1,15 @@
+import { BtcAccountType } from '@metamask/keyring-api';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-import { BtcAccountType } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-import { addressSummary } from '../../../../helpers/utils/util';
-import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
-import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+
 import ConfirmRemoveAccount from '.';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
+import { addressSummary } from '../../../../helpers/utils/util';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 

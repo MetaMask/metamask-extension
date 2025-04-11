@@ -1,3 +1,5 @@
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import type {
   ReactNode} from 'react';
 import React, {
@@ -6,8 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -21,6 +22,8 @@ import {
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -32,8 +35,6 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 

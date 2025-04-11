@@ -1,19 +1,20 @@
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
+import { getNativeCurrencyForChain } from '../../../../../selectors';
+import {
+  getImageForChainId,
+  getMultichainIsEvm,
+} from '../../../../../selectors/multichain';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
 } from '../../../../component-library';
-import { getNativeCurrencyForChain } from '../../../../../selectors';
-import {
-  getImageForChainId,
-  getMultichainIsEvm,
-} from '../../../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import type { TokenFiatDisplayInfo } from '../../types';
 
 type TokenCellBadgeProps = {

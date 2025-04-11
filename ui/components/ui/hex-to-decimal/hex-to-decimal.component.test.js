@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
 import HexToDecimal from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 describe('HexToDecimal Component', () => {
   it('should render a prefixed hex as a decimal with a className', () => {

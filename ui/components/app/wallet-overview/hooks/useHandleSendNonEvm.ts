@@ -4,18 +4,19 @@ import { parseCaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+
+import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
+import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
 } from '../../../../selectors';
-import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
-import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainNativeAssetType } from '../../../../selectors/assets';
+import {
+  sendMultichainTransaction,
+  setDefaultHomeActiveTabName,
+} from '../../../../store/actions';
 
 /**
  * Use this hook to trigger the send flow for non-EVM accounts.

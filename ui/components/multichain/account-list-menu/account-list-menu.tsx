@@ -1,19 +1,3 @@
-import React, {
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useLocation,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-router-dom';
-import Fuse from 'fuse.js';
-import { useDispatch, useSelector } from 'react-redux';
 import type {
   KeyringAccountType} from '@metamask/keyring-api';
 import {
@@ -21,9 +5,56 @@ import {
   EthAccountType,
   SolAccountType
 } from '@metamask/keyring-api';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import type { CaipChainId } from '@metamask/utils';
+import Fuse from 'fuse.js';
+import PropTypes from 'prop-types';
+import React, {
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+
 ///: END:ONLY_INCLUDE_IF
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import type {
+  AccountOverviewTabKey} from '../../../../shared/constants/app-state';
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
+} from '../../../../shared/constants/app-state';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  FlexDirection,
+  Size,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import {
   Box,
   ButtonLink,
@@ -42,17 +73,7 @@ import { TextFieldSearch } from '../../component-library/text-field-search/depre
 import { AccountListItem } from '../account-list-item';
 import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
 
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  Size,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getConnectedSubjectsForAllAddresses,
   getHiddenAccountsList,
@@ -83,11 +104,6 @@ import {
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   CONNECT_HARDWARE_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CONFIRMATION_V_NEXT_ROUTE,
@@ -96,15 +112,7 @@ import {
 } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import {
-  ACCOUNT_WATCHER_NAME,
-  ACCOUNT_WATCHER_SNAP_ID,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import {
@@ -114,7 +122,6 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import type {
   MultichainWalletSnapClient,
   MultichainWalletSnapOptions} from '../../../hooks/accounts/useMultichainWalletSnapClient';
@@ -128,12 +135,6 @@ import type {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import type {
-  AccountOverviewTabKey} from '../../../../shared/constants/app-state';
-import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
-} from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { CreateSnapAccount } from '../create-snap-account';

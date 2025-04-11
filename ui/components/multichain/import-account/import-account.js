@@ -1,15 +1,14 @@
-import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getErrorMessage } from '../../../../shared/modules/error';
+
 import {
   MetaMetricsEventAccountImportType,
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, ButtonLink, Label, Text } from '../../component-library';
-import Dropdown from '../../ui/dropdown';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BlockSize,
@@ -20,8 +19,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import * as actions from '../../../store/actions';
+import { Box, ButtonLink, Label, Text } from '../../component-library';
+import Dropdown from '../../ui/dropdown';
 
 // Subviews
 import JsonImportView from './json';

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import RecoveryPhrase from './review-recovery-phrase';
 
 export default {

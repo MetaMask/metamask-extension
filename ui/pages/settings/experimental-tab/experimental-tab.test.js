@@ -1,8 +1,9 @@
 import React from 'react';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
-import configureStore from '../../../store/store';
+
 import mockState from '../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import { LegacyMetaMetricsProvider } from '../../../contexts/metametrics';
+import configureStore from '../../../store/store';
 import ExperimentalTab from './experimental-tab.component';
 
 const render = (overrideMetaMaskState, props = {}) => {

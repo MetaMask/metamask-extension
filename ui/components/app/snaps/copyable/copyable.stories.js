@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Copyable } from './copyable';
 
 export default {

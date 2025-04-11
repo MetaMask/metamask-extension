@@ -1,18 +1,19 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import {
   SmartTransactionStatuses,
   SmartTransactionMinedTx,
 } from '@metamask/smart-transactions-controller/dist/types';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+
 import {
   ETH_4337_METHODS,
   ETH_EOA_METHODS,
 } from '../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { mockNetworkState } from '../../test/stub/networks';
 import {
   unapprovedMessagesSelector,

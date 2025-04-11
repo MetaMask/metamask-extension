@@ -1,7 +1,8 @@
-import { cloneDeep, isObject } from 'lodash';
 import { NetworkType } from '@metamask/controller-utils';
-import { hasProperty } from '@metamask/utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { hasProperty } from '@metamask/utils';
+import { cloneDeep, isObject } from 'lodash';
+
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_RPC_URL_MAP,

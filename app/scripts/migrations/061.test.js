@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+
 import migration61 from './061';
 
 describe('migration #61', () => {

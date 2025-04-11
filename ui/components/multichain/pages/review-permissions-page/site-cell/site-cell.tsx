@@ -1,27 +1,28 @@
-import React, { useContext, useState } from 'react';
 import type { CaipAccountId, CaipChainId } from '@metamask/utils';
+import React, { useContext, useState } from 'react';
+
+import { EditAccountsModal, EditNetworksModal } from '../../..';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import type { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import {
   AvatarAccount,
   AvatarAccountSize,
   Box,
   IconName,
 } from '../../../../component-library';
-import { EditAccountsModal, EditNetworksModal } from '../../..';
-import type { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
+import { SiteCellTooltip } from './site-cell-tooltip';
 
 // Define types for networks, accounts, and other props
 type Network = {

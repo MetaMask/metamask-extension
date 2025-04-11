@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
-import { formatSwapsValueForDisplay } from '../swaps.util';
+import PropTypes from 'prop-types';
+import React, { useState, useContext } from 'react';
+
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { Icon, IconName } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   JustifyContent,
   DISPLAY,
@@ -12,8 +14,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '../../../components/component-library';
-import { I18nContext } from '../../../contexts/i18n';
+import { formatSwapsValueForDisplay } from '../swaps.util';
 
 export default function ExchangeRateDisplay({
   primaryTokenValue,

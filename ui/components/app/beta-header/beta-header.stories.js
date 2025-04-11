@@ -1,8 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+
+import BetaHeader from '.';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import BetaHeader from '.';
 
 const store = configureStore({
   ...testData,

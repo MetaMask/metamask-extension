@@ -1,4 +1,12 @@
 import type {
+  AddApprovalRequest,
+  UpdateRequestState,
+  StartFlow,
+  EndFlow,
+  AcceptRequest,
+} from '@metamask/approval-controller';
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import type {
   SmartTransactionsControllerSmartTransactionEvent,
 } from '@metamask/smart-transactions-controller';
 import type SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -9,7 +17,6 @@ import type {
 import {
   SmartTransactionStatuses
 } from '@metamask/smart-transactions-controller/dist/types';
-import type { Hex } from '@metamask/utils';
 import type {
   TransactionController,
   TransactionMeta,
@@ -18,23 +25,16 @@ import {
   TransactionType,
   type PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
-import type { RestrictedMessenger } from '@metamask/base-controller';
-import type {
-  AddApprovalRequest,
-  UpdateRequestState,
-  StartFlow,
-  EndFlow,
-  AcceptRequest,
-} from '@metamask/approval-controller';
 
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
-import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
+import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 
 const namespace = 'SmartTransactions';
 

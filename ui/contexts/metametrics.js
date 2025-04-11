@@ -3,6 +3,9 @@
  * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
  * metrics system. This file implements Segment analytics tracking.
  */
+import { captureException, captureMessage } from '@sentry/browser';
+import { omit } from 'lodash';
+import PropTypes from 'prop-types';
 import React, {
   Component,
   createContext,
@@ -10,18 +13,14 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
-import { captureException, captureMessage } from '@sentry/browser';
 
-import { omit } from 'lodash';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
+import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
 // type imports

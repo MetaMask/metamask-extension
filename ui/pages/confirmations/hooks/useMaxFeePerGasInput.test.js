@@ -4,7 +4,6 @@ import {
   GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
-
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,

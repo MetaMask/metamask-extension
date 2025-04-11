@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { withFixtures, openDapp, unlockWallet } = require('../../helpers');
+
 const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, openDapp, unlockWallet } = require('../../helpers');
 
 describe('Eth sign', function () {
   it('will throw method not found error', async function () {

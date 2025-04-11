@@ -1,19 +1,23 @@
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import type {
   KeyringMetadata,
   KeyringObject} from '@metamask/keyring-controller';
 import {
   KeyringTypes,
 } from '@metamask/keyring-controller';
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+
 ///: END:ONLY_INCLUDE_IF
+import { AttemptExportState } from '../../../../shared/constants/accounts';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
+import { findKeyringId } from '../../../../shared/lib/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
@@ -21,6 +25,7 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getHDEntropyIndex,
@@ -38,6 +43,7 @@ import {
   setAccountDetailsAddress,
 } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
+import SRPQuiz from '../../app/srp-quiz-modal';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -52,12 +58,7 @@ import {
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import SRPQuiz from '../../app/srp-quiz-modal';
-import { findKeyringId } from '../../../../shared/lib/keyring';
-import { isAbleToRevealSrp } from '../../../helpers/utils/util';
-import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
-import { AttemptExportState } from '../../../../shared/constants/accounts';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';

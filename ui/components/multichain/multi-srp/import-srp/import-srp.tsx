@@ -1,9 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { ThemeType } from '../../../../../shared/constants/preferences';
+import {
+  TextVariant,
+  BlockSize,
+  Display,
+  FlexDirection,
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../helpers/constants/design-system';
+import { clearClipboard } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../hooks/useTheme';
 import * as actions from '../../../../store/actions';
+import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
+import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import {
   Text,
   Box,
@@ -15,19 +29,6 @@ import {
   ButtonLink,
   TextFieldType,
 } from '../../../component-library';
-import {
-  TextVariant,
-  BlockSize,
-  Display,
-  FlexDirection,
-  BorderRadius,
-  BackgroundColor,
-} from '../../../../helpers/constants/design-system';
-import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
-import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
-import { clearClipboard } from '../../../../helpers/utils/util';
-import { useTheme } from '../../../../hooks/useTheme';
-import { ThemeType } from '../../../../../shared/constants/preferences';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();

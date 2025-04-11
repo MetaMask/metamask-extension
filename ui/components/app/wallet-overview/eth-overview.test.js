@@ -1,23 +1,24 @@
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import { KeyringType } from '../../../../shared/constants/keyring';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import useMultiPolling from '../../../hooks/useMultiPolling';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { getIntlLocale } from '../../../ducks/locale/locale';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/stub/networks';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../test/jest/rendering';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import useMultiPolling from '../../../hooks/useMultiPolling';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import EthOverview from './eth-overview';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.

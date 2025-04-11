@@ -2,13 +2,13 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { getSelectedAccount } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { SignatureRequestType } from '../../types/confirm';
+import { getSelectedAccount } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
+import type { SignatureRequestType } from '../../types/confirm';
 
 export const useSelectedAccountAlerts = (): Alert[] => {
   const t = useI18nContext();

@@ -1,9 +1,8 @@
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../box';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -18,7 +17,7 @@ import {
   TextAlign,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ButtonIcon,
   Icon,
@@ -26,6 +25,8 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
+import Box from '../box';
+
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],

@@ -1,18 +1,19 @@
 import type { Store } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
+
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { getUseExternalServices } from '../../selectors';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { defaultBuyableChains } from './constants';
 import rampsReducer, {
   fetchBuyableChains,
   getBuyableChains,
   getIsBitcoinBuyable,
   getIsNativeTokenBuyable,
 } from './ramps';
-import { defaultBuyableChains } from './constants';
 
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
 const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;

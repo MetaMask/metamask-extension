@@ -1,9 +1,9 @@
+import type { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 import NodeStream from 'node:stream';
 import OurReadableStream from 'readable-stream';
 import ReadableStream2 from 'readable-stream-2';
 import ReadableStream3 from 'readable-stream-3';
 
-import type { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';

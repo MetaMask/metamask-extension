@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
+
+import type { MetaMetricsEventFragment } from '../../../../shared/constants/metametrics';
 import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { updateEventFragment } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import type { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 
-import type { MetaMetricsEventFragment } from '../../../../shared/constants/metametrics';
 
 /**
  * When a signature has been requested, there should be an event fragment created for it in

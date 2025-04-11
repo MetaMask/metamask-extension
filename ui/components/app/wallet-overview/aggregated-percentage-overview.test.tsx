@@ -1,16 +1,17 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import '@testing-library/jest-dom';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
 } from '../../../selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
 jest.mock('react-redux', () => ({

@@ -1,7 +1,7 @@
-import React from 'react';
-
 import PropTypes from 'prop-types';
+import React from 'react';
 import { MemoryRouter, withRouter } from 'react-router-dom';
+
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,

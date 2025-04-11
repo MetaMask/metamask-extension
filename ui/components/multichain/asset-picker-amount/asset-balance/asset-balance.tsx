@@ -1,12 +1,13 @@
 import React from 'react';
-import { Box, Text } from '../../../component-library';
+
+import type { Asset } from '../../../../ducks/send';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { Asset } from '../../../../ducks/send';
+import { Box, Text } from '../../../component-library';
 import { AssetBalanceText } from './asset-balance-text';
 
 type AssetBalanceProps = {

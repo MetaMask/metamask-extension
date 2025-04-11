@@ -1,6 +1,7 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+
 import { lockMetamask } from '../../store/actions';
 import Lock from './lock.component';
 

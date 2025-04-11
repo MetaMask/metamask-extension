@@ -3,6 +3,7 @@ import type {
   MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { CaipAssetId } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   CaipAssetType,
   CaipChainId,
@@ -12,7 +13,7 @@ import {
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import type { Token, TokenWithFiatAmount } from '../components/app/assets/types';

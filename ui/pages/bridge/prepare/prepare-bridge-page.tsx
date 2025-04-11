@@ -1,17 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import classnames from 'classnames';
-import { debounce } from 'lodash';
-import { useHistory, useLocation } from 'react-router-dom';
-import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   isSolanaChainId,
@@ -21,6 +8,40 @@ import {
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
+import { BigNumber } from 'bignumber.js';
+import classnames from 'classnames';
+import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import { debounce } from 'lodash';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+
+import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { SECOND } from '../../../../shared/constants/time';
+import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
+import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  ButtonIcon,
+  IconName,
+  PopoverPosition,
+  Text,
+} from '../../../components/component-library';
+import { Toast, ToastContainer } from '../../../components/multichain';
+import { Footer } from '../../../components/multichain/pages/page';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -51,17 +72,6 @@ import {
   getHardwareWalletName,
 } from '../../../ducks/bridge/selectors';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  ButtonIcon,
-  IconName,
-  PopoverPosition,
-  Text,
-} from '../../../components/component-library';
-import {
   BackgroundColor,
   BlockSize,
   Display,
@@ -72,14 +82,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setActiveNetwork,
   setActiveNetworkWithError,
   setSelectedAccount,
 } from '../../../store/actions';
-import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
+import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
+import { Column, Row, Tooltip } from '../layout';
 import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
@@ -90,11 +101,7 @@ import {
   useCrossChainSwapsEventTracker,
 } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
-import { Footer } from '../../../components/multichain/pages/page';
-import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
@@ -106,8 +113,6 @@ import {
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { SECOND } from '../../../../shared/constants/time';
-import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -118,15 +123,11 @@ import {
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
-import { Toast, ToastContainer } from '../../../components/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
+import { BridgeInputGroup } from './bridge-input-group';
 import { DestinationAccountPicker } from './components/destination-account-picker';
 import type { TmpBridgeToken } from './types';
 

@@ -1,19 +1,20 @@
-import React from 'react';
-import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
+import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
+import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../../shared/lib/multichain/networks';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/jest';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { formatBlockExplorerAddressUrl } from '../../../../../shared/lib/multichain/networks';
+import configureStore from '../../../../store/store';
 import NicknamePopover from './nickname-popovers.component';
 
 const mockAccount = createMockInternalAccount({

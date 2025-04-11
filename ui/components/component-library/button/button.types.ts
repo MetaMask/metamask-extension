@@ -1,7 +1,7 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
+import type { ButtonLinkStyleUtilityProps } from '../button-link/button-link.types';
 import type { ButtonPrimaryStyleUtilityProps } from '../button-primary/button-primary.types';
 import type { ButtonSecondaryStyleUtilityProps } from '../button-secondary/button-secondary.types';
-import type { ButtonLinkStyleUtilityProps } from '../button-link/button-link.types';
 
 export enum ButtonSize {
   Sm = 'sm',

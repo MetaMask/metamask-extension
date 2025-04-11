@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { render } from '@testing-library/react';
-import { ContainerMaxWidth } from './container.types';
+import * as React from 'react';
+
 import { Container } from './container';
+import { ContainerMaxWidth } from './container.types';
 
 describe('Container', () => {
   it('should render the Container without crashing', () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Box,
   Button,
@@ -17,9 +18,9 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
-import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 
 export function UpgradeCancelModal({

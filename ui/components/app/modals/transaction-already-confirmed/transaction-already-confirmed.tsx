@@ -1,13 +1,19 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { type TransactionMeta } from '@metamask/transaction-controller';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { I18nContext } from '../../../../contexts/i18n';
+import {
+  AlignItems,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
+import { useModalProps } from '../../../../hooks/useModalProps';
 import {
   getRpcPrefsForCurrentProvider,
   getTransaction,
 } from '../../../../selectors';
-import { useModalProps } from '../../../../hooks/useModalProps';
-
+import type { MetaMaskReduxState } from '../../../../store/store';
 import {
   Modal,
   ModalOverlay,
@@ -17,12 +23,6 @@ import {
   Text,
   ModalFooter,
 } from '../../../component-library';
-import {
-  AlignItems,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../contexts/i18n';
-import type { MetaMaskReduxState } from '../../../../store/store';
 
 export default function TransactionAlreadyConfirmed() {
   const {

@@ -1,4 +1,9 @@
 const { strict: assert } = require('assert');
+
+const {
+  MetaMetricsEventName,
+} = require('../../../../shared/constants/metametrics');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   connectToDapp,
   withFixtures,
@@ -8,10 +13,6 @@ const {
   logInWithBalanceValidation,
   WINDOW_TITLES,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  MetaMetricsEventName,
-} = require('../../../../shared/constants/metametrics');
 
 async function mockedDappViewedEndpointFirstVisit(mockServer) {
   return await mockServer

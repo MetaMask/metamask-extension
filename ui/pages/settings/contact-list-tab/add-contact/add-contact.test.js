@@ -1,17 +1,18 @@
-import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
+import {
+  MOCK_ADDRESS_BOOK,
+  MOCK_DOMAIN_RESOLUTION,
+} from '../../../../../test/data/mock-data';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import '@testing-library/jest-dom/extend-expect';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { domainInitialState } from '../../../../ducks/domains';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-import {
-  MOCK_ADDRESS_BOOK,
-  MOCK_DOMAIN_RESOLUTION,
-} from '../../../../../test/data/mock-data';
 import * as domainDucks from '../../../../ducks/domains';
 import AddContact from './add-contact.component';
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import { BrowserQRCodeReader } from '@zxing/browser';
+import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import log from 'loglevel';
 import PropTypes from 'prop-types';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Spinner from '../../ui/spinner';
 

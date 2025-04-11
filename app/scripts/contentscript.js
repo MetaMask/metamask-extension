@@ -1,19 +1,19 @@
 import { getIsBrowserPrerenderBroken } from '../../shared/modules/browser-runtime.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import {
-  destroyStreams,
-  initStreams,
-  onDisconnectDestroyStreams,
-  setupExtensionStreams,
-} from './streams/provider-stream';
+  initializeCookieHandlerSteam,
+  isDetectedCookieMarketingSite,
+} from './streams/cookie-handler-stream';
 import {
   isDetectedPhishingSite,
   initPhishingStreams,
 } from './streams/phishing-stream';
 import {
-  initializeCookieHandlerSteam,
-  isDetectedCookieMarketingSite,
-} from './streams/cookie-handler-stream';
+  destroyStreams,
+  initStreams,
+  onDisconnectDestroyStreams,
+  setupExtensionStreams,
+} from './streams/provider-stream';
 
 const start = () => {
   if (isDetectedPhishingSite) {

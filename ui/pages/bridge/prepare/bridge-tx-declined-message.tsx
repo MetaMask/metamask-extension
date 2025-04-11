@@ -1,16 +1,17 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  AlignItems,
-  Display,
-  TextColor,
-} from '../../../helpers/constants/design-system';
+
 import {
   ButtonLinkSize,
   Text,
   ButtonLink,
 } from '../../../components/component-library';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import {
+  AlignItems,
+  Display,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 export const BridgeTxDeclinedMessage = () => {
   const dispatch = useDispatch();

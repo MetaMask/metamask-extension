@@ -1,11 +1,12 @@
-import React from 'react';
 import classnames from 'classnames';
-import { Box } from '../../../../../component-library';
+import React from 'react';
+
 import {
   BlockSize,
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
+import { Box } from '../../../../../component-library';
 import type { StyleUtilityProps } from '../../../../../component-library/box';
 
 // TODO: Convert to a `type` in a future major version.

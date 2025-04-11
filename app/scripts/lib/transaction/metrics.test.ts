@@ -1,43 +1,44 @@
+import { toHex } from '@metamask/controller-utils';
 import type { Provider } from '@metamask/network-controller';
-import type {
-  GasFeeToken,
-  TransactionMeta} from '@metamask/transaction-controller';
+import { errorCodes } from '@metamask/rpc-errors';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { errorCodes } from '@metamask/rpc-errors';
-import { toHex } from '@metamask/controller-utils';
-import {
-  createTestProviderTools,
-  getTestAccounts,
-} from '../../../../test/stub/provider';
+import type {
+  GasFeeToken,
+  TransactionMeta} from '@metamask/transaction-controller';
+
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
-import {
-  AssetType,
-  TokenStandard,
-  TransactionMetaMetricsEvent,
-} from '../../../../shared/constants/transaction';
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
   MetaMetricsEventUiCustomization,
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import {
+  AssetType,
+  TokenStandard,
+  TransactionMetaMetricsEvent,
+} from '../../../../shared/constants/transaction';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import type {
   TransactionEventPayload,
   TransactionMetaEventPayload,
   TransactionMetricsRequest,
 } from '../../../../shared/types/metametrics';
+import {
+  createTestProviderTools,
+  getTestAccounts,
+} from '../../../../test/stub/provider';
 import {
   handleTransactionAdded,
   handleTransactionApproved,

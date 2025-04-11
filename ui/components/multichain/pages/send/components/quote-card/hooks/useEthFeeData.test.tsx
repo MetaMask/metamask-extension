@@ -1,5 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   getNativeCurrency,
   getConversionRate,
@@ -11,7 +13,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
 } from '../../../../../../../selectors';
-import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import useEthFeeData from './useEthFeeData';
 
 jest.mock('react-redux', () => ({

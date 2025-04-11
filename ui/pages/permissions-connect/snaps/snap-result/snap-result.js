@@ -1,10 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  IconName,
+  Text,
+} from '../../../../components/component-library';
 import Box from '../../../../components/ui/box/box';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import {
   AlignItems,
   BlockSize,
@@ -18,15 +26,7 @@ import {
   TextAlign,
   Display,
 } from '../../../../helpers/constants/design-system';
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  IconName,
-  Text,
-} from '../../../../components/component-library';
-import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getSnapMetadata } from '../../../../selectors';
 
 export default function SnapResult({

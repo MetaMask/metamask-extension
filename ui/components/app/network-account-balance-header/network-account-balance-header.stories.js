@@ -1,4 +1,5 @@
 import React from 'react';
+
 import NetworkAccountBalanceHeader from './network-account-balance-header';
 
 export default {

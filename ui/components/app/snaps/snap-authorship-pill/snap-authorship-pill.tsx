@@ -1,8 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box, IconSize, Text } from '../../../component-library';
-import { SnapIcon } from '../snap-icon';
-import { getSnapMetadata } from '../../../../selectors';
+
 import {
   AlignItems,
   BorderRadius,
@@ -11,6 +9,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { getSnapMetadata } from '../../../../selectors';
+import { Box, IconSize, Text } from '../../../component-library';
+import { SnapIcon } from '../snap-icon';
 
 type SnapAuthorshipPillProps = {
   snapId: string;

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import type { BoxModel } from './types';
 
 function buildShapePoints(coordinates: [number, number][]): string {

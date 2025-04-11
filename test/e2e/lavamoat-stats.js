@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
 /* eslint-disable node/shebang */
-const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
-const yargs = require('yargs/yargs');
+const path = require('path');
 const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs/yargs');
+
 const { exitWithError } = require('../../development/lib/exit-with-error');
-const { withFixtures, tinyDelayMs } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
+const { withFixtures, tinyDelayMs } = require('./helpers');
 
 async function measurePage() {
   let metrics;

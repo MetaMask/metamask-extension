@@ -8,6 +8,7 @@ import {
   within,
 } from '@testing-library/react';
 import nock from 'nock';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,

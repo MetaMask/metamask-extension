@@ -1,9 +1,10 @@
-import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { Provider } from 'react-redux';
-import { RpcEndpointType } from '@metamask/network-controller';
+
 import NetworkListItem from './network-list-item';
 import '@testing-library/jest-dom/extend-expect';
 

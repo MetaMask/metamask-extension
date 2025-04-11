@@ -1,10 +1,11 @@
-import React from 'react';
 import classnames from 'classnames';
-import PropTypes from 'prop-types';
 import { capitalize } from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
-import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
 
 export const threeStepStages = {
   PASSWORD_CREATE: 1,

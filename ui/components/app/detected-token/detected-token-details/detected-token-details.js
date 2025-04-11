@@ -1,6 +1,14 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { Display } from '../../../../helpers/constants/design-system';
+import {
+  getCurrentNetwork,
+  getTestNetworkBackgroundColor,
+  getTokenList,
+} from '../../../../selectors';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -9,16 +17,9 @@ import {
   BadgeWrapper,
   Box,
 } from '../../../component-library';
-import DetectedTokenValues from '../detected-token-values/detected-token-values';
 import DetectedTokenAddress from '../detected-token-address/detected-token-address';
 import DetectedTokenAggregators from '../detected-token-aggregators/detected-token-aggregators';
-import { Display } from '../../../../helpers/constants/design-system';
-import {
-  getCurrentNetwork,
-  getTestNetworkBackgroundColor,
-  getTokenList,
-} from '../../../../selectors';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import DetectedTokenValues from '../detected-token-values/detected-token-values';
 
 const DetectedTokenDetails = ({
   token,

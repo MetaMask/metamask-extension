@@ -1,6 +1,7 @@
-import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -14,6 +15,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   ButtonBase,
@@ -21,7 +23,6 @@ import {
   IconName,
   Text,
 } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
 
 export const ProductTour = ({

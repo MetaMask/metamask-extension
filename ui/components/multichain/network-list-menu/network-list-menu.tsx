@@ -1,3 +1,16 @@
+import { EthScope } from '@metamask/keyring-api';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  RpcEndpointType,
+  type UpdateNetworkFields,
+} from '@metamask/network-controller';
+import {
+  type CaipChainId,
+  type Hex,
+  parseCaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import Fuse from 'fuse.js';
 import React, {
   useContext,
   useEffect,
@@ -13,23 +26,43 @@ import {
   Draggable
 } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
-import { EthScope } from '@metamask/keyring-api';
+
 import {
-  RpcEndpointType,
-  type UpdateNetworkFields,
-} from '@metamask/network-controller';
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import {
-  type CaipChainId,
-  type Hex,
-  parseCaipChainId,
-  KnownCaipNamespace,
-} from '@metamask/utils';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+  FEATURED_RPCS,
+  TEST_CHAINS,
+  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
+} from '../../../../shared/constants/network';
+import {
+  convertCaipToHexChainId,
+  sortNetworks,
+  getNetworkIcon,
+  getRpcDataByChainId,
+} from '../../../../shared/modules/network.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../ducks/metamask/metamask';
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { openWindow } from '../../../helpers/utils/window';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
-import { NetworkListItem } from '../network-list-item';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideNetworkBanner,
   setActiveNetwork,
@@ -46,12 +79,6 @@ import {
   setTokenNetworkFilter,
   detectNfts,
 } from '../../../store/actions';
-import {
-  FEATURED_RPCS,
-  TEST_CHAINS,
-  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
-} from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -72,17 +99,6 @@ import {
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
   ButtonSecondary,
   ButtonSecondarySize,
@@ -95,30 +111,15 @@ import {
   ModalHeader,
   AvatarNetworkSize,
 } from '../../component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  convertCaipToHexChainId,
-  sortNetworks,
-  getNetworkIcon,
-  getRpcDataByChainId,
-} from '../../../../shared/modules/network.utils';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
-import { openWindow } from '../../../helpers/utils/window';
-import PopularNetworkList from './popular-network-list/popular-network-list';
-import NetworkListSearch from './network-list-search/network-list-search';
-import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
-import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
+import { NetworkListItem } from '../network-list-item';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
+import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
+import NetworkListSearch from './network-list-search/network-list-search';
+import PopularNetworkList from './popular-network-list/popular-network-list';
+import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 
 export enum ACTION_MODE {
   // Displays the search box and network list

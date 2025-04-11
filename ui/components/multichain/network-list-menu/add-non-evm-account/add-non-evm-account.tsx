@@ -1,18 +1,11 @@
-import React, { useCallback } from 'react';
 import type { CaipChainId } from '@metamask/utils';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { toggleNetworkMenu } from '../../../../store/actions';
 import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
-import {
-  Box,
-  Text,
-  ButtonPrimary,
-  ButtonPrimarySize,
-} from '../../../component-library';
 import {
   BlockSize,
   Display,
@@ -21,11 +14,18 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
+import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getMetaMaskHdKeyrings } from '../../../../selectors';
+import { toggleNetworkMenu } from '../../../../store/actions';
+import {
+  Box,
+  Text,
+  ButtonPrimary,
+  ButtonPrimarySize,
+} from '../../../component-library';
 import { CreateSnapAccount } from '../../create-snap-account';
 import { SrpList } from '../../multi-srp/srp-list';
-import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 
 const SNAP_CLIENT_CONFIG_MAP: Record<
   string,

@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory, useParams } from 'react-router-dom';
+
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
+import { TraceName } from '../../../../shared/lib/trace';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import Loading from '../../../components/ui/loading-screen';
 import {
   clearConfirmTransaction,
@@ -13,7 +17,6 @@ import {
 } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
@@ -21,6 +24,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
@@ -42,9 +46,6 @@ import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { useAsyncResult } from '../../../hooks/useAsync';
-import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {

@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
-import type { Chunk, EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
+import type { Chunk, EntryObject, Stats } from 'webpack';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;

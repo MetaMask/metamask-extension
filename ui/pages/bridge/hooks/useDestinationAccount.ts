@@ -1,16 +1,17 @@
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import { isSolanaChainId } from '@metamask/bridge-controller';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { getToChain } from '../../../ducks/bridge/selectors';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getSelectedInternalAccount,
   getSelectedEvmInternalAccount,
 } from '../../../selectors';
-import { getToChain } from '../../../ducks/bridge/selectors';
 import {
   getLastSelectedSolanaAccount,
   getMultichainIsEvm,
 } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import type { DestinationAccount } from '../prepare/types';
 
 export const useDestinationAccount = (isSwap = false) => {

@@ -1,10 +1,11 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
+
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChangeRow } from './balance-change-row';
 import { TotalFiatDisplay } from './fiat-display';
-import type { BalanceChange } from './types';
 import { sortBalanceChanges } from './sortBalanceChanges';
+import type { BalanceChange } from './types';
 
 const HEADING_MOCK = 'Mock Heading';
 

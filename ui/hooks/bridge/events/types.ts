@@ -1,4 +1,5 @@
 import type { CaipChainId } from '@metamask/utils';
+
 import type { StatusTypes } from '../../../../shared/types/bridge-status';
 
 export enum ActionType {

@@ -1,12 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import {
   getMockConfirmStateForTransaction,
   getMockPersonalSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import type { Confirmation } from '../../../types/confirm';
 import { Splash } from './splash';
 

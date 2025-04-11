@@ -3,10 +3,11 @@ import type {
 import {
   PPOMController
 } from '@metamask/ppom-validator';
+
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
-import type { ControllerInitFunction } from '../types';
 import type { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messenger';
+import type { ControllerInitFunction } from '../types';
 
 export const PPOMControllerInit: ControllerInitFunction<
   PPOMController,

@@ -1,5 +1,6 @@
 import { ERC20, ERC721 } from '@metamask/controller-utils';
 import { rpcErrors } from '@metamask/rpc-errors';
+
 import watchAssetHandler from './watch-asset';
 
 describe('watchAssetHandler', () => {

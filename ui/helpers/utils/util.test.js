@@ -1,13 +1,14 @@
-import Bowser from 'bowser';
-import BN from 'bn.js';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import BN from 'bn.js';
+import Bowser from 'bowser';
+import { toChecksumAddress } from 'ethereumjs-util';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
-import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import * as util from './util';
 
 describe('util', () => {

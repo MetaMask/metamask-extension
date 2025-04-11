@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
+
 import {
   Box,
   IconName,
@@ -10,6 +9,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
 } from '../../components/component-library';
+import { NotificationsPage } from '../../components/multichain';
+import { Content, Header } from '../../components/multichain/pages/page';
 import {
   BlockSize,
   BorderColor,
@@ -20,18 +21,18 @@ import {
   TextVariant,
   TextColor,
 } from '../../helpers/constants/design-system';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
+import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getInternalAccounts } from '../../selectors';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
   getValidNotificationAccounts,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { getInternalAccounts } from '../../selectors';
-import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
-import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
+import { NotificationsSettingsTypes } from './notifications-settings-types';
 
 function useNotificationAccounts() {
   const accountAddresses = useSelector(getValidNotificationAccounts);

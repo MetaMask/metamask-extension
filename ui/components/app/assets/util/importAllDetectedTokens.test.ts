@@ -1,4 +1,5 @@
 import type { NetworkConfiguration } from '@metamask/network-controller';
+
 import type { Token } from '../types';
 import { importAllDetectedTokens } from './importAllDetectedTokens';
 

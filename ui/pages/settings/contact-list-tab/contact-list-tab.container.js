@@ -1,13 +1,13 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBook, getInternalAccounts } from '../../../selectors';
+import { compose } from 'redux';
 
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
+import { getAddressBook, getInternalAccounts } from '../../../selectors';
 import ContactListTab from './contact-list-tab.component';
 
 const mapStateToProps = (state, ownProps) => {

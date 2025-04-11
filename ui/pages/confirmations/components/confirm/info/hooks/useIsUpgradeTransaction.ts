@@ -1,5 +1,6 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+
 import { useConfirmContext } from '../../../../context/confirm';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 

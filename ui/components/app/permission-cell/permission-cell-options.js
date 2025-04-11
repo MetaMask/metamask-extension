@@ -1,17 +1,18 @@
-import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import Box from '../../ui/box';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IconName, ButtonIcon, Text } from '../../component-library';
-import { Menu, MenuItem } from '../../ui/menu';
+
+import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Popover from '../../ui/popover/popover.component';
-import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { revokeDynamicSnapPermissions } from '../../../store/actions';
+import { IconName, ButtonIcon, Text } from '../../component-library';
+import Box from '../../ui/box';
+import { Menu, MenuItem } from '../../ui/menu';
+import Popover from '../../ui/popover/popover.component';
 
 export const PermissionCellOptions = ({
   snapId,

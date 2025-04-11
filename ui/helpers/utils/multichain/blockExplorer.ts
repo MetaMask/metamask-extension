@@ -1,11 +1,12 @@
 import { getAccountLink } from '@metamask/etherscan-link';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import type { MultichainNetwork } from '../../../selectors/multichain';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import type { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import type { MultichainNetwork } from '../../../selectors/multichain';
 
 export const getMultichainBlockExplorerUrl = (
   network: MultichainNetwork,

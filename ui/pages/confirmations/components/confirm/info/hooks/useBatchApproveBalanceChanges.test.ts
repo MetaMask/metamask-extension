@@ -1,24 +1,25 @@
-import { act } from '@testing-library/react';
+import { toHex } from '@metamask/controller-utils';
 import type {
   BatchTransactionParams} from '@metamask/transaction-controller';
 import {
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { act } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
-import { toHex } from '@metamask/controller-utils';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+
+import { TokenStandard } from '../../../../../../../shared/constants/transaction';
 import {
   CHAIN_ID,
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
-import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
-import { getTokenStandardAndDetails } from '../../../../../../store/actions';
-import { TokenStandard } from '../../../../../../../shared/constants/transaction';
-import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import type { BalanceChange } from '../../../simulation-details/types';
-import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
-import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../shared/constants';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { buildSetApproveForAllTransactionData } from '../../../../../../../test/data/confirmations/set-approval-for-all';
+import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { getTokenStandardAndDetails } from '../../../../../../store/actions';
+import type { BalanceChange } from '../../../simulation-details/types';
+import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../shared/constants';
 import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({

@@ -1,11 +1,12 @@
 import { NameType } from '@metamask/name-controller';
-import { HandlerType } from '@metamask/snaps-utils';
+import type { GetPermissionControllerState } from '@metamask/permission-controller';
 import type {
   GetAllSnaps,
   GetSnap,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import type { GetPermissionControllerState } from '@metamask/permission-controller';
+import { HandlerType } from '@metamask/snaps-utils';
+
 import type {
   SnapsNameProviderMessenger} from './SnapsNameProvider';
 import {

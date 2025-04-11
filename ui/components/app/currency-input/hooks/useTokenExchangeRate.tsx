@@ -1,14 +1,15 @@
-import { useMemo, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { useMemo, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getTokenExchangeRates } from '../../../../selectors';
+
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getConversionRate,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import { getTokenExchangeRates } from '../../../../selectors';
 
 type ExchangeRate = number | typeof LOADING | typeof FAILED | undefined;
 

@@ -2,12 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { setBackgroundConnection } from '../../../store/background-connection';
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-  fireEvent,
-} from '../../../../test/jest';
+import AwaitingSwap from '.';
 import {
   Slippage,
   QUOTES_EXPIRED_ERROR,
@@ -17,7 +12,12 @@ import {
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
-import AwaitingSwap from '.';
+import {
+  renderWithProvider,
+  createSwapsMockStore,
+  fireEvent,
+} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 
 const middleware = [thunk];
 

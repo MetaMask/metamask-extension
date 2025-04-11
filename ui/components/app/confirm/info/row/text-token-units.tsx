@@ -1,12 +1,12 @@
-import React from 'react';
 import type { BigNumber } from 'bignumber.js';
+import React from 'react';
 
 import { calcTokenAmount } from '../../../../../../shared/lib/transactions-controller-utils';
+import { shortenString } from '../../../../../helpers/utils/util';
 import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../pages/confirmations/components/simulation-details/formatAmount';
-import { shortenString } from '../../../../../helpers/utils/util';
 import { ConfirmInfoRowText } from './text';
 
 type ConfirmInfoRowTextTokenUnitsProps = {

@@ -1,11 +1,12 @@
 import React from 'react';
+
+import { BlockSize } from '../../../helpers/constants/design-system';
 import {
   Button,
   ButtonVariant,
   ButtonSize,
   IconName,
 } from '../../component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
 
 export type NotificationDetailButtonProps = {
   /**

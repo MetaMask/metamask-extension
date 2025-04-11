@@ -1,5 +1,5 @@
-const path = require('node:path');
 const { readFile, writeFile } = require('node:fs/promises');
+const path = require('node:path');
 
 const rootDirectory = path.resolve(__dirname, '..', '..');
 const packageJsonPath = path.join(rootDirectory, 'package.json');

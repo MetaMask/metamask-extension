@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 /**
  * @deprecated The `<IconWithFallback />` component has been deprecated in favor of the new `<AvatarNetwork />` or `<AvatarFavicon />` component from the component-library.

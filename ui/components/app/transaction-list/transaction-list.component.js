@@ -1,3 +1,7 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { TransactionType } from '@metamask/transaction-controller';
+import { capitalize } from 'lodash';
+import PropTypes from 'prop-types';
 import React, {
   useMemo,
   useState,
@@ -8,20 +12,22 @@ import React, {
   ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { TransactionType } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { capitalize } from 'lodash';
-import { isEvmAccountType } from '@metamask/keyring-api';
+
 ///: END:ONLY_INCLUDE_IF
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
-  nonceSortedCompletedTransactionsSelector,
-  nonceSortedCompletedTransactionsSelectorAllChains,
-  nonceSortedPendingTransactionsSelector,
-  nonceSortedPendingTransactionsSelectorAllChains,
-} from '../../../selectors/transactions';
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
+import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -30,24 +36,15 @@ import {
   getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+import {
+  nonceSortedCompletedTransactionsSelector,
+  nonceSortedCompletedTransactionsSelectorAllChains,
+  nonceSortedPendingTransactionsSelector,
+  nonceSortedPendingTransactionsSelectorAllChains,
+} from '../../../selectors/transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 ///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import TransactionListItem from '../transaction-list-item';
-import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
-import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
-import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
-import {
-  getMultichainNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  getSelectedAccountMultichainTransactions,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors/multichain';
-
 import {
   Box,
   Button,
@@ -62,10 +59,22 @@ import {
   BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import TransactionIcon from '../transaction-icon';
-import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
+import TransactionIcon from '../transaction-icon';
+import TransactionListItem from '../transaction-list-item';
+import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import {
+  getMultichainNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  getSelectedAccountMultichainTransactions,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/multichain';
+
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -94,17 +103,9 @@ import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 ///: END:ONLY_INCLUDE_IF
 
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 
 const PAGE_INCREMENT = 10;

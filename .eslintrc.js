@@ -1,7 +1,7 @@
 const { readFileSync } = require('node:fs');
 const path = require('node:path');
-const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
+const ts = require('typescript');
 
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);

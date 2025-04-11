@@ -3,10 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import {
-  renderWithProvider,
-  createSwapsMockStore,
-} from '../../../../test/jest';
-import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
@@ -18,6 +14,10 @@ import {
   SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
+import {
+  renderWithProvider,
+  createSwapsMockStore,
+} from '../../../../test/jest';
 import SwapsBannerAlert from './swaps-banner-alert';
 
 const middleware = [thunk];

@@ -1,33 +1,3 @@
-import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
-import {
-  CurrencyRateController,
-  TokenDetectionController,
-  TokenListController,
-  TokensController,
-  RatesController,
-  fetchMultiExchangeRate,
-  TokenBalancesController,
-} from '@metamask/assets-controllers';
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import { ObservableStore } from '@metamask/obs-store';
-import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  throttle,
-  memoize,
-  wrap,
-  pick,
-  cloneDeep,
-  uniq,
-} from 'lodash';
-import {
-  KeyringController,
-  KeyringTypes,
-  keyringBuilderFactory,
-} from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
@@ -145,8 +115,16 @@ import {
 import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
+import {
+  CurrencyRateController,
+  TokenDetectionController,
+  TokenListController,
+  TokensController,
+  RatesController,
+  fetchMultiExchangeRate,
+  TokenBalancesController,
+} from '@metamask/assets-controllers';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   hasProperty,
   hexToBigInt,
@@ -178,47 +156,34 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
-
+import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
-  methodsRequiringNetworkSwitch,
-  methodsThatCanSwitchNetworkWithoutApproval,
-  methodsThatShouldBeEnqueued,
-} from '../../shared/constants/methods-tags';
+  KeyringController,
+  KeyringTypes,
+  keyringBuilderFactory,
+} from '@metamask/keyring-controller';
+import { ObservableStore } from '@metamask/obs-store';
+import { storeAsStream } from '@metamask/obs-store/dist/asStream';
+import EventEmitter from 'events';
+import {
+  debounce,
+  throttle,
+  memoize,
+  wrap,
+  pick,
+  cloneDeep,
+  uniq,
+} from 'lodash';
+import { finished, pipeline } from 'readable-stream';
+
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import { TokenStandard } from '../../shared/constants/transaction';
-import {
-  GAS_API_BASE_URL,
-  GAS_DEV_API_BASE_URL,
-  SWAPS_CLIENT_ID,
-} from '../../shared/constants/swaps';
-import {
-  CHAIN_IDS,
-  CHAIN_SPEC_URL,
-  NETWORK_TYPES,
-  NetworkStatus,
-  MAINNET_DISPLAY_NAME,
-  DEFAULT_CUSTOM_TESTNET_MAP,
-  UNSUPPORTED_RPC_METHODS,
-} from '../../shared/constants/network';
-import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
-import {
-  HardwareDeviceNames,
-  HardwareKeyringType,
-  LedgerTransportTypes,
-} from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
-import {
-  RestrictedMethods,
-  ExcludedSnapPermissions,
-  ExcludedSnapEndowments,
-  CaveatTypes,
-} from '../../shared/constants/permissions';
-import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -263,30 +228,47 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
-import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  handleMMITransactionUpdate,
-  ///: END:ONLY_INCLUDE_IF
-  createTransactionEventFragmentWithTxId,
-} from './lib/transaction/metrics';
+  HardwareDeviceNames,
+  HardwareKeyringType,
+  LedgerTransportTypes,
+} from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
+import {
+  methodsRequiringNetworkSwitch,
+  methodsThatCanSwitchNetworkWithoutApproval,
+  methodsThatShouldBeEnqueued,
+} from '../../shared/constants/methods-tags';
+import {
+  CHAIN_IDS,
+  CHAIN_SPEC_URL,
+  NETWORK_TYPES,
+  NetworkStatus,
+  MAINNET_DISPLAY_NAME,
+  DEFAULT_CUSTOM_TESTNET_MAP,
+  UNSUPPORTED_RPC_METHODS,
+} from '../../shared/constants/network';
+import {
+  RestrictedMethods,
+  ExcludedSnapPermissions,
+  ExcludedSnapEndowments,
+  CaveatTypes,
+} from '../../shared/constants/permissions';
+import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
+import {
+  GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
+} from '../../shared/constants/swaps';
+import { TokenStandard } from '../../shared/constants/transaction';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { UI_NOTIFICATIONS } from '../../shared/notifications';
+import { BridgeStatusAction } from '../../shared/types/bridge-status';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-import { SnapsNameProvider } from './lib/SnapsNameProvider';
-import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
-import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
-import {
-  onMessageReceived,
-  checkForMultipleVersionsRunning,
-} from './detect-multiple-instances';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { MMIController } from './controllers/mmi-controller';
-import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
-import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTrackerController from './controllers/account-tracker-controller';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -421,6 +403,24 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { MMIController } from './controllers/mmi-controller';
+import {
+  onMessageReceived,
+  checkForMultipleVersionsRunning,
+} from './detect-multiple-instances';
+import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
+import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
+import ComposableObservableStore from './lib/ComposableObservableStore';
+import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
+import { SnapsNameProvider } from './lib/SnapsNameProvider';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  handleMMITransactionUpdate,
+  ///: END:ONLY_INCLUDE_IF
+  createTransactionEventFragmentWithTxId,
+} from './lib/transaction/metrics';
+import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

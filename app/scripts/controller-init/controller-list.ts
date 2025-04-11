@@ -1,14 +1,3 @@
-import type { GasFeeController } from '@metamask/gas-fee-controller';
-import type { KeyringController } from '@metamask/keyring-controller';
-import type { NetworkController } from '@metamask/network-controller';
-import type {
-  CaveatSpecificationConstraint,
-  PermissionController,
-  PermissionSpecificationConstraint,
-} from '@metamask/permission-controller';
-import type { PPOMController } from '@metamask/ppom-validator';
-import type SmartTransactionsController from '@metamask/smart-transactions-controller';
-import type { TransactionController } from '@metamask/transaction-controller';
 import type { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import type { AccountsController } from '@metamask/accounts-controller';
 import type {
@@ -20,8 +9,27 @@ import type {
   NftDetectionController,
   TokenRatesController,
 } from '@metamask/assets-controllers';
+import type { GasFeeController } from '@metamask/gas-fee-controller';
+import type { KeyringController } from '@metamask/keyring-controller';
 import type { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import type { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
+import type { NetworkController } from '@metamask/network-controller';
+import type { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
+import type { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import type {
+  CaveatSpecificationConstraint,
+  PermissionController,
+  PermissionSpecificationConstraint,
+} from '@metamask/permission-controller';
+import type { PPOMController } from '@metamask/ppom-validator';
+import type { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
+import type { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
+import type {
+  RateLimitController,
+  RateLimitedApiMap,
+} from '@metamask/rate-limit-controller';
+import type SmartTransactionsController from '@metamask/smart-transactions-controller';
+import type { TransactionController } from '@metamask/transaction-controller';
 import type {
   CronjobController,
   ExecutionService,
@@ -30,18 +38,11 @@ import type {
   SnapInsightsController,
   SnapInterfaceController,
 } from '@metamask/snaps-controllers';
-import type {
-  RateLimitController,
-  RateLimitedApiMap,
-} from '@metamask/rate-limit-controller';
-import type { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
-import type { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
-import type { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
-import type { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+
+import type { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import type OnboardingController from '../controllers/onboarding';
 import type { PreferencesController } from '../controllers/preferences-controller';
 import type SwapsController from '../controllers/swaps';
-import type { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 
 /**
  * Union of all controllers supporting or required by modular initialization.

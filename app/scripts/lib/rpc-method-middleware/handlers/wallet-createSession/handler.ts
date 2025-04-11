@@ -1,4 +1,3 @@
-import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import type {
   Caip25Authorization,
   NormalizedScopesObject,
@@ -15,10 +14,16 @@ import {
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import type {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
+import type { NetworkController } from '@metamask/network-controller';
+import type {
   RequestedPermissions} from '@metamask/permission-controller';
 import {
   invalidParams
 } from '@metamask/permission-controller';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import type {
   CaipAccountId,
   CaipChainId,
@@ -31,11 +36,8 @@ import {
   KnownCaipNamespace,
   parseCaipAccountId,
 } from '@metamask/utils';
-import type { NetworkController } from '@metamask/network-controller';
-import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
+
+import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import type {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload} from '../../../../../../shared/constants/metametrics';
@@ -43,13 +45,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName
 } from '../../../../../../shared/constants/metametrics';
-import { shouldEmitDappViewedEvent } from '../../../util';
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
-import type { GrantedPermissions } from '../types';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { isKnownSessionPropertyValue } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { shouldEmitDappViewedEvent } from '../../../util';
+import type { GrantedPermissions } from '../types';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible

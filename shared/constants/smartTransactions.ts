@@ -1,6 +1,6 @@
 import { isProduction } from '../modules/environment';
-import { SECOND } from './time';
 import { CHAIN_IDS } from './network';
+import { SECOND } from './time';
 
 export const FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME: number = SECOND * 10;
 export const FALLBACK_SMART_TRANSACTIONS_DEADLINE: number = 180;

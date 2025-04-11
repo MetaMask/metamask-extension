@@ -1,18 +1,18 @@
-import type { ReactChildren } from 'react';
-import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import React from 'react';
+import type { ReactChildren } from 'react';
 
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import { useGasFeeLowAlerts } from './useGasFeeLowAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';

@@ -1,6 +1,7 @@
+import log from 'loglevel';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import log from 'loglevel';
+
 import {
   setParticipateInMetaMetrics,
   showLoadingIndication,

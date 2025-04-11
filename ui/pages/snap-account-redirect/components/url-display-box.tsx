@@ -1,5 +1,6 @@
 import React from 'react';
-import type { SnapAccountRedirectProps } from '../snap-account-redirect';
+
+import { Box, Text } from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,7 +10,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import RedirectUrlIcon from './redirect-url-icon';
 
 const UrlDisplayBox = ({

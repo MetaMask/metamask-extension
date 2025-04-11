@@ -1,13 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
-import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { QuoteResponse } from '@metamask/bridge-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
-import { addToken, addNetwork } from '../../../store/actions';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { addToken, addNetwork } from '../../../store/actions';
 
 export default function useAddToken() {
   const dispatch = useDispatch();

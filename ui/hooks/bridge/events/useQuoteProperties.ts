@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
 import { useSelector } from 'react-redux';
+
+import { SECOND } from '../../../../shared/constants/time';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { formatProviderLabel } from '../../../pages/bridge/utils/quote';
 import { useIsTxSubmittable } from '../useIsTxSubmittable';
-import { SECOND } from '../../../../shared/constants/time';
 
 export const useQuoteProperties = () => {
   const { recommendedQuote, sortedQuotes, quotesInitialLoadTimeMs } =

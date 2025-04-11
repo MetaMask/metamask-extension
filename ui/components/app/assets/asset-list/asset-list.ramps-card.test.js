@@ -1,11 +1,12 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
+
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/jest';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import configureStore from '../../../../store/store';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion

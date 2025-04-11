@@ -1,27 +1,27 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { Redirect } from 'react-router-dom';
-import Button from '../../../../components/ui/button/button.component';
-import TextField from '../../../../components/ui/text-field';
-import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 import {
   AvatarAccount,
   AvatarAccountSize,
   Box,
   Text,
 } from '../../../../components/component-library';
-
+import Button from '../../../../components/ui/button/button.component';
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import TextField from '../../../../components/ui/text-field';
 import {
   AlignItems,
   BlockSize,
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {

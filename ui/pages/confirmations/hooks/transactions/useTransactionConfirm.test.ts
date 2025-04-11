@@ -1,11 +1,12 @@
+import { toHex } from '@metamask/controller-utils';
 import type { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { toHex } from '@metamask/controller-utils';
+
+import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 jest.mock('../../../../../shared/modules/selectors');

@@ -1,18 +1,19 @@
+import { toHex } from '@metamask/controller-utils';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { toHex } from '@metamask/controller-utils';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import type { CHAIN_IDS } from '../../../../shared/constants/network';
-import { ButtonVariant } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNetworkDetailsByChainId } from '../../../helpers/utils/notification.util';
-import { NotificationDetailButton } from '../notification-detail-button';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getNetworkDetailsByChainId } from '../../../helpers/utils/notification.util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ButtonVariant } from '../../component-library';
+import { NotificationDetailButton } from '../notification-detail-button';
 
 type Notification = NotificationServicesController.Types.INotification;
 

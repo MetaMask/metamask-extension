@@ -1,17 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import {
-  JustifyContent,
-  AlignItems,
-  Display,
-  TextVariant,
-  BlockSize,
-  FlexDirection,
-  BackgroundColor,
-  BorderRadius,
-  IconColor,
-} from '../../../helpers/constants/design-system';
-import { I18nContext } from '../../../contexts/i18n';
+import React, { useContext, useState, useEffect } from 'react';
+
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -24,7 +14,18 @@ import {
   IconSize,
   Text,
 } from '../../../components/component-library';
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+import { I18nContext } from '../../../contexts/i18n';
+import {
+  JustifyContent,
+  AlignItems,
+  Display,
+  TextVariant,
+  BlockSize,
+  FlexDirection,
+  BackgroundColor,
+  BorderRadius,
+  IconColor,
+} from '../../../helpers/constants/design-system';
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);

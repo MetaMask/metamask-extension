@@ -1,5 +1,6 @@
 import React from 'react';
-import { ButtonIcon, IconName, Text, Box } from '../../../component-library';
+
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import {
   BlockSize,
   BorderColor,
@@ -12,8 +13,8 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 // import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { ButtonIcon, IconName, Text, Box } from '../../../component-library';
 
 export const KeyringAccountListItem = ({
   account,

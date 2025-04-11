@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-named-as-default
-import Router from 'react-router-dom';
 
-import type { AbstractMessage } from '@metamask/message-manager';
 import type { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import type { AbstractMessage } from '@metamask/message-manager';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
@@ -10,10 +10,11 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
-import { ApprovalType } from '@metamask/controller-utils';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+import Router from 'react-router-dom';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const ID_MOCK = '123-456';

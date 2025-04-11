@@ -1,12 +1,12 @@
+import type { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import React from 'react';
 
-import type { Hex } from '@metamask/utils';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { GasFeesDetails } from './gas-fees-details';
 
 jest.mock('../../../../../../../store/actions', () => ({

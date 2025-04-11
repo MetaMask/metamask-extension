@@ -5,13 +5,14 @@ import {
   within,
   screen,
 } from '@testing-library/react';
-import { integrationTestRender } from '../../lib/render-helpers';
-import * as backgroundConnection from '../../../ui/store/background-connection';
-import { createMockImplementation } from '../helpers';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import * as backgroundConnection from '../../../ui/store/background-connection';
+import { integrationTestRender } from '../../lib/render-helpers';
+import { createMockImplementation } from '../helpers';
 import {
   ethSentNotification,
   featureNotification,

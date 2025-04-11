@@ -1,18 +1,18 @@
-const { promises: fs } = require('fs');
-const path = require('path');
 const childProcess = require('child_process');
+const { promises: fs } = require('fs');
 const { mergeWith, cloneDeep } = require('lodash');
+const path = require('path');
+
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-
+const { fromIniFile } = require('./config');
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
-const { fromIniFile } = require('./config');
 
 module.exports = createManifestTasks;
 

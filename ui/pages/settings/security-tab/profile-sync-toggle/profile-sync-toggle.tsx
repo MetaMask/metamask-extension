@@ -1,23 +1,14 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  useEnableProfileSyncing,
-  useDisableProfileSyncing,
-} from '../../../../hooks/identity/useProfileSyncing';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import {
-  selectIsProfileSyncingEnabled,
-  selectIsProfileSyncingUpdateLoading,
-} from '../../../../selectors/identity/profile-syncing';
-import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
+import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import ToggleButton from '../../../../components/ui/toggle-button';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   Display,
   FlexDirection,
@@ -25,8 +16,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import {
+  useEnableProfileSyncing,
+  useDisableProfileSyncing,
+} from '../../../../hooks/identity/useProfileSyncing';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../../selectors';
+import {
+  selectIsProfileSyncingEnabled,
+  selectIsProfileSyncingUpdateLoading,
+} from '../../../../selectors/identity/profile-syncing';
+import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
+import { showModal } from '../../../../store/actions';
 
 const ProfileSyncToggle = () => {
   const trackEvent = useContext(MetaMetricsContext);

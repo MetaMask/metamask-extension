@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 import * as UpdateEthereumChainAlerts from './useUpdateEthereumChainAlerts';
 
-import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

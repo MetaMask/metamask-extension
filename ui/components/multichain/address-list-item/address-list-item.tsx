@@ -1,15 +1,7 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import Confusable from '../../ui/confusable';
-import {
-  AvatarAccount,
-  Box,
-  AvatarAccountVariant,
-  Text,
-  AvatarAccountSize,
-  Icon,
-  IconName,
-} from '../../component-library';
+
+import { I18nContext } from '../../../contexts/i18n';
 import {
   TextAlign,
   TextVariant,
@@ -22,10 +14,19 @@ import {
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { getUseBlockie } from '../../../selectors';
+import {
+  AvatarAccount,
+  Box,
+  AvatarAccountVariant,
+  Text,
+  AvatarAccountSize,
+  Icon,
+  IconName,
+} from '../../component-library';
+import Confusable from '../../ui/confusable';
 import Tooltip from '../../ui/tooltip';
-import { I18nContext } from '../../../contexts/i18n';
 
 type AddressListItemProps = {
   address: string;

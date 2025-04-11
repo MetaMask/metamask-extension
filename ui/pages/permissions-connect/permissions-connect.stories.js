@@ -1,9 +1,10 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { PermissionPageContainerContent } from '../../components/app/permission-page-container';
 import PermissionsConnectFooter from '../../components/app/permissions-connect-footer';
 import { PageContainerFooter } from '../../components/ui/page-container';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import ChooseAccount from './choose-account';
 
 const account1 = {

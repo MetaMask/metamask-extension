@@ -1,6 +1,6 @@
 /* eslint-disable node/shebang */
-const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
+const path = require('path');
 
 async function isWritable(directory) {
   try {

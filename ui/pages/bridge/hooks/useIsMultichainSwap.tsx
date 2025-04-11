@@ -1,8 +1,9 @@
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
-import { getMultichainIsSolana } from '../../../selectors/multichain';
+
 import { getIsSwap } from '../../../ducks/bridge/selectors';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 
 /*
  * This returns true if the url contains swaps=true and the current chain is solana

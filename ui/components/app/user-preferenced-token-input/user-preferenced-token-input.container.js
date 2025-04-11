@@ -1,5 +1,6 @@
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import UserPreferencedTokenInput from './user-preferenced-token-input.component';
 
 const mapStateToProps = (state) => state;

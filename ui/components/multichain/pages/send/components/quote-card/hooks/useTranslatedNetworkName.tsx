@@ -1,8 +1,9 @@
-import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
+import { useSelector } from 'react-redux';
+
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export default function useTranslatedNetworkName() {
   const chainId = useSelector(getCurrentChainId);

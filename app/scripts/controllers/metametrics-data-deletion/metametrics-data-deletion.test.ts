@@ -1,4 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
+
 import type {
   AllowedActions} from './metametrics-data-deletion';
 import {

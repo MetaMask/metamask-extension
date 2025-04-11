@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
 import classnames from 'classnames';
+import React, { useRef, useEffect } from 'react';
 
 import {
   BackgroundColor,
@@ -10,11 +10,10 @@ import {
   AlignItems,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-
 import { Box } from '../box';
 import type { PolymorphicRef , BoxProps } from '../box';
-import { useModalContext } from '../modal/modal.context';
 import { ModalFocus } from '../modal-focus';
+import { useModalContext } from '../modal/modal.context';
 import type {
   ModalContentProps,
   ModalContentComponent} from './modal-content.types';

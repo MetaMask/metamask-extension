@@ -1,11 +1,12 @@
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { RenderResult } from '@testing-library/react';
 import React from 'react';
 import type { Reducer } from 'redux';
-import type { RenderResult } from '@testing-library/react';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import configureStore from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
 
 export const MOCK_SNAP_ID = 'npm:@metamask/test-snap-bip44';

@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
 import classnames from 'classnames';
+import React, { useContext } from 'react';
+
+import { Display } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef, BoxProps } from '../box';
 import { Box } from '../box';
 import { SelectContext } from '../select-wrapper';
-import { Display } from '../../../helpers/constants/design-system';
 import type {
   SelectOptionProps,
   SelectOptionComponent,

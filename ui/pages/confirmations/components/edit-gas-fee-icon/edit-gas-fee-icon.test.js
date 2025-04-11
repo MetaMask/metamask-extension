@@ -1,9 +1,10 @@
-import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+
+import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
 import EditGasFeeIcon from './edit-gas-fee-icon';
 
 jest.mock('../../../../store/actions', () => ({

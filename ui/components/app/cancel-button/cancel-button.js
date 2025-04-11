@@ -1,16 +1,17 @@
 import { Tooltip } from '@material-ui/core';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import Button from '../../ui/button';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';
 import { isBalanceSufficient } from '../../../pages/confirmations/send/send.utils';
 import { getSelectedAccount } from '../../../selectors';
+import Button from '../../ui/button';
 
 export default function CancelButton({
   cancelTransaction,

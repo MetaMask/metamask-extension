@@ -1,10 +1,8 @@
-import React from 'react';
-import { DateTime } from 'luxon';
 import { toHex } from '@metamask/controller-utils';
+import { DateTime } from 'luxon';
+import React from 'react';
 
 import { NETWORK_TO_NAME_MAP } from '../../../../../../../../shared/constants/network';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import type { SignatureRequestType } from '../../../../../types/confirm';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -13,7 +11,9 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { Box, Text } from '../../../../../../../components/component-library';
 import { TextColor } from '../../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
+import type { SignatureRequestType } from '../../../../../types/confirm';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();

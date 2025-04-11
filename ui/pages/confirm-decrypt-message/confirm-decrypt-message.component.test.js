@@ -1,17 +1,18 @@
+import copyToClipboard from 'copy-to-clipboard';
+import { merge } from 'lodash';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { merge } from 'lodash';
-import copyToClipboard from 'copy-to-clipboard';
+
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useScrollRequired } from '../../hooks/useScrollRequired';
 import {
   decryptMsg,
   decryptMsgInline,
   cancelDecryptMsg,
 } from '../../store/actions';
-import { useScrollRequired } from '../../hooks/useScrollRequired';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 const messageIdMock = '12345';

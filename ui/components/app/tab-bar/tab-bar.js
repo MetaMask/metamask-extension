@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import { Icon, IconName, IconSize, Box } from '../../component-library';
 import {
   BorderRadius,
   Color,
   Display,
 } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize, Box } from '../../component-library';
 
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;

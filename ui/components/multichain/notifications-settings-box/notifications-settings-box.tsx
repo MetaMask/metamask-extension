@@ -1,7 +1,5 @@
 import React from 'react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, Text } from '../../component-library';
-import ToggleButton from '../../ui/toggle-button';
+
 import {
   BlockSize,
   Display,
@@ -11,7 +9,10 @@ import {
   TextColor,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Box, Text } from '../../component-library';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+import ToggleButton from '../../ui/toggle-button';
 
 export type NotificationsSettingsBoxProps = {
   children?: React.ReactNode;

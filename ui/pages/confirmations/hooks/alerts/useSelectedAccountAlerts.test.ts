@@ -1,13 +1,13 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import mockState from '../../../../../test/data/mock-state.json';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockConfirmStateForTransaction,
   getMockPersonalSignConfirmStateForRequest,
 } from '../../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { unapprovedPersonalSignMsg } from '../../../../../test/data/confirmations/personal_sign';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import type { SignatureRequestType } from '../../types/confirm';
 import { useSelectedAccountAlerts } from './useSelectedAccountAlerts';
 

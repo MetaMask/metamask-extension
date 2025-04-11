@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+
 import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
 import { ReviewPermissions } from './review-permissions-page';
 

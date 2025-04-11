@@ -1,10 +1,11 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { I18nContext } from '../../../../contexts/i18n';
+
 import InfoTooltip from '../../../../components/ui/info-tooltip';
-import ExchangeRateDisplay from '../../exchange-rate-display';
+import { I18nContext } from '../../../../contexts/i18n';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
+import ExchangeRateDisplay from '../../exchange-rate-display';
 
 const QuoteDetails = ({
   slippage,

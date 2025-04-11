@@ -1,20 +1,16 @@
-import React from 'react';
-
-import sinon from 'sinon';
-import thunk from 'redux-thunk';
-
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import sinon from 'sinon';
 
-import { tick } from '../../../../../test/lib/timer-helpers';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-
-import * as actions from '../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { KeyringType } from '../../../../../shared/constants/keyring';
-
-import { mockNetworkState } from '../../../../../test/stub/networks';
 import UnconnectedAccountAlert from '.';
+import { KeyringType } from '../../../../../shared/constants/keyring';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { tick } from '../../../../../test/lib/timer-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import * as actions from '../../../../store/actions';
 
 describe('Unconnected Account Alert', () => {
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';

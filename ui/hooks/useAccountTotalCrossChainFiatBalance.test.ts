@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import {
-  getCrossChainTokenExchangeRates,
-  getCrossChainMetaMaskCachedBalances,
-} from '../selectors';
+
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   getCurrentCurrency,
   getCurrencyRates,
   getTokenBalances,
 } from '../ducks/metamask/metamask';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import {
+  getCrossChainTokenExchangeRates,
+  getCrossChainMetaMaskCachedBalances,
+} from '../selectors';
 import type {
   FormattedTokensWithBalances} from './useAccountTotalCrossChainFiatBalance';
 import {

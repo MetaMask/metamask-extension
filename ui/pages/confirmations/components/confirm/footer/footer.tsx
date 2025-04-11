@@ -2,6 +2,7 @@ import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -30,13 +31,13 @@ import {
   updateCustomNonce,
 } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
-import { getConfirmationSender } from '../utils';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
-import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
-import { UpgradeCancelModal } from './upgrade-cancel-modal';
+import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
+import { UpgradeCancelModal } from './upgrade-cancel-modal';
 
 export type OnCancelHandler = ({
   location,

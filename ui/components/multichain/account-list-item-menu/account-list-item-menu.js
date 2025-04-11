@@ -1,18 +1,28 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { formatAccountType } from '../../../helpers/utils/metrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getHardwareWalletType,
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
 } from '../../../selectors';
-
-import { MenuItem } from '../../ui/menu';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import {
+  showModal,
+  updateAccountsList,
+  updateHiddenAccountsList,
+} from '../../../store/actions';
 import {
   IconName,
   ModalFocus,
@@ -21,19 +31,8 @@ import {
   PopoverRole,
   Text,
 } from '../../component-library';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  showModal,
-  updateAccountsList,
-  updateHiddenAccountsList,
-} from '../../../store/actions';
-import { TextVariant } from '../../../helpers/constants/design-system';
-import { formatAccountType } from '../../../helpers/utils/metrics';
+import { MenuItem } from '../../ui/menu';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 

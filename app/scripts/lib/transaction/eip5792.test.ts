@@ -1,3 +1,15 @@
+import { Messenger } from '@metamask/base-controller';
+import type {
+  SendCalls,
+  SendCallsParams} from '@metamask/eth-json-rpc-middleware';
+import {
+  GetCallsStatusCode
+} from '@metamask/eth-json-rpc-middleware';
+import type {
+  AutoManagedNetworkClient,
+  CustomNetworkClientConfiguration,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
 import type {
   TransactionController,
   TransactionControllerGetStateAction,
@@ -5,19 +17,8 @@ import type {
 import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import type {
-  AutoManagedNetworkClient,
-  CustomNetworkClientConfiguration,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
-import type {
-  SendCalls,
-  SendCallsParams} from '@metamask/eth-json-rpc-middleware';
-import {
-  GetCallsStatusCode
-} from '@metamask/eth-json-rpc-middleware';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
-import { Messenger } from '@metamask/base-controller';
+
 import type {
   EIP5792Messenger} from './eip5792';
 import {

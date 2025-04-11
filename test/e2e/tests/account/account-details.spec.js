@@ -1,8 +1,9 @@
-const { strict: assert } = require('assert');
 const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
-const { withFixtures, unlockWallet } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+const { strict: assert } = require('assert');
+
 const { tEn } = require('../../../lib/i18n-helpers');
+const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, unlockWallet } = require('../../helpers');
 
 describe('Show account details', function () {
   const PASSWORD = 'correct horse battery staple';

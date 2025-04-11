@@ -1,18 +1,19 @@
+import { fireEvent } from '@testing-library/react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
 import configureMockState from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { openWindow } from '../../../../helpers/utils/window';
-import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { openWindow } from '../../../../helpers/utils/window';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';

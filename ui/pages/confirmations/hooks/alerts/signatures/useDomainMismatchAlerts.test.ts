@@ -1,11 +1,11 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import type { SignatureRequestType } from '../../../types/confirm';
 import useDomainMismatchAlert from './useDomainMismatchAlerts';

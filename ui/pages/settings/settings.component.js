@@ -1,9 +1,32 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
-import TabBar from '../../components/app/tab-bar';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { SnapIcon } from '../../components/app/snaps/snap-icon';
+import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import TabBar from '../../components/app/tab-bar';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  Box,
+  Text,
+  IconSize,
+} from '../../components/component-library';
+import MetafoxLogo from '../../components/ui/metafox-logo';
+import {
+  AlignItems,
+  Color,
+  Display,
+  FlexDirection,
+  TextVariant,
+} from '../../helpers/constants/design-system';
 import {
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
@@ -26,42 +49,18 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
-
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-  Box,
-  Text,
-  IconSize,
-} from '../../components/component-library';
-import {
-  AlignItems,
-  Color,
-  Display,
-  FlexDirection,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import MetafoxLogo from '../../components/ui/metafox-logo';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
-import { SnapIcon } from '../../components/app/snaps/snap-icon';
-import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
-import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
-import InfoTab from './info-tab';
-import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
-import SettingsSearch from './settings-search';
-import SettingsSearchList from './settings-search-list';
+import InfoTab from './info-tab';
+import SecurityTab from './security-tab';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { RevealSrpList } from './security-tab/reveal-srp-list';
+import SettingsSearch from './settings-search';
+import SettingsSearchList from './settings-search-list';
+import SettingsTab from './settings-tab';
 ///: END:ONLY_INCLUDE_IF
 
 class SettingsPage extends PureComponent {

@@ -1,5 +1,6 @@
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { cloneDeep } from 'lodash';
+
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './121.1';
 

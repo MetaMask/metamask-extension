@@ -1,11 +1,13 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   parseCaipAssetType,
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import { AssetType } from '../../shared/constants/transaction';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
@@ -17,7 +19,6 @@ import {
   getLastSelectedNonEvmAccount,
   getMultichainBalances,
 } from '../selectors/multichain';
-import { AssetType } from '../../shared/constants/transaction';
 import {
   getInternalAccount,
   getSelectedEvmInternalAccount,

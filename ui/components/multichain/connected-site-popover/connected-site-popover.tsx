@@ -1,6 +1,18 @@
 import type { RefObject } from 'react';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { I18nContext } from '../../../contexts/i18n';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { getURLHost } from '../../../helpers/utils/util';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
+import { getImageForChainId } from '../../../selectors/multichain';
+import { toggleNetworkMenu } from '../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -12,17 +24,6 @@ import {
   PopoverPosition,
   Text,
 } from '../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { I18nContext } from '../../../contexts/i18n';
-import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
-import { getURLHost } from '../../../helpers/utils/util';
-import { getImageForChainId } from '../../../selectors/multichain';
-import { toggleNetworkMenu } from '../../../store/actions';
 
 type ConnectedSitePopoverProps = {
   isOpen: boolean;

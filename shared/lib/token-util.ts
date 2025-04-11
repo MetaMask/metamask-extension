@@ -1,6 +1,6 @@
-import { abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import { abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import type { Provider } from '@metamask/network-controller';
 
 /**

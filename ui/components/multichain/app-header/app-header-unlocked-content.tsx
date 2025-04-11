@@ -1,9 +1,20 @@
-import React, { useContext, useState } from 'react';
-import browser from 'webextension-polyfill';
-
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import browser from 'webextension-polyfill';
+
+
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../shared/constants/metametrics';
+import { MINUTE } from '../../../../shared/constants/time';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -17,6 +28,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   ButtonBase,
@@ -29,11 +43,6 @@ import {
   Text,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../shared/constants/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toggleAccountMenu } from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
@@ -45,18 +54,10 @@ import {
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { shortenAddress } from '../../../helpers/utils/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;

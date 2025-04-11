@@ -1,9 +1,10 @@
 import React from 'react';
+
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
-import configureStore from '../../../../store/store';
-import type { TextColor } from '../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
+import type { TextColor } from '../../../../helpers/constants/design-system';
+import configureStore from '../../../../store/store';
 import { AssetBalanceText } from './asset-balance-text';
 
 const store = configureStore({

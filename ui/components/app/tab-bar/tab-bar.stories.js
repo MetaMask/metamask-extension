@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Icon, IconName } from '../../component-library';
+
 import TabBar from '.';
+import { Icon, IconName } from '../../component-library';
 
 export default {
   title: 'Components/App/TabBar',

@@ -1,13 +1,12 @@
-import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
+
 import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
-
 import type { PolymorphicRef, BoxProps } from '../box';
-
 import type { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 
 export const HeaderBase: HeaderBaseComponent = React.forwardRef(

@@ -1,14 +1,15 @@
-import { act } from '@testing-library/react';
 import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { act } from '@testing-library/react';
 import { useDispatch } from 'react-redux';
+
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import {
   EIP_7702_REVOKE_ADDRESS,

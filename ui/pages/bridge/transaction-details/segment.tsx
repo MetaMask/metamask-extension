@@ -1,12 +1,13 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
+
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { Box } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
 
 export default function Segment({ type }: { type: StatusTypes | null }) {
   return (

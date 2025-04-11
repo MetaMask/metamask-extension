@@ -1,7 +1,6 @@
 import React from 'react';
 import type { FC } from 'react';
 
-import { Box } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,6 +10,7 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import { Box } from '../../component-library';
 
 export type NotificationDetailProps = {
   icon: JSX.Element;

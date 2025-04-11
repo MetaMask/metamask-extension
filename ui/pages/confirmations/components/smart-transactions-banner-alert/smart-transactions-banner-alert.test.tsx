@@ -1,15 +1,16 @@
-import React from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { Store } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
+import React from 'react';
+
+import { AlertTypes } from '../../../../../shared/constants/alerts';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { setAlertEnabledness } from '../../../../store/actions';
+import configureStore from '../../../../store/store';
 import { ConfirmContext } from '../../context/confirm';
 import type { Confirmation, SignatureRequestType } from '../../types/confirm';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
-import configureStore from '../../../../store/store';
-import { AlertTypes } from '../../../../../shared/constants/alerts';
-import { setAlertEnabledness } from '../../../../store/actions';
-import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
 
 type TestConfirmContextValue = {

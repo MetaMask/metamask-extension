@@ -1,14 +1,13 @@
+import Fuse from 'fuse.js';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Fuse from 'fuse.js';
-import { Box, Text } from '../../../../component-library';
-import { I18nContext } from '../../../../../contexts/i18n';
-import ContactList from '../../../../app/contact-list';
+
 import {
-  getAddressBook,
-  getCurrentNetworkTransactions,
-  getInternalAccounts,
-} from '../../../../../selectors';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { I18nContext } from '../../../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   addHistoryEntry,
   getRecipientUserInput,
@@ -21,11 +20,13 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { CONTACT_LIST_ROUTE } from '../../../../../helpers/constants/routes';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
+  getAddressBook,
+  getCurrentNetworkTransactions,
+  getInternalAccounts,
+} from '../../../../../selectors';
+import ContactList from '../../../../app/contact-list';
+import { Box, Text } from '../../../../component-library';
 import { SendPageRow } from './send-page-row';
 
 export const SendPageAddressBook = () => {

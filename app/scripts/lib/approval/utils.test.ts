@@ -2,10 +2,11 @@ import type {
   ApprovalController,
   ApprovalRequest,
 } from '@metamask/approval-controller';
-import type { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import type { Json } from '@metamask/utils';
+
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { rejectAllApprovals, rejectOriginApprovals } from './utils';
 

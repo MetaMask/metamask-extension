@@ -1,14 +1,15 @@
-import { useSelector } from 'react-redux';
-import BN from 'bn.js';
 import type { Token } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
+import BN from 'bn.js';
+import { useSelector } from 'react-redux';
+
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getTokenBalances } from '../ducks/metamask/metamask';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
-import { getTokenBalances } from '../ducks/metamask/metamask';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import useMultiPolling from './useMultiPolling';
 
 export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {

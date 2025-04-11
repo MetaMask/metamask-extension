@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import Tooltip from '../../../../components/ui/tooltip';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import { Icon, IconName } from '../../../../components/component-library';
+import Tooltip from '../../../../components/ui/tooltip';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class AdvancedGasInputs extends Component {

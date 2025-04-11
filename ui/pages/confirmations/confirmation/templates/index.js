@@ -1,5 +1,12 @@
-import { omit, pick } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
+import { omit, pick } from 'lodash';
+
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../../../../shared/constants/app';
 import {
   deleteInterface,
   rejectPendingApproval,
@@ -7,27 +14,21 @@ import {
   setNewNetworkAdded,
   addNetwork,
 } from '../../../../store/actions';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-} from '../../../../../shared/constants/app';
-import smartTransactionStatusPage from './smart-transaction-status-page';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import createSnapAccount from './create-snap-account';
-import removeSnapAccount from './remove-snap-account';
-import snapAccountRedirect from './snap-account-redirect';
-import createNamedSnapAccount from './create-named-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import addEthereumChain from './add-ethereum-chain';
-import switchEthereumChain from './switch-ethereum-chain';
-import success from './success';
+import createNamedSnapAccount from './create-named-snap-account';
+import createSnapAccount from './create-snap-account';
 import error from './error';
+import removeSnapAccount from './remove-snap-account';
+import smartTransactionStatusPage from './smart-transaction-status-page';
+import snapAccountRedirect from './snap-account-redirect';
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
-import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
+import snapPrompt from './snaps/snap-prompt/snap-prompt';
+import success from './success';
+import switchEthereumChain from './switch-ethereum-chain';
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,

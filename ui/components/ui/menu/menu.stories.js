@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import PropTypes from 'prop-types';
-import { IconName, BannerAlert } from '../../component-library';
-import { Severity } from '../../../helpers/constants/design-system';
+import React, { useState } from 'react';
+
 import { Menu, MenuItem } from '.';
+import { Severity } from '../../../helpers/constants/design-system';
+import { IconName, BannerAlert } from '../../component-library';
 
 export default {
   title: 'Components/UI/Menu',

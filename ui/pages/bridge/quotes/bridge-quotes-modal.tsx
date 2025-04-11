@@ -1,12 +1,14 @@
-import React from 'react';
-import { IconName } from '@metamask/snaps-sdk/jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { startCase } from 'lodash';
 import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
 } from '@metamask/bridge-controller';
+import { IconName } from '@metamask/snaps-sdk/jsx';
+import { startCase } from 'lodash';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   ButtonLink,
   IconSize,
@@ -16,6 +18,13 @@ import {
   ModalOverlay,
   Text,
 } from '../../../components/component-library';
+import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
+import {
+  getBridgeQuotes,
+  getBridgeSortOrder,
+} from '../../../ducks/bridge/selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,28 +32,20 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { Column, Row } from '../layout';
 import {
   formatEtaInMinutes,
   formatCurrencyAmount,
   formatTokenAmount,
 } from '../utils/quote';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import {
-  getBridgeQuotes,
-  getBridgeSortOrder,
-} from '../../../ducks/bridge/selectors';
-import { Column, Row } from '../layout';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getMultichainNativeCurrency } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const BridgeQuotesModal = ({
   onClose,

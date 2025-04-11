@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { Box } from '../../../../../../components/component-library';
-import { BlockSize } from '../../../../../../helpers/constants/design-system';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
+import { Box } from '../../../../../../components/component-library';
+import { BlockSize } from '../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { parseSanitizeTypedDataMessage } from '../../../../utils';
 import { DataTree } from '../dataTree';
 

@@ -1,9 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
+import React from 'react';
+
+import { NetworkListMenu } from '.';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -14,7 +13,9 @@ import {
   LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { NetworkListMenu } from '.';
+import mockState from '../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import configureStore from '../../../store/store';
 
 const mockSetShowTestNetworks = jest.fn();
 const mockToggleNetworkMenu = jest.fn();

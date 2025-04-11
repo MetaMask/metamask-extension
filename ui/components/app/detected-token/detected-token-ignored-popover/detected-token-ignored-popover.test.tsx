@@ -1,5 +1,6 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover';
 
 describe('DetectedTokenIgnoredPopover', () => {

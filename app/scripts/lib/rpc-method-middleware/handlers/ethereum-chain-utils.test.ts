@@ -1,10 +1,11 @@
 import * as Multichain from '@metamask/chain-agnostic-permission';
-import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import type { Hex } from '@metamask/utils';
+
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {

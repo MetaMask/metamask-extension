@@ -1,11 +1,12 @@
+import { renderHook, act } from '@testing-library/react-hooks';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import type { Store } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { Store } from 'redux';
-import * as actions from '../../store/actions';
+
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
+import * as actions from '../../store/actions';
 import {
   useCreateNotifications,
   useDisableNotifications,

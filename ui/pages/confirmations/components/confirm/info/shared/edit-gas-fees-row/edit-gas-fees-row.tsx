@@ -1,8 +1,9 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import type { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -20,10 +21,10 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { SelectedGasFeeToken } from '../selected-gas-fee-token';
-import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 
 export const EditGasFeesRow = ({
   fiatFee,

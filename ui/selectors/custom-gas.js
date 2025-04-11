@@ -1,20 +1,19 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
-import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { formatETHFee } from '../helpers/utils/formatters';
-
-import { getGasPrice } from '../ducks/send';
+import { EtherDenomination } from '../../shared/constants/common';
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
+import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
+import { Numeric } from '../../shared/modules/Numeric';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
-import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../shared/modules/Numeric';
-import { EtherDenomination } from '../../shared/constants/common';
+import { getGasPrice } from '../ducks/send';
+import { formatCurrency } from '../helpers/utils/confirm-tx.util';
+import { formatETHFee } from '../helpers/utils/formatters';
 import { getIsMainnet } from './selectors';
 
 export function getCustomGasLimit(state) {

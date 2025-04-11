@@ -5,25 +5,26 @@ import {
   getDefaultInternalOptions,
   SnapKeyring
 } from '@metamask/eth-snap-keyring';
-import browser from 'webextension-polyfill';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
+import browser from 'webextension-polyfill';
+
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { IconName } from '../../../../ui/components/component-library/icon';
+import type MetaMetricsController from '../../controllers/metametrics-controller';
 import { t } from '../../translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { IconName } from '../../../../ui/components/component-library/icon';
-import type MetaMetricsController from '../../controllers/metametrics-controller';
-import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { getSnapName, isSnapPreinstalled } from './snaps';
 import type { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
  * Builder type for the Snap keyring.

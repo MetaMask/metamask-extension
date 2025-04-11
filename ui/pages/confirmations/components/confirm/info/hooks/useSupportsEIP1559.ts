@@ -4,6 +4,7 @@ import {
   TransactionEnvelopeType
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
 import { isLegacyTransaction } from '../../../../../../helpers/utils/transactions.util';
 import { checkNetworkAndAccountSupports1559 } from '../../../../../../selectors';
 

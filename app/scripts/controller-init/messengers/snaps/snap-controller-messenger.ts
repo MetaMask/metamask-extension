@@ -1,19 +1,12 @@
+import type {
+  AddApprovalRequest,
+  UpdateRequestState,
+} from '@metamask/approval-controller';
 import type { Messenger } from '@metamask/base-controller';
 import type {
-  ExecuteSnapAction,
-  TerminateSnapAction,
-  TerminateAllSnapsAction,
-  HandleRpcRequestAction,
-  GetResult,
-  GetMetadata,
-  Update,
-  ResolveVersion,
-  CreateInterface,
-  GetInterface,
-  ErrorMessageEvent,
-  OutboundRequest,
-  OutboundResponse,
-} from '@metamask/snaps-controllers';
+  KeyringControllerGetKeyringsByTypeAction,
+  KeyringControllerLockEvent,
+} from '@metamask/keyring-controller';
 import type {
   GetEndowments,
   GetPermissions,
@@ -30,13 +23,21 @@ import type {
   UpdateCaveat,
 } from '@metamask/permission-controller';
 import type {
-  AddApprovalRequest,
-  UpdateRequestState,
-} from '@metamask/approval-controller';
-import type {
-  KeyringControllerGetKeyringsByTypeAction,
-  KeyringControllerLockEvent,
-} from '@metamask/keyring-controller';
+  ExecuteSnapAction,
+  TerminateSnapAction,
+  TerminateAllSnapsAction,
+  HandleRpcRequestAction,
+  GetResult,
+  GetMetadata,
+  Update,
+  ResolveVersion,
+  CreateInterface,
+  GetInterface,
+  ErrorMessageEvent,
+  OutboundRequest,
+  OutboundResponse,
+} from '@metamask/snaps-controllers';
+
 import type { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 
 type Actions =

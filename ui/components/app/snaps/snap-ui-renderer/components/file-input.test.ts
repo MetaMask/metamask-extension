@@ -1,6 +1,7 @@
 import { Box, Form, Field, FileInput, Button } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import * as backgroundConnection from '../../../../../store/background-connection';
 import {
   MOCK_INTERFACE_ID,

@@ -1,5 +1,3 @@
-import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   GasFeeEstimateLevel,
   TransactionType,
@@ -12,20 +10,22 @@ import {
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { add0x } from '@metamask/utils';
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  getSelectedAccountCachedBalance,
-  selectMaxValueModeForTransaction,
-} from '../../../../../../selectors';
 import {
   decimalToHex,
   multiplyHexes,
   subtractHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
+import {
+  getSelectedAccountCachedBalance,
+  selectMaxValueModeForTransaction,
+} from '../../../../../../selectors';
 import { updateEditableParams } from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
-import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { HEX_ZERO } from '../shared/constants';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 // This hook is used to refresh the max value of the transaction

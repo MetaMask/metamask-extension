@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+
 import { I18nContext } from '../../../contexts/i18n';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';

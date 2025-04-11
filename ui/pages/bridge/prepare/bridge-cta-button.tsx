@@ -1,6 +1,8 @@
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -17,8 +19,6 @@ import {
   getWasTxDeclined,
   getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import {
   AlignItems,
   BlockSize,
@@ -27,13 +27,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import { Row } from '../layout';
 import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 

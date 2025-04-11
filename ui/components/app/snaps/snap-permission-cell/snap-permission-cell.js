@@ -1,15 +1,8 @@
-import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  AvatarBase,
-  AvatarBaseSize,
-  AvatarFavicon,
-  AvatarFaviconSize,
-  IconSize,
-  Text,
-} from '../../../component-library';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -23,9 +16,17 @@ import {
   getAvatarFallbackLetter,
   getSnapName,
 } from '../../../../helpers/utils/util';
-import PermissionCell from '../../permission-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getSnapsMetadata } from '../../../../selectors';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+  AvatarFavicon,
+  AvatarFaviconSize,
+  IconSize,
+  Text,
+} from '../../../component-library';
+import PermissionCell from '../../permission-cell';
 
 export default function SnapPermissionCell({
   snapId,

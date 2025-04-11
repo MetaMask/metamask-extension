@@ -4,35 +4,36 @@
 //
 // run any task with "yarn build ${taskName}"
 //
-const path = require('path');
-const livereload = require('gulp-livereload');
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
-const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
-const difference = require('lodash/difference');
+const { sync: globby } = require('globby');
+const livereload = require('gulp-livereload');
 const { intersection } = require('lodash');
-const { getVersion } = require('../lib/get-version');
+const difference = require('lodash/difference');
+const path = require('path');
+const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs/yargs');
+
 const { loadBuildTypesConfig } = require('../lib/build-type');
+const { getVersion } = require('../lib/get-version');
+const { getConfig } = require('./config');
 const { BUILD_TARGETS, TASKS } = require('./constants');
+const createEtcTasks = require('./etc');
+const createManifestTasks = require('./manifest');
+const createScriptTasks = require('./scripts');
+const createStaticAssetTasks = require('./static');
+const createStyleTasks = require('./styles');
 const {
   createTask,
   composeSeries,
   composeParallel,
   runTask,
 } = require('./task');
-const createManifestTasks = require('./manifest');
-const createScriptTasks = require('./scripts');
-const createStyleTasks = require('./styles');
-const createStaticAssetTasks = require('./static');
-const createEtcTasks = require('./etc');
 const {
   getBrowserVersionMap,
   getEnvironment,
   isDevBuild,
   isTestBuild,
 } = require('./utils');
-const { getConfig } = require('./config');
 
 /* eslint-disable no-constant-condition, node/global-require */
 if (false) {

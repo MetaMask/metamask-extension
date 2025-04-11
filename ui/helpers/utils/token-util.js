@@ -1,13 +1,14 @@
 import log from 'loglevel';
-import { getTokenStandardAndDetails } from '../../store/actions';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import * as util from './util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { getTokenStandardAndDetails } from '../../store/actions';
 import { formatCurrency } from './confirm-tx.util';
+import * as util from './util';
 
 const DEFAULT_SYMBOL = '';
 

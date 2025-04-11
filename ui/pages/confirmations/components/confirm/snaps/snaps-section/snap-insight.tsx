@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import { SnapUIRenderer } from '../../../../../../components/app/snaps/snap-ui-renderer';
-import { Delineator } from '../../../../../../components/ui/delineator';
 import { Text } from '../../../../../../components/component-library';
+import { Delineator } from '../../../../../../components/ui/delineator';
+import Tooltip from '../../../../../../components/ui/tooltip';
 import {
   TextColor,
   TextVariant,
@@ -11,7 +13,6 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getSnapMetadata } from '../../../../../../selectors';
-import Tooltip from '../../../../../../components/ui/tooltip';
 
 export type SnapInsightProps = {
   snapId: string;

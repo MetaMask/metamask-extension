@@ -7,6 +7,7 @@ import {
   Input,
 } from '@metamask/snaps-sdk/jsx';
 import { fireEvent, waitFor } from '@testing-library/react';
+
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import * as backgroundConnection from '../../../../store/background-connection';
 import { renderInterface, MOCK_INTERFACE_ID, MOCK_SNAP_ID } from './test-utils';

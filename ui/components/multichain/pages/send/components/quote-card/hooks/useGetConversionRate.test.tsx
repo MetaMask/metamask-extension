@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+
 import { getNativeCurrency } from '../../../../../../../ducks/metamask/metamask';
 import {
   getBestQuote,

@@ -1,4 +1,5 @@
 import type { AddressElement } from '@metamask/snaps-sdk/jsx';
+
 import type { UIComponentFactory } from './types';
 
 export const address: UIComponentFactory<AddressElement> = ({ element }) => ({

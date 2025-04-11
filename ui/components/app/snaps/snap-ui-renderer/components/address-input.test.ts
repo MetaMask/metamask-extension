@@ -1,5 +1,6 @@
 import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
+
 import { renderInterface } from '../test-utils';
 
 describe('SnapUIAddressInput', () => {

@@ -1,6 +1,7 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
@@ -18,8 +19,8 @@ import {
   isAddressLedger,
 } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
-import type { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 
 const useLedgerConnection = () => {
   const dispatch = useDispatch();

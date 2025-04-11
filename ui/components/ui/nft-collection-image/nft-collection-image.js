@@ -1,11 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import Box from '../box';
+
 import { Color, TextAlign } from '../../../helpers/constants/design-system';
-import Identicon from '../identicon';
-import { getTokenList } from '../../../selectors';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { getTokenList } from '../../../selectors';
+import Box from '../box';
+import Identicon from '../identicon';
 
 export default function NftCollectionImage({ assetName, tokenAddress }) {
   const { collections } = useNftsCollections();

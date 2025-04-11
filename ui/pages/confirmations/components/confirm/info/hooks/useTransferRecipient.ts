@@ -3,6 +3,7 @@ import type {
 import {
   TransactionType,
 } from '@metamask/transaction-controller';
+
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTokenTransactionData } from './useTokenTransactionData';
 

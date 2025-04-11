@@ -1,6 +1,7 @@
 const { Browser } = require('selenium-webdriver');
-const { Driver } = require('./driver');
+
 const ChromeDriver = require('./chrome');
+const { Driver } = require('./driver');
 const FirefoxDriver = require('./firefox');
 
 async function buildWebDriver({

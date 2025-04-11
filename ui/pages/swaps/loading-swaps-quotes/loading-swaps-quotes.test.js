@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import LoadingSwapsQuotes from '.';
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import LoadingSwapsQuotes from '.';
 
 const createProps = (customProps = {}) => {
   return {

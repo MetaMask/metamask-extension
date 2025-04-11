@@ -1,15 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { BtcAccountType } from '@metamask/keyring-api';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
 ///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getMultichainIsMainnet,
-  ///: END:ONLY_INCLUDE_IF
-  getMultichainProviderConfig,
-  getMultichainSelectedAccountCachedBalance,
-} from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -22,6 +16,13 @@ import {
   getSelectedInternalAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getMultichainIsMainnet,
+  ///: END:ONLY_INCLUDE_IF
+  getMultichainProviderConfig,
+  getMultichainSelectedAccountCachedBalance,
+} from '../../../selectors/multichain';
 import { CoinOverview } from './coin-overview';
 
 type NonEvmOverviewProps = {

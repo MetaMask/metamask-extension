@@ -1,8 +1,9 @@
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } from '@metamask/bridge-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 

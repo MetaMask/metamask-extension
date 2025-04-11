@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';

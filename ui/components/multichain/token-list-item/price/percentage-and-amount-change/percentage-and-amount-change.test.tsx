@@ -1,19 +1,20 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import '@testing-library/jest-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import type { MarketDataDetails } from '@metamask/assets-controllers';
-import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import {
-  getSelectedAccountCachedBalance,
-  getTokensMarketData,
-} from '../../../../../selectors';
+
 import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
   getConversionRate,
   getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
+import {
+  getSelectedAccountCachedBalance,
+  getTokensMarketData,
+} from '../../../../../selectors';
 import { PercentageAndAmountChange } from './percentage-and-amount-change';
 
 jest.mock('react-redux', () => ({

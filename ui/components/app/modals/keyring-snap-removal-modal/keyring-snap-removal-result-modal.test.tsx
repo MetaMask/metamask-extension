@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
 import mockStore from '../../../../../test/data/mock-state.json';
 import {
   fireEvent,

@@ -4,7 +4,6 @@ import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
 } from '../../../../shared/constants/smartTransactions';
 import { MINUTE } from '../../../../shared/constants/time';
-
 import type { SwapsControllerState } from './swaps.types';
 
 export const controllerName = 'SwapsController';

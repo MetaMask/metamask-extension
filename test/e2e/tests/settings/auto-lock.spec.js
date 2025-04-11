@@ -1,5 +1,5 @@
-const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 
 describe('Auto-Lock Timer', function () {
   it('should automatically lock the wallet once the idle time has elapsed', async function () {

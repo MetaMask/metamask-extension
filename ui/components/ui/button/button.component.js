@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const CLASSNAME_DEFAULT = 'btn-default';
 const CLASSNAME_PRIMARY = 'btn-primary';

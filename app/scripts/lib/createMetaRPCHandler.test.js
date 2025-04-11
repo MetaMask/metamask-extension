@@ -1,4 +1,5 @@
 import { obj as createThoughStream } from 'through2';
+
 import createMetaRPCHandler from './createMetaRPCHandler';
 
 describe('createMetaRPCHandler', () => {

@@ -1,13 +1,14 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
 export function isSpendingCapUnlimited(decodedSpendingCap: number) {

@@ -1,18 +1,18 @@
-import React from 'react';
-import { act, fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { act, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 
-import configureStore from '../../../store/store';
+import { ImportTokensModal } from '.';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   clearPendingTokens,
   getTokenStandardAndDetailsByChain,
   setPendingTokens,
   setConfirmationExchangeRates,
 } from '../../../store/actions';
-import mockState from '../../../../test/data/mock-state.json';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { ImportTokensModal } from '.';
+import configureStore from '../../../store/store';
 
 jest.mock('../../../store/actions', () => ({
   getTokenStandardAndDetailsByChain: jest

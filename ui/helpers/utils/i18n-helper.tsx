@@ -1,12 +1,13 @@
-import React from 'react';
 import * as Sentry from '@sentry/browser';
+import React from 'react';
+
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import type {
   I18NMessageDict,
   I18NSubstitution} from '../../../shared/modules/i18n';
 import {
   getMessage as getMessageShared,
 } from '../../../shared/modules/i18n';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 
 /**
  * Returns a localized message for the given key

@@ -1,10 +1,11 @@
-import React from 'react';
 import type { Hex } from '@metamask/utils';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -20,8 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export const NetworkRow = ({

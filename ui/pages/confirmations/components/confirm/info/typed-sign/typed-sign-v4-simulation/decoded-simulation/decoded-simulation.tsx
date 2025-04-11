@@ -1,4 +1,3 @@
-import React, { useMemo } from 'react';
 import type {
   DecodingDataStateChange,
   DecodingDataStateChanges} from '@metamask/signature-controller';
@@ -6,16 +5,17 @@ import {
   DecodingDataChangeType
 } from '@metamask/signature-controller';
 import type { Hex } from '@metamask/utils';
+import React, { useMemo } from 'react';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 import { Text } from '../../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
-import type { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
+import type { SignatureRequestType } from '../../../../../../types/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
-import TokenValueDisplay from '../value-display/value-display';
 import NativeValueDisplay from '../native-value-display/native-value-display';
+import TokenValueDisplay from '../value-display/value-display';
 
 export enum StateChangeType {
   NFTListingReceive = 'NFTListingReceive',

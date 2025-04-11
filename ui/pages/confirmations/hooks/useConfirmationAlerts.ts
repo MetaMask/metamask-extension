@@ -1,25 +1,26 @@
 import { useMemo } from 'react';
+
 import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
+import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
-import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 ///: END:ONLY_INCLUDE_IF
-import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
-import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();

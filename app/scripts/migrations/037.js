@@ -1,5 +1,5 @@
-import { cloneDeep } from 'lodash';
 import { normalizeEnsName } from '@metamask/controller-utils';
+import { cloneDeep } from 'lodash';
 
 const version = 37;
 

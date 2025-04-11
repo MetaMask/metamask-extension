@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import { isMetamaskSuggestedGasEstimate } from '../../../helpers/utils/gas';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
+import { isMetamaskSuggestedGasEstimate } from '../../../helpers/utils/gas';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
 const BASE_CLASS = 'loading-heartbeat';

@@ -1,5 +1,6 @@
-import { merge } from 'lodash';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { merge } from 'lodash';
+
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedContractInteractionConfirmation,

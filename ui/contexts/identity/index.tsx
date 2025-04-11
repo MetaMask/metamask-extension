@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import {
   useAutoSignIn,

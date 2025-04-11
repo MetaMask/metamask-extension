@@ -1,10 +1,12 @@
-import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { useHistory } from 'react-router-dom';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+
+import { ImportNftsModal } from '.';
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
@@ -12,7 +14,6 @@ import {
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
-import { ImportNftsModal } from '.';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';

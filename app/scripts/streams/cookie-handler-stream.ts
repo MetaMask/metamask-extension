@@ -1,14 +1,15 @@
-import browser from 'webextension-polyfill';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
-import { pipeline } from 'readable-stream';
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import PortStream from 'extension-port-stream';
+import { pipeline } from 'readable-stream';
+import browser from 'webextension-polyfill';
+
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
-import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import {
   METAMASK_COOKIE_HANDLER,
   CONTENT_SCRIPT,

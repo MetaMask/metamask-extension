@@ -1,15 +1,12 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { createSelector } from 'reselect';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
-import {
-  PRIORITY_STATUS_HASH,
-  PENDING_STATUS_HASH,
-} from '../helpers/constants/transactions';
-import txHelper from '../helpers/utils/tx-helper';
+import { createSelector } from 'reselect';
+
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
@@ -20,7 +17,11 @@ import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
 } from '../../shared/modules/selectors/util';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
+import {
+  PRIORITY_STATUS_HASH,
+  PENDING_STATUS_HASH,
+} from '../helpers/constants/transactions';
+import txHelper from '../helpers/utils/tx-helper';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 

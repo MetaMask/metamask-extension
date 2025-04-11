@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+
 import Modal from '../../modal';
 
 export default class RejectTransactionsModal extends PureComponent {

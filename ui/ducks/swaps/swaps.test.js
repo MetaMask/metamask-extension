@@ -2,12 +2,12 @@ import nock from 'nock';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { MOCKS, createSwapsMockStore } from '../../../test/jest';
-import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
+import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import React, { useState } from 'react';
+
 import {
   BackgroundColor,
   IconColor,
@@ -13,6 +13,7 @@ import {
   BorderRadius,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AvatarIcon,
   AvatarIconSize,

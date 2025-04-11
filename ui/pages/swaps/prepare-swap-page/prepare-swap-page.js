@@ -1,25 +1,54 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
-import BigNumber from 'bignumber.js';
-import PropTypes from 'prop-types';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { uniqBy, isEqual, isEmpty } from 'lodash';
-import { useHistory } from 'react-router-dom';
 import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
+import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
+import { uniqBy, isEqual, isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
+import {
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
+} from '../../../../shared/constants/common';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  TokenBucketPriority,
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  QUOTES_EXPIRED_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+} from '../../../../shared/constants/swaps';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+} from '../../../../shared/modules/selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import Box from '../../../components/ui/box';
+import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
   getRenderableTokenData,
 } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import { I18nContext } from '../../../contexts/i18n';
 import {
   getTokens,
   getConversionRate,
   getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
-import Box from '../../../components/ui/box';
 import {
   DISPLAY,
   TextColor,
@@ -59,7 +88,7 @@ import {
   getLatestAddedTokenTo,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
@@ -70,38 +99,12 @@ import {
   getIsBridgeChain,
   getIsBridgeEnabled,
 } from '../../../selectors';
-import {
-  getSmartTransactionsEnabled,
-  getSmartTransactionsPreferenceEnabled,
-  getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLinkType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  TokenBucketPriority,
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  QUOTES_EXPIRED_ERROR,
-  MAX_ALLOWED_SLIPPAGE,
-  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-} from '../../../../shared/constants/swaps';
-import {
-  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
-} from '../../../../shared/constants/common';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   resetSwapsPostFetchState,
   ignoreTokens,
@@ -111,14 +114,18 @@ import {
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
-import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
+import ImportToken from '../import-token';
+import ListWithSearch from '../list-with-search/list-with-search';
+import SelectedToken from '../selected-token/selected-token';
+import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
+import SwapsFooter from '../swaps-footer';
 import {
   countDecimals,
   fetchTokenPrice,
   formatSwapsValueForDisplay,
   getClassNameForCharLength,
 } from '../swaps.util';
-import { fetchTokenBalance } from '../../../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
@@ -139,16 +146,9 @@ import {
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
-import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
-import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
-import SwapsFooter from '../swaps-footer';
-import SelectedToken from '../selected-token/selected-token';
-import ListWithSearch from '../list-with-search/list-with-search';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useBridging from '../../../hooks/bridge/useBridging';
 import useSwapDefaultToToken from '../../../hooks/swap/useSwapDefaultToToken';
-import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 

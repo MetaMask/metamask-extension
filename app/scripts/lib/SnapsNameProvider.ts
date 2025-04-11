@@ -1,3 +1,4 @@
+import type { RestrictedMessenger } from '@metamask/base-controller';
 import type {
   NameProvider,
   NameProviderMetadata,
@@ -9,18 +10,17 @@ import {
 } from '@metamask/name-controller';
 import type { GetPermissionControllerState } from '@metamask/permission-controller';
 import type {
+  GetAllSnaps,
+  GetSnap,
+  HandleSnapRequest,
+} from '@metamask/snaps-controllers';
+import type {
   AddressLookupArgs,
   AddressLookupResult,
   Snap as TruncatedSnap,
 } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
-import type {
-  GetAllSnaps,
-  GetSnap,
-  HandleSnapRequest,
-} from '@metamask/snaps-controllers';
-import type { RestrictedMessenger } from '@metamask/base-controller';
 
 type AllowedActions =
   | GetAllSnaps

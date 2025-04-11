@@ -1,16 +1,16 @@
-const { withFixtures } = require('../../helpers');
-const {
-  createInternalTransactionWithMaxAmount,
-  reviewTransaction,
-} = require('../../page-objects/flows/transaction');
-const FixtureBuilder = require('../../fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
+const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures } = require('../../helpers');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
 const {
   validateTransaction,
 } = require('../../page-objects/flows/send-transaction.flow');
+const {
+  createInternalTransactionWithMaxAmount,
+  reviewTransaction,
+} = require('../../page-objects/flows/transaction');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {

@@ -1,5 +1,6 @@
-import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
+import * as React from 'react';
+
 import { Button, type ButtonProps } from '../button';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';

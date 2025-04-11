@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Button,
   IconName,
@@ -10,7 +12,6 @@ import {
   ModalOverlay,
   Text,
 } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 // Maps to localizations for title and text
 export enum DisconnectType {

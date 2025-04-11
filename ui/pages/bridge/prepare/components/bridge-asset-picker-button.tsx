@@ -1,9 +1,5 @@
 import React from 'react';
-import type {
-  SelectButtonProps} from '../../../../components/component-library/select-button/select-button.types';
-import {
-  SelectButtonSize,
-} from '../../../../components/component-library/select-button/select-button.types';
+
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -13,6 +9,12 @@ import {
   SelectButton,
   Text,
 } from '../../../../components/component-library';
+import type {
+  SelectButtonProps} from '../../../../components/component-library/select-button/select-button.types';
+import {
+  SelectButtonSize,
+} from '../../../../components/component-library/select-button/select-button.types';
+import type { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,9 +24,8 @@ import {
   OverflowWrap,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const BridgeAssetPickerButton = ({
   asset,

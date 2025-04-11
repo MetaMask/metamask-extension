@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+
 import { getIntlLocale } from '../ducks/locale/locale';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { shortenString } from '../helpers/utils/util';

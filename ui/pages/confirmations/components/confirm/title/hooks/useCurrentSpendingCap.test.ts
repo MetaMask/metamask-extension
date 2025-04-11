@@ -1,4 +1,5 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+
 import { CONTRACT_INTERACTION_SENDER_ADDRESS } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import mockState from '../../../../../../../test/data/mock-state.json';

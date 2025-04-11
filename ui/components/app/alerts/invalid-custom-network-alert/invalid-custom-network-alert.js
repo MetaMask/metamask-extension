@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { ALERT_STATE } from '../../../../ducks/alerts';
 import {
@@ -8,10 +8,10 @@ import {
   getAlertState,
   getNetworkName,
 } from '../../../../ducks/alerts/invalid-custom-network';
-import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Button from '../../../ui/button';
+import Popover from '../../../ui/popover';
 
 const { ERROR, LOADING } = ALERT_STATE;
 

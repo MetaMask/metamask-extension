@@ -1,12 +1,13 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
-import { updateEditableParams } from '../../../../../../store/actions';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { renderHook } from '@testing-library/react-hooks';
+
 import {
   getSelectedAccountCachedBalance,
   selectMaxValueModeForTransaction,
 } from '../../../../../../selectors';
+import { updateEditableParams } from '../../../../../../store/actions';
+import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useMaxValueRefresher } from './useMaxValueRefresher';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 

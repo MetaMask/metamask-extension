@@ -1,5 +1,9 @@
-import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
+import { useSelector } from 'react-redux';
+
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getIsTestnet,
   getSelectedAccount,
@@ -7,17 +11,14 @@ import {
   getTokenList,
   selectERC20TokensByChain,
 } from '../../../../selectors';
-import type { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
   isChainIdMainnet,
 } from '../../../../selectors/multichain';
+import type { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+
 import { hideModal } from '../../../store/actions';
 
 const mapStateToProps = (state) => {

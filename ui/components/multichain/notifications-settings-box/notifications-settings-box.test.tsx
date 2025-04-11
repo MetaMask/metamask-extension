@@ -1,8 +1,9 @@
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { render, screen, fireEvent } from '@testing-library/react';
-import configureStore from '../../../store/store';
+
 import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
 import { NotificationsSettingsBox } from './notifications-settings-box';
 
 const store = configureStore({

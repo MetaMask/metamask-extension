@@ -1,13 +1,13 @@
 const fs = require('fs');
 
 const {
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} = require('../../shared/constants/bridge');
-const {
   ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
+const {
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} = require('../../shared/constants/bridge');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -15,12 +15,11 @@ const {
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { MOCK_META_METRICS_ID } = require('./constants');
-const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
+const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
 
-const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -56,11 +55,12 @@ const blocklistedHosts = [
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
 ];
+const { mockIdentityServices } = require('./tests/identity/mocks');
+const { mockNotificationServices } = require('./tests/notifications/mocks');
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
-const { mockNotificationServices } = require('./tests/notifications/mocks');
-const { mockIdentityServices } = require('./tests/identity/mocks');
+const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">

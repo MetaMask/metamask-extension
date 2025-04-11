@@ -1,10 +1,37 @@
+import type { Nft } from '@metamask/assets-controllers';
+import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
+import type { Hex } from '@metamask/utils';
+import { isEqual } from 'lodash';
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { isEqual } from 'lodash';
-import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
-import type { Nft } from '@metamask/assets-controllers';
-import type { Hex } from '@metamask/utils';
+
+import {
+  addUrlProtocolPrefix,
+  isWebUrl,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../../../app/scripts/lib/util';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../../shared/constants/transaction';
+import { Numeric } from '../../../../../../shared/modules/Numeric';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../../../ducks/metamask/metamask';
+import { startNewDraftTransaction } from '../../../../../ducks/send';
 import {
   TextColor,
   IconColor,
@@ -21,10 +48,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
-import {
   getCurrentNetwork,
   getIpfsGateway,
   getNetworkConfigurationIdByChainId,
@@ -34,6 +57,7 @@ import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
@@ -42,16 +66,10 @@ import {
   setActiveNetworkWithError,
   setSwitchedNetworkDetails,
 } from '../../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
-import { startNewDraftTransaction } from '../../../../../ducks/send';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../../shared/constants/transaction';
 import {
   ButtonIcon,
   IconName,
@@ -63,32 +81,15 @@ import {
   Icon,
 } from '../../../../component-library';
 import { NftItem } from '../../../../multichain/nft-item';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
-import {
-  addUrlProtocolPrefix,
-  isWebUrl,
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import { getImageForChainId } from '../../../../../selectors/multichain';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
-import NftDetailInformationRow from './nft-detail-information-row';
-import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
+import NftDetailInformationFrame from './nft-detail-information-frame';
+import NftDetailInformationRow from './nft-detail-information-row';
 import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;

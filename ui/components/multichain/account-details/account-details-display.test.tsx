@@ -1,9 +1,10 @@
-import React from 'react';
 import { act } from '@testing-library/react';
-import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
+import React from 'react';
+
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+import configureStore from '../../../store/store';
 import { AccountDetailsDisplay } from './account-details-display';
 
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account', () => ({

@@ -2,6 +2,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   TEST_CHAINS,

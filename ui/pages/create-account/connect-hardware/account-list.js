@@ -1,15 +1,14 @@
+import { getAccountLink } from '@metamask/etherscan-link';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { getAccountLink } from '@metamask/etherscan-link';
-
-import Button from '../../../components/ui/button';
-import Checkbox from '../../../components/ui/check-box';
-import Dropdown from '../../../components/ui/dropdown';
-
-import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import Button from '../../../components/ui/button';
+import Checkbox from '../../../components/ui/check-box';
+import Dropdown from '../../../components/ui/dropdown';
+import { getURLHostName } from '../../../helpers/utils/util';
+
 
 class AccountList extends Component {
   state = {

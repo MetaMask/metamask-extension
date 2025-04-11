@@ -1,12 +1,89 @@
+import { TransactionType } from '@metamask/transaction-controller';
+import { createProjectLogger } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
+import { captureMessage } from '@sentry/browser';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
-import { captureMessage } from '@sentry/browser';
 
-import { TransactionType } from '@metamask/transaction-controller';
-import { createProjectLogger } from '@metamask/utils';
+
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { EtherDenomination } from '../../../shared/constants/common';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+  getSmartTransactionsPreferenceEnabled,
+} from '../../../shared/modules/selectors';
+import {
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
+  SWAP_FAILED_ERROR,
+  SWAPS_FETCH_ORDER_CONFLICT,
+  ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
+  Slippage,
+  StablecoinsByChainId,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+} from '../../../shared/constants/swaps';
+import {
+  IN_PROGRESS_TRANSACTION_STATUSES,
+  SmartTransactionStatus,
+} from '../../../shared/constants/transaction';
+import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
+import {
+  addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
+  getValueFromWeiHex,
+  hexWEIToDecGWEI,
+} from '../../../shared/modules/conversion.utils';
+import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
+import {
+  AWAITING_SIGNATURES_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  LOADING_QUOTES_ROUTE,
+  SWAPS_ERROR_ROUTE,
+  SWAPS_MAINTENANCE_ROUTE,
+  SMART_TRANSACTION_STATUS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
+import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
+import {
+  fetchSwapsFeatureFlags,
+  fetchSwapsGasPrices,
+  isContractAddressValid,
+  getSwapsLivenessForNetwork,
+  parseSmartTransactionsError,
+  StxErrorTypes,
+  getSwap1559GasFeeEstimates,
+} from '../../pages/swaps/swaps.util';
+import {
+  getSelectedAccount,
+  getTokenExchangeRates,
+  getUSDConversionRate,
+  getSwapsDefaultToken,
+  isHardwareWallet,
+  getHardwareWalletType,
+  checkNetworkAndAccountSupports1559,
+  getSelectedInternalAccount,
+  getSelectedNetwork,
+  getHDEntropyIndex,
+} from '../../selectors';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -31,82 +108,6 @@ import {
   cancelSmartTransaction,
   getTransactions,
 } from '../../store/actions';
-import {
-  AWAITING_SIGNATURES_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  LOADING_QUOTES_ROUTE,
-  SWAPS_ERROR_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
-  SMART_TRANSACTION_STATUS_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
-import {
-  fetchSwapsFeatureFlags,
-  fetchSwapsGasPrices,
-  isContractAddressValid,
-  getSwapsLivenessForNetwork,
-  parseSmartTransactionsError,
-  StxErrorTypes,
-  getSwap1559GasFeeEstimates,
-} from '../../pages/swaps/swaps.util';
-import {
-  addHexes,
-  decGWEIToHexWEI,
-  decimalToHex,
-  getValueFromWeiHex,
-  hexWEIToDecGWEI,
-} from '../../../shared/modules/conversion.utils';
-import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
-import {
-  getSelectedAccount,
-  getTokenExchangeRates,
-  getUSDConversionRate,
-  getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
-  checkNetworkAndAccountSupports1559,
-  getSelectedInternalAccount,
-  getSelectedNetwork,
-  getHDEntropyIndex,
-} from '../../selectors';
-import {
-  getSmartTransactionsEnabled,
-  getSmartTransactionsOptInStatusForMetrics,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../shared/modules/selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import {
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  CONTRACT_DATA_DISABLED_ERROR,
-  SWAP_FAILED_ERROR,
-  SWAPS_FETCH_ORDER_CONFLICT,
-  ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
-  Slippage,
-  StablecoinsByChainId,
-  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-} from '../../../shared/constants/swaps';
-import {
-  IN_PROGRESS_TRANSACTION_STATUSES,
-  SmartTransactionStatus,
-} from '../../../shared/constants/transaction';
-import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-} from '../../../shared/lib/transactions-controller-utils';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
-import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 
 const debugLog = createProjectLogger('swaps');
 

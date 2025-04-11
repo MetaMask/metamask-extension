@@ -1,24 +1,24 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
 } from '../../../../../selectors';
 import { getMultichainNativeCurrency } from '../../../../../selectors/multichain';
-import { isBalanceSufficient } from '../../../send/send.utils';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import {
-  AlertActionKey,
-  RowAlertKey,
-} from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
+import { isBalanceSufficient } from '../../../send/send.utils';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();

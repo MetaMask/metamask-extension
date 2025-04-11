@@ -1,7 +1,9 @@
+import type { Hex } from '@metamask/utils';
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
-import TokenCell from '../token-cell';
+
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import {
   getChainIdsToPoll,
   getNewTokensImported,
@@ -9,18 +11,17 @@ import {
   getSelectedAccount,
   getTokenSortConfig,
 } from '../../../../selectors';
-import { endTrace, TraceName } from '../../../../../shared/lib/trace';
-import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
-import { useNetworkFilter } from '../hooks';
-import type { TokenWithFiatAmount } from '../types';
-import { filterAssets } from '../util/filter';
-import { sortAssets } from '../util/sort';
-import useMultiChainAssets from '../hooks/useMultichainAssets';
+import { getTokenBalancesEvm } from '../../../../selectors/assets';
 import {
   getMultichainIsEvm,
   getMultichainNetwork,
 } from '../../../../selectors/multichain';
-import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import { useNetworkFilter } from '../hooks';
+import useMultiChainAssets from '../hooks/useMultichainAssets';
+import TokenCell from '../token-cell';
+import type { TokenWithFiatAmount } from '../types';
+import { filterAssets } from '../util/filter';
+import { sortAssets } from '../util/sort';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;

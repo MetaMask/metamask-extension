@@ -1,4 +1,5 @@
 import { memoize } from 'lodash';
+
 import { SECOND } from '../constants/time';
 
 /**

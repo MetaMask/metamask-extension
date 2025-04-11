@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import {
   addNewAccount,
   setAccountLabel,

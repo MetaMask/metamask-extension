@@ -1,7 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+
+import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
+import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
+import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
+import {
+  ButtonIcon,
+  Box,
+  ButtonIconSize,
+} from '../../../components/component-library';
+import { Content, Page } from '../../../components/multichain/pages/page';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,15 +20,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE, SNAPS_ROUTE } from '../../../helpers/constants/routes';
 import { getSnaps, getPermissions } from '../../../selectors';
-import {
-  ButtonIcon,
-  Box,
-  ButtonIconSize,
-} from '../../../components/component-library';
-import { Content, Page } from '../../../components/multichain/pages/page';
-import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
-import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
 import SnapSettings from './snap-settings';
 
 function SnapView() {

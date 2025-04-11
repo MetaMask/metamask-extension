@@ -1,4 +1,5 @@
 import React from 'react';
+
 import GasDetailsItem from '.';
 
 export default {

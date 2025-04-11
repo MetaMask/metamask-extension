@@ -1,4 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 /**

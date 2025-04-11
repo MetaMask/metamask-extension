@@ -1,7 +1,7 @@
 import * as React from 'react';
+
 import { renderWithProvider, screen } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-
 import DetectedTokenAddress from './detected-token-address';
 
 describe('DetectedTokenAddress', () => {

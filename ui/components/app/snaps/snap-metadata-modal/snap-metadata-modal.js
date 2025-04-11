@@ -1,11 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import {
   getSnapPrefix,
   isSnapId,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  FlexWrap,
+  FontWeight,
+  IconColor,
+  JustifyContent,
+  OverflowWrap,
+  TextAlign,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { formatDate } from '../../../../helpers/utils/util';
+import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import {
   getSnap,
   getSnapRegistryData,
@@ -24,26 +41,10 @@ import {
   ModalOverlay,
   Text,
 } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  FlexWrap,
-  FontWeight,
-  IconColor,
-  JustifyContent,
-  OverflowWrap,
-  TextAlign,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { formatDate } from '../../../../helpers/utils/util';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { ShowMore } from '../show-more';
-import SnapExternalPill from '../snap-version/snap-external-pill';
-import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
+import { ShowMore } from '../show-more';
 import { SnapIcon } from '../snap-icon';
+import SnapExternalPill from '../snap-version/snap-external-pill';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();

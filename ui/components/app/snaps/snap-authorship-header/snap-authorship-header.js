@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   BackgroundColor,
   TextColor,
@@ -12,8 +13,8 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getSnapMetadata } from '../../../../selectors';
-
 import {
   Text,
   Box,
@@ -23,9 +24,8 @@ import {
   ButtonIconSize,
   ButtonIcon,
 } from '../../../component-library';
-import { SnapMetadataModal } from '../snap-metadata-modal';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapIcon } from '../snap-icon';
+import { SnapMetadataModal } from '../snap-metadata-modal';
 
 const SnapAuthorshipHeader = ({
   snapId,

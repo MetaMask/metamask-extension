@@ -1,10 +1,13 @@
-import { BigNumber } from 'bignumber.js';
-import type { Hex, Json } from '@metamask/utils';
 import type { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import type {
   FeeMarketGasFeeEstimates,
   TransactionParams,
 } from '@metamask/transaction-controller';
+import type { Hex, Json } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+
+import { EtherDenomination } from '../../../shared/constants/common';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import type {
   SwapsTokenObject} from '../../../shared/constants/swaps';
 import {
@@ -24,25 +27,17 @@ import {
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL
 } from '../../../shared/constants/swaps';
-import {
-  isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
-} from '../../../shared/modules/swaps.utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-  toPrecisionWithoutTrailingZeros,
-} from '../../../shared/lib/transactions-controller-utils';
 import {
   getBaseApi,
   truthyString,
   validateData,
 } from '../../../shared/lib/swaps-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../shared/lib/transactions-controller-utils';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -50,7 +45,12 @@ import {
   getValueFromWeiHex,
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../shared/constants/common';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../shared/modules/swaps.utils';
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { estimateGasFee } from './swaps.util.gas';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;

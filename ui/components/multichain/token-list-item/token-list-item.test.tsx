@@ -1,18 +1,19 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureMockStore from 'redux-mock-store';
+
+import { TokenListItem } from '.';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getIntlLocale } from '../../../ducks/locale/locale';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getCurrencyRates,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { TokenListItem } from '.';
 
 const state = {
   metamask: {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SettingsSearch from './settings-search';
 
 export default {

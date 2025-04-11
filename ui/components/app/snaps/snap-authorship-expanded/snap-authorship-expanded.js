@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -20,6 +21,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { formatDate } from '../../../../helpers/utils/util';
+import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapRegistryData } from '../../../../selectors';
@@ -28,7 +30,6 @@ import { Box, ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapExternalPill from '../snap-version/snap-external-pill';
-import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 
 const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();

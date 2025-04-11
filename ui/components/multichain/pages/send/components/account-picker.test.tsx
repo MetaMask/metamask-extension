@@ -1,20 +1,21 @@
+import { BtcAccountType } from '@metamask/keyring-api';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { BtcAccountType } from '@metamask/keyring-api';
+
+import { SendPageAccountPicker } from '.';
+import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
-import { SEND_STAGES } from '../../../../../ducks/send';
 import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   createMockInternalAccount,
 } from '../../../../../../test/jest/mocks';
-import type { CombinedBackgroundAndReduxState } from '../../../../../store/store';
+import { SEND_STAGES } from '../../../../../ducks/send';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+import type { CombinedBackgroundAndReduxState } from '../../../../../store/store';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
-import { SendPageAccountPicker } from '.';
 
 type State = {
   metamask: Pick<

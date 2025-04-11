@@ -1,14 +1,15 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 import configureMockState from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import HoldToRevealButton from './hold-to-reveal-button';
 

@@ -1,10 +1,9 @@
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { useSelector } from 'react-redux';
 
 import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
 const isNullOrUndefined = (value) => value === null || value === undefined;

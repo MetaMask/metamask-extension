@@ -1,15 +1,16 @@
-import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
-import reactRouterDom from 'react-router-dom';
 import { EthAccountType } from '@metamask/keyring-api';
-import configureStore from '../../../../../store/store';
+import { fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+import reactRouterDom from 'react-router-dom';
+
+import NftsTab from '.';
+import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../../../test/jest';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../../../../test/stub/networks';
-import NftsTab from '.';
+import configureStore from '../../../../../store/store';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

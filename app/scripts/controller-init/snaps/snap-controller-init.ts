@@ -1,19 +1,20 @@
 import { SnapController } from '@metamask/snaps-controllers';
 import { hasProperty } from '@metamask/utils';
-import type { ControllerInitFunction } from '../types';
+
+import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
+import { getBooleanFlag } from '../../lib/util';
 import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import type {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
-import { getBooleanFlag } from '../../lib/util';
+import type { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the Snap controller.

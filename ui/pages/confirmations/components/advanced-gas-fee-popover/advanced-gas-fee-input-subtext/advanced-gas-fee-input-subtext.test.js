@@ -1,5 +1,6 @@
-import React from 'react';
 import { act } from '@testing-library/react';
+import React from 'react';
+
 import { renderWithProvider, screen } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';

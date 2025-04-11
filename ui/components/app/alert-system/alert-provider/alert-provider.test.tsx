@@ -1,5 +1,6 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
+
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { TextAlign } from '../../../../helpers/constants/design-system';
 import type { AlertProviderProps } from './alert-provider';

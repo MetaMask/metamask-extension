@@ -1,14 +1,15 @@
-import React from 'react';
-import { waitFor, fireEvent } from '@testing-library/react';
-import configureMockStore from 'redux-mock-store';
 import type { Snap } from '@metamask/snaps-utils';
+import { waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+
+import messages from '../../../../../app/_locales/en/messages.json';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
 const mockOnClose = jest.fn();

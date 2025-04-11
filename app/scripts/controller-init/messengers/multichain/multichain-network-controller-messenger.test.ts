@@ -1,4 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+
 import { getMultichainNetworkControllerMessenger } from './multichain-network-controller-messenger';
 
 describe('getMultichainNetworkControllerMessenger', () => {

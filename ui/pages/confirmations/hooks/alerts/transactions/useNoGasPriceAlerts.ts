@@ -1,20 +1,20 @@
-import { useSelector } from 'react-redux';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
-import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { getNoGasPriceFetched } from '../../../../../selectors';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getNoGasPriceFetched } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useNoGasPriceAlerts(): Alert[] {

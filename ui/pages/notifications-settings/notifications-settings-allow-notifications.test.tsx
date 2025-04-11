@@ -1,8 +1,9 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 

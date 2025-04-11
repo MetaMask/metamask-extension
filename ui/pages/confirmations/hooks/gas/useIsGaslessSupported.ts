@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
+
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';

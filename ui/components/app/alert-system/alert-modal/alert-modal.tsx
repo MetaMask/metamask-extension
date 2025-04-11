@@ -1,5 +1,6 @@
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import React, { useCallback, useEffect } from 'react';
+
 import {
   BlockaidReason,
   SecurityProvider,

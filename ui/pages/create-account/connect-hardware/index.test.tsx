@@ -1,16 +1,16 @@
 import { fireEvent, waitFor } from '@testing-library/react';
-import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import ConnectHardwareForm from '.';
 import {
   LedgerTransportTypes,
   HardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
-import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ConnectHardwareForm from '.';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../test/stub/networks';
 
 const mockConnectHardware = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);

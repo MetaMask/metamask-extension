@@ -1,6 +1,17 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
 import { I18nContext } from '../../../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  getDomainError,
+  getDomainResolutions,
+  getDomainWarning,
+} from '../../../../../ducks/domains';
 import {
   addHistoryEntry,
   getRecipient,
@@ -9,23 +20,13 @@ import {
   updateRecipientUserInput,
 } from '../../../../../ducks/send';
 import {
-  getDomainError,
-  getDomainResolutions,
-  getDomainWarning,
-} from '../../../../../ducks/domains';
-import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
 } from '../../../../component-library';
 import { Tab, Tabs } from '../../../../ui/tabs';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageAddressBook } from './address-book';
+import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageRow } from './send-page-row';
 import { SendPageYourAccounts } from './your-accounts';
 

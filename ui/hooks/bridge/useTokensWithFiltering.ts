@@ -1,7 +1,3 @@
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import type { ChainId } from '@metamask/controller-utils';
-import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
   formatChainIdToCaip,
@@ -13,26 +9,31 @@ import {
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { selectERC20TokensByChain } from '../../selectors';
-import { AssetType } from '../../../shared/constants/transaction';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { useMultichainBalances } from '../useMultichainBalances';
-import { useAsyncResult } from '../useAsync';
-import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
-import { MINUTE } from '../../../shared/constants/time';
-import {
-  type BridgeAppState,
-  getTopAssetsFromFeatureFlags,
-} from '../../ducks/bridge/selectors';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import type { ChainId } from '@metamask/controller-utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
+import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
+import { MINUTE } from '../../../shared/constants/time';
+import { AssetType } from '../../../shared/constants/transaction';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import type {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  type BridgeAppState,
+  getTopAssetsFromFeatureFlags,
+} from '../../ducks/bridge/selectors';
+import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
+import { selectERC20TokensByChain } from '../../selectors';
+import { useAsyncResult } from '../useAsync';
+import { useMultichainBalances } from '../useMultichainBalances';
 
 type FilterPredicate = (
   symbol: string,

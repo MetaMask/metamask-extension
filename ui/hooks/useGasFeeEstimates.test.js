@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+
 import { GasEstimateTypes } from '../../shared/constants/gas';
 import {
   getGasEstimateTypeByChainId,
@@ -11,7 +12,6 @@ import {
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
-
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import usePolling from './usePolling';
 

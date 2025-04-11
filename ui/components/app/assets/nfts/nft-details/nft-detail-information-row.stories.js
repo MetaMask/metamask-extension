@@ -1,4 +1,5 @@
 import React from 'react';
+
 import NftDetailInformationRow from './nft-detail-information-row';
 
 export default {

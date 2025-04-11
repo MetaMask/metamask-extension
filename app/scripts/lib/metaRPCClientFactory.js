@@ -1,7 +1,8 @@
 import { JsonRpcError } from '@metamask/rpc-errors';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import createRandomId from '../../../shared/modules/random-id';
+
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
+import createRandomId from '../../../shared/modules/random-id';
 
 class DisconnectError extends Error {}
 

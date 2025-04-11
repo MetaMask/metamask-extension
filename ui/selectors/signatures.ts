@@ -1,5 +1,6 @@
-import { createSelector } from 'reselect';
 import type { DefaultRootState } from 'react-redux';
+import { createSelector } from 'reselect';
+
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   unapprovedPersonalMsgsSelector,

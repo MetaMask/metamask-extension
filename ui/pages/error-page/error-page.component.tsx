@@ -1,10 +1,9 @@
+import * as Sentry from '@sentry/browser';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import * as Sentry from '@sentry/browser';
 import browser from 'webextension-polyfill';
 
-import { getParticipateInMetaMetrics } from '../../selectors';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
 import {
   BannerAlert,
   Box,
@@ -21,6 +20,9 @@ import {
   ModalBody,
   ModalFooter,
 } from '../../components/component-library';
+import { ButtonSize } from '../../components/component-library/button/button.types';
+import { Textarea } from '../../components/component-library/textarea/textarea';
+import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import {
   AlignItems,
   BackgroundColor,
@@ -33,11 +35,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
-
-import { Textarea } from '../../components/component-library/textarea/textarea';
-import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
-import { ButtonSize } from '../../components/component-library/button/button.types';
-import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getParticipateInMetaMetrics } from '../../selectors';
 
 type ErrorPageProps = {
   error: {

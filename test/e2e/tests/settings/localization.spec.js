@@ -1,5 +1,5 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { withFixtures, unlockWallet } = require('../../helpers');
 
 async function mockPhpConversion(mockServer) {
   return await mockServer

@@ -1,7 +1,8 @@
 import React from 'react';
+
+import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { SiteCellTooltip } from './site-cell-tooltip';
 
 describe('SiteCellTooltip', () => {

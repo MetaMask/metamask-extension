@@ -1,16 +1,15 @@
-import React from 'react';
-import { act, screen } from '@testing-library/react';
 
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
+import { act, screen } from '@testing-library/react';
+import React from 'react';
 
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
-import { renderWithProvider } from '../../../../../test/jest';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
-import configureStore from '../../../../store/store';
-
+import { renderWithProvider } from '../../../../../test/jest';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import configureStore from '../../../../store/store';
 import TransactionDetail from './transaction-detail.component';
 
 jest.mock('../../../../store/actions', () => ({

@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+
 import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,

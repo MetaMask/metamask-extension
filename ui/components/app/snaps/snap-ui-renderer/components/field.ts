@@ -10,14 +10,15 @@ import type {
   AssetSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+
 import { getPrimaryChildElementIndex, mapToTemplate } from '../utils';
-import { dropdown as dropdownFn } from './dropdown';
-import { radioGroup as radioGroupFn } from './radioGroup';
-import { checkbox as checkboxFn } from './checkbox';
-import { selector as selectorFn } from './selector';
 import { assetSelector as assetSelectorFn } from './asset-selector';
-import type { UIComponentFactory, UIComponentParams } from './types';
+import { checkbox as checkboxFn } from './checkbox';
+import { dropdown as dropdownFn } from './dropdown';
 import { constructInputProps } from './input';
+import { radioGroup as radioGroupFn } from './radioGroup';
+import { selector as selectorFn } from './selector';
+import type { UIComponentFactory, UIComponentParams } from './types';
 
 export const field: UIComponentFactory<FieldElement> = ({
   element,

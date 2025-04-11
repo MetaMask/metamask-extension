@@ -1,10 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  Box,
-  ButtonIcon,
-  IconName,
-  ButtonIconSize,
-} from '../../../../component-library';
+
 import {
   BorderRadius,
   AlignItems,
@@ -12,6 +7,12 @@ import {
   JustifyContent,
   BorderColor,
 } from '../../../../../helpers/constants/design-system';
+import {
+  Box,
+  ButtonIcon,
+  IconName,
+  ButtonIconSize,
+} from '../../../../component-library';
 import { NetworkFilterDropdownItem } from './network-filter-drop-down-item';
 
 type NetworkFilterDropdownProps = {

@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../modal';
-import TextField from '../../../ui/text-field';
+import React, { useState } from 'react';
+
 import {
   TextVariant,
   AlignItems,
   BlockSize,
   Display,
 } from '../../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
   Box,
   ButtonIcon,
@@ -19,6 +18,8 @@ import {
   IconName,
   Text,
 } from '../../../component-library';
+import TextField from '../../../ui/text-field';
+import Modal from '../../modal';
 
 const CustomizeNonce = ({
   hideModal,

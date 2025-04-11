@@ -1,5 +1,5 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   AlignItems,
@@ -9,7 +9,6 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-
 import type { BoxProps, PolymorphicRef } from '../box';
 import { Box } from '../box';
 import { Icon, IconSize } from '../icon';

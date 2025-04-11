@@ -1,8 +1,9 @@
+const { createDeferredPromise } = require('@metamask/utils');
 const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
-const { createDeferredPromise } = require('@metamask/utils');
 const { until } = require('selenium-webdriver');
 
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
@@ -10,13 +11,11 @@ const {
   WINDOW_TITLES,
   createWebSocketConnection,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 const {
   METAMASK_HOTLIST_DIFF_URL,
   METAMASK_STALELIST_URL,
   BlockProvider,
 } = require('./helpers');
-
 const {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,

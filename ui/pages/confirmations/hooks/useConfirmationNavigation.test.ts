@@ -1,9 +1,10 @@
-import { useHistory } from 'react-router-dom';
+import type { ApprovalFlowState } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import type { Json } from '@metamask/utils';
-import type { ApprovalFlowState } from '@metamask/approval-controller';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { useHistory } from 'react-router-dom';
+
 import mockState from '../../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,

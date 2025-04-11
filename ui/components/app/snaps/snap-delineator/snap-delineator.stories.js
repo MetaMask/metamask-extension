@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { SnapDelineator } from '.';
 
 export default {

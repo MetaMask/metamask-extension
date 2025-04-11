@@ -1,18 +1,19 @@
 /* eslint-disable jest/require-top-level-describe */
-import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { merge } from 'lodash';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import React from 'react';
+
+import { AccountListItem, AccountListItemMenuTypes } from '.';
 import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { AccountListItem, AccountListItemMenuTypes } from '.';
+import { shortenAddress } from '../../../helpers/utils/util';
+import configureStore from '../../../store/store';
 
 const mockAccount = {
   ...mockState.metamask.internalAccounts.accounts[

@@ -1,18 +1,19 @@
-import type {
-  TransactionControllerMessenger,
-  TransactionControllerOptions} from '@metamask/transaction-controller';
+import { Messenger } from '@metamask/base-controller';
+import type { NetworkController } from '@metamask/network-controller';
 import {
   TransactionController
 } from '@metamask/transaction-controller';
-import { Messenger } from '@metamask/base-controller';
-import type { NetworkController } from '@metamask/network-controller';
-import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
+import type {
+  TransactionControllerMessenger,
+  TransactionControllerOptions} from '@metamask/transaction-controller';
+
 import type {
   TransactionControllerInitMessenger} from '../messengers/transaction-controller-messenger';
 import {
   getTransactionControllerInitMessenger,
   getTransactionControllerMessenger
 } from '../messengers/transaction-controller-messenger';
+import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { TransactionControllerInit } from './transaction-controller-init';
 

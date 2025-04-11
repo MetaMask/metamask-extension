@@ -1,10 +1,10 @@
+import classnames from 'classnames';
 import type { Ref } from 'react';
 import React, { forwardRef } from 'react';
 import ReactDOM from 'react-dom';
-import classnames from 'classnames';
 
-import type { ModalProps } from './modal.types';
 import { ModalContext } from './modal.context';
+import type { ModalProps } from './modal.types';
 
 export const Modal = forwardRef(
   (

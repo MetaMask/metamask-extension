@@ -1,10 +1,10 @@
+import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
 } from '../../../../store/actions';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
-import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import { useHandleSendNonEvm } from './useHandleSendNonEvm';
 
 jest.mock('../../../../store/actions', () => ({

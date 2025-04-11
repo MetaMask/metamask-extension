@@ -1,10 +1,11 @@
 import React from 'react';
-import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
-import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import GasTiming from '../gas-timing/gas-timing.component';
-import { Icon, IconName } from '../../../../components/component-library';
-import README from './README.mdx';
+
 import TransactionDetail from '.';
+import { Icon, IconName } from '../../../../components/component-library';
+import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
+import GasTiming from '../gas-timing/gas-timing.component';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import README from './README.mdx';
 
 export default {
   title: 'Confirmations/Components/TransactionDetail',

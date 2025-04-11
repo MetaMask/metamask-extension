@@ -1,13 +1,14 @@
-import React, { useState, useRef } from 'react';
 import classnames from 'classnames';
+import React, { useState, useRef } from 'react';
+
 import type { BoxProps } from '../box';
 import { Box, type PolymorphicRef } from '../box';
 import { Popover, PopoverPosition } from '../popover';
+import { SelectContext } from './select-wrapper.context';
 import type {
   SelectWrapperComponent,
   SelectWrapperProps,
 } from './select-wrapper.types';
-import { SelectContext } from './select-wrapper.context';
 
 export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

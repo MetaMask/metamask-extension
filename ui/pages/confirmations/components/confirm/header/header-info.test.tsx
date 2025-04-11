@@ -1,6 +1,6 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
 
 import {
   MetaMetricsEventCategory,

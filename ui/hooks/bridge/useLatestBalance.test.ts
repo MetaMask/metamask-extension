@@ -1,11 +1,12 @@
-import { zeroAddress } from 'ethereumjs-util';
 import * as bridgeController from '@metamask/bridge-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { zeroAddress } from 'ethereumjs-util';
+
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import useLatestBalance from './useLatestBalance';
 
 const mockCalcLatestSrcBalance = jest.fn();

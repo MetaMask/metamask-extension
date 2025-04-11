@@ -1,6 +1,8 @@
 /**
  * @jest-environment node
  */
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
+import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import {
   ListNames,
   METAMASK_STALELIST_URL,
@@ -9,9 +11,8 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
+
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import MetaMaskController from './metamask-controller';
 

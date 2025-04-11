@@ -1,7 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import ContactList from '../../../components/app/contact-list';
+import {
+  ButtonPrimary,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
+import { IconColor, Size } from '../../../helpers/constants/design-system';
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -11,15 +19,8 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import {
-  ButtonPrimary,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../components/component-library';
-import { IconColor, Size } from '../../../helpers/constants/design-system';
-import EditContact from './edit-contact';
 import AddContact from './add-contact';
+import EditContact from './edit-contact';
 import ViewContact from './view-contact';
 
 export default class ContactListTab extends Component {

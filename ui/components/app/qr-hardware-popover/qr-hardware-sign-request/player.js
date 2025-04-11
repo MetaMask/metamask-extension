@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
 import { UR, UREncoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { QRCodeSVG } from 'qrcode.react';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import {
   AlignItems,
   Display,
   FlexDirection,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
-import { PageContainerFooter } from '../../../ui/page-container';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text, Box } from '../../../component-library';
+import { PageContainerFooter } from '../../../ui/page-container';
 
 // QR code configuration constants to help with memory optimization
 const QR_FRAGMENT_SIZE = 200;

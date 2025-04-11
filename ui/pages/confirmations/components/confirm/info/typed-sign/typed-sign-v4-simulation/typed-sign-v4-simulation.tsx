@@ -1,10 +1,10 @@
 import React from 'react';
 
-import type { SignatureRequestType } from '../../../../../types/confirm';
-import { isPermitSignatureRequest } from '../../../../../utils';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDecodedSignatureMetrics } from '../../../../../hooks/useDecodedSignatureMetrics';
 import { useTypesSignSimulationEnabledInfo } from '../../../../../hooks/useTypesSignSimulationEnabledInfo';
+import type { SignatureRequestType } from '../../../../../types/confirm';
+import { isPermitSignatureRequest } from '../../../../../utils';
 import { DecodedSimulation } from './decoded-simulation';
 import { PermitSimulation } from './permit-simulation';
 

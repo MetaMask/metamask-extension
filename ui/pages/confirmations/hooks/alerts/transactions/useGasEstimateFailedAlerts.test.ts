@@ -1,16 +1,16 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({

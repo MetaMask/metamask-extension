@@ -1,6 +1,7 @@
 import React from 'react';
-import README from './README.mdx';
+
 import Slider from '.';
+import README from './README.mdx';
 
 export default {
   title: 'Components/UI/Slider',

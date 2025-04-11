@@ -1,4 +1,5 @@
 import { captureException } from '@sentry/browser';
+
 import {
   OFFSCREEN_LOAD_TIMEOUT,
   OffscreenCommunicationTarget,

@@ -1,15 +1,11 @@
-import React from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
+import React from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../component-library';
+
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,8 +14,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../../component-library';
 import RpcListItem from '../rpc-list-item';
 
 export const SelectRpcUrlModal = ({

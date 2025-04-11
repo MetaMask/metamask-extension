@@ -1,5 +1,6 @@
 import type { FunctionComponent, ReactNode } from 'react';
 import React from 'react';
+
 import Tooltip from '../../../ui/tooltip';
 
 export type SnapUITooltipProps = {

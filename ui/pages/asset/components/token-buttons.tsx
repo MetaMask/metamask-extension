@@ -1,22 +1,42 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
+import type { CaipAssetType } from '@metamask/utils';
+import { isEqual } from 'lodash';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
-import type { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
-import { isEqual } from 'lodash';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
+} from '../../../../shared/constants/metametrics';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
+import IconButton from '../../../components/ui/icon-button/icon-button';
 import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-import { startNewDraftTransaction } from '../../../ducks/send';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
+import useBridging from '../../../hooks/bridge/useBridging';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -29,52 +49,33 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 import {
   showModal,
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
 } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsSwapsEventSource,
-} from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import {
   Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import IconButton from '../../../components/ui/icon-button/icon-button';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import type { Asset } from './asset-page';
 
 const TokenButtons = ({

@@ -1,6 +1,7 @@
 import React from 'react';
-import { DisclosureVariant } from './disclosure.constants';
+
 import Disclosure from '.';
+import { DisclosureVariant } from './disclosure.constants';
 
 export default {
   title: 'Components/UI/Disclosure', // title should follow the folder structure location of the component. Don't use spaces.

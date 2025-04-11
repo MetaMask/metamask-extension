@@ -1,13 +1,14 @@
 /* eslint-disable camelcase */
-import { useSelector } from 'react-redux';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
+
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   getIsBridgeTx,
   getQuoteRequest,
 } from '../../../ducks/bridge/selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { getCurrentKeyring } from '../../../selectors';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { ActionType } from './types';
 import { useConvertedUsdAmounts } from './useConvertedUsdAmounts';
 

@@ -1,15 +1,15 @@
 import type { Messenger } from '@metamask/base-controller';
+import type { GetPermissions } from '@metamask/permission-controller';
+import type { SignatureStateChange } from '@metamask/signature-controller';
 import type {
   DeleteInterface,
   GetAllSnaps,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import type { GetPermissions } from '@metamask/permission-controller';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerTransactionStatusUpdatedEvent,
 } from '@metamask/transaction-controller';
-import type { SignatureStateChange } from '@metamask/signature-controller';
 
 type Actions =
   | HandleSnapRequest

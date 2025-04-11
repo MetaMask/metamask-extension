@@ -1,6 +1,7 @@
+import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
-import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
+
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -10,17 +11,17 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import {
+  getProviderConfig,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
 } from '../../selectors/selectors';
-import {
-  getProviderConfig,
-  getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';

@@ -1,9 +1,6 @@
 import React from 'react';
 import type { FC } from 'react';
 
-import { NotificationDetail } from '../notification-detail';
-import type { IconName} from '../../component-library';
-import { AvatarIcon, Text } from '../../component-library';
 import type {
   BackgroundColor} from '../../../helpers/constants/design-system';
 import {
@@ -11,6 +8,9 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import type { IconName} from '../../component-library';
+import { AvatarIcon, Text } from '../../component-library';
+import { NotificationDetail } from '../notification-detail';
 
 type IconProps = {
   iconName: IconName;

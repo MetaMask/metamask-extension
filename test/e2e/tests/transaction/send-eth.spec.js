@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
@@ -9,7 +10,7 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {

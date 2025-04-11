@@ -1,15 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { SensitiveText, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
   FlexWrap,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import { SensitiveText, Box } from '../../component-library';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param

@@ -1,17 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
-import { SubjectType } from '@metamask/permission-controller';
-import { ApprovalType } from '@metamask/controller-utils';
-import {
-  stripSnapPrefix,
-  getLocalizedSnapManifest,
-  SnapStatus,
-} from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
-import semver from 'semver';
-import { createSelector } from 'reselect';
-import { NameType } from '@metamask/name-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 import {
   SnapEndowments,
@@ -24,16 +10,58 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { ApprovalType } from '@metamask/controller-utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { NameType } from '@metamask/name-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import {
-  getCurrentChainId,
-  getProviderConfig,
-  getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+  SnapStatus,
+} from '@metamask/snaps-utils';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { memoize } from 'lodash';
+import { toUnicode } from 'punycode/punycode.js';
+import { createSelector } from 'reselect';
+import semver from 'semver';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import { DAY } from '../../shared/constants/time';
+import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
+import {
+  getConversionRate,
+  isNotEIP1559Network,
+  isEIP1559Network,
+  getLedgerTransportType,
+  isAddressLedger,
+  getIsUnlocked,
+  getCompletedOnboarding,
+} from '../ducks/metamask/metamask';
+import {
+  getLedgerWebHidConnectedStatus,
+  getLedgerTransportStatus,
+} from '../ducks/app/app';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../shared/modules/conversion.utils';
+import { BackgroundColor } from '../helpers/constants/design-system';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
+import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import {
+  WebHIDConnectedStatuses,
+  LedgerTransportTypes,
+  HardwareTransportStates,
+} from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
+import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,
@@ -65,77 +93,45 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
 } from '../../shared/constants/network';
 import {
-  WebHIDConnectedStatuses,
-  LedgerTransportTypes,
-  HardwareTransportStates,
-} from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
-
-import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
-
-import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
-
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { AssetType } from '../../shared/constants/transaction';
-
+import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  getCurrentChainId,
+  getProviderConfig,
+  getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+} from '../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { hasTransactionData } from '../../shared/modules/transaction.utils';
+import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
-
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import { DAY } from '../../shared/constants/time';
-import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
-import {
-  getConversionRate,
-  isNotEIP1559Network,
-  isEIP1559Network,
-  getLedgerTransportType,
-  isAddressLedger,
-  getIsUnlocked,
-  getCompletedOnboarding,
-} from '../ducks/metamask/metamask';
-import {
-  getLedgerWebHidConnectedStatus,
-  getLedgerTransportStatus,
-} from '../ducks/app/app';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../shared/modules/conversion.utils';
-import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
-import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
-import { hasTransactionData } from '../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
-import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-import {
-  getAllUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-  getUnapprovedTransactions,
-} from './transactions';
 // eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
+import { getApprovalRequestsByType } from './approvals';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
   getMultichainNetwork,
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
-import { getApprovalRequestsByType } from './approvals';
+import {
+  getAllUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+} from './transactions';
 
 /** `appState` slice selectors */
 

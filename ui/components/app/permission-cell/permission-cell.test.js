@@ -1,9 +1,10 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import PermissionCell from './permission-cell';
 
 describe('Permission Cell', () => {

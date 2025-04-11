@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../../../store/actions';
-import Identicon from '../../../ui/identicon';
-import Button from '../../../ui/button';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -13,6 +10,10 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/modules/selectors/networks';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import * as actions from '../../../../store/actions';
+import Button from '../../../ui/button';
+import Identicon from '../../../ui/identicon';
 
 function mapStateToProps(state) {
   return {

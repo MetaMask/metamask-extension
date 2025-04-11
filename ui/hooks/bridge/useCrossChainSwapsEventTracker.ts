@@ -1,12 +1,13 @@
-import { useCallback, useContext } from 'react';
 import type { SortOrder } from '@metamask/bridge-controller';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useCallback, useContext } from 'react';
+
 import type {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource} from '../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory
 } from '../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import type {
   RequestParams,
   RequestMetadata,

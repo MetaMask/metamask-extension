@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ImportToken from './import-token';
 
 export default {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PermissionsRedirect from '.';
 
 export default {

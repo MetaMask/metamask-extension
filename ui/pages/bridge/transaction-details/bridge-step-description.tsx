@@ -1,11 +1,18 @@
-import * as React from 'react';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import type { Hex } from '@metamask/utils';
 import type {
   TransactionMeta} from '@metamask/transaction-controller';
 import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import * as React from 'react';
+
+import type {
+  AllowedBridgeChainIds} from '../../../../shared/constants/bridge';
+import {
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../../shared/constants/bridge';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import type {
   BridgeHistoryItem,
   Step} from '../../../../shared/types/bridge-status';
@@ -14,7 +21,6 @@ import {
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
 import { Box, Text } from '../../../components/component-library';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import {
   AlignItems,
   Display,
@@ -22,11 +28,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type {
-  AllowedBridgeChainIds} from '../../../../shared/constants/bridge';
-import {
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
 
 type I18nFunction = (
   key: string,

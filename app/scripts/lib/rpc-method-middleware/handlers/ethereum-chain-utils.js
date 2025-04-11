@@ -1,15 +1,16 @@
-import { ApprovalType } from '@metamask/controller-utils';
-import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { ApprovalType } from '@metamask/controller-utils';
+import { rpcErrors } from '@metamask/rpc-errors';
+
+import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { getValidUrl } from '../../util';
 
 export function validateChainId(chainId) {

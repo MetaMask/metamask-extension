@@ -1,3 +1,4 @@
+const FixtureBuilder = require('../../fixture-builder');
 const {
   openDapp,
   switchToNotificationWindow,
@@ -5,7 +6,6 @@ const {
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../../snaps/enums');
 const {
   expectName,

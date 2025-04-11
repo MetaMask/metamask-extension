@@ -1,16 +1,17 @@
 import { isEqual } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { getTokens } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { selectNftsByChainId } from '../../../selectors';
 import {
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../../store/actions';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { usePrevious } from '../../../hooks/usePrevious';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { selectNftsByChainId } from '../../../selectors';
 
 export function useAssetDetails(
   tokenAddress,

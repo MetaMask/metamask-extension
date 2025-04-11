@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  FormTextField,
-  FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
-} from '../../../component-library';
+
+import { isWebUrl } from '../../../../../app/scripts/lib/util';
 import {
   BackgroundColor,
   BlockSize,
@@ -18,9 +11,17 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  Box,
+  ButtonPrimary,
+  ButtonPrimarySize,
+  FormTextField,
+  FormTextFieldSize,
+  HelpText,
+  HelpTextSeverity,
+} from '../../../component-library';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isWebUrl } from '../../../../../app/scripts/lib/util';
 
 const AddBlockExplorerModal = ({
   onAdded,

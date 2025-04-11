@@ -3,6 +3,7 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
+
 import ethereumAccounts from './eth-accounts';
 
 const baseRequest = {

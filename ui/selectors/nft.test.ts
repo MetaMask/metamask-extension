@@ -1,4 +1,5 @@
 import type { NftContract } from '@metamask/assets-controllers';
+
 import { mockNetworkState } from '../../test/stub/networks';
 import {
   getNftContractsByAddressByChain,

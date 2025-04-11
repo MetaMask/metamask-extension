@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * @deprecated The `<Dialog />` component has been deprecated in favor of the new `<BannerAlert>` component from the component-library.

@@ -1,12 +1,13 @@
-import React from 'react';
-import type { GasFeeToken } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
-import configureStore from '../../../../../../../store/store';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import type { GasFeeToken } from '@metamask/transaction-controller';
+import React from 'react';
+
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import configureStore from '../../../../../../../store/store';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenListItem } from './gas-fee-token-list-item';
 

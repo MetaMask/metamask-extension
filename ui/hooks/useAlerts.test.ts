@@ -1,9 +1,9 @@
-import { Severity } from '../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import type {
   ConfirmAlertsState,
   AlertSeverity,
 } from '../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../helpers/constants/design-system';
 import useAlerts from './useAlerts';
 
 describe('useAlerts', () => {

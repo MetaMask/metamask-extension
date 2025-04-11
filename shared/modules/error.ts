@@ -1,10 +1,10 @@
-import log from 'loglevel';
 import {
   getErrorMessage as _getErrorMessage,
   hasProperty,
   isObject,
   isErrorWithMessage,
 } from '@metamask/utils';
+import log from 'loglevel';
 
 export { isErrorWithMessage } from '@metamask/utils';
 

@@ -1,4 +1,6 @@
 import React from 'react';
+
+import Typography from '.';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
@@ -12,14 +14,11 @@ import {
   BorderColor,
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
-import Box from '../box';
-
 import { BannerAlert } from '../../component-library/banner-alert';
-
+import Box from '../box';
+import README from './README.mdx';
 import { ValidColors, ValidTags } from './typography';
 
-import README from './README.mdx';
-import Typography from '.';
 
 const sizeKnobOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];

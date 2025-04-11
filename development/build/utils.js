@@ -1,7 +1,8 @@
-const path = require('path');
 const { readFileSync, writeFileSync } = require('fs');
-const semver = require('semver');
 const { capitalize } = require('lodash');
+const path = require('path');
+const semver = require('semver');
+
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 

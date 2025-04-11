@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { ConnectedSiteMenu } from '.';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -8,7 +10,6 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { ConnectedSiteMenu } from '.';
 
 export default {
   title: 'Components/Multichain/ConnectedSiteMenu',

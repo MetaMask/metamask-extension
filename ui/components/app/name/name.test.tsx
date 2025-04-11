@@ -1,15 +1,16 @@
-import * as React from 'react';
 import { NameType } from '@metamask/name-controller';
+import * as React from 'react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useDisplayName } from '../../../hooks/useDisplayName';
-import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useDisplayName } from '../../../hooks/useDisplayName';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');

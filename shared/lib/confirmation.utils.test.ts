@@ -1,5 +1,6 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
+
 import {
   shouldUseRedesignForTransactions,
   shouldUseRedesignForSignatures,

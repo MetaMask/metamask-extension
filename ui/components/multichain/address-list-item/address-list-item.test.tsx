@@ -1,10 +1,11 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
+
+import { AddressListItem } from '.';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { AddressListItem } from '.';
+import configureStore from '../../../store/store';
 
 const SAMPLE_ADDRESS = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
 const SAMPLE_LABEL = 'metamask.eth';

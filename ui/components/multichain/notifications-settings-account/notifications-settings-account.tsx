@@ -1,6 +1,6 @@
-import React from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { AvatarAccount, Box, Text } from '../../component-library';
+import React from 'react';
+
 import {
   BlockSize,
   Display,
@@ -12,6 +12,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { AvatarAccount, Box, Text } from '../../component-library';
 
 export type NotificationsSettingsAccountProps = {
   address: string;

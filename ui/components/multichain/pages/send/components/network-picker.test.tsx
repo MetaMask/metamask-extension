@@ -1,8 +1,9 @@
 import React from 'react';
-import configureStore from '../../../../../store/store';
+
+import { SendPageNetworkPicker } from '.';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
-import { SendPageNetworkPicker } from '.';
+import configureStore from '../../../../../store/store';
 
 const mockToggleNetworkMenu = jest.fn();
 jest.mock('../../../../../store/actions.ts', () => ({

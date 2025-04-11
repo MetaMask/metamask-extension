@@ -1,5 +1,6 @@
 import type { FunctionComponent } from 'react';
 import React from 'react';
+
 import type { BannerAlertSeverity } from '../../../component-library';
 import { BannerAlert } from '../../../component-library';
 

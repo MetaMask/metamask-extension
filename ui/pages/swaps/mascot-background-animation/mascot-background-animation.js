@@ -1,7 +1,7 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import EventEmitter from 'events';
-import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
+import React, { useRef } from 'react';
 
 import Mascot from '../../../components/ui/mascot';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';

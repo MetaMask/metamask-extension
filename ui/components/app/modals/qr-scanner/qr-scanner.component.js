@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/browser';
-import { usePrevious } from '../../../../hooks/usePrevious';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
-import { getURL } from '../../../../helpers/utils/util';
-import WebcamUtils from '../../../../helpers/utils/webcam-utils';
-import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
-import Spinner from '../../../ui/spinner';
+import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect, useCallback } from 'react';
 
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { SECOND } from '../../../../../shared/constants/time';
+import { getURL } from '../../../../helpers/utils/util';
+import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePrevious } from '../../../../hooks/usePrevious';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
+import Spinner from '../../../ui/spinner';
 import { parseScanContent } from './scan-util';
 
 const READY_STATE = {

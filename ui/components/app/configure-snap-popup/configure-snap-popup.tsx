@@ -1,5 +1,15 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ButtonVariant,
   Button,
@@ -10,15 +20,6 @@ import {
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 
 export enum ConfigureSnapPopupType {
   CONFIGURE = 'configure',

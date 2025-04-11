@@ -1,20 +1,19 @@
-import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
 
 import {
   EditGasModes,
   GasEstimateTypes,
 } from '../../../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import mockEstimates from '../../../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import { GasFeeContextProvider } from '../../../../../../contexts/gasFee';
 import configureStore from '../../../../../../store/store';
-
-import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
-import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
-import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
+import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import PriorityfeeInput from './priority-fee-input';
 
 const LOW_PRIORITY_FEE = 0.000000001;

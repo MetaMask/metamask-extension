@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+
 import {
   BorderColor,
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
 import { Text, Box } from '../../component-library';
 import Callout from './callout';
 

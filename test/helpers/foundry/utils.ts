@@ -1,5 +1,6 @@
 import { execFileSync, execSync } from 'node:child_process';
 import { arch } from 'node:os';
+
 import type {
   Binary,
   Platform} from './types';

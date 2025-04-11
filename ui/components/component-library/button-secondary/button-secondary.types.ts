@@ -1,5 +1,5 @@
-import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
 import type { PolymorphicComponentPropWithRef } from '../box';
+import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
 
 export enum ButtonSecondarySize {
   Sm = 'sm',

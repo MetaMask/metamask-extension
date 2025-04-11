@@ -1,4 +1,5 @@
 const { ESLint } = require('eslint');
+
 const eslintrc = require('../../../.eslintrc');
 
 // We want to lint the transformed files to ensure that they are valid.

@@ -1,6 +1,7 @@
 import { jsonrpc2 } from '@metamask/utils';
-import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
+
 import { createUnsupportedMethodMiddleware } from '.';
+import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 
 describe('createUnsupportedMethodMiddleware', () => {
   const getMockRequest = (method: string) => ({

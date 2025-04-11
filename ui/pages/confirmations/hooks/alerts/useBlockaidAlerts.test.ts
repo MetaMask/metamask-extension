@@ -4,16 +4,16 @@ import {
 } from '@metamask/transaction-controller';
 
 import {
-  getMockConfirmStateForTransaction,
-  getMockPersonalSignConfirmStateForRequest,
-} from '../../../../../test/data/confirmations/helper';
-import {
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
+import {
+  getMockConfirmStateForTransaction,
+  getMockPersonalSignConfirmStateForRequest,
+} from '../../../../../test/data/confirmations/helper';
+import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
-import mockState from '../../../../../test/data/mock-state.json';
 import type { SecurityAlertResponse } from '../../types/confirm';
 import useBlockaidAlert from './useBlockaidAlerts';
 

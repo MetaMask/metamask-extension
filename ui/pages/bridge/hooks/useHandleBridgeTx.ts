@@ -1,7 +1,8 @@
-import { BigNumber } from 'bignumber.js';
-import { TransactionType } from '@metamask/transaction-controller';
-import { useDispatch } from 'react-redux';
 import { FeeType, type QuoteResponse } from '@metamask/bridge-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
+import { useDispatch } from 'react-redux';
+
 import { Numeric } from '../../../../shared/modules/Numeric';
 import useHandleTx from './useHandleTx';
 

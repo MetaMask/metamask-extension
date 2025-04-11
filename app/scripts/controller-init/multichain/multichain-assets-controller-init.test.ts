@@ -1,12 +1,13 @@
 import { MultichainAssetsController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
-import { buildControllerInitRequestMock } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
+
 import type {
   MultichainAssetsControllerMessenger} from '../messengers/multichain';
 import {
   getMultichainAssetsControllerMessenger
 } from '../messengers/multichain';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { MultichainAssetsControllerInit } from './multichain-assets-controller-init';
 
 jest.mock('@metamask/assets-controllers');

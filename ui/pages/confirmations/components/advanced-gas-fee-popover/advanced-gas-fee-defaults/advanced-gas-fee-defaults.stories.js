@@ -1,12 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+
+import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../context';
-import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
-import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
-import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);

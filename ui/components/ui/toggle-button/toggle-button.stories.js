@@ -1,5 +1,6 @@
-import React from 'react';
 import { useArgs } from '@storybook/client-api';
+import React from 'react';
+
 import README from './README.mdx';
 import ToggleButton from './toggle-button.component';
 

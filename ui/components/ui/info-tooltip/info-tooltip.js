@@ -1,6 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import Tooltip from '../tooltip';
 import InfoTooltipIcon from './info-tooltip-icon';
 

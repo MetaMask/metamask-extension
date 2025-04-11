@@ -1,5 +1,6 @@
-import type { PPOMController } from '@metamask/ppom-validator';
 import { Messenger } from '@metamask/base-controller';
+import type { PPOMController } from '@metamask/ppom-validator';
+
 import { buildControllerInitRequestMock } from './test/utils';
 import type { ControllerApi, ControllerName } from './types';
 import { initControllers } from './utils';

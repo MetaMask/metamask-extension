@@ -1,10 +1,24 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
+import { TransactionGroupCategory } from '../../shared/constants/transaction';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
+import { getIntlLocale } from '../ducks/locale/locale';
+import { getNfts } from '../ducks/metamask/metamask';
+import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { camelCaseToCapitalize } from '../helpers/utils/common.util';
+import {
+  getStatusKey,
+  getTransactionTypeTitle,
+} from '../helpers/utils/transactions.util';
 import {
   getAllDetectedTokens,
   getAllTokens,
@@ -12,12 +26,6 @@ import {
   getSelectedAddress,
   selectERC20TokensByChain,
 } from '../selectors/selectors';
-import {
-  getStatusKey,
-  getTransactionTypeTitle,
-} from '../helpers/utils/transactions.util';
-import { camelCaseToCapitalize } from '../helpers/utils/common.util';
-import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   getAssetDetails,
   getTokenAddressParam,
@@ -28,30 +36,22 @@ import {
   shortenAddress,
   stripHttpSchemes,
 } from '../helpers/utils/util';
-
 import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts } from '../ducks/metamask/metamask';
-import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
-import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
-import { getIntlLocale } from '../ducks/locale/locale';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
+import useBridgeChainInfo from './bridge/useBridgeChainInfo';
+import { useCurrencyDisplay } from './useCurrencyDisplay';
+import { useCurrentAsset } from './useCurrentAsset';
 import { useI18nContext } from './useI18nContext';
+import { useSwappedTokenValue } from './useSwappedTokenValue';
+import { useTokenData } from './useTokenData';
+import { useTokenDisplayValue } from './useTokenDisplayValue';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
-import { useCurrencyDisplay } from './useCurrencyDisplay';
-import { useTokenDisplayValue } from './useTokenDisplayValue';
-import { useTokenData } from './useTokenData';
-import { useSwappedTokenValue } from './useSwappedTokenValue';
-import { useCurrentAsset } from './useCurrentAsset';
-import useBridgeChainInfo from './bridge/useBridgeChainInfo';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:

@@ -2,9 +2,8 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling';
-import { updateThrottledOriginState } from '../../../store/actions';
-
 import { selectThrottledOrigins } from '../../../selectors';
+import { updateThrottledOriginState } from '../../../store/actions';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const NUMBER_OF_REJECTIONS_THRESHOLD = 3;

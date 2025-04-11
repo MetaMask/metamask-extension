@@ -1,5 +1,5 @@
-import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import nock from 'nock';
 
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   return async (method: string): Promise<T | undefined> => {

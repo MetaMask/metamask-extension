@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+
 import updateTxData from './updateTxData';
 
 describe('updateTxData', () => {

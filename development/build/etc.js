@@ -1,8 +1,8 @@
+const del = require('del');
 const { promises: fs } = require('fs');
 const gulp = require('gulp');
 const sort = require('gulp-sort');
 const gulpZip = require('gulp-zip');
-const del = require('del');
 const pify = require('pify');
 const pipeline = pify(require('readable-stream').pipeline);
 

@@ -4,8 +4,8 @@
 normalizes txParams on unconfirmed txs
 
 */
-import { cloneDeep } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { cloneDeep } from 'lodash';
 
 const version = 27;
 

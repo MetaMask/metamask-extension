@@ -1,16 +1,15 @@
-import React from 'react';
 import { act, screen } from '@testing-library/react';
+import React from 'react';
 
 import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import configureStore from '../../../../../store/store';
-import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
-
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({

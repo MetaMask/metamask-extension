@@ -1,7 +1,7 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
 
-import mockState from '../../../../../test/data/mock-state.json';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
+import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
 import * as ConfirmationNavigation from '../../hooks/useConfirmationNavigation';

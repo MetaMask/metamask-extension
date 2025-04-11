@@ -1,18 +1,17 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setAccountDetailsAddress } from '../../../store/actions';
-
-import { MenuItem } from '../../ui/menu';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { setAccountDetailsAddress } from '../../../store/actions';
+import { IconName, Text } from '../../component-library';
+import { MenuItem } from '../../ui/menu';
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,

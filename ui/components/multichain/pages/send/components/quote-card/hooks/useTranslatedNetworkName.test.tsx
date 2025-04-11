@@ -1,8 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import useTranslatedNetworkName from './useTranslatedNetworkName';
 
 jest.mock('react-redux', () => ({

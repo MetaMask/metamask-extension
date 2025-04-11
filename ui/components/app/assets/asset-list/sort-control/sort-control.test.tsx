@@ -1,11 +1,12 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { setTokenSortConfig } from '../../../../../store/actions';
+
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { getPreferences } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getPreferences } from '../../../../../selectors';
+import { setTokenSortConfig } from '../../../../../store/actions';
 import SortControl from './sort-control';
 
 // Mock the sortAssets utility

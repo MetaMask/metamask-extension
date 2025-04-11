@@ -1,4 +1,3 @@
-const actions = require('../store/actions');
 const {
   CONTRACT_ADDRESS_UNISWAP,
   CONTRACT_ADDRESS_SOURCIFY,
@@ -7,6 +6,7 @@ const {
   TRANSACTION_DECODE_SOURCIFY,
   TRANSACTION_DECODE_FOUR_BYTE,
 } = require('../../test/data/confirmations/transaction-decode');
+const actions = require('../store/actions');
 
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
 const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC

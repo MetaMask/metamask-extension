@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
+import { ApprovalType } from '@metamask/controller-utils';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { ApprovalType } from '@metamask/controller-utils';
-
-import configureStore from '../../store/store';
-
-import mockState from '../../../.storybook/test-data';
 
 import ConfirmAddSuggestedNFT from '.';
+import mockState from '../../../.storybook/test-data';
+import configureStore from '../../store/store';
+
+
 
 const pendingNftApprovals = {
   1: {

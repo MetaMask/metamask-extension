@@ -1,17 +1,18 @@
-import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import CurrencyDisplay from '../../ui/currency-display';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
+import { getSelectedEvmInternalAccount } from '../../../selectors';
 import {
   getMultichainNativeCurrency,
   getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSelectedEvmInternalAccount } from '../../../selectors';
+import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
+import CurrencyDisplay from '../../ui/currency-display';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param

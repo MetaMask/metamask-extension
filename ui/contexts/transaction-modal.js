@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { createContext, useContext, useState } from 'react';
 
 export const TransactionModalContext = createContext({});
 

@@ -1,7 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip } from 'react-tippy';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { Tooltip } from 'react-tippy';
+
+import { AvatarGroup } from '../../..';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,8 +15,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { AvatarType } from '../../../avatar-group/avatar-group.types';
-import { AvatarGroup } from '../../..';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getUseBlockie } from '../../../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -23,9 +26,7 @@ import {
   Box,
   Text,
 } from '../../../../component-library';
-import { getUseBlockie } from '../../../../../selectors';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import { AvatarType } from '../../../avatar-group/avatar-group.types';
 
 export const SiteCellTooltip = ({ accounts, networks }) => {
   const t = useI18nContext();

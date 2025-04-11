@@ -1,8 +1,8 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 
-import mockState from '../../../../../test/data/mock-state.json';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
+import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import * as Actions from '../../../../store/actions';
 import { useNetworkAndOriginSwitchingAlerts } from './useNetworkAndOriginSwitchingAlerts';

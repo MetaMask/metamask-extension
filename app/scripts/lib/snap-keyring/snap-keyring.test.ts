@@ -6,6 +6,7 @@ import {
 } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { SnapId } from '@metamask/snaps-sdk';
+
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -16,11 +17,11 @@ import {
   showAccountNameSuggestionDialog,
   snapKeyringBuilder,
 } from './snap-keyring';
+import { getSnapName, isSnapPreinstalled } from './snaps';
 import type {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
 } from './types';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();

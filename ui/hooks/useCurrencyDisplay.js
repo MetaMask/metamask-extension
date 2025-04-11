@@ -1,22 +1,22 @@
-import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
+
+import { EtherDenomination } from '../../shared/constants/common';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  TEST_NETWORK_TICKER_MAP,
+} from '../../shared/constants/network';
+import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
+import { Numeric } from '../../shared/modules/Numeric';
+import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
+import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getMultichainCurrentCurrency,
   getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
-
-import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  TEST_NETWORK_TICKER_MAP,
-} from '../../shared/constants/network';
-import { Numeric } from '../../shared/modules/Numeric';
-import { EtherDenomination } from '../../shared/constants/common';
-import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.

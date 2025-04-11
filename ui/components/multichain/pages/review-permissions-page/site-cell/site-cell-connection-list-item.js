@@ -1,5 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -11,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -18,7 +20,6 @@ import {
   ButtonLink,
   Text,
 } from '../../../../component-library';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export const SiteCellConnectionListItem = ({
   title,

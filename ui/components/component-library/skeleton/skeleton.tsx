@@ -1,5 +1,5 @@
-import React from 'react';
 import classnames from 'classnames';
+import React from 'react';
 
 import {
   BackgroundColor,
@@ -7,7 +7,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
-
 import type { SkeletonProps, SkeletonComponent } from './skeleton.types';
 
 export const Skeleton: SkeletonComponent = React.forwardRef(

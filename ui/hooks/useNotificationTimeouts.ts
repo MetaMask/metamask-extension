@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
-import { deleteNotificationsById } from '../store/actions';
+
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { deleteNotificationsById } from '../store/actions';
 
 /**
  * This hook is used to enforce lifecycles for snap notifications.

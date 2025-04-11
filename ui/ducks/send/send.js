@@ -1,3 +1,9 @@
+import { toHex } from '@metamask/controller-utils';
+import { providerErrors } from '@metamask/rpc-errors';
+import {
+  TransactionEnvelopeType,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   createAsyncThunk,
   createSelector,
@@ -7,18 +13,42 @@ import BigNumber from 'bignumber.js';
 import { addHexPrefix, zeroAddress, isHexString } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { providerErrors } from '@metamask/rpc-errors';
+
+import { EtherDenomination } from '../../../shared/constants/common';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import { SECOND } from '../../../shared/constants/time';
 import {
-  TransactionEnvelopeType,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
-import { getErrorMessage } from '../../../shared/modules/error';
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
+import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
 import {
   decimalToHex,
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
-import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
+import { getErrorMessage } from '../../../shared/modules/error';
+import {
+  isBurnAddress,
+  isPossibleAddress,
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
+  getTokenAddressParam,
+  getTokenMetadata,
+  getTokenIdParam,
+} from '../../helpers/utils/token-util';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
@@ -40,11 +70,6 @@ import {
   isTokenBalanceSufficient,
 } from '../../pages/confirmations/send/send.utils';
 import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-  getProviderConfig,
-} from '../../../shared/modules/selectors/networks';
-import {
   getAdvancedInlineGasShown,
   getGasPriceInHexWei,
   getIsMainnet,
@@ -62,6 +87,14 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
+import {
+  QR_CODE_DETECTED,
+  SELECTED_ACCOUNT_CHANGED,
+  ACCOUNT_CHANGED,
+  ADDRESS_BOOK_UPDATED,
+  GAS_FEE_ESTIMATES_UPDATED,
+  CLEAR_SWAP_AND_SEND_STATE,
+} from '../../store/actionConstants';
 import {
   displayWarning,
   hideLoadingIndication,
@@ -87,19 +120,6 @@ import {
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
-  QR_CODE_DETECTED,
-  SELECTED_ACCOUNT_CHANGED,
-  ACCOUNT_CHANGED,
-  ADDRESS_BOOK_UPDATED,
-  GAS_FEE_ESTIMATES_UPDATED,
-  CLEAR_SWAP_AND_SEND_STATE,
-} from '../../store/actionConstants';
-import {
-  getTokenAddressParam,
-  getTokenMetadata,
-  getTokenIdParam,
-} from '../../helpers/utils/token-util';
-import {
   checkExistingAddresses,
   isOriginContractAddress,
 } from '../../helpers/utils/util';
@@ -108,32 +128,11 @@ import {
   getNativeCurrency,
   getTokens,
 } from '../metamask/metamask';
-
 import { resetDomainResolution } from '../domains';
-import {
-  isBurnAddress,
-  isPossibleAddress,
-  isValidHexAddress,
-  toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
-
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
-import { SECOND } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-} from '../../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 // used for typing
 // eslint-disable-next-line no-unused-vars
@@ -143,10 +142,6 @@ import {
 } from '../../helpers/constants/routes';
 import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
 import {
-  getDisabledSwapAndSendNetworksFromAPI,
-  getSwapAndSendQuotes,
-} from './swap-and-send-utils';
-import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
@@ -154,6 +149,10 @@ import {
   addAdjustedReturnToQuotes,
   getIsDraftSwapAndSend,
 } from './helpers';
+import {
+  getDisabledSwapAndSendNetworksFromAPI,
+  getSwapAndSendQuotes,
+} from './swap-and-send-utils';
 
 const RECENT_REQUEST_ERROR =
   'This has been replaced with a more recent request';

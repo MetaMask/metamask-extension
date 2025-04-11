@@ -1,4 +1,5 @@
 import React from 'react';
+
 import BottomButtons from './bottom-buttons';
 
 export default {

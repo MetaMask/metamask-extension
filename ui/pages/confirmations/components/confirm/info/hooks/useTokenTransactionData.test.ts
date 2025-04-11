@@ -1,17 +1,18 @@
-import type { Hex } from '@metamask/utils';
 import type { TransactionDescription } from '@ethersproject/abi';
+import type { Hex } from '@metamask/utils';
+
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import {
+  genUnapprovedSetApprovalForAllConfirmation,
+  INCREASE_ALLOWANCE_TRANSACTION_DATA,
+} from '../../../../../../../test/data/confirmations/set-approval-for-all';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import {
   genUnapprovedTokenTransferConfirmation,
   TRANSFER_FROM_TRANSACTION_DATA,
 } from '../../../../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
-import {
-  genUnapprovedSetApprovalForAllConfirmation,
-  INCREASE_ALLOWANCE_TRANSACTION_DATA,
-} from '../../../../../../../test/data/confirmations/set-approval-for-all';
 import { useTokenTransactionData } from './useTokenTransactionData';
 
 function runHook(transactionData: string) {

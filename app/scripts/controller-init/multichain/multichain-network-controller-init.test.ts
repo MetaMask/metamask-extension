@@ -1,12 +1,13 @@
-import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { Messenger } from '@metamask/base-controller';
-import { buildControllerInitRequestMock } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
+import { MultichainNetworkController } from '@metamask/multichain-network-controller';
+
 import type {
   MultichainNetworkControllerMessenger} from '../messengers/multichain';
 import {
   getMultichainNetworkControllerMessenger,
 } from '../messengers/multichain';
+import { buildControllerInitRequestMock } from '../test/utils';
+import type { ControllerInitRequest } from '../types';
 import { MultichainNetworkControllerInit } from './multichain-network-controller-init';
 
 jest.mock('@metamask/multichain-network-controller');

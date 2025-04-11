@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import nock from 'nock';
+
 import ReadOnlyNetworkStore from './read-only-network-store';
 
 const FIXTURE_SERVER_HOST = 'localhost';

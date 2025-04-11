@@ -1,7 +1,8 @@
-import { randomUUID } from 'crypto';
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen } from '@testing-library/react';
+import { randomUUID } from 'crypto';
 import nock from 'nock';
+
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';

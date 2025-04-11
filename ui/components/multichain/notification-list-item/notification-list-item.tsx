@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
@@ -14,11 +13,12 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import type { NotificationListItemIconProps } from '../notification-list-item-icon/notification-list-item-icon';
-import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
-import { NotificationListItemIcon } from '../notification-list-item-icon';
-import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
+import { Box, Icon, IconName, Text } from '../../component-library';
+import { NotificationListItemIcon } from '../notification-list-item-icon';
+import type { NotificationListItemIconProps } from '../notification-list-item-icon/notification-list-item-icon';
+import { NotificationListItemText } from '../notification-list-item-text';
+import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
 
 export type NotificationListItemProps = {
   id: string;

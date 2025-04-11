@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import TokenInput from '../../ui/token-input';
+import React, { PureComponent } from 'react';
+
 import { getTokenSymbol } from '../../../store/actions';
+import TokenInput from '../../ui/token-input';
 
 // This component is not used in codebase, removing usage of useNativeCurrencyAsPrimaryCurrency in this PR
 export default class UserPreferencedTokenInput extends PureComponent {

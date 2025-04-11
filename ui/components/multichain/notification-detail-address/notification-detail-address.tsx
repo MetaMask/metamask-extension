@@ -1,14 +1,15 @@
 import React from 'react';
 import type { FC } from 'react';
-import { NotificationDetail } from '../notification-detail';
-import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
-import { AvatarAccount, Text } from '../../component-library';
+
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   FontWeight,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { AvatarAccount, Text } from '../../component-library';
+import { NotificationDetail } from '../notification-detail';
+import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
 
 export type NotificationDetailAddressProps = {
   side: string;

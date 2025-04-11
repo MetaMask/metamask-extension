@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import ReactFocusLock from 'react-focus-lock';
+
 import type { ModalFocusProps } from './modal-focus.types';
 
 /**

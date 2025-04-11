@@ -1,10 +1,11 @@
 import { providerErrors } from '@metamask/rpc-errors';
+
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import switchEthereumChain from './switch-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
+import switchEthereumChain from './switch-ethereum-chain';
 
 jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),

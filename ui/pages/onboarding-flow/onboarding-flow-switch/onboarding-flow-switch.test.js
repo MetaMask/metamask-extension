@@ -1,5 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -7,7 +9,6 @@ import {
   LOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import OnboardingFlowSwitch from './onboarding-flow-switch';
 
 describe('Onboaring Flow Switch Component', () => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { readPartitionsFile } from '../../common/partitions-file';
+
 import type { ModulePartitionChild } from '../../common/build-module-partitions';
+import { readPartitionsFile } from '../../common/partitions-file';
 import Box from './Box';
 import Connections from './Connections';
 import type { BoxRect, BoxModel } from './types';
