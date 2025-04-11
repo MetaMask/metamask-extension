@@ -99,10 +99,10 @@ describe('Incoming Transactions', function () {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.check_txAction('Receive', 1);
+        await activityList.check_txAction('Received', 1);
         await activityList.check_txAmountInActivity('1.23 ETH', 1);
 
-        await activityList.check_txAction('Receive', 2);
+        await activityList.check_txAction('Received', 2);
         await activityList.check_txAmountInActivity('2.34 ETH', 2);
       },
     );
