@@ -2,6 +2,7 @@ import { MockttpServer } from 'mockttp';
 import { mockEthDaiTrade } from '../swaps/shared';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
+import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 
@@ -276,19 +277,28 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
 
 export async function mockSmartTransactionBatchRequests(
   mockServer: MockttpServer,
-  transactionHashes: string[],
+  {
+    error = false,
+    transactionHashes,
+  }: {
+    error?: boolean;
+    transactionHashes: string[];
+  },
 ) {
   await mockSmartTransactionRequestsBase(mockServer);
+
+  const submitStatusCode = error ? 500 : 200;
+
+  const submitResponse = error
+    ? {}
+    : { uuid: STX_UUID, txHashes: transactionHashes };
 
   await mockServer
     .forPost(
       'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
     )
     .once()
-    .thenJson(200, {
-      uuid: STX_UUID,
-      txHashes: transactionHashes,
-    });
+    .thenJson(submitStatusCode, submitResponse);
 
   for (const transactionHash of transactionHashes) {
     await mockServer
