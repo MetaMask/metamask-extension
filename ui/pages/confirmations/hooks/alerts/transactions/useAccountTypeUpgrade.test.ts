@@ -3,7 +3,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -49,19 +48,15 @@ function runHook({
 }
 
 describe('useAccountTypeUpgrade', () => {
-  const isBatchTransactionMock = jest.mocked(isBatchTransaction);
-
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   it('returns an empty array when the transaction is not a batch transaction', () => {
-    isBatchTransactionMock.mockReturnValue(false);
     expect(runHook()).toEqual([]);
   });
 
   it('returns an alert when the transaction is a batch transaction', () => {
-    isBatchTransactionMock.mockReturnValue(true);
     expect(
       runHook({
         currentConfirmation: {

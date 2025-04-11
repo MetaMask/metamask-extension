@@ -1,5 +1,9 @@
 import React from 'react';
-import { AuthorizationList } from '@metamask/transaction-controller';
+import {
+  AuthorizationList,
+  NestedTransactionMetadata,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
@@ -20,14 +24,17 @@ jest.mock(
 
 function render({
   authorizationList,
+  nestedTransactions,
 }: {
   authorizationList?: AuthorizationList;
+  nestedTransactions?: NestedTransactionMetadata[];
 }) {
   const store = configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
         address: FROM_MOCK,
         authorizationList,
+        nestedTransactions,
       }),
     ),
   );
@@ -44,12 +51,14 @@ describe('TransactionAccountDetails', () => {
     expect(getByText('0x12345...67890')).toBeInTheDocument();
   });
 
-  it('renders account type', () => {
-    const { getByText } = render({
+  it('renders type row', () => {
+    const { getByText, queryByText } = render({
       authorizationList: [{ address: DELEGATION_MOCK }],
     });
 
     expect(getByText('Smart account')).toBeInTheDocument();
+    expect(getByText('Type')).toBeInTheDocument();
+    expect(queryByText('Account type')).toBeNull();
   });
 
   it('does not render if no authorization list', () => {
@@ -57,5 +66,39 @@ describe('TransactionAccountDetails', () => {
 
     expect(queryByText('0x12345...67890')).toBeNull();
     expect(queryByText('Smart account')).toBeNull();
+  });
+
+  it('renders Account Type when transaction is a batch transaction', () => {
+    const { getByText } = render({
+      authorizationList: [{ address: DELEGATION_MOCK }],
+      nestedTransactions: [{ to: FROM_MOCK }],
+    });
+
+    expect(getByText('Account type')).toBeInTheDocument();
+  });
+
+  describe('RecipientRow', () => {
+    it('renders when transaction is a batch transaction', () => {
+      const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+      const { getByText, getByTestId } = render({
+        authorizationList: [{ address: DELEGATION_MOCK }],
+        nestedTransactions: [
+          {
+            to: FROM_MOCK,
+            data: '0x1',
+            type: TransactionType.contractInteraction,
+          },
+          {
+            to: ADDRESS_2_MOCK,
+            data: '0x2',
+            type: TransactionType.contractInteraction,
+          },
+        ] as NestedTransactionMetadata[],
+      });
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+      expect(getByText('Interacting with')).toBeInTheDocument();
+    });
   });
 });
