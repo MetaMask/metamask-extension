@@ -34,6 +34,8 @@ jobs:
 
       - name: Run beta build
         env:
+          INFURA_PROJECT_ID: ''
+          INFURA_BETA_PROJECT_ID: ''
           SEGMENT_BETA_WRITE_KEY: 00000000000
           SENTRY_DSN: https://fake@sentry.io/0000000
           ENABLE_MV3: true
