@@ -23,7 +23,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import PulseLoader from '../../../ui/pulse-loader';
-import { AvatarGroup } from '../../../multichain';
+import { AvatarGroup } from '../../../multichain/avatar-group/avatar-group';
 import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
