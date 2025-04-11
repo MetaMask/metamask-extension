@@ -706,6 +706,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên Blur có thể gặp rủi ro."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Bạn đang tương tác với một trang web độc hại. Nếu tiếp tục, bạn sẽ bị mất tài sản."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên OpenSea có thể gặp rủi ro."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Nếu bạn xác nhận yêu cầu này, bạn có thể bị mất tài sản. Chúng tôi khuyên bạn nên hủy yêu cầu này."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Bạn đang gửi tài sản của mình cho kẻ lừa đảo. Nếu tiếp tục, bạn sẽ bị mất những tài sản đó."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Nếu bạn xác nhận yêu cầu này, bạn đang cho phép kẻ lừa đảo rút và chi tiêu tài sản của mình. Bạn sẽ không lấy lại được tài sản."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
   },
@@ -762,6 +780,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Bạn sẽ cần cho phép truy cập vào $1 $2 để thực hiện cầu nối, sau đó hãy phê duyệt việc thực hiện cầu nối sang $2. Điều này sẽ yêu cầu hai lần xác nhận riêng biệt."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Đã sao chép liên kết trình khám phá khối!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Đang tính toán..."
   },
@@ -817,6 +838,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Chọn token và số tiền"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Đã tạo tài khoản Solana"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "Đã nhận $1 trên $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -845,6 +869,12 @@
   },
   "bridgeToChain": {
     "message": "Cầu nối đến $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Nếu bạn đã thêm token này theo cách thủ công, hãy đảm bảo rằng bạn nhận thức được các rủi ro đối với tiền của mình trước khi thực hiện cầu nối."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Chúng tôi không thể xác minh token này."
   },
   "bridgeTxDetailsBridging": {
     "message": "Cầu nối"
@@ -2453,6 +2483,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Nhập ví hoặc tài khoản"
+  },
+  "importWalletSuccess": {
+    "message": "Cụm từ khôi phục bí mật $1 đã được nhập",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Nhập $1",
@@ -4318,6 +4352,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Bảo vệ tiền của bạn"
+  },
+  "redeposit": {
+    "message": "Nạp lại"
   },
   "refreshList": {
     "message": "Làm mới danh sách"
