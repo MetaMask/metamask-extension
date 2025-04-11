@@ -18,6 +18,8 @@ import {
 
 export default class InfoTab extends PureComponent {
   state = {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     version: process.env.METAMASK_VERSION,
     isVisitSupportDataConsentModalOpen: false,
   };

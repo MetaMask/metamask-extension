@@ -581,7 +581,11 @@ function createFactoredBuild({
         __dirname,
         `../../lavamoat/browserify/policy-override.json`,
       ),
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       writeAutoPolicyDebug: process.env.WRITE_AUTO_POLICY_DEBUG,
     };
     Object.assign(bundlerOpts, lavamoatBrowserify.args);

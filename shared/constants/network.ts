@@ -323,7 +323,8 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-// eslint-disable-next-line no-restricted-globals
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line no-restricted-globals, n/no-process-env
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
   network,

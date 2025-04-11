@@ -383,6 +383,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
             await unlockWallet(driver);
 
@@ -464,6 +466,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
             await unlockWallet(driver);
 

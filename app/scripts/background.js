@@ -83,9 +83,13 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const inTest = process.env.IN_TEST;
 const migrator = new Migrator({
   migrations,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   defaultVersion: process.env.WITH_STATE
     ? FIXTURE_STATE_METADATA_VERSION
     : null,
@@ -107,6 +111,8 @@ const metamaskInternalProcessHash = {
 
 const metamaskBlockedPorts = ['trezor-connect'];
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
@@ -121,11 +127,15 @@ const requestAccountTabIds = {};
 let controller;
 const tabOriginMapping = {};
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState =
     persistenceManager.get.bind(persistenceManager);
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 // normalized (adds a trailing slash to the end of the domain if it's missing)
@@ -385,6 +395,8 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
 
   const port = args[0];
   const isDappConnecting = port.sender.tab?.id;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (isDappConnecting && process.env.MULTICHAIN_API) {
     connectExternalCaip(...args);
   } else {
@@ -468,7 +480,8 @@ async function initialize() {
     // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
     // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line no-restricted-globals, n/no-process-env
     if (process.env.IN_TEST && window.navigator?.webdriver) {
       getSocketBackgroundToMocha();
     }
@@ -607,6 +620,8 @@ export async function loadStateFromPersistence() {
   // migrations
   migrator.on('error', console.warn);
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -797,6 +812,8 @@ export function setupController(
   // MetaMask Controller
   //
   controller = new MetamaskController({
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
@@ -1016,6 +1033,8 @@ export function setupController(
   };
 
   connectExternalCaip = async (remotePort) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (!process.env.MULTICHAIN_API) {
       return;
     }
@@ -1069,6 +1088,8 @@ export function setupController(
     updateBadge,
   );
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
     controller.controllerMessenger.subscribe(
       METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
@@ -1312,6 +1333,8 @@ const addAppInstalledEvent = () => {
 function onInstall() {
   log.debug('First install detected');
   addAppInstalledEvent();
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
@@ -1348,6 +1371,8 @@ async function initBackground() {
   onNavigateToTab();
   try {
     await initialize();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
@@ -1366,6 +1391,8 @@ async function initBackground() {
     log.error(error);
   }
 }
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }

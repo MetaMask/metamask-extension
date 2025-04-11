@@ -4,7 +4,11 @@ import log from 'loglevel';
 import nock from 'nock';
 import { TextEncoder, TextDecoder } from 'util';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 process.env.IN_TEST = true;
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 process.env.METAMASK_BUILD_TYPE = 'main';
 
 global.chrome = {

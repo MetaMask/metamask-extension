@@ -124,6 +124,8 @@ function transformUiState(data) {
 async function matchesSnapshot({
   data,
   snapshot,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   update = process.env.UPDATE_SNAPSHOTS === 'true',
 }) {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
@@ -186,6 +188,8 @@ function getMissingProperties(complete, object) {
 
 describe('Sentry errors', function () {
   const migrationError =
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';

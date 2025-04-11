@@ -823,6 +823,8 @@ export default class Home extends PureComponent {
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 

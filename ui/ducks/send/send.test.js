@@ -4088,6 +4088,8 @@ describe('Send Slice', () => {
         });
 
         it('returns BASIC when on localhost and advanced inline gas is false and IN_TEST is set', () => {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           process.env.IN_TEST = true;
           expect(
             getGasInputMode({
@@ -4098,6 +4100,8 @@ describe('Send Slice', () => {
               send: initialState,
             }),
           ).toBe(GAS_INPUT_MODES.BASIC);
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           process.env.IN_TEST = false;
         });
 
@@ -4129,6 +4133,8 @@ describe('Send Slice', () => {
         });
 
         it('returns INLINE when on mainnet and advanced inline gas is false but eth_gasPrice estimate is used even IN_TEST', () => {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           process.env.IN_TEST = true;
           expect(
             getGasInputMode({
@@ -4141,6 +4147,8 @@ describe('Send Slice', () => {
               send: initialState,
             }),
           ).toBe(GAS_INPUT_MODES.INLINE);
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           process.env.IN_TEST = false;
         });
 

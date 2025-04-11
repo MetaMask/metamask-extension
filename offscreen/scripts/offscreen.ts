@@ -50,7 +50,8 @@ async function init(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 init().then(() => {
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line no-restricted-globals, n/no-process-env
   if (process.env.IN_TEST) {
     chrome.runtime.onMessage.addListener((message) => {
       if (

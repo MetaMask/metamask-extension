@@ -567,15 +567,15 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify success event and category. Success event was: ${
           options.event
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Category was: ${options.category}. Payload keys were: ${Object.keys(
           options,
         )}. ${
           typeof options.properties === 'object'
-            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
         }`,
       );
@@ -933,8 +933,8 @@ export default class MetaMetricsController extends BaseController<
         },
         context: this.#buildContext(referrer, page),
       });
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       this.#captureException(err);
     }
@@ -1032,15 +1032,15 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify event and category. Event was: ${
           payload.event
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
           payload,
         )}. ${
           typeof payload.properties === 'object'
-            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
         }`,
       );
@@ -1427,8 +1427,8 @@ export default class MetaMetricsController extends BaseController<
         userId: metaMetricsId ?? undefined,
         traits: userTraits,
       });
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       this.#captureException(err);
     }

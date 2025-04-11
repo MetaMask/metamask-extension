@@ -177,6 +177,8 @@ const AccountListItem = ({
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
         ? account.balance
         : totalFiatBalance;
@@ -229,11 +231,15 @@ const AccountListItem = ({
     let isAggregatedFiatOverviewBalance;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     isAggregatedFiatOverviewBalance =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
       !isEvmNetwork;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     isAggregatedFiatOverviewBalance =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
     return isAggregatedFiatOverviewBalance;

@@ -18,6 +18,8 @@ jest.mock('webextension-polyfill', () => {
 });
 
 describe('extension platform', () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const metamaskVersion = process.env.METAMASK_VERSION;
   beforeEach(() => {
     // TODO: Delete this an enable 'resetMocks' in `jest.config.js` instead
@@ -26,11 +28,15 @@ describe('extension platform', () => {
 
   afterEach(() => {
     // reset `METAMASK_VERSION` env var
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.METAMASK_VERSION = metamaskVersion;
   });
 
   describe('getVersion', () => {
     it('should return non-prerelease version', () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_VERSION = 'should.not.return.me';
       browser.runtime.getManifest.mockReturnValue({
         version: '1.2.3',
@@ -43,6 +49,8 @@ describe('extension platform', () => {
     });
 
     it('should return rollback version', () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_VERSION = 'should.not.return.me';
       browser.runtime.getManifest.mockReturnValue({
         version: '1.2.3.1',
@@ -55,6 +63,8 @@ describe('extension platform', () => {
     });
 
     it('should return SemVer-formatted version manifest of prerelease', () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_VERSION = 'should.not.return.me';
       browser.runtime.getManifest.mockReturnValue({
         version: '1.2.3-beta.0',

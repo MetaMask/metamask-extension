@@ -27,6 +27,8 @@ import {
   Text,
 } from '../../component-library';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const inTest = Boolean(process.env.IN_TEST);
 
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {

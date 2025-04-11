@@ -35,7 +35,8 @@ describe('I18N Module', () => {
     jest.resetAllMocks();
     clearCaches();
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line no-restricted-globals, n/no-process-env
     process.env.IN_TEST = 'true';
   });
 
@@ -99,7 +100,8 @@ describe('I18N Module', () => {
         describe('if using fallback locale', () => {
           it('logs error', () => {
             // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-            // eslint-disable-next-line no-restricted-globals
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line no-restricted-globals, n/no-process-env
             delete process.env.IN_TEST;
 
             expect(
@@ -134,10 +136,12 @@ describe('I18N Module', () => {
 
           it('throws if ENABLE_SETTINGS_PAGE_DEV_OPTIONS is set true', () => {
             // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-            // eslint-disable-next-line no-restricted-globals
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line no-restricted-globals, n/no-process-env
             process.env.IN_TEST = String(false);
             // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-            // eslint-disable-next-line no-restricted-globals
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line no-restricted-globals, n/no-process-env
             process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS = String(true);
             expect(() =>
               getMessage(

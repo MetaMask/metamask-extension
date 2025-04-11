@@ -27,6 +27,8 @@ const { PAGES } = require('../../webdriver/driver');
 // with a "NoSuchWindowError: Browsing context has been discarded" whenever
 // we try to open a third dapp, so this test run in Firefox will
 // validate two dapps instead of 3
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 async function openDappAndSwitchChain(driver, dappUrl, chainId) {

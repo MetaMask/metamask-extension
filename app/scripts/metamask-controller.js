@@ -1,19 +1,3 @@
-import { nanoid } from 'nanoid';
-import { captureException } from '@sentry/browser';
-import { AddressBookController } from '@metamask/address-book-controller';
-import {
-  ApprovalController,
-  ApprovalRequestNotFoundError,
-} from '@metamask/approval-controller';
-import { Messenger } from '@metamask/base-controller';
-import { EnsController } from '@metamask/ens-controller';
-import { PhishingController } from '@metamask/phishing-controller';
-import { AnnouncementController } from '@metamask/announcement-controller';
-import {
-  NetworkController,
-  getDefaultNetworkControllerState,
-} from '@metamask/network-controller';
-import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   MethodNames,
   PermissionController,
@@ -98,6 +82,12 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { AddressBookController } from '@metamask/address-book-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
+import {
+  ApprovalController,
+  ApprovalRequestNotFoundError,
+} from '@metamask/approval-controller';
 import {
   CurrencyRateController,
   TokenDetectionController,
@@ -107,16 +97,7 @@ import {
   fetchMultiExchangeRate,
   TokenBalancesController,
 } from '@metamask/assets-controllers';
-import {
-  hasProperty,
-  hexToBigInt,
-  toCaipChainId,
-  parseCaipAccountId,
-} from '@metamask/utils';
-import { normalize } from '@metamask/eth-sig-util';
-
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-
+import { Messenger } from '@metamask/base-controller';
 import {
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
@@ -126,7 +107,6 @@ import {
   walletInvokeMethod,
   MultichainApiNotifications,
 } from '@metamask/multichain-api-middleware';
-
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -138,6 +118,7 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
+import { EnsController } from '@metamask/ens-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
@@ -145,11 +126,13 @@ import {
   LedgerKeyring,
   LedgerIframeBridge,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { normalize } from '@metamask/eth-sig-util';
 import {
   OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
+import { GasFeeController } from '@metamask/gas-fee-controller';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
@@ -159,9 +142,22 @@ import {
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
+import {
+  NetworkController,
+  getDefaultNetworkControllerState,
+} from '@metamask/network-controller';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
+import { PhishingController } from '@metamask/phishing-controller';
 import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import {
+  hasProperty,
+  hexToBigInt,
+  toCaipChainId,
+  parseCaipAccountId,
+} from '@metamask/utils';
+import { captureException } from '@sentry/browser';
 import { Mutex } from 'await-semaphore';
 import { rawChainData } from 'eth-chainlist';
 import LatticeKeyring from 'eth-lattice-keyring';
@@ -176,25 +172,12 @@ import {
   uniq,
 } from 'lodash';
 import log from 'loglevel';
+import { nanoid } from 'nanoid';
 import { finished, pipeline } from 'readable-stream';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 ///: END:ONLY_INCLUDE_IF
 
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { convertNetworkId } from '../../shared/modules/network.utils';
-import {
-  getIsSmartTransaction,
-  getFeatureFlagsByChainId,
-} from '../../shared/modules/selectors';
-import { createCaipStream } from '../../shared/modules/caip-stream';
-import { BaseUrl } from '../../shared/constants/urls';
-import {
-  TOKEN_TRANSFER_LOG_TOPIC_HASH,
-  TRANSFER_SINFLE_LOG_TOPIC_HASH,
-} from '../../shared/lib/transactions-controller-utils';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { endTrace, trace } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import {
   ORIGIN_METAMASK,
@@ -202,7 +185,6 @@ import {
   MESSAGE_TYPE,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import {
   HardwareDeviceNames,
@@ -245,6 +227,8 @@ import {
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { TokenStandard } from '../../shared/constants/transaction';
+import { BaseUrl } from '../../shared/constants/urls';
+import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import {
   getStorageItem,
@@ -255,7 +239,20 @@ import {
   fetchTokenBalance,
   fetchERC1155Balance,
 } from '../../shared/lib/token-util';
+import { endTrace, trace } from '../../shared/lib/trace';
+import {
+  TOKEN_TRANSFER_LOG_TOPIC_HASH,
+  TRANSFER_SINFLE_LOG_TOPIC_HASH,
+} from '../../shared/lib/transactions-controller-utils';
+import { createCaipStream } from '../../shared/modules/caip-stream';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { convertNetworkId } from '../../shared/modules/network.utils';
+import {
+  getIsSmartTransaction,
+  getFeatureFlagsByChainId,
+} from '../../shared/modules/selectors';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -265,16 +262,6 @@ import { BridgeStatusAction } from '../../shared/types/bridge-status';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 ///: END:ONLY_INCLUDE_IF
-import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
-import { PreferencesController } from './controllers/preferences-controller';
-import { AppStateController } from './controllers/app-state-controller';
-import { AlertController } from './controllers/alert-controller';
-import OnboardingController from './controllers/onboarding';
-import Backup from './lib/backup';
-import DecryptMessageController from './controllers/decrypt-message';
-import SwapsController from './controllers/swaps';
-import MetaMetricsController from './controllers/metametrics-controller';
-import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
@@ -385,14 +372,22 @@ import { NotificationServicesControllerInit } from './controller-init/notificati
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { AccountOrderController } from './controllers/account-order';
 import AccountTrackerController from './controllers/account-tracker-controller';
+import { AlertController } from './controllers/alert-controller';
+import { AppStateController } from './controllers/app-state-controller';
+import DecryptMessageController from './controllers/decrypt-message';
+import MetaMetricsController from './controllers/metametrics-controller';
 import { MMIController } from './controllers/mmi-controller';
 import { NetworkOrderController } from './controllers/network-order';
+import OnboardingController from './controllers/onboarding';
+import { PreferencesController } from './controllers/preferences-controller';
+import SwapsController from './controllers/swaps';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
+import Backup from './lib/backup';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -408,8 +403,10 @@ import {
   createMultichainMethodMiddleware,
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
+import { segment } from './lib/segment';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
+import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -2327,8 +2324,8 @@ export default class MetamaskController extends EventEmitter {
     resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(err);
       }
@@ -4434,8 +4431,8 @@ export default class MetamaskController extends EventEmitter {
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4454,8 +4451,8 @@ export default class MetamaskController extends EventEmitter {
             userAddress,
             tokenId,
           );
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
@@ -4484,8 +4481,8 @@ export default class MetamaskController extends EventEmitter {
             ...details,
             balance: balanceToUse,
           };
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
           // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4565,8 +4562,8 @@ export default class MetamaskController extends EventEmitter {
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4595,8 +4592,8 @@ export default class MetamaskController extends EventEmitter {
             tokenId,
             networkClientId,
           );
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
@@ -4625,8 +4622,8 @@ export default class MetamaskController extends EventEmitter {
             ...details,
             balance: balanceToUse,
           };
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
           // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4647,8 +4644,8 @@ export default class MetamaskController extends EventEmitter {
       const details =
         await this.assetsContractController.getTokenStandardAndDetails(address);
       return details?.symbol;
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       return null;
     }
@@ -4868,8 +4865,8 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
@@ -5015,8 +5012,8 @@ export default class MetamaskController extends EventEmitter {
 
         await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
       }
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       // If somehow this login token doesn't work properly,
       // remove it and the user will get shown back to the unlock screen
@@ -5544,8 +5541,8 @@ export default class MetamaskController extends EventEmitter {
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
       );
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -6733,8 +6730,8 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController.revokePermissions({
               [origin]: permissionKeys,
             });
-          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             // we dont want to handle errors here because
             // the revokePermissions api method should just
@@ -6751,8 +6748,8 @@ export default class MetamaskController extends EventEmitter {
               target,
               caveatType,
             );
-          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             if (e instanceof PermissionDoesNotExistError) {
               // suppress expected error in case that the origin
@@ -7170,8 +7167,8 @@ export default class MetamaskController extends EventEmitter {
               target,
               caveatType,
             );
-          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             if (e instanceof PermissionDoesNotExistError) {
               // suppress expected error in case that the origin
@@ -7267,8 +7264,8 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       });
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // noop
     }
@@ -7450,8 +7447,8 @@ export default class MetamaskController extends EventEmitter {
         }
         try {
           this.notifyConnection(conn, await getPayload(origin));
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-        // eslint-disable-next-line id-denylist
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
         } catch (err) {
           console.error(err);
         }
@@ -7475,8 +7472,8 @@ export default class MetamaskController extends EventEmitter {
       if (connection.engine) {
         connection.engine.emit('notification', payload);
       }
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       console.error(err);
     }
@@ -7985,8 +7982,8 @@ export default class MetamaskController extends EventEmitter {
   updateNetworksList = (chainIds) => {
     try {
       this.networkOrderController.updateNetworksList(chainIds);
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -8000,8 +7997,8 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -8015,8 +8012,8 @@ export default class MetamaskController extends EventEmitter {
   updateHiddenAccountsList = (hiddenAccountList) => {
     try {
       this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -8331,8 +8328,8 @@ export default class MetamaskController extends EventEmitter {
                 contract: singleLog.address,
                 ...parsedLog,
               });
-            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-            // eslint-disable-next-line id-denylist
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+              // eslint-disable-next-line id-denylist
             } catch (err) {
               // ignore
             }

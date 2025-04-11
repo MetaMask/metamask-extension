@@ -15,6 +15,8 @@ async function main() {
       (_yargs) =>
         _yargs
           .option('browser', {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line n/no-process-env
             default: process.env.SELENIUM_BROWSER || 'all',
             description: `Set the browser to be used; specify 'chrome', 'firefox', 'all' or leave unset to run on 'all' by default.`,
             type: 'string',
@@ -81,7 +83,11 @@ async function main() {
         `"The browser must be set, via the '--browser' flag or the SELENIUM_BROWSER environment variable`,
       );
       return;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     } else if (selectedBrowserForRun !== process.env.SELENIUM_BROWSER) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.SELENIUM_BROWSER = selectedBrowserForRun;
     }
     try {
@@ -104,6 +110,8 @@ async function main() {
     }
 
     if (debug) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.E2E_DEBUG = 'true';
     }
 
@@ -111,20 +119,28 @@ async function main() {
     let exit = '--exit';
 
     if (leaveRunning) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.E2E_LEAVE_RUNNING = 'true';
       testTimeoutInMilliseconds = 0;
       exit = '--no-exit';
     }
 
     if (updateSnapshot) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.UPDATE_SNAPSHOTS = 'true';
     }
 
     if (updatePrivacySnapshot) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
     }
 
     const configFile = path.join(__dirname, '.mocharc.js');
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
     const dir = 'test/test-results/e2e';

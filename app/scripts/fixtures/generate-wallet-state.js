@@ -14,7 +14,11 @@ import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
 import { withUnreadNotifications } from './with-unread-notifications';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const FIXTURES_CONFIG = process.env.WITH_STATE
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   ? JSON.parse(process.env.WITH_STATE)
   : {};
 
@@ -27,7 +31,11 @@ export async function generateWalletState() {
   const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
 
   const { vault, accounts } = await generateVaultAndAccount(
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.TEST_SRP || E2E_SRP,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.PASSWORD,
   );
 
