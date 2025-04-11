@@ -25,6 +25,8 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
+/** @typedef {{ metamask: import('../../store/store.ts').MetaMaskReduxState['metamask'] }} MetaMaskSlice */
+
 const initialState = {
   isInitialized: false,
   isUnlocked: false,
