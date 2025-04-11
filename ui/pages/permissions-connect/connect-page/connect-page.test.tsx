@@ -9,6 +9,18 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { ConnectPage, ConnectPageProps } from './connect-page';
 
+// Mock the CreateSolanaAccountModal component to avoid errors
+jest.mock(
+  '../../../components/multichain/create-solana-account-modal/create-solana-account-modal',
+  () => ({
+    CreateSolanaAccountModal: ({ onClose }: { onClose: () => void }) => (
+      <div data-testid="create-solana-account-modal">
+        <button onClick={onClose}>Close</button>
+      </div>
+    ),
+  }),
+);
+
 const mockTestDappUrl = 'https://test.dapp';
 
 const mockTargetSubjectMetadata = {
@@ -282,5 +294,174 @@ describe('ConnectPage', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render Solana account requested message when promptToCreateSolanaAccount is true', () => {
+    const { getByText } = render({
+      props: {
+        request: {
+          id: '1',
+          origin: mockTestDappUrl,
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            promptToCreateSolanaAccount: true,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    expect(
+      getByText('This site is requesting a Solana account.'),
+    ).toBeDefined();
+    expect(getByText('Create Solana account')).toBeDefined();
+  });
+
+  it('should not render Solana account message when promptToCreateSolanaAccount is false', () => {
+    const { queryByText } = render({
+      props: {
+        request: {
+          id: '1',
+          origin: mockTestDappUrl,
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            promptToCreateSolanaAccount: false,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    expect(
+      queryByText('A Solana account is required to connect to this site.'),
+    ).toBeNull();
+    expect(queryByText('Create Solana account')).toBeNull();
+  });
+
+  it('should open CreateSolanaAccountModal when create Solana account button is clicked', () => {
+    const { getByText, getByTestId } = render({
+      props: {
+        request: {
+          id: '1',
+          origin: mockTestDappUrl,
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            promptToCreateSolanaAccount: true,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    const createSolanaAccountButton = getByText('Create Solana account');
+    fireEvent.click(createSolanaAccountButton);
+
+    expect(getByTestId('create-solana-account-modal')).toBeDefined();
+  });
+
+  it('should not show select account message when promptToCreateSolanaAccount is true', () => {
+    const { queryByText } = render({
+      props: {
+        request: {
+          id: '1',
+          origin: mockTestDappUrl,
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            promptToCreateSolanaAccount: true,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    expect(queryByText('Select an account to connect')).toBeNull();
   });
 });
