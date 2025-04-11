@@ -14,61 +14,36 @@ import React, {
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import CountdownTimer from '../countdown-timer';
-import SwapsFooter from '../swaps-footer';
-import Box from '../../../components/ui/box';
-import {
-  TextColor,
-  JustifyContent,
-  DISPLAY,
-  AlignItems,
-  TextVariant,
-  FRACTIONS,
-  TEXT_ALIGN,
-  Size,
-  FlexDirection,
-  Severity,
-  FontStyle,
-} from '../../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../components/component-library';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsEventErrorType,
-} from '../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
-import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-  toPrecisionWithoutTrailingZeros,
-} from '../../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventErrorType,
+} from '../../../../shared/constants/metametrics';
+import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
   MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
+import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
 import {
   calcTokenValue,
   calculateMaxGasLimit,
 } from '../../../../shared/lib/swaps-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../shared/lib/transactions-controller-utils';
 import {
   decimalToHex,
   decWEIToDecETH,
   sumHexes,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
-import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   getSmartTransactionsOptInStatusForMetrics,
@@ -76,6 +51,15 @@ import {
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
+import {
+  BannerAlert,
+  ButtonLink,
+  ButtonLinkSize,
+  Text,
+} from '../../../components/component-library';
+import Box from '../../../components/ui/box';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -111,12 +95,26 @@ import {
   getIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
 import {
+  TextColor,
+  JustifyContent,
+  DISPLAY,
+  AlignItems,
+  TextVariant,
+  FRACTIONS,
+  TEXT_ALIGN,
+  Size,
+  FlexDirection,
+  Severity,
+  FontStyle,
+} from '../../../helpers/constants/design-system';
+import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
@@ -142,8 +140,10 @@ import {
   getLayer1GasFee,
 } from '../../../store/actions';
 import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
+import CountdownTimer from '../countdown-timer';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import SelectQuotePopover from '../select-quote-popover';
+import SwapsFooter from '../swaps-footer';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
@@ -1032,8 +1032,8 @@ export default function ReviewQuote({
           l1ApprovalFeeTotal,
         );
         setMultiLayerL1FeeTotal(l1FeeTotal);
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         captureException(e);
         setMultiLayerL1FeeTotal(null);

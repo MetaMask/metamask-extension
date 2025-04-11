@@ -164,8 +164,6 @@ export const ImportTokensModal = ({ onClose }) => {
   const showSearchTab =
     isTokenDetectionSupported ||
     isTokenDetectionInactiveOnMainnet ||
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-    // eslint-disable-next-line n/no-process-env
     Boolean(process.env.IN_TEST);
 
   const tokenListByChain = useSelector(selectERC20TokensByChain);
@@ -287,8 +285,8 @@ export const ImportTokensModal = ({ onClose }) => {
       dispatch(clearPendingTokens());
       dispatch(hideImportTokensModal());
       history.push(DEFAULT_ROUTE);
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       dispatch(setNewTokensImportedError('error'));
       dispatch(clearPendingTokens());

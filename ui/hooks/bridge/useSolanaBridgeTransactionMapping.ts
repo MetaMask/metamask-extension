@@ -39,8 +39,8 @@ export default function useSolanaBridgeTransactionMapping(
         const hexChainId = new Numeric(chainId, 10).toPrefixedHexString();
         // @ts-expect-error WIP: Need to fix type for indexing NETWORK_TO_NAME_MAP with string
         networkName = NETWORK_TO_NAME_MAP[hexChainId];
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // If conversion fails, just use the original chain ID
         console.error('Error converting chain ID', e);

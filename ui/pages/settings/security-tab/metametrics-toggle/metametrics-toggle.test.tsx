@@ -74,8 +74,8 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
   );
   const metaMetricsToggleButton = getByTestId(
     PARTICIPATE_IN_METRICS_TOGGLE_TEST_ID,
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
   ).querySelector('input') as HTMLInputElement;
 
   return {

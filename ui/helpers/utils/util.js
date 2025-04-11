@@ -457,8 +457,8 @@ export function bnLessThanEqualTo(a, b) {
 export function getURL(url) {
   try {
     return new URL(url);
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     return '';
   }
@@ -658,8 +658,8 @@ export async function getAssetImageURL(image, ipfsGateway) {
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
       return await getFormattedIpfsUrl(ipfsGateway, image, true);
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       logErrorWithMessage(e);
       return '';
@@ -721,8 +721,6 @@ export const getDedupedSnaps = (request, permissions) => {
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
 
-// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-// eslint-disable-next-line n/no-process-env
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
 const REGEX_LTR_OVERRIDE = /\u202D/giu;
@@ -839,8 +837,8 @@ export const fetchTokenExchangeRates = async (
       tokenAddresses,
       chainId,
     });
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     return {};
   }
@@ -862,8 +860,8 @@ export const hexToText = (hex) => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
     return buff.length === 32 ? hex : buff.toString('utf8');
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
@@ -922,8 +920,8 @@ export const transformOriginToTitle = (rawOrigin) => {
 
     const parts = url.hostname.split('.');
     return parts.slice(-2).join('.');
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     return 'Unknown Origin';
   }

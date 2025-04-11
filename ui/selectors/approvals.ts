@@ -42,8 +42,8 @@ export const getApprovalRequestsByType = (
 ) => {
   const pendingApprovalRequests = Object.values(
     state.metamask.pendingApprovals,
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   ).filter(({ type }) => type === approvalType);
 
   if (predicate) {

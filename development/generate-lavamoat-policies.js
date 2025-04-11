@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const concurrently = require('concurrently');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');

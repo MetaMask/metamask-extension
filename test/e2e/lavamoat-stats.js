@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /* eslint-disable node/shebang */
 const { promises: fs, constants: fsConstants } = require('fs');
 const path = require('path');

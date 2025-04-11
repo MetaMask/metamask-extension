@@ -191,9 +191,9 @@ export const Popover: PopoverComponent = React.forwardRef(
     return (
       <>
         {isPortal
-          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-          // eslint-disable-next-line no-restricted-globals
-          ? isOpen && createPortal(PopoverContent, document.body)
+          ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
+            isOpen && createPortal(PopoverContent, document.body)
           : isOpen && PopoverContent}
       </>
     );

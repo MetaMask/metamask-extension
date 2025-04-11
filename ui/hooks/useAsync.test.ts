@@ -306,8 +306,8 @@ describe('useAsyncResultOrThrow', () => {
     try {
       Object.prototype.toString.call(result.current);
       fail('Should have thrown');
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       const thrownError = e as CustomError;
       expect(thrownError).toBe(error);

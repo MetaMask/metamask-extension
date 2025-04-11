@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const { codeFrameColumns } = require('@babel/code-frame');
 const fs = require('fs');
 const path = require('path');

@@ -6,18 +6,15 @@ import { banner } from './banner';
 import { bold } from './bold';
 import { box } from './box';
 import { button } from './button';
-import { radioGroup } from './radioGroup';
-import { tooltip } from './tooltip';
-import { value } from './value';
-import { checkbox } from './checkbox';
 import { card } from './card';
-import { footer } from './footer';
+import { checkbox } from './checkbox';
 import { container } from './container';
 import { copyable } from './copyable';
 import { divider } from './divider';
 import { dropdown } from './dropdown';
 import { field } from './field';
 import { fileInput } from './file-input';
+import { footer } from './footer';
 import { form } from './form';
 import { heading } from './heading';
 import { icon } from './icon';
@@ -25,12 +22,15 @@ import { image } from './image';
 import { input } from './input';
 import { italic } from './italic';
 import { link } from './link';
+import { radioGroup } from './radioGroup';
 import { row } from './row';
 import { section } from './section';
 import { selector } from './selector';
 import { skeleton } from './skeleton';
 import { spinner } from './spinner';
 import { text } from './text';
+import { tooltip } from './tooltip';
+import { value } from './value';
 
 export const COMPONENT_MAPPING = {
   AssetSelector: assetSelector,

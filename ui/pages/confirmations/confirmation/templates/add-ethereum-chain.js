@@ -354,8 +354,8 @@ function getValues(pendingApproval, t, actions, history, data) {
       let endpointChainId;
       try {
         endpointChainId = await jsonRpcRequest(customRpcUrl, 'eth_chainId');
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(
           `Request for method 'eth_chainId on ${customRpcUrl} failed`,

@@ -56,6 +56,13 @@ import {
   getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import {
+  getMultichainNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  getSelectedAccountMultichainTransactions,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/multichain';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
@@ -78,35 +85,28 @@ import {
   BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
+import { ActivityListItem } from '../../multichain';
+import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
+import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
+import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
-import {
-  getMultichainNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  getSelectedAccountMultichainTransactions,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
-import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { ActivityListItem } from '../../multichain';
 ///: END:ONLY_INCLUDE_IF
 
 // eslint-disable-next-line import/no-restricted-paths
-import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 
 const PAGE_INCREMENT = 10;
 

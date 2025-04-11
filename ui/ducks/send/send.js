@@ -765,9 +765,9 @@ export const initializeSendState = createAsyncThunk(
 
     const swapsBlockedTokens =
       getIsSwapsChain(state) && getUseExternalServices(state)
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
-        ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
+        ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
+          (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
         : [];
 
     const disabledSwapAndSendNetworks =
@@ -2491,8 +2491,8 @@ export function updateRecipientUserInput(userInput) {
               sendingAddress,
             );
             isProbablyAnAssetContract = Boolean(standard);
-          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             console.log(e);
           }
@@ -2721,8 +2721,8 @@ export function updateSendAsset(
               details.address,
               details.tokenId,
             );
-          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-          // eslint-disable-next-line id-denylist
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
           } catch (err) {
             const message = getErrorMessage(err);
             if (message.includes('Unable to verify ownership.')) {
@@ -3324,8 +3324,6 @@ export function getGasInputMode(state) {
   if (state[name].gasIsSetInModal) {
     return GAS_INPUT_MODES.CUSTOM;
   }
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-  // eslint-disable-next-line n/no-process-env
   if ((!isMainnet && !process.env.IN_TEST) || showAdvancedGasFields) {
     return GAS_INPUT_MODES.INLINE;
   }
@@ -3334,8 +3332,6 @@ export function getGasInputMode(state) {
   // instruct the UI to render the INLINE inputs in this case, only on
   // mainnet or IN_TEST.
   if (
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-    // eslint-disable-next-line n/no-process-env
     (isMainnet || process.env.IN_TEST) &&
     gasEstimateType === GasEstimateTypes.ethGasPrice
   ) {

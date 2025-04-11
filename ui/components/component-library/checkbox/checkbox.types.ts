@@ -65,10 +65,9 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * Use inputRef to pass a ref to the html input element
    */
-  inputRef?:
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
-    | React.RefObject<HTMLInputElement>
+  inputRef?: // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
+  | React.RefObject<HTMLInputElement>
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
     // eslint-disable-next-line no-restricted-globals
     | ((instance: HTMLInputElement | null) => void);

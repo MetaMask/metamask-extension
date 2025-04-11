@@ -124,7 +124,7 @@ function getOptions(
       coerce: (
         rawVersion: string,
       ): { version: 'nightly' | `v${string}`; tag: string } => {
-        if (/^nightly/u.test(rawVersion)) {
+        if (rawVersion.startsWith('nightly')) {
           return { version: 'nightly', tag: rawVersion };
           // we don't validate the version much, we just trust the user
         } else if (isVersionString(rawVersion)) {

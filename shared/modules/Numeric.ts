@@ -56,7 +56,7 @@ function isDecimalHex(value: string): boolean {
  */
 function hexadecimalToBigNumber(value: string | number): BigNumber {
   const stringified = typeof value === 'number' ? `${value}` : value;
-  const isNegative = stripHexPrefix(stringified)[0] === '-';
+  const isNegative = stripHexPrefix(stringified).startsWith('-');
   const valueWithoutNegation = stringified.replace('-', '');
 
   const valueAsBigNumber = new BigNumber(

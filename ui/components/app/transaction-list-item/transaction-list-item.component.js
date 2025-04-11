@@ -51,7 +51,9 @@ import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayD
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
+import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { abortTransactionSigning } from '../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -60,15 +62,13 @@ import {
   Box,
   Text,
 } from '../../component-library';
+import { ActivityListItem } from '../../multichain';
+import Button from '../../ui/button';
+import CancelButton from '../cancel-button';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
 import TransactionIcon from '../transaction-icon';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
-import Button from '../../ui/button';
-import CancelButton from '../cancel-button';
-import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
-import { ActivityListItem } from '../../multichain';
-import { abortTransactionSigning } from '../../../store/actions';
 
 function TransactionListItemInner({
   transactionGroup,

@@ -33,8 +33,8 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
           // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           forceUpdateMetamaskState(dispatch);
         }
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         if (!cancelled) {
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889

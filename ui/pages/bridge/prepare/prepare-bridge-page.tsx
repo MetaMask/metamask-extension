@@ -94,8 +94,22 @@ import type { CrossChainSwapsEventProperties } from '../../../hooks/bridge/useCr
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
+import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  getCurrentKeyring,
+  getSelectedEvmInternalAccount,
+  getSelectedInternalAccount,
+  getTokenList,
+} from '../../../selectors';
+import {
+  getLastSelectedNonEvmAccount,
+  getMultichainIsEvm,
+  getMultichainProviderConfig,
+} from '../../../selectors/multichain';
 import {
   setActiveNetwork,
   setActiveNetworkWithError,
@@ -104,29 +118,15 @@ import {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
+import { useDestinationAccount } from '../hooks/useDestinationAccount';
+import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { Column, Row, Tooltip } from '../layout';
+import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import {
-  getCurrentKeyring,
-  getSelectedEvmInternalAccount,
-  getSelectedInternalAccount,
-  getTokenList,
-} from '../../../selectors';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getLastSelectedNonEvmAccount,
-  getMultichainIsEvm,
-  getMultichainProviderConfig,
-} from '../../../selectors/multichain';
-import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
-import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { BridgeInputGroup } from './bridge-input-group';
 import { DestinationAccountPicker } from './components/destination-account-picker';

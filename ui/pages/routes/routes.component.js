@@ -67,6 +67,8 @@ import {
 } from '../../helpers/constants/routes';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
+import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import PermissionsConnect from '../permissions-connect';
 // TODO: Remove restricted import
@@ -75,8 +77,6 @@ import PermissionsConnect from '../permissions-connect';
 ///: END:ONLY_INCLUDE_IF
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
-import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   getConnectingLabel,
   hideAppHeader,

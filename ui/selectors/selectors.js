@@ -1265,8 +1265,6 @@ export function getIsTestnet(state) {
 }
 
 export function getIsNonStandardEthChain(state) {
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-  // eslint-disable-next-line n/no-process-env
   return !(getIsMainnet(state) || getIsTestnet(state) || process.env.IN_TEST);
 }
 
@@ -1305,8 +1303,6 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
   (currentChainId, { tokenNetworkFilter }) => {
     // Portfolio view not enabled outside popular networks
     if (
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-      // eslint-disable-next-line n/no-process-env
       !process.env.PORTFOLIO_VIEW ||
       !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
     ) {
@@ -1764,11 +1760,7 @@ export function getIsSwapsChain(state, overrideChainId) {
   const currentChainId = getCurrentChainId(state);
   const chainId = overrideChainId ?? currentChainId;
   const isDevelopment =
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-    // eslint-disable-next-line n/no-process-env
     process.env.METAMASK_ENVIRONMENT === 'development' ||
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-    // eslint-disable-next-line n/no-process-env
     process.env.METAMASK_ENVIRONMENT === 'testing';
   return isDevelopment
     ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
@@ -2585,8 +2577,6 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
   (networkConfigurations, currentChainId) => {
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-    // eslint-disable-next-line n/no-process-env
     if (!process.env.PORTFOLIO_VIEW) {
       return [currentChainId];
     }
@@ -2609,8 +2599,6 @@ export const getChainIdsToPoll = createDeepEqualSelector(
     isTokenNetworkFilterEqualCurrentNetwork,
   ) => {
     if (
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-      // eslint-disable-next-line n/no-process-env
       !process.env.PORTFOLIO_VIEW ||
       isTokenNetworkFilterEqualCurrentNetwork
     ) {
@@ -2635,8 +2623,6 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
     isTokenNetworkFilterEqualCurrentNetwork,
   ) => {
     if (
-      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31895
-      // eslint-disable-next-line n/no-process-env
       !process.env.PORTFOLIO_VIEW ||
       isTokenNetworkFilterEqualCurrentNetwork
     ) {
@@ -3363,8 +3349,8 @@ export function getAllPermittedChainsForSelectedTab(state, activeTab) {
     try {
       const { namespace } = parseCaipChainId(caipChainId);
       return namespace !== KnownCaipNamespace.Wallet;
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       return false;
     }

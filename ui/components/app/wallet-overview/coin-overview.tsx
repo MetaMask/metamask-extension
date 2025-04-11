@@ -1,7 +1,6 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { Hex } from '@metamask/utils';
-import type { CaipChainId } from '@metamask/utils';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

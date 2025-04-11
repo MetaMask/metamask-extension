@@ -23,14 +23,14 @@ export default function cleanErrorStack(err) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
     err.stack = err.message;
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } else if (msg === '') {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
     err.stack = err.name;
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } else if (!err.stack) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist

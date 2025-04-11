@@ -61,8 +61,8 @@ export class IconFactory {
     address: string,
     diameter: number,
     tokenMetadata?: Partial<TokenMetadata>,
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
   ): HTMLElement | SVGSVGElement {
     if (iconExistsFor(address, tokenMetadata)) {
       return imageElFor(tokenMetadata);

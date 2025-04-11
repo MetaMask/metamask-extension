@@ -65,22 +65,6 @@ import {
   getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
 import {
-  DISPLAY,
-  TextColor,
-  JustifyContent,
-  AlignItems,
-  SEVERITIES,
-  TextVariant,
-  BLOCK_SIZES,
-  FontWeight,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
-import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import {
-  useTokensToSearch,
-  getRenderableTokenData,
-} from '../../../hooks/useTokensToSearch';
-import {
   fetchQuotesAndSetQuoteState,
   setSwapsFromToken,
   setSwapToToken,
@@ -108,6 +92,29 @@ import {
   getLatestAddedTokenTo,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
+import {
+  DISPLAY,
+  TextColor,
+  JustifyContent,
+  AlignItems,
+  SEVERITIES,
+  TextVariant,
+  BLOCK_SIZES,
+  FontWeight,
+  TextAlign,
+} from '../../../helpers/constants/design-system';
+import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
+import { getURLHostName } from '../../../helpers/utils/util';
+import useBridging from '../../../hooks/bridge/useBridging';
+import useSwapDefaultToToken from '../../../hooks/swap/useSwapDefaultToToken';
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import {
+  useTokensToSearch,
+  getRenderableTokenData,
+} from '../../../hooks/useTokensToSearch';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
   getSwapsDefaultToken,
@@ -119,10 +126,6 @@ import {
   getIsBridgeChain,
   getIsBridgeEnabled,
 } from '../../../selectors';
-import { getURLHostName } from '../../../helpers/utils/util';
-import { usePrevious } from '../../../hooks/usePrevious';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   resetSwapsPostFetchState,
@@ -145,10 +148,7 @@ import {
   formatSwapsValueForDisplay,
   getClassNameForCharLength,
 } from '../swaps.util';
-import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import TransactionSettings from '../transaction-settings/transaction-settings';
-import useBridging from '../../../hooks/bridge/useBridging';
-import useSwapDefaultToToken from '../../../hooks/swap/useSwapDefaultToToken';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 

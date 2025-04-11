@@ -18,8 +18,8 @@ export function useTimeout(cb, delay, immediate = true) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
     saveCb.current = cb;
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   }, [cb]);
 
   useEffect(() => {

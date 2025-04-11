@@ -20,8 +20,8 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
   return async function fetchWithTimeout(
     url: RequestInfo,
     opts?: RequestInit,
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
   ): Promise<Response> {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
     // eslint-disable-next-line no-restricted-globals

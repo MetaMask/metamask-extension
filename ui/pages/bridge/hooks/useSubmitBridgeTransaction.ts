@@ -111,8 +111,8 @@ export default function useSubmitBridgeTransaction() {
           quoteResponse,
         });
       }
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       debugLog('Approve transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
@@ -195,8 +195,8 @@ export default function useSubmitBridgeTransaction() {
         quoteResponse,
         approvalTxId: approvalTxMeta?.id,
       });
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       debugLog('Bridge transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
