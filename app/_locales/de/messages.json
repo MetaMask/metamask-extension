@@ -2723,9 +2723,6 @@
   "ledgerLocked": {
     "message": "Keine Verbindung zum Ledger-Gerät. Bitte stellen Sie sicher, dass Ihr Gerät entsperrt ist und die Ethereum-App geöffnet ist."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Es können nicht mehrere Ledger-Geräte gleichzeitig verbunden werden. Bevor ein neues Ledger-Gerät verbunden werden kann, sollten Sie zunächst die Verbindung zum vorherigen Gerät trennen."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live braucht zu lange für eine Reaktion oder um eine Verbindung herzustellen. Stellen Sie sicher, dass die Ledger Live-App geöffnet und Ihr Gerät entsperrt ist."
   },

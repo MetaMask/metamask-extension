@@ -2723,9 +2723,6 @@
   "ledgerLocked": {
     "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "여러 Ledger 장치를 동시에 연결할 수 없습니다. 새 Ledger 장치를 연결하려면 이전 장치를 먼저 연결 해제해야 합니다."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
   },
