@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "詐欺が判明している第三者がこのサイトにアクセスできます。このまま進めると、資産が失われます。"
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "このサイトは安全に見えるかもしれませんが、第三者が情報にアクセスできる可能性があります。サインインすると、資産が盗まれる可能性があります。"
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "確定すると、すべての資金や資産が失われる可能性があります。"
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "サインインすると、OpenSeaに出品している資産の一部またはすべてが危険にさらされます。"
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "サインインすると、Blurに出品している資産の一部またはすべてが危険にさらされます。"
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "このサイトは悪意のあるドメインとして認識されています。サインインすると、資金や資産が失われます。この要求をキャンセルすることを強くお勧めします。"
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "サインインすると、すべての資産が失われる可能性があります。この要求をキャンセルすることをお勧めします。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "このサイトがスタンダードアカウントへの切り替えを求めています。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "サイトがこのアカウントを所有することを証明するためにサインインを求めています。"
   },
@@ -1133,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "アクセス許可を取り消す"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "アカウントをリセット"
-  },
   "confirmTitleSIWESignature": {
     "message": "サインインリクエスト"
   },
@@ -1147,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "この要求を確定すると、アカウントがスマートアカウントに更新されます。"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "トランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "更新とトランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "アカウントを更新しない場合は、こちらからキャンセルできます。\n\n更新せずにこのトランザクションを完了させるには、サイトでこの要求をもう一度行う必要があります。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "トランザクションのキャンセル"
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
@@ -3735,9 +3693,6 @@
     "message": "1年",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5430,6 @@
     "message": "$1のロックを解除するには、ダウンロードして設定し、パスワードを入力してください。",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "OneKeyを接続する"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "OneKeyをコンピューターに直接接続し、ロックを解除します。必ず正しいパスフレーズを使用してください。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Trezorを接続する"
   },
@@ -6173,9 +6121,6 @@
   },
   "transactionErrored": {
     "message": "トランザクションでエラーが発生しました。"
-  },
-  "transactionFailedBannerMessage": {
-    "message": "このトランザクションには追加の手数料がかかるため、中止しました。資金はウォレットから移動していません。"
   },
   "transactionFlowNetwork": {
     "message": "ネットワーク"

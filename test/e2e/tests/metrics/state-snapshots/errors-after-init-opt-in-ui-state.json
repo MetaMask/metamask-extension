@@ -64,7 +64,8 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
-    "errorInSettings": null
+    "errorInSettings": null,
+    "showNewSrpAddedToast": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -119,9 +120,9 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     },
     "throttledOrigins": "object",
@@ -162,6 +163,7 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
+    "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
     "isEvmSelected": "boolean",
@@ -207,6 +209,8 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
+    "manageInstitutionalWallets": "boolean",
+    "disabledUpgradeAccountsByChain": "object",
     "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -301,7 +305,6 @@
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
-    "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -341,6 +344,9 @@
     },
     "bridgeFeatureFlags": {
       "extensionConfig": {
+        "maxRefreshCount": "number",
+        "refreshRate": "number",
+        "support": "boolean",
         "chains": {
           "eip155:1": "object",
           "eip155:10": "object",
@@ -352,10 +358,7 @@
           "eip155:43114": "object",
           "eip155:59144": "object",
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
-        },
-        "maxRefreshCount": "number",
-        "refreshRate": "number",
-        "support": "boolean"
+        }
       },
       "mobileConfig": "object"
     },

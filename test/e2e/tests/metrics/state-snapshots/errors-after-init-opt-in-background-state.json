@@ -64,6 +64,9 @@
   "BridgeController": {
     "bridgeFeatureFlags": {
       "extensionConfig": {
+        "maxRefreshCount": "number",
+        "refreshRate": "number",
+        "support": "boolean",
         "chains": {
           "eip155:1": "object",
           "eip155:10": "object",
@@ -75,10 +78,7 @@
           "eip155:43114": "object",
           "eip155:59144": "object",
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
-        },
-        "maxRefreshCount": "number",
-        "refreshRate": "number",
-        "support": "boolean"
+        }
       },
       "mobileConfig": "object"
     },
@@ -113,9 +113,9 @@
         "usdConversionRate": 1700
       },
       "MegaETH": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     }
   },
@@ -138,6 +138,7 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean"
   },
+  "InstitutionalSnapController": "object",
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
@@ -189,6 +190,7 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
+  "NftDetectionController": "object",
   "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -268,7 +270,9 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object"
+    "showIncomingTransactions": "object",
+    "manageInstitutionalWallets": "boolean",
+    "disabledUpgradeAccountsByChain": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {

@@ -9,15 +9,11 @@ import { setAccountLabel } from '../../../store/actions';
 import {
   getHardwareWalletType,
   getInternalAccountByAddress,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskKeyrings,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
   isAbleToExportAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   isAbleToRevealSrp,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/utils/util';
 import {
   Box,
@@ -137,10 +133,8 @@ export const AccountDetailsDisplay = ({
     metadata: { keyring },
   } = account;
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const keyrings = useSelector(getMetaMaskKeyrings);
   const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
-  ///: END:ONLY_INCLUDE_IF
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
@@ -193,23 +187,19 @@ export const AccountDetailsDisplay = ({
           {t('showPrivateKey')}
         </ButtonSecondary>
       ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        exportSrpFeatureEnabled ? (
-          <ButtonSecondary
-            data-testid="account-details-display-export-srp"
-            block
-            size={ButtonSecondarySize.Lg}
-            variant={TextVariant.bodyMd}
-            onClick={() => {
-              onExportClick('SRP');
-            }}
-          >
-            {t('showSRP')}
-          </ButtonSecondary>
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {exportSrpFeatureEnabled ? (
+        <ButtonSecondary
+          data-testid="account-details-display-export-srp"
+          block
+          size={ButtonSecondarySize.Lg}
+          variant={TextVariant.bodyMd}
+          onClick={() => {
+            onExportClick('SRP');
+          }}
+        >
+          {t('showSRP')}
+        </ButtonSecondary>
+      ) : null}
     </Box>
   );
 };
