@@ -1720,24 +1720,23 @@
         "process.cwd": true
       }
     },
-    "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": {
+    "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "browserify>has>function-bind": true
       }
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
-        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "string.prototype.matchall>side-channel>side-channel-map>call-bound": {
+    "browserify>util>which-typed-array>call-bound": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -1810,6 +1809,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -2260,7 +2260,7 @@
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
@@ -2418,7 +2418,7 @@
     },
     "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
@@ -2497,7 +2497,7 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "string.prototype.matchall>es-abstract>es-set-tostringtag": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
@@ -2518,7 +2518,7 @@
     },
     "string.prototype.matchall>es-abstract>es-object-atoms": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true
+        "string.prototype.matchall>es-abstract>es-errors": true
       }
     },
     "string.prototype.matchall>es-abstract>es-set-tostringtag": {
@@ -3380,6 +3380,13 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
         "util.format": true
@@ -3410,12 +3417,13 @@
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
+        "Float16Array": true,
         "WeakRef": true
       },
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
@@ -3932,7 +3940,7 @@
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
@@ -7089,7 +7097,9 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>get-intrinsic>get-proto": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
       }
     },
@@ -7563,7 +7573,7 @@
     "string.prototype.matchall>es-abstract>safe-regex-test": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>is-regex": true
       }
     },
@@ -7703,7 +7713,7 @@
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
@@ -7712,7 +7722,7 @@
     "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
@@ -7746,22 +7756,22 @@
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "browserify>util>which-typed-array>call-bound": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "browserify>util>which-typed-array>call-bound": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
@@ -7769,7 +7779,7 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
