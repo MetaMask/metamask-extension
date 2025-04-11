@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Ce site demande que vous lui accordiez l'autorisation de dépenser vos jetons."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Ce site demande à repasser à un compte standard."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Un site vous demande de vous connecter pour prouver que vous êtes le titulaire de ce compte."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Retirer l'autorisation"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Réinitialiser le compte"
-  },
   "confirmTitleSIWESignature": {
     "message": "Demande de connexion"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Demande de transaction"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Si vous confirmez cette demande, votre compte sera mis à niveau et converti en un compte intelligent."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Annuler la transaction"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Annuler la mise à niveau et la transaction"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Si vous ne souhaitez pas mettre à niveau votre compte, vous pouvez l’annuler ici.\n\nPour finaliser cette transaction sans mise à niveau, vous devrez soumettre à nouveau cette demande sur le site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Annuler la transaction"
   },
   "confirmationAlertDetails": {
     "message": "Pour protéger vos actifs, nous vous suggérons de rejeter la demande."

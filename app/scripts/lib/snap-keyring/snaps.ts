@@ -3,7 +3,7 @@ import {
   getLocalizedSnapManifest,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
-import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
+import { PREINSTALLED_SNAPS } from '../../constants/snaps';
 import { SnapKeyringBuilderMessenger } from './types';
 
 /**
@@ -13,7 +13,7 @@ import { SnapKeyringBuilderMessenger } from './types';
  * @returns True if Snap is a preinstalled Snap, false otherwise.
  */
 export function isSnapPreinstalled(snapId: SnapId) {
-  return PREINSTALLED_SNAPS.some((snap) => snap.snapId === snapId);
+  return PREINSTALLED_SNAPS.some((snap) => snap === snapId);
 }
 
 /**

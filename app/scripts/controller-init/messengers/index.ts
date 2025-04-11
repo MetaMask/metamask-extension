@@ -25,6 +25,7 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
+import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
@@ -51,6 +52,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  InstitutionalSnapController: {
+    getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {

@@ -275,7 +275,7 @@ export const getFromTokenConversionRate = createSelector(
       if (isSolanaChainId(fromChain.chainId)) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          assetsRates[fromToken.address]?.rate,
+          assetsRates[fromToken.assetId]?.rate,
           nonEvmNativeConversionRate?.sol?.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
