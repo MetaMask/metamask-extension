@@ -20,7 +20,7 @@ export function AccountTypeMessage() {
           rel="noreferrer noopener"
           color={TextColor.primaryDefault}
         >
-          {t('learnMore')}
+          {t('learnMoreUpperCase')}
         </ButtonLink>,
       ])}
     </Text>

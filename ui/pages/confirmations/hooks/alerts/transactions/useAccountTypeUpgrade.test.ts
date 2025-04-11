@@ -9,12 +9,13 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { AccountTypeMessage } from './AccountTypeMessage';
 import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
+import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 jest.mock('../../../../../../shared/lib/transactions.utils');
 
 const FROM_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 const TO_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
-const NESTED_TRANSACTIONS_MOCK = [{ data: '0x', to: TO_MOCK, from: FROM_MOCK }];
+const NESTED_TRANSACTIONS_MOCK = [{ data: '0x', to: TO_MOCK }];
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
 
@@ -48,6 +49,7 @@ function runHook({
 }
 
 describe('useAccountTypeUpgrade', () => {
+  const isBatchTransactionMock = jest.mocked(isBatchTransaction);
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -57,6 +59,7 @@ describe('useAccountTypeUpgrade', () => {
   });
 
   it('returns an alert when the transaction is a batch transaction', () => {
+    isBatchTransactionMock.mockReturnValue(true)
     expect(
       runHook({
         currentConfirmation: {
