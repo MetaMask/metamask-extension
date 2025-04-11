@@ -48,14 +48,12 @@ export const CASH_SLIDE = {
   href: 'https://portfolio.metamask.io/sell',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export const MULTI_SRP_SLIDE = {
   id: 'multiSrp',
   title: 'slideMultiSrpTitle',
   description: 'slideMultiSrpDescription',
   image: './images/slide-multi-srp-icon.svg',
 };
-///: END:ONLY_INCLUDE_IF
 
 export const ZERO_BALANCE = '0x0';
 
