@@ -74,7 +74,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
-      - bitcoin
+      # - bitcoin
       - solana
       - multi-srp
       - solana-swaps
@@ -151,6 +151,8 @@ features:
         dest: snaps/account-watcher.json
       - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
         dest: snaps/preinstalled-example-snap.json
+      - src: ./app/build-types/flask/images/
+        dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
@@ -160,8 +162,6 @@ features:
         dest: snaps/ens-resolver-snap.json
       - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/institutional-wallet-snap.json
-      - src: ./app/build-types/flask/images/
-        dest: images
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
