@@ -211,6 +211,72 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  it('renders the tag with the snap name for named snap accounts', () => {
+    const { container } = render(
+      {
+        account: {
+          ...mockAccount,
+          metadata: {
+            ...mockAccount.metadata,
+            snap: {
+              id: mockSnap.id,
+            },
+            keyring: {
+              type: 'Snap Keyring',
+            },
+          },
+          balance: '0x0',
+        },
+      },
+      {
+        metamask: {
+          snaps: {
+            [mockSnap.id]: {
+              ...mockSnap,
+              preinstalled: false,
+            },
+          },
+        },
+      },
+    );
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
+  });
+
+  it('does not render the tag with the snap name for preinstalled snap accounts', () => {
+    const { container } = render(
+      {
+        account: {
+          ...mockAccount,
+          metadata: {
+            ...mockAccount.metadata,
+            snap: {
+              id: mockSnap.id,
+            },
+            keyring: {
+              type: 'Snap Keyring',
+            },
+          },
+          balance: '0x0',
+        },
+      },
+      {
+        metamask: {
+          snaps: {
+            [mockSnap.id]: {
+              ...mockSnap,
+              preinstalled: true,
+            },
+          },
+        },
+      },
+    );
+    const tag = container.querySelector('.mm-tag');
+    expect(tag).not.toBeInTheDocument();
+  });
+  ///: END:ONLY_INCLUDE_IF
+
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
       it('renders tokens for EVM account', () => {
