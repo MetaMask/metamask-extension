@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { Icon, IconName } from '../../../component-library';
+import { IconName } from '../../../component-library';
 import PageFooter from '.';
 
 describe('Page Footer', () => {
@@ -56,10 +56,7 @@ describe('Page Footer', () => {
 
     it('renders submitButtonIcon if passed', () => {
       const { container } = renderWithProvider(
-        <PageFooter
-          {...props}
-          submitButtonIcon={IconName.Add}
-        />,
+        <PageFooter {...props} submitButtonIcon={IconName.Add} />,
       );
 
       expect(container.querySelector('.mm-icon')).toBeInTheDocument();

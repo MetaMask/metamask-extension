@@ -44,9 +44,7 @@ export default class PageContainerFooter extends Component {
     } = this.props;
 
     const submitVariant =
-    submitButtonType === 'confirm'
-      ? ButtonVariant.Primary
-      : submitButtonType;
+      submitButtonType === 'confirm' ? ButtonVariant.Primary : submitButtonType;
 
     const cancelVariant =
       cancelButtonType === 'default'
