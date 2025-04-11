@@ -35,7 +35,7 @@ const ORIGIN_MOCK = 'test.com';
 const DELEGATION_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 
 const SEND_CALLS_MOCK: SendCalls = {
-  version: '2.0',
+  version: '2.0.0',
   calls: [{ to: '0x123' }],
   chainId: CHAIN_ID_MOCK,
   from: FROM_MOCK,
@@ -220,7 +220,7 @@ describe('EIP-5792', () => {
           { ...SEND_CALLS_MOCK, version: '1.0' },
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(`Version not supported: Got 1.0, expected 2.0`);
+      ).rejects.toThrow(`Version not supported: Got 1.0, expected 2.0.0`);
     });
 
     it('throws if chain ID does not match network client', async () => {
@@ -375,7 +375,7 @@ describe('EIP-5792', () => {
       } as unknown as TransactionControllerState);
 
       expect(getCallsStatus(messenger, BATCH_ID_MOCK)).toStrictEqual({
-        version: '1.0',
+        version: '2.0.0',
         id: BATCH_ID_MOCK,
         chainId: CHAIN_ID_MOCK,
         atomic: true,

@@ -42,8 +42,7 @@ export enum EIP5792ErrorCode {
   RejectedUpgrade = 5750,
 }
 
-const VERSION_SEND_CALLS = '2.0';
-const VERSION_GET_CALLS_STATUS = '1.0';
+const VERSION = '2.0.0';
 
 export async function processSendCalls(
   hooks: {
@@ -155,7 +154,7 @@ export function getCallsStatus(
   ];
 
   return {
-    version: VERSION_GET_CALLS_STATUS,
+    version: VERSION,
     id,
     chainId,
     atomic: true, // Always atomic as we currently only support EIP-7702 batches
@@ -249,9 +248,9 @@ function validateSendCalls(
 function validateSendCallsVersion(sendCalls: SendCalls) {
   const { version } = sendCalls;
 
-  if (version !== VERSION_SEND_CALLS) {
+  if (version !== VERSION) {
     throw rpcErrors.invalidInput(
-      `Version not supported: Got ${version}, expected ${VERSION_SEND_CALLS}`,
+      `Version not supported: Got ${version}, expected ${VERSION}`,
     );
   }
 }
