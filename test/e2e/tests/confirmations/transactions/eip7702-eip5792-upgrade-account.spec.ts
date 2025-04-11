@@ -126,7 +126,7 @@ describe('Upgrade Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSendCalls();
 
-        await testDapp.assertEip5792SendCallsError(
+        await testDapp.checkEip5792SendCallsError(
           'Error: EIP-5792 is not supported for this chain and account - Chain ID: 0x539, Account: 0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
         );
       },

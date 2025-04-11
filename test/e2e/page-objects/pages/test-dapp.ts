@@ -253,6 +253,18 @@ class TestDapp {
     }
 
   /**
+    * Verify the EIP-5792 send calls error message on the test dapp.
+    *
+    * @param expectedMessage - The expected error message to verify.
+    */
+    async checkEip5792SendCallsError(expectedMessage: string) {
+      await this.driver.waitForSelector({
+        css: this.eip5792SendCallsError,
+        text: expectedMessage,
+      });
+    }
+
+  /**
    * Verifies the eth_subscribe response.
    *
    * @param shouldBePresent - Whether the eth_subscribe response should be present, defaults to true.
@@ -595,13 +607,6 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signPermitResultV,
       text: `v: ${expectedV}`,
-    });
-  }
-
-  async assertEip5792SendCallsError(expectedMessage: string) {
-    await this.driver.waitForSelector({
-      css: this.eip5792SendCallsError,
-      text: expectedMessage,
     });
   }
 
