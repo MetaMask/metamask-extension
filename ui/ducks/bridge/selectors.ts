@@ -4,6 +4,7 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
+import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import {
   isSolanaChainId,
   type BridgeToken,
@@ -15,6 +16,7 @@ import {
   getNativeAssetForChainId,
   type BridgeAppState as BridgeAppStateFromController,
   selectBridgeQuotes,
+  selectIsQuoteExpired,
 } from '@metamask/bridge-controller';
 import { SolAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -67,7 +69,6 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './bridge';
-import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -403,6 +404,16 @@ const _getBridgeFeesPerGas = createSelector(
     ),
   }),
 );
+
+export const getIsQuoteExpired = (
+  { metamask }: BridgeAppState,
+  currentTimeInMs: number,
+) =>
+  selectIsQuoteExpired(
+    metamask,
+    { featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG },
+    currentTimeInMs,
+  );
 
 export const getBridgeQuotes = createSelector(
   [
