@@ -5291,6 +5291,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware::locator=metamask-crx%40workspace%3A.":
+  version: 16.0.1
+  resolution: "@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware#.yalc/@metamask/eth-json-rpc-middleware::hash=1d4ba0&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/eth-block-tracker": "npm:^11.0.4"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
+    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bn.js: "npm:^5.2.1"
+    klona: "npm:^2.0.6"
+    pify: "npm:^5.0.0"
+    safe-stable-stringify: "npm:^2.4.3"
+  checksum: 10/5b2fefbcf3b064a6896d734c76f32b9ab7986cbd2dacf1949997ac3a49e595dec316eddf2ed8c3b880dc55a0efd8779ae8f81b72a1d60a74f54f4875eb122eba
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-middleware@npm:^15.0.1":
   version: 15.3.0
   resolution: "@metamask/eth-json-rpc-middleware@npm:15.3.0"
@@ -5311,7 +5331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^16.0.0, @metamask/eth-json-rpc-middleware@npm:^16.0.1":
+"@metamask/eth-json-rpc-middleware@npm:^16.0.1":
   version: 16.0.1
   resolution: "@metamask/eth-json-rpc-middleware@npm:16.0.1"
   dependencies:
@@ -27369,7 +27389,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
+    "@metamask/eth-json-rpc-middleware": "file:.yalc/@metamask/eth-json-rpc-middleware"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
