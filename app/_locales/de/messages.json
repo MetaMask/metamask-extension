@@ -1121,21 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Wenn Sie diese Anfrage bestätigen, wird Ihr Konto zu einem Smart-Konto aktualisiert."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Transaktion stornieren"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Aktualisierung abbrechen und Transaktion stornieren"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Wenn Sie Ihr Konto nicht aktualisieren möchten, können Sie es hier stornieren.\n\nUm diese Transaktion ohne Aktualisierung abzuschließen, müssen Sie diese Anfrage erneut auf der Website stellen. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Transaktion stornieren"
-  },
   "confirmationAlertDetails": {
     "message": "Um Ihre Assets zu schützen, empfehlen wir die Ablehnung der Anfrage."
   },

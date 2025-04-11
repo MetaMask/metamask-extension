@@ -20,7 +20,7 @@ import {
   getSmartTransactionsMigrationAppliedInternal,
 } from '../../../../../shared/modules/selectors/smart-transactions';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../../shared/modules/selectors';
 
@@ -60,7 +60,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     );
 
     const chainSupportsSmartTransactions = useSelector(
-      getCurrentChainSupportsSmartTransactions,
+      getChainSupportsSmartTransactions,
     );
 
     const smartTransactionsPreferenceEnabled = useSelector(
