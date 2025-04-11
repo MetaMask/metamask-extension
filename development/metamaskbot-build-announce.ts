@@ -1,4 +1,3 @@
-import { execFileSync } from 'child_process';
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
 
@@ -70,6 +69,9 @@ async function start(): Promise<void> {
       chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
     },
+    'builds (beta)': {
+      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}.zip`,
+    },
     'builds (flask)': {
       chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
@@ -83,27 +85,6 @@ async function start(): Promise<void> {
       firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
   };
-
-  const commitMessage = execFileSync('git', [
-    'show',
-    '-s',
-    '--format=%s',
-    HEAD_COMMIT_HASH,
-  ])
-    .toString()
-    .trim();
-
-  const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
-  const betaMatch = commitMessage.match(betaVersionRegex);
-
-  // only include beta build link if a beta version is detected in the commit message
-  if (betaMatch) {
-    const betaVersion = betaMatch[0].split('-beta.')[1];
-    console.log(`Beta version ${betaVersion} detected, adding beta build link`);
-    buildMap['builds (beta)'] = {
-      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.${betaVersion}.zip`,
-    };
-  }
 
   const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
     const buildLinks = Object.entries(builds).map(([platform, url]) => {
