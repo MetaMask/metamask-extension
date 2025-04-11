@@ -136,7 +136,11 @@ const TokenButtons = ({
     ) {
       try {
         const networkConfigurationId = networks[token.chainId];
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(
           setSwitchedNetworkDetails({
             networkClientId: networkConfigurationId,
@@ -192,6 +196,8 @@ const TokenButtons = ({
 
     try {
       await setCorrectChain();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
         startNewDraftTransaction({
           type: AssetType.token,

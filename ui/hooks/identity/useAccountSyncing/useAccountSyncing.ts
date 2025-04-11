@@ -83,6 +83,8 @@ export const useDeleteAccountSyncingDataFromUserStorage = () => {
   const dispatch = useDispatch();
   const dispatchDeleteAccountSyncingData = useCallback(async () => {
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(deleteAccountSyncingDataFromUserStorage());
     } catch {
       // Do Nothing

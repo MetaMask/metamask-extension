@@ -26,6 +26,8 @@ export function useSwitchFeatureAnnouncementsChange(): {
       setError(null);
 
       try {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setFeatureAnnouncementsEnabled(state));
       } catch (e) {
         const errorMessage =
@@ -58,8 +60,12 @@ export function useSwitchAccountNotificationsChange(): {
 
       try {
         if (state) {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(updateOnChainTriggersByAccount(addresses));
         } else {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await dispatch(deleteOnChainTriggersByAccount(addresses));
         }
       } catch (e) {
@@ -84,6 +90,8 @@ function useRefetchAccountSettings() {
 
   const getAccountSettings = useCallback(async (accounts: string[]) => {
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const result = (await dispatch(
         checkAccountsPresence(accounts),
       )) as unknown as UseSwitchAccountNotificationsData;

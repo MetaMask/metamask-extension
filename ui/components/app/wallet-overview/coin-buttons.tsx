@@ -231,7 +231,11 @@ const CoinButtons = ({
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(
           setSwitchedNetworkDetails({
             networkClientId: networkConfigurationId,
@@ -274,6 +278,8 @@ const CoinButtons = ({
 
     // Native Send flow
     await setCorrectChain();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
   }, [

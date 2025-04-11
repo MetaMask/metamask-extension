@@ -182,6 +182,8 @@ const PopularNetworkList = ({
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+                  // eslint-disable-next-line @typescript-eslint/await-thenable
                   await dispatch(
                     requestUserApproval({
                       origin: ORIGIN_METAMASK,

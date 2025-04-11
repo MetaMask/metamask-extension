@@ -28,6 +28,8 @@ describe('createOriginThrottlingMiddleware', () => {
     const next = jest.fn();
     const end = jest.fn();
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
 
     expect(next).toHaveBeenCalled();
@@ -47,6 +49,8 @@ describe('createOriginThrottlingMiddleware', () => {
       lastRejection: Date.now(),
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await middleware(
       req,
       { error: null } as unknown as JsonRpcResponse<Json>,
@@ -79,6 +83,8 @@ describe('createOriginThrottlingMiddleware', () => {
       lastRejection: Date.now(),
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await middleware(req, responseWithoutError, next, end);
 
     expect(mockUpdateThrottledOriginState).toHaveBeenCalledWith('testOrigin', {
@@ -111,6 +117,8 @@ describe('createOriginThrottlingMiddleware', () => {
       lastRejection: 0,
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await middleware(req, responseWithUserRejectedError, next, end);
 
     expect(mockUpdateThrottledOriginState).toHaveBeenCalledWith('testOrigin', {
@@ -145,6 +153,8 @@ describe('createOriginThrottlingMiddleware', () => {
       lastRejection: 0,
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await middleware(req, responseWithUserRejectedError, next, end);
 
     expect(mockUpdateThrottledOriginState).not.toHaveBeenCalled();

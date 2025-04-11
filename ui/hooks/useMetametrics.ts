@@ -29,6 +29,8 @@ export function useEnableMetametrics(): {
     setError(null);
 
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setParticipateInMetaMetrics(true));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
@@ -71,6 +73,8 @@ export function useDisableMetametrics(): {
     setError(null);
 
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setParticipateInMetaMetrics(false));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');

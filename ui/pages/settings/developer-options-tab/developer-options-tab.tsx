@@ -78,6 +78,8 @@ const DeveloperOptionsTab = () => {
   }, []);
 
   const handleResetOnboardingClick = useCallback(async (): Promise<void> => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(resetOnboarding());
     setHasResetOnboarding(true);
 
@@ -97,6 +99,8 @@ const DeveloperOptionsTab = () => {
   const handleToggleServiceWorkerAlive = async (
     value: boolean,
   ): Promise<void> => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setServiceWorkerKeepAlivePreference(value));
     setIsServiceWorkerKeptAlive(value);
   };

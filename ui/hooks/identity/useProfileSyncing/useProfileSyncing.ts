@@ -26,6 +26,8 @@ export function useEnableProfileSyncing(): {
 
     try {
       // set profile syncing to true
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(enableProfileSyncingAction());
     } catch (e) {
       const errorMessage =
@@ -58,6 +60,8 @@ export function useDisableProfileSyncing(): {
 
     try {
       // disable profile syncing
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(disableProfileSyncingAction());
     } catch (e) {
       const errorMessage =

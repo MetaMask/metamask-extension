@@ -139,6 +139,8 @@ describe('WhatsNewModal', () => {
       const submitButton = screen.getByTestId('submit-add-account-with-name');
       fireEvent.click(submitButton);
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await expect(mockCreateAccount).toHaveBeenCalledWith({
         scope: MultichainNetworks.SOLANA,
         entropySource: KEYRING_ID,

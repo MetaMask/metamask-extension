@@ -216,12 +216,16 @@ describe('MetaMetricsController', function () {
   describe('createEventFragment', function () {
     it('should throw an error if the param is missing successEvent or category', async function () {
       await withController(async ({ controller }) => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
           controller.createEventFragment({ event: 'test' });
         }).toThrow(/Must specify success event and category\./u);
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
@@ -368,6 +372,8 @@ describe('MetaMetricsController', function () {
 
         const MOCK_NONEXISTING_ID = 'test-nonexistingid';
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await expect(() => {
           controller.updateEventFragment(MOCK_NONEXISTING_ID, {
             properties: { test: 1 },
@@ -1884,6 +1890,8 @@ describe('MetaMetricsController', function () {
           expect(controller.state.marketingCampaignCookieId).toStrictEqual(
             TEST_GA_COOKIE_ID,
           );
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await controller.setDataCollectionForMarketing(false);
           expect(controller.state.marketingCampaignCookieId).toStrictEqual(
             null,
