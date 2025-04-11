@@ -300,6 +300,7 @@ describe('./utils/helpers.ts', () => {
     function runTest(settings: Combination<typeof matrix>) {
       const { colorDepth, level, env, hasErrors, hasWarnings } = settings;
 
+      // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31862
       let testHelpers: typeof import('../utils/helpers');
       // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       const originalGetColorDepth = process.stderr.getColorDepth;
