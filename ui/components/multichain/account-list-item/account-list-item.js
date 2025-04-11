@@ -5,17 +5,17 @@ import classnames from 'classnames';
 import { BigNumber } from 'bignumber.js';
 ///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
+import { AvatarType } from '../avatar-group/avatar-group.types';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   ButtonIcon,
   Icon,
@@ -36,12 +36,11 @@ import {
   JustifyContent,
   Size,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -62,8 +61,6 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 ///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsTestnet,
-  getMultichainNativeCurrency,
-  getMultichainNativeCurrencyImage,
   getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
@@ -76,6 +73,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { getChainIdsWithTransactionActivity } from '../../../selectors/multichain/networks';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -83,6 +81,10 @@ import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
+import {
+  CHAIN_ID_TO_NAME_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../shared/constants/network';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -164,14 +166,28 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
-  // cross chain agg balance
-  const mappedOrderedTokenList = useMemo(
-    () =>
-      accountTotalFiatBalances.orderedTokenList.map((item) => ({
-        avatarValue: item.iconUrl,
-      })),
-    [accountTotalFiatBalances.orderedTokenList],
+  const chainsWithTransactionActivity = useSelector(
+    getChainIdsWithTransactionActivity,
   );
+
+  const sortedNetworkIcons = useMemo(() => {
+    const chainsWithActivityByAddress =
+      chainsWithTransactionActivity?.[account.address]?.activeChains ?? [];
+
+    const chainsWithActivity = chainsWithActivityByAddress
+      .map((chainId) => toHex(chainId))
+      .map((chainId) => {
+        const networkName = CHAIN_ID_TO_NAME_MAP[chainId];
+        return {
+          chainId,
+          name: networkName,
+          avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
+        };
+      });
+
+    return chainsWithActivity;
+  }, [chainsWithTransactionActivity, account.address]);
+
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
@@ -208,14 +224,7 @@ const AccountListItem = ({
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useMultichainSelector(
-    getMultichainNativeCurrencyImage,
-    account,
-  );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    account,
-  );
+
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -235,17 +244,6 @@ const AccountListItem = ({
       !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
     return isAggregatedFiatOverviewBalance;
-  };
-
-  const getPreferredCurrencyValue = () => {
-    let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = account.balance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    value = isEvmNetwork ? account.balance : balanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
-    return value;
   };
 
   return (
@@ -402,39 +400,13 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={1}
-              className="multichain-account-list-item__avatar-currency"
-            >
-              <AvatarToken
-                src={primaryTokenImage}
-                name={nativeCurrency}
-                size={AvatarTokenSize.Xs}
-                borderColor={BorderColor.borderDefault}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.End}
-                as="div"
-              >
-                <UserPreferencedCurrencyDisplay
-                  account={account}
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={getPreferredCurrencyValue()}
-                  type={SECONDARY}
-                  showNative
-                  data-testid="second-currency-display"
-                  privacyMode={privacyMode}
-                />
-              </Text>
-            </Box>
+          {sortedNetworkIcons.length > 0 && (
+            <AvatarGroup
+              avatarType={AvatarType.NETWORK}
+              members={sortedNetworkIcons}
+              limit={4}
+              renderTag={false}
+            />
           )}
         </Box>
         {accountLabel ? (
