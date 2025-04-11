@@ -10,11 +10,12 @@ import {
 import { toHex } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import type {
-  ///: END:ONLY_INCLUDE_IF
-  CaipChainId} from '@metamask/utils';
+  CaipChainId,
+} from '@metamask/utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isCaipChainId
+  isCaipChainId,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -34,8 +35,11 @@ import {
 } from '../../../helpers/constants/routes';
 import type {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  SwapsEthToken} from '../../../selectors';
+  SwapsEthToken,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
