@@ -12,20 +12,18 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   private readonly batchTxList = '[data-testid="batch-txs=]';
 
-  private readonly confirmUpgradeButton = 'Use smart account';
-
-  private readonly rejectBatchButton = {
+  private readonly confirmUpgradeButton = {
     tag: 'button',
-    text: 'Cancel transaction',
-  };
-
-  private readonly rejectBatchRejectUpgradeButton = {
-    tag: 'button',
-    text: 'Cancel update & transaction',
+    text: 'Use smart account',
   };
 
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
+
+  private readonly rejectUpgradeButton = {
+    tag: 'button',
+    text: 'Don’t use smart account',
+  };
 
   private readonly txType = '[data-testid="tx-type"]';
 
@@ -49,24 +47,10 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
-  async rejectBatch(): Promise<void> {
-      await this.driver.clickElement(this.footerCancelButton);
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.rejectBatchButton,
-      );
-  }
-
-  async rejectBatchRejectUpgrade(): Promise<void> {
-    await this.driver.clickElement(this.footerCancelButton);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.rejectBatchRejectUpgradeButton,
-    );
-  }
-
   async tickSplashUpgradeButton(): Promise<void> {
-    await this.driver.clickElement({
-      text: this.confirmUpgradeButton,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.confirmUpgradeButton);
+  }
+  async tickSplashRejectUpgradeButton(): Promise<void> {
+    await this.driver.clickElement(this.rejectUpgradeButton);
   }
 }

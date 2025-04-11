@@ -11,7 +11,7 @@ class Confirmation {
 
   private headerAccountDetailsButton: RawLocator;
 
-  protected footerCancelButton: RawLocator;
+  private footerCancelButton: RawLocator;
 
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
