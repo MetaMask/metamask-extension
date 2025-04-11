@@ -10,12 +10,11 @@ import {
 import { toHex } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import type {
-  CaipChainId,
-} from '@metamask/utils';
+  ///: END:ONLY_INCLUDE_IF
+  CaipChainId} from '@metamask/utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isCaipChainId,
-  ///: END:ONLY_INCLUDE_IF
+  isCaipChainId
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -35,11 +34,8 @@ import {
 } from '../../../helpers/constants/routes';
 import type {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  SwapsEthToken,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
+  SwapsEthToken} from '../../../selectors';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
@@ -251,6 +247,7 @@ const CoinButtons = ({
   }, [currentChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,
@@ -291,6 +288,7 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp(getChainId());
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -325,6 +323,7 @@ const CoinButtons = ({
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       handleBridgeOnClick(true);
       return;
     }
@@ -334,6 +333,7 @@ const CoinButtons = ({
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isSwapsChain) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         event: MetaMetricsEventName.NavSwapButtonClicked,
         category: MetaMetricsEventCategory.Swaps,
@@ -474,6 +474,7 @@ const CoinButtons = ({
             }
             label={t('receive')}
             onClick={() => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
               trackEvent({
                 event: MetaMetricsEventName.NavReceiveButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,

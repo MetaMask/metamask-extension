@@ -23,6 +23,7 @@ export const EditGasIconButton = ({
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const openEditEIP1559TxGasFeeModal = () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     updateTransactionEventFragment({
       gas_edit_attempted: 'basic',
     });

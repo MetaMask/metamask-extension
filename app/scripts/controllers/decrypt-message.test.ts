@@ -205,6 +205,7 @@ describe('DecryptMessageController', () => {
       messageToDecrypt,
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     expect(
       decryptMessageController.decryptMessage(messageToDecrypt),
     ).rejects.toThrow('Invalid encrypted data.');
@@ -262,6 +263,7 @@ describe('DecryptMessageController', () => {
       data: '0x7b2022666f6f223a202262617222207d',
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     expect(
       decryptMessageController.decryptMessageInline(messageToDecrypt),
     ).rejects.toThrow('Invalid encrypted data.');

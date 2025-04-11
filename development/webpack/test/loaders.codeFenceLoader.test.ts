@@ -8,6 +8,7 @@ import codeFenceLoader, {
   getCodeFenceLoader
 } from '../utils/loaders/codeFenceLoader';
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 describe('codeFenceLoader', () => {
   type CallbackArgs = Parameters<
     LoaderContext<CodeFenceLoaderOptions>['callback']
@@ -48,6 +49,7 @@ console.log('I am Groot.');
   }
 
   [false, true].forEach((omitFeature) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     it(`should ${omitFeature ? '' : 'not '}remove source when feature is ${
       omitFeature ? 'not ' : ''
     }active`, async () => {
@@ -61,6 +63,7 @@ console.log('I am Groot.');
     });
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should throw an error when options are invalid', () => {
     const data = generateData({ omitFeature: false });
     data.context.getOptions = () => {
@@ -73,6 +76,7 @@ console.log('I am Groot.');
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return an error when code fences are invalid', async () => {
     const data = generateData({ omitFeature: false });
     data.source = '///: BEGIN:ONLY_INCLUDE_IF\nconsole.log("I am Groot.");\n'; // invalid because there is no end comment
@@ -87,7 +91,9 @@ console.log('I am Groot.');
     assert.strictEqual(content, undefined);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   describe('getCodeFenceLoader', () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     it('should return a loader with correct properties', () => {
       const features: FeatureLabels = { active: new Set(), all: new Set() };
       const result = getCodeFenceLoader(features);

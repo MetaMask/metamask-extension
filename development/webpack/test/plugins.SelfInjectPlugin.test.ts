@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { SelfInjectPlugin } from '../utils/plugins/SelfInjectPlugin';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 describe('SelfInjectPlugin', () => {
   const matrix = {
     test: [/\.js$/u, /\.ts$/u] as const,
@@ -25,6 +26,7 @@ describe('SelfInjectPlugin', () => {
     map,
     devtool,
   }: Combination<typeof matrix>) {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     it(`should produce valid output when test is ${test}, filename is ${filename}, map is ${
       map ? 'available' : 'missing'
     }, and devtool is ${devtool}`, () => {

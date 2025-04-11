@@ -71,6 +71,7 @@ describe('useProcessNewDecimalValue', () => {
       '0x0000000000000000000000000000000000000001',
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     waitFor(() => {
       expect(exchangeRate?.value).toBe('2.34');
     });
@@ -90,6 +91,7 @@ describe('useProcessNewDecimalValue', () => {
       '0x0000000000000000000000000000000000000001',
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     waitFor(() => {
       expect(exchangeRate?.value).toBe(undefined);
     });
@@ -107,6 +109,7 @@ describe('useProcessNewDecimalValue', () => {
       '0x0000000000000000000000000000000000000001',
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     waitFor(() => {
       expect(exchangeRate?.value).toBe(undefined);
     });

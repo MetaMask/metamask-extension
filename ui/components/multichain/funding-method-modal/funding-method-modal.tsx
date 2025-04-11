@@ -60,6 +60,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const handleTransferCryptoClick = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.NavSendButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -91,6 +92,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   ]);
 
   const handleBuyCryptoClick = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,

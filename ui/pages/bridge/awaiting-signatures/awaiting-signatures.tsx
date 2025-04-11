@@ -47,6 +47,7 @@ export default function AwaitingSignatures() {
   const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,

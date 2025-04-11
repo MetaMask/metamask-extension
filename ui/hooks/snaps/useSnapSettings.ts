@@ -29,6 +29,7 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
         })) as { id: string };
         if (!cancelled) {
           setData(newData);
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           forceUpdateMetamaskState(dispatch);
         }
       } catch (err) {
@@ -43,6 +44,7 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
     }
 
     if (snapId) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       fetchPage(snapId);
     }
 

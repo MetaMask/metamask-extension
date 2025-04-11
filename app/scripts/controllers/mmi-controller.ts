@@ -164,10 +164,12 @@ export class MMIController {
 
     // Get configuration from MMIConfig controller
     if (!process.env.IN_TEST) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.mmiConfigurationController.storeConfiguration().then(() => {
         // This must happen after the configuration is fetched
         // Otherwise websockets will always be disabled in the first run
 
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         this.transactionUpdateController.subscribeToEvents();
       });
     }
@@ -283,6 +285,7 @@ export class MMIController {
 
         keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
           log.info(`Refresh token change event for ${type}`);
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           this.persistKeyringsAfterRefreshTokenChange();
         });
 
@@ -298,6 +301,7 @@ export class MMIController {
         );
 
         keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           this.logAndStoreApiRequest(logData);
         });
 
@@ -316,6 +320,7 @@ export class MMIController {
         const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           updateCustodianTransactions({
             keyring,
             type,
@@ -358,6 +363,7 @@ export class MMIController {
       await this.mmiConfigurationController.store.getState();
 
     if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
     }
   }
@@ -407,6 +413,7 @@ export class MMIController {
 
     keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
       log.info(`Refresh token change event for ${keyring.type}`);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.persistKeyringsAfterRefreshTokenChange();
     });
 
@@ -420,6 +427,7 @@ export class MMIController {
     );
 
     keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.logAndStoreApiRequest(logData);
     });
 
@@ -531,6 +539,7 @@ export class MMIController {
       await this.mmiConfigurationController.store.getState();
 
     if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.transactionUpdateController.getCustomerProofForAddresses(
         newAccounts,
       );
@@ -826,6 +835,7 @@ export class MMIController {
     signOperation: string,
   ) {
     if (signature.custodian_transactionId) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.transactionUpdateController.addTransactionToWatchList(
         signature.custodian_transactionId,
         signature.from,

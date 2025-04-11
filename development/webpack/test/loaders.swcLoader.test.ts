@@ -8,6 +8,7 @@ import swcLoader, {
 import type { Combination} from './helpers';
 import { generateCases } from './helpers';
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 describe('swcLoader', () => {
   type CallbackArgs = Parameters<LoaderContext<SwcLoaderOptions>['callback']>;
 
@@ -44,6 +45,7 @@ describe('swcLoader', () => {
     return { context: mockContext, source, expected, deferredPromise };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should transform code', async () => {
     const { context, source, deferredPromise, expected } = generateData();
     const returnValue = swcLoader.call(context, source);
@@ -56,6 +58,7 @@ describe('swcLoader', () => {
     assert.deepStrictEqual(mapObj.sources, [context.resourcePath]);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should throw an error when options are invalid', () => {
     const { context, source } = generateData();
     context.getOptions = () => {
@@ -69,6 +72,7 @@ describe('swcLoader', () => {
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return an error when code is invalid', async () => {
     const { context, deferredPromise } = generateData();
     const brokenSource = 'this is not real code;';
@@ -80,6 +84,7 @@ describe('swcLoader', () => {
     assert.strictEqual(map, undefined);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   describe('getSwcLoader', () => {
     const matrix = {
       syntax: ['typescript', 'ecmascript'] as const,
@@ -95,6 +100,7 @@ describe('swcLoader', () => {
       delete process.env.__HMR_READY__;
     });
     function runTest({ syntax, enableJsx, watch, isDevelopment }: TestCase) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       it(`should return a loader with correct properties when syntax is ${syntax}, jsx is ${enableJsx}, watch is ${watch}, and isDevelopment is ${isDevelopment}`, () => {
         process.env.__HMR_READY__ = 'true';
         // helpers caches `__HMR_READY__` on initialization, so we need to a new

@@ -84,6 +84,7 @@ export function NotificationsSettingsAllowNotifications({
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
     if (isMetamaskNotificationsEnabled) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
@@ -96,6 +97,7 @@ export function NotificationsSettingsAllowNotifications({
       });
       await disableNotifications();
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,

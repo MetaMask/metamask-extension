@@ -133,6 +133,7 @@ describe('AssetPage', () => {
       },
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
       setBridgeFeatureFlags: jest.fn(),

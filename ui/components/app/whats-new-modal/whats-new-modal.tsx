@@ -96,6 +96,7 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   const notifications = useSelector(getSortedAnnouncementsToShow);
 
   const handleNotificationViewed = (id: number) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     updateViewedNotifications({ [id]: true });
   };
 
@@ -104,6 +105,7 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
       handleNotificationViewed(id);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       category: MetaMetricsEventCategory.Home,
       event: MetaMetricsEventName.WhatsNewViewed,

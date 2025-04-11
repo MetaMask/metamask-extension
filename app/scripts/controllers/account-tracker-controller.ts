@@ -239,6 +239,7 @@ export default class AccountTrackerController extends BaseController<
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           this.updateAccountsAllActiveNetworks();
         }
         return true;
@@ -261,6 +262,7 @@ export default class AccountTrackerController extends BaseController<
           !useMultiAccountBalanceChecker
         ) {
           this.#selectedAccount = newAccount;
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           this.updateAccountsAllActiveNetworks();
         }
       },
@@ -300,6 +302,7 @@ export default class AccountTrackerController extends BaseController<
     // add listener
     this.#blockTracker.addListener('latest', this.#updateForBlock);
     // fetch account balances
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     this.updateAccounts();
   }
 
@@ -431,6 +434,7 @@ export default class AccountTrackerController extends BaseController<
 
     this.#listeners[networkClientId] = updateForBlock;
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     this.updateAccounts(networkClientId);
   }
 
@@ -531,11 +535,13 @@ export default class AccountTrackerController extends BaseController<
 
     // fetch balances for the accounts if there is block number ready
     if (this.#currentBlockNumberByChainId[this.#getCurrentChainId()]) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.updateAccounts();
     }
     this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
       const { chainId } = this.#getCorrectNetworkClient(networkClientId);
       if (this.#currentBlockNumberByChainId[chainId]) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         this.updateAccounts(networkClientId);
       }
     });
@@ -853,6 +859,7 @@ export default class AccountTrackerController extends BaseController<
         `MetaMask - Account Tracker single call balance fetch failed`,
         error,
       );
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       Promise.allSettled(
         addresses.map(async (address) =>
           this.#updateAccount(address, provider, chainId),

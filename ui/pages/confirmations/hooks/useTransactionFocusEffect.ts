@@ -38,6 +38,7 @@ export const useTransactionFocusEffect = () => {
       // If the transaction type is not one of the types that should be focused,
       // we need to unfocus the previous focused confirmation and reset the focused confirmation
       if (focusedConfirmationId) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         setTransactionFocus(focusedConfirmationId, false);
         setFocusedConfirmationId(null);
       }
@@ -48,14 +49,17 @@ export const useTransactionFocusEffect = () => {
       // If the window is focused and the focused confirmation is not the current one,
       // we need to unfocus the previous focused confirmation and focus the current one
       if (focusedConfirmationId) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         setTransactionFocus(focusedConfirmationId, false);
       }
       // Set the focused confirmation to the current one
       setFocusedConfirmationId(id);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setTransactionFocus(id, true);
     } else if (!isWindowFocused && focusedConfirmationId) {
       // If the window is not focused and there is a focused confirmation,
       // we need to unfocus the focused confirmation
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setTransactionFocus(focusedConfirmationId, false);
       setFocusedConfirmationId(null);
     }

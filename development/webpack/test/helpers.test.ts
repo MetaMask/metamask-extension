@@ -13,14 +13,17 @@ import {
 import * as helpers from '../utils/helpers';
 import { type Combination, generateCases } from './helpers';
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 describe('./utils/helpers.ts', () => {
   afterEach(() => mock.restoreAll());
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return undefined when noop it called', () => {
     const nothing = helpers.noop();
     assert.strictEqual(nothing, undefined);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return all entries listed in the manifest and file system for manifest_version 2', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
@@ -105,6 +108,7 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(canBeChunked({ name: 'anything.js' } as Chunk), true);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return all entries listed in the manifest and file system for manifest_version 3', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
@@ -192,6 +196,7 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(canBeChunked({ name: 'anything.js' } as Chunk), true);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should handle manifest.json files with empty sections', () => {
     const originalReaddirSync = fs.readdirSync;
     const appRoot = '<app-root>';
@@ -220,6 +225,7 @@ describe('./utils/helpers.ts', () => {
     assert.deepStrictEqual(entryv3, {});
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should throw if an entry file starts with an underscore', () => {
     const manifest = {
       manifest_version: 2,
@@ -233,6 +239,7 @@ describe('./utils/helpers.ts', () => {
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   describe('logStats', () => {
     const getStatsMock = (
       stats: 'normal' | 'none',
@@ -260,12 +267,14 @@ describe('./utils/helpers.ts', () => {
       } as const satisfies Stats;
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     it('should log nothing if err and stats are both not defined', () => {
       const { mock: error } = mock.method(console, 'error', helpers.noop);
       helpers.logStats(undefined, undefined);
       assert.strictEqual(error.callCount(), 0, 'error should not be called');
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     it('should log only the error when error and stats are provided', () => {
       const stats = getStatsMock('normal', 'production', false, false);
       const { mock: error } = mock.method(console, 'error', helpers.noop);
@@ -320,6 +329,7 @@ describe('./utils/helpers.ts', () => {
         process.stderr.getColorDepth = originalGetColorDepth;
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       it(`should log message when stats is "${level}" and env is "${env}", with errors: \`${hasErrors}\` and warnings: \`${hasWarnings}\``, () => {
         const stats = getStatsMock(level, env, hasErrors, hasWarnings);
         const { mock: error } = mock.method(console, 'error', testHelpers.noop);

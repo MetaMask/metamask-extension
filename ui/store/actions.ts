@@ -1595,6 +1595,7 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         attemptCloseNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
@@ -1771,6 +1772,7 @@ export function updateMetamaskState(
       // event that we are not yet on the send flow with a draftTransaction in
       // progress.
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
 
@@ -2868,6 +2870,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       attemptCloseNotificationPopup();
     }
   };
@@ -2944,6 +2947,7 @@ export function qrCodeDetected(
     // If on the send page, the send slice will listen for the QR_CODE_DETECTED
     // action and update its state. Address changes need to recompute gasLimit
     // so we fire this method so that the send page gasLimit can be recomputed
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     dispatch(computeEstimatedGasLimit());
   };
 }
@@ -3292,6 +3296,7 @@ export function setSmartTransactionsPreferenceEnabled(
   return async (dispatch, getState) => {
     const smartTransactionsOptInStatus =
       getSmartTransactionsOptInStatusInternal(getState());
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -4068,6 +4073,7 @@ export function approvePermissionsRequest(
       if (err) {
         dispatch(displayWarning(err));
       }
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       forceUpdateMetamaskState(dispatch);
     });
   };
@@ -5027,6 +5033,7 @@ export async function setWeb3ShimUsageAlertDismissed(origin: string) {
 
 // Smart Transactions Controller
 export function clearSmartTransactionFees() {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   submitRequestToBackground('clearSmartTransactionFees');
 }
 
@@ -5270,6 +5277,7 @@ export async function setNetworkClientIdForDomain(
 
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
   } catch (error) {
     logErrorWithMessage(error);
@@ -5339,6 +5347,7 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 
 export function setUseExternalNameSources(val: boolean): void {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     submitRequestToBackground('setUseExternalNameSources', [val]);
   } catch (error) {
     logErrorWithMessage(error);
@@ -5347,6 +5356,7 @@ export function setUseExternalNameSources(val: boolean): void {
 
 export function setUseTransactionSimulations(val: boolean): void {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     submitRequestToBackground('setUseTransactionSimulations', [val]);
   } catch (error) {
     logErrorWithMessage(error);

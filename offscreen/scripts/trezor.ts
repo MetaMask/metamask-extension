@@ -37,6 +37,7 @@ export default function init() {
             }
 
             if (event.payload.features?.model) {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
               chrome.runtime.sendMessage({
                 target: OffscreenCommunicationTarget.extension,
                 event: OffscreenCommunicationEvents.trezorDeviceConnect,
@@ -48,6 +49,7 @@ export default function init() {
             }
           });
 
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           TrezorConnectSDK.init({
             ...msg.params,
             env: 'webextension',
@@ -68,6 +70,7 @@ export default function init() {
           break;
 
         case TrezorAction.getPublicKey:
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           TrezorConnectSDK.getPublicKey(msg.params).then((result) => {
             sendResponse(result);
           });
@@ -75,6 +78,7 @@ export default function init() {
           break;
 
         case TrezorAction.signTransaction:
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           TrezorConnectSDK.ethereumSignTransaction(msg.params).then(
             (result) => {
               sendResponse(result);
@@ -84,6 +88,7 @@ export default function init() {
           break;
 
         case TrezorAction.signMessage:
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           TrezorConnectSDK.ethereumSignMessage(msg.params).then((result) => {
             sendResponse(result);
           });
@@ -91,6 +96,7 @@ export default function init() {
           break;
 
         case TrezorAction.signTypedData:
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           TrezorConnectSDK.ethereumSignTypedData(msg.params).then((result) => {
             sendResponse(result);
           });

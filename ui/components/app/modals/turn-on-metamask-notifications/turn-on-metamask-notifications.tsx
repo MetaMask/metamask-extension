@@ -59,6 +59,7 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
       event: MetaMetricsEventName.NotificationsActivated,
@@ -74,6 +75,7 @@ export default function TurnOnMetamaskNotifications() {
     hideModal();
     setIsLoading((prevLoadingState) => {
       if (!prevLoadingState) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         trackEvent({
           category: MetaMetricsEventCategory.NotificationsActivationFlow,
           event: MetaMetricsEventName.NotificationsActivated,

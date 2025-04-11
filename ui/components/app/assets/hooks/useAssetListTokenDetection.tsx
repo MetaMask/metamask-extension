@@ -59,6 +59,7 @@ const useAssetListTokenDetection = () => {
   };
 
   const trackTokenAddedEvent = (importedToken: Token, chainId: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.TokenAdded,
       category: MetaMetricsEventCategory.Wallet,
@@ -81,6 +82,7 @@ const useAssetListTokenDetection = () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     importAllDetectedTokens(
       isOnCurrentNetwork,
       detectedTokensMultichain,

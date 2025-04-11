@@ -31,6 +31,7 @@ describe('AddRpcUrlModal', () => {
     const mockAddUrl = jest.fn();
     render(<AddRpcUrlModal onAdded={() => null} />);
     const addButton = screen.getByRole('button', { name: 'addUrl' });
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     userEvent.click(addButton);
     expect(mockAddUrl).not.toHaveBeenCalled();
   });

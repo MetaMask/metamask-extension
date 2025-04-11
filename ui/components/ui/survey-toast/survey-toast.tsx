@@ -80,6 +80,7 @@ export function SurveyToast() {
       }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     fetchSurvey();
 
     return () => {
@@ -117,6 +118,7 @@ export function SurveyToast() {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.SurveyToast,
       category: MetaMetricsEventCategory.Feedback,

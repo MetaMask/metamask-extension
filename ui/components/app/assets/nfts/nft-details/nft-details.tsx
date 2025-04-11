@@ -207,6 +207,7 @@ export function NftDetailsComponent({
   const { chainId } = currentChain;
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
@@ -228,6 +229,7 @@ export function NftDetailsComponent({
       dispatch(setRemoveNftMessage('error'));
     } finally {
       // track event
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
@@ -247,6 +249,7 @@ export function NftDetailsComponent({
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       checkAndUpdateSingleNftOwnershipStatus(nft);
     }
   }, [nft, prevNft]);

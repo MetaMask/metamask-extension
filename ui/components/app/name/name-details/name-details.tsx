@@ -197,6 +197,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     };
 
     reset();
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     update();
 
     updateInterval.current = setInterval(update, UPDATE_DELAY);

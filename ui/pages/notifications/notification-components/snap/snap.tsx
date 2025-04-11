@@ -40,6 +40,7 @@ export const components: NotificationComponent<SnapNotification> = {
 
     const handleSnapButton = () => {
       if (!notification.isRead) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         markNotificationAsRead([
           {
             id: notification.id,

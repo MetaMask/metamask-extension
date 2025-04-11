@@ -89,6 +89,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
           order,
         }),
       );
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TokenSortPreference,

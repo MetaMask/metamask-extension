@@ -76,6 +76,7 @@ export const SrpList = ({
           key={`srp-${keyring.metadata.id}`}
           data-testid={`hd-keyring-${keyring.metadata.id}`}
           onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.SecretRecoveryPhrasePickerSelected,
@@ -101,6 +102,7 @@ export const SrpList = ({
                   data-testid={`srp-list-show-accounts-${index}`}
                   onClick={(event: React.MouseEvent) => {
                     event.stopPropagation();
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
                     trackEvent({
                       category: MetaMetricsEventCategory.Accounts,
                       event:

@@ -35,6 +35,7 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
 
   useEffect(() => {
     let isMounted = true;
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     (async () => {
       const lastConfirmation = await getLastInteractedConfirmationInfo();
 
@@ -50,6 +51,7 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setLastInteractedConfirmationInfo({
         id: currentConfirmationId,
         chainId: newChainId,

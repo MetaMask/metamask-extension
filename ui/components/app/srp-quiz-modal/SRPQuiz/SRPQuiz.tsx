@@ -286,6 +286,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
 
   // trackEvent shortcut specific to the SRP quiz
   const trackEventSrp = useCallback((location) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent(
       {
         category: MetaMetricsEventCategory.Keys,

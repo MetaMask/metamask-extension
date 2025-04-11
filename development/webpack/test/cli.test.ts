@@ -4,6 +4,7 @@ import { getDryRunMessage, parseArgv } from '../utils/cli';
 import { getBuildTypes } from '../utils/config';
 import { Browsers } from '../utils/helpers';
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 describe('./utils/cli.ts', () => {
   const defaultArgs = {
     env: 'development',
@@ -26,6 +27,7 @@ describe('./utils/cli.ts', () => {
     stats: false,
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return defaults', () => {
     const { args, cacheKey, features } = parseArgv([], getBuildTypes());
     assert.deepStrictEqual(args, defaultArgs);
@@ -41,6 +43,7 @@ describe('./utils/cli.ts', () => {
     assert(features.active instanceof Set, 'features.active should be a Set');
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('getDryRunMessage', () => {
     const { args, features } = parseArgv([], getBuildTypes());
     const message = getDryRunMessage(args, features);
@@ -54,6 +57,7 @@ describe('./utils/cli.ts', () => {
     assert(message.length > 0, 'Dry run message should not be empty');
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should allow for build types with no features', () => {
     const buildTypesConfig = getBuildTypes();
     delete buildTypesConfig.buildTypes.main.features;
@@ -65,6 +69,7 @@ describe('./utils/cli.ts', () => {
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should allow for a build type with no features section', () => {
     const buildTypesConfig = getBuildTypes();
     delete buildTypesConfig.buildTypes.main.features;
@@ -76,6 +81,7 @@ describe('./utils/cli.ts', () => {
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should return all browsers when `--browser all` is specified', () => {
     const { args } = parseArgv(['--browser', 'all'], getBuildTypes());
     assert.deepStrictEqual(args.browser, Browsers);

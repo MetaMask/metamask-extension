@@ -329,6 +329,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // to ensure that the isConnected value can be accurately inferred from
       // NetworkController.state.networksMetadata in return value of
       // `metamask_getProviderState` requests and `metamask_chainChanged` events.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
     }
 
@@ -379,6 +380,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
@@ -640,6 +642,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                     onToggle={(value: boolean) => {
                       dispatch(setShowTestNetworks(!value));
                       if (!value) {
+                        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
                         trackEvent({
                           event: MetaMetricsEventName.TestNetworksDisplayed,
                           category: MetaMetricsEventCategory.Network,
@@ -667,6 +670,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               startIconProps={{ marginRight: 2 }}
               block
               onClick={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
                 trackEvent({
                   event: MetaMetricsEventName.AddNetworkButtonClick,
                   category: MetaMetricsEventCategory.Network,

@@ -74,12 +74,14 @@ function rejectApproval({
     case ApprovalType.SnapDialogPrompt:
     case DIALOG_APPROVAL_TYPES.default:
       log('Rejecting snap dialog', { id, interfaceId, origin, type });
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       approvalController.accept(id, null);
       deleteInterface?.(interfaceId);
       break;
 
     case ApprovalType.SnapDialogConfirmation:
       log('Rejecting snap confirmation', { id, interfaceId, origin, type });
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       approvalController.accept(id, false);
       deleteInterface?.(interfaceId);
       break;
@@ -89,6 +91,7 @@ function rejectApproval({
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
       log('Rejecting snap account confirmation', { id, origin, type });
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       approvalController.accept(id, false);
       break;
     ///: END:ONLY_INCLUDE_IF

@@ -66,7 +66,9 @@ describe('migration #120.1', () => {
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     actAssertInvalidUserStorageState('user storage state is not an object');
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     actAssertInvalidUserStorageState({
       // missing the isProfileSyncingEnabled field
       isProfileSyncingUpdateLoading: false,

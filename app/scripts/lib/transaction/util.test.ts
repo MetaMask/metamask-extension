@@ -204,6 +204,7 @@ describe('Transaction Utils', () => {
           transactionMeta: TRANSACTION_META_MOCK,
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         addTransaction(request).then(() => {
           completed = true;
         });
@@ -296,6 +297,7 @@ describe('Transaction Utils', () => {
           },
         );
 
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         addTransaction(request).then(() => {
           completed = true;
         });

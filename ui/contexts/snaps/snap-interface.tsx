@@ -96,6 +96,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     name?: string,
     value?: unknown,
   ) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
       snapId,
       origin: 'metamask',
@@ -157,6 +158,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   };
 
   const uploadFile = (name: string, file: FileObject | null) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
       snapId,
       origin: 'metamask',
@@ -185,6 +187,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
    */
   const handleFileChange: HandleFileChange = (name, file, form) => {
     if (file) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       file
         .arrayBuffer()
         .then((arrayBuffer) => new Uint8Array(arrayBuffer))

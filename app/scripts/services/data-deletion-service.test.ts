@@ -1133,6 +1133,7 @@ async function fetchWithFakeTimers({
   // the tests don't trigger an "Unhandled Promise error" due to the delayed
   // handling of the Promise.
   let resolved = false;
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   (async () => {
     try {
       await pendingUpdate;

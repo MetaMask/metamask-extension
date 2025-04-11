@@ -47,6 +47,7 @@ async function init(): Promise<void> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 init().then(() => {
   if (process.env.IN_TEST) {
     chrome.runtime.onMessage.addListener((message) => {
@@ -62,6 +63,7 @@ init().then(() => {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   chrome.runtime.sendMessage({
     target: OffscreenCommunicationTarget.extensionMain,
     isBooted: true,

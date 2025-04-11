@@ -28,6 +28,7 @@ const TokenListContainer = React.memo(
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string) => {
         onClickAsset(chainId, tokenAddress);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         trackEvent({
           event: MetaMetricsEventName.TokenScreenOpened,
           category: MetaMetricsEventCategory.Navigation,

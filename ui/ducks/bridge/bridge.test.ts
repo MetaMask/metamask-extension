@@ -127,6 +127,7 @@ describe('Ducks - Bridge', () => {
   describe('setBridgeFeatureFlags', () => {
     it('should call setBridgeFeatureFlags in the background', async () => {
       const mockSetBridgeFeatureFlags = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setBackgroundConnection({
         [BridgeBackgroundAction.SET_FEATURE_FLAGS]: mockSetBridgeFeatureFlags,
       } as never);
@@ -161,6 +162,7 @@ describe('Ducks - Bridge', () => {
   describe('updateQuoteRequestParams', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setBackgroundConnection({
         [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
       } as never);
@@ -195,6 +197,7 @@ describe('Ducks - Bridge', () => {
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
       } as never);

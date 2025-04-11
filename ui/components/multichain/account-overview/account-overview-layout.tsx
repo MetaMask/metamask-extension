@@ -61,6 +61,7 @@ export const AccountOverviewLayout = ({
     }
     ///: END:ONLY_INCLUDE_IF
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,
       category: MetaMetricsEventCategory.Banner,
@@ -72,6 +73,7 @@ export const AccountOverviewLayout = ({
 
   const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
     if (isLastSlide) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
         category: MetaMetricsEventCategory.Banner,
@@ -84,6 +86,7 @@ export const AccountOverviewLayout = ({
     (renderedSlides: CarouselSlide[]) => {
       if (!hasRendered) {
         renderedSlides.forEach((slide) => {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           trackEvent({
             event: MetaMetricsEventName.BannerDisplay,
             category: MetaMetricsEventCategory.Banner,

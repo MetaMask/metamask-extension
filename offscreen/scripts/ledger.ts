@@ -27,6 +27,7 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
 
     if (data) {
       if (data.action === LEDGER_KEYRING_IFRAME_CONNECTED_EVENT) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         chrome.runtime.sendMessage({
           action: OffscreenCommunicationEvents.ledgerDeviceConnect,
           payload: data.payload.connected,

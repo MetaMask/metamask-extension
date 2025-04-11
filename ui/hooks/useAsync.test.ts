@@ -48,6 +48,7 @@ describe('useAsyncCallback', () => {
 
     // Execute with counter=0
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     await waitForNextUpdate();
@@ -57,6 +58,7 @@ describe('useAsyncCallback', () => {
     counter = 1;
     rerender({ fn: async () => `count: ${counter}` });
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     await waitForNextUpdate();
@@ -70,6 +72,7 @@ describe('useAsyncCallback', () => {
 
     // Execute and check pending state
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     expect(result.current[1]).toEqual(RESULT_PENDING);
@@ -86,6 +89,7 @@ describe('useAsyncCallback', () => {
     );
 
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     await waitForNextUpdate();
@@ -104,8 +108,11 @@ describe('useAsyncCallback', () => {
 
     // Trigger multiple executions
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
 
@@ -128,11 +135,13 @@ describe('useAsyncCallback', () => {
 
     // Start first execution then change deps and execute again
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     currentPromise = p2;
     rerender({ value: 'test2' });
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
 
@@ -163,6 +172,7 @@ describe('useAsyncCallback', () => {
       );
 
       act(() => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         result.current[0]();
       });
       await waitForNextUpdate();
@@ -186,6 +196,7 @@ describe('useAsyncCallback', () => {
 
     // First execution fails
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     await waitForNextUpdate();
@@ -193,6 +204,7 @@ describe('useAsyncCallback', () => {
 
     // Second execution succeeds
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     await waitForNextUpdate();
@@ -207,6 +219,7 @@ describe('useAsyncCallback', () => {
     // Capture state transitions
     states.push({ ...result.current[1] });
     act(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       result.current[0]();
     });
     states.push({ ...result.current[1] });

@@ -51,6 +51,7 @@ const ProfileSyncToggle = () => {
 
   useEffect(() => {
     if (!basicFunctionality) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       disableProfileSyncing();
     }
   }, [basicFunctionality, disableProfileSyncing]);
@@ -61,6 +62,7 @@ const ProfileSyncToggle = () => {
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
@@ -72,11 +74,13 @@ const ProfileSyncToggle = () => {
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
             disableProfileSyncing();
           },
         }),
       );
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,

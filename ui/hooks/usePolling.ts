@@ -31,6 +31,7 @@ const usePolling = <PollingInput>(
     };
 
     // Start polling when the component mounts
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     usePollingOptions
       .startPolling(usePollingOptions.input)
       .then((pollToken) => {

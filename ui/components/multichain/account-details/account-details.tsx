@@ -226,6 +226,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       <HoldToRevealModal
         isOpen={showHoldToReveal}
         onClose={() => {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           trackEvent({
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportCanceled,

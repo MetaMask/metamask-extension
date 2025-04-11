@@ -110,6 +110,7 @@ describe('requestEthereumAccountsHandler', () => {
       getUnlockPromise.mockReturnValue(promise);
       getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       handler(baseRequest);
       expect(response).toStrictEqual({
         id: 0,

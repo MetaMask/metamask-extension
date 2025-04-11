@@ -35,6 +35,7 @@ export const useHistoricalPrices = ({
   useEffect(() => {
     if (chainSupported) {
       setLoading(true);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       fetchWithCache({
         url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
         cacheOptions: { cacheRefreshTime: 5 * MINUTE },

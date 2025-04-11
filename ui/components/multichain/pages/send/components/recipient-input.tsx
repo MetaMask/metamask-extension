@@ -44,6 +44,7 @@ export const SendPageRecipientInput = () => {
     async (address: string) => {
       dispatch(addHistoryEntry(`sendFlow - Valid address typed ${address}`));
       await dispatch(updateRecipientUserInput(address));
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       trackEvent(
         {
           event: MetaMetricsEventName.sendRecipientSelected,
@@ -70,6 +71,7 @@ export const SendPageRecipientInput = () => {
   );
 
   const scanQrCode = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     trackEvent({
       event: 'Used QR scanner',
       category: MetaMetricsEventCategory.Transactions,

@@ -28,12 +28,14 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
    */
   useEffect(() => {
     if (shouldAutoSignIn) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       autoSignIn();
     }
   }, [shouldAutoSignIn, autoSignIn]);
 
   useEffect(() => {
     if (shouldAutoSignOut) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       autoSignOut();
     }
   }, [shouldAutoSignOut, autoSignOut]);

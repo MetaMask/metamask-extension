@@ -324,6 +324,7 @@ class SmartTransactionHook {
       this.#addApprovalRequest({
         uuid,
       });
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       this.#addListenerToUpdateStatusPage({
         uuid,
       });
@@ -335,6 +336,7 @@ class SmartTransactionHook {
       return;
     }
     this.#approvalFlowEnded = true;
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     this.#endApprovalFlow(this.#approvalFlowId);
 
     // Clear the shared approval flow ID when we end the flow

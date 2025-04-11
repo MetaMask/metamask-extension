@@ -111,6 +111,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
       useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         getNextAvailableAccountName(accounts).then(setDefaultAccountName);
       }, []);
 
@@ -144,6 +145,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           event.preventDefault();
           try {
             await onCreateAccount(trimmedAccountName || defaultAccountName);
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
@@ -155,6 +157,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             });
             history.push(mostRecentOverviewPage);
           } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAddFailed,
@@ -187,6 +190,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             error={!isValidAccountName}
             onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
               if (e.key === 'Enter') {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
                 onSubmit(e);
               }
             }}
