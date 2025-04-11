@@ -49,10 +49,10 @@ class BridgeQuotePage {
       await this.driver.clickElement(this.applyButton);
     }
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
-    await this.driver.delay(1000); // Wait for the token to be loaded/ Wait for the token to be loaded
-    const tokenButtons = await this.driver.findElements(this.tokenButton);
-    const firstButton = tokenButtons[0];
-    await firstButton.click();
+    await this.driver.clickElement({
+      text: quote.tokenFrom,
+      css: this.tokenButton,
+    });
 
     // QTY
     await this.driver.fill(this.sourceAmount, quote.amount);
@@ -62,8 +62,10 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.destinationAssetPickerButton);
     await this.driver.clickElement(`[data-testid="${quote.toChain}"]`);
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
-    await this.driver.delay(1000); // Wait for the token to be loaded
-    await this.driver.clickElement(this.tokenButton);
+    await this.driver.clickElement({
+      text: quote.tokenTo,
+      css: this.tokenButton,
+    });
   };
 
   submitQuote = async () => {

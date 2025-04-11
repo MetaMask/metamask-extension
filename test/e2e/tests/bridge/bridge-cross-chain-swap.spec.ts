@@ -10,6 +10,7 @@ import BridgeQuotePage, {
   BridgeQuote,
 } from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
@@ -27,7 +28,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
       ),
       async ({ driver }) => {
-        await await unlockWallet(driver);
+        await unlockWallet(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed();
         // disable smart transactions
@@ -61,7 +62,6 @@ describe('Bridge tests', function (this: Suite) {
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
         await switchToNetworkFlow(driver, 'Linea Mainnet');
-        await driver.delay(1000);
 
         await bridgeTransaction(
           driver,
@@ -92,7 +92,6 @@ describe('Bridge tests', function (this: Suite) {
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
         await switchToNetworkFlow(driver, 'Linea Mainnet');
-        await driver.delay(1000);
 
         await bridgeTransaction(
           driver,
@@ -147,9 +146,7 @@ describe('Bridge tests', function (this: Suite) {
     );
 
     // Check the wallet ETH balance is correct
-    await driver.waitForSelector({
-      testId: 'account-value-and-suffix',
-      text: expectedAmount,
-    });
+    const accountListPage = new AccountListPage(driver);
+    await accountListPage.check_accountValueAndSuffixDisplayed(expectedAmount);
   }
 });
