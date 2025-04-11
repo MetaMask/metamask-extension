@@ -5641,15 +5641,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.4.0":
-  version: 17.4.0
-  resolution: "@metamask/keyring-api@npm:17.4.0"
+"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.4.0, @metamask/keyring-api@npm:^17.5.0":
+  version: 17.5.0
+  resolution: "@metamask/keyring-api@npm:17.5.0"
   dependencies:
     "@metamask/keyring-utils": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
     bech32: "npm:^2.0.0"
-  checksum: 10/4d7f74579aca158ec82e7fade9f22536a129aeecd3aeba7a2b240c7c68a5e3a410612f362632447c470fef2ef2cad80be027a511bcbf24985f97d3717822b4bb
+  checksum: 10/b6409b235c02f102f142ec9bf89486591262fdc717341a0a8425454755b625c5ab63f1c5fd745ec743e220772bed51f1315c43e219e88c3e4fbe9d19efce660c
   languageName: node
   linkType: hard
 
@@ -6571,10 +6571,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.18.1":
-  version: 1.18.1
-  resolution: "@metamask/solana-wallet-snap@npm:1.18.1"
-  checksum: 10/f67d7aec765b744283f766897e138d48b00003645fcb90c0fad604a13c0088b576760c4ef55b909e42e04b7574866d486e559803d617410170ab2dff8b125e08
+"@metamask/solana-wallet-snap@npm:^1.19.0":
+  version: 1.19.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.19.0"
+  checksum: 10/c653ec56d5d9ac275440dc36aa588b4da5a1d243aed16e248a539d64298904df3f9cb814bbc8cef4b95d3bc3a1794b3a11d72775307fb74f1bd599f0772c8fea
   languageName: node
   linkType: hard
 
@@ -27403,7 +27403,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
-    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/keyring-api": "npm:^17.5.0"
     "@metamask/keyring-controller": "npm:^21.0.1"
     "@metamask/keyring-internal-api": "npm:^6.0.1"
     "@metamask/keyring-snap-client": "npm:^4.1.0"
@@ -27446,7 +27446,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^12.1.0"
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/solana-wallet-snap": "npm:^1.18.1"
+    "@metamask/solana-wallet-snap": "npm:^1.19.0"
     "@metamask/solana-wallet-standard": "npm:^0.1.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
