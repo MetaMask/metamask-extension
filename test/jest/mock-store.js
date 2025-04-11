@@ -4,11 +4,11 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { DEFAULT_BRIDGE_STATUS_STATE } from '@metamask/bridge-status-controller';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
 import { mockTokenData } from '../data/bridge/mock-token-data';
 
 export const createGetSmartTransactionFeesApiResponse = () => {

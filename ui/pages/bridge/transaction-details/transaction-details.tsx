@@ -6,6 +6,10 @@ import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
+  type BridgeHistoryItem,
+  StatusTypes,
+} from '@metamask/bridge-status-controller';
+import {
   AvatarNetwork,
   AvatarNetworkSize,
   BannerAlert,
@@ -32,10 +36,6 @@ import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
 } from '../../../helpers/constants/common';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,

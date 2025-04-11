@@ -2,12 +2,11 @@ import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { Box } from '../../../components/component-library';
 import {
   BridgeHistoryItem,
   StatusTypes,
-  Step,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
+import { Box } from '../../../components/component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
   getStepStatus,
@@ -42,7 +41,7 @@ export default function BridgeStepList({
 }: BridgeStepsProps) {
   const steps = bridgeHistoryItem?.quote.steps || [];
   const stepStatuses = steps.map((step) =>
-    getStepStatus({ bridgeHistoryItem, step: step as Step, srcChainTxMeta }),
+    getStepStatus({ bridgeHistoryItem, step, srcChainTxMeta }),
   );
 
   return (

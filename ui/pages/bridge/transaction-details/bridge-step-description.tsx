@@ -7,10 +7,10 @@ import {
 } from '@metamask/transaction-controller';
 import {
   BridgeHistoryItem,
-  Step,
   ActionTypes,
   StatusTypes,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
+import { type Step } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import {
