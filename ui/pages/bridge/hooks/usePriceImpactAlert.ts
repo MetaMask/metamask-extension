@@ -21,9 +21,9 @@ const useQuotePriceImpact = () => {
 
     return (
       (slippagePercentage.percentageInCurrency &&
-        slippagePercentage.percentageInCurrency > SLIPPAGE_THRESHOLD) ||
+        slippagePercentage.percentageInCurrency >= SLIPPAGE_THRESHOLD) ||
       (slippagePercentage.percentageInUsd &&
-        slippagePercentage.percentageInUsd > SLIPPAGE_THRESHOLD) ||
+        slippagePercentage.percentageInUsd >= SLIPPAGE_THRESHOLD) ||
       false
     );
   }, [activeQuote]);
