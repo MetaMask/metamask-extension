@@ -8,8 +8,6 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
-// eslint-disable-next-line import/no-restricted-paths
-import * as snapModule from '../../../app/scripts/lib/snap-keyring/snaps';
 import mockState from '../../../test/data/mock-state.json';
 import {
   getAccountLabel,
@@ -195,7 +193,7 @@ describe('Accounts', () => {
             KeyringType.snap,
             mockSnapAccountWithName,
             mockSnapName,
-            mockSnapId,
+            false,
           ),
         ).toBe('Test Snap Name (Beta)');
       });
@@ -206,28 +204,20 @@ describe('Accounts', () => {
             KeyringType.snap,
             mockSnapAccountWithoutName,
             null,
-            mockSnapId,
+            false,
           ),
         ).toBe('Snaps (Beta)');
       });
 
       it('should return null if snap is preinstalled', () => {
-        const spy = jest
-          .spyOn(snapModule, 'isSnapPreinstalled')
-          .mockReturnValue(true);
-
-        const preinstalledSnapId = 'preinstalled-snap-id';
-
         expect(
           getAccountLabel(
             KeyringType.snap,
             mockSnapAccountWithName,
             mockSnapName,
-            preinstalledSnapId,
+            true,
           ),
         ).toBeNull();
-
-        spy.mockRestore();
       });
     });
   });
