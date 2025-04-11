@@ -12,8 +12,10 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { capitalize } from 'lodash';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  TransactionType as KeyringTransactionType,
+} from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -726,9 +728,8 @@ const MultichainTransactionListItem = ({
   toggleShowDetails,
 }) => {
   const t = useI18nContext();
-  const { assetInputs, assetOutputs, isRedeposit } =
+  const { from, to, type, timestamp, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction, networkConfig);
-  let title = capitalize(transaction.type);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
   // A redeposit transaction is a special case where the outputs list is emtpy because we are sending to ourselves and only pay the fees
@@ -763,7 +764,7 @@ const MultichainTransactionListItem = ({
         title={t('redeposit')}
         subtitle={
           <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
+            date={formatTimestamp(timestamp)}
             error={{}}
             status={statusKey}
             statusOnly
@@ -773,65 +774,65 @@ const MultichainTransactionListItem = ({
     );
   }
 
-  return assetOutputs.map((output, index) => {
-    let { amount, unit } = output;
+  let { amount, unit } = to ?? {};
+  let category = type;
+  if (type === KeyringTransactionType.Swap) {
+    amount = from.amount;
+    unit = from.unit;
+  }
 
-    if (transaction.type === TransactionType.swap) {
-      title = `${t('swap')} ${assetInputs[index].unit} ${'to'} ${output.unit}`;
-      amount = assetInputs[index].amount;
-      unit = assetInputs[index].unit;
-    }
+  if (type === KeyringTransactionType.Unknown) {
+    category = TransactionGroupCategory.interaction;
+  }
 
-    return (
-      <ActivityListItem
-        key={index}
-        className="custom-class"
-        data-testid="activity-list-item"
-        onClick={() => toggleShowDetails(transaction)}
-        icon={
-          <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-            display={Display.Block}
-            badge={
-              <AvatarNetwork
-                className="activity-tx__network-badge"
-                data-testid="activity-tx-network-badge"
-                size={AvatarNetworkSize.Xs}
-                name={networkConfig.id}
-                src={networkConfig.rpcPrefs?.imageUrl}
-                borderColor={BackgroundColor.backgroundDefault}
-              />
-            }
-          >
-            <TransactionIcon category={transaction.type} status={statusKey} />
-          </BadgeWrapper>
-        }
-        rightContent={
-          <Text
-            className="activity-list-item__primary-currency"
-            color="text-default"
-            data-testid="transaction-list-item-primary-currency"
-            ellipsis
-            fontWeight="medium"
-            textAlign="right"
-            title="Primary Currency"
-            variant="body-lg-medium"
-          >
-            {amount} {unit}
-          </Text>
-        }
-        title={title}
-        subtitle={
-          <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
-            error={{}}
-            status={statusKey}
-            statusOnly
-          />
-        }
-      />
-    );
-  });
+  return (
+    <ActivityListItem
+      className="custom-class"
+      data-testid="activity-list-item"
+      onClick={() => toggleShowDetails(transaction)}
+      icon={
+        <BadgeWrapper
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+          display={Display.Block}
+          badge={
+            <AvatarNetwork
+              className="activity-tx__network-badge"
+              data-testid="activity-tx-network-badge"
+              size={AvatarNetworkSize.Xs}
+              name={networkConfig.id}
+              src={networkConfig.rpcPrefs?.imageUrl}
+              borderColor={BackgroundColor.backgroundDefault}
+            />
+          }
+        >
+          <TransactionIcon category={category} status={statusKey} />
+        </BadgeWrapper>
+      }
+      rightContent={
+        <Text
+          className="activity-list-item__primary-currency"
+          color="text-default"
+          data-testid="transaction-list-item-primary-currency"
+          ellipsis
+          fontWeight="medium"
+          textAlign="right"
+          title="Primary Currency"
+          variant="body-lg-medium"
+        >
+          {amount} {unit}
+        </Text>
+      }
+      title={title}
+      subtitle={
+        <TransactionStatusLabel
+          date={formatTimestamp(transaction.timestamp)}
+          error={{}}
+          status={statusKey}
+          statusOnly
+        />
+      }
+    />
+  );
 };
 
 MultichainTransactionListItem.propTypes = {

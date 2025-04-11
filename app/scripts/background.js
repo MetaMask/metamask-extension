@@ -541,6 +541,20 @@ async function loadPreinstalledSnaps() {
 }
 
 /**
+ * Loads the preinstalled snaps from urls and returns them as an array.
+ * It fails if any Snap fails to load in the expected time range.
+ */
+async function loadPreinstalledSnaps() {
+  const fetchWithTimeout = getFetchWithTimeout();
+  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
+    const response = await fetchWithTimeout(url);
+    return await response.json();
+  });
+
+  return Promise.all(promises);
+}
+
+/**
  * An error thrown if the phishing warning page takes too long to load.
  */
 class PhishingWarningPageTimeoutError extends Error {

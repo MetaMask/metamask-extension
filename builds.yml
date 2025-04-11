@@ -151,6 +151,8 @@ features:
         dest: snaps/account-watcher.json
       - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
         dest: snaps/preinstalled-example-snap.json
+      - src: ./app/build-types/flask/images/
+        dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
