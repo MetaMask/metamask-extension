@@ -44,7 +44,7 @@ export const BridgeCTAButton = ({
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
-  priceImpactAcknowledged: boolean;
+  priceImpactAcknowledged?: boolean;
 }) => {
   const t = useI18nContext();
 
