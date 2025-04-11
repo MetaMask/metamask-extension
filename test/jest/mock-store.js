@@ -808,10 +808,8 @@ export const createBridgeMockStore = (
         },
       },
       ...bridgeStateOverrides,
-      bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
-        ...bridgeStatusStateOverrides,
-      },
+      ...DEFAULT_BRIDGE_STATUS_STATE,
+      ...bridgeStatusStateOverrides,
     },
     send: {
       swapsBlockedTokens: [],

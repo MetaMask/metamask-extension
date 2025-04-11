@@ -201,8 +201,7 @@ export const handleTransactionFailedTypeBridge = async (
 ) => {
   const state = { metamask: backgroundState };
   const { transactionMeta: txMeta } = payload;
-  const bridgeHistoryItem =
-    state.metamask.bridgeStatusState.txHistory[txMeta.id];
+  const bridgeHistoryItem = state.metamask.txHistory[txMeta.id];
   const { quote, hasApprovalTx } = bridgeHistoryItem;
 
   const common = getCommonProperties(bridgeHistoryItem, state);

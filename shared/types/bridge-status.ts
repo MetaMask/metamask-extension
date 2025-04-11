@@ -206,9 +206,7 @@ export type BridgeStatusState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
 };
 
-export type BridgeStatusControllerState = {
-  bridgeStatusState: BridgeStatusState;
-};
+export type BridgeStatusControllerState = BridgeStatusState;
 
 export type BridgeStatusAppState = ProviderConfigState & {
   metamask: BridgeStatusControllerState;

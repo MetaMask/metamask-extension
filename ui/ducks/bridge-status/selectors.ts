@@ -7,7 +7,7 @@ import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask.bridgeStatusState;
+  state.metamask;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
