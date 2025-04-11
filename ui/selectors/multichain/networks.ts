@@ -117,23 +117,19 @@ export const getMultichainNetworkConfigurationsByChainId =
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Testnet];
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Signet];
       }
 
       if (solanaEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
-        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] = {
-          chainId: SolScope.Testnet,
-          name: 'Solana Testnet',
-          nativeCurrency: `${SolScope.Testnet}/slip44:501`,
-          isEvm: false,
-        };
-        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] = {
-          chainId: SolScope.Devnet,
-          name: 'Solana Testnet',
-          nativeCurrency: `${SolScope.Testnet}/slip44:501`,
-          isEvm: false,
-        };
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
+          nonEvmNetworkConfigurationsByChainId[SolScope.Testnet];
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
+          nonEvmNetworkConfigurationsByChainId[SolScope.Devnet];
       }
       ///: END:ONLY_INCLUDE_IF
 

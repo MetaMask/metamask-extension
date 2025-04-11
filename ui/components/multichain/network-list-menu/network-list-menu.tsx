@@ -20,6 +20,7 @@ import {
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
 import {
+  NON_EVM_TESTNET_IDS,
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
@@ -56,7 +57,6 @@ import {
 } from '../../../../shared/constants/network';
 import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
-  NON_EVM_TESTNETS,
   NETWORK_TO_ACCOUNT_TYPE_MAP,
 } from '../../../../shared/constants/multichain/networks';
 import {
@@ -207,8 +207,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             const hexChainId = convertCaipToHexChainId(id as CaipChainId);
             isTest = (TEST_CHAINS as string[]).includes(hexChainId);
           } else {
-            // @ts-expect-error - Ignore error
-            isTest = NON_EVM_TESTNETS.includes(chainId);
+            isTest = NON_EVM_TESTNET_IDS.includes(chainId);
           }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];

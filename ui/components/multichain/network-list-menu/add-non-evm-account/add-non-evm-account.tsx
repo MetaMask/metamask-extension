@@ -40,6 +40,10 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
     clientType: WalletClientType.Bitcoin,
     chainId: MultichainNetworks.BITCOIN_TESTNET,
   },
+  [MultichainNetworks.BITCOIN_SIGNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_SIGNET,
+  },
   [MultichainNetworks.SOLANA]: {
     clientType: WalletClientType.Solana,
     chainId: MultichainNetworks.SOLANA,

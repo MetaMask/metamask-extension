@@ -65,12 +65,6 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
 };
 
-export const NON_EVM_TESTNETS = [
-  MultichainNetworks.BITCOIN_TESTNET,
-  MultichainNetworks.SOLANA_DEVNET,
-  MultichainNetworks.SOLANA_TESTNET,
-] as const;
-
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_TOKEN_IMAGE_URL =
   './images/bitcoin-testnet-logo.svg';
