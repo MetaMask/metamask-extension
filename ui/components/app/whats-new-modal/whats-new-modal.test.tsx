@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
@@ -117,10 +117,13 @@ describe('WhatsNewModal', () => {
         });
       });
 
-      it('calls onClose when the modal is closed', () => {
+      it('calls onClose when the modal is closed', async () => {
         const closeButton = screen.getByRole('button', { name: /close/iu });
         fireEvent.click(closeButton);
-        expect(mockOnClose).toHaveBeenCalled();
+
+        await waitFor(() => {
+          expect(mockOnClose).toHaveBeenCalled();
+        });
       });
     });
 
@@ -186,9 +189,9 @@ describe('WhatsNewModal', () => {
           const notNowButton = screen.getByTestId('not-now-button');
           fireEvent.click(notNowButton);
 
-          expect(
-            screen.queryByTestId('whats-new-modal'),
-          ).not.toBeInTheDocument();
+          await waitFor(() => {
+            expect(mockOnClose).toHaveBeenCalled();
+          });
         });
       });
 
@@ -240,24 +243,18 @@ describe('WhatsNewModal', () => {
           const gotItButton = screen.getByTestId('got-it-button');
           fireEvent.click(gotItButton);
 
-          expect(
-            screen.queryByTestId('whats-new-modal'),
-          ).not.toBeInTheDocument();
-          expect(
-            screen.getByTestId('create-solana-account-modal'),
-          ).not.toBeInTheDocument();
+          await waitFor(() => {
+            expect(mockOnClose).toHaveBeenCalled();
+          });
         });
 
         it('closes the modal when clicking "Not Now"', async () => {
           const notNowButton = screen.getByTestId('not-now-button');
           fireEvent.click(notNowButton);
 
-          expect(
-            screen.queryByTestId('whats-new-modal'),
-          ).not.toBeInTheDocument();
-          expect(
-            screen.getByTestId('create-solana-account-modal'),
-          ).not.toBeInTheDocument();
+          await waitFor(() => {
+            expect(mockOnClose).toHaveBeenCalled();
+          });
         });
       });
     });
