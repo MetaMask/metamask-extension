@@ -13,7 +13,7 @@ import initLattice from './lattice';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
- * in the metamask-controller (background/serivce worker) process. This will be
+ * in the metamask-controller (background/service worker) process. This will be
  * utilized by snaps for communication with snaps running in the offscreen
  * document.
  */

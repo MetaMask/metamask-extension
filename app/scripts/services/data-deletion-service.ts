@@ -140,7 +140,7 @@ function createRetryPolicy({
 }
 
 /**
- * A serivce for requesting the deletion of analytics data.
+ * A service for requesting the deletion of analytics data.
  */
 export class DataDeletionService {
   #analyticsDataDeletionEndpoint: string;
