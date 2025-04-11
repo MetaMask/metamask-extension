@@ -29,7 +29,7 @@ const defaultOptions = {
   chainId: 1337,
   gasLimit: 30000000,
   gasPrice: 2000000000,
-  hardfork: 'Muirglacier' as Hardfork,
+  hardfork: 'Prague' as Hardfork,
   host: '127.0.0.1',
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
