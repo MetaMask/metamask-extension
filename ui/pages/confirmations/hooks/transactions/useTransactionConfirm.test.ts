@@ -69,7 +69,7 @@ describe('useTransactionConfirm', () => {
     jest.resetAllMocks();
 
     getIsSmartTransactionMock.mockReturnValue(false);
-    updateAndApproveTxMock.mockReturnValue(() =>
+    updateAndApproveTxMock.mockReturnValue(async () =>
       Promise.resolve({} as TransactionMeta),
     );
   });

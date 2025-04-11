@@ -85,7 +85,7 @@ export const MockStatusResponse = {
 };
 
 let mockFetchBridgeTxStatusCount = 0;
-export const mockFetchBridgeTxStatus: () => Promise<StatusResponse> = () => {
+export const mockFetchBridgeTxStatus: () => Promise<StatusResponse> = async () => {
   return new Promise((resolve) => {
     console.log('HELLO mockFetchBridgeTxStatus', mockFetchBridgeTxStatusCount);
     setTimeout(() => {

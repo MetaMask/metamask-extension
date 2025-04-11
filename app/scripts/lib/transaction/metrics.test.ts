@@ -1270,7 +1270,7 @@ describe('Transaction metrics', () => {
     ['if submitted', handleTransactionSubmitted],
     [
       'if confirmed',
-      (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+      async (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
         handleTransactionConfirmed(
           request,
           args.transactionMeta as TransactionMetaEventPayload,

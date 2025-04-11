@@ -31,7 +31,7 @@ export class LedgerOffscreenBridge
 {
   isDeviceConnected = false;
 
-  init() {
+  async init() {
     chrome.runtime.onMessage.addListener((msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extension &&
@@ -44,20 +44,20 @@ export class LedgerOffscreenBridge
     return Promise.resolve();
   }
 
-  destroy() {
+  async destroy() {
     // TODO: remove listener
     return Promise.resolve();
   }
 
-  getOptions() {
+  async getOptions() {
     return Promise.resolve({});
   }
 
-  setOptions() {
+  async setOptions() {
     return Promise.resolve();
   }
 
-  attemptMakeApp() {
+  async attemptMakeApp() {
     return new Promise<boolean>((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
@@ -77,7 +77,7 @@ export class LedgerOffscreenBridge
     });
   }
 
-  updateTransportMethod(transportType: string) {
+  async updateTransportMethod(transportType: string) {
     return new Promise<boolean>((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
@@ -96,7 +96,7 @@ export class LedgerOffscreenBridge
     });
   }
 
-  getPublicKey(params: { hdPath: string }) {
+  async getPublicKey(params: { hdPath: string }) {
     return new Promise<{
       publicKey: string;
       address: string;
@@ -119,7 +119,7 @@ export class LedgerOffscreenBridge
     });
   }
 
-  deviceSignTransaction(params: { hdPath: string; tx: string }) {
+  async deviceSignTransaction(params: { hdPath: string; tx: string }) {
     return new Promise<{
       v: string;
       s: string;
@@ -142,7 +142,7 @@ export class LedgerOffscreenBridge
     });
   }
 
-  deviceSignMessage(params: { hdPath: string; message: string }) {
+  async deviceSignMessage(params: { hdPath: string; message: string }) {
     return new Promise<{
       v: number;
       s: string;
@@ -165,7 +165,7 @@ export class LedgerOffscreenBridge
     });
   }
 
-  deviceSignTypedData(
+  async deviceSignTypedData(
     params: LedgerSignTypedDataParams,
   ): Promise<LedgerSignTypedDataResponse> {
     return new Promise<{

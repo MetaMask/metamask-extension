@@ -114,7 +114,7 @@ describe('DataDeletionService', () => {
 
         await expect(
           fetchWithFakeTimers({
-            fetchOperation: () =>
+            fetchOperation: async () =>
               dataDeletionService.createDataDeletionRegulationTask(
                 mockMetaMetricsId,
               ),
@@ -151,7 +151,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.createDataDeletionRegulationTask(
               mockMetaMetricsId,
             ),
@@ -185,7 +185,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.createDataDeletionRegulationTask(
               mockMetaMetricsId,
             ),
@@ -205,9 +205,9 @@ describe('DataDeletionService', () => {
           onDegraded,
         });
 
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
-            fetchOperation: () =>
+            fetchOperation: async () =>
               dataDeletionService.createDataDeletionRegulationTask(
                 mockMetaMetricsId,
               ),
@@ -239,7 +239,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.createDataDeletionRegulationTask(
               mockMetaMetricsId,
             ),
@@ -270,7 +270,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.createDataDeletionRegulationTask(
               mockMetaMetricsId,
             ),
@@ -315,14 +315,14 @@ describe('DataDeletionService', () => {
           // break doesn't end during a retry attempt
           circuitBreakDuration: defaultMaxRetryDelay * 10,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.createDataDeletionRegulationTask(
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -330,7 +330,7 @@ describe('DataDeletionService', () => {
           ).rejects.toThrow('Failed to fetch');
         }
 
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -358,7 +358,7 @@ describe('DataDeletionService', () => {
           circuitBreakDuration: defaultMaxRetryDelay * 10,
           onBreak,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.createDataDeletionRegulationTask(
             mockMetaMetricsId,
           );
@@ -366,7 +366,7 @@ describe('DataDeletionService', () => {
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -396,14 +396,14 @@ describe('DataDeletionService', () => {
           onBreak,
           onDegraded,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.createDataDeletionRegulationTask(
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -415,7 +415,7 @@ describe('DataDeletionService', () => {
         // Should be called twice by now, once per update attempt prior to break
         expect(onDegraded).toHaveBeenCalledTimes(attemptsToTriggerBreak - 1);
 
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -454,14 +454,14 @@ describe('DataDeletionService', () => {
           ...getDefaultOptions(),
           circuitBreakDuration,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.createDataDeletionRegulationTask(
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -469,7 +469,7 @@ describe('DataDeletionService', () => {
           ).rejects.toThrow('Failed to fetch');
         }
         // Confirm that circuit has broken
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -482,7 +482,7 @@ describe('DataDeletionService', () => {
 
         // The circuit should remain open after the first request fails
         // The fetch error is replaced by the circuit break error due to the retries
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -492,7 +492,7 @@ describe('DataDeletionService', () => {
         );
 
         // Confirm that the circuit is still open
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -526,14 +526,14 @@ describe('DataDeletionService', () => {
           ...getDefaultOptions(),
           circuitBreakDuration,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.createDataDeletionRegulationTask(
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() => {
+          await expect(async () => {
             return fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -541,7 +541,7 @@ describe('DataDeletionService', () => {
           }).rejects.toThrow('Failed to fetch');
         }
         // Confirm that circuit has broken
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -660,7 +660,7 @@ describe('DataDeletionService', () => {
 
         await expect(
           fetchWithFakeTimers({
-            fetchOperation: () =>
+            fetchOperation: async () =>
               dataDeletionService.fetchDeletionRegulationStatus(mockTaskId),
             retries,
           }),
@@ -697,7 +697,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.fetchDeletionRegulationStatus(mockTaskId),
           retries: 0,
         });
@@ -733,7 +733,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.fetchDeletionRegulationStatus(mockTaskId),
           retries: 1,
         });
@@ -751,9 +751,9 @@ describe('DataDeletionService', () => {
           onDegraded,
         });
 
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
-            fetchOperation: () =>
+            fetchOperation: async () =>
               dataDeletionService.fetchDeletionRegulationStatus(mockTaskId),
             // Advance timers enough to resolve default number of retries
             retries: RETRIES,
@@ -788,7 +788,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.fetchDeletionRegulationStatus(mockTaskId),
           retries,
         });
@@ -821,7 +821,7 @@ describe('DataDeletionService', () => {
         });
 
         await fetchWithFakeTimers({
-          fetchOperation: () =>
+          fetchOperation: async () =>
             dataDeletionService.fetchDeletionRegulationStatus(mockTaskId),
           retries: 1,
         });
@@ -865,12 +865,12 @@ describe('DataDeletionService', () => {
           // break doesn't end during a retry attempt
           circuitBreakDuration: defaultMaxRetryDelay * 10,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -878,7 +878,7 @@ describe('DataDeletionService', () => {
           ).rejects.toThrow('Failed to fetch');
         }
 
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -906,13 +906,13 @@ describe('DataDeletionService', () => {
           circuitBreakDuration: defaultMaxRetryDelay * 10,
           onBreak,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
 
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -942,12 +942,12 @@ describe('DataDeletionService', () => {
           onBreak,
           onDegraded,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -959,7 +959,7 @@ describe('DataDeletionService', () => {
         // Should be called twice by now, once per update attempt prior to break
         expect(onDegraded).toHaveBeenCalledTimes(attemptsToTriggerBreak - 1);
 
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -999,12 +999,12 @@ describe('DataDeletionService', () => {
           ...getDefaultOptions(),
           circuitBreakDuration,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() =>
+          await expect(async () =>
             fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -1012,7 +1012,7 @@ describe('DataDeletionService', () => {
           ).rejects.toThrow('Failed to fetch');
         }
         // Confirm that circuit has broken
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -1025,7 +1025,7 @@ describe('DataDeletionService', () => {
 
         // The circuit should remain open after the first request fails
         // The fetch error is replaced by the circuit break error due to the retries
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -1035,7 +1035,7 @@ describe('DataDeletionService', () => {
         );
 
         // Confirm that the circuit is still open
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,
@@ -1072,12 +1072,12 @@ describe('DataDeletionService', () => {
           ...getDefaultOptions(),
           circuitBreakDuration,
         });
-        const fetchOperation = () =>
+        const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
-          await expect(() => {
+          await expect(async () => {
             return fetchWithFakeTimers({
               fetchOperation,
               retries,
@@ -1085,7 +1085,7 @@ describe('DataDeletionService', () => {
           }).rejects.toThrow('Failed to fetch');
         }
         // Confirm that circuit has broken
-        await expect(() =>
+        await expect(async () =>
           fetchWithFakeTimers({
             fetchOperation,
             retries,

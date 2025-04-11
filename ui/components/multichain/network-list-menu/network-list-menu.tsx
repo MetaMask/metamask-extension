@@ -554,7 +554,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                       />
                     </Box>
                   }
-                  onClose={() => hideNetworkBanner()}
+                  onClose={async () => hideNetworkBanner()}
                   description={t('dragAndDropBanner')}
                 />
               )}

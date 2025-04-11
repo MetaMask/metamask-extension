@@ -46,8 +46,8 @@ describe('ProfileSyncToggle', () => {
   });
 
   function arrangeMocks() {
-    const enableProfileSyncingMock = jest.fn(() => Promise.resolve());
-    const disableProfileSyncingMock = jest.fn(() => Promise.resolve());
+    const enableProfileSyncingMock = jest.fn(async () => Promise.resolve());
+    const disableProfileSyncingMock = jest.fn(async () => Promise.resolve());
 
     jest.spyOn(ProfileSyncingHook, 'useEnableProfileSyncing').mockReturnValue({
       enableProfileSyncing: enableProfileSyncingMock,

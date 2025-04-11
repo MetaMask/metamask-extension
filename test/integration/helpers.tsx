@@ -2,7 +2,7 @@ import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
-  return (method: string): Promise<T | undefined> => {
+  return async (method: string): Promise<T | undefined> => {
     if (method in requests) {
       return Promise.resolve(requests[method]);
     }

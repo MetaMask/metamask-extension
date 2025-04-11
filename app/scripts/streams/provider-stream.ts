@@ -215,7 +215,7 @@ const destroyLegacyExtensionStreams = () => {
  * @param msg.name - custom property and name to identify the message received
  * @returns
  */
-const onMessageSetUpExtensionStreams = (msg: MessageType) => {
+const onMessageSetUpExtensionStreams = async (msg: MessageType) => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!extensionStream) {
       setupExtensionStreams();

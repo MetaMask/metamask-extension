@@ -17,7 +17,7 @@ export async function getContractProxyAddress(
   provider: Provider,
 ): Promise<Hex | undefined> {
   const responses = await Promise.all(
-    IMPLEMENTATION_STORAGE_SLOTS.map((storageSlot) =>
+    IMPLEMENTATION_STORAGE_SLOTS.map(async (storageSlot) =>
       provider.request<JsonRpcParams, Hex>({
         method: 'eth_getStorageAt',
         params: [contractAddress, storageSlot, 'latest'],

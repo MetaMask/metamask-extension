@@ -389,7 +389,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={() => requestAccountsPermission()}
+              onClick={async () => requestAccountsPermission()}
             >
               {t('connectAccounts')}
             </ButtonPrimary>

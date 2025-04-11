@@ -4,7 +4,7 @@
  *
  * @returns Promise<string>
  */
-export const mockWaitForTransactionHash: () => Promise<string> = () => {
+export const mockWaitForTransactionHash: () => Promise<string> = async () => {
   return new Promise((resolve) => {
     setTimeout(() => {
       // Need a real tx hash to pass some downstream validation
@@ -24,7 +24,7 @@ export const mockWaitForTransactionHash: () => Promise<string> = () => {
 export const mockSignAndSubmitTransactions: () => Promise<{
   uuid: string;
   txHash?: string;
-}> = () => {
+}> = async () => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({

@@ -6,7 +6,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { submitRequestToBackground } from '../../store/background-connection';
 
-export function estimateGasFee(request: {
+export async function estimateGasFee(request: {
   transactionParams: TransactionParams;
   chainId?: Hex;
   networkClientId?: NetworkClientId;

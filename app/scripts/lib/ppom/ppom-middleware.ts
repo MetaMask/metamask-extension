@@ -108,7 +108,7 @@ export function createPPOMMiddleware<
 
       trace(
         { name: TraceName.PPOMValidation, parentContext: req.traceContext },
-        () =>
+        async () =>
           validateRequestWithPPOM({
             ppomController,
             request: req,

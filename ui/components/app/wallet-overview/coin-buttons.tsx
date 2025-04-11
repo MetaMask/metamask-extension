@@ -422,7 +422,7 @@ const CoinButtons = ({
             />
           }
           label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
+          onClick={async () => handleBridgeOnClick(false)}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }

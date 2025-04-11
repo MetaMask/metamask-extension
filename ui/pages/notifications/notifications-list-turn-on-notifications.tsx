@@ -116,7 +116,7 @@ export const NotificationsListTurnOnNotifications = () => {
       </Text>
       <Box>
         <Button
-          onClick={() => handleTurnOnNotifications()}
+          onClick={async () => handleTurnOnNotifications()}
           size={ButtonSize.Md}
           disabled={loading}
           loading={loading}

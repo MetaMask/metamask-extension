@@ -27,7 +27,7 @@ describe('Ethereum Chain Utils', () => {
       ...mks,
     };
     const response: { result?: true } = {};
-    const switchChain = (chainId: Hex, networkClientId: string) =>
+    const switchChain = async (chainId: Hex, networkClientId: string) =>
       EthChainUtils.switchChain(response, end, chainId, networkClientId, mocks);
 
     return {

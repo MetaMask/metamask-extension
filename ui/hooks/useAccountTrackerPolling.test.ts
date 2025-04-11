@@ -8,7 +8,7 @@ import useAccountTrackerPolling from './useAccountTrackerPolling';
 let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
-  accountTrackerStartPolling: jest.fn().mockImplementation((input) => {
+  accountTrackerStartPolling: jest.fn().mockImplementation(async (input) => {
     const promise = Promise.resolve(`${input}_tracking`);
     mockPromises.push(promise);
     return promise;

@@ -1090,7 +1090,7 @@ export default class SwapsController extends BaseController<
     });
   }
 
-  private _timedoutGasReturn(
+  private async _timedoutGasReturn(
     tradeTxParams: Trade,
     aggregator = '',
   ): Promise<{ gasLimit: string | null; simulationFails: boolean }> {

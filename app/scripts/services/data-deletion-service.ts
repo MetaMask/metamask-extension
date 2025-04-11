@@ -225,7 +225,7 @@ export class DataDeletionService {
   async createDataDeletionRegulationTask(
     metaMetricsId: string,
   ): Promise<string> {
-    const response = await this.#createDataDeletionTaskPolicy.execute(() =>
+    const response = await this.#createDataDeletionTaskPolicy.execute(async () =>
       this.#fetchWithTimeout(
         `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
           this.#analyticsDataDeletionSourceId
@@ -259,7 +259,7 @@ export class DataDeletionService {
   async fetchDeletionRegulationStatus(
     deleteRegulationId: string,
   ): Promise<DeleteRegulationStatus> {
-    const response = await this.#fetchStatusPolicy.execute(() =>
+    const response = await this.#fetchStatusPolicy.execute(async () =>
       this.#fetchWithTimeout(
         `${
           this.#analyticsDataDeletionEndpoint

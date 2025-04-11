@@ -236,7 +236,7 @@ export class MMIController {
     return custodianEventHandlerFactory({
       log,
       getState: () => this.getState(),
-      getPendingNonce: (address) => this.getPendingNonce(address),
+      getPendingNonce: async (address) => this.getPendingNonce(address),
       setTxHash: (txId, txHash) => this.updateTransactionHash(txId, txHash),
       signatureController: this.signatureController,
       txStateManager: this.txStateManager,
@@ -319,7 +319,7 @@ export class MMIController {
             keyring,
             type,
             txList,
-            getPendingNonce: (address) => this.getPendingNonce(address),
+            getPendingNonce: async (address) => this.getPendingNonce(address),
             setTxHash: (txId, txHash) =>
               this.updateTransactionHash(txId, txHash),
             txStateManager: this.txStateManager,

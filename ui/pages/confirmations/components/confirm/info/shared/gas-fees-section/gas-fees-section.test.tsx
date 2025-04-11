@@ -39,7 +39,7 @@ describe('<GasFeesSection />', () => {
   });
 
   it('renders component for gas fees section', async () => {
-    (getGasFeeTimeEstimate as jest.Mock).mockImplementation(() =>
+    (getGasFeeTimeEstimate as jest.Mock).mockImplementation(async () =>
       Promise.resolve({ upperTimeBound: '1000' }),
     );
 

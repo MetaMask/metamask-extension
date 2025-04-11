@@ -111,7 +111,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
           id: interfaceId,
         },
       },
-    }).then(() => forceUpdateMetamaskState(dispatch));
+    }).then(async () => forceUpdateMetamaskState(dispatch));
   };
 
   const updateState = (state: InterfaceState) =>
@@ -171,7 +171,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
           id: interfaceId,
         },
       },
-    }).then(() => forceUpdateMetamaskState(dispatch));
+    }).then(async () => forceUpdateMetamaskState(dispatch));
   };
 
   /**
@@ -186,7 +186,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       file
         .arrayBuffer()
         .then((arrayBuffer) => new Uint8Array(arrayBuffer))
-        .then((uint8Array) => encodeBase64(uint8Array))
+        .then(async (uint8Array) => encodeBase64(uint8Array))
         .then((base64) => {
           const fileObject: FileObject = {
             name: file.name,

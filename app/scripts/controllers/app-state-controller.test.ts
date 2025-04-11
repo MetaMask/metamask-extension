@@ -36,7 +36,7 @@ jest.mock('../../../shared/modules/mv3.utils', () => ({
 
 const extensionMock = {
   alarms: {
-    getAll: jest.fn(() => Promise.resolve([])),
+    getAll: jest.fn(async () => Promise.resolve([])),
     create: jest.fn(),
     clear: jest.fn(),
     onAlarm: {

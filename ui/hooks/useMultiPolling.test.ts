@@ -5,7 +5,7 @@ import useMultiPolling from './useMultiPolling';
 describe('useMultiPolling', () => {
   it('Should start/stop polling when inputs are added/removed, and stop on dismount', async () => {
     const promises: Promise<string>[] = [];
-    const mockStartPolling = jest.fn().mockImplementation((input) => {
+    const mockStartPolling = jest.fn().mockImplementation(async (input) => {
       const promise = Promise.resolve(`${input}_token`);
       promises.push(promise);
       return promise;

@@ -1431,7 +1431,7 @@ export default class MetaMetricsController extends BaseController<
    * @param payload - properties to attach to event
    * @param options - options for routing and handling the event
    */
-  #track(
+  async #track(
     payload: SegmentEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {

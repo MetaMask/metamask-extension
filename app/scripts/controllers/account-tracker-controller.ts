@@ -424,7 +424,7 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
-    const updateForBlock = (blockNumber: string) =>
+    const updateForBlock = async (blockNumber: string) =>
       this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
     blockTracker.addListener('latest', updateForBlock);
 
@@ -642,7 +642,7 @@ export default class AccountTrackerController extends BaseController<
   async updateAccountsAllActiveNetworks(): Promise<void> {
     await this.updateAccounts();
     await Promise.all(
-      Array.from(this.#pollingTokenSets).map(([networkClientId]) => {
+      Array.from(this.#pollingTokenSets).map(async ([networkClientId]) => {
         return this.updateAccounts(networkClientId);
       }),
     );
@@ -689,7 +689,7 @@ export default class AccountTrackerController extends BaseController<
         id in SINGLE_CALL_BALANCES_ADDRESSES)(chainId)
     ) {
       await Promise.all(
-        addresses.map((address) =>
+        addresses.map(async (address) =>
           this.#updateAccount(address, provider, chainId),
         ),
       );
@@ -853,7 +853,7 @@ export default class AccountTrackerController extends BaseController<
         error,
       );
       Promise.allSettled(
-        addresses.map((address) =>
+        addresses.map(async (address) =>
           this.#updateAccount(address, provider, chainId),
         ),
       );

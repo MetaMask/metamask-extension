@@ -30,7 +30,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     this.dbVersion = dbVersion;
   }
 
-  #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
+  async #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
 

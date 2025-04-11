@@ -1282,7 +1282,7 @@ async function getNestedMethodNames(
     .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
     .map((tx) => tx.data as Hex);
 
-  const results = await Promise.all(allData.map((data) => getMethodData(data)));
+  const results = await Promise.all(allData.map(async (data) => getMethodData(data)));
 
   const names = results
     .map((result) => result?.name)

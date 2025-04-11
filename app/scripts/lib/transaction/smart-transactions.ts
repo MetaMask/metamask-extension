@@ -403,7 +403,7 @@ class SmartTransactionHook {
     );
   }
 
-  #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
+  async #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
@@ -511,14 +511,14 @@ class SmartTransactionHook {
   }
 }
 
-export const submitSmartTransactionHook = (
+export const submitSmartTransactionHook = async (
   request: SubmitSmartTransactionRequest,
 ) => {
   const smartTransactionHook = new SmartTransactionHook(request);
   return smartTransactionHook.submit();
 };
 
-export const submitBatchSmartTransactionHook = (
+export const submitBatchSmartTransactionHook = async (
   request: SubmitSmartTransactionRequest,
 ) => {
   const smartTransactionHook = new SmartTransactionHook(request);

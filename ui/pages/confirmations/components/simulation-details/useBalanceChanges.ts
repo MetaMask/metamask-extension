@@ -171,12 +171,12 @@ export const useBalanceChanges = ({
     .map((tbc) => tbc.address);
 
   const erc20Decimals = useAsyncResultOrThrow(
-    () => fetchAllErc20Decimals(erc20TokenAddresses),
+    async () => fetchAllErc20Decimals(erc20TokenAddresses),
     [JSON.stringify(erc20TokenAddresses)],
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(
-    () => fetchTokenFiatRates(fiatCurrency, erc20TokenAddresses, chainId),
+    async () => fetchTokenFiatRates(fiatCurrency, erc20TokenAddresses, chainId),
     [JSON.stringify(erc20TokenAddresses), chainId, fiatCurrency],
   );
 
