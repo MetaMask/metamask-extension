@@ -16,8 +16,6 @@ const useQuotePriceImpact = () => {
       activeQuote.sentAmount,
     );
 
-    console.log('the slippage is ', slippagePercentage);
-
     // If slippage is bigger than 5% in either currency, we need to show the alert
     const SLIPPAGE_THRESHOLD = 5;
 
