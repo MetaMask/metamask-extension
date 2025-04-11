@@ -1,4 +1,4 @@
-import { NestedTransactionMetadata } from "@metamask/transaction-controller";
+import { NestedTransactionMetadata } from '@metamask/transaction-controller';
 
 /**
  * Determines if a transaction is a batch transaction.
@@ -9,6 +9,5 @@ import { NestedTransactionMetadata } from "@metamask/transaction-controller";
 export function isBatchTransaction(
   nestedTransactions: NestedTransactionMetadata[] | undefined,
 ): boolean {
-  return Boolean(nestedTransactions?.length)
-  ;
+  return Boolean(nestedTransactions?.length);
 }

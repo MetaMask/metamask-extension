@@ -7,13 +7,20 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { AccountTypeMessage } from './AccountTypeMessage';
 import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
-import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 jest.mock('../../../../../../shared/lib/transactions.utils');
+jest.mock(
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
 
-const FROM_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 const TO_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 const NESTED_TRANSACTIONS_MOCK = [{ data: '0x', to: TO_MOCK }];
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -41,7 +48,7 @@ function runHook({
     : {};
 
   const response = renderHookWithConfirmContextProvider(
-    useAccountTypeUpgrade,
+    () => useAccountTypeUpgrade(),
     state,
   );
 
@@ -59,12 +66,11 @@ describe('useAccountTypeUpgrade', () => {
   });
 
   it('returns an alert when the transaction is a batch transaction', () => {
-    isBatchTransactionMock.mockReturnValue(true)
+    isBatchTransactionMock.mockReturnValue(true);
     expect(
       runHook({
         currentConfirmation: {
           ...TRANSACTION_META_MOCK,
-          txParams: { from: FROM_MOCK, to: TO_MOCK },
           nestedTransactions: NESTED_TRANSACTIONS_MOCK,
         } as TransactionMeta,
       }),

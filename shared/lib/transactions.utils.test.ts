@@ -4,9 +4,7 @@ import { isBatchTransaction } from './transactions.utils';
 describe('Transactions utils', () => {
   describe('isBatchTransaction', () => {
     it('returns true when nestedTransactions has items', () => {
-      const nested: NestedTransactionMetadata[] = [
-        { to: '0x1', data: '0x' },
-      ];
+      const nested: NestedTransactionMetadata[] = [{ to: '0x1', data: '0x' }];
       expect(isBatchTransaction(nested)).toBe(true);
     });
 
