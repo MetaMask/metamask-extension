@@ -1,0 +1,1132 @@
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.cjs b/dist/DeFiPositionsController/DeFiPositionsController.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..fbd717d5abe30e596177b12afc0af821c3bdc87f
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.cjs
+@@ -0,0 +1,126 @@
++"use strict";
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var _DeFiPositionsController_instances, _DeFiPositionsController_fetchPositions, _DeFiPositionsController_isEnabled, _DeFiPositionsController_updateAccountPositions, _DeFiPositionsController_fetchAccountPositions;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.DeFiPositionsController = exports.getDefaultDefiPositionsControllerState = void 0;
++const polling_controller_1 = require("@metamask/polling-controller");
++const fetch_positions_1 = require("./fetch-positions.cjs");
++const group_defi_positions_1 = require("./group-defi-positions.cjs");
++const assetsUtil_1 = require("../assetsUtil.cjs");
++const TEN_MINUTES_IN_MS = 60000;
++const FETCH_POSITIONS_BATCH_SIZE = 10;
++const controllerName = 'DeFiPositionsController';
++const controllerMetadata = {
++    allDeFiPositions: {
++        persist: false,
++        anonymous: false,
++    },
++};
++const getDefaultDefiPositionsControllerState = () => {
++    return {
++        allDeFiPositions: {},
++    };
++};
++exports.getDefaultDefiPositionsControllerState = getDefaultDefiPositionsControllerState;
++/**
++ * Controller that stores assets and exposes convenience methods
++ */
++class DeFiPositionsController extends (0, polling_controller_1.StaticIntervalPollingController)() {
++    /**
++     * Tokens controller options
++     *
++     * @param options - Constructor options.
++     * @param options.messenger - The controller messenger.
++     * @param options.isEnabled - Function that returns whether the controller is enabled. (default: () => true)
++     */
++    constructor({ messenger, isEnabled = () => true, }) {
++        super({
++            name: controllerName,
++            metadata: controllerMetadata,
++            messenger,
++            state: (0, exports.getDefaultDefiPositionsControllerState)(),
++        });
++        _DeFiPositionsController_instances.add(this);
++        _DeFiPositionsController_fetchPositions.set(this, void 0);
++        _DeFiPositionsController_isEnabled.set(this, void 0);
++        this.setIntervalLength(TEN_MINUTES_IN_MS);
++        __classPrivateFieldSet(this, _DeFiPositionsController_fetchPositions, (0, fetch_positions_1.buildPositionFetcher)(), "f");
++        __classPrivateFieldSet(this, _DeFiPositionsController_isEnabled, isEnabled, "f");
++        this.messagingSystem.subscribe('KeyringController:unlock', () => {
++            this.startPolling(null);
++        });
++        this.messagingSystem.subscribe('KeyringController:lock', () => {
++            this.stopAllPolling();
++        });
++        this.messagingSystem.subscribe('TransactionController:transactionConfirmed', async (transactionMeta) => {
++            if (!__classPrivateFieldGet(this, _DeFiPositionsController_isEnabled, "f").call(this)) {
++                return;
++            }
++            await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_updateAccountPositions).call(this, transactionMeta.txParams.from);
++        });
++        this.messagingSystem.subscribe('AccountsController:accountAdded', async (account) => {
++            if (!__classPrivateFieldGet(this, _DeFiPositionsController_isEnabled, "f").call(this) || !account.type.startsWith('eip155:')) {
++                return;
++            }
++            await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_updateAccountPositions).call(this, account.address);
++        });
++    }
++    async _executePoll() {
++        if (!__classPrivateFieldGet(this, _DeFiPositionsController_isEnabled, "f").call(this)) {
++            return;
++        }
++        const accounts = this.messagingSystem.call('AccountsController:listAccounts');
++        const results = await (0, assetsUtil_1.reduceInBatchesSerially)({
++            initialResult: [],
++            values: accounts,
++            batchSize: FETCH_POSITIONS_BATCH_SIZE,
++            eachBatch: async (workingResult, batch) => {
++                const batchResults = (await Promise.all(batch.map(async ({ address: accountAddress, type }) => {
++                    if (type.startsWith('eip155:')) {
++                        const positions = await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_fetchAccountPositions).call(this, accountAddress);
++                        return {
++                            accountAddress,
++                            positions,
++                        };
++                    }
++                    return undefined;
++                }))).filter(Boolean);
++                return [...workingResult, ...batchResults];
++            },
++        });
++        const allDefiPositions = results.reduce((acc, { accountAddress, positions }) => {
++            acc[accountAddress] = positions;
++            return acc;
++        }, {});
++        this.update((state) => {
++            state.allDeFiPositions = allDefiPositions;
++        });
++    }
++}
++exports.DeFiPositionsController = DeFiPositionsController;
++_DeFiPositionsController_fetchPositions = new WeakMap(), _DeFiPositionsController_isEnabled = new WeakMap(), _DeFiPositionsController_instances = new WeakSet(), _DeFiPositionsController_updateAccountPositions = async function _DeFiPositionsController_updateAccountPositions(accountAddress) {
++    const accountPositionsPerChain = await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_fetchAccountPositions).call(this, accountAddress);
++    this.update((state) => {
++        state.allDeFiPositions[accountAddress] = accountPositionsPerChain;
++    });
++}, _DeFiPositionsController_fetchAccountPositions = async function _DeFiPositionsController_fetchAccountPositions(accountAddress) {
++    try {
++        const defiPositionsResponse = await __classPrivateFieldGet(this, _DeFiPositionsController_fetchPositions, "f").call(this, accountAddress);
++        return (0, group_defi_positions_1.groupDeFiPositions)(defiPositionsResponse);
++        // eslint-disable-next-line @typescript-eslint/no-unused-vars
++    }
++    catch (error) {
++        return null;
++    }
++};
++//# sourceMappingURL=DeFiPositionsController.cjs.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.cjs.map b/dist/DeFiPositionsController/DeFiPositionsController.cjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..683ca082f960b487910b0da166c3ef9365dfd33c
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.cjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"DeFiPositionsController.cjs","sourceRoot":"","sources":["../../src/DeFiPositionsController/DeFiPositionsController.ts"],"names":[],"mappings":"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","sourcesContent":["import type {\n  AccountsControllerAccountAddedEvent,\n  AccountsControllerListAccountsAction,\n} from '@metamask/accounts-controller';\nimport type {\n  ControllerGetStateAction,\n  ControllerStateChangeEvent,\n  RestrictedMessenger,\n  StateMetadata,\n} from '@metamask/base-controller';\nimport type { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';\nimport type { KeyringControllerLockEvent } from '@metamask/keyring-controller';\nimport { StaticIntervalPollingController } from '@metamask/polling-controller';\nimport type { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';\nimport type { Hex } from '@metamask/utils';\n\nimport type { DefiPositionResponse } from './fetch-positions';\nimport { buildPositionFetcher } from './fetch-positions';\nimport {\n  groupDeFiPositions,\n  type GroupedDeFiPositions,\n} from './group-defi-positions';\nimport { reduceInBatchesSerially } from '../assetsUtil';\n\nconst TEN_MINUTES_IN_MS = 60_000;\n\nconst FETCH_POSITIONS_BATCH_SIZE = 10;\n\nconst controllerName = 'DeFiPositionsController';\n\ntype GroupedDeFiPositionsPerChain = {\n  [chain: Hex]: GroupedDeFiPositions;\n};\n\nexport type DeFiPositionsControllerState = {\n  /**\n   * Object containing DeFi positions per account and network\n   */\n  allDeFiPositions: {\n    [accountAddress: string]: GroupedDeFiPositionsPerChain | null;\n  };\n};\n\nconst controllerMetadata: StateMetadata<DeFiPositionsControllerState> = {\n  allDeFiPositions: {\n    persist: false,\n    anonymous: false,\n  },\n};\n\nexport const getDefaultDefiPositionsControllerState =\n  (): DeFiPositionsControllerState => {\n    return {\n      allDeFiPositions: {},\n    };\n  };\n\nexport type DeFiPositionsControllerActions =\n  DeFiPositionsControllerGetStateAction;\n\nexport type DeFiPositionsControllerGetStateAction = ControllerGetStateAction<\n  typeof controllerName,\n  DeFiPositionsControllerState\n>;\n\nexport type DeFiPositionsControllerEvents =\n  DeFiPositionsControllerStateChangeEvent;\n\nexport type DeFiPositionsControllerStateChangeEvent =\n  ControllerStateChangeEvent<\n    typeof controllerName,\n    DeFiPositionsControllerState\n  >;\n\n/**\n * The external actions available to the {@link DeFiPositionsController}.\n */\nexport type DeFiPositionsControllerAllowedActions =\n  AccountsControllerListAccountsAction;\n\n/**\n * The external events available to the {@link DeFiPositionsController}.\n */\nexport type DeFiPositionsControllerAllowedEvents =\n  | KeyringControllerUnlockEvent\n  | KeyringControllerLockEvent\n  | TransactionControllerTransactionConfirmedEvent\n  | AccountsControllerAccountAddedEvent;\n\n/**\n * The messenger of the {@link DeFiPositionsController}.\n */\nexport type DeFiPositionsControllerMessenger = RestrictedMessenger<\n  typeof controllerName,\n  DeFiPositionsControllerActions | DeFiPositionsControllerAllowedActions,\n  DeFiPositionsControllerEvents | DeFiPositionsControllerAllowedEvents,\n  DeFiPositionsControllerAllowedActions['type'],\n  DeFiPositionsControllerAllowedEvents['type']\n>;\n\n/**\n * Controller that stores assets and exposes convenience methods\n */\nexport class DeFiPositionsController extends StaticIntervalPollingController()<\n  typeof controllerName,\n  DeFiPositionsControllerState,\n  DeFiPositionsControllerMessenger\n> {\n  readonly #fetchPositions: (\n    accountAddress: string,\n  ) => Promise<DefiPositionResponse[]>;\n\n  readonly #isEnabled: () => boolean;\n\n  /**\n   * Tokens controller options\n   *\n   * @param options - Constructor options.\n   * @param options.messenger - The controller messenger.\n   * @param options.isEnabled - Function that returns whether the controller is enabled. (default: () => true)\n   */\n  constructor({\n    messenger,\n    isEnabled = () => true,\n  }: {\n    messenger: DeFiPositionsControllerMessenger;\n    isEnabled?: () => boolean;\n  }) {\n    super({\n      name: controllerName,\n      metadata: controllerMetadata,\n      messenger,\n      state: getDefaultDefiPositionsControllerState(),\n    });\n\n    this.setIntervalLength(TEN_MINUTES_IN_MS);\n\n    this.#fetchPositions = buildPositionFetcher();\n    this.#isEnabled = isEnabled;\n\n    this.messagingSystem.subscribe('KeyringController:unlock', () => {\n      this.startPolling(null);\n    });\n\n    this.messagingSystem.subscribe('KeyringController:lock', () => {\n      this.stopAllPolling();\n    });\n\n    this.messagingSystem.subscribe(\n      'TransactionController:transactionConfirmed',\n      async (transactionMeta) => {\n        if (!this.#isEnabled()) {\n          return;\n        }\n\n        await this.#updateAccountPositions(transactionMeta.txParams.from);\n      },\n    );\n\n    this.messagingSystem.subscribe(\n      'AccountsController:accountAdded',\n      async (account) => {\n        if (!this.#isEnabled() || !account.type.startsWith('eip155:')) {\n          return;\n        }\n\n        await this.#updateAccountPositions(account.address);\n      },\n    );\n  }\n\n  async _executePoll(): Promise<void> {\n    if (!this.#isEnabled()) {\n      return;\n    }\n\n    const accounts = this.messagingSystem.call(\n      'AccountsController:listAccounts',\n    );\n\n    const results = await reduceInBatchesSerially({\n      initialResult: [] as {\n        accountAddress: string;\n        positions: GroupedDeFiPositionsPerChain | null;\n      }[],\n      values: accounts,\n      batchSize: FETCH_POSITIONS_BATCH_SIZE,\n      eachBatch: async (workingResult, batch) => {\n        const batchResults = (\n          await Promise.all(\n            batch.map(async ({ address: accountAddress, type }) => {\n              if (type.startsWith('eip155:')) {\n                const positions =\n                  await this.#fetchAccountPositions(accountAddress);\n\n                return {\n                  accountAddress,\n                  positions,\n                };\n              }\n\n              return undefined;\n            }),\n          )\n        ).filter(Boolean) as {\n          accountAddress: string;\n          positions: GroupedDeFiPositionsPerChain | null;\n        }[];\n\n        return [...workingResult, ...batchResults];\n      },\n    });\n\n    const allDefiPositions = results.reduce(\n      (acc, { accountAddress, positions }) => {\n        acc[accountAddress] = positions;\n        return acc;\n      },\n      {} as DeFiPositionsControllerState['allDeFiPositions'],\n    );\n\n    this.update((state) => {\n      state.allDeFiPositions = allDefiPositions;\n    });\n  }\n\n  async #updateAccountPositions(accountAddress: string): Promise<void> {\n    const accountPositionsPerChain =\n      await this.#fetchAccountPositions(accountAddress);\n\n    this.update((state) => {\n      state.allDeFiPositions[accountAddress] = accountPositionsPerChain;\n    });\n  }\n\n  async #fetchAccountPositions(\n    accountAddress: string,\n  ): Promise<GroupedDeFiPositionsPerChain | null> {\n    try {\n      const defiPositionsResponse = await this.#fetchPositions(accountAddress);\n\n      return groupDeFiPositions(defiPositionsResponse);\n      // eslint-disable-next-line @typescript-eslint/no-unused-vars\n    } catch (error) {\n      return null;\n    }\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.d.cts b/dist/DeFiPositionsController/DeFiPositionsController.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..5aca481c33da7b4e518201fc221b6b7884d883fe
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.d.cts
+@@ -0,0 +1,72 @@
++/// <reference types="node" />
++import type { AccountsControllerAccountAddedEvent, AccountsControllerListAccountsAction } from "@metamask/accounts-controller";
++import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
++import type { KeyringControllerUnlockEvent } from "@metamask/keyring-controller";
++import type { KeyringControllerLockEvent } from "@metamask/keyring-controller";
++import type { TransactionControllerTransactionConfirmedEvent } from "@metamask/transaction-controller";
++import type { Hex } from "@metamask/utils";
++import { type GroupedDeFiPositions } from "./group-defi-positions.cjs";
++declare const controllerName = "DeFiPositionsController";
++type GroupedDeFiPositionsPerChain = {
++    [chain: Hex]: GroupedDeFiPositions;
++};
++export type DeFiPositionsControllerState = {
++    /**
++     * Object containing DeFi positions per account and network
++     */
++    allDeFiPositions: {
++        [accountAddress: string]: GroupedDeFiPositionsPerChain | null;
++    };
++};
++export declare const getDefaultDefiPositionsControllerState: () => DeFiPositionsControllerState;
++export type DeFiPositionsControllerActions = DeFiPositionsControllerGetStateAction;
++export type DeFiPositionsControllerGetStateAction = ControllerGetStateAction<typeof controllerName, DeFiPositionsControllerState>;
++export type DeFiPositionsControllerEvents = DeFiPositionsControllerStateChangeEvent;
++export type DeFiPositionsControllerStateChangeEvent = ControllerStateChangeEvent<typeof controllerName, DeFiPositionsControllerState>;
++/**
++ * The external actions available to the {@link DeFiPositionsController}.
++ */
++export type DeFiPositionsControllerAllowedActions = AccountsControllerListAccountsAction;
++/**
++ * The external events available to the {@link DeFiPositionsController}.
++ */
++export type DeFiPositionsControllerAllowedEvents = KeyringControllerUnlockEvent | KeyringControllerLockEvent | TransactionControllerTransactionConfirmedEvent | AccountsControllerAccountAddedEvent;
++/**
++ * The messenger of the {@link DeFiPositionsController}.
++ */
++export type DeFiPositionsControllerMessenger = RestrictedMessenger<typeof controllerName, DeFiPositionsControllerActions | DeFiPositionsControllerAllowedActions, DeFiPositionsControllerEvents | DeFiPositionsControllerAllowedEvents, DeFiPositionsControllerAllowedActions['type'], DeFiPositionsControllerAllowedEvents['type']>;
++declare const DeFiPositionsController_base: (abstract new (...args: any[]) => {
++    readonly "__#14@#intervalIds": Record<string, NodeJS.Timeout>;
++    "__#14@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPolling(input: import("@metamask/utils").Json): void;
++    _stopPollingByPollingTokenSetId(key: string): void;
++    readonly "__#3@#pollingTokenSets": Map<string, Set<string>>;
++    "__#3@#callbacks": Map<string, Set<(input: import("@metamask/utils").Json) => void>>;
++    _executePoll(input: import("@metamask/utils").Json): Promise<void>;
++    startPolling(input: import("@metamask/utils").Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingComplete(input: import("@metamask/utils").Json, callback: (input: import("@metamask/utils").Json) => void): void;
++}) & typeof import("@metamask/base-controller").BaseController;
++/**
++ * Controller that stores assets and exposes convenience methods
++ */
++export declare class DeFiPositionsController extends DeFiPositionsController_base<typeof controllerName, DeFiPositionsControllerState, DeFiPositionsControllerMessenger> {
++    #private;
++    /**
++     * Tokens controller options
++     *
++     * @param options - Constructor options.
++     * @param options.messenger - The controller messenger.
++     * @param options.isEnabled - Function that returns whether the controller is enabled. (default: () => true)
++     */
++    constructor({ messenger, isEnabled, }: {
++        messenger: DeFiPositionsControllerMessenger;
++        isEnabled?: () => boolean;
++    });
++    _executePoll(): Promise<void>;
++}
++export {};
++//# sourceMappingURL=DeFiPositionsController.d.cts.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.d.cts.map b/dist/DeFiPositionsController/DeFiPositionsController.d.cts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..48f4f5bcc76021e87c52fcb0aa9dd076b7a89ca5
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.d.cts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"DeFiPositionsController.d.cts","sourceRoot":"","sources":["../../src/DeFiPositionsController/DeFiPositionsController.ts"],"names":[],"mappings":";AAAA,OAAO,KAAK,EACV,mCAAmC,EACnC,oCAAoC,EACrC,sCAAsC;AACvC,OAAO,KAAK,EACV,wBAAwB,EACxB,0BAA0B,EAC1B,mBAAmB,EAEpB,kCAAkC;AACnC,OAAO,KAAK,EAAE,4BAA4B,EAAE,qCAAqC;AACjF,OAAO,KAAK,EAAE,0BAA0B,EAAE,qCAAqC;AAE/E,OAAO,KAAK,EAAE,8CAA8C,EAAE,yCAAyC;AACvG,OAAO,KAAK,EAAE,GAAG,EAAE,wBAAwB;AAI3C,OAAO,EAEL,KAAK,oBAAoB,EAC1B,mCAA+B;AAOhC,QAAA,MAAM,cAAc,4BAA4B,CAAC;AAEjD,KAAK,4BAA4B,GAAG;IAClC,CAAC,KAAK,EAAE,GAAG,GAAG,oBAAoB,CAAC;CACpC,CAAC;AAEF,MAAM,MAAM,4BAA4B,GAAG;IACzC;;OAEG;IACH,gBAAgB,EAAE;QAChB,CAAC,cAAc,EAAE,MAAM,GAAG,4BAA4B,GAAG,IAAI,CAAC;KAC/D,CAAC;CACH,CAAC;AASF,eAAO,MAAM,sCAAsC,QAC7C,4BAIH,CAAC;AAEJ,MAAM,MAAM,8BAA8B,GACxC,qCAAqC,CAAC;AAExC,MAAM,MAAM,qCAAqC,GAAG,wBAAwB,CAC1E,OAAO,cAAc,EACrB,4BAA4B,CAC7B,CAAC;AAEF,MAAM,MAAM,6BAA6B,GACvC,uCAAuC,CAAC;AAE1C,MAAM,MAAM,uCAAuC,GACjD,0BAA0B,CACxB,OAAO,cAAc,EACrB,4BAA4B,CAC7B,CAAC;AAEJ;;GAEG;AACH,MAAM,MAAM,qCAAqC,GAC/C,oCAAoC,CAAC;AAEvC;;GAEG;AACH,MAAM,MAAM,oCAAoC,GAC5C,4BAA4B,GAC5B,0BAA0B,GAC1B,8CAA8C,GAC9C,mCAAmC,CAAC;AAExC;;GAEG;AACH,MAAM,MAAM,gCAAgC,GAAG,mBAAmB,CAChE,OAAO,cAAc,EACrB,8BAA8B,GAAG,qCAAqC,EACtE,6BAA6B,GAAG,oCAAoC,EACpE,qCAAqC,CAAC,MAAM,CAAC,EAC7C,oCAAoC,CAAC,MAAM,CAAC,CAC7C,CAAC;;;;;;;;;;;;;;;;AAEF;;GAEG;AACH,qBAAa,uBAAwB,SAAQ,6BAC3C,OAAO,cAAc,EACrB,4BAA4B,EAC5B,gCAAgC,CACjC;;IAOC;;;;;;OAMG;gBACS,EACV,SAAS,EACT,SAAsB,GACvB,EAAE;QACD,SAAS,EAAE,gCAAgC,CAAC;QAC5C,SAAS,CAAC,EAAE,MAAM,OAAO,CAAC;KAC3B;IA4CK,YAAY,IAAI,OAAO,CAAC,IAAI,CAAC;CA4EpC"}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.d.mts b/dist/DeFiPositionsController/DeFiPositionsController.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..5bcafa704f1676a3152bb02d6446f086603a67ea
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.d.mts
+@@ -0,0 +1,72 @@
++/// <reference types="node" />
++import type { AccountsControllerAccountAddedEvent, AccountsControllerListAccountsAction } from "@metamask/accounts-controller";
++import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
++import type { KeyringControllerUnlockEvent } from "@metamask/keyring-controller";
++import type { KeyringControllerLockEvent } from "@metamask/keyring-controller";
++import type { TransactionControllerTransactionConfirmedEvent } from "@metamask/transaction-controller";
++import type { Hex } from "@metamask/utils";
++import { type GroupedDeFiPositions } from "./group-defi-positions.mjs";
++declare const controllerName = "DeFiPositionsController";
++type GroupedDeFiPositionsPerChain = {
++    [chain: Hex]: GroupedDeFiPositions;
++};
++export type DeFiPositionsControllerState = {
++    /**
++     * Object containing DeFi positions per account and network
++     */
++    allDeFiPositions: {
++        [accountAddress: string]: GroupedDeFiPositionsPerChain | null;
++    };
++};
++export declare const getDefaultDefiPositionsControllerState: () => DeFiPositionsControllerState;
++export type DeFiPositionsControllerActions = DeFiPositionsControllerGetStateAction;
++export type DeFiPositionsControllerGetStateAction = ControllerGetStateAction<typeof controllerName, DeFiPositionsControllerState>;
++export type DeFiPositionsControllerEvents = DeFiPositionsControllerStateChangeEvent;
++export type DeFiPositionsControllerStateChangeEvent = ControllerStateChangeEvent<typeof controllerName, DeFiPositionsControllerState>;
++/**
++ * The external actions available to the {@link DeFiPositionsController}.
++ */
++export type DeFiPositionsControllerAllowedActions = AccountsControllerListAccountsAction;
++/**
++ * The external events available to the {@link DeFiPositionsController}.
++ */
++export type DeFiPositionsControllerAllowedEvents = KeyringControllerUnlockEvent | KeyringControllerLockEvent | TransactionControllerTransactionConfirmedEvent | AccountsControllerAccountAddedEvent;
++/**
++ * The messenger of the {@link DeFiPositionsController}.
++ */
++export type DeFiPositionsControllerMessenger = RestrictedMessenger<typeof controllerName, DeFiPositionsControllerActions | DeFiPositionsControllerAllowedActions, DeFiPositionsControllerEvents | DeFiPositionsControllerAllowedEvents, DeFiPositionsControllerAllowedActions['type'], DeFiPositionsControllerAllowedEvents['type']>;
++declare const DeFiPositionsController_base: (abstract new (...args: any[]) => {
++    readonly "__#14@#intervalIds": Record<string, NodeJS.Timeout>;
++    "__#14@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPolling(input: import("@metamask/utils").Json): void;
++    _stopPollingByPollingTokenSetId(key: string): void;
++    readonly "__#3@#pollingTokenSets": Map<string, Set<string>>;
++    "__#3@#callbacks": Map<string, Set<(input: import("@metamask/utils").Json) => void>>;
++    _executePoll(input: import("@metamask/utils").Json): Promise<void>;
++    startPolling(input: import("@metamask/utils").Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingComplete(input: import("@metamask/utils").Json, callback: (input: import("@metamask/utils").Json) => void): void;
++}) & typeof import("@metamask/base-controller").BaseController;
++/**
++ * Controller that stores assets and exposes convenience methods
++ */
++export declare class DeFiPositionsController extends DeFiPositionsController_base<typeof controllerName, DeFiPositionsControllerState, DeFiPositionsControllerMessenger> {
++    #private;
++    /**
++     * Tokens controller options
++     *
++     * @param options - Constructor options.
++     * @param options.messenger - The controller messenger.
++     * @param options.isEnabled - Function that returns whether the controller is enabled. (default: () => true)
++     */
++    constructor({ messenger, isEnabled, }: {
++        messenger: DeFiPositionsControllerMessenger;
++        isEnabled?: () => boolean;
++    });
++    _executePoll(): Promise<void>;
++}
++export {};
++//# sourceMappingURL=DeFiPositionsController.d.mts.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.d.mts.map b/dist/DeFiPositionsController/DeFiPositionsController.d.mts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..ad0304b1fe01f1e186181aedbdac29602982a677
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.d.mts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"DeFiPositionsController.d.mts","sourceRoot":"","sources":["../../src/DeFiPositionsController/DeFiPositionsController.ts"],"names":[],"mappings":";AAAA,OAAO,KAAK,EACV,mCAAmC,EACnC,oCAAoC,EACrC,sCAAsC;AACvC,OAAO,KAAK,EACV,wBAAwB,EACxB,0BAA0B,EAC1B,mBAAmB,EAEpB,kCAAkC;AACnC,OAAO,KAAK,EAAE,4BAA4B,EAAE,qCAAqC;AACjF,OAAO,KAAK,EAAE,0BAA0B,EAAE,qCAAqC;AAE/E,OAAO,KAAK,EAAE,8CAA8C,EAAE,yCAAyC;AACvG,OAAO,KAAK,EAAE,GAAG,EAAE,wBAAwB;AAI3C,OAAO,EAEL,KAAK,oBAAoB,EAC1B,mCAA+B;AAOhC,QAAA,MAAM,cAAc,4BAA4B,CAAC;AAEjD,KAAK,4BAA4B,GAAG;IAClC,CAAC,KAAK,EAAE,GAAG,GAAG,oBAAoB,CAAC;CACpC,CAAC;AAEF,MAAM,MAAM,4BAA4B,GAAG;IACzC;;OAEG;IACH,gBAAgB,EAAE;QAChB,CAAC,cAAc,EAAE,MAAM,GAAG,4BAA4B,GAAG,IAAI,CAAC;KAC/D,CAAC;CACH,CAAC;AASF,eAAO,MAAM,sCAAsC,QAC7C,4BAIH,CAAC;AAEJ,MAAM,MAAM,8BAA8B,GACxC,qCAAqC,CAAC;AAExC,MAAM,MAAM,qCAAqC,GAAG,wBAAwB,CAC1E,OAAO,cAAc,EACrB,4BAA4B,CAC7B,CAAC;AAEF,MAAM,MAAM,6BAA6B,GACvC,uCAAuC,CAAC;AAE1C,MAAM,MAAM,uCAAuC,GACjD,0BAA0B,CACxB,OAAO,cAAc,EACrB,4BAA4B,CAC7B,CAAC;AAEJ;;GAEG;AACH,MAAM,MAAM,qCAAqC,GAC/C,oCAAoC,CAAC;AAEvC;;GAEG;AACH,MAAM,MAAM,oCAAoC,GAC5C,4BAA4B,GAC5B,0BAA0B,GAC1B,8CAA8C,GAC9C,mCAAmC,CAAC;AAExC;;GAEG;AACH,MAAM,MAAM,gCAAgC,GAAG,mBAAmB,CAChE,OAAO,cAAc,EACrB,8BAA8B,GAAG,qCAAqC,EACtE,6BAA6B,GAAG,oCAAoC,EACpE,qCAAqC,CAAC,MAAM,CAAC,EAC7C,oCAAoC,CAAC,MAAM,CAAC,CAC7C,CAAC;;;;;;;;;;;;;;;;AAEF;;GAEG;AACH,qBAAa,uBAAwB,SAAQ,6BAC3C,OAAO,cAAc,EACrB,4BAA4B,EAC5B,gCAAgC,CACjC;;IAOC;;;;;;OAMG;gBACS,EACV,SAAS,EACT,SAAsB,GACvB,EAAE;QACD,SAAS,EAAE,gCAAgC,CAAC;QAC5C,SAAS,CAAC,EAAE,MAAM,OAAO,CAAC;KAC3B;IA4CK,YAAY,IAAI,OAAO,CAAC,IAAI,CAAC;CA4EpC"}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.mjs b/dist/DeFiPositionsController/DeFiPositionsController.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..a3974761754aa7a733029f35bf33569e6825f09f
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.mjs
+@@ -0,0 +1,121 @@
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var _DeFiPositionsController_instances, _DeFiPositionsController_fetchPositions, _DeFiPositionsController_isEnabled, _DeFiPositionsController_updateAccountPositions, _DeFiPositionsController_fetchAccountPositions;
++import { StaticIntervalPollingController } from "@metamask/polling-controller";
++import { buildPositionFetcher } from "./fetch-positions.mjs";
++import { groupDeFiPositions } from "./group-defi-positions.mjs";
++import { reduceInBatchesSerially } from "../assetsUtil.mjs";
++const TEN_MINUTES_IN_MS = 60000;
++const FETCH_POSITIONS_BATCH_SIZE = 10;
++const controllerName = 'DeFiPositionsController';
++const controllerMetadata = {
++    allDeFiPositions: {
++        persist: false,
++        anonymous: false,
++    },
++};
++export const getDefaultDefiPositionsControllerState = () => {
++    return {
++        allDeFiPositions: {},
++    };
++};
++/**
++ * Controller that stores assets and exposes convenience methods
++ */
++export class DeFiPositionsController extends StaticIntervalPollingController() {
++    /**
++     * Tokens controller options
++     *
++     * @param options - Constructor options.
++     * @param options.messenger - The controller messenger.
++     * @param options.isEnabled - Function that returns whether the controller is enabled. (default: () => true)
++     */
++    constructor({ messenger, isEnabled = () => true, }) {
++        super({
++            name: controllerName,
++            metadata: controllerMetadata,
++            messenger,
++            state: getDefaultDefiPositionsControllerState(),
++        });
++        _DeFiPositionsController_instances.add(this);
++        _DeFiPositionsController_fetchPositions.set(this, void 0);
++        _DeFiPositionsController_isEnabled.set(this, void 0);
++        this.setIntervalLength(TEN_MINUTES_IN_MS);
++        __classPrivateFieldSet(this, _DeFiPositionsController_fetchPositions, buildPositionFetcher(), "f");
++        __classPrivateFieldSet(this, _DeFiPositionsController_isEnabled, isEnabled, "f");
++        this.messagingSystem.subscribe('KeyringController:unlock', () => {
++            this.startPolling(null);
++        });
++        this.messagingSystem.subscribe('KeyringController:lock', () => {
++            this.stopAllPolling();
++        });
++        this.messagingSystem.subscribe('TransactionController:transactionConfirmed', async (transactionMeta) => {
++            if (!__classPrivateFieldGet(this, _DeFiPositionsController_isEnabled, "f").call(this)) {
++                return;
++            }
++            await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_updateAccountPositions).call(this, transactionMeta.txParams.from);
++        });
++        this.messagingSystem.subscribe('AccountsController:accountAdded', async (account) => {
++            if (!__classPrivateFieldGet(this, _DeFiPositionsController_isEnabled, "f").call(this) || !account.type.startsWith('eip155:')) {
++                return;
++            }
++            await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_updateAccountPositions).call(this, account.address);
++        });
++    }
++    async _executePoll() {
++        if (!__classPrivateFieldGet(this, _DeFiPositionsController_isEnabled, "f").call(this)) {
++            return;
++        }
++        const accounts = this.messagingSystem.call('AccountsController:listAccounts');
++        const results = await reduceInBatchesSerially({
++            initialResult: [],
++            values: accounts,
++            batchSize: FETCH_POSITIONS_BATCH_SIZE,
++            eachBatch: async (workingResult, batch) => {
++                const batchResults = (await Promise.all(batch.map(async ({ address: accountAddress, type }) => {
++                    if (type.startsWith('eip155:')) {
++                        const positions = await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_fetchAccountPositions).call(this, accountAddress);
++                        return {
++                            accountAddress,
++                            positions,
++                        };
++                    }
++                    return undefined;
++                }))).filter(Boolean);
++                return [...workingResult, ...batchResults];
++            },
++        });
++        const allDefiPositions = results.reduce((acc, { accountAddress, positions }) => {
++            acc[accountAddress] = positions;
++            return acc;
++        }, {});
++        this.update((state) => {
++            state.allDeFiPositions = allDefiPositions;
++        });
++    }
++}
++_DeFiPositionsController_fetchPositions = new WeakMap(), _DeFiPositionsController_isEnabled = new WeakMap(), _DeFiPositionsController_instances = new WeakSet(), _DeFiPositionsController_updateAccountPositions = async function _DeFiPositionsController_updateAccountPositions(accountAddress) {
++    const accountPositionsPerChain = await __classPrivateFieldGet(this, _DeFiPositionsController_instances, "m", _DeFiPositionsController_fetchAccountPositions).call(this, accountAddress);
++    this.update((state) => {
++        state.allDeFiPositions[accountAddress] = accountPositionsPerChain;
++    });
++}, _DeFiPositionsController_fetchAccountPositions = async function _DeFiPositionsController_fetchAccountPositions(accountAddress) {
++    try {
++        const defiPositionsResponse = await __classPrivateFieldGet(this, _DeFiPositionsController_fetchPositions, "f").call(this, accountAddress);
++        return groupDeFiPositions(defiPositionsResponse);
++        // eslint-disable-next-line @typescript-eslint/no-unused-vars
++    }
++    catch (error) {
++        return null;
++    }
++};
++//# sourceMappingURL=DeFiPositionsController.mjs.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/DeFiPositionsController.mjs.map b/dist/DeFiPositionsController/DeFiPositionsController.mjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..3015fbaff7baaf201c2afbea3450b3798e1e6c35
+--- /dev/null
++++ b/dist/DeFiPositionsController/DeFiPositionsController.mjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"DeFiPositionsController.mjs","sourceRoot":"","sources":["../../src/DeFiPositionsController/DeFiPositionsController.ts"],"names":[],"mappings":"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","sourcesContent":["import type {\n  AccountsControllerAccountAddedEvent,\n  AccountsControllerListAccountsAction,\n} from '@metamask/accounts-controller';\nimport type {\n  ControllerGetStateAction,\n  ControllerStateChangeEvent,\n  RestrictedMessenger,\n  StateMetadata,\n} from '@metamask/base-controller';\nimport type { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';\nimport type { KeyringControllerLockEvent } from '@metamask/keyring-controller';\nimport { StaticIntervalPollingController } from '@metamask/polling-controller';\nimport type { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';\nimport type { Hex } from '@metamask/utils';\n\nimport type { DefiPositionResponse } from './fetch-positions';\nimport { buildPositionFetcher } from './fetch-positions';\nimport {\n  groupDeFiPositions,\n  type GroupedDeFiPositions,\n} from './group-defi-positions';\nimport { reduceInBatchesSerially } from '../assetsUtil';\n\nconst TEN_MINUTES_IN_MS = 60_000;\n\nconst FETCH_POSITIONS_BATCH_SIZE = 10;\n\nconst controllerName = 'DeFiPositionsController';\n\ntype GroupedDeFiPositionsPerChain = {\n  [chain: Hex]: GroupedDeFiPositions;\n};\n\nexport type DeFiPositionsControllerState = {\n  /**\n   * Object containing DeFi positions per account and network\n   */\n  allDeFiPositions: {\n    [accountAddress: string]: GroupedDeFiPositionsPerChain | null;\n  };\n};\n\nconst controllerMetadata: StateMetadata<DeFiPositionsControllerState> = {\n  allDeFiPositions: {\n    persist: false,\n    anonymous: false,\n  },\n};\n\nexport const getDefaultDefiPositionsControllerState =\n  (): DeFiPositionsControllerState => {\n    return {\n      allDeFiPositions: {},\n    };\n  };\n\nexport type DeFiPositionsControllerActions =\n  DeFiPositionsControllerGetStateAction;\n\nexport type DeFiPositionsControllerGetStateAction = ControllerGetStateAction<\n  typeof controllerName,\n  DeFiPositionsControllerState\n>;\n\nexport type DeFiPositionsControllerEvents =\n  DeFiPositionsControllerStateChangeEvent;\n\nexport type DeFiPositionsControllerStateChangeEvent =\n  ControllerStateChangeEvent<\n    typeof controllerName,\n    DeFiPositionsControllerState\n  >;\n\n/**\n * The external actions available to the {@link DeFiPositionsController}.\n */\nexport type DeFiPositionsControllerAllowedActions =\n  AccountsControllerListAccountsAction;\n\n/**\n * The external events available to the {@link DeFiPositionsController}.\n */\nexport type DeFiPositionsControllerAllowedEvents =\n  | KeyringControllerUnlockEvent\n  | KeyringControllerLockEvent\n  | TransactionControllerTransactionConfirmedEvent\n  | AccountsControllerAccountAddedEvent;\n\n/**\n * The messenger of the {@link DeFiPositionsController}.\n */\nexport type DeFiPositionsControllerMessenger = RestrictedMessenger<\n  typeof controllerName,\n  DeFiPositionsControllerActions | DeFiPositionsControllerAllowedActions,\n  DeFiPositionsControllerEvents | DeFiPositionsControllerAllowedEvents,\n  DeFiPositionsControllerAllowedActions['type'],\n  DeFiPositionsControllerAllowedEvents['type']\n>;\n\n/**\n * Controller that stores assets and exposes convenience methods\n */\nexport class DeFiPositionsController extends StaticIntervalPollingController()<\n  typeof controllerName,\n  DeFiPositionsControllerState,\n  DeFiPositionsControllerMessenger\n> {\n  readonly #fetchPositions: (\n    accountAddress: string,\n  ) => Promise<DefiPositionResponse[]>;\n\n  readonly #isEnabled: () => boolean;\n\n  /**\n   * Tokens controller options\n   *\n   * @param options - Constructor options.\n   * @param options.messenger - The controller messenger.\n   * @param options.isEnabled - Function that returns whether the controller is enabled. (default: () => true)\n   */\n  constructor({\n    messenger,\n    isEnabled = () => true,\n  }: {\n    messenger: DeFiPositionsControllerMessenger;\n    isEnabled?: () => boolean;\n  }) {\n    super({\n      name: controllerName,\n      metadata: controllerMetadata,\n      messenger,\n      state: getDefaultDefiPositionsControllerState(),\n    });\n\n    this.setIntervalLength(TEN_MINUTES_IN_MS);\n\n    this.#fetchPositions = buildPositionFetcher();\n    this.#isEnabled = isEnabled;\n\n    this.messagingSystem.subscribe('KeyringController:unlock', () => {\n      this.startPolling(null);\n    });\n\n    this.messagingSystem.subscribe('KeyringController:lock', () => {\n      this.stopAllPolling();\n    });\n\n    this.messagingSystem.subscribe(\n      'TransactionController:transactionConfirmed',\n      async (transactionMeta) => {\n        if (!this.#isEnabled()) {\n          return;\n        }\n\n        await this.#updateAccountPositions(transactionMeta.txParams.from);\n      },\n    );\n\n    this.messagingSystem.subscribe(\n      'AccountsController:accountAdded',\n      async (account) => {\n        if (!this.#isEnabled() || !account.type.startsWith('eip155:')) {\n          return;\n        }\n\n        await this.#updateAccountPositions(account.address);\n      },\n    );\n  }\n\n  async _executePoll(): Promise<void> {\n    if (!this.#isEnabled()) {\n      return;\n    }\n\n    const accounts = this.messagingSystem.call(\n      'AccountsController:listAccounts',\n    );\n\n    const results = await reduceInBatchesSerially({\n      initialResult: [] as {\n        accountAddress: string;\n        positions: GroupedDeFiPositionsPerChain | null;\n      }[],\n      values: accounts,\n      batchSize: FETCH_POSITIONS_BATCH_SIZE,\n      eachBatch: async (workingResult, batch) => {\n        const batchResults = (\n          await Promise.all(\n            batch.map(async ({ address: accountAddress, type }) => {\n              if (type.startsWith('eip155:')) {\n                const positions =\n                  await this.#fetchAccountPositions(accountAddress);\n\n                return {\n                  accountAddress,\n                  positions,\n                };\n              }\n\n              return undefined;\n            }),\n          )\n        ).filter(Boolean) as {\n          accountAddress: string;\n          positions: GroupedDeFiPositionsPerChain | null;\n        }[];\n\n        return [...workingResult, ...batchResults];\n      },\n    });\n\n    const allDefiPositions = results.reduce(\n      (acc, { accountAddress, positions }) => {\n        acc[accountAddress] = positions;\n        return acc;\n      },\n      {} as DeFiPositionsControllerState['allDeFiPositions'],\n    );\n\n    this.update((state) => {\n      state.allDeFiPositions = allDefiPositions;\n    });\n  }\n\n  async #updateAccountPositions(accountAddress: string): Promise<void> {\n    const accountPositionsPerChain =\n      await this.#fetchAccountPositions(accountAddress);\n\n    this.update((state) => {\n      state.allDeFiPositions[accountAddress] = accountPositionsPerChain;\n    });\n  }\n\n  async #fetchAccountPositions(\n    accountAddress: string,\n  ): Promise<GroupedDeFiPositionsPerChain | null> {\n    try {\n      const defiPositionsResponse = await this.#fetchPositions(accountAddress);\n\n      return groupDeFiPositions(defiPositionsResponse);\n      // eslint-disable-next-line @typescript-eslint/no-unused-vars\n    } catch (error) {\n      return null;\n    }\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.cjs b/dist/DeFiPositionsController/fetch-positions.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..d8be1f2ad5b8a5bfdd57c2c6fb5ccd20e24906ac
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.cjs
+@@ -0,0 +1,21 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.buildPositionFetcher = exports.DEFI_POSITIONS_API_URL = void 0;
++// TODO: Update with prod API URL when available
++exports.DEFI_POSITIONS_API_URL = 'https://defiadapters.dev-api.cx.metamask.io';
++/**
++ * Builds a function that fetches DeFi positions for a given account address
++ *
++ * @returns A function that fetches DeFi positions for a given account address
++ */
++function buildPositionFetcher() {
++    return async (accountAddress) => {
++        const defiPositionsResponse = await fetch(`${exports.DEFI_POSITIONS_API_URL}/positions/${accountAddress}`);
++        if (defiPositionsResponse.status !== 200) {
++            throw new Error(`Unable to fetch defi positions - HTTP ${defiPositionsResponse.status}`);
++        }
++        return (await defiPositionsResponse.json()).data;
++    };
++}
++exports.buildPositionFetcher = buildPositionFetcher;
++//# sourceMappingURL=fetch-positions.cjs.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.cjs.map b/dist/DeFiPositionsController/fetch-positions.cjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..3fff84a51fd4c5afbbdd84dd5ea8333d732f620c
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.cjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"fetch-positions.cjs","sourceRoot":"","sources":["../../src/DeFiPositionsController/fetch-positions.ts"],"names":[],"mappings":";;;AAwDA,gDAAgD;AACnC,QAAA,sBAAsB,GACjC,6CAA6C,CAAC;AAEhD;;;;GAIG;AACH,SAAgB,oBAAoB;IAClC,OAAO,KAAK,EAAE,cAAsB,EAAmC,EAAE;QACvE,MAAM,qBAAqB,GAAG,MAAM,KAAK,CACvC,GAAG,8BAAsB,cAAc,cAAc,EAAE,CACxD,CAAC;QAEF,IAAI,qBAAqB,CAAC,MAAM,KAAK,GAAG,EAAE;YACxC,MAAM,IAAI,KAAK,CACb,yCAAyC,qBAAqB,CAAC,MAAM,EAAE,CACxE,CAAC;SACH;QAED,OAAO,CAAC,MAAM,qBAAqB,CAAC,IAAI,EAAE,CAAC,CAAC,IAAI,CAAC;IACnD,CAAC,CAAC;AACJ,CAAC;AAdD,oDAcC","sourcesContent":["export type DefiPositionResponse = AdapterResponse<{\n  tokens: ProtocolToken[];\n}>;\n\ntype ProtocolDetails = {\n  chainId: number;\n  protocolId: string;\n  productId: string;\n  name: string;\n  description: string;\n  iconUrl: string;\n  siteUrl: string;\n  positionType: PositionType;\n  metadata?: {\n    groupPositions?: boolean;\n  };\n};\n\ntype AdapterResponse<ProtocolResponse> =\n  | (ProtocolDetails & {\n      chainName: string;\n    } & (\n        | (ProtocolResponse & { success: true })\n        | (AdapterErrorResponse & { success: false })\n      ))\n  | (AdapterErrorResponse & { success: false });\n\ntype AdapterErrorResponse = {\n  error: {\n    message: string;\n  };\n};\n\nexport type PositionType = 'supply' | 'borrow' | 'stake' | 'reward';\n\nexport type ProtocolToken = Balance & {\n  type: 'protocol';\n  tokenId?: string;\n};\n\nexport type Underlying = Balance & {\n  type: 'underlying' | 'underlying-claimable';\n  iconUrl: string;\n};\n\nexport type Balance = {\n  address: string;\n  name: string;\n  symbol: string;\n  decimals: number;\n  balanceRaw: string;\n  balance: number;\n  price?: number;\n  tokens?: Underlying[];\n};\n\n// TODO: Update with prod API URL when available\nexport const DEFI_POSITIONS_API_URL =\n  'https://defiadapters.dev-api.cx.metamask.io';\n\n/**\n * Builds a function that fetches DeFi positions for a given account address\n *\n * @returns A function that fetches DeFi positions for a given account address\n */\nexport function buildPositionFetcher() {\n  return async (accountAddress: string): Promise<DefiPositionResponse[]> => {\n    const defiPositionsResponse = await fetch(\n      `${DEFI_POSITIONS_API_URL}/positions/${accountAddress}`,\n    );\n\n    if (defiPositionsResponse.status !== 200) {\n      throw new Error(\n        `Unable to fetch defi positions - HTTP ${defiPositionsResponse.status}`,\n      );\n    }\n\n    return (await defiPositionsResponse.json()).data;\n  };\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.d.cts b/dist/DeFiPositionsController/fetch-positions.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..d9d92e503f4ac57872008460716806143d1d68c4
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.d.cts
+@@ -0,0 +1,58 @@
++export type DefiPositionResponse = AdapterResponse<{
++    tokens: ProtocolToken[];
++}>;
++type ProtocolDetails = {
++    chainId: number;
++    protocolId: string;
++    productId: string;
++    name: string;
++    description: string;
++    iconUrl: string;
++    siteUrl: string;
++    positionType: PositionType;
++    metadata?: {
++        groupPositions?: boolean;
++    };
++};
++type AdapterResponse<ProtocolResponse> = (ProtocolDetails & {
++    chainName: string;
++} & ((ProtocolResponse & {
++    success: true;
++}) | (AdapterErrorResponse & {
++    success: false;
++}))) | (AdapterErrorResponse & {
++    success: false;
++});
++type AdapterErrorResponse = {
++    error: {
++        message: string;
++    };
++};
++export type PositionType = 'supply' | 'borrow' | 'stake' | 'reward';
++export type ProtocolToken = Balance & {
++    type: 'protocol';
++    tokenId?: string;
++};
++export type Underlying = Balance & {
++    type: 'underlying' | 'underlying-claimable';
++    iconUrl: string;
++};
++export type Balance = {
++    address: string;
++    name: string;
++    symbol: string;
++    decimals: number;
++    balanceRaw: string;
++    balance: number;
++    price?: number;
++    tokens?: Underlying[];
++};
++export declare const DEFI_POSITIONS_API_URL = "https://defiadapters.dev-api.cx.metamask.io";
++/**
++ * Builds a function that fetches DeFi positions for a given account address
++ *
++ * @returns A function that fetches DeFi positions for a given account address
++ */
++export declare function buildPositionFetcher(): (accountAddress: string) => Promise<DefiPositionResponse[]>;
++export {};
++//# sourceMappingURL=fetch-positions.d.cts.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.d.cts.map b/dist/DeFiPositionsController/fetch-positions.d.cts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..f3c1f7fc357f58158bd5aa78c6d7cca0fa74e319
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.d.cts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"fetch-positions.d.cts","sourceRoot":"","sources":["../../src/DeFiPositionsController/fetch-positions.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,oBAAoB,GAAG,eAAe,CAAC;IACjD,MAAM,EAAE,aAAa,EAAE,CAAC;CACzB,CAAC,CAAC;AAEH,KAAK,eAAe,GAAG;IACrB,OAAO,EAAE,MAAM,CAAC;IAChB,UAAU,EAAE,MAAM,CAAC;IACnB,SAAS,EAAE,MAAM,CAAC;IAClB,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IACpB,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,MAAM,CAAC;IAChB,YAAY,EAAE,YAAY,CAAC;IAC3B,QAAQ,CAAC,EAAE;QACT,cAAc,CAAC,EAAE,OAAO,CAAC;KAC1B,CAAC;CACH,CAAC;AAEF,KAAK,eAAe,CAAC,gBAAgB,IACjC,CAAC,eAAe,GAAG;IACjB,SAAS,EAAE,MAAM,CAAC;CACnB,GAAG,CACE,CAAC,gBAAgB,GAAG;IAAE,OAAO,EAAE,IAAI,CAAA;CAAE,CAAC,GACtC,CAAC,oBAAoB,GAAG;IAAE,OAAO,EAAE,KAAK,CAAA;CAAE,CAAC,CAC9C,CAAC,GACJ,CAAC,oBAAoB,GAAG;IAAE,OAAO,EAAE,KAAK,CAAA;CAAE,CAAC,CAAC;AAEhD,KAAK,oBAAoB,GAAG;IAC1B,KAAK,EAAE;QACL,OAAO,EAAE,MAAM,CAAC;KACjB,CAAC;CACH,CAAC;AAEF,MAAM,MAAM,YAAY,GAAG,QAAQ,GAAG,QAAQ,GAAG,OAAO,GAAG,QAAQ,CAAC;AAEpE,MAAM,MAAM,aAAa,GAAG,OAAO,GAAG;IACpC,IAAI,EAAE,UAAU,CAAC;IACjB,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB,CAAC;AAEF,MAAM,MAAM,UAAU,GAAG,OAAO,GAAG;IACjC,IAAI,EAAE,YAAY,GAAG,sBAAsB,CAAC;IAC5C,OAAO,EAAE,MAAM,CAAC;CACjB,CAAC;AAEF,MAAM,MAAM,OAAO,GAAG;IACpB,OAAO,EAAE,MAAM,CAAC;IAChB,IAAI,EAAE,MAAM,CAAC;IACb,MAAM,EAAE,MAAM,CAAC;IACf,QAAQ,EAAE,MAAM,CAAC;IACjB,UAAU,EAAE,MAAM,CAAC;IACnB,OAAO,EAAE,MAAM,CAAC;IAChB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,MAAM,CAAC,EAAE,UAAU,EAAE,CAAC;CACvB,CAAC;AAGF,eAAO,MAAM,sBAAsB,gDACY,CAAC;AAEhD;;;;GAIG;AACH,wBAAgB,oBAAoB,qBACJ,MAAM,KAAG,QAAQ,oBAAoB,EAAE,CAAC,CAavE"}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.d.mts b/dist/DeFiPositionsController/fetch-positions.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..81bf780c1323995c72e58dc86c83547e15e62fcb
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.d.mts
+@@ -0,0 +1,58 @@
++export type DefiPositionResponse = AdapterResponse<{
++    tokens: ProtocolToken[];
++}>;
++type ProtocolDetails = {
++    chainId: number;
++    protocolId: string;
++    productId: string;
++    name: string;
++    description: string;
++    iconUrl: string;
++    siteUrl: string;
++    positionType: PositionType;
++    metadata?: {
++        groupPositions?: boolean;
++    };
++};
++type AdapterResponse<ProtocolResponse> = (ProtocolDetails & {
++    chainName: string;
++} & ((ProtocolResponse & {
++    success: true;
++}) | (AdapterErrorResponse & {
++    success: false;
++}))) | (AdapterErrorResponse & {
++    success: false;
++});
++type AdapterErrorResponse = {
++    error: {
++        message: string;
++    };
++};
++export type PositionType = 'supply' | 'borrow' | 'stake' | 'reward';
++export type ProtocolToken = Balance & {
++    type: 'protocol';
++    tokenId?: string;
++};
++export type Underlying = Balance & {
++    type: 'underlying' | 'underlying-claimable';
++    iconUrl: string;
++};
++export type Balance = {
++    address: string;
++    name: string;
++    symbol: string;
++    decimals: number;
++    balanceRaw: string;
++    balance: number;
++    price?: number;
++    tokens?: Underlying[];
++};
++export declare const DEFI_POSITIONS_API_URL = "https://defiadapters.dev-api.cx.metamask.io";
++/**
++ * Builds a function that fetches DeFi positions for a given account address
++ *
++ * @returns A function that fetches DeFi positions for a given account address
++ */
++export declare function buildPositionFetcher(): (accountAddress: string) => Promise<DefiPositionResponse[]>;
++export {};
++//# sourceMappingURL=fetch-positions.d.mts.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.d.mts.map b/dist/DeFiPositionsController/fetch-positions.d.mts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..7bfc19850adb8e2a6c7aba8b263f38d6f1e40df9
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.d.mts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"fetch-positions.d.mts","sourceRoot":"","sources":["../../src/DeFiPositionsController/fetch-positions.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,oBAAoB,GAAG,eAAe,CAAC;IACjD,MAAM,EAAE,aAAa,EAAE,CAAC;CACzB,CAAC,CAAC;AAEH,KAAK,eAAe,GAAG;IACrB,OAAO,EAAE,MAAM,CAAC;IAChB,UAAU,EAAE,MAAM,CAAC;IACnB,SAAS,EAAE,MAAM,CAAC;IAClB,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IACpB,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,MAAM,CAAC;IAChB,YAAY,EAAE,YAAY,CAAC;IAC3B,QAAQ,CAAC,EAAE;QACT,cAAc,CAAC,EAAE,OAAO,CAAC;KAC1B,CAAC;CACH,CAAC;AAEF,KAAK,eAAe,CAAC,gBAAgB,IACjC,CAAC,eAAe,GAAG;IACjB,SAAS,EAAE,MAAM,CAAC;CACnB,GAAG,CACE,CAAC,gBAAgB,GAAG;IAAE,OAAO,EAAE,IAAI,CAAA;CAAE,CAAC,GACtC,CAAC,oBAAoB,GAAG;IAAE,OAAO,EAAE,KAAK,CAAA;CAAE,CAAC,CAC9C,CAAC,GACJ,CAAC,oBAAoB,GAAG;IAAE,OAAO,EAAE,KAAK,CAAA;CAAE,CAAC,CAAC;AAEhD,KAAK,oBAAoB,GAAG;IAC1B,KAAK,EAAE;QACL,OAAO,EAAE,MAAM,CAAC;KACjB,CAAC;CACH,CAAC;AAEF,MAAM,MAAM,YAAY,GAAG,QAAQ,GAAG,QAAQ,GAAG,OAAO,GAAG,QAAQ,CAAC;AAEpE,MAAM,MAAM,aAAa,GAAG,OAAO,GAAG;IACpC,IAAI,EAAE,UAAU,CAAC;IACjB,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB,CAAC;AAEF,MAAM,MAAM,UAAU,GAAG,OAAO,GAAG;IACjC,IAAI,EAAE,YAAY,GAAG,sBAAsB,CAAC;IAC5C,OAAO,EAAE,MAAM,CAAC;CACjB,CAAC;AAEF,MAAM,MAAM,OAAO,GAAG;IACpB,OAAO,EAAE,MAAM,CAAC;IAChB,IAAI,EAAE,MAAM,CAAC;IACb,MAAM,EAAE,MAAM,CAAC;IACf,QAAQ,EAAE,MAAM,CAAC;IACjB,UAAU,EAAE,MAAM,CAAC;IACnB,OAAO,EAAE,MAAM,CAAC;IAChB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,MAAM,CAAC,EAAE,UAAU,EAAE,CAAC;CACvB,CAAC;AAGF,eAAO,MAAM,sBAAsB,gDACY,CAAC;AAEhD;;;;GAIG;AACH,wBAAgB,oBAAoB,qBACJ,MAAM,KAAG,QAAQ,oBAAoB,EAAE,CAAC,CAavE"}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.mjs b/dist/DeFiPositionsController/fetch-positions.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..82c82d8116a62768f87cfd2a3e1510a48ab72a75
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.mjs
+@@ -0,0 +1,17 @@
++// TODO: Update with prod API URL when available
++export const DEFI_POSITIONS_API_URL = 'https://defiadapters.dev-api.cx.metamask.io';
++/**
++ * Builds a function that fetches DeFi positions for a given account address
++ *
++ * @returns A function that fetches DeFi positions for a given account address
++ */
++export function buildPositionFetcher() {
++    return async (accountAddress) => {
++        const defiPositionsResponse = await fetch(`${DEFI_POSITIONS_API_URL}/positions/${accountAddress}`);
++        if (defiPositionsResponse.status !== 200) {
++            throw new Error(`Unable to fetch defi positions - HTTP ${defiPositionsResponse.status}`);
++        }
++        return (await defiPositionsResponse.json()).data;
++    };
++}
++//# sourceMappingURL=fetch-positions.mjs.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/fetch-positions.mjs.map b/dist/DeFiPositionsController/fetch-positions.mjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..8ebf7b2976c750687cdce529a98f2348f6e5dab1
+--- /dev/null
++++ b/dist/DeFiPositionsController/fetch-positions.mjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"fetch-positions.mjs","sourceRoot":"","sources":["../../src/DeFiPositionsController/fetch-positions.ts"],"names":[],"mappings":"AAwDA,gDAAgD;AAChD,MAAM,CAAC,MAAM,sBAAsB,GACjC,6CAA6C,CAAC;AAEhD;;;;GAIG;AACH,MAAM,UAAU,oBAAoB;IAClC,OAAO,KAAK,EAAE,cAAsB,EAAmC,EAAE;QACvE,MAAM,qBAAqB,GAAG,MAAM,KAAK,CACvC,GAAG,sBAAsB,cAAc,cAAc,EAAE,CACxD,CAAC;QAEF,IAAI,qBAAqB,CAAC,MAAM,KAAK,GAAG,EAAE;YACxC,MAAM,IAAI,KAAK,CACb,yCAAyC,qBAAqB,CAAC,MAAM,EAAE,CACxE,CAAC;SACH;QAED,OAAO,CAAC,MAAM,qBAAqB,CAAC,IAAI,EAAE,CAAC,CAAC,IAAI,CAAC;IACnD,CAAC,CAAC;AACJ,CAAC","sourcesContent":["export type DefiPositionResponse = AdapterResponse<{\n  tokens: ProtocolToken[];\n}>;\n\ntype ProtocolDetails = {\n  chainId: number;\n  protocolId: string;\n  productId: string;\n  name: string;\n  description: string;\n  iconUrl: string;\n  siteUrl: string;\n  positionType: PositionType;\n  metadata?: {\n    groupPositions?: boolean;\n  };\n};\n\ntype AdapterResponse<ProtocolResponse> =\n  | (ProtocolDetails & {\n      chainName: string;\n    } & (\n        | (ProtocolResponse & { success: true })\n        | (AdapterErrorResponse & { success: false })\n      ))\n  | (AdapterErrorResponse & { success: false });\n\ntype AdapterErrorResponse = {\n  error: {\n    message: string;\n  };\n};\n\nexport type PositionType = 'supply' | 'borrow' | 'stake' | 'reward';\n\nexport type ProtocolToken = Balance & {\n  type: 'protocol';\n  tokenId?: string;\n};\n\nexport type Underlying = Balance & {\n  type: 'underlying' | 'underlying-claimable';\n  iconUrl: string;\n};\n\nexport type Balance = {\n  address: string;\n  name: string;\n  symbol: string;\n  decimals: number;\n  balanceRaw: string;\n  balance: number;\n  price?: number;\n  tokens?: Underlying[];\n};\n\n// TODO: Update with prod API URL when available\nexport const DEFI_POSITIONS_API_URL =\n  'https://defiadapters.dev-api.cx.metamask.io';\n\n/**\n * Builds a function that fetches DeFi positions for a given account address\n *\n * @returns A function that fetches DeFi positions for a given account address\n */\nexport function buildPositionFetcher() {\n  return async (accountAddress: string): Promise<DefiPositionResponse[]> => {\n    const defiPositionsResponse = await fetch(\n      `${DEFI_POSITIONS_API_URL}/positions/${accountAddress}`,\n    );\n\n    if (defiPositionsResponse.status !== 200) {\n      throw new Error(\n        `Unable to fetch defi positions - HTTP ${defiPositionsResponse.status}`,\n      );\n    }\n\n    return (await defiPositionsResponse.json()).data;\n  };\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.cjs b/dist/DeFiPositionsController/group-defi-positions.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..99d1b666a84e57d8020c2aa237a64149e721c10a
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.cjs
+@@ -0,0 +1,97 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.groupDeFiPositions = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const lodash_1 = require("lodash");
++/**
++ *
++ * @param defiPositionsResponse - The response from the defi positions API
++ * @returns The grouped positions that get assigned to the state
++ */
++function groupDeFiPositions(defiPositionsResponse) {
++    const groupedDeFiPositions = {};
++    for (const position of defiPositionsResponse) {
++        if (!position.success) {
++            continue;
++        }
++        const { chainId, protocolId, iconUrl, positionType } = position;
++        const chain = (0, controller_utils_1.toHex)(chainId);
++        if (!groupedDeFiPositions[chain]) {
++            groupedDeFiPositions[chain] = {
++                aggregatedMarketValue: 0,
++                protocols: {},
++            };
++        }
++        const chainData = groupedDeFiPositions[chain];
++        if (!chainData.protocols[protocolId]) {
++            chainData.protocols[protocolId] = {
++                protocolDetails: {
++                    name: (0, lodash_1.upperFirst)((0, lodash_1.camelCase)(protocolId)),
++                    iconUrl,
++                },
++                aggregatedMarketValue: 0,
++                positionTypes: {},
++            };
++        }
++        const protocolData = chainData.protocols[protocolId];
++        let positionTypeData = protocolData.positionTypes[positionType];
++        if (!positionTypeData) {
++            positionTypeData = {
++                aggregatedMarketValue: 0,
++                positions: [],
++            };
++            protocolData.positionTypes[positionType] = positionTypeData;
++        }
++        for (const protocolToken of position.tokens) {
++            const token = processToken(protocolToken);
++            // If groupPositions is true, we group all positions of the same type
++            if (position.metadata?.groupPositions) {
++                if (positionTypeData.positions.length === 0) {
++                    positionTypeData.positions.push([token]);
++                }
++                else {
++                    positionTypeData.positions[0].push(token);
++                }
++            }
++            else {
++                positionTypeData.positions.push([token]);
++            }
++            if (token.marketValue) {
++                const multiplier = position.positionType === 'borrow' ? -1 : 1;
++                positionTypeData.aggregatedMarketValue += token.marketValue;
++                protocolData.aggregatedMarketValue += token.marketValue * multiplier;
++                chainData.aggregatedMarketValue += token.marketValue * multiplier;
++            }
++        }
++    }
++    return groupedDeFiPositions;
++}
++exports.groupDeFiPositions = groupDeFiPositions;
++/**
++ *
++ * @param tokenBalance - The token balance that is going to be processed
++ * @returns The processed token balance
++ */
++function processToken(tokenBalance) {
++    if (!tokenBalance.tokens) {
++        return {
++            ...tokenBalance,
++            marketValue: tokenBalance.price
++                ? tokenBalance.balance * tokenBalance.price
++                : undefined,
++        };
++    }
++    const processedTokens = tokenBalance.tokens.map((t) => {
++        const { tokens, ...tokenWithoutUnderlyings } = processToken(t);
++        return tokenWithoutUnderlyings;
++    });
++    const marketValue = processedTokens.reduce((acc, t) => acc === undefined || t.marketValue === undefined
++        ? undefined
++        : acc + t.marketValue, 0);
++    return {
++        ...tokenBalance,
++        marketValue,
++        tokens: processedTokens,
++    };
++}
++//# sourceMappingURL=group-defi-positions.cjs.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.cjs.map b/dist/DeFiPositionsController/group-defi-positions.cjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..d277551189109414758a6bdf3cf34c4886355ea9
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.cjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"group-defi-positions.cjs","sourceRoot":"","sources":["../../src/DeFiPositionsController/group-defi-positions.ts"],"names":[],"mappings":"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","sourcesContent":["import { toHex } from '@metamask/controller-utils';\nimport type { Hex } from '@metamask/utils';\nimport { upperFirst, camelCase } from 'lodash';\n\nimport type {\n  DefiPositionResponse,\n  PositionType,\n  ProtocolToken,\n  Underlying,\n  Balance,\n} from './fetch-positions';\n\nexport type GroupedDeFiPositions = {\n  aggregatedMarketValue: number;\n  protocols: {\n    [protocolId: string]: {\n      protocolDetails: { name: string; iconUrl: string };\n      aggregatedMarketValue: number;\n      positionTypes: {\n        [key in PositionType]?: {\n          aggregatedMarketValue: number;\n          positions: ProtocolTokenWithMarketValue[][];\n        };\n      };\n    };\n  };\n};\n\nexport type ProtocolTokenWithMarketValue = Omit<ProtocolToken, 'tokens'> & {\n  marketValue?: number;\n  tokens: UnderlyingWithMarketValue[];\n};\n\nexport type UnderlyingWithMarketValue = Omit<Underlying, 'tokens'> & {\n  marketValue?: number;\n};\n\n/**\n *\n * @param defiPositionsResponse - The response from the defi positions API\n * @returns The grouped positions that get assigned to the state\n */\nexport function groupDeFiPositions(\n  defiPositionsResponse: DefiPositionResponse[],\n): {\n  [key: Hex]: GroupedDeFiPositions;\n} {\n  const groupedDeFiPositions: { [key: Hex]: GroupedDeFiPositions } = {};\n\n  for (const position of defiPositionsResponse) {\n    if (!position.success) {\n      continue;\n    }\n\n    const { chainId, protocolId, iconUrl, positionType } = position;\n\n    const chain = toHex(chainId);\n\n    if (!groupedDeFiPositions[chain]) {\n      groupedDeFiPositions[chain] = {\n        aggregatedMarketValue: 0,\n        protocols: {},\n      };\n    }\n\n    const chainData = groupedDeFiPositions[chain];\n\n    if (!chainData.protocols[protocolId]) {\n      chainData.protocols[protocolId] = {\n        protocolDetails: {\n          name: upperFirst(camelCase(protocolId)),\n          iconUrl,\n        },\n        aggregatedMarketValue: 0,\n        positionTypes: {},\n      };\n    }\n\n    const protocolData = chainData.protocols[protocolId];\n\n    let positionTypeData = protocolData.positionTypes[positionType];\n    if (!positionTypeData) {\n      positionTypeData = {\n        aggregatedMarketValue: 0,\n        positions: [],\n      };\n      protocolData.positionTypes[positionType] = positionTypeData;\n    }\n\n    for (const protocolToken of position.tokens) {\n      const token = processToken(protocolToken) as ProtocolTokenWithMarketValue;\n\n      // If groupPositions is true, we group all positions of the same type\n      if (position.metadata?.groupPositions) {\n        if (positionTypeData.positions.length === 0) {\n          positionTypeData.positions.push([token]);\n        } else {\n          positionTypeData.positions[0].push(token);\n        }\n      } else {\n        positionTypeData.positions.push([token]);\n      }\n\n      if (token.marketValue) {\n        const multiplier = position.positionType === 'borrow' ? -1 : 1;\n\n        positionTypeData.aggregatedMarketValue += token.marketValue;\n        protocolData.aggregatedMarketValue += token.marketValue * multiplier;\n        chainData.aggregatedMarketValue += token.marketValue * multiplier;\n      }\n    }\n  }\n\n  return groupedDeFiPositions;\n}\n\n/**\n *\n * @param tokenBalance - The token balance that is going to be processed\n * @returns The processed token balance\n */\nfunction processToken<T extends Balance>(\n  tokenBalance: T,\n): T & {\n  marketValue?: number;\n  tokens?: UnderlyingWithMarketValue[];\n} {\n  if (!tokenBalance.tokens) {\n    return {\n      ...tokenBalance,\n      marketValue: tokenBalance.price\n        ? tokenBalance.balance * tokenBalance.price\n        : undefined,\n    };\n  }\n\n  const processedTokens = tokenBalance.tokens.map((t) => {\n    const { tokens, ...tokenWithoutUnderlyings } = processToken(t);\n\n    return tokenWithoutUnderlyings;\n  });\n\n  const marketValue = processedTokens.reduce(\n    (acc, t) =>\n      acc === undefined || t.marketValue === undefined\n        ? undefined\n        : acc + t.marketValue,\n    0 as number | undefined,\n  );\n\n  return {\n    ...tokenBalance,\n    marketValue,\n    tokens: processedTokens,\n  };\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.d.cts b/dist/DeFiPositionsController/group-defi-positions.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..0cf84a730d3cc8d09810da35556c58a1f5ccf381
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.d.cts
+@@ -0,0 +1,36 @@
++import type { Hex } from "@metamask/utils";
++import type { DefiPositionResponse, PositionType, ProtocolToken, Underlying } from "./fetch-positions.cjs";
++export type GroupedDeFiPositions = {
++    aggregatedMarketValue: number;
++    protocols: {
++        [protocolId: string]: {
++            protocolDetails: {
++                name: string;
++                iconUrl: string;
++            };
++            aggregatedMarketValue: number;
++            positionTypes: {
++                [key in PositionType]?: {
++                    aggregatedMarketValue: number;
++                    positions: ProtocolTokenWithMarketValue[][];
++                };
++            };
++        };
++    };
++};
++export type ProtocolTokenWithMarketValue = Omit<ProtocolToken, 'tokens'> & {
++    marketValue?: number;
++    tokens: UnderlyingWithMarketValue[];
++};
++export type UnderlyingWithMarketValue = Omit<Underlying, 'tokens'> & {
++    marketValue?: number;
++};
++/**
++ *
++ * @param defiPositionsResponse - The response from the defi positions API
++ * @returns The grouped positions that get assigned to the state
++ */
++export declare function groupDeFiPositions(defiPositionsResponse: DefiPositionResponse[]): {
++    [key: Hex]: GroupedDeFiPositions;
++};
++//# sourceMappingURL=group-defi-positions.d.cts.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.d.cts.map b/dist/DeFiPositionsController/group-defi-positions.d.cts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..5e7f6759fa44b6986a92aa0e5d55e60287e5527e
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.d.cts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"group-defi-positions.d.cts","sourceRoot":"","sources":["../../src/DeFiPositionsController/group-defi-positions.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,GAAG,EAAE,wBAAwB;AAG3C,OAAO,KAAK,EACV,oBAAoB,EACpB,YAAY,EACZ,aAAa,EACb,UAAU,EAEX,8BAA0B;AAE3B,MAAM,MAAM,oBAAoB,GAAG;IACjC,qBAAqB,EAAE,MAAM,CAAC;IAC9B,SAAS,EAAE;QACT,CAAC,UAAU,EAAE,MAAM,GAAG;YACpB,eAAe,EAAE;gBAAE,IAAI,EAAE,MAAM,CAAC;gBAAC,OAAO,EAAE,MAAM,CAAA;aAAE,CAAC;YACnD,qBAAqB,EAAE,MAAM,CAAC;YAC9B,aAAa,EAAE;iBACZ,GAAG,IAAI,YAAY,CAAC,CAAC,EAAE;oBACtB,qBAAqB,EAAE,MAAM,CAAC;oBAC9B,SAAS,EAAE,4BAA4B,EAAE,EAAE,CAAC;iBAC7C;aACF,CAAC;SACH,CAAC;KACH,CAAC;CACH,CAAC;AAEF,MAAM,MAAM,4BAA4B,GAAG,IAAI,CAAC,aAAa,EAAE,QAAQ,CAAC,GAAG;IACzE,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,MAAM,EAAE,yBAAyB,EAAE,CAAC;CACrC,CAAC;AAEF,MAAM,MAAM,yBAAyB,GAAG,IAAI,CAAC,UAAU,EAAE,QAAQ,CAAC,GAAG;IACnE,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB,CAAC;AAEF;;;;GAIG;AACH,wBAAgB,kBAAkB,CAChC,qBAAqB,EAAE,oBAAoB,EAAE,GAC5C;IACD,CAAC,GAAG,EAAE,GAAG,GAAG,oBAAoB,CAAC;CAClC,CAoEA"}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.d.mts b/dist/DeFiPositionsController/group-defi-positions.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..0da9fa83521613519c155143fb6b9b903a57e434
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.d.mts
+@@ -0,0 +1,36 @@
++import type { Hex } from "@metamask/utils";
++import type { DefiPositionResponse, PositionType, ProtocolToken, Underlying } from "./fetch-positions.mjs";
++export type GroupedDeFiPositions = {
++    aggregatedMarketValue: number;
++    protocols: {
++        [protocolId: string]: {
++            protocolDetails: {
++                name: string;
++                iconUrl: string;
++            };
++            aggregatedMarketValue: number;
++            positionTypes: {
++                [key in PositionType]?: {
++                    aggregatedMarketValue: number;
++                    positions: ProtocolTokenWithMarketValue[][];
++                };
++            };
++        };
++    };
++};
++export type ProtocolTokenWithMarketValue = Omit<ProtocolToken, 'tokens'> & {
++    marketValue?: number;
++    tokens: UnderlyingWithMarketValue[];
++};
++export type UnderlyingWithMarketValue = Omit<Underlying, 'tokens'> & {
++    marketValue?: number;
++};
++/**
++ *
++ * @param defiPositionsResponse - The response from the defi positions API
++ * @returns The grouped positions that get assigned to the state
++ */
++export declare function groupDeFiPositions(defiPositionsResponse: DefiPositionResponse[]): {
++    [key: Hex]: GroupedDeFiPositions;
++};
++//# sourceMappingURL=group-defi-positions.d.mts.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.d.mts.map b/dist/DeFiPositionsController/group-defi-positions.d.mts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..ad50df78e221db99f85f79e4c5d15dab7b5ab3bd
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.d.mts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"group-defi-positions.d.mts","sourceRoot":"","sources":["../../src/DeFiPositionsController/group-defi-positions.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,GAAG,EAAE,wBAAwB;AAG3C,OAAO,KAAK,EACV,oBAAoB,EACpB,YAAY,EACZ,aAAa,EACb,UAAU,EAEX,8BAA0B;AAE3B,MAAM,MAAM,oBAAoB,GAAG;IACjC,qBAAqB,EAAE,MAAM,CAAC;IAC9B,SAAS,EAAE;QACT,CAAC,UAAU,EAAE,MAAM,GAAG;YACpB,eAAe,EAAE;gBAAE,IAAI,EAAE,MAAM,CAAC;gBAAC,OAAO,EAAE,MAAM,CAAA;aAAE,CAAC;YACnD,qBAAqB,EAAE,MAAM,CAAC;YAC9B,aAAa,EAAE;iBACZ,GAAG,IAAI,YAAY,CAAC,CAAC,EAAE;oBACtB,qBAAqB,EAAE,MAAM,CAAC;oBAC9B,SAAS,EAAE,4BAA4B,EAAE,EAAE,CAAC;iBAC7C;aACF,CAAC;SACH,CAAC;KACH,CAAC;CACH,CAAC;AAEF,MAAM,MAAM,4BAA4B,GAAG,IAAI,CAAC,aAAa,EAAE,QAAQ,CAAC,GAAG;IACzE,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,MAAM,EAAE,yBAAyB,EAAE,CAAC;CACrC,CAAC;AAEF,MAAM,MAAM,yBAAyB,GAAG,IAAI,CAAC,UAAU,EAAE,QAAQ,CAAC,GAAG;IACnE,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB,CAAC;AAEF;;;;GAIG;AACH,wBAAgB,kBAAkB,CAChC,qBAAqB,EAAE,oBAAoB,EAAE,GAC5C;IACD,CAAC,GAAG,EAAE,GAAG,GAAG,oBAAoB,CAAC;CAClC,CAoEA"}
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.mjs b/dist/DeFiPositionsController/group-defi-positions.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..b2b2d6f6e3640e47bf41907c4afe3e726ffd39f0
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.mjs
+@@ -0,0 +1,94 @@
++import { toHex } from "@metamask/controller-utils";
++import $lodash from "lodash";
++const { upperFirst, camelCase } = $lodash;
++/**
++ *
++ * @param defiPositionsResponse - The response from the defi positions API
++ * @returns The grouped positions that get assigned to the state
++ */
++export function groupDeFiPositions(defiPositionsResponse) {
++    const groupedDeFiPositions = {};
++    for (const position of defiPositionsResponse) {
++        if (!position.success) {
++            continue;
++        }
++        const { chainId, protocolId, iconUrl, positionType } = position;
++        const chain = toHex(chainId);
++        if (!groupedDeFiPositions[chain]) {
++            groupedDeFiPositions[chain] = {
++                aggregatedMarketValue: 0,
++                protocols: {},
++            };
++        }
++        const chainData = groupedDeFiPositions[chain];
++        if (!chainData.protocols[protocolId]) {
++            chainData.protocols[protocolId] = {
++                protocolDetails: {
++                    name: upperFirst(camelCase(protocolId)),
++                    iconUrl,
++                },
++                aggregatedMarketValue: 0,
++                positionTypes: {},
++            };
++        }
++        const protocolData = chainData.protocols[protocolId];
++        let positionTypeData = protocolData.positionTypes[positionType];
++        if (!positionTypeData) {
++            positionTypeData = {
++                aggregatedMarketValue: 0,
++                positions: [],
++            };
++            protocolData.positionTypes[positionType] = positionTypeData;
++        }
++        for (const protocolToken of position.tokens) {
++            const token = processToken(protocolToken);
++            // If groupPositions is true, we group all positions of the same type
++            if (position.metadata?.groupPositions) {
++                if (positionTypeData.positions.length === 0) {
++                    positionTypeData.positions.push([token]);
++                }
++                else {
++                    positionTypeData.positions[0].push(token);
++                }
++            }
++            else {
++                positionTypeData.positions.push([token]);
++            }
++            if (token.marketValue) {
++                const multiplier = position.positionType === 'borrow' ? -1 : 1;
++                positionTypeData.aggregatedMarketValue += token.marketValue;
++                protocolData.aggregatedMarketValue += token.marketValue * multiplier;
++                chainData.aggregatedMarketValue += token.marketValue * multiplier;
++            }
++        }
++    }
++    return groupedDeFiPositions;
++}
++/**
++ *
++ * @param tokenBalance - The token balance that is going to be processed
++ * @returns The processed token balance
++ */
++function processToken(tokenBalance) {
++    if (!tokenBalance.tokens) {
++        return {
++            ...tokenBalance,
++            marketValue: tokenBalance.price
++                ? tokenBalance.balance * tokenBalance.price
++                : undefined,
++        };
++    }
++    const processedTokens = tokenBalance.tokens.map((t) => {
++        const { tokens, ...tokenWithoutUnderlyings } = processToken(t);
++        return tokenWithoutUnderlyings;
++    });
++    const marketValue = processedTokens.reduce((acc, t) => acc === undefined || t.marketValue === undefined
++        ? undefined
++        : acc + t.marketValue, 0);
++    return {
++        ...tokenBalance,
++        marketValue,
++        tokens: processedTokens,
++    };
++}
++//# sourceMappingURL=group-defi-positions.mjs.map
+\ No newline at end of file
+diff --git a/dist/DeFiPositionsController/group-defi-positions.mjs.map b/dist/DeFiPositionsController/group-defi-positions.mjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..96b9aff90bd873dfb25b22bbc4ce3a8cddcd00ae
+--- /dev/null
++++ b/dist/DeFiPositionsController/group-defi-positions.mjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"group-defi-positions.mjs","sourceRoot":"","sources":["../../src/DeFiPositionsController/group-defi-positions.ts"],"names":[],"mappings":"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","sourcesContent":["import { toHex } from '@metamask/controller-utils';\nimport type { Hex } from '@metamask/utils';\nimport { upperFirst, camelCase } from 'lodash';\n\nimport type {\n  DefiPositionResponse,\n  PositionType,\n  ProtocolToken,\n  Underlying,\n  Balance,\n} from './fetch-positions';\n\nexport type GroupedDeFiPositions = {\n  aggregatedMarketValue: number;\n  protocols: {\n    [protocolId: string]: {\n      protocolDetails: { name: string; iconUrl: string };\n      aggregatedMarketValue: number;\n      positionTypes: {\n        [key in PositionType]?: {\n          aggregatedMarketValue: number;\n          positions: ProtocolTokenWithMarketValue[][];\n        };\n      };\n    };\n  };\n};\n\nexport type ProtocolTokenWithMarketValue = Omit<ProtocolToken, 'tokens'> & {\n  marketValue?: number;\n  tokens: UnderlyingWithMarketValue[];\n};\n\nexport type UnderlyingWithMarketValue = Omit<Underlying, 'tokens'> & {\n  marketValue?: number;\n};\n\n/**\n *\n * @param defiPositionsResponse - The response from the defi positions API\n * @returns The grouped positions that get assigned to the state\n */\nexport function groupDeFiPositions(\n  defiPositionsResponse: DefiPositionResponse[],\n): {\n  [key: Hex]: GroupedDeFiPositions;\n} {\n  const groupedDeFiPositions: { [key: Hex]: GroupedDeFiPositions } = {};\n\n  for (const position of defiPositionsResponse) {\n    if (!position.success) {\n      continue;\n    }\n\n    const { chainId, protocolId, iconUrl, positionType } = position;\n\n    const chain = toHex(chainId);\n\n    if (!groupedDeFiPositions[chain]) {\n      groupedDeFiPositions[chain] = {\n        aggregatedMarketValue: 0,\n        protocols: {},\n      };\n    }\n\n    const chainData = groupedDeFiPositions[chain];\n\n    if (!chainData.protocols[protocolId]) {\n      chainData.protocols[protocolId] = {\n        protocolDetails: {\n          name: upperFirst(camelCase(protocolId)),\n          iconUrl,\n        },\n        aggregatedMarketValue: 0,\n        positionTypes: {},\n      };\n    }\n\n    const protocolData = chainData.protocols[protocolId];\n\n    let positionTypeData = protocolData.positionTypes[positionType];\n    if (!positionTypeData) {\n      positionTypeData = {\n        aggregatedMarketValue: 0,\n        positions: [],\n      };\n      protocolData.positionTypes[positionType] = positionTypeData;\n    }\n\n    for (const protocolToken of position.tokens) {\n      const token = processToken(protocolToken) as ProtocolTokenWithMarketValue;\n\n      // If groupPositions is true, we group all positions of the same type\n      if (position.metadata?.groupPositions) {\n        if (positionTypeData.positions.length === 0) {\n          positionTypeData.positions.push([token]);\n        } else {\n          positionTypeData.positions[0].push(token);\n        }\n      } else {\n        positionTypeData.positions.push([token]);\n      }\n\n      if (token.marketValue) {\n        const multiplier = position.positionType === 'borrow' ? -1 : 1;\n\n        positionTypeData.aggregatedMarketValue += token.marketValue;\n        protocolData.aggregatedMarketValue += token.marketValue * multiplier;\n        chainData.aggregatedMarketValue += token.marketValue * multiplier;\n      }\n    }\n  }\n\n  return groupedDeFiPositions;\n}\n\n/**\n *\n * @param tokenBalance - The token balance that is going to be processed\n * @returns The processed token balance\n */\nfunction processToken<T extends Balance>(\n  tokenBalance: T,\n): T & {\n  marketValue?: number;\n  tokens?: UnderlyingWithMarketValue[];\n} {\n  if (!tokenBalance.tokens) {\n    return {\n      ...tokenBalance,\n      marketValue: tokenBalance.price\n        ? tokenBalance.balance * tokenBalance.price\n        : undefined,\n    };\n  }\n\n  const processedTokens = tokenBalance.tokens.map((t) => {\n    const { tokens, ...tokenWithoutUnderlyings } = processToken(t);\n\n    return tokenWithoutUnderlyings;\n  });\n\n  const marketValue = processedTokens.reduce(\n    (acc, t) =>\n      acc === undefined || t.marketValue === undefined\n        ? undefined\n        : acc + t.marketValue,\n    0 as number | undefined,\n  );\n\n  return {\n    ...tokenBalance,\n    marketValue,\n    tokens: processedTokens,\n  };\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
+index 0eb212b5eb9a9ef2f61c44b9e5f04b14d5571865..f4f097a86a0feba2d20f84199536fdd097360777 100644
+--- a/dist/assetsUtil.cjs
++++ b/dist/assetsUtil.cjs
+@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
++function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
+ exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
+@@ -234,7 +235,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
+     const index = url.indexOf('/');
+     const cid = index !== -1 ? url.substring(0, index) : url;
+     const path = index !== -1 ? url.substring(index) : undefined;
+-    const { CID } = await import("multiformats");
++    const { CID } = _interopRequireWildcard(require("multiformats"));
+     // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
+     // because most cid v0s appear to be incompatible with IPFS subdomains
+     return {
+diff --git a/dist/index.cjs b/dist/index.cjs
+index fb237a6bd5bfbc6f6e7d598dcda1af9568ffd873..27b39cd52d845d0f961b99cbb0c1ebc248859184 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
+     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.TokenSearchDiscoveryDataController = exports.getDefaultMultichainAssetsRatesControllerState = exports.MultichainAssetsRatesController = exports.getDefaultMultichainAssetsControllerState = exports.MultichainAssetsController = exports.MultichainBalancesController = exports.Cryptocurrency = exports.RatesController = exports.getNativeTokenAddress = exports.SUPPORTED_CHAIN_IDS = exports.CodefiTokenPricesServiceV2 = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.getFormattedIpfsUrl = exports.formatIconUrlWithProxy = exports.isTokenDetectionSupportedForNetwork = exports.TokensController = exports.TokenRatesController = exports.getDefaultTokenRatesControllerState = exports.TokenListController = exports.TokenDetectionController = exports.TokenBalancesController = exports.NftDetectionController = exports.NftController = exports.getDefaultNftControllerState = exports.AssetsContractController = exports.SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID = exports.AccountTrackerController = void 0;
++exports.DeFiPositionsController = exports.TokenSearchDiscoveryDataController = exports.getDefaultMultichainAssetsRatesControllerState = exports.MultichainAssetsRatesController = exports.getDefaultMultichainAssetsControllerState = exports.MultichainAssetsController = exports.MultichainBalancesController = exports.Cryptocurrency = exports.RatesController = exports.getNativeTokenAddress = exports.SUPPORTED_CHAIN_IDS = exports.CodefiTokenPricesServiceV2 = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.getFormattedIpfsUrl = exports.formatIconUrlWithProxy = exports.isTokenDetectionSupportedForNetwork = exports.TokensController = exports.TokenRatesController = exports.getDefaultTokenRatesControllerState = exports.TokenListController = exports.TokenDetectionController = exports.TokenBalancesController = exports.NftDetectionController = exports.NftController = exports.getDefaultNftControllerState = exports.AssetsContractController = exports.SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID = exports.AccountTrackerController = void 0;
+ var AccountTrackerController_1 = require("./AccountTrackerController.cjs");
+ Object.defineProperty(exports, "AccountTrackerController", { enumerable: true, get: function () { return AccountTrackerController_1.AccountTrackerController; } });
+ var AssetsContractController_1 = require("./AssetsContractController.cjs");
+@@ -60,4 +60,6 @@ Object.defineProperty(exports, "MultichainAssetsRatesController", { enumerable:
+ Object.defineProperty(exports, "getDefaultMultichainAssetsRatesControllerState", { enumerable: true, get: function () { return MultichainAssetsRatesController_1.getDefaultMultichainAssetsRatesControllerState; } });
+ var TokenSearchDiscoveryDataController_1 = require("./TokenSearchDiscoveryDataController/index.cjs");
+ Object.defineProperty(exports, "TokenSearchDiscoveryDataController", { enumerable: true, get: function () { return TokenSearchDiscoveryDataController_1.TokenSearchDiscoveryDataController; } });
++var DeFiPositionsController_1 = require("./DeFiPositionsController/DeFiPositionsController.cjs");
++Object.defineProperty(exports, "DeFiPositionsController", { enumerable: true, get: function () { return DeFiPositionsController_1.DeFiPositionsController; } });
+ //# sourceMappingURL=index.cjs.map
+\ No newline at end of file
+diff --git a/dist/index.cjs.map b/dist/index.cjs.map
+index 2c75f84d5ebbe3e4c6ec54a83683753f81a7c267..6308b160df04148540e46ed9322ea7b89928dca9 100644
+--- a/dist/index.cjs.map
++++ b/dist/index.cjs.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.cjs","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;AASA,2EAAsE;AAA7D,oIAAA,wBAAwB,OAAA;AAuBjC,2EAGoC;AAFlC,mJAAA,uCAAuC,OAAA;AACvC,oIAAA,wBAAwB,OAAA;AAE1B,+DAAyC;AAYzC,qDAA8E;AAArE,6HAAA,4BAA4B,OAAA;AAAE,8GAAA,aAAa,OAAA;AAwBpD,uEAAkE;AAAzD,gIAAA,sBAAsB,OAAA;AAS/B,yEAAoE;AAA3D,kIAAA,uBAAuB,OAAA;AAQhC,2EAAsE;AAA7D,oIAAA,wBAAwB,OAAA;AAWjC,iEAA4D;AAAnD,0HAAA,mBAAmB,OAAA;AAa5B,mEAGgC;AAF9B,2IAAA,mCAAmC,OAAA;AACnC,4HAAA,oBAAoB,OAAA;AAWtB,2DAAsD;AAA7C,oHAAA,gBAAgB,OAAA;AACzB,+CAMsB;AALpB,iIAAA,mCAAmC,OAAA;AACnC,oHAAA,sBAAsB,OAAA;AACtB,iHAAA,mBAAmB,OAAA;AACnB,6HAAA,+BAA+B,OAAA;AAC/B,2GAAA,aAAa,OAAA;AAEf,yEAIgC;AAH9B,kIAAA,0BAA0B,OAAA;AAC1B,2HAAA,mBAAmB,OAAA;AACnB,6HAAA,qBAAqB,OAAA;AAEvB,+DAAoE;AAA3D,kHAAA,eAAe,OAAA;AAAE,iHAAA,cAAc,OAAA;AAWxC,yFAA8E;AAArE,4IAAA,4BAA4B,OAAA;AAUrC,qFAGsC;AAFpC,wIAAA,0BAA0B,OAAA;AAC1B,uJAAA,yCAAyC,OAAA;AAY3C,+FAG2C;AAFzC,kJAAA,+BAA+B,OAAA;AAC/B,iKAAA,8CAA8C,OAAA;AAWhD,qGAA0F;AAAjF,wJAAA,kCAAkC,OAAA","sourcesContent":["export type {\n  AccountInformation,\n  AccountTrackerControllerMessenger,\n  AccountTrackerControllerState,\n  AccountTrackerControllerActions,\n  AccountTrackerControllerGetStateAction,\n  AccountTrackerControllerStateChangeEvent,\n  AccountTrackerControllerEvents,\n} from './AccountTrackerController';\nexport { AccountTrackerController } from './AccountTrackerController';\nexport type {\n  AssetsContractControllerActions,\n  AssetsContractControllerEvents,\n  AssetsContractControllerGetERC20StandardAction,\n  AssetsContractControllerGetERC721StandardAction,\n  AssetsContractControllerGetERC1155StandardAction,\n  AssetsContractControllerGetERC20BalanceOfAction,\n  AssetsContractControllerGetERC20TokenDecimalsAction,\n  AssetsContractControllerGetERC20TokenNameAction,\n  AssetsContractControllerGetERC721NftTokenIdAction,\n  AssetsContractControllerGetERC721TokenURIAction,\n  AssetsContractControllerGetERC721AssetNameAction,\n  AssetsContractControllerGetERC721AssetSymbolAction,\n  AssetsContractControllerGetERC721OwnerOfAction,\n  AssetsContractControllerGetERC1155TokenURIAction,\n  AssetsContractControllerGetERC1155BalanceOfAction,\n  AssetsContractControllerTransferSingleERC1155Action,\n  AssetsContractControllerGetTokenStandardAndDetailsAction,\n  AssetsContractControllerGetBalancesInSingleCallAction,\n  AssetsContractControllerMessenger,\n  BalanceMap,\n} from './AssetsContractController';\nexport {\n  SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID,\n  AssetsContractController,\n} from './AssetsContractController';\nexport * from './CurrencyRateController';\nexport type {\n  NftControllerState,\n  NftControllerMessenger,\n  NftControllerActions,\n  NftControllerGetStateAction,\n  NftControllerEvents,\n  NftControllerStateChangeEvent,\n  Nft,\n  NftContract,\n  NftMetadata,\n} from './NftController';\nexport { getDefaultNftControllerState, NftController } from './NftController';\nexport type {\n  NftDetectionControllerMessenger,\n  ApiNft,\n  ApiNftContract,\n  ApiNftLastSale,\n  ApiNftCreator,\n  ReservoirResponse,\n  TokensResponse,\n  BlockaidResultType,\n  Blockaid,\n  Market,\n  TokenResponse,\n  TopBid,\n  LastSale,\n  FeeBreakdown,\n  Attributes,\n  Collection,\n  Royalties,\n  Ownership,\n  FloorAsk,\n  Price,\n  Metadata,\n} from './NftDetectionController';\nexport { NftDetectionController } from './NftDetectionController';\nexport type {\n  TokenBalancesControllerMessenger,\n  TokenBalancesControllerActions,\n  TokenBalancesControllerGetStateAction,\n  TokenBalancesControllerEvents,\n  TokenBalancesControllerStateChangeEvent,\n  TokenBalancesControllerState,\n} from './TokenBalancesController';\nexport { TokenBalancesController } from './TokenBalancesController';\nexport type {\n  TokenDetectionControllerMessenger,\n  TokenDetectionControllerActions,\n  TokenDetectionControllerGetStateAction,\n  TokenDetectionControllerEvents,\n  TokenDetectionControllerStateChangeEvent,\n} from './TokenDetectionController';\nexport { TokenDetectionController } from './TokenDetectionController';\nexport type {\n  TokenListState,\n  TokenListToken,\n  TokenListMap,\n  TokenListStateChange,\n  TokenListControllerEvents,\n  GetTokenListState,\n  TokenListControllerActions,\n  TokenListControllerMessenger,\n} from './TokenListController';\nexport { TokenListController } from './TokenListController';\nexport type {\n  ContractExchangeRates,\n  ContractMarketData,\n  Token,\n  TokenRatesControllerActions,\n  TokenRatesControllerEvents,\n  TokenRatesControllerGetStateAction,\n  TokenRatesControllerMessenger,\n  TokenRatesControllerState,\n  TokenRatesControllerStateChangeEvent,\n  MarketDataDetails,\n} from './TokenRatesController';\nexport {\n  getDefaultTokenRatesControllerState,\n  TokenRatesController,\n} from './TokenRatesController';\nexport type {\n  TokensControllerState,\n  TokensControllerActions,\n  TokensControllerGetStateAction,\n  TokensControllerAddDetectedTokensAction,\n  TokensControllerEvents,\n  TokensControllerStateChangeEvent,\n  TokensControllerMessenger,\n} from './TokensController';\nexport { TokensController } from './TokensController';\nexport {\n  isTokenDetectionSupportedForNetwork,\n  formatIconUrlWithProxy,\n  getFormattedIpfsUrl,\n  fetchTokenContractExchangeRates,\n  getKeyByValue,\n} from './assetsUtil';\nexport {\n  CodefiTokenPricesServiceV2,\n  SUPPORTED_CHAIN_IDS,\n  getNativeTokenAddress,\n} from './token-prices-service';\nexport { RatesController, Cryptocurrency } from './RatesController';\nexport type {\n  RatesControllerState,\n  RatesControllerEvents,\n  RatesControllerActions,\n  RatesControllerMessenger,\n  RatesControllerGetStateAction,\n  RatesControllerStateChangeEvent,\n  RatesControllerPollingStartedEvent,\n  RatesControllerPollingStoppedEvent,\n} from './RatesController';\nexport { MultichainBalancesController } from './MultichainBalancesController';\nexport type {\n  MultichainBalancesControllerState,\n  MultichainBalancesControllerGetStateAction,\n  MultichainBalancesControllerStateChange,\n  MultichainBalancesControllerActions,\n  MultichainBalancesControllerEvents,\n  MultichainBalancesControllerMessenger,\n} from './MultichainBalancesController';\n\nexport {\n  MultichainAssetsController,\n  getDefaultMultichainAssetsControllerState,\n} from './MultichainAssetsController';\n\nexport type {\n  MultichainAssetsControllerState,\n  MultichainAssetsControllerGetStateAction,\n  MultichainAssetsControllerStateChangeEvent,\n  MultichainAssetsControllerActions,\n  MultichainAssetsControllerEvents,\n  MultichainAssetsControllerMessenger,\n} from './MultichainAssetsController';\n\nexport {\n  MultichainAssetsRatesController,\n  getDefaultMultichainAssetsRatesControllerState,\n} from './MultichainAssetsRatesController';\n\nexport type {\n  MultichainAssetsRatesControllerState,\n  MultichainAssetsRatesControllerActions,\n  MultichainAssetsRatesControllerEvents,\n  MultichainAssetsRatesControllerGetStateAction,\n  MultichainAssetsRatesControllerStateChange,\n  MultichainAssetsRatesControllerMessenger,\n} from './MultichainAssetsRatesController';\nexport { TokenSearchDiscoveryDataController } from './TokenSearchDiscoveryDataController';\nexport type {\n  TokenDisplayData,\n  TokenSearchDiscoveryDataControllerState,\n  TokenSearchDiscoveryDataControllerGetStateAction,\n  TokenSearchDiscoveryDataControllerEvents,\n  TokenSearchDiscoveryDataControllerStateChangeEvent,\n  TokenSearchDiscoveryDataControllerActions,\n  TokenSearchDiscoveryDataControllerMessenger,\n} from './TokenSearchDiscoveryDataController';\n"]}
+\ No newline at end of file
++{"version":3,"file":"index.cjs","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;AASA,2EAAsE;AAA7D,oIAAA,wBAAwB,OAAA;AAuBjC,2EAGoC;AAFlC,mJAAA,uCAAuC,OAAA;AACvC,oIAAA,wBAAwB,OAAA;AAE1B,+DAAyC;AAYzC,qDAA8E;AAArE,6HAAA,4BAA4B,OAAA;AAAE,8GAAA,aAAa,OAAA;AAwBpD,uEAAkE;AAAzD,gIAAA,sBAAsB,OAAA;AAS/B,yEAAoE;AAA3D,kIAAA,uBAAuB,OAAA;AAQhC,2EAAsE;AAA7D,oIAAA,wBAAwB,OAAA;AAWjC,iEAA4D;AAAnD,0HAAA,mBAAmB,OAAA;AAa5B,mEAGgC;AAF9B,2IAAA,mCAAmC,OAAA;AACnC,4HAAA,oBAAoB,OAAA;AAWtB,2DAAsD;AAA7C,oHAAA,gBAAgB,OAAA;AACzB,+CAMsB;AALpB,iIAAA,mCAAmC,OAAA;AACnC,oHAAA,sBAAsB,OAAA;AACtB,iHAAA,mBAAmB,OAAA;AACnB,6HAAA,+BAA+B,OAAA;AAC/B,2GAAA,aAAa,OAAA;AAEf,yEAIgC;AAH9B,kIAAA,0BAA0B,OAAA;AAC1B,2HAAA,mBAAmB,OAAA;AACnB,6HAAA,qBAAqB,OAAA;AAEvB,+DAAoE;AAA3D,kHAAA,eAAe,OAAA;AAAE,iHAAA,cAAc,OAAA;AAWxC,yFAA8E;AAArE,4IAAA,4BAA4B,OAAA;AAUrC,qFAGsC;AAFpC,wIAAA,0BAA0B,OAAA;AAC1B,uJAAA,yCAAyC,OAAA;AAY3C,+FAG2C;AAFzC,kJAAA,+BAA+B,OAAA;AAC/B,iKAAA,8CAA8C,OAAA;AAWhD,qGAA0F;AAAjF,wJAAA,kCAAkC,OAAA;AAU3C,iGAA4F;AAAnF,kIAAA,uBAAuB,OAAA","sourcesContent":["export type {\n  AccountInformation,\n  AccountTrackerControllerMessenger,\n  AccountTrackerControllerState,\n  AccountTrackerControllerActions,\n  AccountTrackerControllerGetStateAction,\n  AccountTrackerControllerStateChangeEvent,\n  AccountTrackerControllerEvents,\n} from './AccountTrackerController';\nexport { AccountTrackerController } from './AccountTrackerController';\nexport type {\n  AssetsContractControllerActions,\n  AssetsContractControllerEvents,\n  AssetsContractControllerGetERC20StandardAction,\n  AssetsContractControllerGetERC721StandardAction,\n  AssetsContractControllerGetERC1155StandardAction,\n  AssetsContractControllerGetERC20BalanceOfAction,\n  AssetsContractControllerGetERC20TokenDecimalsAction,\n  AssetsContractControllerGetERC20TokenNameAction,\n  AssetsContractControllerGetERC721NftTokenIdAction,\n  AssetsContractControllerGetERC721TokenURIAction,\n  AssetsContractControllerGetERC721AssetNameAction,\n  AssetsContractControllerGetERC721AssetSymbolAction,\n  AssetsContractControllerGetERC721OwnerOfAction,\n  AssetsContractControllerGetERC1155TokenURIAction,\n  AssetsContractControllerGetERC1155BalanceOfAction,\n  AssetsContractControllerTransferSingleERC1155Action,\n  AssetsContractControllerGetTokenStandardAndDetailsAction,\n  AssetsContractControllerGetBalancesInSingleCallAction,\n  AssetsContractControllerMessenger,\n  BalanceMap,\n} from './AssetsContractController';\nexport {\n  SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID,\n  AssetsContractController,\n} from './AssetsContractController';\nexport * from './CurrencyRateController';\nexport type {\n  NftControllerState,\n  NftControllerMessenger,\n  NftControllerActions,\n  NftControllerGetStateAction,\n  NftControllerEvents,\n  NftControllerStateChangeEvent,\n  Nft,\n  NftContract,\n  NftMetadata,\n} from './NftController';\nexport { getDefaultNftControllerState, NftController } from './NftController';\nexport type {\n  NftDetectionControllerMessenger,\n  ApiNft,\n  ApiNftContract,\n  ApiNftLastSale,\n  ApiNftCreator,\n  ReservoirResponse,\n  TokensResponse,\n  BlockaidResultType,\n  Blockaid,\n  Market,\n  TokenResponse,\n  TopBid,\n  LastSale,\n  FeeBreakdown,\n  Attributes,\n  Collection,\n  Royalties,\n  Ownership,\n  FloorAsk,\n  Price,\n  Metadata,\n} from './NftDetectionController';\nexport { NftDetectionController } from './NftDetectionController';\nexport type {\n  TokenBalancesControllerMessenger,\n  TokenBalancesControllerActions,\n  TokenBalancesControllerGetStateAction,\n  TokenBalancesControllerEvents,\n  TokenBalancesControllerStateChangeEvent,\n  TokenBalancesControllerState,\n} from './TokenBalancesController';\nexport { TokenBalancesController } from './TokenBalancesController';\nexport type {\n  TokenDetectionControllerMessenger,\n  TokenDetectionControllerActions,\n  TokenDetectionControllerGetStateAction,\n  TokenDetectionControllerEvents,\n  TokenDetectionControllerStateChangeEvent,\n} from './TokenDetectionController';\nexport { TokenDetectionController } from './TokenDetectionController';\nexport type {\n  TokenListState,\n  TokenListToken,\n  TokenListMap,\n  TokenListStateChange,\n  TokenListControllerEvents,\n  GetTokenListState,\n  TokenListControllerActions,\n  TokenListControllerMessenger,\n} from './TokenListController';\nexport { TokenListController } from './TokenListController';\nexport type {\n  ContractExchangeRates,\n  ContractMarketData,\n  Token,\n  TokenRatesControllerActions,\n  TokenRatesControllerEvents,\n  TokenRatesControllerGetStateAction,\n  TokenRatesControllerMessenger,\n  TokenRatesControllerState,\n  TokenRatesControllerStateChangeEvent,\n  MarketDataDetails,\n} from './TokenRatesController';\nexport {\n  getDefaultTokenRatesControllerState,\n  TokenRatesController,\n} from './TokenRatesController';\nexport type {\n  TokensControllerState,\n  TokensControllerActions,\n  TokensControllerGetStateAction,\n  TokensControllerAddDetectedTokensAction,\n  TokensControllerEvents,\n  TokensControllerStateChangeEvent,\n  TokensControllerMessenger,\n} from './TokensController';\nexport { TokensController } from './TokensController';\nexport {\n  isTokenDetectionSupportedForNetwork,\n  formatIconUrlWithProxy,\n  getFormattedIpfsUrl,\n  fetchTokenContractExchangeRates,\n  getKeyByValue,\n} from './assetsUtil';\nexport {\n  CodefiTokenPricesServiceV2,\n  SUPPORTED_CHAIN_IDS,\n  getNativeTokenAddress,\n} from './token-prices-service';\nexport { RatesController, Cryptocurrency } from './RatesController';\nexport type {\n  RatesControllerState,\n  RatesControllerEvents,\n  RatesControllerActions,\n  RatesControllerMessenger,\n  RatesControllerGetStateAction,\n  RatesControllerStateChangeEvent,\n  RatesControllerPollingStartedEvent,\n  RatesControllerPollingStoppedEvent,\n} from './RatesController';\nexport { MultichainBalancesController } from './MultichainBalancesController';\nexport type {\n  MultichainBalancesControllerState,\n  MultichainBalancesControllerGetStateAction,\n  MultichainBalancesControllerStateChange,\n  MultichainBalancesControllerActions,\n  MultichainBalancesControllerEvents,\n  MultichainBalancesControllerMessenger,\n} from './MultichainBalancesController';\n\nexport {\n  MultichainAssetsController,\n  getDefaultMultichainAssetsControllerState,\n} from './MultichainAssetsController';\n\nexport type {\n  MultichainAssetsControllerState,\n  MultichainAssetsControllerGetStateAction,\n  MultichainAssetsControllerStateChangeEvent,\n  MultichainAssetsControllerActions,\n  MultichainAssetsControllerEvents,\n  MultichainAssetsControllerMessenger,\n} from './MultichainAssetsController';\n\nexport {\n  MultichainAssetsRatesController,\n  getDefaultMultichainAssetsRatesControllerState,\n} from './MultichainAssetsRatesController';\n\nexport type {\n  MultichainAssetsRatesControllerState,\n  MultichainAssetsRatesControllerActions,\n  MultichainAssetsRatesControllerEvents,\n  MultichainAssetsRatesControllerGetStateAction,\n  MultichainAssetsRatesControllerStateChange,\n  MultichainAssetsRatesControllerMessenger,\n} from './MultichainAssetsRatesController';\nexport { TokenSearchDiscoveryDataController } from './TokenSearchDiscoveryDataController';\nexport type {\n  TokenDisplayData,\n  TokenSearchDiscoveryDataControllerState,\n  TokenSearchDiscoveryDataControllerGetStateAction,\n  TokenSearchDiscoveryDataControllerEvents,\n  TokenSearchDiscoveryDataControllerStateChangeEvent,\n  TokenSearchDiscoveryDataControllerActions,\n  TokenSearchDiscoveryDataControllerMessenger,\n} from './TokenSearchDiscoveryDataController';\nexport { DeFiPositionsController } from './DeFiPositionsController/DeFiPositionsController';\nexport type {\n  DeFiPositionsControllerState,\n  DeFiPositionsControllerAllowedActions,\n  DeFiPositionsControllerAllowedEvents,\n  DeFiPositionsControllerActions,\n  DeFiPositionsControllerEvents,\n  DeFiPositionsControllerGetStateAction,\n  DeFiPositionsControllerStateChangeEvent,\n  DeFiPositionsControllerMessenger,\n} from './DeFiPositionsController/DeFiPositionsController';\nexport type { GroupedDeFiPositions } from './DeFiPositionsController/group-defi-positions';\n"]}
+\ No newline at end of file
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index b6fe487ca02c3d662f8303d4501e3f65d0ba74b3..907e0d4b29fe20e041e512480638570f218bb84c 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -29,4 +29,7 @@ export { MultichainAssetsRatesController, getDefaultMultichainAssetsRatesControl
+ export type { MultichainAssetsRatesControllerState, MultichainAssetsRatesControllerActions, MultichainAssetsRatesControllerEvents, MultichainAssetsRatesControllerGetStateAction, MultichainAssetsRatesControllerStateChange, MultichainAssetsRatesControllerMessenger, } from "./MultichainAssetsRatesController/index.cjs";
+ export { TokenSearchDiscoveryDataController } from "./TokenSearchDiscoveryDataController/index.cjs";
+ export type { TokenDisplayData, TokenSearchDiscoveryDataControllerState, TokenSearchDiscoveryDataControllerGetStateAction, TokenSearchDiscoveryDataControllerEvents, TokenSearchDiscoveryDataControllerStateChangeEvent, TokenSearchDiscoveryDataControllerActions, TokenSearchDiscoveryDataControllerMessenger, } from "./TokenSearchDiscoveryDataController/index.cjs";
++export { DeFiPositionsController } from "./DeFiPositionsController/DeFiPositionsController.cjs";
++export type { DeFiPositionsControllerState, DeFiPositionsControllerAllowedActions, DeFiPositionsControllerAllowedEvents, DeFiPositionsControllerActions, DeFiPositionsControllerEvents, DeFiPositionsControllerGetStateAction, DeFiPositionsControllerStateChangeEvent, DeFiPositionsControllerMessenger, } from "./DeFiPositionsController/DeFiPositionsController.cjs";
++export type { GroupedDeFiPositions } from "./DeFiPositionsController/group-defi-positions.cjs";
+ //# sourceMappingURL=index.d.cts.map
+\ No newline at end of file
+diff --git a/dist/index.d.cts.map b/dist/index.d.cts.map
+index d9167106f50d5298b457b13d592593977a251da4..12fc213f4bf62e0b47aecd29d38b52830257a59b 100644
+--- a/dist/index.d.cts.map
++++ b/dist/index.d.cts.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.d.cts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"index.d.cts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AAAA,YAAY,EACV,kBAAkB,EAClB,iCAAiC,EACjC,6BAA6B,EAC7B,+BAA+B,EAC/B,sCAAsC,EACtC,wCAAwC,EACxC,8BAA8B,GAC/B,uCAAmC;AACpC,OAAO,EAAE,wBAAwB,EAAE,uCAAmC;AACtE,YAAY,EACV,+BAA+B,EAC/B,8BAA8B,EAC9B,8CAA8C,EAC9C,+CAA+C,EAC/C,gDAAgD,EAChD,+CAA+C,EAC/C,mDAAmD,EACnD,+CAA+C,EAC/C,iDAAiD,EACjD,+CAA+C,EAC/C,gDAAgD,EAChD,kDAAkD,EAClD,8CAA8C,EAC9C,gDAAgD,EAChD,iDAAiD,EACjD,mDAAmD,EACnD,wDAAwD,EACxD,qDAAqD,EACrD,iCAAiC,EACjC,UAAU,GACX,uCAAmC;AACpC,OAAO,EACL,uCAAuC,EACvC,wBAAwB,GACzB,uCAAmC;AACpC,6CAAyC;AACzC,YAAY,EACV,kBAAkB,EAClB,sBAAsB,EACtB,oBAAoB,EACpB,2BAA2B,EAC3B,mBAAmB,EACnB,6BAA6B,EAC7B,GAAG,EACH,WAAW,EACX,WAAW,GACZ,4BAAwB;AACzB,OAAO,EAAE,4BAA4B,EAAE,aAAa,EAAE,4BAAwB;AAC9E,YAAY,EACV,+BAA+B,EAC/B,MAAM,EACN,cAAc,EACd,cAAc,EACd,aAAa,EACb,iBAAiB,EACjB,cAAc,EACd,kBAAkB,EAClB,QAAQ,EACR,MAAM,EACN,aAAa,EACb,MAAM,EACN,QAAQ,EACR,YAAY,EACZ,UAAU,EACV,UAAU,EACV,SAAS,EACT,SAAS,EACT,QAAQ,EACR,KAAK,EACL,QAAQ,GACT,qCAAiC;AAClC,OAAO,EAAE,sBAAsB,EAAE,qCAAiC;AAClE,YAAY,EACV,gCAAgC,EAChC,8BAA8B,EAC9B,qCAAqC,EACrC,6BAA6B,EAC7B,uCAAuC,EACvC,4BAA4B,GAC7B,sCAAkC;AACnC,OAAO,EAAE,uBAAuB,EAAE,sCAAkC;AACpE,YAAY,EACV,iCAAiC,EACjC,+BAA+B,EAC/B,sCAAsC,EACtC,8BAA8B,EAC9B,wCAAwC,GACzC,uCAAmC;AACpC,OAAO,EAAE,wBAAwB,EAAE,uCAAmC;AACtE,YAAY,EACV,cAAc,EACd,cAAc,EACd,YAAY,EACZ,oBAAoB,EACpB,yBAAyB,EACzB,iBAAiB,EACjB,0BAA0B,EAC1B,4BAA4B,GAC7B,kCAA8B;AAC/B,OAAO,EAAE,mBAAmB,EAAE,kCAA8B;AAC5D,YAAY,EACV,qBAAqB,EACrB,kBAAkB,EAClB,KAAK,EACL,2BAA2B,EAC3B,0BAA0B,EAC1B,kCAAkC,EAClC,6BAA6B,EAC7B,yBAAyB,EACzB,oCAAoC,EACpC,iBAAiB,GAClB,mCAA+B;AAChC,OAAO,EACL,mCAAmC,EACnC,oBAAoB,GACrB,mCAA+B;AAChC,YAAY,EACV,qBAAqB,EACrB,uBAAuB,EACvB,8BAA8B,EAC9B,uCAAuC,EACvC,sBAAsB,EACtB,gCAAgC,EAChC,yBAAyB,GAC1B,+BAA2B;AAC5B,OAAO,EAAE,gBAAgB,EAAE,+BAA2B;AACtD,OAAO,EACL,mCAAmC,EACnC,sBAAsB,EACtB,mBAAmB,EACnB,+BAA+B,EAC/B,aAAa,GACd,yBAAqB;AACtB,OAAO,EACL,0BAA0B,EAC1B,mBAAmB,EACnB,qBAAqB,GACtB,yCAA+B;AAChC,OAAO,EAAE,eAAe,EAAE,cAAc,EAAE,oCAA0B;AACpE,YAAY,EACV,oBAAoB,EACpB,qBAAqB,EACrB,sBAAsB,EACtB,wBAAwB,EACxB,6BAA6B,EAC7B,+BAA+B,EAC/B,kCAAkC,EAClC,kCAAkC,GACnC,oCAA0B;AAC3B,OAAO,EAAE,4BAA4B,EAAE,iDAAuC;AAC9E,YAAY,EACV,iCAAiC,EACjC,0CAA0C,EAC1C,uCAAuC,EACvC,mCAAmC,EACnC,kCAAkC,EAClC,qCAAqC,GACtC,iDAAuC;AAExC,OAAO,EACL,0BAA0B,EAC1B,yCAAyC,GAC1C,+CAAqC;AAEtC,YAAY,EACV,+BAA+B,EAC/B,wCAAwC,EACxC,0CAA0C,EAC1C,iCAAiC,EACjC,gCAAgC,EAChC,mCAAmC,GACpC,+CAAqC;AAEtC,OAAO,EACL,+BAA+B,EAC/B,8CAA8C,GAC/C,oDAA0C;AAE3C,YAAY,EACV,oCAAoC,EACpC,sCAAsC,EACtC,qCAAqC,EACrC,6CAA6C,EAC7C,0CAA0C,EAC1C,wCAAwC,GACzC,oDAA0C;AAC3C,OAAO,EAAE,kCAAkC,EAAE,uDAA6C;AAC1F,YAAY,EACV,gBAAgB,EAChB,uCAAuC,EACvC,gDAAgD,EAChD,wCAAwC,EACxC,kDAAkD,EAClD,yCAAyC,EACzC,2CAA2C,GAC5C,uDAA6C;AAC9C,OAAO,EAAE,uBAAuB,EAAE,8DAA0D;AAC5F,YAAY,EACV,4BAA4B,EAC5B,qCAAqC,EACrC,oCAAoC,EACpC,8BAA8B,EAC9B,6BAA6B,EAC7B,qCAAqC,EACrC,uCAAuC,EACvC,gCAAgC,GACjC,8DAA0D;AAC3D,YAAY,EAAE,oBAAoB,EAAE,2DAAuD"}
+\ No newline at end of file
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 76fa4bf2d76680ff34e16b7b4cd3f7beb3db5d56..bad126446f875e6a6e6c59f3340b442158fa8809 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -29,4 +29,7 @@ export { MultichainAssetsRatesController, getDefaultMultichainAssetsRatesControl
+ export type { MultichainAssetsRatesControllerState, MultichainAssetsRatesControllerActions, MultichainAssetsRatesControllerEvents, MultichainAssetsRatesControllerGetStateAction, MultichainAssetsRatesControllerStateChange, MultichainAssetsRatesControllerMessenger, } from "./MultichainAssetsRatesController/index.mjs";
+ export { TokenSearchDiscoveryDataController } from "./TokenSearchDiscoveryDataController/index.mjs";
+ export type { TokenDisplayData, TokenSearchDiscoveryDataControllerState, TokenSearchDiscoveryDataControllerGetStateAction, TokenSearchDiscoveryDataControllerEvents, TokenSearchDiscoveryDataControllerStateChangeEvent, TokenSearchDiscoveryDataControllerActions, TokenSearchDiscoveryDataControllerMessenger, } from "./TokenSearchDiscoveryDataController/index.mjs";
++export { DeFiPositionsController } from "./DeFiPositionsController/DeFiPositionsController.mjs";
++export type { DeFiPositionsControllerState, DeFiPositionsControllerAllowedActions, DeFiPositionsControllerAllowedEvents, DeFiPositionsControllerActions, DeFiPositionsControllerEvents, DeFiPositionsControllerGetStateAction, DeFiPositionsControllerStateChangeEvent, DeFiPositionsControllerMessenger, } from "./DeFiPositionsController/DeFiPositionsController.mjs";
++export type { GroupedDeFiPositions } from "./DeFiPositionsController/group-defi-positions.mjs";
+ //# sourceMappingURL=index.d.mts.map
+\ No newline at end of file
+diff --git a/dist/index.d.mts.map b/dist/index.d.mts.map
+index d165b406f0677b93ad02156a58c3f2cf2c5f4d4b..e5710fe3a77f6b8d4c69d7e79d317377e28926a3 100644
+--- a/dist/index.d.mts.map
++++ b/dist/index.d.mts.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.d.mts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"index.d.mts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 2db38aad9bc3d30fbdb072ba6bf3a8b273eb1793..900128d2c297f8673e94bb171d7cd3544dc5bcde 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -15,4 +15,5 @@ export { MultichainBalancesController } from "./MultichainBalancesController/ind
+ export { MultichainAssetsController, getDefaultMultichainAssetsControllerState } from "./MultichainAssetsController/index.mjs";
+ export { MultichainAssetsRatesController, getDefaultMultichainAssetsRatesControllerState } from "./MultichainAssetsRatesController/index.mjs";
+ export { TokenSearchDiscoveryDataController } from "./TokenSearchDiscoveryDataController/index.mjs";
++export { DeFiPositionsController } from "./DeFiPositionsController/DeFiPositionsController.mjs";
+ //# sourceMappingURL=index.mjs.map
+\ No newline at end of file
+diff --git a/dist/index.mjs.map b/dist/index.mjs.map
+index be6b76e53d95c8d9254c6de6f60b338e1e899c8f..b418920ad1e2c3a5865e710038079b6d45f0bb39 100644
+--- a/dist/index.mjs.map
++++ b/dist/index.mjs.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.mjs","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AASA,OAAO,EAAE,wBAAwB,EAAE,uCAAmC;AAuBtE,OAAO,EACL,uCAAuC,EACvC,wBAAwB,EACzB,uCAAmC;AACpC,6CAAyC;AAYzC,OAAO,EAAE,4BAA4B,EAAE,aAAa,EAAE,4BAAwB;AAwB9E,OAAO,EAAE,sBAAsB,EAAE,qCAAiC;AASlE,OAAO,EAAE,uBAAuB,EAAE,sCAAkC;AAQpE,OAAO,EAAE,wBAAwB,EAAE,uCAAmC;AAWtE,OAAO,EAAE,mBAAmB,EAAE,kCAA8B;AAa5D,OAAO,EACL,mCAAmC,EACnC,oBAAoB,EACrB,mCAA+B;AAUhC,OAAO,EAAE,gBAAgB,EAAE,+BAA2B;AACtD,OAAO,EACL,mCAAmC,EACnC,sBAAsB,EACtB,mBAAmB,EACnB,+BAA+B,EAC/B,aAAa,EACd,yBAAqB;AACtB,OAAO,EACL,0BAA0B,EAC1B,mBAAmB,EACnB,qBAAqB,EACtB,yCAA+B;AAChC,OAAO,EAAE,eAAe,EAAE,cAAc,EAAE,oCAA0B;AAWpE,OAAO,EAAE,4BAA4B,EAAE,iDAAuC;AAU9E,OAAO,EACL,0BAA0B,EAC1B,yCAAyC,EAC1C,+CAAqC;AAWtC,OAAO,EACL,+BAA+B,EAC/B,8CAA8C,EAC/C,oDAA0C;AAU3C,OAAO,EAAE,kCAAkC,EAAE,uDAA6C","sourcesContent":["export type {\n  AccountInformation,\n  AccountTrackerControllerMessenger,\n  AccountTrackerControllerState,\n  AccountTrackerControllerActions,\n  AccountTrackerControllerGetStateAction,\n  AccountTrackerControllerStateChangeEvent,\n  AccountTrackerControllerEvents,\n} from './AccountTrackerController';\nexport { AccountTrackerController } from './AccountTrackerController';\nexport type {\n  AssetsContractControllerActions,\n  AssetsContractControllerEvents,\n  AssetsContractControllerGetERC20StandardAction,\n  AssetsContractControllerGetERC721StandardAction,\n  AssetsContractControllerGetERC1155StandardAction,\n  AssetsContractControllerGetERC20BalanceOfAction,\n  AssetsContractControllerGetERC20TokenDecimalsAction,\n  AssetsContractControllerGetERC20TokenNameAction,\n  AssetsContractControllerGetERC721NftTokenIdAction,\n  AssetsContractControllerGetERC721TokenURIAction,\n  AssetsContractControllerGetERC721AssetNameAction,\n  AssetsContractControllerGetERC721AssetSymbolAction,\n  AssetsContractControllerGetERC721OwnerOfAction,\n  AssetsContractControllerGetERC1155TokenURIAction,\n  AssetsContractControllerGetERC1155BalanceOfAction,\n  AssetsContractControllerTransferSingleERC1155Action,\n  AssetsContractControllerGetTokenStandardAndDetailsAction,\n  AssetsContractControllerGetBalancesInSingleCallAction,\n  AssetsContractControllerMessenger,\n  BalanceMap,\n} from './AssetsContractController';\nexport {\n  SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID,\n  AssetsContractController,\n} from './AssetsContractController';\nexport * from './CurrencyRateController';\nexport type {\n  NftControllerState,\n  NftControllerMessenger,\n  NftControllerActions,\n  NftControllerGetStateAction,\n  NftControllerEvents,\n  NftControllerStateChangeEvent,\n  Nft,\n  NftContract,\n  NftMetadata,\n} from './NftController';\nexport { getDefaultNftControllerState, NftController } from './NftController';\nexport type {\n  NftDetectionControllerMessenger,\n  ApiNft,\n  ApiNftContract,\n  ApiNftLastSale,\n  ApiNftCreator,\n  ReservoirResponse,\n  TokensResponse,\n  BlockaidResultType,\n  Blockaid,\n  Market,\n  TokenResponse,\n  TopBid,\n  LastSale,\n  FeeBreakdown,\n  Attributes,\n  Collection,\n  Royalties,\n  Ownership,\n  FloorAsk,\n  Price,\n  Metadata,\n} from './NftDetectionController';\nexport { NftDetectionController } from './NftDetectionController';\nexport type {\n  TokenBalancesControllerMessenger,\n  TokenBalancesControllerActions,\n  TokenBalancesControllerGetStateAction,\n  TokenBalancesControllerEvents,\n  TokenBalancesControllerStateChangeEvent,\n  TokenBalancesControllerState,\n} from './TokenBalancesController';\nexport { TokenBalancesController } from './TokenBalancesController';\nexport type {\n  TokenDetectionControllerMessenger,\n  TokenDetectionControllerActions,\n  TokenDetectionControllerGetStateAction,\n  TokenDetectionControllerEvents,\n  TokenDetectionControllerStateChangeEvent,\n} from './TokenDetectionController';\nexport { TokenDetectionController } from './TokenDetectionController';\nexport type {\n  TokenListState,\n  TokenListToken,\n  TokenListMap,\n  TokenListStateChange,\n  TokenListControllerEvents,\n  GetTokenListState,\n  TokenListControllerActions,\n  TokenListControllerMessenger,\n} from './TokenListController';\nexport { TokenListController } from './TokenListController';\nexport type {\n  ContractExchangeRates,\n  ContractMarketData,\n  Token,\n  TokenRatesControllerActions,\n  TokenRatesControllerEvents,\n  TokenRatesControllerGetStateAction,\n  TokenRatesControllerMessenger,\n  TokenRatesControllerState,\n  TokenRatesControllerStateChangeEvent,\n  MarketDataDetails,\n} from './TokenRatesController';\nexport {\n  getDefaultTokenRatesControllerState,\n  TokenRatesController,\n} from './TokenRatesController';\nexport type {\n  TokensControllerState,\n  TokensControllerActions,\n  TokensControllerGetStateAction,\n  TokensControllerAddDetectedTokensAction,\n  TokensControllerEvents,\n  TokensControllerStateChangeEvent,\n  TokensControllerMessenger,\n} from './TokensController';\nexport { TokensController } from './TokensController';\nexport {\n  isTokenDetectionSupportedForNetwork,\n  formatIconUrlWithProxy,\n  getFormattedIpfsUrl,\n  fetchTokenContractExchangeRates,\n  getKeyByValue,\n} from './assetsUtil';\nexport {\n  CodefiTokenPricesServiceV2,\n  SUPPORTED_CHAIN_IDS,\n  getNativeTokenAddress,\n} from './token-prices-service';\nexport { RatesController, Cryptocurrency } from './RatesController';\nexport type {\n  RatesControllerState,\n  RatesControllerEvents,\n  RatesControllerActions,\n  RatesControllerMessenger,\n  RatesControllerGetStateAction,\n  RatesControllerStateChangeEvent,\n  RatesControllerPollingStartedEvent,\n  RatesControllerPollingStoppedEvent,\n} from './RatesController';\nexport { MultichainBalancesController } from './MultichainBalancesController';\nexport type {\n  MultichainBalancesControllerState,\n  MultichainBalancesControllerGetStateAction,\n  MultichainBalancesControllerStateChange,\n  MultichainBalancesControllerActions,\n  MultichainBalancesControllerEvents,\n  MultichainBalancesControllerMessenger,\n} from './MultichainBalancesController';\n\nexport {\n  MultichainAssetsController,\n  getDefaultMultichainAssetsControllerState,\n} from './MultichainAssetsController';\n\nexport type {\n  MultichainAssetsControllerState,\n  MultichainAssetsControllerGetStateAction,\n  MultichainAssetsControllerStateChangeEvent,\n  MultichainAssetsControllerActions,\n  MultichainAssetsControllerEvents,\n  MultichainAssetsControllerMessenger,\n} from './MultichainAssetsController';\n\nexport {\n  MultichainAssetsRatesController,\n  getDefaultMultichainAssetsRatesControllerState,\n} from './MultichainAssetsRatesController';\n\nexport type {\n  MultichainAssetsRatesControllerState,\n  MultichainAssetsRatesControllerActions,\n  MultichainAssetsRatesControllerEvents,\n  MultichainAssetsRatesControllerGetStateAction,\n  MultichainAssetsRatesControllerStateChange,\n  MultichainAssetsRatesControllerMessenger,\n} from './MultichainAssetsRatesController';\nexport { TokenSearchDiscoveryDataController } from './TokenSearchDiscoveryDataController';\nexport type {\n  TokenDisplayData,\n  TokenSearchDiscoveryDataControllerState,\n  TokenSearchDiscoveryDataControllerGetStateAction,\n  TokenSearchDiscoveryDataControllerEvents,\n  TokenSearchDiscoveryDataControllerStateChangeEvent,\n  TokenSearchDiscoveryDataControllerActions,\n  TokenSearchDiscoveryDataControllerMessenger,\n} from './TokenSearchDiscoveryDataController';\n"]}
+\ No newline at end of file
++{"version":3,"file":"index.mjs","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AASA,OAAO,EAAE,wBAAwB,EAAE,uCAAmC;AAuBtE,OAAO,EACL,uCAAuC,EACvC,wBAAwB,EACzB,uCAAmC;AACpC,6CAAyC;AAYzC,OAAO,EAAE,4BAA4B,EAAE,aAAa,EAAE,4BAAwB;AAwB9E,OAAO,EAAE,sBAAsB,EAAE,qCAAiC;AASlE,OAAO,EAAE,uBAAuB,EAAE,sCAAkC;AAQpE,OAAO,EAAE,wBAAwB,EAAE,uCAAmC;AAWtE,OAAO,EAAE,mBAAmB,EAAE,kCAA8B;AAa5D,OAAO,EACL,mCAAmC,EACnC,oBAAoB,EACrB,mCAA+B;AAUhC,OAAO,EAAE,gBAAgB,EAAE,+BAA2B;AACtD,OAAO,EACL,mCAAmC,EACnC,sBAAsB,EACtB,mBAAmB,EACnB,+BAA+B,EAC/B,aAAa,EACd,yBAAqB;AACtB,OAAO,EACL,0BAA0B,EAC1B,mBAAmB,EACnB,qBAAqB,EACtB,yCAA+B;AAChC,OAAO,EAAE,eAAe,EAAE,cAAc,EAAE,oCAA0B;AAWpE,OAAO,EAAE,4BAA4B,EAAE,iDAAuC;AAU9E,OAAO,EACL,0BAA0B,EAC1B,yCAAyC,EAC1C,+CAAqC;AAWtC,OAAO,EACL,+BAA+B,EAC/B,8CAA8C,EAC/C,oDAA0C;AAU3C,OAAO,EAAE,kCAAkC,EAAE,uDAA6C;AAU1F,OAAO,EAAE,uBAAuB,EAAE,8DAA0D","sourcesContent":["export type {\n  AccountInformation,\n  AccountTrackerControllerMessenger,\n  AccountTrackerControllerState,\n  AccountTrackerControllerActions,\n  AccountTrackerControllerGetStateAction,\n  AccountTrackerControllerStateChangeEvent,\n  AccountTrackerControllerEvents,\n} from './AccountTrackerController';\nexport { AccountTrackerController } from './AccountTrackerController';\nexport type {\n  AssetsContractControllerActions,\n  AssetsContractControllerEvents,\n  AssetsContractControllerGetERC20StandardAction,\n  AssetsContractControllerGetERC721StandardAction,\n  AssetsContractControllerGetERC1155StandardAction,\n  AssetsContractControllerGetERC20BalanceOfAction,\n  AssetsContractControllerGetERC20TokenDecimalsAction,\n  AssetsContractControllerGetERC20TokenNameAction,\n  AssetsContractControllerGetERC721NftTokenIdAction,\n  AssetsContractControllerGetERC721TokenURIAction,\n  AssetsContractControllerGetERC721AssetNameAction,\n  AssetsContractControllerGetERC721AssetSymbolAction,\n  AssetsContractControllerGetERC721OwnerOfAction,\n  AssetsContractControllerGetERC1155TokenURIAction,\n  AssetsContractControllerGetERC1155BalanceOfAction,\n  AssetsContractControllerTransferSingleERC1155Action,\n  AssetsContractControllerGetTokenStandardAndDetailsAction,\n  AssetsContractControllerGetBalancesInSingleCallAction,\n  AssetsContractControllerMessenger,\n  BalanceMap,\n} from './AssetsContractController';\nexport {\n  SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID,\n  AssetsContractController,\n} from './AssetsContractController';\nexport * from './CurrencyRateController';\nexport type {\n  NftControllerState,\n  NftControllerMessenger,\n  NftControllerActions,\n  NftControllerGetStateAction,\n  NftControllerEvents,\n  NftControllerStateChangeEvent,\n  Nft,\n  NftContract,\n  NftMetadata,\n} from './NftController';\nexport { getDefaultNftControllerState, NftController } from './NftController';\nexport type {\n  NftDetectionControllerMessenger,\n  ApiNft,\n  ApiNftContract,\n  ApiNftLastSale,\n  ApiNftCreator,\n  ReservoirResponse,\n  TokensResponse,\n  BlockaidResultType,\n  Blockaid,\n  Market,\n  TokenResponse,\n  TopBid,\n  LastSale,\n  FeeBreakdown,\n  Attributes,\n  Collection,\n  Royalties,\n  Ownership,\n  FloorAsk,\n  Price,\n  Metadata,\n} from './NftDetectionController';\nexport { NftDetectionController } from './NftDetectionController';\nexport type {\n  TokenBalancesControllerMessenger,\n  TokenBalancesControllerActions,\n  TokenBalancesControllerGetStateAction,\n  TokenBalancesControllerEvents,\n  TokenBalancesControllerStateChangeEvent,\n  TokenBalancesControllerState,\n} from './TokenBalancesController';\nexport { TokenBalancesController } from './TokenBalancesController';\nexport type {\n  TokenDetectionControllerMessenger,\n  TokenDetectionControllerActions,\n  TokenDetectionControllerGetStateAction,\n  TokenDetectionControllerEvents,\n  TokenDetectionControllerStateChangeEvent,\n} from './TokenDetectionController';\nexport { TokenDetectionController } from './TokenDetectionController';\nexport type {\n  TokenListState,\n  TokenListToken,\n  TokenListMap,\n  TokenListStateChange,\n  TokenListControllerEvents,\n  GetTokenListState,\n  TokenListControllerActions,\n  TokenListControllerMessenger,\n} from './TokenListController';\nexport { TokenListController } from './TokenListController';\nexport type {\n  ContractExchangeRates,\n  ContractMarketData,\n  Token,\n  TokenRatesControllerActions,\n  TokenRatesControllerEvents,\n  TokenRatesControllerGetStateAction,\n  TokenRatesControllerMessenger,\n  TokenRatesControllerState,\n  TokenRatesControllerStateChangeEvent,\n  MarketDataDetails,\n} from './TokenRatesController';\nexport {\n  getDefaultTokenRatesControllerState,\n  TokenRatesController,\n} from './TokenRatesController';\nexport type {\n  TokensControllerState,\n  TokensControllerActions,\n  TokensControllerGetStateAction,\n  TokensControllerAddDetectedTokensAction,\n  TokensControllerEvents,\n  TokensControllerStateChangeEvent,\n  TokensControllerMessenger,\n} from './TokensController';\nexport { TokensController } from './TokensController';\nexport {\n  isTokenDetectionSupportedForNetwork,\n  formatIconUrlWithProxy,\n  getFormattedIpfsUrl,\n  fetchTokenContractExchangeRates,\n  getKeyByValue,\n} from './assetsUtil';\nexport {\n  CodefiTokenPricesServiceV2,\n  SUPPORTED_CHAIN_IDS,\n  getNativeTokenAddress,\n} from './token-prices-service';\nexport { RatesController, Cryptocurrency } from './RatesController';\nexport type {\n  RatesControllerState,\n  RatesControllerEvents,\n  RatesControllerActions,\n  RatesControllerMessenger,\n  RatesControllerGetStateAction,\n  RatesControllerStateChangeEvent,\n  RatesControllerPollingStartedEvent,\n  RatesControllerPollingStoppedEvent,\n} from './RatesController';\nexport { MultichainBalancesController } from './MultichainBalancesController';\nexport type {\n  MultichainBalancesControllerState,\n  MultichainBalancesControllerGetStateAction,\n  MultichainBalancesControllerStateChange,\n  MultichainBalancesControllerActions,\n  MultichainBalancesControllerEvents,\n  MultichainBalancesControllerMessenger,\n} from './MultichainBalancesController';\n\nexport {\n  MultichainAssetsController,\n  getDefaultMultichainAssetsControllerState,\n} from './MultichainAssetsController';\n\nexport type {\n  MultichainAssetsControllerState,\n  MultichainAssetsControllerGetStateAction,\n  MultichainAssetsControllerStateChangeEvent,\n  MultichainAssetsControllerActions,\n  MultichainAssetsControllerEvents,\n  MultichainAssetsControllerMessenger,\n} from './MultichainAssetsController';\n\nexport {\n  MultichainAssetsRatesController,\n  getDefaultMultichainAssetsRatesControllerState,\n} from './MultichainAssetsRatesController';\n\nexport type {\n  MultichainAssetsRatesControllerState,\n  MultichainAssetsRatesControllerActions,\n  MultichainAssetsRatesControllerEvents,\n  MultichainAssetsRatesControllerGetStateAction,\n  MultichainAssetsRatesControllerStateChange,\n  MultichainAssetsRatesControllerMessenger,\n} from './MultichainAssetsRatesController';\nexport { TokenSearchDiscoveryDataController } from './TokenSearchDiscoveryDataController';\nexport type {\n  TokenDisplayData,\n  TokenSearchDiscoveryDataControllerState,\n  TokenSearchDiscoveryDataControllerGetStateAction,\n  TokenSearchDiscoveryDataControllerEvents,\n  TokenSearchDiscoveryDataControllerStateChangeEvent,\n  TokenSearchDiscoveryDataControllerActions,\n  TokenSearchDiscoveryDataControllerMessenger,\n} from './TokenSearchDiscoveryDataController';\nexport { DeFiPositionsController } from './DeFiPositionsController/DeFiPositionsController';\nexport type {\n  DeFiPositionsControllerState,\n  DeFiPositionsControllerAllowedActions,\n  DeFiPositionsControllerAllowedEvents,\n  DeFiPositionsControllerActions,\n  DeFiPositionsControllerEvents,\n  DeFiPositionsControllerGetStateAction,\n  DeFiPositionsControllerStateChangeEvent,\n  DeFiPositionsControllerMessenger,\n} from './DeFiPositionsController/DeFiPositionsController';\nexport type { GroupedDeFiPositions } from './DeFiPositionsController/group-defi-positions';\n"]}
+\ No newline at end of file
+diff --git a/package.json b/package.json
+index 6a5b0a1558faf77e3ba272a058088ed1a0b898d6..c80d4b8655c4d401003af031198ade0023d3dd81 100644
+--- a/package.json
++++ b/package.json
+@@ -81,7 +81,7 @@
+     "@metamask/approval-controller": "^7.1.3",
+     "@metamask/auto-changelog": "^3.4.4",
+     "@metamask/ethjs-provider-http": "^0.3.0",
+-    "@metamask/keyring-controller": "^21.0.1",
++    "@metamask/keyring-controller": "^21.0.2",
+     "@metamask/keyring-internal-api": "^6.0.1",
+     "@metamask/keyring-snap-client": "^4.1.0",
+     "@metamask/network-controller": "^23.2.0",
+@@ -90,6 +90,7 @@
+     "@metamask/providers": "^18.1.1",
+     "@metamask/snaps-controllers": "^9.19.0",
+     "@metamask/snaps-sdk": "^6.17.1",
++    "@metamask/transaction-controller": "^54.0.0",
+     "@types/jest": "^27.4.1",
+     "@types/lodash": "^4.14.191",
+     "@types/node": "^16.18.54",
+@@ -113,6 +114,7 @@
+     "@metamask/preferences-controller": "^17.0.0",
+     "@metamask/providers": "^18.1.0",
+     "@metamask/snaps-controllers": "^9.19.0",
++    "@metamask/transaction-controller": "^54.0.0",
+     "webextension-polyfill": "^0.10.0 || ^0.11.0 || ^0.12.0"
+   },
+   "engines": {

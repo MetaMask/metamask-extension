@@ -2053,7 +2053,6 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
-
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
@@ -2078,7 +2077,6 @@ export default class MetamaskController extends EventEmitter {
       NftController: this.nftController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
-      DeFiPositionsController: this.deFiPositionsController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2096,6 +2094,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      DeFiPositionsController: this.deFiPositionsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -2105,7 +2104,6 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-
         ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
@@ -2154,13 +2152,13 @@ export default class MetamaskController extends EventEmitter {
         UserOperationController: this.userOperationController,
         // Notification Controllers
         AuthenticationController: this.authenticationController,
-        DeFiPositionsController: this.deFiPositionsController,
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
         QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
+        DeFiPositionsController: this.deFiPositionsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
