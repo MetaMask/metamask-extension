@@ -1,0 +1,191 @@
+Commit Message,Author,PR Link,Team,Change Type
+chore(runway): cherry-pick chore: cp-12.16.0 Add default platform for suggested key (#31842),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31842,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: cp-12.16.0 update Keystone keyring package to v0.15.2 (#31773),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31773,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: cp-12.16.0 include networkClientId in stx submitSignedTransactions call (#31728),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31728,team-runway-bot,,Ops
+chore(runway): cherry-pick feat: cp-12.16.0 remove OneKey device from hardware selection page (#31703),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31703,team-runway-bot,,Added
+chore(runway): cherry-pick fix: Revert "feat(14507): improve error message for failed txn in activity… (#31717),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31717,team-runway-bot,,Added
+chore(runway): cherry-pick bump "@metamask/smart-transactions-controller": "^16.3.1" (#31710),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31710,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: cp-12.16.0 add gasless metrics (#31600),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31600,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: cp-12.16.0 fix send trx send title (#31571),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31571,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: cp-12.16.0 show solana fiat values (#31480),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31480,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: 31266 qr device sign transaction issue (#31445),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31445,team-runway-bot,,Ops
+chore(runway): cherry-pick fix: cp-12.16.0 Follow up on the publishBatch hook (#31409),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31409,team-runway-bot,,Ops
+chore(runway): cherry-pick feat: Implement the publishBatch hook for smart transactions (#31371),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/31371,team-runway-bot,,Added
+fix: Display "🦊 Smart contract" in "interacting with" row for batch transaction confirmations (#31507),Vinicius Stevam,https://github.com/MetaMask/metamask-extension/pull/31507,team-confirmations,,Fixed
+feat: support gasless transactions via EIP-7702 (#31593),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31593,team-confirmations,,Added
+feat: Add splash page for smart account upgrade (#31765),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31765,team-confirmations,,Added
+feat: add setting to dismiss prompt to enable smart contract (#31609),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31609,team-confirmations,,Added
+fix: improvements in page to revert smart account to EOA account (#31605),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31605,team-confirmations,,Fixed
+fix: Update blockaid friction modal copy (#31475),Vinicius Stevam,https://github.com/MetaMask/metamask-extension/pull/31475,team-confirmations,,Fixed
+chore: Add e2e for network add / switch scenario when there are pending confirmations (#30956),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/30956,team-confirmations,,Changed
+fix: switch-ethereun-chain not passing rejectApprovalRequestsForOrigin hook correctly (#31672),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31672,team-confirmations,,Fixed
+feat: cp-12.16.0 require network client ID when adding transactions #31456 (#31626),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31626,team-confirmations,,Added
+feat: require network client ID when adding transactions (#31456),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31456,team-confirmations,,Added
+feat: escape / sanitize signTypedData update  (#31377),digiwand,https://github.com/MetaMask/metamask-extension/pull/31377,team-confirmations,,Added
+feat: fetch user balance for transaction's network (#31441),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31441,team-confirmations,,Added
+feat: cp-12.16.0 gas fee token toast (#31338) (#31596),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31596,team-confirmations,,Added
+fix: cp-12.16.0 add gasless metrics (#31560),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31560,team-confirmations,,Fixed
+fix: cp-12.16.0 select first gas fee token automatically (#31508) (#31594),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31594,team-confirmations,,Fixed
+fix: cp-12.16.0 hide balance alert if selected gas fee token (#31497) (#31565),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31565,team-confirmations,,Fixed
+fix: For batch transactions sum total of gas needed for all transactions in the batched should be check to show insufficient funds error (#31555),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31555,team-confirmations,,Changed
+feat: for batch transaction simulation section approve rows should be displayed at the top (#31511),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31511,team-confirmations,,Added
+fix: unscrollable Remove Snap modal dialog (#31413),digiwand,https://github.com/MetaMask/metamask-extension/pull/31413,team-confirmations,,Fixed
+fix: should not show NonContractAddressAlert for auth request (#31503),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31503,team-confirmations,,Fixed
+chore: remove preference to enable incoming transaction polling for networks (#31269),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31269,team-confirmations,,Changed
+fix: select first gas fee token automatically (#31508),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31508,team-confirmations,,Fixed
+fix: hide balance alert if selected gas fee token (#31497),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31497,team-confirmations,,Fixed
+fix: Fix `useTransactionGasFeeEstimate` to calculate gas estimate properly (#31469),OGPoyraz,https://github.com/MetaMask/metamask-extension/pull/31469,team-confirmations,,Fixed
+fix: Add `enableTxParamsGasFeeUpdates` to `true` in `TransactionController` config (#31476),OGPoyraz,https://github.com/MetaMask/metamask-extension/pull/31476,team-confirmations,,Fixed
+chore: Bump transaction controller version (#31440),Pedro Figueiredo,https://github.com/MetaMask/metamask-extension/pull/31440,team-confirmations,,Changed
+fix: simulation of type-4 transactions (#31335),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31335,team-confirmations,,Fixed
+chore: Updating @metamask/user-operation-controller to version 31.0.0 (#31242),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31242,team-confirmations,,Changed
+fix: cp-12.15.0 support link in EIP-5792 cancel request modal. (#31386),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/31386,team-confirmations,,Fixed
+fix: missing non-evm account modal bottom border-radius (#31374),digiwand,https://github.com/MetaMask/metamask-extension/pull/31374,team-confirmations,,Fixed
+fix: Confirmation responsiveness inconsistencies (redesign Snaps multichain permissions-connect confirmations-page) (#31058),digiwand,https://github.com/MetaMask/metamask-extension/pull/31058,team-confirmations,,Changed
+feat: gas fee token toast (#31338),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/31338,team-confirmations,,Added
+chore: cp-12.16.0 Add default platform for suggested key (#31812),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/31812,team-wallet-framework,,Changed
+fix: cp-12.15.2 Allow `verifyingContract` to be omitted from EIP-712 signatures (#31613),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/31613,team-wallet-framework,,Fixed
+fix: cp-12.15.0 Prevent fullscreen UI from opening every startup (#31332),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/31332,team-wallet-framework,,Fixed
+fix: #30115: Hide import key error (#31129),David Walsh,https://github.com/MetaMask/metamask-extension/pull/31129,team-wallet-ux,,Fixed
+fix: Prevent double filtering of tokens (#31742),David Walsh,https://github.com/MetaMask/metamask-extension/pull/31742,team-wallet-ux,,Fixed
+fix: Update routes callbacks per react-perf's warnings (#31019),David Walsh,https://github.com/MetaMask/metamask-extension/pull/31019,team-wallet-ux,,Fixed
+fix(swap/bridge): move to activity tab before transaction (#31505),Alejandro Garcia Anglada,https://github.com/MetaMask/metamask-extension/pull/31505,team-solana,,Fixed
+chore: sol-267 remove pill for snap accounts (#31716),António Regadas,https://github.com/MetaMask/metamask-extension/pull/31716,team-solana,,Changed
+fix: solana modal auto focus fix (#31713),António Regadas,https://github.com/MetaMask/metamask-extension/pull/31713,team-solana,,Fixed
+feat: Sol 208 extension asset details UI (#31407),Xavier Brochard,https://github.com/MetaMask/metamask-extension/pull/31407,team-solana,,Added
+fix: multichain swap transaction to show from amount (#31592),Alejandro Garcia Anglada,https://github.com/MetaMask/metamask-extension/pull/31592,team-solana,,Fixed
+chore: default account name visibility/width (#31202),António Regadas,https://github.com/MetaMask/metamask-extension/pull/31202,team-solana,,Changed
+test: fix flaky speed up and cancel transaction tests (#31561),Priya,https://github.com/MetaMask/metamask-extension/pull/31561,team-qa,,Changed
+test: add spec `signs message with verifyingContract field missing` (#31630),seaona,https://github.com/MetaMask/metamask-extension/pull/31630,team-qa,,Changed
+chore: add logs and a few mock missed (#31698),Ramon AC,https://github.com/MetaMask/metamask-extension/pull/31698,team-qa,,Changed
+test: fix failing ppom e2e (#31645),Priya,https://github.com/MetaMask/metamask-extension/pull/31645,team-qa,,Changed
+fix: flaky test Multichain API Call wallet_createSession (#31603),seaona,https://github.com/MetaMask/metamask-extension/pull/31603,team-qa,,Changed
+fix: flaky test `Request Queueing chainId proxy sync should preserve per dapp network selections after connecting and switching without refresh calls` (#31599),seaona,https://github.com/MetaMask/metamask-extension/pull/31599,team-qa,,Changed
+fix: flaky test `MetaMask onboarding should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on` (#31521),seaona,https://github.com/MetaMask/metamask-extension/pull/31521,team-qa,,Changed
+test: Migrate dapp interaction e2e tests to Typescript and Page object modal (#31473),chloeYue,https://github.com/MetaMask/metamask-extension/pull/31473,team-qa,,Changed
+test: eip7702 setup and upgrade+batch simple spec (#31234),seaona,https://github.com/MetaMask/metamask-extension/pull/31234,team-qa,,Changed
+test: removing some entries from live request allowlist by adding missing mocks (#31504),seaona,https://github.com/MetaMask/metamask-extension/pull/31504,team-qa,,Changed
+test: migrate account permission e2e tests to Typescript and Page object modal  (#31402),chloeYue,https://github.com/MetaMask/metamask-extension/pull/31402,team-qa,,Changed
+test: Add E2E coverage for transactions insights on more types of transactions (#31078),Harika,https://github.com/MetaMask/metamask-extension/pull/31078,team-qa,,Changed
+fix: codeowners file name `.yarnrc.yml` (#31487),seaona,https://github.com/MetaMask/metamask-extension/pull/31487,team-qa,,Fixed
+test: rename more ganache old references (#31470),seaona,https://github.com/MetaMask/metamask-extension/pull/31470,team-qa,,Changed
+chore: cherry pick audit solana v16 (#31472),seaona,https://github.com/MetaMask/metamask-extension/pull/31472,team-qa,,Ops
+fix: `test-e2e-chrome-vault-decryption` job (#31425),seaona,https://github.com/MetaMask/metamask-extension/pull/31425,team-qa,,Changed
+chore: temporarily ignore `@solana/web3.js (deprecation)` (#31467),seaona,https://github.com/MetaMask/metamask-extension/pull/31467,team-qa,,Changed
+test: migrate NFT tests to Typescript and Page object modal (#31396),chloeYue,https://github.com/MetaMask/metamask-extension/pull/31396,team-qa,,Changed
+test: add mock to fix privacy test flakiness (#31429),chloeYue,https://github.com/MetaMask/metamask-extension/pull/31429,team-qa,,Changed
+test: MMQA-224 add test eth to weth (#31278),Ramon AC,https://github.com/MetaMask/metamask-extension/pull/31278,team-qa,,Changed
+test: rename double and triple ganache references (#31385),seaona,https://github.com/MetaMask/metamask-extension/pull/31385,team-qa,,Changed
+fix: flaky test `Settings - general tab validate "मानक हिन्दी" language on tooltips` (#31384),seaona,https://github.com/MetaMask/metamask-extension/pull/31384,team-qa,,Changed
+fix: flaky test `Swaps - notifications tests notifications for slippage` (#31383),seaona,https://github.com/MetaMask/metamask-extension/pull/31383,team-qa,,Changed
+fix: flaky test `Switching between account from different networks Create a Solana account and switch to another network` (#31382),seaona,https://github.com/MetaMask/metamask-extension/pull/31382,team-qa,,Changed
+fix: cp-12.17.0 upgrade @metamask/eth-ledger-bridge-keyring to fix the ledger signTypedDataV4 with salt (#31313),Xiaoming Wang,https://github.com/MetaMask/metamask-extension/pull/31313,team-hardware-wallets,,Fixed
+fix: update Keystone keyring package to v0.15.2 (#31690),Xiaoming Wang,https://github.com/MetaMask/metamask-extension/pull/31690,team-hardware-wallets,,Fixed
+feat: cp-12.16.0 remove OneKey device from hardware selection page (#31549),Sébastien Van Eyck,https://github.com/MetaMask/metamask-extension/pull/31549,team-hardware-wallets,,Added
+fix: 31266 qr device sign transaction issue (#31366),Xiaoming Wang,https://github.com/MetaMask/metamask-extension/pull/31366,team-hardware-wallets,,Fixed
+chore: update solana snap to 1.18.1 (#31819),Shane T,https://github.com/MetaMask/metamask-extension/pull/31819,team-identity,,Changed
+feat(institutional-snap-controller): Institutional Snap transaction handling  (#30180),Shane T,https://github.com/MetaMask/metamask-extension/pull/30180,team-identity,,Added
+feat(institutional-snap): manage institutional snaps preference and account menu option (#31655),Shane T,https://github.com/MetaMask/metamask-extension/pull/31655,team-identity,,Added
+chore: remove MMI hooks and upgrade transaction controller (#31597),Shane T,https://github.com/MetaMask/metamask-extension/pull/31597,team-identity,,Changed
+feat(institutional-snap): pre-install institutional snap (#31531),Shane T,https://github.com/MetaMask/metamask-extension/pull/31531,team-identity,,Added
+fix: Swap to ethereum string (#31715),Gustavo Silva,https://github.com/MetaMask/metamask-extension/pull/31715,team-swaps-and-bridge,,Fixed
+fix: prevents unintended second redirection to activity tab (#31822),hunty,https://github.com/MetaMask/metamask-extension/pull/31822,team-swaps-and-bridge,,Fixed
+fix: missing solana fiat values in XChain swaps page (#31686),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31686,team-swaps-and-bridge,,Fixed
+feat: adds deeply liquid stablecoin slippage value of 0.5 (#31744),hunty,https://github.com/MetaMask/metamask-extension/pull/31744,team-swaps-and-bridge,,Added
+fix: show account balances for selected XChain swap destination address (#31684),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31684,team-swaps-and-bridge,,Fixed
+fix: remove-duplicated-alerts (#31695),Gustavo Silva,https://github.com/MetaMask/metamask-extension/pull/31695,team-swaps-and-bridge,,Fixed
+fix: cp-12.16.0 HW wallet confirmation warning for bridge (#31679),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31679,team-swaps-and-bridge,,Fixed
+fix: cp-12.16.0 include networkClientId in stx submitSignedTransactions call (#31689),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31689,team-swaps-and-bridge,,Fixed
+fix:`useTransactionGasFeeEstimate` to calculate gas estimate. (#31700),Gustavo Silva,https://github.com/MetaMask/metamask-extension/pull/31700,team-swaps-and-bridge,,Fixed
+feat: (MMS-2106) supports copying block explorer link in bridge page (#31498),hunty,https://github.com/MetaMask/metamask-extension/pull/31498,team-swaps-and-bridge,,Added
+chore: mms-1799 unverified token (#31462),Gustavo Silva,https://github.com/MetaMask/metamask-extension/pull/31462,team-swaps-and-bridge,,Changed
+feat: (MMS-2076) create solana account without redirecting (#31493),hunty,https://github.com/MetaMask/metamask-extension/pull/31493,team-swaps-and-bridge,,Added
+fix: cp-12.16.0 show solana fiat values (#31417),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31417,team-swaps-and-bridge,,Fixed
+fix: cp-12.16.0 include solana swap features and bug fixes (#31408),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31408,team-swaps-and-bridge,,Added
+fix: balance and token icons are unavailable when the bridge page is reopened (#31343),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31343,team-swaps-and-bridge,,Fixed
+feat: fetch asset metadata on search (#31258),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31258,team-swaps-and-bridge,,Added
+refactor: migrate to @metamask/bridge-controller (#31059),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/31059,team-swaps-and-bridge,,Changed
+chore: Bump Snaps packages (#31693),Frederik Bolding,https://github.com/MetaMask/metamask-extension/pull/31693,team-snaps-platform,,Changed
+fix: Add `displayAvatar` prop to Snap `AddressInput` component (#31746),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/31746,team-snaps-platform,,Fixed
+chore: Bump profile-sync-controller (#31771),Frederik Bolding,https://github.com/MetaMask/metamask-extension/pull/31771,team-snaps-platform,,Changed
+fix(snaps): Fix type issue with assets metadata (#31696),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/31696,team-snaps-platform,,Fixed
+fix: Prevent overflow in from Snaps UI header in confirmations (#31595),Frederik Bolding,https://github.com/MetaMask/metamask-extension/pull/31595,team-snaps-platform,,Fixed
+fix(snaps): Update balance display in `AssetSelector` (#31428),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/31428,team-snaps-platform,,Fixed
+chore: move Snap component tests into their own files (#31361),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/31361,team-snaps-platform,,Changed
+revert(snaps): Revert breaking changes from #31058 (#31391),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/31391,team-snaps-platform,,Unknown
+feat: add metamaskbot codeowner announcement (#30668),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/30668,team-snaps-platform,,Added
+chore: Updating Text component "body" font sizes (#31494),George Marshall,https://github.com/MetaMask/metamask-extension/pull/31494,team-design-system,,Changed
+chore: adding mm poly font files and making it available via css (#31535),George Marshall,https://github.com/MetaMask/metamask-extension/pull/31535,team-design-system,,Changed
+feat: updating popup width of extension from 357px to 400px (#31443),George Marshall,https://github.com/MetaMask/metamask-extension/pull/31443,team-design-system,,Added
+chore: updating font family from euclid to centra (#31303),George Marshall,https://github.com/MetaMask/metamask-extension/pull/31303,team-design-system,,Changed
+fix: import srp error handling and style (#31662),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31662,team-accounts,,Fixed
+fix: import srp error handling and style (#31662),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31662,team-accounts,,Fixed
+fix: dark mode styling and spacing (#31661),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31661,team-accounts,,Changed
+fix: workaround for first party snap account name suggestion (#31542),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31542,team-accounts,,Fixed
+fix: cp-12.16.0 activity tab (#31567),Dario Anongba Varela,https://github.com/MetaMask/metamask-extension/pull/31567,team-accounts,,Fixed
+fix: small amounts on activity tab (#31563),Dario Anongba Varela,https://github.com/MetaMask/metamask-extension/pull/31563,team-accounts,,Fixed
+fix: prevent multiple account creations in the same flow. (#31543),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31543,team-accounts,,Fixed
+fix: activity tab aggregated amount (#31514),Dario Anongba Varela,https://github.com/MetaMask/metamask-extension/pull/31514,team-accounts,,Fixed
+refactor: multichain activity tab (#31439),Dario Anongba Varela,https://github.com/MetaMask/metamask-extension/pull/31439,team-accounts,,Changed
+chore: bump accounts dependencies (#31433),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/31433,team-accounts,,Ops
+fix: hide accounts by default in reveal srp flow (#31395),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31395,team-accounts,,Fixed
+fix: srp toast message (#31312),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/31312,team-accounts,,Fixed
+feat: add new way to customize the Snap account creation flow (#31285),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/31285,team-accounts,,Added
+feat: SIP-26 Integration (#29887),jiexi,https://github.com/MetaMask/metamask-extension/pull/29887,team-wallet-api-platform,,Added
+fix: Failed to construct URL: Invalid URL at new URL (#31502),Teng,https://github.com/MetaMask/metamask-extension/pull/31502,Unknown,,Fixed
+fix: update function name in 077-supplement-for-088.ts (#29971),Teng,https://github.com/MetaMask/metamask-extension/pull/29971,Unknown,,Fixed
+chore: add icon image for Plume network (#31712),Amine Harty,https://github.com/MetaMask/metamask-extension/pull/31712,team-network-enablement,,Changed
+chore(runway): cherry-pick fix: cp-12.16.0 carousel fix (#31780),Stanley Yuen,https://github.com/MetaMask/metamask-extension/pull/31780,team-network-enablement,,Ops
+fix: carousel e2e test (#31756),Stanley Yuen,https://github.com/MetaMask/metamask-extension/pull/31756,team-network-enablement,,Changed
+feat: cp-12.15.2 add icon image for `Lens` network (#31638),Amine Harty,https://github.com/MetaMask/metamask-extension/pull/31638,team-network-enablement,,Added
+ci: turn on skip-allow-scripts to save time (#31330),Howard Braham,https://github.com/MetaMask/metamask-extension/pull/31330,team-tiger,,Changed
+chore: update node-pty (#31500),Howard Braham,https://github.com/MetaMask/metamask-extension/pull/31500,team-tiger,,Changed
+feat(solana): update add account from opt in solana (#31387),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/31387,team-mmi,,Added
+fix: add solana modal title (#31660),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/31660,team-mmi,,Fixed
+feat: fix srp list padding (#31697),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/31697,team-mmi,,Added
+fix: wrap long asset names (#31657),Bernardo Garces Chapero,https://github.com/MetaMask/metamask-extension/pull/31657,team-mmi,,Fixed
+feat: Add clear functionality to SRP import error banner (#30673),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/30673,team-mmi,,Added
+feat(solana): update add account from network picker (#31358),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/31358,team-mmi,,Added
+style: Update alignment and hover effect for token cell (#31615),Amanda Yeoh,https://github.com/MetaMask/metamask-extension/pull/31615,team-assets,,Unknown
+fix: update assets contract controller modular controller init (#31681),sahar-fehri,https://github.com/MetaMask/metamask-extension/pull/31681,team-assets,,Fixed
+fix: improve fetching nft details for custom contracts (#31432),sahar-fehri,https://github.com/MetaMask/metamask-extension/pull/31432,team-assets,,Fixed
+style: Update color for no balance and generic avatars (#30891),Amanda Yeoh,https://github.com/MetaMask/metamask-extension/pull/30891,team-assets,,Unknown
+style: Remove shadow from toast (#31618),Amanda Yeoh,https://github.com/MetaMask/metamask-extension/pull/31618,team-assets,,Unknown
+style: Update font weights for balance price and other headers (#31624),Amanda Yeoh,https://github.com/MetaMask/metamask-extension/pull/31624,team-assets,,Unknown
+fix: nftDetectionController with new initialization pattern (#31674),sahar-fehri,https://github.com/MetaMask/metamask-extension/pull/31674,team-assets,,Fixed
+fix: nftController with modular init pattern (#31658),sahar-fehri,https://github.com/MetaMask/metamask-extension/pull/31658,team-assets,,Fixed
+fix: fix NFT balance in send flow (#31239),sahar-fehri,https://github.com/MetaMask/metamask-extension/pull/31239,team-assets,,Fixed
+chore: Update Soneium logo (#31573),Nick Gambino,https://github.com/MetaMask/metamask-extension/pull/31573,team-assets,,Changed
+feat: multichain tokens import (#31201),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/31201,team-assets,,Added
+chore: Add XRPL EVM Testnet network (#31533),Nick Gambino,https://github.com/MetaMask/metamask-extension/pull/31533,team-assets,,Changed
+fix: cp-12.16.0 fix send trx send title (#31559),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/31559,team-assets,,Fixed
+fix: notification details event (#31526),Prithpal Sooriya,https://github.com/MetaMask/metamask-extension/pull/31526,team-assets,,Fixed
+chore: Remove PortfolioView feature flags (#31501),Nick Gambino,https://github.com/MetaMask/metamask-extension/pull/31501,team-assets,,Added
+feat: update native balance by address (#31510),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/31510,team-assets,,Added
+fix: fix button disabled for long tokenId (#31359),sahar-fehri,https://github.com/MetaMask/metamask-extension/pull/31359,team-assets,,Fixed
+fix: handle array image edge cases (#30494),Prithpal Sooriya,https://github.com/MetaMask/metamask-extension/pull/30494,team-assets,,Fixed
+refactor: migrate tokenRates controller to modular controller init (#31254),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/31254,team-assets,,Changed
+style: Update color of values to text-default (#30886),Amanda Yeoh,https://github.com/MetaMask/metamask-extension/pull/30886,team-assets,,Unknown
+fix: token name sort  (#31302),Nick Gambino,https://github.com/MetaMask/metamask-extension/pull/31302,team-assets,,Fixed
+style: Update tabs color hover and animations (#30907),Amanda Yeoh,https://github.com/MetaMask/metamask-extension/pull/30907,team-assets,,Unknown
+chore: cherry-pick fix: HW wallet confirmation warning for bridge into v12.16.0 (#31740),Derek Brans,https://github.com/MetaMask/metamask-extension/pull/31740,team-extension-platform,,Ops
+chore: master sync (after v12.15.2) (#31720),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/31720,team-extension-platform,,Changed
+yarn lint:changelog (#31722),Derek Brans,https://github.com/MetaMask/metamask-extension/pull/31722,team-extension-platform,,Unknown
+fix: Revert "feat(14507): improve error message for failed txn in activity… (#31137),Derek Brans,https://github.com/MetaMask/metamask-extension/pull/31137,team-extension-platform,,Added
+fix: CI for external contributions (#31566),Norbert Elter,https://github.com/MetaMask/metamask-extension/pull/31566,team-extension-platform,,Fixed
+test: ensure `foundryup` works when bin path contains a space character (#31577),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/31577,team-extension-platform,,Changed
+fix: sanitizeTestTitle (#31574),Norbert Elter,https://github.com/MetaMask/metamask-extension/pull/31574,team-extension-platform,,Fixed
+chore: Sync `main` with `master` `v12.15.0` -> `v12.15.1` (#31581),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/31581,team-extension-platform,,Changed
+feat: add runway api (#31524),Norbert Elter,https://github.com/MetaMask/metamask-extension/pull/31524,team-extension-platform,,Added
+feat: webpack chrome e2e on gha (#31363),Norbert Elter,https://github.com/MetaMask/metamask-extension/pull/31363,team-extension-platform,,Added
+chore: sync `master` with `main` `v12.14.2` -> `v12.15.0` (#31495),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/31495,team-extension-platform,,Changed
+fix: should not auto-close notification window if loaded in a tab (#30970),Derek Brans,https://github.com/MetaMask/metamask-extension/pull/30970,team-extension-platform,,Fixed
+fix: cp-12.15.0 remove sentry cdn url from sentry script (#31360),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/31360,team-extension-platform,,Fixed
+test: fix mocha vs jest type conflicts in test files (#31049),Derek Brans,https://github.com/MetaMask/metamask-extension/pull/31049,team-extension-platform,,Changed
+feat(remote-mode): add feature slide (#31463),Luis Taniça,https://github.com/MetaMask/metamask-extension/pull/31463,team-vault,,Added
+chore(remote-mode): add getIsRemoteModeEnabled selector (#31334),Luis Taniça,https://github.com/MetaMask/metamask-extension/pull/31334,team-vault,,Changed
+fix: cp-12.16.0 bump "@metamask/smart-transactions-controller": "^16.3.1" (#31668),Daniel,https://github.com/MetaMask/metamask-extension/pull/31668,team-transactions,,Ops
+fix: cp-12.16.0 Follow up on the publishBatch hook (#31401),Daniel,https://github.com/MetaMask/metamask-extension/pull/31401,team-transactions,,Fixed
+feat: Implement the publishBatch hook for smart transactions (#31267),Daniel,https://github.com/MetaMask/metamask-extension/pull/31267,team-transactions,,Added
+New Crowdin translations by Github Action (#30815),MetaMask Bot,https://github.com/MetaMask/metamask-extension/pull/30815,team-bot,,Unknown
+chore: add workflow_dispatch to security-code-scanner (#30620),MetaMask Bot,https://github.com/MetaMask/metamask-extension/pull/30620,team-bot,,Changed
