@@ -1,10 +1,10 @@
 import { BridgeClientId, type Quote } from '@metamask/bridge-controller';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
   StatusRequestWithSrcTxHash,
   StatusRequestDto,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { validateResponse, validators } from './validators';
 import { BRIDGE_STATUS_BASE_URL } from './constants';
 

@@ -5029,7 +5029,6 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-network-controller": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
     "@ts-bridge/cli": "npm:^0.6.1"
     bignumber.js: "npm:^9.1.2"
@@ -5040,6 +5039,24 @@ __metadata:
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
     reselect: ^5.1.1
+  languageName: node
+  linkType: soft
+
+"@metamask/bridge-status-controller@portal:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/bridge-status-controller@portal:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/bridge-controller": "npm:^13.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.2.0"
+  peerDependencies:
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/snaps-controllers": ^9.19.0
+    "@metamask/transaction-controller": ^54.0.0
   languageName: node
   linkType: soft
 
@@ -27258,6 +27275,7 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/bridge-controller": "npm:*"
+    "@metamask/bridge-status-controller": "npm:^12.0.1"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"

@@ -1,11 +1,11 @@
+import { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
-import { BridgeStatusState } from '../../../../shared/types/bridge-status';
 
 export const REFRESH_INTERVAL_MS = 10 * 1000;
 
 export const BRIDGE_STATUS_CONTROLLER_NAME = 'BridgeStatusController';
 
-export const DEFAULT_BRIDGE_STATUS_STATE: BridgeStatusState = {
+export const DEFAULT_BRIDGE_STATUS_STATE: BridgeStatusControllerState = {
   txHistory: {},
 };
 

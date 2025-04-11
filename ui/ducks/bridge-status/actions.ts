@@ -1,7 +1,8 @@
+import { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   BridgeStatusAction,
   StartPollingForBridgeTxStatusArgsSerialized,
-} from '../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
@@ -16,6 +17,13 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
   };
 };
 
+/**
+ * Start polling for a bridge transaction status
+ *
+ * @param startPollingForBridgeTxStatusArgs
+ * @returns
+ * @deprecated Use `submitBridgeTx` instead
+ */
 export const startPollingForBridgeTxStatus = (
   startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgsSerialized,
 ) => {
@@ -26,6 +34,23 @@ export const startPollingForBridgeTxStatus = (
       >(BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS, [
         startPollingForBridgeTxStatusArgs,
       ]),
+    );
+  };
+};
+
+/**
+ * Submit a solana bridge or swap transaction using the bridge status controller
+ *
+ * @param quote
+ * @returns
+ */
+export const submitBridgeTx = (quote: QuoteResponse & QuoteMetadata) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    return dispatch(
+      callBridgeStatusControllerMethod<[QuoteResponse & QuoteMetadata]>(
+        BridgeStatusAction.SUBMIT_TX,
+        [quote],
+      ),
     );
   };
 };

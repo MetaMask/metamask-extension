@@ -134,6 +134,7 @@ export default function useHandleTx() {
   const unapprovedConfirmations = useSelector(
     getMemoizedUnapprovedConfirmations,
   );
+  // TODO keep this redirect
   // Redirect to the confirmation page if an unapproved confirmation exists
   useEffect(() => {
     const templatedSnapApproval = unapprovedTemplatedConfirmations.find(

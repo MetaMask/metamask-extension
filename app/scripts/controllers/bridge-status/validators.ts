@@ -1,11 +1,11 @@
-import { truthyString, validateData } from '../../../../shared/lib/swaps-utils';
 import {
   BridgeId,
   DestChainStatus,
   SrcChainStatus,
   Asset,
   StatusTypes,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
+import { truthyString, validateData } from '../../../../shared/lib/swaps-utils';
 import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 type Validator<ExpectedResponse, DataToValidate> = {

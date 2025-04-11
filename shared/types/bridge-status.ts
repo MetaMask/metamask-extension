@@ -178,37 +178,6 @@ export type TokenAmountValuesSerialized = {
   usd: string | null;
 };
 
-export type QuoteMetadataSerialized = {
-  gasFee: TokenAmountValuesSerialized;
-  /**
-   * The total network fee for the bridge transaction
-   * estimatedGasFees + relayerFees
-   */
-  totalNetworkFee: TokenAmountValuesSerialized;
-  /**
-   * The total max network fee for the bridge transaction
-   * maxGasFees + relayerFees
-   */
-  totalMaxNetworkFee: TokenAmountValuesSerialized;
-  toTokenAmount: TokenAmountValuesSerialized;
-  /**
-   * The adjusted return for the bridge transaction
-   * destTokenAmount - totalNetworkFee
-   */
-  adjustedReturn: Omit<TokenAmountValuesSerialized, 'amount'>;
-  /**
-   * The actual amount sent by user in non-atomic decimal form
-   * srcTokenAmount + metabridgeFee
-   */
-  sentAmount: TokenAmountValuesSerialized;
-  swapRate: string; // destTokenAmount / sentAmount
-  /**
-   * The cost of the bridge transaction
-   * sentAmount - adjustedReturn
-   */
-  cost: Omit<TokenAmountValuesSerialized, 'amount'>;
-};
-
 export type StartPollingForBridgeTxStatusArgs = {
   bridgeTxMeta: TransactionMeta;
   statusRequest: StatusRequest;
@@ -228,7 +197,7 @@ export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
   StartPollingForBridgeTxStatusArgs,
   'quoteResponse'
 > & {
-  quoteResponse: QuoteResponse & QuoteMetadataSerialized;
+  quoteResponse: QuoteResponse & QuoteMetadata;
 };
 
 export type SourceChainTxMetaId = string;

@@ -158,6 +158,10 @@ import {
   walletRevokeSession,
   walletInvokeMethod,
 } from '@metamask/multichain';
+import BridgeStatusController, {
+  BRIDGE_STATUS_CONTROLLER_NAME,
+  BridgeStatusAction,
+} from '@metamask/bridge-status-controller';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -241,7 +245,6 @@ import { endTrace, trace } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
-import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -349,8 +352,6 @@ import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddle
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
-import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import {
   rejectAllApprovals,
   rejectOriginApprovals,
