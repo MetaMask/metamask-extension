@@ -28,7 +28,13 @@ type Actions =
 
 export type EIP5792Messenger = Messenger<Actions, never>;
 
-const VERSION_SEND_CALLS = '1.0';
+export enum AtomicCapabilityStatus {
+  Supported = 'supported',
+  Ready = 'ready',
+  Unsupported = 'unsupported',
+}
+
+const VERSION_SEND_CALLS = '2.0';
 const VERSION_GET_CALLS_STATUS = '1.0';
 
 export async function processSendCalls(
@@ -138,13 +144,13 @@ export function getCallsStatus(
 }
 
 export async function getCapabilities(
-  address: Hex,
-  chainIds: Hex[] | undefined,
   hooks: {
     getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
   },
+  address: Hex,
+  chainIds: Hex[] | undefined,
 ) {
   const {
     getDisabledUpgradeAccountsByChain,
@@ -159,46 +165,40 @@ export async function getCapabilities(
     chainIds,
   });
 
-  const finalChainIds = chainIds ?? Object.keys(batchSupport);
+  return batchSupport.reduce<GetCapabilitiesResult>(
+    (acc, chainBatchSupport) => {
+      const { chainId } = chainBatchSupport;
+      const chainIdNormalized = chainId.toLowerCase() as Hex;
 
-  return finalChainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
-    const chainIdNormalized = chainId.toLowerCase() as Hex;
+      const { delegationAddress, isSupported, upgradeContractAddress } =
+        chainBatchSupport;
 
-    const chainBatchSupport = batchSupport.find(
-      (batchSupportEntry) =>
-        batchSupportEntry.chainId.toLowerCase() === chainIdNormalized,
-    );
+      const isUpgradeDisabled =
+        getDisabledUpgradeAccountsByChain()?.[chainIdNormalized]?.includes(
+          addressNormalized,
+        ) || getDismissSmartAccountSuggestionEnabled();
 
-    const { delegationAddress, isSupported, upgradeContractAddress } =
-      chainBatchSupport ?? {};
+      const canUpgrade =
+        !isUpgradeDisabled && upgradeContractAddress && !delegationAddress;
 
-    const isUpgradeDisabled =
-      getDisabledUpgradeAccountsByChain()[chainIdNormalized]?.includes(
-        addressNormalized,
-      ) || getDismissSmartAccountSuggestionEnabled();
+      if (!isSupported && !canUpgrade) {
+        return acc;
+      }
 
-    const canUpgrade =
-      !isUpgradeDisabled &&
-      chainBatchSupport &&
-      upgradeContractAddress &&
-      !delegationAddress;
+      const status = isSupported
+        ? AtomicCapabilityStatus.Supported
+        : AtomicCapabilityStatus.Ready;
 
-    let status = 'unsupported';
+      acc[chainId as Hex] = {
+        atomic: {
+          status,
+        },
+      };
 
-    if (isSupported) {
-      status = 'supported';
-    } else if (canUpgrade) {
-      status = 'ready';
-    }
-
-    acc[chainId as Hex] = {
-      atomic: {
-        status,
-      },
-    };
-
-    return acc;
-  }, {});
+      return acc;
+    },
+    {},
+  );
 }
 
 function validateSendCalls(
