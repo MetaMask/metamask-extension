@@ -4,7 +4,7 @@ import { MultichainNetwork } from '../../../selectors/multichain';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
+import { NETWORKS_EXTRA_DATA } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 
 export const getMultichainBlockExplorerUrl = (
@@ -17,18 +17,19 @@ export const getMultichainAccountUrl = (
   address: string,
   network: MultichainNetwork,
 ): string => {
-  const { namespace } = parseCaipChainId(network.chainId);
+  const { chainId } = network;
+  const { namespace } = parseCaipChainId(chainId);
+  const { blockExplorerFormatUrls } = NETWORKS_EXTRA_DATA[chainId];
   if (namespace === KnownCaipNamespace.Eip155) {
     return getAccountLink(
       normalizeSafeAddress(address),
-      network.network.chainId,
-      network.network?.rpcPrefs,
+      chainId,
+      // @ts-expect-error - ignore error
+      blockExplorerFormatUrls.url,
     );
   }
 
   // We're in a non-EVM context, so we assume we can use format URLs instead.
-  const { blockExplorerFormatUrls } =
-    network.network as MultichainProviderConfig;
   if (blockExplorerFormatUrls) {
     return formatBlockExplorerAddressUrl(blockExplorerFormatUrls, address);
   }

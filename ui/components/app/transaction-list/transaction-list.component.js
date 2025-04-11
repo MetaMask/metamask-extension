@@ -42,13 +42,16 @@ import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getMultichainNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedAccountMultichainTransactions,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/multichain';
+import {
+  getIsEvmMultichainNetworkSelected,
+  getSelectedMultichainNetworkConfiguration,
+} from '../../../selectors/multichain/networks';
 
 import {
   Box,
@@ -101,6 +104,7 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { NETWORKS_EXTRA_DATA } from '../../../../shared/constants/multichain/networks';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
@@ -353,8 +357,7 @@ export default function TransactionList({
   ]);
 
   const chainId = useSelector(getCurrentChainId);
-  const account = useSelector(getSelectedInternalAccount);
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+  const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
@@ -497,9 +500,8 @@ export default function TransactionList({
     setSelectedTransaction(transaction);
   }, []);
 
-  const multichainNetwork = useMultichainSelector(
-    getMultichainNetwork,
-    selectedAccount,
+  const multichainNetwork = useSelector(
+    getSelectedMultichainNetworkConfiguration,
   );
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -524,7 +526,7 @@ export default function TransactionList({
               transaction={selectedTransaction}
               onClose={() => toggleShowDetails(null)}
               userAddress={selectedAccount.address}
-              networkConfig={multichainNetwork.network}
+              networkConfig={multichainNetwork}
             />
           ))}
 
@@ -566,7 +568,7 @@ export default function TransactionList({
                         <MultichainTransactionListItem
                           key={`${transaction.id}`}
                           transaction={transaction}
-                          networkConfig={multichainNetwork.network}
+                          networkConfig={multichainNetwork}
                           toggleShowDetails={toggleShowDetails}
                         />
                       );
@@ -728,6 +730,8 @@ const MultichainTransactionListItem = ({
   const t = useI18nContext();
   const { assetInputs, assetOutputs, isRedeposit } =
     useMultichainTransactionDisplay(transaction, networkConfig);
+  const { chainId } = networkConfig;
+  const { networkLogo } = NETWORKS_EXTRA_DATA[chainId];
   let title = capitalize(transaction.type);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
@@ -748,8 +752,8 @@ const MultichainTransactionListItem = ({
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={networkConfig.id}
-                src={networkConfig.rpcPrefs?.imageUrl}
+                name={chainId}
+                src={networkLogo}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }
@@ -797,8 +801,8 @@ const MultichainTransactionListItem = ({
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={networkConfig.id}
-                src={networkConfig.rpcPrefs?.imageUrl}
+                name={chainId}
+                src={networkLogo}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }

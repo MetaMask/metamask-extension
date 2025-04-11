@@ -122,6 +122,11 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
 } as const;
 
+/**
+ * @deprecated MULTICHAIN_PROVIDER_CONFIGS is deprecated and will be removed in the future.
+ * Use the data from @metamask/multichain-network-controller instead or NETWORKS_EXTRA_DATA.
+ * Useful selectors in selectors/multichain/networks.ts
+ */
 export const MULTICHAIN_PROVIDER_CONFIGS: Record<
   CaipChainId,
   MultichainProviderConfig
@@ -236,5 +241,52 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
         MultichainNetworks.SOLANA_TESTNET
       ],
     isAddressCompatible: isSolanaAddress,
+  },
+};
+
+// TODO: Move this to controller as constant
+export const NETWORKS_EXTRA_DATA: Record<
+  CaipChainId,
+  {
+    decimal: number;
+    ticker: string;
+    networkLogo: string;
+    blockExplorerFormatUrls: MultichainBlockExplorerFormatUrls;
+  }
+> = {
+  [BtcScope.Mainnet]: {
+    decimal: 8,
+    ticker: 'BTC',
+    networkLogo: MULTICHAIN_TOKEN_IMAGE_MAP[BtcScope.Mainnet],
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[BtcScope.Mainnet],
+  },
+  [BtcScope.Testnet]: {
+    decimal: 5,
+    ticker: 'BTC',
+    networkLogo: MULTICHAIN_TOKEN_IMAGE_MAP[BtcScope.Testnet],
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[BtcScope.Testnet],
+  },
+  [SolScope.Mainnet]: {
+    decimal: 5,
+    ticker: 'SOL',
+    networkLogo: MULTICHAIN_TOKEN_IMAGE_MAP[SolScope.Mainnet],
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[SolScope.Mainnet],
+  },
+  [SolScope.Testnet]: {
+    decimal: 5,
+    ticker: 'SOL',
+    networkLogo: MULTICHAIN_TOKEN_IMAGE_MAP[SolScope.Testnet],
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[SolScope.Testnet],
+  },
+  [SolScope.Devnet]: {
+    decimal: 5,
+    ticker: 'SOL',
+    networkLogo: MULTICHAIN_TOKEN_IMAGE_MAP[SolScope.Devnet],
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[SolScope.Devnet],
   },
 };
