@@ -65,15 +65,14 @@ const ListItem = ({
 
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
-
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, txParams } = currentConfirmation ?? {};
-  const { from } = txParams;
-
   const { handleRejectUpgrade } = useSmartAccountActions();
 
-  if (!currentConfirmation || acknowledged) {
+  const { chainId, txParams, origin } = currentConfirmation ?? {};
+  const { from } = txParams;
+
+  if (!currentConfirmation || acknowledged || origin === 'metamask') {
     return null;
   }
 
