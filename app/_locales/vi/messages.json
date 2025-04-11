@@ -2723,9 +2723,6 @@
   "ledgerLocked": {
     "message": "Không thể kết nối với thiết bị Ledger. Vui lòng đảm bảo bạn đã mở khóa thiết bị và mở ứng dụng Ethereum."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Không thể kết nối nhiều thiết bị Ledger cùng lúc. Để kết nối thiết bị Ledger mới, trước tiên bạn cần ngắt kết nối thiết bị trước đó."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
   },
