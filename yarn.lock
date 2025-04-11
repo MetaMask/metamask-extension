@@ -5029,9 +5029,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-network-controller": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
-    "@ts-bridge/cli": "npm:^0.6.1"
     bignumber.js: "npm:^9.1.2"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
@@ -10668,30 +10666,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ts-bridge/cli@npm:^0.6.1":
-  version: 0.6.3
-  resolution: "@ts-bridge/cli@npm:0.6.3"
-  dependencies:
-    "@ts-bridge/resolver": "npm:^0.2.0"
-    chalk: "npm:^5.3.0"
-    cjs-module-lexer: "npm:^1.3.1"
-    yargs: "npm:^17.7.2"
-  peerDependencies:
-    typescript: ">=4.8.0"
-  bin:
-    ts-bridge: ./dist/index.js
-    tsbridge: ./dist/index.js
-  checksum: 10/01cba56ff0f097ca0ef15b79cff80a6be07b7f237e7153f63f7a9acf911583d0a410385fa1711d7b14e3a5e95fed63310b6a743700e7ecc0dd3a2d97a0df75b3
-  languageName: node
-  linkType: hard
-
-"@ts-bridge/resolver@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@ts-bridge/resolver@npm:0.2.0"
-  checksum: 10/d4cfd1f47e9648a5f9c893b1b076adabde3a57cbe81ef823bcbbcc77a122fb6f06d99f40ff48198f8dc766bfc4b3b351d4e87cfcf2db64f7e6db924eb82a5db1
-  languageName: node
-  linkType: hard
-
 "@ts-graphviz/adapter@npm:^2.0.6":
   version: 2.0.6
   resolution: "@ts-graphviz/adapter@npm:2.0.6"
@@ -15676,13 +15650,6 @@ __metadata:
   version: 1.3.1
   resolution: "cjs-module-lexer@npm:1.3.1"
   checksum: 10/6629188d5ce74b57e5dce2222db851b5496a8d65b533a05957fb24089a3cec8d769378013c375a954c5a0f7522cde6a36d5a65bfd88f5575cb2de3176046fa8e
-  languageName: node
-  linkType: hard
-
-"cjs-module-lexer@npm:^1.3.1":
-  version: 1.4.3
-  resolution: "cjs-module-lexer@npm:1.4.3"
-  checksum: 10/d2b92f919a2dedbfd61d016964fce8da0035f827182ed6839c97cac56e8a8077cfa6a59388adfe2bc588a19cef9bbe830d683a76a6e93c51f65852062cfe2591
   languageName: node
   linkType: hard
 
