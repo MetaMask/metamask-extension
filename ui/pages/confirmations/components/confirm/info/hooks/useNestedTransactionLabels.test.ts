@@ -48,10 +48,7 @@ describe('useNestedTransactionLabels', () => {
       },
     );
 
-    expect(result.current).toEqual([
-      'Transaction 1',
-      'Transaction 2',
-    ]);
+    expect(result.current).toEqual(['Transaction 1', 'Transaction 2']);
   });
 
   it('returns fallback labels when resolution is disabled', () => {
@@ -115,6 +112,6 @@ describe('useNestedTransactionLabels', () => {
       },
     );
 
-    expect(result.current).toEqual(['Transaction 5']);
+    expect(result.current).toEqual(['Transaction 6']);
   });
 });

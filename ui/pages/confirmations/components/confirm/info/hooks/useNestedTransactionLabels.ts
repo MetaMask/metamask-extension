@@ -1,6 +1,6 @@
 import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { useFourByte } from './useFourByte';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFourByte } from './useFourByte';
 
 export function useNestedTransactionLabels({
   nestedTransactions,

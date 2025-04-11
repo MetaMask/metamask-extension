@@ -6276,12 +6276,12 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
-  "transactionIncludesTypes": {
-    "message": "This transaction includes: $1."
-  },
   "transactionIdLabel": {
     "message": "Transaction ID",
     "description": "Label for the source transaction ID field."
+  },
+  "transactionIncludesTypes": {
+    "message": "This transaction includes: $1."
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"

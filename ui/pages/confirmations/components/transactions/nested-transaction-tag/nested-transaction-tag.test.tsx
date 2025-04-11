@@ -1,11 +1,11 @@
 import React from 'react';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { NestedTransactionTag } from './nested-transaction-tag';
 import configureStore from '../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useNestedTransactionLabels } from '../../confirm/info/hooks/useNestedTransactionLabels';
+import { NestedTransactionTag } from './nested-transaction-tag';
 
 jest.mock('../../confirm/info/hooks/useNestedTransactionLabels', () => ({
   useNestedTransactionLabels: jest.fn(),
