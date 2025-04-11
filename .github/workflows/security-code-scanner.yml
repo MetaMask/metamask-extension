@@ -18,7 +18,7 @@ jobs:
       security-events: write
     steps:
       - name: MetaMask Security Code Scanner
-        uses: MetaMask/Security-Code-Scanner@main
+        uses: MetaMask/action-security-code-scanner@v1
         with:
           repo: ${{ github.repository }}
           paths_ignored: |
