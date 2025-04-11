@@ -674,6 +674,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getRpcServiceOptions: () => ({
+        fetch: globalThis.fetch.bind(globalThis),
+        btoa: globalThis.btoa.bind(globalThis),
+      }),
     });
     this.networkController.initializeProvider();
 
@@ -2051,8 +2055,8 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledAccountUpgradeChains:
-            this.preferencesController.getDisabledAccountUpgradeChains.bind(
+          getDisabledUpgradeAccountsByChain:
+            this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
               this.preferencesController,
             ),
           validateSecurity: (securityAlertId, request, chainId) =>
@@ -3609,10 +3613,9 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      disableAccountUpgradeForChain:
-        preferencesController.disableAccountUpgradeForChain.bind(
-          preferencesController,
-        ),
+      disableAccountUpgrade: preferencesController.disableAccountUpgrade.bind(
+        preferencesController,
+      ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -3766,11 +3769,9 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       generateNewMnemonicAndAddToVault:
         this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
       // txController
@@ -4672,7 +4673,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} mnemonic
    * @returns {object} new account address
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
@@ -4747,7 +4747,6 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Create a new Vault and restore an existent keyring.
@@ -4768,6 +4767,13 @@ export default class MetamaskController extends EventEmitter {
 
       // Clear snap state
       this.snapController.clearState();
+
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.accountOrderController.updateHiddenAccountsList([]);
 
       // clear accounts in AccountTrackerController
       this.accountTrackerController.clearAccounts();
@@ -5356,12 +5362,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSeedPhrase(password, _keyringId) {
     return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(
-        password,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        _keyringId,
-        ///: END:ONLY_INCLUDE_IF
-      ),
+      await this.keyringController.exportSeedPhrase(password, _keyringId),
     );
   }
 

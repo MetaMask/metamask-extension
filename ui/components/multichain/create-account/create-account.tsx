@@ -10,9 +10,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { KeyringTypes } from '@metamask/keyring-controller';
-///: END:ONLY_INCLUDE_IF
 
 import {
   Box,
@@ -27,11 +25,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
 import {
   getMetaMaskAccountsOrdered,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskHdKeyrings,
   getSelectedKeyringByIdOrDefault,
   getHdKeyringIndexByIdOrDefault,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -42,9 +38,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
-///: END:ONLY_INCLUDE_IF
 
 type Props = {
   /**
@@ -70,10 +64,8 @@ type Props = {
   /**
    * Callback to select the SRP
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSrp?: () => void;
   selectedKeyringId?: string;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -89,10 +81,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       {
         getNextAvailableAccountName,
         onCreateAccount,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         onSelectSrp,
         selectedKeyringId,
-        ///: END:ONLY_INCLUDE_IF
         onActionComplete,
         scope,
       }: CreateAccountProps<C>,
@@ -127,7 +117,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         trimmedAccountName || defaultAccountName,
         defaultAccountName,
       );
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       const hdKeyrings: {
         accounts: InternalAccount[];
         type: KeyringTypes;
@@ -140,7 +129,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const selectedHdKeyringIndex = useSelector((state) =>
         getHdKeyringIndexByIdOrDefault(state, selectedKeyringId),
       );
-      ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
@@ -210,21 +198,17 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               }
             }}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            hdKeyrings.length > 1 && onSelectSrp && selectedKeyring ? (
-              <Box marginBottom={3}>
-                <SelectSrp
-                  onClick={onSelectSrp}
-                  srpName={t('secretRecoveryPhrasePlusNumber', [
-                    selectedHdKeyringIndex + 1,
-                  ])}
-                  srpAccounts={selectedKeyring.accounts.length}
-                />
-              </Box>
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
+          {hdKeyrings.length > 1 && onSelectSrp && selectedKeyring ? (
+            <Box marginBottom={3}>
+              <SelectSrp
+                onClick={onSelectSrp}
+                srpName={t('secretRecoveryPhrasePlusNumber', [
+                  selectedHdKeyringIndex + 1,
+                ])}
+                srpAccounts={selectedKeyring.accounts.length}
+              />
+            </Box>
+          ) : null}
           <Box display={Display.Flex} marginTop={1} gap={2}>
             <ButtonSecondary
               data-testid="cancel-add-account-with-name"
