@@ -3,6 +3,8 @@ import {
   EthAccountType,
   SolAccountType,
 } from '@metamask/keyring-api';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -18,6 +20,8 @@ export type AccountOverviewProps = AccountOverviewCommonProps & {
   useExternalServices: boolean;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AccountOverview(props: AccountOverviewProps) {
   const t = useI18nContext();
   const account = useSelector(getSelectedInternalAccount);

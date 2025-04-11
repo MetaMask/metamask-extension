@@ -1,4 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +10,8 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
 import { PickerNetwork } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MetafoxLogo from '../../ui/metafox-logo';
 
 type AppHeaderLockedContentProps = {

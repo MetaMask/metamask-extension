@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -7,6 +9,8 @@ import {
   renderWithProvider,
   waitFor,
 } from '../../../../../test/jest';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import KeyringSnapRemovalResult from './keyring-snap-removal-result-modal';
 
 const mockOnClose = jest.fn();

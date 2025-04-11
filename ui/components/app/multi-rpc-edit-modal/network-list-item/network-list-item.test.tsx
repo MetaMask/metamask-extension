@@ -1,10 +1,14 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { render, screen, fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkListItem from './network-list-item';
 import '@testing-library/jest-dom/extend-expect';
 

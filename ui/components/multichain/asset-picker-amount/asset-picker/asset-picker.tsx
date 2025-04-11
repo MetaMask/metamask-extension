@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -39,6 +41,8 @@ import {
   BadgeWrapper,
   AvatarNetwork,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../ui/tooltip';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
@@ -96,6 +100,8 @@ export type AssetPickerProps = {
 >;
 
 // A component that lets the user pick from a list of assets.
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPicker({
   children,
   header,

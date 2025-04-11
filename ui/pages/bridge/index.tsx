@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
@@ -25,6 +27,8 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import useBridging from '../../hooks/bridge/useBridging';
@@ -33,10 +37,16 @@ import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { getIsBridgeEnabled } from '../../selectors';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 
 const CrossChainSwap = () => {

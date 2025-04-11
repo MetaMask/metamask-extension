@@ -4,6 +4,8 @@ import type {
 import {
   SimulationErrorCode
 } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -16,7 +18,11 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,

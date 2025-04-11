@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -22,7 +24,11 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import { AddressCopyButton } from '../../../../../components/multichain';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Identicon from '../../../../../components/ui/identicon';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
@@ -64,13 +70,21 @@ const HeaderInfo = () => {
   const eventProps = isSignature
     ? {
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
           ?.signatureMethod,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       }
     : {
         location: MetaMetricsEventLocation.Transaction,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: currentConfirmation?.type,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       };
 

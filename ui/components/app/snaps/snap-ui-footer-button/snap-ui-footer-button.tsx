@@ -6,6 +6,8 @@ import {
 import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import classnames from 'classnames';
 import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 

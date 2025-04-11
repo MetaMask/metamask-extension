@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,6 +20,8 @@ import {
   updateRecipientUserInput,
 } from '../../../../../ducks/send';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DomainInput from '../../../../../pages/confirmations/send/send-content/add-recipient/domain-input';
 import { showQrScanner } from '../../../../../store/actions';
 import { Label } from '../../../../component-library';
@@ -80,6 +84,8 @@ export const SendPageRecipientInput = () => {
       category: MetaMetricsEventCategory.Transactions,
       properties: {
         action: 'Edit Screen',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         legacy_event: true,
       },
     });

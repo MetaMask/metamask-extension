@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -34,9 +36,12 @@ import {
   setServiceWorkerKeepAlivePreference,
 } from '../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-restricted-paths, @typescript-eslint/naming-convention
 import ToggleRow from './developer-options-toggle-row-component';
 import { ProfileSyncDevSettings } from './profile-sync';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SentryTest from './sentry-test';
 
 /**

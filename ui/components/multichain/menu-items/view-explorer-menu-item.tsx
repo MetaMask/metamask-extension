@@ -1,5 +1,7 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { parseCaipChainId } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -60,8 +62,12 @@ export const openBlockExplorer = (
     event: MetaMetricsEventName.ExternalLinkClicked,
     category: MetaMetricsEventCategory.Navigation,
     properties: {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       link_type: MetaMetricsEventLinkType.AccountTracker,
       location: metricsLocation,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       url_domain: getURLHostName(addressLink),
     },
   });
@@ -121,6 +127,8 @@ export const ViewExplorerMenuItem = ({
           category: MetaMetricsEventCategory.Accounts,
           properties: {
             location: metricsLocation,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainId,
           },
         });

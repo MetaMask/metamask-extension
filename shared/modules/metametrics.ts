@@ -3,9 +3,17 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionMetricsRequest } from '../types/metametrics';
 
 type SmartTransactionMetricsProperties = {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   is_smart_transaction: boolean;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   gas_included: boolean;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   smart_transaction_timed_out?: boolean;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   smart_transaction_proxied?: boolean;
 };
 
@@ -15,6 +23,8 @@ export const getSmartTransactionMetricsProperties = (
 ) => {
   const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
   const properties = {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     is_smart_transaction: isSmartTransaction,
   } as SmartTransactionMetricsProperties;
   if (!isSmartTransaction) {

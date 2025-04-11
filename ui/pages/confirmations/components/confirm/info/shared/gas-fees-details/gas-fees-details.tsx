@@ -1,5 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Dispatch, SetStateAction } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -14,6 +16,8 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import GasTiming from '../../../../gas-timing/gas-timing.component';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';

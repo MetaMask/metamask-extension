@@ -1,7 +1,13 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import type { AvatarBaseProps } from '../avatar-base';
 import { AvatarBase } from '../avatar-base';
@@ -16,6 +22,8 @@ import {
 } from './avatar-account.types';
 
 export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarAccountSize.Md,

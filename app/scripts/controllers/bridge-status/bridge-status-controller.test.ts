@@ -2,6 +2,8 @@ import { ChainId } from '@metamask/bridge-controller';
 
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BridgeStatusController from './bridge-status-controller';
 import { DEFAULT_BRIDGE_STATUS_STATE } from './constants';
 import {

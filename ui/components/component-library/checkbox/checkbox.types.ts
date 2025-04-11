@@ -72,9 +72,13 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   iconProps?: IconProps<'span'>;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type CheckboxProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, CheckboxStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type CheckboxComponent = <C extends React.ElementType = 'div'>(
   props: CheckboxProps<C>,
 ) => React.ReactElement | null;

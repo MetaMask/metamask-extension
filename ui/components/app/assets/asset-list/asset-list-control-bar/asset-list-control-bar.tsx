@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -49,9 +51,17 @@ import {
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../ui/tooltip';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ImportControl from '../import-control';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkFilter from '../network-filter';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 
 type AssetListControlBarProps = {

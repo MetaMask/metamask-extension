@@ -1,4 +1,6 @@
 import isEqual from 'lodash/isEqual';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
@@ -9,6 +11,8 @@ import {
   Box,
   Text,
 } from '../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -33,6 +37,8 @@ import {
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
@@ -52,14 +58,28 @@ export default function AwaitingSignatures() {
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         needs_two_confirmations: needsTwoConfirmations,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from: fromToken?.symbol ?? '',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to: toToken?.symbol ?? '',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_hardware_wallet: hardwareWalletUsed,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hardware_wallet_type: hardwareWalletType ?? '',
       },
       sensitiveProperties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });

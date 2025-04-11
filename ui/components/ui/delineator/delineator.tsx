@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 
 import {
@@ -17,6 +19,8 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Preloader from '../icon/preloader/preloader-icon.component';
 import type { DelineatorProps, DelineatorType } from './delineator.types';
 import { getIconPropsByType, overrideTextComponentColorByType } from './utils';
@@ -67,6 +71,8 @@ const Header = ({
   return (
     <Box
       className={classnames({
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         delineator__header: true,
         'delineator__header--expanded': isExpanded,
         'delineator__header--loading': isLoading,

@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { Display } from '../../../helpers/constants/design-system';
@@ -12,6 +14,8 @@ import {
 } from './badge-wrapper.types';
 
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,

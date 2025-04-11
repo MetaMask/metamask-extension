@@ -1,8 +1,12 @@
 import { NameType } from '@metamask/name-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Name from '../../../../../../../components/app/name';
 import {
   Box,
@@ -11,6 +15,8 @@ import {
   IconName,
   Text,
 } from '../../../../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -24,6 +30,8 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import { Container } from '../../shared/transaction-data/transaction-data';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';

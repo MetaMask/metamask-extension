@@ -17,6 +17,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 import { IconName } from '../../../../ui/components/component-library/icon';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type MetaMetricsController from '../../controllers/metametrics-controller';
 import { t } from '../../translate';
 // TODO: Remove restricted import
@@ -305,8 +307,14 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         event,
         category: MetaMetricsEventCategory.Accounts,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: MetaMetricsEventAccountType.Snap,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: snapId,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: snapName,
         },
       });
@@ -462,8 +470,14 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         event,
         category: MetaMetricsEventCategory.Accounts,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: MetaMetricsEventAccountType.Snap,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: snapId,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: snapName,
         },
       });

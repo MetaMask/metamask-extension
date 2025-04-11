@@ -1,5 +1,7 @@
 import { isSnapId } from '@metamask/snaps-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -9,6 +11,8 @@ import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirm
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TypedSignInfoV1 from './typed-sign-v1';
 
 jest.mock(

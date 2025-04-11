@@ -3,6 +3,8 @@ import type { ChangeEvent as ReactChangeEvent } from 'react';
 
 import type { COMPONENT_MAPPING } from '.';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type UIComponentParams<T extends JSXElement> = {
   map: Record<string, number>;
   element: T;
@@ -26,6 +28,8 @@ export type UIComponent = {
   key?: string;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type UIComponentFactory<T extends JSXElement> = (
   params: UIComponentParams<T>,
 ) => UIComponent;

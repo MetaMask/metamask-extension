@@ -1,5 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -9,6 +11,8 @@ import {
   AvatarTokenSize,
   Box,
 } from '../../../../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Identicon from '../../../../../../../components/ui/identicon';
 import { BackgroundColor } from '../../../../../../../helpers/constants/design-system';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
@@ -20,6 +24,8 @@ export enum GasFeeTokenIconSize {
   Md = 'md',
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenIcon({
   size = GasFeeTokenIconSize.Md,
   tokenAddress,

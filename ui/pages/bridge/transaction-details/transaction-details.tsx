@@ -2,6 +2,8 @@ import { formatChainIdToHex } from '@metamask/bridge-controller';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
@@ -46,6 +48,8 @@ import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
 import type { MetaMaskReduxState } from '../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import {
   PRIMARY,
@@ -66,10 +70,18 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import { getImageForChainId } from '../../../selectors/multichain';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BridgeExplorerLinks from './bridge-explorer-links';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BridgeStepList from './bridge-step-list';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TransactionDetailRow from './transaction-detail-row';
 
 const getBlockExplorerUrl = (

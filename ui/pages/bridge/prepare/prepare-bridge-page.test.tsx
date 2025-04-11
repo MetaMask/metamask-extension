@@ -2,6 +2,8 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { zeroAddress } from 'ethereumjs-util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 
@@ -10,6 +12,8 @@ import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import configureStore from '../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PrepareBridgePage from './prepare-bridge-page';
 
 describe('PrepareBridgePage', () => {

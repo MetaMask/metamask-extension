@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom/extend-expect';
@@ -10,7 +12,8 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMessage } from '../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getParticipateInMetaMetrics } from '../../selectors';
-// eslint-disable-next-line import/no-restricted-paths
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-restricted-paths, @typescript-eslint/naming-convention
 import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({

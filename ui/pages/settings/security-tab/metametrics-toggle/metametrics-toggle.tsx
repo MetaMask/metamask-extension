@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -6,6 +8,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { Box, Text } from '../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ToggleButton from '../../../../components/ui/toggle-button';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -66,7 +70,11 @@ const MetametricsToggle = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_metrics_opted_in: false,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_marketing_consent: false,
           location: 'Settings',
         },

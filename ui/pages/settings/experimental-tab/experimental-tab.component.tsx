@@ -1,4 +1,8 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { PureComponent } from 'react';
 
 import {
@@ -12,6 +16,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   Box,
 } from '../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

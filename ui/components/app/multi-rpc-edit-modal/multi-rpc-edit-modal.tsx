@@ -1,4 +1,6 @@
 import type { NetworkConfiguration } from '@metamask/network-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -27,8 +29,12 @@ import {
   Box,
   Text,
 } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkListItem from './network-list-item/network-list-item';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();

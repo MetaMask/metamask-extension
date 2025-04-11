@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -11,7 +13,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ToggleButton from '../../ui/toggle-button';
 
 export type NotificationsSettingsBoxProps = {
@@ -24,6 +30,8 @@ export type NotificationsSettingsBoxProps = {
   onToggle: () => void;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsBox({
   children,
   value,

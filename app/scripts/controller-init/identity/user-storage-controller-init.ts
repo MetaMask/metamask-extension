@@ -37,6 +37,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.ProfileSyncing,
             event: MetaMetricsEventName.AccountsSyncAdded,
             properties: {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
             },
           });
@@ -46,6 +48,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.ProfileSyncing,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
             properties: {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
             },
           });
@@ -63,7 +67,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.ProfileSyncing,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
             properties: {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               situation_message: situationMessage,
             },
           });

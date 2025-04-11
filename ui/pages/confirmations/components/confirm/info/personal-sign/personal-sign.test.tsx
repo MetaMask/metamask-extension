@@ -1,5 +1,7 @@
 import { isSnapId } from '@metamask/snaps-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -18,6 +20,8 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import type { SignatureRequestType } from '../../../../types/confirm';
 import * as utils from '../../../../utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PersonalSignInfo from './personal-sign';
 
 jest.mock(

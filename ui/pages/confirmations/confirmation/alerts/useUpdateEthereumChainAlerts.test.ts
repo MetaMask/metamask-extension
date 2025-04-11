@@ -4,6 +4,8 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 

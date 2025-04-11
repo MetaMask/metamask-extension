@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -28,6 +30,8 @@ import { Content, Header, Page } from '../../../../multichain/pages/page';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftFullImage() {
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();

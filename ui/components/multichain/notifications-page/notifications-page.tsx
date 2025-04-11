@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -8,6 +10,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Box } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MetafoxLogo from '../../ui/metafox-logo';
 import { Page } from '../pages/page';
 
@@ -15,6 +19,8 @@ export type NotificationsPageProps = {
   children: React.ReactNode;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsPage({ children }: NotificationsPageProps) {
   const history = useHistory();
 

@@ -1,6 +1,8 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -22,6 +24,8 @@ import {
   IconName,
   IconSize,
 } from '../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -165,7 +169,11 @@ const TokenButtons = ({
       properties: {
         location: 'Token Overview',
         text: 'Buy',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainId,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
       },
     });
@@ -178,9 +186,13 @@ const TokenButtons = ({
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: token.symbol,
           location: MetaMetricsSwapsEventSource.TokenView,
           text: 'Send',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: token.chainId,
         },
       },
@@ -260,9 +272,13 @@ const TokenButtons = ({
       event: MetaMetricsEventName.NavSwapButtonClicked,
       category: MetaMetricsEventCategory.Swaps,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
         location: MetaMetricsSwapsEventSource.TokenView,
         text: 'Swap',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainId,
       },
     });

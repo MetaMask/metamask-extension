@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useRef } from 'react';
 
 import type { BoxProps } from '../box';
@@ -11,6 +13,8 @@ import type {
 } from './select-wrapper.types';
 
 export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       className = '',

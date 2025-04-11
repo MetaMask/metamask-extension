@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -13,6 +15,8 @@ import type { TextProps } from '../text';
 import type { LabelProps, LabelComponent } from './label.types';
 
 export const Label: LabelComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'label'>(
     { htmlFor, className, children, ...props }: LabelProps<C>,
     ref?: PolymorphicRef<C>,

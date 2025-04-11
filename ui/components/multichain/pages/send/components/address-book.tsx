@@ -1,4 +1,8 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Fuse from 'fuse.js';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -25,6 +29,8 @@ import {
   getCurrentNetworkTransactions,
   getInternalAccounts,
 } from '../../../../../selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ContactList from '../../../../app/contact-list';
 import { Box, Text } from '../../../../component-library';
 import { SendPageRow } from './send-page-row';

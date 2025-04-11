@@ -4,7 +4,11 @@ import type {
 import {
   KeyringTypes,
 } from '@metamask/keyring-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
@@ -42,7 +46,11 @@ import {
   hideWarning,
   setAccountDetailsAddress,
 } from '../../../store/actions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SRPQuiz from '../../app/srp-quiz-modal';
 import {
   AvatarAccount,
@@ -232,7 +240,11 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportCanceled,
             properties: {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Pkey,
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });

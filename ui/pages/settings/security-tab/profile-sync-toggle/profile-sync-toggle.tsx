@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,7 +8,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { Box, Text } from '../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ToggleButton from '../../../../components/ui/toggle-button';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -69,10 +75,20 @@ const ProfileSyncToggle = () => {
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
               properties: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 settings_group: 'security_privacy',
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 settings_type: 'profile_syncing',
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 old_value: true,
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 new_value: false,
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
@@ -87,10 +103,20 @@ const ProfileSyncToggle = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_group: 'security_privacy',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_type: 'profile_syncing',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: false,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_value: true,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });

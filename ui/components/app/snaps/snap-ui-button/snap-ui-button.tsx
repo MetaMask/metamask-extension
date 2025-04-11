@@ -1,6 +1,8 @@
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import classnames from 'classnames';
 import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';

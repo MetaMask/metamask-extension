@@ -114,9 +114,13 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
   popoverProps?: PopoverStyleUtilityProps;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectWrapperProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SelectWrapperStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectWrapperComponent = <C extends React.ElementType = 'div'>(
   props: SelectWrapperProps<C>,
 ) => React.ReactElement | null;

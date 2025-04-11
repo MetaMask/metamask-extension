@@ -1,4 +1,6 @@
 import type { TokenListMap } from '@metamask/assets-controllers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -40,6 +42,8 @@ import {
   AssetPicker,
   type AssetPickerProps,
 } from './asset-picker/asset-picker';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MaxClearButton from './max-clear-button';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 

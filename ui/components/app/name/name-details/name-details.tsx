@@ -9,6 +9,8 @@ import {
 } from '@metamask/name-controller';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { isEqual } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useCallback,
   useEffect,
@@ -53,11 +55,15 @@ import {
   ModalFooter,
   ButtonSize,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import FormComboField from '../../../ui/form-combo-field/form-combo-field';
 import type {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
 import { usePetnamesMetrics } from './metrics';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NameDisplay from './name-display';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
@@ -211,6 +217,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
   return { proposedNames, initialSources };
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NameDetails({
   onClose,
   type,

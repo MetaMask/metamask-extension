@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type React from 'react';
 
 import type { IconColor } from '../../../helpers/constants/design-system';
@@ -215,9 +217,13 @@ export interface IconStyleUtilityProps extends StyleUtilityProps {
   style?: React.CSSProperties;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type IconProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, IconStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type IconComponent = <C extends React.ElementType = 'span'>(
   props: IconProps<C>,
 ) => React.ReactElement | null;

@@ -1,6 +1,8 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { screen, fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';

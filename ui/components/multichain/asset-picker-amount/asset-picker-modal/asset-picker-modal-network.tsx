@@ -4,6 +4,8 @@ import type {
 } from '@metamask/network-controller';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import type { CaipChainId } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 

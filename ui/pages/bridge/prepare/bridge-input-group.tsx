@@ -5,6 +5,8 @@ import {
 import type { BridgeToken } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import type { BigNumber } from 'bignumber.js';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 

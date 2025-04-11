@@ -12,6 +12,8 @@ import { BigNumber } from 'bignumber.js';
 import classnames from 'classnames';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useCallback,
   useEffect,
@@ -89,6 +91,8 @@ import {
   setActiveNetworkWithError,
   setSelectedAccount,
 } from '../../../store/actions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import {
@@ -161,6 +165,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
     quotesLastFetchedMs,

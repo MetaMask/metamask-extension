@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useEffect } from 'react';
 
 import {
@@ -15,6 +17,8 @@ import type { AvatarTokenComponent , AvatarTokenProps} from './avatar-token.type
 import { AvatarTokenSize } from './avatar-token.types';
 
 export const AvatarToken: AvatarTokenComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarTokenSize.Md,

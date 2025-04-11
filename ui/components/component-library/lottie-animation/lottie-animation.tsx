@@ -6,6 +6,8 @@ import type {
 // Use lottie_light to avoid unsafe-eval which breaks the CSP
 // https://github.com/airbnb/lottie-web/issues/289#issuecomment-1454909624
 import lottie from 'lottie-web/build/player/lottie_light';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useRef } from 'react';
 
 export type LottieAnimationProps = {

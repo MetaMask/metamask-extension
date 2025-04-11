@@ -2,11 +2,15 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { ConfirmNav } from './nav';

@@ -1,4 +1,6 @@
 import type { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback } from 'react';
 
 import {
@@ -19,6 +21,8 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

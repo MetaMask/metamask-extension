@@ -1,8 +1,12 @@
 import { NameType } from '@metamask/name-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState } from 'react';
 
 import { SMART_ACCOUNT_INFO_LINK } from '../../../../../../../shared/lib/ui-utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Name from '../../../../../../components/app/name';
 import {
   Box,
@@ -27,6 +31,8 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
 

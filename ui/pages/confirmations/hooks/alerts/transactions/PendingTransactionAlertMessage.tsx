@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { ButtonLink, Text } from '../../../../../components/component-library';
@@ -5,6 +7,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 

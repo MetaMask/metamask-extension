@@ -1,5 +1,7 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 

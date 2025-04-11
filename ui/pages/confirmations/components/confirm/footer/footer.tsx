@@ -1,5 +1,7 @@
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -36,6 +38,8 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { getConfirmationSender } from '../utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import OriginThrottleModal from './origin-throttle-modal';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 

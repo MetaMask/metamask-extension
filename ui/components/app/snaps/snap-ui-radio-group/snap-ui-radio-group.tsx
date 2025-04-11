@@ -1,5 +1,7 @@
 import classnames from 'classnames';
 import type { FunctionComponent} from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useState } from 'react';
 
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, useHistory } from 'react-router-dom';

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type React from 'react';
 
 import type { BannerBaseStyleUtilityProps } from '../banner-base/banner-base.types';
@@ -35,9 +37,13 @@ export interface BannerTipStyleUtilityProps
   startAccessory?: React.ReactNode;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerTipProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, BannerTipStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerTipComponent = <C extends React.ElementType = 'div'>(
   props: BannerTipProps<C>,
 ) => React.ReactElement | null;

@@ -44,6 +44,8 @@ import type {
 } from '../../../shared/constants/mmi-controller';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type AccountTrackerController from './account-tracker-controller';
 import type { AppStateController } from './app-state-controller';
 import { getPermissionBackgroundApiMethods } from './permissions';

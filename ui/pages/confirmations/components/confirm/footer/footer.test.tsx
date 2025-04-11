@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -23,11 +25,15 @@ import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import type { SignatureRequestType } from '../../../types/confirm';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -200,6 +206,8 @@ describe('ConfirmFooter', () => {
           metamask: {
             signatureSecurityAlertResponses: {
               [mockSecurityAlertId]: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 result_type: BlockaidResultType.Malicious,
               },
             },

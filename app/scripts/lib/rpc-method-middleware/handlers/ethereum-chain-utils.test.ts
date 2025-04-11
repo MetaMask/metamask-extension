@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Multichain from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
@@ -6,6 +8,8 @@ import {
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import type { Hex } from '@metamask/utils';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {

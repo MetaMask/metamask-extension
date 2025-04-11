@@ -24,6 +24,8 @@ const getBaseRequest = (overrides = {}) => ({
   origin: 'http://test.com',
   params: [
     {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_accounts: {},
     },
   ],
@@ -480,6 +482,8 @@ describe('requestPermissionsHandler', () => {
           getBaseRequest({
             params: [
               {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 eth_accounts: {},
                 'endowment:permitted-chains': {},
                 otherPermissionA: {},
@@ -525,6 +529,8 @@ describe('requestPermissionsHandler', () => {
             getBaseRequest({
               params: [
                 {
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   eth_accounts: {},
                   'endowment:permitted-chains': {},
                   otherPermissionA: {},

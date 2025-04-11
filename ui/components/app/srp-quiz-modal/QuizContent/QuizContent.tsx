@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -13,6 +15,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Button, Box, Text } from '../../../component-library';
 import type { IQuizInformationProps } from '../types';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function QuizContent({
   icon,
   image,

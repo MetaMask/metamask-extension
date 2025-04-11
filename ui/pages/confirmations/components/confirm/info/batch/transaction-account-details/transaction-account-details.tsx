@@ -1,4 +1,6 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -14,6 +16,8 @@ import {
   useIsUpgradeTransaction,
 } from '../../hooks/useIsUpgradeTransaction';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionAccountDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

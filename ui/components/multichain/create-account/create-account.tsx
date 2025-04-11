@@ -3,6 +3,8 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   ChangeEvent,
   KeyboardEvent} from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useCallback,
   useContext,
@@ -73,15 +75,21 @@ type Props = {
   ///: END:ONLY_INCLUDE_IF
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CreateAccountProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, Props>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CreateAccountComponent = <C extends React.ElementType = 'form'>(
   props: CreateAccountProps<C>,
 ) => React.ReactElement | null;
 
 export const CreateAccount: CreateAccountComponent = React.memo(
   React.forwardRef(
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'form'>(
       {
         getNextAvailableAccountName,
@@ -150,8 +158,12 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
               properties: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
               },
             });
@@ -162,8 +174,12 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAddFailed,
               properties: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 account_type: MetaMetricsEventAccountType.Default,
                 error: (error as Error).message,
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
               },
             });

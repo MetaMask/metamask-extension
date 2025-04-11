@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { IconColor, Display } from '../../../helpers/constants/design-system';
@@ -8,6 +10,8 @@ import type { IconProps, IconComponent } from './icon.types';
 import { IconSize } from './icon.types';
 
 export const Icon: IconComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'span'>(
     {
       name,

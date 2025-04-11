@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -31,7 +33,11 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { Box, ButtonLink, Text } from '../../../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../../ui/tooltip';
 import useEthFeeData from './hooks/useEthFeeData';
 import useGetConversionRate from './hooks/useGetConversionRate';
@@ -50,6 +56,8 @@ const REFRESH_INTERVAL = 30;
  * @param options0
  * @param options0.scrollRef - ref to scroll to quote on quote load
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -94,6 +102,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
           event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_fetch: isQuoteJustLoaded,
           },
           sensitiveProperties: {

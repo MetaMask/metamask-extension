@@ -2,6 +2,8 @@ import type {
   BatchTransactionParams,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
@@ -14,6 +16,8 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
@@ -35,6 +39,8 @@ export function NestedTransactionData() {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NestedTransaction({
   index,
   nestedTransaction,

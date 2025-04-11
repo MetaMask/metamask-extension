@@ -1,6 +1,8 @@
 import type { Snap } from '@metamask/snaps-utils';
 import { waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -9,7 +11,8 @@ import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-ut
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-restricted-paths, @typescript-eslint/naming-convention
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
 const mockOnClose = jest.fn();

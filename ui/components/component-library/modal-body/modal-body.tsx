@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { Box } from '../box';
@@ -6,6 +8,8 @@ import type { PolymorphicRef, BoxProps } from '../box';
 import type { ModalBodyProps, ModalBodyComponent } from './modal-body.types';
 
 export const ModalBody: ModalBodyComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     { className = '', children, ...props }: ModalBodyProps<C>,
     ref?: PolymorphicRef<C>,

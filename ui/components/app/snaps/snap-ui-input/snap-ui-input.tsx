@@ -2,6 +2,8 @@ import classnames from 'classnames';
 import type {
   ChangeEvent,
   FunctionComponent} from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useEffect,
   useRef,

@@ -1,4 +1,6 @@
 import type { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -29,6 +31,8 @@ import {
   Text,
   IconSize,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Card from '../../../ui/card';
 import { SrpListItem } from './srp-list-item';
 

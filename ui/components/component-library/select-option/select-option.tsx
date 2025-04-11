@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 
 import { Display } from '../../../helpers/constants/design-system';
@@ -11,6 +13,8 @@ import type {
 } from './select-option.types';
 
 export const SelectOption: SelectOptionComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     { className = '', value, children, ...props }: SelectOptionProps<C>,
     ref?: PolymorphicRef<C>,

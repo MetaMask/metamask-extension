@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -14,6 +16,8 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import type { SignatureRequestType } from '../../../types/confirm';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import LedgerInfo from './ledger-info';
 
 describe('LedgerInfo', () => {

@@ -1,4 +1,6 @@
 import type { CaipChainId } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -35,6 +37,8 @@ import {
   Text,
   IconName,
 } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import FundingMethodItem from './funding-method-item';
 
 type FundingMethodModalProps = {
@@ -68,7 +72,11 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       properties: {
         location: RampsMetaMaskEntry?.TokensBanner,
         text: 'Transfer crypto',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: symbol,
       },
     });
@@ -100,7 +108,11 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       properties: {
         location: RampsMetaMaskEntry?.TokensBanner,
         text: 'Buy crypto',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: symbol,
       },
     });

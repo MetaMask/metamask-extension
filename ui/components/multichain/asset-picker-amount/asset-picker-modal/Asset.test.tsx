@@ -1,4 +1,6 @@
 import { render } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,6 +10,8 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getTokenList } from '../../../../selectors';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
 import { TokenListItem } from '../../token-list-item';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Asset from './Asset';
 
 jest.mock('react-redux', () => ({

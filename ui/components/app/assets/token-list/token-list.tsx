@@ -1,4 +1,6 @@
 import type { Hex } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -18,6 +20,8 @@ import {
 } from '../../../../selectors/multichain';
 import { useNetworkFilter } from '../hooks';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TokenCell from '../token-cell';
 import type { TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
@@ -27,6 +31,8 @@ type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick }: TokenListProps) {
   const isEvm = useSelector(getMultichainIsEvm);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);

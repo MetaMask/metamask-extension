@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type React from 'react';
 
 import type { AvatarFaviconProps } from '../avatar-favicon';
@@ -50,9 +52,13 @@ export interface TagUrlStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TagUrlProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TagUrlStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TagUrlComponent = <C extends React.ElementType = 'div'>(
   props: TagUrlProps<C>,
 ) => React.ReactElement | null;

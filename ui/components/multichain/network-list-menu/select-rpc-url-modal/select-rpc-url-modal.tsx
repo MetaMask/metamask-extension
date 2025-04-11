@@ -2,6 +2,8 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -21,6 +23,8 @@ import {
   Box,
   Text,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RpcListItem from '../rpc-list-item';
 
 export const SelectRpcUrlModal = ({

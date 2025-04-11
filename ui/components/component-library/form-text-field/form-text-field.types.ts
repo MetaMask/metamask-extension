@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type React from 'react';
 
 import type { PolymorphicComponentPropWithRef } from '../box';
@@ -68,12 +70,16 @@ export interface FormTextFieldWithoutLabelProps
   id?: string; // id is optional when label is not provided
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type FormTextFieldProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<
     C,
     FormTextFieldWithLabelProps | FormTextFieldWithoutLabelProps
   >;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type FormTextFieldComponent = <C extends React.ElementType = 'div'>(
   props: FormTextFieldProps<C>,
 ) => React.ReactElement | null;

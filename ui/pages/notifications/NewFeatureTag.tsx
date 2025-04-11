@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -12,6 +14,8 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectIsMetamaskNotificationsFeatureSeen } from '../../selectors/metamask-notifications/metamask-notifications';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NewFeatureTag() {
   const t = useI18nContext();
 

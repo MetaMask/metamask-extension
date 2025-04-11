@@ -1,9 +1,13 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { I18nContext } from '../../../../contexts/i18n';
 import { useDisableProfileSyncing } from '../../../../hooks/identity/useProfileSyncing';
 import { useModalProps } from '../../../../hooks/useModalProps';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 
 jest.mock('../../../../hooks/useModalProps', () => ({

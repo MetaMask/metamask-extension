@@ -4,6 +4,8 @@ import type { CaipAssetType, Hex} from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
 import type { ReactNode} from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -12,10 +14,16 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import useMultiChainAssets from '../../../components/app/assets/hooks/useMultichainAssets';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TokenCell from '../../../components/app/assets/token-cell';
 import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TransactionList from '../../../components/app/transaction-list';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import {
   AvatarNetwork,
@@ -68,7 +76,11 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { getPricePrecision, localizeLargeNumber } from '../util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetChart from './chart/asset-chart';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TokenButtons from './token-buttons';
 
 /** Information about a native or token asset */

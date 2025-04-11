@@ -6,8 +6,14 @@ import {
   SolAccountType
 } from '@metamask/keyring-api';
 import type { CaipChainId } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Fuse from 'fuse.js';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useContext,
   useState,
@@ -325,10 +331,18 @@ export const AccountListMenu = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_name: ACCOUNT_WATCHER_NAME,
         location: 'Main Menu',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -372,10 +386,18 @@ export const AccountListMenu = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: client.getSnapId(),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_name: client.getSnapName(),
         location: 'Main Menu',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -458,6 +480,8 @@ export const AccountListMenu = ({
         event: MetaMetricsEventName.NavAccountSwitched,
         properties: {
           location: 'Main Menu',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       });
@@ -655,8 +679,12 @@ export const AccountListMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Default,
                       location: 'Main Menu',
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -792,8 +820,12 @@ export const AccountListMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Imported,
                       location: 'Main Menu',
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -823,8 +855,12 @@ export const AccountListMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Hardware,
                       location: 'Main Menu',
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -855,8 +891,12 @@ export const AccountListMenu = ({
                         category: MetaMetricsEventCategory.Navigation,
                         event: MetaMetricsEventName.AccountAddSelected,
                         properties: {
+                          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           account_type: MetaMetricsEventAccountType.Snap,
                           location: 'Main Menu',
+                          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           hd_entropy_index: hdEntropyIndex,
                         },
                       });

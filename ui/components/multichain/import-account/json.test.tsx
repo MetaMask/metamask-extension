@@ -1,4 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -6,7 +8,8 @@ import messages from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-restricted-paths, @typescript-eslint/naming-convention
 import Json from './json';
 
 const mockImportFunc = jest.fn();

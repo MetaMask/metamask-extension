@@ -1,8 +1,12 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { Text } from '../../../../components/component-library';
 import type { SizeNumber } from '../../../../components/component-library/box/box.types';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   TextColor,

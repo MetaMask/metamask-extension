@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState } from 'react';
 
 import {
@@ -7,6 +9,8 @@ import {
 import useAlerts from '../../../../../../hooks/useAlerts';
 import { Box } from '../../../../../component-library';
 import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
 import type {

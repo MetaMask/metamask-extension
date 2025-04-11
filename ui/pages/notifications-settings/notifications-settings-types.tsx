@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -26,6 +28,8 @@ import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifi
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsTypes({
   disabled,
 }: {
@@ -61,8 +65,14 @@ export function NotificationsSettingsTypes({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_type: 'product_announcements',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: featureAnnouncementsEnabled,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_value: !featureAnnouncementsEnabled,
         },
       });

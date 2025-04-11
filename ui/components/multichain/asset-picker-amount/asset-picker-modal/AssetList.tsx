@@ -4,6 +4,8 @@ import type {
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -28,7 +30,11 @@ import {
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
 import { Box } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import LoadingScreen from '../../../ui/loading-screen';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetComponent from './Asset';
 import type { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -58,6 +64,8 @@ type AssetListProps = {
   >;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AssetList({
   handleAssetChange,
   asset,

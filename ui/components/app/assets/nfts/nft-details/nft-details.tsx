@@ -2,6 +2,8 @@ import type { Nft } from '@metamask/assets-controllers';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import type { Hex } from '@metamask/utils';
 import { isEqual } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -66,7 +68,11 @@ import {
   setActiveNetworkWithError,
   setSwitchedNetworkDetails,
 } from '../../../../../store/actions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NftOptions from '../nft-options/nft-options';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
@@ -87,13 +93,21 @@ import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
 // TODO: Remove restricted import
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NftDetailDescription from './nft-detail-description';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NftDetailInformationFrame from './nft-detail-information-frame';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NftDetailInformationRow from './nft-detail-information-row';
 import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NftDetailsComponent({
   nft,
   nftChainId,
@@ -216,6 +230,8 @@ export function NftDetailsComponent({
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
       },
     });
@@ -240,10 +256,18 @@ export function NftDetailsComponent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_contract_address: address,
           tokenId: tokenId.toString(),
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.NFT,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_standard: standard,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: currentNetwork,
           isSuccessful: isSuccessfulEvent,
         },
@@ -927,6 +951,8 @@ export function NftDetailsComponent({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NftDetails({ nft }: { nft: Nft }) {
   const { chainId } = useParams();
 

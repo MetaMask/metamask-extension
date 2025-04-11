@@ -1,10 +1,14 @@
 import type { ReactNodeLike } from 'prop-types';
 import type { ReactNode } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AdvancedGasFeePopover from '../components/advanced-gas-fee-popover';
 import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';
 import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
@@ -15,9 +19,13 @@ import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-toke
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { PluggableSection } from '../components/confirm/pluggable-section';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Splash } from '../components/confirm/splash';
 import { Title } from '../components/confirm/title';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';

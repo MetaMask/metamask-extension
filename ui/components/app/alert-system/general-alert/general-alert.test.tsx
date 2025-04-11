@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
@@ -5,6 +7,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../component-library';
 import type { GeneralAlertProps } from './general-alert';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import GeneralAlert from './general-alert';
 
 describe('GeneralAlert', () => {

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -8,6 +10,8 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetListControlBar from './asset-list-control-bar';
 
 describe('AssetListControlBar', () => {

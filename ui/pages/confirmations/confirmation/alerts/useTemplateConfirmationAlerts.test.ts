@@ -3,8 +3,12 @@ import { useDispatch } from 'react-redux';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as UpdateEthereumChainAlerts from './useUpdateEthereumChainAlerts';
 
 

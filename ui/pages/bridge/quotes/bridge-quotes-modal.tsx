@@ -5,6 +5,8 @@ import {
 } from '@metamask/bridge-controller';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import { startCase } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -100,6 +102,8 @@ export const BridgeQuotesModal = ({
                       ...quoteRequestProperties,
                       ...requestMetadataProperties,
                       ...quoteListProperties,
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       sort_order: sortOrder,
                     },
                   });
@@ -182,6 +186,8 @@ export const BridgeQuotesModal = ({
                           ...requestMetadataProperties,
                           ...quoteListProperties,
                           ...tradeProperties,
+                          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           is_best_quote: isRecommendedQuote,
                         },
                       });

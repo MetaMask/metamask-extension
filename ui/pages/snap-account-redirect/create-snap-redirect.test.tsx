@@ -1,9 +1,13 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import mockState from '../../../test/data/mock-state.json';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../test/e2e/constants';
 import { renderWithProvider } from '../../../test/jest';
 import configureStore from '../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SnapAccountRedirect from './snap-account-redirect';
 
 const store = configureStore({

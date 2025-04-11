@@ -28,6 +28,8 @@ import type {
   RateLimitController,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type SmartTransactionsController from '@metamask/smart-transactions-controller';
 import type { TransactionController } from '@metamask/transaction-controller';
 import type {
@@ -40,8 +42,12 @@ import type {
 } from '@metamask/snaps-controllers';
 
 import type { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type OnboardingController from '../controllers/onboarding';
 import type { PreferencesController } from '../controllers/preferences-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type SwapsController from '../controllers/swaps';
 
 /**

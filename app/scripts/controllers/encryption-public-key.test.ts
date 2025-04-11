@@ -12,6 +12,8 @@ import type {
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
 } from './encryption-public-key';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import EncryptionPublicKeyController from './encryption-public-key';
 
 jest.mock('@metamask/message-manager', () => ({
@@ -58,6 +60,8 @@ const createManagerMessengerMock = () =>
     subscribe: jest.fn(),
   } as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>);
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),

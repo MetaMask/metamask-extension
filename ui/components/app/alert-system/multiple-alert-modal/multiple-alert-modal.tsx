@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 
 import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
@@ -39,6 +41,8 @@ export type MultipleAlertModalProps = {
   skipAlertNavigation?: boolean;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PreviousButton({
   selectedIndex,
   onBackButtonClick,
@@ -67,6 +71,8 @@ function PreviousButton({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NextButton({
   selectedIndex,
   alertsLength,
@@ -97,6 +103,8 @@ function NextButton({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PageNumber({
   selectedIndex,
   alertsLength,
@@ -117,6 +125,8 @@ function PageNumber({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PageNavigation({
   alerts,
   onBackButtonClick,
@@ -147,6 +157,8 @@ function PageNavigation({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultipleAlertModal({
   alertKey,
   displayAllAlerts = false,

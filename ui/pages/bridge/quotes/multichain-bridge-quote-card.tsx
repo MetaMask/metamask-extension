@@ -4,6 +4,8 @@ import {
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 

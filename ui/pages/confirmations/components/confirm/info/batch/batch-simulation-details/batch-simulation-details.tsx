@@ -4,6 +4,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
@@ -22,6 +24,8 @@ import {
 import type {
   ApprovalBalanceChange} from '../../hooks/useBatchApproveBalanceChanges';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchSimulationDetails() {
   const t = useI18nContext();
 

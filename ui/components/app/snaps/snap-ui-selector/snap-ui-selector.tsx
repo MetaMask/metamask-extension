@@ -3,6 +3,8 @@ import { isObject } from '@metamask/utils';
 import classnames from 'classnames';
 import type {
   MouseEvent as ReactMouseEvent} from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useState,
   useEffect

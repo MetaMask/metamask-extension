@@ -1,11 +1,19 @@
 import type { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { memo } from 'react';
 
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { Icon, IconName, IconSize } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Identicon from '../../../ui/identicon';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import FormattedName from './formatted-value';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ShortenedName from './shortened-name';
 
 export type NameDisplayProps = {
@@ -41,9 +49,17 @@ const NameDisplay = memo(
       <div
         className={classnames({
           name: true,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           name__clickable: Boolean(handleClick),
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           name__saved: hasPetname,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           name__recognized_unsaved: !hasPetname && hasDisplayName,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           name__missing: !hasDisplayName,
         })}
         onClick={handleClick}

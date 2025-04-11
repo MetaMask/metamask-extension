@@ -8,6 +8,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isCaipChainId
 } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -63,10 +65,14 @@ import {
   getNetworkConfigurationIdByChainId,
   isNonEvmAccount,
 } from '../../../selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 ///: END:ONLY_INCLUDE_IF
 import { Box, Icon, IconName, IconSize } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -207,12 +213,16 @@ const CoinButtons = ({
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:
     const snapId = internalAccount.metadata.snap?.id;
     if (snapId) {
       return {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: snapId,
       };
     }
@@ -258,10 +268,16 @@ const CoinButtons = ({
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: account.type,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: nativeToken,
           location: 'Home',
           text: 'Send',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
           ...getSnapAccountMetaMetricsPropertiesIfAny(account),
         },
@@ -300,10 +316,16 @@ const CoinButtons = ({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: account.type,
         location: 'Home',
         text: 'Buy',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: defaultSwapsToken,
         ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
@@ -345,9 +367,13 @@ const CoinButtons = ({
         event: MetaMetricsEventName.NavSwapButtonClicked,
         category: MetaMetricsEventCategory.Swaps,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: 'ETH',
           location: MetaMetricsSwapsEventSource.MainView,
           text: 'Swap',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
         },
       });
@@ -488,6 +514,8 @@ const CoinButtons = ({
                 properties: {
                   text: 'Receive',
                   location: trackingLocation,
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   chain_id: chainId,
                 },
               });

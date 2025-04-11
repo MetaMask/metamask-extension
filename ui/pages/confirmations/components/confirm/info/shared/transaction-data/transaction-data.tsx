@@ -2,6 +2,8 @@ import { hexStripZeros } from '@ethersproject/bytes';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import _ from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import type { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
@@ -28,6 +30,8 @@ import {
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Preloader from '../../../../../../../components/ui/icon/preloader';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -96,6 +100,8 @@ export const TransactionData = ({
   );
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function Container({
   children,
   isLoading,
@@ -129,6 +135,8 @@ export function Container({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
   return (
@@ -141,6 +149,8 @@ function RawDataRow({ transactionData }: { transactionData: string }) {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function FunctionContainer({
   method,
   source,
@@ -198,6 +208,8 @@ function FunctionContainer({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamValue({
   param,
   source,
@@ -229,6 +241,8 @@ function ParamValue({
   return <ConfirmInfoRowText text={valueString} />;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamRow({
   param,
   index,
@@ -267,6 +281,8 @@ function ParamRow({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function UniswapPath({
   pathPools,
   chainId,

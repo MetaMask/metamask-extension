@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -11,6 +13,8 @@ import {
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import type { InternalAccountWithBalance } from '../../../../selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import {
   Text,

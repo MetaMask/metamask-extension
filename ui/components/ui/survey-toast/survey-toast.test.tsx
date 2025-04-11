@@ -1,4 +1,6 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import configureStore from 'redux-mock-store';
@@ -14,6 +16,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { SurveyToast } from './survey-toast';
 
 jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));

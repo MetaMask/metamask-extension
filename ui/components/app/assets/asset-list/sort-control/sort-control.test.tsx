@@ -1,4 +1,6 @@
 import { screen, fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -7,6 +9,8 @@ import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getPreferences } from '../../../../../selectors';
 import { setTokenSortConfig } from '../../../../../store/actions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SortControl from './sort-control';
 
 // Mock the sortAssets utility
@@ -90,6 +94,8 @@ describe('SortControl', () => {
       category: 'Settings',
       event: 'Token Sort Preference',
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_sort_preference: 'title',
       },
     });
@@ -114,6 +120,8 @@ describe('SortControl', () => {
       category: 'Settings',
       event: 'Token Sort Preference',
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_sort_preference: 'tokenFiatAmount',
       },
     });

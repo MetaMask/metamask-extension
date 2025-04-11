@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState } from 'react';
 
 import type {
@@ -20,6 +22,8 @@ import {
   TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Column from './column';
 
 const Tooltip = React.forwardRef(

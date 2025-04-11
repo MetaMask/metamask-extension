@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -17,6 +19,8 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { REVEAL_SEED_ROUTE } from '../../../../helpers/constants/routes';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getHDEntropyIndex } from '../../../../selectors/selectors';
@@ -31,6 +35,8 @@ import {
 } from '../../../component-library';
 import { ModalContent } from '../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import QuizContent from '../QuizContent';
 import type { JSXDict} from '../types';
 import { QuizStage } from '../types';
@@ -70,6 +76,8 @@ export type SRPQuizProps = {
   closeAfterCompleting?: boolean;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
@@ -293,8 +301,12 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportSelected,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           location,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       },

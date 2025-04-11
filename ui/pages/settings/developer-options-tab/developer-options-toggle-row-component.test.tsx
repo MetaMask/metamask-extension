@@ -1,9 +1,13 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import mockState from '../../../../test/data/mock-state.json'; // Adjust the path based on your actual file location
 import { renderWithProvider } from '../../../../test/jest/rendering';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ToggleRow from './developer-options-toggle-row-component';
 
 describe('ToggleFeatureRow Component', () => {

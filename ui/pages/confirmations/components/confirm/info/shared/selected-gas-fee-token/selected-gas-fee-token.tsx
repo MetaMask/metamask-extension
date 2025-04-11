@@ -1,4 +1,6 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -25,6 +27,8 @@ import {
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

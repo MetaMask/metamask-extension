@@ -1,4 +1,6 @@
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';

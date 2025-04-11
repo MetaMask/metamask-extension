@@ -1,5 +1,7 @@
 import { BtcAccountType } from '@metamask/keyring-api';
 import { fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
@@ -15,6 +17,8 @@ import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 // eslint-disable-next-line import/no-restricted-paths
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import configureStore from '../../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NicknamePopover from './nickname-popovers.component';
 
 const mockAccount = createMockInternalAccount({

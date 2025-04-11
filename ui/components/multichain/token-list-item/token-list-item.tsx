@@ -1,6 +1,8 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex, isStrictHexString } from '@metamask/utils';
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -59,6 +61,8 @@ import {
   SensitiveTextLength,
   Text,
 } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../ui/tooltip';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
@@ -211,7 +215,11 @@ export const TokenListItemComponent = ({
               properties: {
                 location: 'Home',
                 // FIXME: This might not be a number for non-EVM accounts
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: chainId,
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 token_symbol: tokenSymbol,
               },
             });

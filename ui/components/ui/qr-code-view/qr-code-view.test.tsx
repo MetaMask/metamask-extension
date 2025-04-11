@@ -1,10 +1,14 @@
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import QRCodeView from './qr-code-view';
 
 const mockCopy = jest.fn();
@@ -19,6 +23,8 @@ const render = (
   {
     Qr,
     warning,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   }: { Qr: { message: string; data: string }; warning: null | string } = {
     Qr: { data: mockEthAddress, message: '' },
     warning: '',

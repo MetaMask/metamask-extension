@@ -1,6 +1,8 @@
 import { EthAccountType } from '@metamask/keyring-api';
 import { fireEvent, waitFor } from '@testing-library/react';
 import nock from 'nock';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -16,6 +18,8 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import { setBackgroundConnection } from '../../../store/background-connection';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetPage from './asset-page';
 
 jest.mock('../../../store/actions', () => ({
@@ -45,6 +49,8 @@ jest.mock('../../../../shared/constants/network', () => ({
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));

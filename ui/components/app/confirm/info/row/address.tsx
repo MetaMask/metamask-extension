@@ -1,4 +1,6 @@
 import { NameType } from '@metamask/name-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { memo, useState } from 'react';
 
 import {
@@ -9,8 +11,14 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { Box, Text } from '../../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Identicon from '../../../../ui/identicon';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NicknamePopovers from '../../../modals/nickname-popovers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Name from '../../../name/name';
 import { useFallbackDisplayName } from './hook';
 

@@ -8,6 +8,8 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import type {
   DecryptMessageControllerMessenger,
   DecryptMessageControllerOptions} from './decrypt-message';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DecryptMessageController, {
   getDefaultState,
 } from './decrypt-message';
@@ -49,6 +51,8 @@ const createManagerMessengerMock = () =>
     subscribe: jest.fn(),
   } as unknown as jest.Mocked<DecryptMessageManagerMessenger>);
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createDecryptMessageManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),

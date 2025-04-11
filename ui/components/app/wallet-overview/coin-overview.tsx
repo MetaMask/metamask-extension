@@ -4,6 +4,8 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { Hex } from '@metamask/utils';
 import type { CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useContext,
   useState,
@@ -76,12 +78,22 @@ import {
 } from '../../component-library';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Spinner from '../../ui/spinner';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../ui/tooltip';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CoinButtons from './coin-buttons';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import WalletOverview from './wallet-overview';
 
 export type CoinOverviewProps = {

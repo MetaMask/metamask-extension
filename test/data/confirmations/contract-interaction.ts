@@ -76,6 +76,8 @@ export const genUnapprovedContractInteractionConfirmation = ({
         origin: 'https://metamask.github.io',
         securityAlertResponse: {
           reason: 'loading',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'validation_in_progress',
         },
         sendFlowHistory: [],
@@ -154,6 +156,8 @@ export const genUnapprovedContractInteractionConfirmation = ({
     securityAlertResponse: {
       features: [],
       reason: '',
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: 'Benign',
     },
     selectedGasFeeToken,

@@ -1,4 +1,6 @@
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import type { FC } from 'react';
 
@@ -24,6 +26,8 @@ import {
   Box,
   ButtonBaseSize,
 } from '../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../ui/tooltip/tooltip';
 
 type Notification = NotificationServicesController.Types.INotification;
@@ -69,11 +73,19 @@ export const NotificationDetailCopyButton: FC<
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_id: notification.id,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: notification.type,
           ...('chain_id' in notification && {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: notification.chain_id,
           }),
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: 'tx_id',
         },
       });

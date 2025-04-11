@@ -1,4 +1,6 @@
 import { IconName } from '@metamask/snaps-sdk/jsx';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useRef } from 'react';
 
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
@@ -8,6 +10,8 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkFilter from '../../app/assets/asset-list/network-filter';
 import { Box } from '../../component-library';
 import {

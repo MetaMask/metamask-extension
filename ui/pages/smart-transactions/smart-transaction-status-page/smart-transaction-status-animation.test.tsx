@@ -1,5 +1,7 @@
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { render, screen, act } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { SmartTransactionStatusAnimation } from './smart-transaction-status-animation';

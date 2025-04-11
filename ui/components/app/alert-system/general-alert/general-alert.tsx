@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import type { SecurityProvider } from '../../../../../shared/constants/security-provider';
@@ -7,6 +9,8 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -16,6 +20,8 @@ import {
   ButtonLinkSize,
   Text,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Disclosure from '../../../ui/disclosure';
 import { DisclosureVariant } from '../../../ui/disclosure/disclosure.constants';
 import { AlertProvider } from '../alert-provider';
@@ -32,6 +38,8 @@ export type GeneralAlertProps = {
   children?: React.ReactNode;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ReportLink({
   reportUrl,
   provider,
@@ -60,6 +68,8 @@ function ReportLink({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   details,
   reportUrl,
@@ -105,6 +115,8 @@ function AlertDetails({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneralAlert({
   description,
   details,

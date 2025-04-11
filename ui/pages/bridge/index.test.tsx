@@ -1,9 +1,13 @@
 import nock from 'nock';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CrossChainSwap from '.';
 import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';

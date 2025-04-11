@@ -26,6 +26,8 @@ export type I18NMessageDict = {
 export type I18NSubstitution = string | (() => any) | object;
 
 // A parameterized type (or generic type) of maps that use the same structure (translationKey) key
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type I18NMessageDictMap<R> = {
   [translationKey: string]: R;
 };
@@ -53,6 +55,8 @@ const relativeTimeFormatLocaleData = new Set();
  * @param join - An optional callback to join the substituted parts using custom logic
  * @returns The localized message
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const getMessage = <T>(
   localeCode: string,
   localeMessages: I18NMessageDict,

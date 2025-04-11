@@ -1,7 +1,11 @@
 import { waitFor } from '@testing-library/react';
 
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as NotificationSelectorsModule from '../../selectors/metamask-notifications/metamask-notifications';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as ActionsModule from '../../store/actions';
 import {
   useSwitchFeatureAnnouncementsChange,

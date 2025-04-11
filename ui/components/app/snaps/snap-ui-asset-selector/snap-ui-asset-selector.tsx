@@ -1,5 +1,7 @@
 import type { CaipAccountId, CaipChainId } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {

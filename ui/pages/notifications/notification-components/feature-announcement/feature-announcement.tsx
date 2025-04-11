@@ -1,4 +1,6 @@
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { Box, Text } from '../../../../components/component-library';
@@ -97,6 +99,8 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
               variant={TextVariant.bodyMd}
               as="div"
               dangerouslySetInnerHTML={{
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __html: notification.data.longDescription,
               }}
             />

@@ -3,6 +3,8 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { CaipAssetType, Hex} from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,7 +32,11 @@ import {
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { showModal } from '../../../store/actions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetOptions from './asset-options';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetPage from './asset-page';
 
 const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
@@ -137,8 +143,12 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
               event: 'Clicked Block Explorer Link',
               category: MetaMetricsEventCategory.Navigation,
               properties: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 link_type: 'Token Tracker',
                 action: 'Token Options',
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 block_explorer_domain: getURLHostName(tokenTrackerLink),
               },
             });

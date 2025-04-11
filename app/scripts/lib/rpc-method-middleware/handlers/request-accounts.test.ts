@@ -7,6 +7,8 @@ import type {
 
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import { deferredPromise } from '../../util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Util from '../../util';
 import requestEthereumAccounts from './request-accounts';
 
@@ -193,8 +195,14 @@ describe('requestEthereumAccountsHandler', () => {
         category: 'inpage_provider',
         event: 'Dapp Viewed',
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_first_visit: true,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts: 3,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: 2,
         },
         referrer: {

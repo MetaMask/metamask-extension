@@ -4,6 +4,8 @@ import {
   DecodingDataChangeType,
 } from '@metamask/signature-controller';
 import { waitFor } from '@testing-library/dom';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import configureMockStore from 'redux-mock-store';
@@ -15,6 +17,8 @@ import {
 } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TypedSignV4Simulation from './typed-sign-v4-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {

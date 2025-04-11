@@ -1,6 +1,8 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Store } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { AlertTypes } from '../../../../../shared/constants/alerts';
@@ -21,6 +23,8 @@ type TestConfirmContextValue = {
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => (key: string) => key,
 }));

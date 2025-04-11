@@ -1,6 +1,8 @@
 import type { KeyringAccountType } from '@metamask/keyring-api';
 import { EthAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 

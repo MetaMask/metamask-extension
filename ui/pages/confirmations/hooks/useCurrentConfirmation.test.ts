@@ -10,6 +10,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Router from 'react-router-dom';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -43,6 +45,8 @@ const TRANSACTION_MOCK = {
   type: TransactionType.contractInteraction,
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function arrayToIdMap<T>(array: T[]): Record<string, T> {
   return array.reduce(
     (acc, item) => ({

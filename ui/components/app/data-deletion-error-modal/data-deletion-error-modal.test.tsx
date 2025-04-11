@@ -1,9 +1,13 @@
 import { fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { DATA_DELETION_ERROR_MODAL_CLOSE } from '../../../store/actionConstants';
 import configureStore from '../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DataDeletionErrorModal from './data-deletion-error-modal';
 
 const mockCloseDeleteMetaMetricsErrorModal = jest

@@ -1,4 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -26,6 +28,8 @@ export const EditGasIconButton = ({
   const openEditEIP1559TxGasFeeModal = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     updateTransactionEventFragment({
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_edit_attempted: 'basic',
     });
     openModal('editGasFee');

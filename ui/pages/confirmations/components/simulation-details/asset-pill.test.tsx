@@ -1,6 +1,8 @@
 import { NameType } from '@metamask/name-controller';
 import type { Hex } from '@metamask/utils';
 import { screen } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -8,6 +10,8 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Name from '../../../../components/app/name';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
 import configureStore from '../../../../store/store';
@@ -20,6 +24,8 @@ jest.mock('../../../../components/component-library/avatar-network', () => ({
 }));
 
 jest.mock('../../../../components/app/name', () => ({
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => null),
 }));

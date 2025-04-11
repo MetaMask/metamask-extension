@@ -12,6 +12,8 @@ import type {
 } from '@metamask/network-controller';
 import type { TransactionParams } from '@metamask/transaction-controller';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type SwapsController from '.';
 import type {
   MetaMetricsEventCategory,

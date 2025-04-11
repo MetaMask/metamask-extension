@@ -1,4 +1,6 @@
 import { fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -9,6 +11,8 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { FundingMethodModal } from './funding-method-modal';
 
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));

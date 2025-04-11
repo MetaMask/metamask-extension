@@ -1,4 +1,6 @@
 import { toHex } from '@metamask/controller-utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -20,9 +22,12 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { Box } from '../../../../component-library';
 import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { NftItem } from '../../../../multichain/nft-item';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Spinner from '../../../../ui/spinner';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-restricted-paths, @typescript-eslint/naming-convention
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -71,6 +76,8 @@ const NFTGridItem = (props: {
   );
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftGrid({
   nfts,
   handleNftClick,

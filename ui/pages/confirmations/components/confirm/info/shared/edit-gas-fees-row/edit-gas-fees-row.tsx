@@ -1,6 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type { Dispatch, SetStateAction } from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,6 +10,8 @@ import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Box, Text } from '../../../../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -117,6 +121,8 @@ export const EditGasFeesRow = ({
   );
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenValue({ roundedValue }: { roundedValue: string }) {
   return (
     <Text color={TextColor.textDefault} data-testid="first-gas-field">
@@ -125,6 +131,8 @@ function TokenValue({ roundedValue }: { roundedValue: string }) {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function FiatValue({
   color,
   fullValue,

@@ -1,6 +1,8 @@
 // Copied from <https://github.com/tvkhoa/react-tippy/blob/c6e6169e3f2cabe05f1bfbd7e0dea1ddef4debe8/index.d.ts>
 // which for some reason is not included in the distributed version
 declare module 'react-tippy' {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   import * as React from 'react';
 
   export type Position =
@@ -68,6 +70,8 @@ declare module 'react-tippy' {
 
   export class Tooltip extends React.Component<TooltipProps> {}
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   export function withTooltip<P>(
     component: React.ComponentType<P>,
     options: TooltipProps,

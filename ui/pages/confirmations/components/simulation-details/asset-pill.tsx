@@ -1,11 +1,15 @@
 import { NameType } from '@metamask/name-controller';
 import type { Hex } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Name from '../../../../components/app/name';
 import {
   AvatarNetwork,

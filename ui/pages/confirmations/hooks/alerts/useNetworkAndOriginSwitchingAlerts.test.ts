@@ -4,6 +4,8 @@ import { waitFor } from '@testing-library/react';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Actions from '../../../../store/actions';
 import { useNetworkAndOriginSwitchingAlerts } from './useNetworkAndOriginSwitchingAlerts';
 

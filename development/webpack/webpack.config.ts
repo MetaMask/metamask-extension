@@ -2,9 +2,15 @@
  * @file The main webpack configuration file for the browser extension.
  */
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import autoprefixer from 'autoprefixer';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CopyPlugin from 'copy-webpack-plugin';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -124,7 +130,11 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
   new ManifestPlugin({
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     web_accessible_resources: webAccessibleResources,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
       ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
@@ -347,7 +357,11 @@ const config = {
   node: {
     // eventually we should avoid any code that uses node globals `__dirname`
     // and `__filename``. But for now, just warn about their use.
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __dirname: 'warn-mock',
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __filename: 'warn-mock',
     // Hopefully in the the future we won't need to polyfill node `global`, as
     // a browser version, `globalThis`, already exists and we should use it

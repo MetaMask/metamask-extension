@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -36,7 +38,11 @@ import {
 } from '../../../../component-library';
 import { Box } from '../../../../component-library/box/box';
 import { Text } from '../../../../component-library/text/text';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InfoTooltip from '../../../../ui/info-tooltip';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 import { SelectableListItem } from '../sort-control/sort-control';
 

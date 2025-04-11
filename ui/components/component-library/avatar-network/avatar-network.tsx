@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useEffect } from 'react';
 
 import {
@@ -17,6 +19,8 @@ import type { AvatarNetworkComponent , AvatarNetworkProps} from './avatar-networ
 import { AvatarNetworkSize } from './avatar-network.types';
 
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarNetworkSize.Md,

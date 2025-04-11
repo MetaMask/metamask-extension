@@ -6,6 +6,8 @@ import type {
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useState,
   useCallback,
@@ -77,6 +79,8 @@ import type { AssetPickerModalNetwork } from './asset-picker-modal-network';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetList from './AssetList';
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
@@ -131,6 +135,8 @@ type AssetPickerModalProps = {
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModal({
   header,
   isOpen,

@@ -7,6 +7,8 @@ import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const callBridgeStatusControllerMethod = <T extends unknown[]>(
   bridgeAction: BridgeStatusAction,
   args?: T,

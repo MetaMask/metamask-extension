@@ -1,5 +1,7 @@
 import type { Hex} from '@metamask/utils';
 import { hasProperty, isObject, isStrictHexString } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BN from 'bn.js';
 import { cloneDeep, mapKeys } from 'lodash';
 import log from 'loglevel';

@@ -1,5 +1,7 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 

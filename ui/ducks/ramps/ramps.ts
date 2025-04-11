@@ -4,6 +4,8 @@ import { createSelector } from 'reselect';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { getUseExternalServices } from '../../selectors';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';

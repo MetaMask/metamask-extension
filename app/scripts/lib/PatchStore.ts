@@ -2,6 +2,8 @@ import { createProjectLogger } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 

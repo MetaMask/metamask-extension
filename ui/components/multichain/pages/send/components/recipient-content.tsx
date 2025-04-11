@@ -1,4 +1,6 @@
 import type { TokenListMap } from '@metamask/assets-controllers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useCallback,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

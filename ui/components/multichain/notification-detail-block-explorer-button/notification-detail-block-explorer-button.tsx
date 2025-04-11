@@ -1,5 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -62,9 +64,17 @@ export const NotificationDetailBlockExplorerButton = ({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         notification_id: notification.id,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         notification_type: notification.type,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         clicked_item: 'block_explorer',
       },
     });

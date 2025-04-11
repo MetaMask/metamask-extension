@@ -1,5 +1,7 @@
 import { getAccountLink } from '@metamask/etherscan-link';
 import type { Snap } from '@metamask/snaps-utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -25,9 +27,13 @@ import {
   ModalBody,
   ModalFooter,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InfoTooltip from '../../../ui/info-tooltip';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function KeyringRemovalSnapWarning({
   snap,
   keyringAccounts,

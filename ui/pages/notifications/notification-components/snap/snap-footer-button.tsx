@@ -1,9 +1,13 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useState } from 'react';
 
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
 import { ButtonVariant } from '../../../../components/component-library';
 import { NotificationDetailButton } from '../../../../components/multichain';
@@ -30,8 +34,14 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_id: props.notification.id,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: props.notification.type,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: isExternal ? 'external_link' : 'internal_link',
         },
       });

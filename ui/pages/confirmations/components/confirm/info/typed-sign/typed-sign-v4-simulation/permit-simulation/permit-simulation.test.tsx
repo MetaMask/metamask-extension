@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import configureMockStore from 'redux-mock-store';
@@ -9,6 +11,8 @@ import {
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../../utils/token';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../../store/actions', () => {

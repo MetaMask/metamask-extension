@@ -1,4 +1,6 @@
 import { RequestStatus } from '@metamask/bridge-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';

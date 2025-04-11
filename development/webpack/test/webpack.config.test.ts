@@ -147,9 +147,13 @@ ${Object.entries(env)
     assert.deepStrictEqual(
       manifestPlugin.options.transform(
         {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: 3,
           name: 'name',
           version: '1.2.3',
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           content_scripts: [
             {
               js: [
@@ -164,9 +168,13 @@ ${Object.entries(env)
         'brave',
       ),
       {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         content_scripts: [
           {
             js: ['scripts/contentscript.js', 'scripts/inpage.js'],
@@ -293,6 +301,8 @@ ${Object.entries(env)
   // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
     const config: Configuration = getWebpackConfig(['--watch'], {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       __HMR_READY__: 'true',
     });
     delete config.watch;

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { StatusTypes } from '../../../../shared/types/bridge-status';
@@ -7,7 +9,11 @@ import {
   IconSize,
 } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import HollowCircle from './hollow-circle';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PulsingCircle from './pulsing-circle';
 
 const ICON_SIZE = IconSize.Xs;
@@ -41,6 +47,8 @@ type StepsProgressBarItemProps = {
  * @param options.isEdgeComplete - Whether the edge is complete
  * @param options.children - The description of the step to be rendered
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function StepProgressBarItem({
   stepStatus,
   isLastItem,

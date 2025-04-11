@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -13,8 +15,12 @@ import {
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { Text } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CurrencyDisplay from '../../../ui/currency-display';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import type { TokenWithBalance } from '../asset-picker-modal/types';
@@ -27,6 +33,8 @@ export type AssetBalanceTextProps = {
   error?: string;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetBalanceText({
   asset,
   balanceColor,

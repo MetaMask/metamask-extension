@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -13,6 +15,8 @@ import { Container, ContainerMaxWidth } from '../container';
 import type { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
 export const ModalFooter: ModalFooterComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'footer'>(
     {
       className = '',

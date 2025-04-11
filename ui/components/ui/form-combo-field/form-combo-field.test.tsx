@@ -1,9 +1,13 @@
 import { fireEvent } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 import { act } from 'react-dom/test-utils';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import type { FormComboFieldOption } from './form-combo-field';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import FormComboField from './form-combo-field';
 
 const VALUE_MOCK = 'TestValue';

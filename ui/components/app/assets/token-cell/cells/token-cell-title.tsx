@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import {
@@ -8,6 +10,8 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Text } from '../../../../component-library';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../ui/tooltip';
 import type { TokenFiatDisplayInfo } from '../../types';
 import type {

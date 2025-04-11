@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -22,6 +24,8 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getNftImage } from '../../../../helpers/utils/nfts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -31,7 +35,11 @@ import {
   getNftIsStillFetchingIndication,
   getUseNftDetection,
 } from '../../../../selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import {
   Box,
@@ -39,6 +47,8 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Spinner from '../../../ui/spinner';
 import type { NFT } from './types';
 
@@ -53,6 +63,8 @@ type AssetPickerModalNftTabProps = {
   renderSearch: () => void;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModalNftTab({
   searchQuery,
   onClose,
@@ -93,12 +105,20 @@ export function AssetPickerModalNftTab({
         event: MetaMetricsEventName.sendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_destination_asset_picker_modal: false,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_nft: true,
         },
         sensitiveProperties: {
           ...sendAnalytics,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_symbol: nft.name,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_address: nft.address,
         },
       },
