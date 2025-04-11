@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "交易请求"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "取消交易"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "取消升级和交易"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "如果您不想升级您的账户，您可以在此取消。\n\n如要在不升级的情况下完成该交易，您将需要在网站上重新提出此请求。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "取消交易"
-  },
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
   },

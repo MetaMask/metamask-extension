@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Отменить транзакцию"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Отменить обновление и транзакцию"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Если вы не хотите обновлять свой счет, вы можете аннулировать его здесь.\n\nЧтобы завершить эту транзакцию без обновления, необходимо будет снова сделать этот запрос на сайте. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Отменить транзакцию"
-  },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
   },

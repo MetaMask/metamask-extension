@@ -79,6 +79,7 @@ export const ImportAccount = ({ onActionComplete }) => {
         account_type: MetaMetricsEventAccountType.Imported,
         account_import_type: accountImportType,
         hd_entropy_index: hdEntropyIndex,
+        is_suggested_name: true,
       },
     });
   }

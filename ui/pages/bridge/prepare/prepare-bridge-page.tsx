@@ -19,6 +19,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -122,7 +123,6 @@ import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -456,9 +456,8 @@ const PrepareBridgePage = () => {
   }, []);
 
   const occurrences = Number(toToken?.occurrences ?? 0);
-  const toTokenIsNotDefault =
-    toToken?.address &&
-    !isSwapsDefaultTokenAddress(toToken?.address, toChain?.chainId as string);
+  const toTokenIsNotNative =
+    toToken?.address && !isNativeAddress(toToken?.address);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
@@ -855,7 +854,7 @@ const PrepareBridgePage = () => {
           {isCannotVerifyTokenBannerOpen &&
             isEvm &&
             toToken &&
-            toTokenIsNotDefault &&
+            toTokenIsNotNative &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
