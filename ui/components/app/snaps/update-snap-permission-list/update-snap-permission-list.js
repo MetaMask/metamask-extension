@@ -86,10 +86,6 @@ export default function UpdateSnapPermissionList({
     getSubjectName: getSnapName(snapsMetadata),
   });
 
-  const [showAll, setShowAll] = useState(
-    Object.keys(approvedWeightedPermissions).length < 1,
-  );
-
   // Because approved permissions are sometimes hidden following the abstraction logic,
   // it is needed sometimes to fill the gap in permission display, in certain edge cases
   // when there is not enough new and revoked permissions to be shown.
@@ -106,9 +102,9 @@ export default function UpdateSnapPermissionList({
     minApprovedPermissionsToShow,
   );
 
-  const hasMorePermissionsToShow =
-    filteredApprovedWeightedPermissions.length >
-    approvedWeightedPermissions.length;
+  const [showAll, setShowAll] = useState(
+    approvedWeightedPermissions.length <= minApprovedPermissionsToShow,
+  );
 
   const onShowAllPermissions = () => {
     showAllPermissions();
@@ -141,7 +137,7 @@ export default function UpdateSnapPermissionList({
         targetSubjectsMetadata={targetSubjectsMetadata}
         approved
       />
-      {showAll || !hasMorePermissionsToShow ? null : (
+      {showAll ? null : (
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
