@@ -37,13 +37,10 @@ describe('WhatsNewModal', () => {
 
   const renderModalWithNotification = ({
     notificationId,
-    stateOverrides,
   }: {
     notificationId: number;
-    stateOverrides?: Record<string, unknown>;
   }) => {
     const store = configureStore({
-      ...stateOverrides,
       metamask: {
         ...mockState.metamask,
         announcements: {

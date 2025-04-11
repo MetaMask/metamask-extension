@@ -16,6 +16,7 @@ import {
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
   ZERO_BALANCE,
+  MULTI_SRP_SLIDE,
 } from './constants';
 
 type UseSlideManagementProps = {
@@ -54,6 +55,7 @@ export const useCarouselManagement = ({
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
+    defaultSlides.push(MULTI_SRP_SLIDE);
 
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
