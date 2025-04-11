@@ -56,10 +56,10 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 
-  async check_selectedGasFeeTokenPill(symbol: string) {
-    await this.driver.waitForSelector({
-      css: this.gasFeeTokenPill,
-      text: symbol,
+  async check_gasFee(amountToken: string) {
+    await this.driver.findElement({
+      css: '[data-testid="first-gas-field"]',
+      text: amountToken,
     });
   }
 
@@ -70,10 +70,17 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
-  async check_gasFeeToken(amountToken: string) {
+  async check_gasFeeSymbol(symbol: string) {
+    await this.driver.waitForSelector({
+      css: this.gasFeeTokenPill,
+      text: symbol,
+    });
+  }
+
+  async check_gasFeeTokenFee(amountFiat: string) {
     await this.driver.findElement({
-      css: '[data-testid="first-gas-field"]',
-      text: amountToken,
+      css: '[data-testid="gas-fee-token-fee"]',
+      text: amountFiat,
     });
   }
 
