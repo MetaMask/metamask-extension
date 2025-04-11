@@ -157,8 +157,7 @@ const AssetPage = ({
 
   const multiChainAssets = useMultiChainAssets();
   const mutichainTokenWithFiatAmount = multiChainAssets
-    .filter((item) => item.chainId === chainId)
-    .filter((item) => item.address !== undefined)
+    .filter((item) => item.chainId === chainId && item.address !== undefined)
     .find((item) => {
       switch (type) {
         case AssetType.native:
@@ -348,7 +347,11 @@ const AssetPage = ({
           {t('yourBalance')}
         </Text>
         {[AssetType.token, AssetType.native].includes(type) && (
-          <TokenCell key={`${symbol}-${address}`} token={tokenWithFiatAmount} />
+          <TokenCell
+            key={`${symbol}-${address}`}
+            token={tokenWithFiatAmount}
+            disableHover={true}
+          />
         )}
         <Box
           marginTop={2}

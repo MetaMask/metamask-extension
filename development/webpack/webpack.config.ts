@@ -260,7 +260,7 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
-      // snaps
+      // treats JSON files loaded via `new URL('./file.json', import.meta.url)` as assets.
       {
         test: /\.json$/u,
         dependency: 'url',
