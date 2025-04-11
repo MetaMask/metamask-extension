@@ -19,13 +19,17 @@ import {
   RpcEndpointType,
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  toEvmCaipChainId,
+  type MultichainNetworkConfiguration,
+} from '@metamask/multichain-network-controller';
 import {
   type CaipChainId,
   type Hex,
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
+import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
@@ -65,8 +69,8 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
-  getPermittedChainsForSelectedTab,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -108,6 +112,7 @@ import {
   sortNetworks,
   getNetworkIcon,
   getRpcDataByChainId,
+  sortNetworksByPrioity,
 } from '../../../../shared/modules/network.utils';
 import {
   getCompletedOnboarding,
@@ -173,11 +178,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
 
   const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -303,6 +308,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     Object.values(testNetworks),
     searchQuery,
   );
+  // A sorted list of test networks that put Sepolia first then Linea Sepolia at the top
+  // and the rest of the test networks in alphabetical order.
+  const sortedTestNetworks = useMemo(() => {
+    return sortNetworksByPrioity(searchedTestNetworks, [
+      toEvmCaipChainId(ChainId.sepolia),
+      toEvmCaipChainId(ChainId['linea-sepolia']),
+    ]);
+  }, [searchedTestNetworks]);
 
   const handleEvmNetworkChange = (chainId: CaipChainId) => {
     const hexChainId = convertCaipToHexChainId(chainId);
@@ -341,7 +354,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
 
     if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, hexChainId));
+      dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
       }
@@ -663,7 +676,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
               {showTestnets || currentlyOnTestnet ? (
                 <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
+                  {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),
                   )}
                 </Box>

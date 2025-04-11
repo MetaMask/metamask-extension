@@ -114,11 +114,11 @@ export const AggregatedPercentageOverview = () => {
     }
   }
 
-  let color = TextColor.textDefault;
+  let color = TextColor.textAlternative;
 
   if (!privacyMode && isValidAmount(amountChange)) {
     if ((amountChange as number) === 0) {
-      color = TextColor.textDefault;
+      color = TextColor.textAlternative;
     } else if ((amountChange as number) > 0) {
       color = TextColor.successDefault;
     } else {

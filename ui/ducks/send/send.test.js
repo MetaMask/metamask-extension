@@ -2930,6 +2930,7 @@ describe('Send Slice', () => {
             gasLimit: GAS_LIMITS.SIMPLE,
           },
         }),
+        metamask: {},
       };
 
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
