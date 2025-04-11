@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "トランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "更新とトランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "アカウントを更新しない場合は、こちらからキャンセルできます。\n\n更新せずにこのトランザクションを完了させるには、サイトでこの要求をもう一度行う必要があります。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "トランザクションのキャンセル"
-  },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
   },
