@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
   DeFiPositionsControllerState,
-  GroupedPositions,
+  GroupedDeFiPositions,
 } from '@metamask/assets-controllers';
 import { Box } from '@material-ui/core';
 import TokenCell from '../token-cell';
@@ -62,7 +62,7 @@ function DefiList({ onClick }: DefiListProps) {
     : null;
 
   const extractIconGroup = (
-    protocolPositions: GroupedPositions['protocols'][keyof GroupedPositions['protocols']],
+    protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],
   ) => {
     if (!protocolPositions?.positionTypes) {
       return [];

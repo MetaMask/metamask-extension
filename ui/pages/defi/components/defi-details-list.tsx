@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { GroupedPositions } from '@metamask/assets-controllers';
+import { GroupedDeFiPositions } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import {
   TextColor,
@@ -22,8 +22,8 @@ export type PositionTypeLabels =
   (typeof PositionTypeLabels)[keyof typeof PositionTypeLabels];
 export type PositionTypeKeys = keyof typeof PositionTypeLabels;
 
-type Protocols = GroupedPositions['protocols'];
-type Protocol = Protocols[keyof GroupedPositions['protocols']];
+type Protocols = GroupedDeFiPositions['protocols'];
+type Protocol = Protocols[keyof GroupedDeFiPositions['protocols']];
 type ProtocolPositionTypes = Protocol['positionTypes'];
 type PositionGroup = NonNullable<
   ProtocolPositionTypes[keyof ProtocolPositionTypes]
