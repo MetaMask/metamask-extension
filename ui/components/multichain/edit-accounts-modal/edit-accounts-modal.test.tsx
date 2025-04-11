@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31892
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { CaipAccountId } from '@metamask/utils';
 import { fireEvent } from '@testing-library/react';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

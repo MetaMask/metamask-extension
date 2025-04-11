@@ -76,6 +76,8 @@ const NativeSendHeading = () => {
 
   const transferValue = nativeAssetTransferValue.toFixed();
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31892
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type TestNetChainId = (typeof TEST_CHAINS)[number];
   const isTestnet = TEST_CHAINS.includes(transactionMeta.chainId);
   const { showFiatInTestnets } = useSelector(getPreferences);

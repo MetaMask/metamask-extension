@@ -1,4 +1,6 @@
 import type {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31892
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
