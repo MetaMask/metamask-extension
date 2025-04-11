@@ -129,6 +129,10 @@ export function NftDetailsComponent({
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
   const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
+  const { defaultRpcEndpointIndex } = nftChainNetwork;
+  const { networkClientId: nftNetworkClientId } =
+    nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
+  console.log('nftNetworkClientId', nftNetworkClientId);
   const nftChainImage = getImageForChainId(nftChainId as string);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
@@ -219,7 +223,7 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     let isSuccessfulEvent = false;
     try {
-      await dispatch(removeAndIgnoreNft(address, tokenId));
+      await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
       isSuccessfulEvent = true;
