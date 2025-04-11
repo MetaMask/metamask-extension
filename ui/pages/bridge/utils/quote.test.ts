@@ -425,7 +425,7 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  it.only.each([
+  it.each([
     [
       new BigNumber('100'),
       new BigNumber('100'),
