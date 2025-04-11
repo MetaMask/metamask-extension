@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Dolandırıcılık yapmakla bilinen üçüncü bir tarafın bu siteye erişimi var. İlerlerseniz varlıklarınızı kaybedersiniz."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Site güvenli görünebilir ancak üçüncü bir tarafın sitenin bilgilerine erişimi olabilir. Giriş yaparsanız varlıklarınız çalınabilir."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Onaylarsanız tüm paranızı ve varlıklarınızı kaybedebilirsiniz."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Giriş yaparsanız OpenSea üzerinde yer alan tüm varlıklarınız tehlikeye girer."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Giriş yaparsanız Blur üzerinde yer alan tüm varlıklarınız tehlikeye girer."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Bu site kötü amaçlı bir alan olarak tanınıyor. Giriş yaparsanız para ve varlıkları kaybedersiniz. Bu talebi iptal etmenizi şiddetle tavsiye ederiz."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Giriş yaparsanız tüm varlıklarınızı kaybedebilirsiniz. Bu talebi iptal etmenizi öneririz."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Bu site token'lerinizi harcamak için izin istiyor."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Bu site standart bir hesaba dönmeyi talep ediyor."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Bir site bu hesabın sahibi olduğunuzu kanıtlamak için giriş yapmanızı istiyor."
   },
@@ -1133,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "İzni kaldır"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Hesabı sıfırla"
-  },
   "confirmTitleSIWESignature": {
     "message": "Giriş talebi"
   },
@@ -1147,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "İşlem talebi"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Bu talebi onaylarsanız hesabınız akıllı bir hesaba güncellenecektir."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "İşlemi iptal et"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Güncellemeyi ve işlemi iptal et"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Hesabınızı güncellemek istemiyorsanız burada iptal edebilirsiniz.\n\nBu işlemi bir güncelleme olmadan bitirmek için sitede tekrar bu talebi sunmanız gerekecek. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "İşlemi iptal et"
   },
   "confirmationAlertDetails": {
     "message": "Varlıklarınızı korumak için talebi reddetmenizi öneririz."
@@ -3735,9 +3693,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Sadece güvendiğiniz sitelere bağlayın. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5430,6 @@
     "message": "$1 kilidini açmak için indirin, kurun ve şifrenizi girin.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "OneKey'nizi bağlayın"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "OneKey'nizi doğrudan bilgisayarınıza bağlayın ve kilidini açın. Doğru parolayı kullandığınızdan emin olun.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Trezor'unuzu bağlayın"
   },
@@ -6173,9 +6121,6 @@
   },
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Bu işlem size ekstra ücretlere mal olacaktı, bu yüzden bunu durdurduk. Paranız hala cüzdanınızda."
   },
   "transactionFlowNetwork": {
     "message": "Ağ"

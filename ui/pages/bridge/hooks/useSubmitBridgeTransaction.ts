@@ -241,10 +241,15 @@ export default function useSubmitBridgeTransaction() {
     }
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    // Only redirect to activity tab if not on Solana
+    // This avoids an unintended side effect where the user is redirected to the activity tab
+    // after already being redirected from a different flow.
+    if (!isSolana) {
+      history.push({
+        pathname: DEFAULT_ROUTE,
+        state: { stayOnHomePage: true },
+      });
+    }
   };
 
   return {

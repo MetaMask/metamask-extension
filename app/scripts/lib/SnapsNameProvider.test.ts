@@ -167,7 +167,7 @@ describe('SnapsNameProvider', () => {
       for (const snapId of [SNAP_MOCK.id, SNAP_MOCK_2.id]) {
         expect(handleSnapRequest).toHaveBeenCalledWith({
           snapId,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
             jsonrpc: '2.0',
