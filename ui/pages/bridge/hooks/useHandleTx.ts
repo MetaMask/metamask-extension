@@ -15,6 +15,7 @@ import {
   addTransaction,
   updateTransaction,
   addTransactionAndWaitForPublish,
+  setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
@@ -159,6 +160,10 @@ export default function useHandleTx() {
     txParams: string;
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
+    // Move to activity tab before submitting a transaction
+    // This is a temporary solution to avoid the transaction not being shown in the activity tab
+    // We should find a better solution in the future
+    await dispatch(setDefaultHomeActiveTabName('activity'));
     // Submit a signing request to the snap
     const snapResponse = await snapSender.send({
       id: crypto.randomUUID(),

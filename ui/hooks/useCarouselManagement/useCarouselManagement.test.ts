@@ -18,6 +18,7 @@ import {
   SWEEPSTAKES_END,
   ZERO_BALANCE,
   REMOTE_MODE_SLIDE,
+  MULTI_SRP_SLIDE,
 } from './constants';
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
@@ -27,6 +28,7 @@ const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
@@ -36,6 +38,7 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   CARD_SLIDE,
   { ...FUND_SLIDE, undismissable: false },
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
@@ -46,6 +49,7 @@ const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
   ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
@@ -56,6 +60,7 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
   CARD_SLIDE,
   { ...FUND_SLIDE, undismissable: false },
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
@@ -66,6 +71,7 @@ const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
   ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
@@ -76,6 +82,7 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
   CARD_SLIDE,
   { ...FUND_SLIDE, undismissable: false },
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
@@ -87,6 +94,7 @@ const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
@@ -98,6 +106,7 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   CARD_SLIDE,
   { ...FUND_SLIDE, undismissable: false },
   CASH_SLIDE,
+  MULTI_SRP_SLIDE,
 ];
 
 jest.mock('react-redux', () => ({
@@ -132,6 +141,7 @@ describe('useCarouselManagement', () => {
   let invalidTestDate: string;
 
   beforeEach(() => {
+    delete process.env.IN_TEST;
     // Test dates
     validTestDate = new Date(SWEEPSTAKES_START.getTime() + 1000).toISOString(); // 1 day after
     invalidTestDate = new Date(
@@ -157,6 +167,10 @@ describe('useCarouselManagement', () => {
     mockGetIsRemoteModeEnabled.mockReturnValue(false);
     // Reset mocks
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    process.env.IN_TEST = 'true';
   });
 
   describe('getSweepstakesCampaignActive', () => {
