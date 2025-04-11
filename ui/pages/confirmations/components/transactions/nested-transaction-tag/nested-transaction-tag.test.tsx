@@ -1,14 +1,14 @@
 import React from 'react';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import configureStore from '../../../../../../../store/store';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { useNestedTransactionLabel } from '../../hooks/useNestedTransactionLabel';
 import { NestedTransactionTag } from './nested-transaction-tag';
+import configureStore from '../../../../../store/store';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { useNestedTransactionLabels } from '../../confirm/info/hooks/useNestedTransactionLabels';
 
-jest.mock('../../hooks/useNestedTransactionLabel', () => ({
-  useNestedTransactionLabel: jest.fn(),
+jest.mock('../../confirm/info/hooks/useNestedTransactionLabels', () => ({
+  useNestedTransactionLabels: jest.fn(),
 }));
 
 const FUNCTION_NAME_MOCK = 'TestFunction';
@@ -38,18 +38,20 @@ function render({
 }
 
 describe('NestedTransactionTag', () => {
-  const useNestedTransactionLabelMock = jest.mocked(useNestedTransactionLabel);
+  const useNestedTransactionLabelsMock = jest.mocked(
+    useNestedTransactionLabels,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useNestedTransactionLabelMock.mockReturnValue({ functionName: undefined });
+    useNestedTransactionLabelsMock.mockReturnValue([
+      FUNCTION_NAME_MOCK,
+      FUNCTION_NAME_MOCK,
+    ]);
   });
 
   it('renders tag label with the right number of transactions', () => {
-    useNestedTransactionLabelMock.mockReturnValue({
-      functionName: FUNCTION_NAME_MOCK,
-    });
+    useNestedTransactionLabelsMock.mockReturnValue([FUNCTION_NAME_MOCK]);
 
     const { getByText } = render({
       nestedTransactions: [
@@ -61,11 +63,7 @@ describe('NestedTransactionTag', () => {
     expect(getByText('Includes 2 transactions')).toBeInTheDocument();
   });
 
-  it('matches snapshot', async () => {
-    useNestedTransactionLabelMock.mockReturnValue({
-      functionName: FUNCTION_NAME_MOCK,
-    });
-
+  it('renders correct tooltip content', () => {
     const { container } = render({
       nestedTransactions: [
         BATCH_TRANSACTION_PARAMS_MOCK,
@@ -73,7 +71,10 @@ describe('NestedTransactionTag', () => {
       ],
     });
 
-    expect(container).toMatchSnapshot();
+    const tooltipTrigger = container.querySelector('[data-original-title]');
+    expect(tooltipTrigger?.getAttribute('data-original-title')).toBe(
+      'This transaction includes: TestFunction, TestFunction.',
+    );
   });
 
   it('does not render if no nested transactions', () => {

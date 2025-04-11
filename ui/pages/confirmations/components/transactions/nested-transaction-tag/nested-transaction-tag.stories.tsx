@@ -1,10 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../../../../../store/store';
+import configureStore from '../../../../../store/store';
 import { NestedTransactionTag } from './nested-transaction-tag';
-import { ConfirmContextProvider } from '../../../../../context/confirm';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { ConfirmContextProvider } from '../../../context/confirm';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 
 const FOUR_BYTE_DATA = '0xabcdefab';
 const SOURCIFY_DATA = '0x98765432';

@@ -10,8 +10,7 @@ import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/co
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
 import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useNestedTransactionLabel } from '../../hooks/useNestedTransactionLabel';
+import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -41,14 +40,12 @@ function NestedTransaction({
   index: number;
   nestedTransaction: BatchTransactionParams;
 }) {
-  const t = useI18nContext();
   const { data, to } = nestedTransaction;
-  const { functionName } = useNestedTransactionLabel({
-    nestedTransaction,
-  });
 
-  const label =
-    functionName ?? t('confirmNestedTransactionTitle', [String(index + 1)]);
+  const label = useNestedTransactionLabels({
+    nestedTransactions: [nestedTransaction],
+    useIndex: index,
+  })[0];
 
   return (
     <ConfirmInfoSection>

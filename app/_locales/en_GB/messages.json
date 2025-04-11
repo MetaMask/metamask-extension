@@ -6266,7 +6266,7 @@
     "message": "Total gas fee"
   },
   "transactionIncludesTypes": {
-    "message": "This transaction includes: $1"
+    "message": "This transaction includes: $1."
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
