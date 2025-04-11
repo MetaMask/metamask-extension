@@ -18,7 +18,6 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
-  isQuoteExpired as isQuoteExpiredUtil,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -158,18 +157,13 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
-    quotesLastFetchedMs,
+    isQuoteExpired,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
   // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
   const activeQuote =
     isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
 
