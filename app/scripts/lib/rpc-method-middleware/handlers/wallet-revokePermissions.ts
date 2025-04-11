@@ -5,7 +5,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
@@ -18,6 +18,7 @@ export const revokePermissionsHandler = {
   implementation: revokePermissionsImplementation,
   hookNames: {
     revokePermissionsForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
     updateCaveat: true,
   },
 };
@@ -31,6 +32,7 @@ export const revokePermissionsHandler = {
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.revokePermissionsForOrigin - A hook that revokes given permission keys for an origin
+ * @param options.rejectApprovalRequestsForOrigin - A hook that rejects pending confirmation for an origin
  * @returns A promise that resolves to nothing
  */
 function revokePermissionsImplementation(
@@ -40,8 +42,10 @@ function revokePermissionsImplementation(
   end: JsonRpcEngineEndCallback,
   {
     revokePermissionsForOrigin,
+    rejectApprovalRequestsForOrigin,
   }: {
     revokePermissionsForOrigin: (permissionKeys: string[]) => void;
+    rejectApprovalRequestsForOrigin: () => void;
   },
 ) {
   const { params } = req;
@@ -78,6 +82,7 @@ function revokePermissionsImplementation(
   }
 
   revokePermissionsForOrigin(relevantPermissionKeys);
+  rejectApprovalRequestsForOrigin();
 
   res.result = null;
 

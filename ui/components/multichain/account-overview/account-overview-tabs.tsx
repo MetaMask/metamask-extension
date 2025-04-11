@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,6 +40,7 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { detectNfts } from '../../../store/actions';
+import { getAllChainsToPoll } from '../../../selectors';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -64,6 +65,7 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   const tabProps = useMemo(
     () => ({
@@ -77,7 +79,7 @@ export const AccountOverviewTabs = ({
     (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
-        dispatch(detectNfts());
+        dispatch(detectNfts(allChainIds));
       }
       trackEvent({
         category: MetaMetricsEventCategory.Home,
@@ -114,7 +116,7 @@ export const AccountOverviewTabs = ({
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${asset}`),
+      history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
     [history],
   );
 
@@ -177,7 +179,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__activity-tab"
             {...tabProps}
           >
-            <TransactionList boxProps={{ paddingTop: 4 }} />
+            <TransactionList boxProps={{ paddingTop: 3 }} />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               <NeedHelpButtonLink

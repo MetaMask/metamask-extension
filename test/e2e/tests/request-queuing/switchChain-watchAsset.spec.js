@@ -18,7 +18,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
 
           .build(),
         localNodeOptions: [

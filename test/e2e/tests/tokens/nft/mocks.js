@@ -370,7 +370,7 @@ function setupAutoDetectMocking(
     .withQuery({
       limit: 50,
       includeTopBid: true,
-      chainIds: '1',
+      chainIds: ['1', '59144'],
       continuation: '',
     })
     .thenCallback(() => {

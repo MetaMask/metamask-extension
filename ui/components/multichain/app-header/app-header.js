@@ -30,10 +30,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import {
-  getSelectedMultichainNetworkConfiguration,
-  getIsEvmMultichainNetworkSelected,
-} from '../../../selectors/multichain/networks';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
@@ -48,7 +45,6 @@ export const AppHeader = ({ location }) => {
   const multichainNetwork = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
-  const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const { chainId, isEvm } = multichainNetwork;
   const networkIconSrc = getNetworkIcon(chainId, isEvm);
@@ -148,7 +144,6 @@ export const AppHeader = ({ location }) => {
             {isUnlocked ? (
               <AppHeaderUnlockedContent
                 popupStatus={popupStatus}
-                isEvmNetwork={isEvmNetwork}
                 currentNetwork={multichainNetwork}
                 networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}

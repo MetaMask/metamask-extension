@@ -21,6 +21,9 @@ class ActivityListPage {
 
   private readonly tooltip = '.tippy-tooltip-content';
 
+  private readonly bridgeTransactionCompleted =
+    '.transaction-status-label--confirmed';
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -162,6 +165,30 @@ class ActivityListPage {
   }
 
   /**
+   * This function checks the specified number of completed Birdge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   *
+   * @param expectedNumber - The number of completed Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge completed transactions is displayed within the timeout period.
+   */
+  async check_completedBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.bridgeTransactionCompleted,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge transactions found in activity list on homepage`,
+    );
+  }
+
+  /**
    * This function checks if a specified transaction amount at the specified index matches the expected one.
    *
    * @param expectedAmount - The expected transaction amount to be displayed. Defaults to '-1 ETH'.
@@ -252,7 +279,7 @@ class ActivityListPage {
   }
 
   async click_confirmTransactionReplacement() {
-    await this.driver.clickElement(this.confirmTransactionReplacementButton);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmTransactionReplacementButton);
   }
 
   async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {

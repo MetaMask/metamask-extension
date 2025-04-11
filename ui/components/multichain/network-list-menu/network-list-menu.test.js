@@ -13,6 +13,7 @@ import {
   BNB_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
@@ -46,6 +47,7 @@ const render = ({
   selectedTabOriginInDomainsState = true,
   isAddingNewNetwork = false,
   editedNetwork = undefined,
+  nePortfolioDiscoverButton = false,
 } = {}) => {
   const state = {
     appState: {
@@ -80,6 +82,8 @@ const render = ({
               networkClientId: 'linea-mainnet',
             },
           ],
+          portfolioDiscoverUrl:
+            'https://portfolio.metamask.io/explore/networks/linea',
         },
         '0x38': {
           nativeCurrency: 'BNB',
@@ -147,6 +151,9 @@ const render = ({
         ...(selectedTabOriginInDomainsState
           ? { [origin]: selectedNetworkClientId }
           : {}),
+      },
+      remoteFeatureFlags: {
+        nePortfolioDiscoverButton,
       },
     },
     activeTab: {
@@ -261,7 +268,7 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Add a custom network')).toBeEnabled();
   });
 
-  it('enables the "AAdd a custom network" button when MetaMask is true', () => {
+  it('enables the "Add a custom network" button when MetaMask is true', () => {
     const { queryByText } = render({ isUnlocked: true });
     expect(queryByText('Add a custom network')).toBeEnabled();
   });
@@ -271,6 +278,58 @@ describe('NetworkListMenu', () => {
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
+  });
+
+  // For now, we only have Linea Mainnet enabled for the discover button.
+  it('enables the "Discover" button when the Feature Flag `nePortfolioDiscoverButton` is true and the network is supported', () => {
+    const { queryByTestId } = render({
+      nePortfolioDiscoverButton: true,
+    });
+
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.LINEA_MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).toBeInTheDocument();
+  });
+
+  it('disables the "Discover" button when the Feature Flag `nePortfolioDiscoverButton` is false even if the network is supported', () => {
+    const { queryByTestId } = render({
+      nePortfolioDiscoverButton: false,
+    });
+
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.LINEA_MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+    const { queryByTestId } = render({
+      nePortfolioDiscoverButton: true,
+    });
+
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).not.toBeInTheDocument();
   });
 
   describe('selectedTabOrigin is connected to wallet', () => {

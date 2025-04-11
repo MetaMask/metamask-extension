@@ -34,7 +34,7 @@ import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -58,9 +58,7 @@ import {
 } from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
-import MetaMaskController, {
-  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
-} from './metamask-controller';
+import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
@@ -554,8 +552,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId:
-            metamaskController.networkController.state.selectedNetworkClientId,
+          networkClientId: undefined,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
@@ -929,7 +926,7 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['not_empty']);
 
           expect(
@@ -959,12 +956,12 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue([]);
 
           metamaskController.getPermittedAccounts('test.com');
           expect(
-            metamaskController.sortAccountsByLastSelected,
+            metamaskController.sortEvmAccountsByLastSelected,
           ).toHaveBeenCalledWith(['0xdead', '0xbeef']);
         });
 
@@ -982,7 +979,7 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['0xbeef', '0xdead']);
 
           expect(
@@ -1070,6 +1067,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1108,6 +1106,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1149,6 +1148,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1198,6 +1198,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:100:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1236,6 +1237,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1274,6 +1276,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1320,6 +1323,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1372,6 +1376,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:5:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1420,6 +1425,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1460,6 +1466,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1509,6 +1516,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1534,6 +1542,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledWith(
           { origin: 'test.com' },
           expectedCaip25Permission,
+          undefined,
         );
       });
 
@@ -1563,6 +1572,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1615,7 +1625,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#sortAccountsByLastSelected', () => {
+    describe('#sortEvmAccountsByLastSelected', () => {
       it('returns the keyring accounts in lastSelected order', () => {
         jest
           .spyOn(metamaskController.accountsController, 'listAccounts')
@@ -1683,7 +1693,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1738,7 +1748,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(() =>
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1796,7 +1806,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(() =>
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1913,7 +1923,7 @@ describe('MetaMaskController', () => {
       });
 
       describe('getHardwareTypeForMetric', () => {
-        it.each(['ledger', 'lattice', 'trezor', 'qr'])(
+        it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
           'should return the correct type for %s',
           async (type) => {
             jest
@@ -1927,24 +1937,6 @@ describe('MetaMaskController', () => {
             expect(result).toBe(HardwareKeyringType[type]);
           },
         );
-
-        it('should handle special case for oneKey', async () => {
-          jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation((_, fn) => {
-              const keyring = {
-                type: 'trezor',
-                bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
-              };
-              return fn({ keyring });
-            });
-
-          const result = await metamaskController.getHardwareTypeForMetric(
-            '0x123',
-          );
-
-          expect(result).toBe('OneKey Hardware');
-        });
       });
 
       describe('forgetDevice', () => {
@@ -3596,15 +3588,13 @@ describe('MetaMaskController', () => {
     });
 
     describe('incoming transactions', () => {
-      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
+      it('starts incoming transaction polling if useExternalServices is enabled for that chainId', async () => {
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: true,
-          },
+          useExternalServices: true,
         });
 
         expect(
@@ -3612,15 +3602,13 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async () => {
+      it('stops incoming transaction polling if useExternalServices is disabled for that chainId', async () => {
         expect(
           TransactionController.prototype.stopIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: false,
-          },
+          useExternalServices: false,
         });
 
         expect(

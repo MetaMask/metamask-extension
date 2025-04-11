@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -69,6 +69,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -108,6 +109,7 @@ const AccountListItem = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const locale = useSelector(getIntlLocale);
   ///: END:ONLY_INCLUDE_IF
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -163,10 +165,12 @@ const AccountListItem = ({
     formattedTokensWithBalancesPerChain,
   );
   // cross chain agg balance
-  const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
-    (item) => ({
-      avatarValue: item.iconUrl,
-    }),
+  const mappedOrderedTokenList = useMemo(
+    () =>
+      accountTotalFiatBalances.orderedTokenList.map((item) => ({
+        avatarValue: item.iconUrl,
+      })),
+    [accountTotalFiatBalances.orderedTokenList],
   );
   let balanceToTranslate;
   if (isEvmNetwork) {
@@ -259,7 +263,7 @@ const AccountListItem = ({
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
-          onClick?.();
+          onClick?.(account);
         }
       }}
     >
@@ -338,7 +342,7 @@ const AccountListItem = ({
                 as="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClick?.();
+                  onClick?.(account);
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
@@ -463,6 +467,7 @@ const AccountListItem = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Account Options',
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
             }

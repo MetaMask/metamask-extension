@@ -64,7 +64,6 @@ describe('NotificationDetailBlockExplorerButton', () => {
           notification={mockNotification as Notification}
           chainId={1}
           txHash="0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379"
-          id="button1"
         />
       </Provider>,
     );

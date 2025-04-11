@@ -283,6 +283,7 @@ function maybeDetectPhishing(theController) {
       // is shipped.
       if (
         details.initiator &&
+        details.initiator !== 'null' &&
         // compare normalized URLs
         new URL(details.initiator).host === phishingPageUrl.host
       ) {
@@ -1056,10 +1057,12 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-    updateBadge,
-  );
+  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
+    controller.controllerMessenger.subscribe(
+      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
+      updateBadge,
+    );
+  }
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,

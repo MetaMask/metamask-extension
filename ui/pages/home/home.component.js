@@ -167,7 +167,7 @@ export default class Home extends PureComponent {
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
     setRemoveNftMessage: PropTypes.func.isRequired,
-    closeNotificationPopup: PropTypes.func.isRequired,
+    attemptCloseNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     newTokensImportedError: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -191,7 +191,7 @@ export default class Home extends PureComponent {
     super(props);
 
     const {
-      closeNotificationPopup,
+      attemptCloseNotificationPopup,
       haveSwapsQuotes,
       haveBridgeQuotes,
       isNotification,
@@ -204,7 +204,7 @@ export default class Home extends PureComponent {
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
-      closeNotificationPopup();
+      attemptCloseNotificationPopup();
     } else if (
       pendingApprovals.length ||
       (!isNotification &&
@@ -264,7 +264,7 @@ export default class Home extends PureComponent {
 
   componentDidUpdate(_prevProps, prevState) {
     const {
-      closeNotificationPopup,
+      attemptCloseNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
       newNetworkAddedConfigurationId,
@@ -286,7 +286,7 @@ export default class Home extends PureComponent {
     }
 
     if (notificationClosing && !prevState.notificationClosing) {
-      closeNotificationPopup();
+      attemptCloseNotificationPopup();
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }

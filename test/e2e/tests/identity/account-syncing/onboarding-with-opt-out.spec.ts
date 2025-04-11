@@ -21,24 +21,39 @@ import {
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { completeOnboardFlowIdentity } from '../flows';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 
-describe('Account syncing - Opt-out Profile Sync', async function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
-  const unencryptedAccounts = accountsToMockForAccountsSync;
-  const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
-  const defaultAccountOneName = 'Account 1';
+describe('Account syncing - Opt-out Profile Sync', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const defaultAccountOneName = 'Account 1';
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+      defaultAccountOneName,
+    };
+  };
 
   describe('from inside MetaMask', function () {
     let walletSrp: string;
+
     it('does not sync when profile sync is turned off - previously synced accounts', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+        defaultAccountOneName,
+      } = await arrange();
 
       await withFixtures(
         {
@@ -99,7 +114,8 @@ describe('Account syncing - Opt-out Profile Sync', async function () {
     });
 
     it('does not sync when profile sync is turned off - new user', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const { userStorageMockttpController, defaultAccountOneName } =
+        await arrange();
 
       await withFixtures(
         {

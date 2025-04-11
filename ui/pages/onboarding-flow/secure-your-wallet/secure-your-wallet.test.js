@@ -28,7 +28,25 @@ describe('Secure Your Wallet Onboarding View', () => {
   });
 
   const mockStore = {
-    metamask: {},
+    metamask: {
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+            metadata: {
+              keyring: 'HD Key Tree',
+            },
+          },
+        },
+        selectedAccount: 'accountId',
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
+    },
     localeMessages: {
       currentLocale: 'en',
     },

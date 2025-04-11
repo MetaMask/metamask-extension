@@ -8,7 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
-import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
+import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { selectConversionRateByChainId } from '../../../../selectors';

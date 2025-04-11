@@ -68,6 +68,7 @@ describe('Swaps - notifications', function () {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockTradesApiPriceSlippageError,
+        localNodeOptions: 'ganache',
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -105,20 +106,14 @@ describe('Swaps - notifications', function () {
     );
   });
   it('tests a notification for not enough balance', async function () {
-    const lowBalanceGanacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 0,
-        },
-      ],
+    const localNodeOptions = {
+      mnemonic: 'test test test test test test test test test test test junk',
     };
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: lowBalanceGanacheOptions,
+        localNodeOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },
@@ -172,6 +167,7 @@ describe('Swaps - notifications', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

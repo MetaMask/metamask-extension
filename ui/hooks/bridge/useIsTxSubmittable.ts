@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { useMemo } from 'react';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -28,15 +29,12 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasForQuote,
   } = useSelector(getValidationErrors);
 
-  const balanceAmount = useLatestBalance(fromToken, fromChainId);
-  const nativeAssetBalance = useLatestBalance(
-    fromChainId
-      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-          fromChainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-        ]
-      : null,
-    fromChainId,
+  const balanceAmount = useLatestBalance(fromToken);
+  const nativeAsset = useMemo(
+    () => getNativeAssetForChainId(fromChainId),
+    [fromChainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   return Boolean(
     fromToken &&

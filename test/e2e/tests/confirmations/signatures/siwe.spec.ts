@@ -121,7 +121,6 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
 
 async function assertInfoValues(driver: Driver) {
   const confirmation = new PersonalSignConfirmation(driver);
-  await confirmation.clickCollapseSectionButton();
   await confirmation.verifyOrigin();
-  await confirmation.verifySiweMessage();
+  await confirmation.check_siweMessage();
 }

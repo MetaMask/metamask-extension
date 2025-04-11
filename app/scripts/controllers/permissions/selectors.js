@@ -2,8 +2,9 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
+  getPermittedAccountsForScopes,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { createSelector } from 'reselect';
 
 /**
@@ -29,7 +30,8 @@ const getSubjects = (state) => state.subjects;
 export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
-    return Object.values(subjects).reduce((originToAccountsMap, subject) => {
+    const originToAccountsMap = new Map();
+    Object.values(subjects).forEach((subject) => {
       const caveats =
         subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
@@ -39,8 +41,69 @@ export const getPermittedAccountsByOrigin = createSelector(
         const ethAccounts = getEthAccounts(caveat.value);
         originToAccountsMap.set(subject.origin, ethAccounts);
       }
-      return originToAccountsMap;
-    }, new Map());
+    });
+    return originToAccountsMap;
+  },
+);
+
+/**
+ * Get the permitted accounts for the given scopes by origin
+ *
+ * @param {Record<string, Record<string, unknown>>} state - The PermissionController state
+ * @param {string[]} scopes - The scopes to get the permitted accounts for
+ * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scopes
+ */
+export const getPermittedAccountsForScopesByOrigin = createSelector(
+  getSubjects,
+  (_, scopes) => scopes,
+  (subjects, scopes) => {
+    const originToAccountsMap = new Map();
+    Object.values(subjects).forEach((subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+      if (caveat) {
+        const scopeAccounts = getPermittedAccountsForScopes(
+          caveat.value,
+          scopes,
+        );
+
+        if (scopeAccounts.length > 0) {
+          originToAccountsMap.set(subject.origin, scopeAccounts);
+        }
+      }
+    });
+    return originToAccountsMap;
+  },
+);
+
+/**
+ * Get the origins with a given session property.
+ *
+ * @param state - The PermissionController state
+ * @param property - The property to check for
+ * @returns An object with keys of origins and values of session properties
+ */
+export const getOriginsWithSessionProperty = createSelector(
+  getSubjects,
+  (_, property) => property,
+  (subjects, property) => {
+    const result = {};
+
+    Object.values(subjects).forEach((subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+      const sessionProperty = caveat?.value?.sessionProperties?.[property];
+      if (sessionProperty !== undefined) {
+        result[subject.origin] = sessionProperty;
+      }
+    });
+
+    return result;
   },
 );
 

@@ -9,11 +9,13 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
+import type { ChainId } from '@metamask/bridge-controller';
 import {
   forceUpdateMetamaskState,
   addTransaction,
   updateTransaction,
   addTransactionAndWaitForPublish,
+  setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
@@ -21,7 +23,6 @@ import {
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
@@ -158,6 +159,10 @@ export default function useHandleTx() {
     txParams: string;
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
+    // Move to activity tab before submitting a transaction
+    // This is a temporary solution to avoid the transaction not being shown in the activity tab
+    // We should find a better solution in the future
+    await dispatch(setDefaultHomeActiveTabName('activity'));
     // Submit a signing request to the snap
     const snapResponse = await snapSender.send({
       id: crypto.randomUUID(),

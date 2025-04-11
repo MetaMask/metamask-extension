@@ -3,6 +3,11 @@ import { IconName } from '@metamask/snaps-sdk/jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+} from '@metamask/bridge-controller';
+import {
   ButtonLink,
   IconSize,
   Modal,
@@ -25,11 +30,6 @@ import {
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import {
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-} from '../../../../shared/types/bridge';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,

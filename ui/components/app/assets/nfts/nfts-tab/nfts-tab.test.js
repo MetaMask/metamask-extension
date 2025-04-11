@@ -36,6 +36,7 @@ const NFTS = [
     image:
       'https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE',
     standard: 'ERC1155',
+    chainId: '1',
   },
   {
     address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
@@ -54,6 +55,7 @@ const NFTS = [
     image:
       'https://lh3.googleusercontent.com/H7VrxaalZv4PF1B8U7ADuc8AfuqTVyzmMEDQ5OXKlx0Tqu5XiwsKYj4j_pAF6wUJjLMQbSN_0n3fuj84lNyRhFW9hyrxqDfY1IiQEQ',
     standard: 'ERC1155',
+    chainId: '1',
   },
   {
     address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
@@ -72,6 +74,7 @@ const NFTS = [
     image:
       'https://lh3.googleusercontent.com/CHNTSlKB_Gob-iwTq8jcag6XwBkTqBMLt_vEKeBv18Q4AoPFAEPceqK6mRzkad2s5djx6CT5zbGQwDy81WwtNzViK5dQbG60uAWv',
     standard: 'ERC1155',
+    chainId: '1',
   },
   {
     address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
@@ -89,6 +92,7 @@ const NFTS = [
     image:
       'https://lh3.googleusercontent.com/4jfPi-nQNWCUXD5qVNVWX7LX2UufU_elEJcvICFlsTdcBXv70asnDEOlI8oKECZxlXq1wseeIXMwmP5tLyOUxMKk',
     standard: 'ERC1155',
+    chainId: '1',
   },
   {
     address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
@@ -106,6 +110,7 @@ const NFTS = [
     image:
       'https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE',
     standard: 'ERC1155',
+    chainId: '1',
   },
   {
     address: '0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414',
@@ -114,6 +119,7 @@ const NFTS = [
     description: null,
     image: 'ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL',
     standard: 'ERC721',
+    chainId: '1',
   },
   {
     address: '0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414',
@@ -122,6 +128,7 @@ const NFTS = [
     description: null,
     image: 'ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL',
     standard: 'ERC721',
+    chainId: '1',
   },
   {
     address: '0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414',
@@ -130,6 +137,7 @@ const NFTS = [
     description: null,
     image: 'ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL',
     standard: 'ERC721',
+    chainId: '1',
   },
 ];
 
@@ -142,7 +150,7 @@ const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
 const setUseNftDetectionStub = jest.fn();
 const setDisplayNftMediaStub = jest.fn();
-
+const setPreferenceStub = jest.fn();
 const render = ({
   nftContracts = [],
   nfts = [],
@@ -219,6 +227,7 @@ describe('NFT Items', () => {
     updateNftDropDownState: updateNftDropDownStateStub,
     setUseNftDetection: setUseNftDetectionStub,
     setOpenSeaEnabled: setDisplayNftMediaStub,
+    setPreference: setPreferenceStub,
   });
   const historyPushMock = jest.fn();
 

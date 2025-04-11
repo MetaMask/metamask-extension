@@ -1219,6 +1219,8 @@ export default function PrepareSwapPage({
             onModalClose={() => {
               dispatch(setTransactionSettingsOpened(false));
             }}
+            sourceTokenSymbol={fromToken?.symbol}
+            destinationTokenSymbol={toToken?.symbol}
           />
         )}
         {showQuotesLoadingAnimation && (

@@ -10,7 +10,7 @@ describe('Settings Search', function () {
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Nicknames',
+    experimental: 'Snaps',
     about: 'Terms of Use',
   };
 

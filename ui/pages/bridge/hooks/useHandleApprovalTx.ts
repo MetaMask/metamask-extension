@@ -5,11 +5,9 @@ import {
   type TxData,
   type QuoteResponse,
   FeeType,
-} from '../../../../shared/types/bridge';
-import {
   isEthUsdt,
   getEthUsdtResetData,
-} from '../../../../shared/modules/bridge-utils/bridge.util';
+} from '@metamask/bridge-controller';
 import { ETH_USDT_ADDRESS } from '../../../../shared/constants/bridge';
 import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';

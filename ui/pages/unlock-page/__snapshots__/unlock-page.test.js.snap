@@ -19,14 +19,16 @@ exports[`Unlock Page should match snapshot 1`] = `
         </div>
       </div>
       <h1
-        class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-1 mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-1 mm-box--color-text-default"
         data-testid="unlock-page-title"
       >
         Welcome back!
       </h1>
-      <div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+      >
         The decentralized web awaits
-      </div>
+      </p>
       <form
         class="unlock-page__form"
       >

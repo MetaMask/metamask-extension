@@ -49,7 +49,7 @@ import {
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getPetnamesEnabled,
+  getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -62,16 +62,14 @@ import {
   setUseAddressBarEnsResolution,
   showModal,
   toggleNetworkMenu,
-  setIncomingTransactionsPreferences,
   setUseTransactionSimulations,
-  setPetnamesEnabled,
+  setUseExternalNameSources,
   setEditedNetwork,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
   openBasicFunctionalityModal,
 } from '../../../ducks/app/app';
-import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
@@ -92,7 +90,6 @@ export default function PrivacySettings() {
 
   const defaultState = useSelector((state) => state.metamask);
   const {
-    incomingTransactionsPreferences,
     use4ByteResolution,
     useTokenDetection,
     useCurrencyRateCheck,
@@ -101,7 +98,7 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
     useTransactionSimulations,
   } = defaultState;
-  const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const useExternalNameSources = useSelector(getUseExternalNameSources);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
@@ -121,7 +118,9 @@ export default function PrivacySettings() {
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
-  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
+  const [turnOnExternalNameSources, setTurnOnExternalNameSources] = useState(
+    useExternalNameSources,
+  );
 
   const trackEvent = useContext(MetaMetricsContext);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -158,7 +157,7 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
-    dispatch(setPetnamesEnabled(turnOnPetnames));
+    setUseExternalNameSources(turnOnExternalNameSources);
 
     // Profile Syncing Setup
     if (!externalServicesOnboardingToggleState) {
@@ -177,11 +176,11 @@ export default function PrivacySettings() {
         settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: isProfileSyncingEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        show_incoming_tx: incomingTransactionsPreferences,
         turnon_token_detection: turnOnTokenDetection,
       },
     });
 
+    console.log('go back man');
     history.push(ONBOARDING_COMPLETION_ROUTE);
   };
 
@@ -618,17 +617,6 @@ export default function PrivacySettings() {
                       </>
                     }
                   />
-                  <IncomingTransactionToggle
-                    networkConfigurations={networkConfigurations}
-                    setIncomingTransactionsPreferences={(chainId, value) =>
-                      dispatch(
-                        setIncomingTransactionsPreferences(chainId, value),
-                      )
-                    }
-                    incomingTransactionsPreferences={
-                      incomingTransactionsPreferences
-                    }
-                  />
                   <Setting
                     value={turnOnCurrencyRateCheck}
                     setValue={setTurnOnCurrencyRateCheck}
@@ -709,10 +697,10 @@ export default function PrivacySettings() {
                     description={t('toggleDecodeDescription')}
                   />
                   <Setting
-                    value={turnOnPetnames}
-                    setValue={setTurnOnPetnames}
-                    title={t('petnamesEnabledToggle')}
-                    description={t('petnamesEnabledToggleDescription')}
+                    value={turnOnExternalNameSources}
+                    setValue={setTurnOnExternalNameSources}
+                    title={t('externalNameSourcesSetting')}
+                    description={t('externalNameSourcesSettingDescription')}
                   />
                 </>
               ) : null}

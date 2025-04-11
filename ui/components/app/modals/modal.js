@@ -86,7 +86,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       width:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '357px' : '449px',
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '400px' : '449px',
       top: 'calc(33% + 45px)',
       paddingLeft:
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,

@@ -21,7 +21,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
   getUnconnectedAccounts,
@@ -133,7 +133,7 @@ export const Connections = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
   const permittedAccounts = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, activeTabOrigin),
   );
 
   const disconnectAllAccounts = () => {

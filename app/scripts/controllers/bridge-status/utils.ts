@@ -1,15 +1,14 @@
-import { BRIDGE_CLIENT_ID } from '../../../../shared/constants/bridge';
+import { BridgeClientId, type Quote } from '@metamask/bridge-controller';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
   StatusRequestWithSrcTxHash,
   StatusRequestDto,
 } from '../../../../shared/types/bridge-status';
-import type { Quote } from '../../../../shared/types/bridge';
 import { validateResponse, validators } from './validators';
 import { BRIDGE_STATUS_BASE_URL } from './constants';
 
-const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
+const CLIENT_ID_HEADER = { 'X-Client-Id': BridgeClientId.EXTENSION };
 
 export const getStatusRequestDto = (
   statusRequest: StatusRequestWithSrcTxHash,

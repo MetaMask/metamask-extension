@@ -19,14 +19,14 @@ class AccountList extends Component {
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
-      this.props.getPage(this.props.device, 1, this.props.selectedPath);
+      this.props.getPage(this.props.device, 1, this.props.selectedPath, false);
     } else {
       this.props.onAccountRestriction();
     }
   };
 
   goToPreviousPage = () => {
-    this.props.getPage(this.props.device, -1, this.props.selectedPath);
+    this.props.getPage(this.props.device, -1, this.props.selectedPath, false);
   };
 
   setPath(pathValue) {
@@ -50,7 +50,7 @@ class AccountList extends Component {
         <div className="hw-connect__hdPath">
           <Dropdown
             className="hw-connect__hdPath__select"
-            options={hdPaths[device.toLowerCase()]}
+            options={hdPaths[device]}
             selectedOption={pathValue || selectedPath}
             onChange={(value) => {
               this.setPath(value);
@@ -73,7 +73,7 @@ class AccountList extends Component {
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
-    ].includes(device.toLowerCase());
+    ].includes(device);
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">

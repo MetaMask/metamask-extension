@@ -66,7 +66,7 @@ export const AggregatedBalance = ({
   );
 
   const formattedTokenDisplay = formatWithThreshold(
-    multichainNativeTokenBalance.amount,
+    parseFloat(multichainNativeTokenBalance.amount.toString()),
     0.0,
     locale,
     {

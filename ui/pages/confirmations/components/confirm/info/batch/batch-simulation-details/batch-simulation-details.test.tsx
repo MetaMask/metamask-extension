@@ -14,7 +14,9 @@ import { AlertMetricsProvider } from '../../../../../../../components/app/alert-
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
-import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
+import { Confirmation } from '../../../../../types/confirm';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
@@ -26,9 +28,12 @@ jest.mock('../../hooks/useBatchApproveBalanceChanges', () => ({
   useBatchApproveBalanceChanges: jest.fn(),
 }));
 
-jest.mock('../../../../../../../store/actions/transaction-controller', () => ({
-  updateAtomicBatchData: jest.fn(),
-}));
+jest.mock(
+  '../../../../../../../store/controller-actions/transaction-controller',
+  () => ({
+    updateAtomicBatchData: jest.fn(),
+  }),
+);
 
 jest.mock('../../../../../confirm-approve/confirm-approve.util', () => ({
   getCustomTxParamsData: jest.fn(),
@@ -87,15 +92,16 @@ const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   nestedTransactionIndex: 0,
 };
 
-function render() {
+function render(transaction?: Confirmation) {
   const store = configureStore(
     getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        nestedTransactions: [NESTED_TRANSACTION_MOCK],
-        simulationData: {
-          tokenBalanceChanges: [],
-        },
-      }),
+      transaction ??
+        genUnapprovedContractInteractionConfirmation({
+          nestedTransactions: [NESTED_TRANSACTION_MOCK],
+          simulationData: {
+            tokenBalanceChanges: [],
+          },
+        }),
     ),
   );
 
@@ -274,5 +280,10 @@ describe('BatchSimulationDetails', () => {
       transactionData: DATA_MOCK,
       transactionIndex: 0,
     });
+  });
+
+  it('return null for transaction of type revokeDelegation', () => {
+    const { container } = render(RevokeDelegation);
+    expect(container.firstChild).toBeNull();
   });
 });

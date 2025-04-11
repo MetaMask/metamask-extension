@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
   Display,
@@ -8,42 +8,44 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
-  getCurrentNetwork,
   getIpfsGateway,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
   nft: NFT;
   onClick: () => void;
   privacyMode?: boolean;
-  currentChain: {
-    chainId: Hex;
-    nickname: string;
-    rpcPrefs?: {
-      imageUrl: string;
-    };
-  };
 }) => {
-  const { nft, onClick, privacyMode, currentChain } = props;
+  const { nft, onClick, privacyMode } = props;
 
-  const { image, imageOriginal } = nft;
+  const { image: _image, imageOriginal, tokenURI } = nft;
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
+  const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftImageURL = useGetAssetImageUrl(
     imageOriginal ?? image ?? undefined,
     ipfsGateway,
   );
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
 
@@ -55,8 +57,8 @@ const NFTGridItem = (props: {
       nft={nft}
       alt={nftImageAlt}
       src={nftItemSrc}
-      networkName={currentChain.nickname}
-      networkSrc={currentChain.rpcPrefs?.imageUrl}
+      networkName={allNetworks?.[toHex(nft.chainId)]?.name}
+      networkSrc={getImageForChainId(toHex(nft.chainId)) || undefined}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}
@@ -74,11 +76,6 @@ export default function NftGrid({
   handleNftClick: (nft: NFT) => void;
   privacyMode?: boolean;
 }) {
-  const currentChain = useSelector(getCurrentNetwork) as {
-    chainId: Hex;
-    nickname: string;
-    rpcPrefs?: { imageUrl: string };
-  };
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
@@ -96,7 +93,6 @@ export default function NftGrid({
                 className="nft-items__image-wrapper"
               >
                 <NFTGridItem
-                  currentChain={currentChain}
                   nft={nft}
                   onClick={() => handleNftClick(nft)}
                   privacyMode={privacyMode}

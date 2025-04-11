@@ -34,6 +34,12 @@ describe('Accounts Selectors', () => {
         Object.values(mockState.metamask.internalAccounts.accounts),
       );
     });
+
+    it('returns the same object', () => {
+      const result1 = getInternalAccounts(mockState as AccountsState);
+      const result2 = getInternalAccounts(mockState as AccountsState);
+      expect(result1 === result2).toBe(true);
+    });
   });
 
   describe('#getSelectedInternalAccount', () => {
@@ -108,7 +114,6 @@ describe('Accounts Selectors', () => {
   });
 
   describe('isSelectedInternalAccountEth', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isEth: true },
       {
@@ -140,7 +145,6 @@ describe('Accounts Selectors', () => {
   });
 
   describe('isSelectedInternalAccountBtc', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isBtc: false },
       {

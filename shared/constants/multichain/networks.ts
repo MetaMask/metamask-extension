@@ -28,6 +28,7 @@ export type MultichainProviderConfig = ProviderConfigWithImageUrl & {
   // NOTE: For now we use a callback to check if the address is compatible with
   // the given network or not
   isAddressCompatible: (address: string) => boolean;
+  decimals: number;
 };
 
 export type MultichainNetworkIds = `${MultichainNetworks}`;
@@ -55,6 +56,8 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
 };
 
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
+export const BITCOIN_TESTNET_TOKEN_IMAGE_URL =
+  './images/bitcoin-testnet-logo.svg';
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
@@ -94,6 +97,7 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
 
 export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
 } as const;
 
@@ -111,6 +115,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Bitcoin',
     id: 'btc-mainnet',
     type: 'rpc',
+    decimals: 8,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
       blockExplorerUrl:
@@ -131,8 +136,9 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Bitcoin (testnet)',
     id: 'btc-testnet',
     type: 'rpc',
+    decimals: 8,
     rpcPrefs: {
-      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN_TESTNET],
       blockExplorerUrl:
         MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
           MultichainNetworks.BITCOIN_TESTNET
@@ -154,6 +160,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Solana',
     id: 'solana-mainnet',
     type: 'rpc',
+    decimals: 5,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
       blockExplorerUrl:
@@ -174,6 +181,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Solana (devnet)',
     id: 'solana-devnet',
     type: 'rpc',
+    decimals: 5,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
       blockExplorerUrl:
@@ -194,6 +202,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Solana (testnet)',
     id: 'solana-testnet',
     type: 'rpc',
+    decimals: 5,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
       blockExplorerUrl:

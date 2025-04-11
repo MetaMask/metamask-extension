@@ -35,7 +35,10 @@ describe('Switching between account from different networks', function (this: Su
         await headerNavbar.check_ifNetworkPickerClickable(true);
         await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
         await headerNavbar.openAccountMenu();
-        await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Solana });
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: 'Solana Account 2',
+        });
         await headerNavbar.check_ifNetworkPickerClickable(true);
         await headerNavbar.check_currentSelectedNetwork('Solana Mainnet');
         await headerNavbar.check_accountLabel('Solana Account 2');

@@ -30,6 +30,9 @@ class HeaderNavbar {
   private readonly notificationsButton =
     '[data-testid="notifications-menu-item"]';
 
+  private readonly notificationCountOption =
+    '[data-testid="global-menu-notification-count"]';
+
   private readonly firstTimeTurnOnNotificationsButton =
     '[data-testid="turn-on-notifications-button"]';
 
@@ -104,6 +107,20 @@ class HeaderNavbar {
   async goToNotifications(): Promise<void> {
     console.log('Click notifications button');
     await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async clickNotificationsOptions(): Promise<void> {
+    console.log('Click notifications options');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async check_notificationCountInMenuOption(count: number): Promise<void> {
+    await this.openThreeDotMenu();
+    await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
   }
 
   async check_currentSelectedNetwork(networkName: string): Promise<void> {

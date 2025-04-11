@@ -1,4 +1,5 @@
 import React from 'react';
+import { CaipAccountId } from '@metamask/utils';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
@@ -40,10 +41,19 @@ const render = (
     mockState.metamask.internalAccounts.accounts,
   ) as unknown as MergedInternalAccount[];
 
+  const accountsWithCaipAccountId = accounts.map((account) => {
+    return {
+      ...account,
+      caipAccountId: `${account.scopes[0]}:${account.address}` as CaipAccountId,
+    };
+  });
+
   return renderWithProvider(
     <EditAccountsModal
-      accounts={accounts}
-      defaultSelectedAccountAddresses={[accounts[0].address]}
+      accounts={accountsWithCaipAccountId}
+      defaultSelectedAccountAddresses={[
+        accountsWithCaipAccountId[0].caipAccountId,
+      ]}
       {...props}
     />,
     store,
@@ -68,7 +78,7 @@ describe('EditAccountsModal', () => {
     });
     fireEvent.click(getByTestId('connect-more-accounts-button'));
     expect(onSubmit).toHaveBeenCalledWith([
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     ]);
   });
 
