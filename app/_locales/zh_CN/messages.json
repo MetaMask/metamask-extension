@@ -706,6 +706,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "如果继续，您在 Blur 上列出的全部资产都将面临风险。"
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "您正在与恶意网站交互。如果继续，您可能会损失资产。"
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "如果继续，您在 OpenSea 上列出的全部资产都将面临风险。"
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "如果您确认此请求，您可能会损失资产。我们建议您取消此请求。"
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "您正在将您的资产发送给欺诈方。如果继续，您将会损失这部分资产。"
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "如果您确认此请求，则表示您允许欺诈方提取并花费您的资产。您将无法收回资产。"
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -762,6 +780,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "您需要允许获取 $1 $2 用于桥接，然后批准桥接到 $2。这需要两次单独的确认。"
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "区块浏览器链接已复制！"
+  },
   "bridgeCalculatingAmount": {
     "message": "正在计算......"
   },
@@ -817,6 +838,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "选择代币和金额"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana 账户已创建"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "在 $2 上收到了 $1",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -845,6 +869,12 @@
   },
   "bridgeToChain": {
     "message": "桥接至 $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "如果您手动添加了此代币，请务必在桥接之前了解资金面临的风险。"
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "我们无法验证此代币。"
   },
   "bridgeTxDetailsBridging": {
     "message": "桥接"
@@ -2453,6 +2483,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "导入钱包或账户"
+  },
+  "importWalletSuccess": {
+    "message": "私钥助记词 $1 已导入",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "导入$1",
@@ -4318,6 +4352,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "保护您的资金"
+  },
+  "redeposit": {
+    "message": "重新存入"
   },
   "refreshList": {
     "message": "刷新列表"
