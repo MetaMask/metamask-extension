@@ -8,6 +8,8 @@ describe('importAllDetectedTokens with PORTFOLIO_VIEW true', () => {
   let trackTokenAddedEventMock: jest.Mock;
 
   beforeEach(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.PORTFOLIO_VIEW = 'true';
     addImportedTokensMock = jest.fn(async () => Promise.resolve());
     trackTokenAddedEventMock = jest.fn();

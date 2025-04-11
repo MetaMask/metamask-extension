@@ -136,6 +136,8 @@ export class Delegation7702PublishHook {
       data: transactionData,
       maxFeePerGas: maxFeePerGas as Hex,
       maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       to: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
     };
 
@@ -223,6 +225,8 @@ export class Delegation7702PublishHook {
     const { amount, recipient, tokenAddress } = gasFeeToken;
     const { data, to } = txParams;
     const tokenAmountPadded = add0x(remove0x(amount).padStart(64, '0'));
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const enforcer = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 
     const enforcerTerms = add0x(

@@ -160,6 +160,8 @@ describe('ErrorPage', () => {
   });
 
   it('should open the support consent modal when the "Contact Support" button is clicked', () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.open = jest.fn();
 
     const { getByTestId } = renderWithProvider(

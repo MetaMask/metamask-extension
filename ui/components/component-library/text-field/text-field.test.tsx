@@ -24,6 +24,8 @@ describe('TextField', () => {
     const { getByTestId } = render(
       <TextField inputProps={{ 'data-testid': 'text-field' }} />,
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textField = getByTestId('text-field') as HTMLInputElement;
 
     expect(textField.value).toBe(''); // initial value is empty string
@@ -175,6 +177,8 @@ describe('TextField', () => {
         inputProps={{ 'data-testid': 'text-field-default-value' }}
       />,
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect((getByRole('textbox') as HTMLInputElement).value).toBe(
       'default value',
     );
@@ -208,6 +212,8 @@ describe('TextField', () => {
     const { getByRole, user } = renderWithUserEvent(
       <TextField maxLength={5} />,
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textField = getByRole('textbox') as HTMLInputElement;
     await user.type(textField, '1234567890');
     expect(getByRole('textbox')).toBeDefined();
@@ -219,8 +225,12 @@ describe('TextField', () => {
     const { getByTestId, getByRole, user } = renderWithUserEvent(
       <TextField readOnly data-testid="read-only" />,
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textField = getByTestId('read-only') as HTMLInputElement;
     await user.type(textField, '1234567890');
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect((getByRole('textbox') as HTMLInputElement).value).toBe('');
     expect(getByRole('textbox')).toHaveAttribute('readonly', '');
   });
@@ -235,6 +245,8 @@ describe('TextField', () => {
   });
   it('should render with a custom input and still work', async () => {
     const CustomInputComponent = React.forwardRef<
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       InputComponent & HTMLInputElement,
       { disableStateStyles: boolean }
     >(({ disableStateStyles, ...props }, ref) => (
@@ -255,6 +267,8 @@ describe('TextField', () => {
         inputProps={{ 'data-testid': 'text-field', className: 'test' }}
       />,
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textField = getByTestId('text-field') as HTMLInputElement;
 
     expect(textField.value).toBe(''); // initial value is empty string

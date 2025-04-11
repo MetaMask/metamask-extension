@@ -137,6 +137,8 @@ ProductTour.propTypes = {
   /**
    * The element that the menu should display next to
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   anchorElement: PropTypes.instanceOf(window.Element),
   /**
    * Function that closes this menu

@@ -34,6 +34,8 @@ export const PPOMControllerInit: ControllerInitFunction<
     ppomProvider: {
       // @ts-expect-error Controller and PPOM wrapper have different argument types in `new` and `validateJsonRpc`
       PPOM: PPOMModule.PPOM,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       ppomInit: async () => PPOMModule.default(process.env.PPOM_URI),
     },
     // @ts-expect-error State type is not `Partial` in controller.
@@ -46,7 +48,11 @@ export const PPOMControllerInit: ControllerInitFunction<
       'PreferencesController:stateChange',
     ),
     // Both values have defaults in `builds.yml` so should always be defined.
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     cdnBaseUrl: process.env.BLOCKAID_FILE_CDN as string,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY as string,
   });
 

@@ -40,8 +40,12 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
     }: CheckboxProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleCheckboxKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         onChange?.(event as unknown as ChangeEvent<HTMLInputElement>);
       }
     };
@@ -75,6 +79,8 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             readOnly={isReadOnly}
             required={isRequired}
             data-indeterminate={isIndeterminate}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               if (isReadOnly) {
                 event.preventDefault();

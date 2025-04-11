@@ -70,6 +70,8 @@ describe('Notifications Activation', () => {
   });
 
   afterEach(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.history.pushState({}, '', '/'); // return to homescreen
   });
 

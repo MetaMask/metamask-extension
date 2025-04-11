@@ -82,8 +82,11 @@ describe('ScrollToBottom', () => {
 
     it('does not scroll to the top while the confirmation id does not change', () => {
       const mockScrollTo = jest.fn();
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line @typescript-eslint/unbound-method, no-restricted-globals -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
 
       jest
@@ -97,13 +100,18 @@ describe('ScrollToBottom', () => {
 
       expect(mockScrollTo).not.toHaveBeenCalled();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
     });
 
     it('scrolls to the top when the confirmation changes', () => {
       const mockScrollTo = jest.fn();
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line @typescript-eslint/unbound-method, no-restricted-globals -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
 
       renderWithConfirmContextProvider(
@@ -113,6 +121,8 @@ describe('ScrollToBottom', () => {
 
       expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
     });
 

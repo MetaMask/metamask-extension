@@ -32,6 +32,8 @@ import type { SortOrder, SortingCallbacksT } from '../../util/sort';
 // should probably be broken out into component library
 type SelectableListItemProps = {
   isSelected?: boolean;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
   children: ReactNode;

@@ -19,8 +19,12 @@ describe('Transaction Relay Utils', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.TRANSACTION_RELAY_API_URL = URL_MOCK;
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fetchMock = jest.spyOn(global, 'fetch').mockReturnValue({
       json: async () =>
         Promise.resolve({ transactionHash: TRANSACTION_HASH_MOCK }),

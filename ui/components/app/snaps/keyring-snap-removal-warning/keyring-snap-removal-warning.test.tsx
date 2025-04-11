@@ -129,6 +129,8 @@ describe('Keyring Snap Remove Warning', () => {
   });
 
   it('opens block explorer for account', async () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const { getByText, getAllByTestId } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
@@ -146,6 +148,8 @@ describe('Keyring Snap Remove Warning', () => {
     fireEvent.click(accountLink[0]);
 
     await waitFor(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       expect(global.platform.openTab).toHaveBeenCalled();
     });
   });

@@ -138,6 +138,8 @@ function createSelectedAccountForAccountsController(
   let selectedAddress = state.PreferencesController?.selectedAddress;
 
   if (typeof selectedAddress !== 'string') {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.PreferencesController?.selectedAddress is ${selectedAddress}`,

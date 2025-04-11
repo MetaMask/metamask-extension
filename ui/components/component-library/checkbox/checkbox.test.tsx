@@ -51,6 +51,8 @@ describe('Checkbox', () => {
       />,
     );
     expect(getByRole('checkbox')).toBeChecked();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(window.getComputedStyle(getByTestId('check-bold')).maskImage).toBe(
       `url('./images/icons/check-bold.svg')`,
     );
@@ -66,6 +68,8 @@ describe('Checkbox', () => {
     expect(getByRole('checkbox').getAttribute('data-indeterminate')).toBe(
       'true',
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(window.getComputedStyle(getByTestId('minus-bold')).maskImage).toBe(
       `url('./images/icons/minus-bold.svg')`,
     );

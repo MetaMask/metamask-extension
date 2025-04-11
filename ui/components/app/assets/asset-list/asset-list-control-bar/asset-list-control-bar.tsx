@@ -78,6 +78,8 @@ const AssetListControlBar = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);

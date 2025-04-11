@@ -3,12 +3,15 @@ import type { AggregatorNetwork } from '../../../ducks/ramps/types';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const isProdEnv = process.env.NODE_ENV === 'production';
 const PROD_RAMP_API_BASE_URL = 'https://on-ramp-content.api.cx.metamask.io';
 const UAT_RAMP_API_BASE_URL = 'https://on-ramp-content.uat-api.cx.metamask.io';
 
 const rampApiBaseUrl =
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-restricted-globals -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   process.env.METAMASK_RAMP_API_CONTENT_BASE_URL ||
   (isProdEnv ? PROD_RAMP_API_BASE_URL : UAT_RAMP_API_BASE_URL);
 

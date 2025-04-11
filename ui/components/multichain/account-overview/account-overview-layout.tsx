@@ -56,6 +56,8 @@ export const AccountOverviewLayout = ({
       openBridgeExperience(
         'Carousel',
         defaultSwapsToken,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         location.pathname.includes('asset') ? '&token=native' : '',
       );
     }

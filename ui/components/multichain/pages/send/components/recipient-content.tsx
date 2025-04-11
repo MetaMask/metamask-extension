@@ -131,6 +131,8 @@ export const SendPageRecipientContent = ({
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Gas data

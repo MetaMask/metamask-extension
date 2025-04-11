@@ -463,6 +463,8 @@ export function getURL(url) {
 }
 
 export function getIsBrowserDeprecated(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   browser = bowser.getParser(window.navigator.userAgent),
 ) {
   return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
@@ -497,6 +499,8 @@ export const toHumanReadableTime = (t, milliseconds) => {
 };
 
 export function clearClipboard() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.navigator.clipboard.writeText('');
 }
 

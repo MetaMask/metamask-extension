@@ -24,6 +24,8 @@ describe('TermsOfUsePopup', () => {
       unobserve: () => null,
       disconnect: () => null,
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.IntersectionObserver = mockIntersectionObserver;
   });
 
@@ -36,10 +38,16 @@ describe('TermsOfUsePopup', () => {
 
   it('scrolls down when handleScrollDownClick is called', () => {
     const mockScrollIntoView = jest.fn();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const originalScrollIntoView = window.HTMLElement.prototype.scrollIntoView;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
     render();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const button = document.querySelector(
       "[data-testid='popover-scroll-button']",
     );
@@ -49,6 +57,8 @@ describe('TermsOfUsePopup', () => {
       behavior: 'smooth',
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
   });
 });

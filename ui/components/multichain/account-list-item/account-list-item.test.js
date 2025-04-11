@@ -129,6 +129,8 @@ describe('AccountListItem', () => {
         shortenAddress(toChecksumHexAddress(mockAccount.address)),
       ),
     ).toBeInTheDocument();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('evm-account-list-item');
@@ -141,6 +143,8 @@ describe('AccountListItem', () => {
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
     ).toBeInTheDocument();
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('[title="$100,000.00 USD"]'),
     ).toBeInTheDocument();
 
@@ -150,6 +154,8 @@ describe('AccountListItem', () => {
   it('renders selected block when account is selected', () => {
     render({ selected: true });
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
   });
@@ -166,18 +172,24 @@ describe('AccountListItem', () => {
       },
     });
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.multichain-account-list-item__tooltip'),
     ).toBeInTheDocument();
   });
 
   it('renders the three-dot menu to launch the details menu', () => {
     render({ menuType: AccountListItemMenuTypes.Account });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
     );
     expect(optionsButton).toBeInTheDocument();
     fireEvent.click(optionsButton);
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.multichain-account-list-item-menu__popover'),
     ).toBeInTheDocument();
   });
@@ -185,6 +197,8 @@ describe('AccountListItem', () => {
   it('executes the action when the item is clicked', () => {
     const onClick = jest.fn();
     render({ onClick });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const item = document.querySelector('.multichain-account-list-item');
     fireEvent.click(item);
     expect(onClick).toHaveBeenCalled();
@@ -193,11 +207,15 @@ describe('AccountListItem', () => {
   it('clicking the three-dot menu opens up options', () => {
     const onClick = jest.fn();
     render({ onClick, menuType: AccountListItemMenuTypes.Account });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const item = document.querySelector(
       '[data-testid="account-list-item-menu-button"]',
     );
     fireEvent.click(item);
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('[data-testid="account-list-menu-open-explorer"]'),
     ).toBeInTheDocument();
   });

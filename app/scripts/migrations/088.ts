@@ -79,6 +79,8 @@ function migrateData(state: Record<string, unknown>): void {
         });
       }
     } else if (hasProperty(nftControllerState, 'allNftContracts')) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.NftController.allNftContracts is ${typeof nftControllerState.allNftContracts}`,
@@ -119,6 +121,8 @@ function migrateData(state: Record<string, unknown>): void {
         });
       }
     } else if (hasProperty(nftControllerState, 'allNfts')) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.NftController.allNfts is ${typeof nftControllerState.allNfts}`,
@@ -132,6 +136,8 @@ function migrateData(state: Record<string, unknown>): void {
 
     state.NftController = nftControllerState;
   } else if (hasProperty(state, 'NftController')) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`typeof state.NftController is ${typeof state.NftController}`),
     );
@@ -167,6 +173,8 @@ function migrateData(state: Record<string, unknown>): void {
         (_, chainId: string) => toHex(chainId),
       );
     } else if (hasProperty(tokenListControllerState, 'tokensChainsCache')) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.TokenListController.tokensChainsCache is ${typeof state
@@ -212,6 +220,8 @@ function migrateData(state: Record<string, unknown>): void {
         (_, chainId: string) => toHex(chainId),
       );
     } else if (hasProperty(tokensControllerState, 'allTokens')) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.TokensController.allTokens is ${typeof tokensControllerState.allTokens}`,
@@ -245,6 +255,8 @@ function migrateData(state: Record<string, unknown>): void {
         (_, chainId: string) => toHex(chainId),
       );
     } else if (hasProperty(tokensControllerState, 'allIgnoredTokens')) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.TokensController.allIgnoredTokens is ${typeof tokensControllerState.allIgnoredTokens}`,
@@ -278,6 +290,8 @@ function migrateData(state: Record<string, unknown>): void {
         (_, chainId: string) => toHex(chainId),
       );
     } else if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.TokensController.allDetectedTokens is ${typeof tokensControllerState.allDetectedTokens}`,
@@ -291,6 +305,8 @@ function migrateData(state: Record<string, unknown>): void {
 
     state.TokensController = tokensControllerState;
   } else {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.TokensController is ${typeof state.TokensController}`,

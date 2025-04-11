@@ -83,7 +83,8 @@ export default function TokenCell({
 
   const handleClick = useCallback(
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line id-length, no-restricted-globals
     (e?: React.MouseEvent<HTMLAnchorElement>) => {
       e?.preventDefault();
 

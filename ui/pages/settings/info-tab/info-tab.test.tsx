@@ -14,7 +14,11 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 describe('InfoTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   describe('validate links', () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     let getByText: (text: string) => HTMLElement;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     let getByTestId: (testId: string) => HTMLElement;
 
     beforeEach(() => {

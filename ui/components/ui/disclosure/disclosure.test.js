@@ -46,7 +46,11 @@ describe('Disclosure', () => {
     it('does not scroll down on open by default or when isScrollToBottomOnOpen is false', () => {
       const mockScrollIntoView = jest.fn();
       const originalScrollIntoView =
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         window.HTMLElement.prototype.scrollIntoView;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
       const { getByTestId } = render(
@@ -55,13 +59,19 @@ describe('Disclosure', () => {
       const element = getByTestId('disclosure');
       fireEvent.click(element);
       expect(mockScrollIntoView).not.toHaveBeenCalled();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
 
     it('scrolls down on open when isScrollToBottomOnOpen is true', () => {
       const mockScrollIntoView = jest.fn();
       const originalScrollIntoView =
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         window.HTMLElement.prototype.scrollIntoView;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
       const { getByTestId } = render(
@@ -75,6 +85,8 @@ describe('Disclosure', () => {
       expect(mockScrollIntoView).toHaveBeenCalledWith({
         behavior: 'smooth',
       });
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
   });

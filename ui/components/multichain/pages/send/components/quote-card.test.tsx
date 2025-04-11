@@ -36,6 +36,8 @@ describe('QuoteCard', () => {
   const useTranslatedNetworkNameMock = useTranslatedNetworkName as jest.Mock;
   const useGetConversionRateMock = useGetConversionRate as jest.Mock;
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const scrollRef = { current: document.createElement('div') };
   const mockDispatch = jest.fn();
   const trackEventMock = jest.fn();

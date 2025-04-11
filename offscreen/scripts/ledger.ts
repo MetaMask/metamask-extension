@@ -16,9 +16,13 @@ const LEDGER_KEYRING_IFRAME_CONNECTED_EVENT = 'ledger-connection-event';
 
 const callbackProcessor = new CallbackProcessor();
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 function setupMessageListeners(iframe: HTMLIFrameElement) {
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.addEventListener('message', ({ origin, data, source }) => {
     if (origin !== KnownOrigins.ledger || source !== iframe.contentWindow) {
       return;
@@ -96,6 +100,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
 
 export default async function init() {
   return new Promise<void>((resolve) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const iframe = document.createElement('iframe');
     iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.3/';
     iframe.allow = 'hid';
@@ -103,6 +109,8 @@ export default async function init() {
       setupMessageListeners(iframe);
       resolve();
     };
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.body.appendChild(iframe);
   });
 }

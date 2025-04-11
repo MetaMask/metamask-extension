@@ -84,6 +84,8 @@ describe('BaseFeeInput', () => {
     await render({
       userFeeLevel: 'high',
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
@@ -94,6 +96,8 @@ describe('BaseFeeInput', () => {
       },
       { editGasMode: EditGasModes.swaps },
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(
       parseInt(
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.high
@@ -109,6 +113,8 @@ describe('BaseFeeInput', () => {
         maxFeePerGas: '0x2E90EDD000',
       },
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
 
@@ -134,6 +140,8 @@ describe('BaseFeeInput', () => {
             maxFeePerGas,
           },
         });
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         expect(document.getElementsByTagName('input')[0]).toHaveValue(
           expectedValue,
         );
@@ -167,12 +175,16 @@ describe('BaseFeeInput', () => {
         maxFeePerGas: '0x174876E800',
       },
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 55 },
     });
     expect(
       screen.queryByText('Max base fee is low for current network conditions'),
     ).not.toBeInTheDocument();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 50 },
     });
@@ -184,12 +196,16 @@ describe('BaseFeeInput', () => {
         maxFeePerGas: '0x174876E800',
       },
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 75 },
     });
     expect(
       screen.queryByText('Max base fee is higher than necessary'),
     ).not.toBeInTheDocument();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 500 },
     });

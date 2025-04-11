@@ -31,6 +31,8 @@ const NftOptions = ({
   // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const [nftOptionsOpen, setNftOptionsOpen] = useState(false);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const ref = useRef<HTMLElement | null>(null);
 
   const closePopover = () => {

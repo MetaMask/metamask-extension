@@ -34,6 +34,8 @@ export function isConfirmTransactionRoute(pathname) {
 
 function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
     }
@@ -43,6 +45,8 @@ function getThemeFromRawTheme(theme) {
 }
 
 export function setTheme(theme) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   document.documentElement.setAttribute(
     'data-theme',
     getThemeFromRawTheme(theme),

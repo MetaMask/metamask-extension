@@ -45,7 +45,8 @@ const useRamps = (
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
 
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-restricted-globals -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         const url = new URL(process.env.PORTFOLIO_URL || '');
         url.pathname = 'buy';
         url.search = params.toString();
@@ -61,6 +62,8 @@ const useRamps = (
     (_chainId?: ChainId | CaipChainId) => {
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       const buyUrl = getBuyURI(_chainId || chainId);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.platform.openTab({
         url: buyUrl,
       });

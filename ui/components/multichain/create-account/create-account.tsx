@@ -144,6 +144,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         async (event: KeyboardEvent<HTMLFormElement>) => {
           setLoading(true);
           event.preventDefault();
@@ -197,14 +199,16 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             label={t('accountName')}
             placeholder={defaultAccountName}
             // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-            // eslint-disable-next-line id-length
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line id-length, no-restricted-globals
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setNewAccountName(e.target.value)
             }
             helpText={errorMessage}
             error={!isValidAccountName}
             // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-            // eslint-disable-next-line id-length
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line id-length, no-restricted-globals
             onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
               if (e.key === 'Enter') {
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878

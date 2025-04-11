@@ -151,21 +151,29 @@ describe('AccountListMenu', () => {
 
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
     expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
   it('displays accounts for list and filters by search', () => {
     render();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
     expect(listItems).toHaveLength(6);
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const searchBox = document.querySelector('input[type=search]') as Element;
     fireEvent.change(searchBox, {
       target: { value: 'Le' },
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const filteredListItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
@@ -175,11 +183,15 @@ describe('AccountListMenu', () => {
   it('displays the "no accounts" message when search finds nothing', () => {
     const { getByTestId } = render();
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const searchBox = document.querySelector('input[type=search]') as Element;
     fireEvent.change(searchBox, {
       target: { value: 'adslfkjlx' },
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const filteredListItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
@@ -280,6 +292,8 @@ describe('AccountListMenu', () => {
 
   it('should render search bar when there is more than one account', () => {
     render();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const searchBox = document.querySelector('input[type=search]');
     expect(searchBox).toBeInTheDocument();
   });
@@ -298,9 +312,13 @@ describe('AccountListMenu', () => {
     expect(getByText('Ethereum account')).toBeInTheDocument();
     expect(getByText('Private Key')).toBeInTheDocument();
     expect(getByText('Hardware wallet')).toBeInTheDocument();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const header = document.querySelector('header') as Element;
     expect(header.innerHTML).toContain('Add account');
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();
 
@@ -318,8 +336,12 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Ethereum account'));
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const header = document.querySelector('header') as Element;
     expect(header.innerHTML).toContain('Add Ethereum account');
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );
@@ -431,6 +453,8 @@ describe('AccountListMenu', () => {
 
     it('renders the "Add account Snap" button if it\'s enabled', async () => {
       // @ts-expect-error mocking platform
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.platform = { openTab: jest.fn() };
       const { getByText, getByTestId } = renderWithState({
         addSnapAccountEnabled: true,
@@ -453,6 +477,8 @@ describe('AccountListMenu', () => {
     it('opens the Snaps registry in a new tab', async () => {
       // Set up mock state
       // @ts-expect-error mocking platform
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.platform = { openTab: jest.fn() };
       const { getByText, getByTestId } = renderWithState({
         addSnapAccountEnabled: true,
@@ -472,6 +498,8 @@ describe('AccountListMenu', () => {
       fireEvent.click(addAccountSnapButton);
 
       // Check if `openTab` was called
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });

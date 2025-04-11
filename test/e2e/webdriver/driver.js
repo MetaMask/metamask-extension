@@ -1393,7 +1393,11 @@ class Driver {
         await this.driver.switchTo().window(handle);
         const uiState = await this.driver.executeScript(
           () =>
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             window.stateHooks?.getCleanAppState &&
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             window.stateHooks.getCleanAppState(),
         );
         if (uiState) {
@@ -1556,10 +1560,14 @@ function collectMetrics() {
     navigation: [],
   };
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.performance.getEntriesByType('paint').forEach((paintEntry) => {
     results.paint[paintEntry.name] = paintEntry.startTime;
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.performance
     .getEntriesByType('navigation')
     .forEach((navigationEntry) => {
@@ -1574,6 +1582,8 @@ function collectMetrics() {
 
   return {
     ...results,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     ...window.stateHooks.getCustomTraces(),
   };
 }

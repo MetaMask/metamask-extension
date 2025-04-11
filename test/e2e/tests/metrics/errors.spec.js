@@ -918,6 +918,8 @@ describe('Sentry errors', function () {
         await driver.findElement('#password');
 
         const fullUiState = await driver.executeScript(() =>
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           window.stateHooks?.getCleanAppState?.(),
         );
 

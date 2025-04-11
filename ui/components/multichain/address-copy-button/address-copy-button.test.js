@@ -35,6 +35,8 @@ describe('AccountListItem', () => {
       mockStore,
     );
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('[data-testid="address-copy-button-text"]')
         .textContent,
     ).toStrictEqual(toChecksumHexAddress(SAMPLE_ADDRESS));
@@ -46,6 +48,8 @@ describe('AccountListItem', () => {
       mockStore,
     );
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('[data-testid="address-copy-button-text"]')
         .textContent,
     ).toStrictEqual(shortenAddress(toChecksumHexAddress(SAMPLE_ADDRESS)));
@@ -56,7 +60,11 @@ describe('AccountListItem', () => {
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
       mockStore,
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(document.querySelector('button'));
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.querySelector('.mm-icon').style.maskImage).toContain(
       'copy-success.svg',
     );

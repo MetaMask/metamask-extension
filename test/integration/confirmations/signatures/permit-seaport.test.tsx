@@ -153,6 +153,8 @@ describe('Permit Seaport Tests', () => {
 
     const details = [
       {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         element: offerDetails0 as HTMLElement,
         content: [
           'ItemType',
@@ -168,6 +170,8 @@ describe('Permit Seaport Tests', () => {
         ],
       },
       {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         element: offerDetails1 as HTMLElement,
         content: [
           'ItemType',
@@ -183,6 +187,8 @@ describe('Permit Seaport Tests', () => {
         ],
       },
       {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         element: considerationDetails0 as HTMLElement,
         content: [
           'ItemType',

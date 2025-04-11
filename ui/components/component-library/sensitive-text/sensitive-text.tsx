@@ -7,6 +7,8 @@ import type { SensitiveTextProps } from './sensitive-text.types';
 import { SensitiveTextLength } from './sensitive-text.types';
 
 export const SensitiveText = React.forwardRef<
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   HTMLParagraphElement,
   SensitiveTextProps
 >((props, ref) => {

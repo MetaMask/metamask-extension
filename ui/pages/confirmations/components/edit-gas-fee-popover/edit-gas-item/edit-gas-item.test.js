@@ -186,6 +186,8 @@ describe('EditGasItem', () => {
       transactionProps: { userFeeLevel: 'high' },
     });
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.getElementsByClassName('edit-gas-item--selected'),
     ).toHaveLength(1);
   });

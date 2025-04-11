@@ -248,6 +248,8 @@ describe('Popover', () => {
     expect(getByText('Press esc key to close')).toBeVisible();
 
     // Trigger the "Escape" key press event
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.keyDown(document, { key: 'Escape' });
 
     // Assert that the popover closes

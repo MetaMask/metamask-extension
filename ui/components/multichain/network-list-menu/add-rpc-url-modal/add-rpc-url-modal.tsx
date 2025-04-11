@@ -36,6 +36,8 @@ const AddRpcUrlModal = ({
 
   const [url, setUrl] = useState<string>();
   const [error, setError] = useState<string>();
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

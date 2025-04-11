@@ -45,6 +45,8 @@ export const SnapUIAddressInput: FunctionComponent<
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const inputRef = useRef<HTMLDivElement>(null);
   const initialValue = getValue(name, form) as string;
   const { namespace, reference } = parseCaipChainId(chainId);
@@ -70,10 +72,14 @@ export const SnapUIAddressInput: FunctionComponent<
    */
   useEffect(() => {
     if (inputRef.current && name === focusedInput) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       (inputRef.current.querySelector('input') as HTMLInputElement).focus();
     }
   }, [inputRef]);
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
 

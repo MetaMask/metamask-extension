@@ -42,10 +42,18 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     const [isUncontrolledOpen, setIsUncontrolledOpen] =
       useState<boolean>(false);
     const [referenceElement, setReferenceElement] =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       useState<HTMLElement | null>();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const popoverRef = useRef<HTMLDivElement | null>(null);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const setBoxRef = (anchorRef: HTMLElement | null) => {
       setReferenceElement(anchorRef);
     };

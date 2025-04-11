@@ -21,6 +21,8 @@ export const SnapUIForm: FunctionComponent<SnapUIFormProps> = ({
 }) => {
   const { handleEvent } = useSnapInterfaceContext();
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleSubmit = (event: FormEvent<HTMLElement>) => {
     event.preventDefault();
     handleEvent({

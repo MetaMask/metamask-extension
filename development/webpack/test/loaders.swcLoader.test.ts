@@ -98,19 +98,28 @@ describe('swcLoader', () => {
     type TestCase = Combination<typeof matrix>;
 
     afterEach(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       delete process.env.__HMR_READY__;
     });
     function runTest({ syntax, enableJsx, watch, isDevelopment }: TestCase) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       it(`should return a loader with correct properties when syntax is ${syntax}, jsx is ${enableJsx}, watch is ${watch}, and isDevelopment is ${isDevelopment}`, () => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         process.env.__HMR_READY__ = 'true';
         // helpers caches `__HMR_READY__` on initialization, so we need to a new
         // one after we mock `process.env.__HMR_READY__`.
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         delete require.cache[require.resolve('../utils/helpers')];
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         delete require.cache[require.resolve('../utils/loaders/swcLoader')];
         const {
           getSwcLoader,
-        }: // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31862
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        }: // eslint-disable-next-line @typescript-eslint/consistent-type-imports, no-restricted-globals -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31862
         typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
 
         // note: this test isn't exhaustive of all possible `swcConfig`
@@ -125,6 +134,8 @@ describe('swcLoader', () => {
         const loader = getSwcLoader(syntax, enableJsx, swcConfig);
         assert.strictEqual(
           loader.loader,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           require.resolve('../utils/loaders/swcLoader'),
         );
         assert.deepStrictEqual(loader.options.jsc.parser, {

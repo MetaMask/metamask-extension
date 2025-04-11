@@ -9,6 +9,8 @@ import type { ManifestFlags } from '../../shared/lib/manifestFlags';
 
 const exec = promisify(callbackExec);
 const PR_BODY_FILEPATH = path.resolve(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   __dirname,
   '..',
   '..',

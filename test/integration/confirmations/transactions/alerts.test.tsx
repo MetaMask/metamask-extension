@@ -94,7 +94,8 @@ describe('Contract Interaction Confirmation Alerts', () => {
       chainId: '0xaa36a7',
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-globals
     global.ethereumProvider = provider as any;
   });
 
@@ -114,7 +115,8 @@ describe('Contract Interaction Confirmation Alerts', () => {
   });
 
   afterAll(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-globals
     delete (global as any).ethereumProvider;
   });
 

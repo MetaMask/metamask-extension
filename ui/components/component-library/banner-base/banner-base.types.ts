@@ -58,6 +58,8 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The onClick handler for the action button (ButtonLink)
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   actionButtonOnClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   /**
    * The start(default left) content area of BannerBase
@@ -67,6 +69,8 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
    * The onClick handler for the close button
    * When passed this will allow for the close button to show
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   /**
    * The props to pass to the close button

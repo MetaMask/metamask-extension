@@ -27,6 +27,8 @@ const wrapper: FC = ({ children }) => (
 describe('useRamps', () => {
   // mock the openTab function to test if it is called with the correct URL when opening the Pdapp
   beforeAll(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(global, 'platform', {
       value: {
         openTab: jest.fn(),
@@ -46,7 +48,11 @@ describe('useRamps', () => {
       },
     };
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const { result } = renderHook(() => useRamps(), { wrapper }); // default metamask entry
@@ -69,7 +75,11 @@ describe('useRamps', () => {
       },
     };
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const { result } = renderHook(
@@ -94,7 +104,11 @@ describe('useRamps', () => {
         },
       };
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const openTabSpy = jest.spyOn(global.platform, 'openTab');
       const { result } = renderHook(() => useRamps(), { wrapper });
 
@@ -108,7 +122,11 @@ describe('useRamps', () => {
   it('should return the default URL when an invalid URL is provided', () => {
     jest.resetModules();
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const originalPortfolioUrl = process.env.PORTFOLIO_URL;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env = { PORTFOLIO_URL: 'invalid-url' };
 
     const { result } = renderHook(() => useRamps(), { wrapper });
@@ -116,6 +134,8 @@ describe('useRamps', () => {
     const buyURI = result.current.getBuyURI('0x1');
     expect(buyURI).toBe('https://portfolio.metamask.io/buy');
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.PORTFOLIO_URL = originalPortfolioUrl;
     jest.resetModules();
   });

@@ -240,6 +240,8 @@ describe('AppStateController', () => {
           } as unknown as PreferencesControllerState,
           [],
         );
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         jest.spyOn(global, 'setTimeout');
 
         controller.setLastActiveTime();
@@ -253,6 +255,8 @@ describe('AppStateController', () => {
 
     it("doesn't set the timer if timeoutMinutes is not set", async () => {
       await withController(({ controller }) => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         jest.spyOn(global, 'setTimeout');
 
         controller.setLastActiveTime();

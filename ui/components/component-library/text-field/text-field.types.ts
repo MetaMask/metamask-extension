@@ -78,7 +78,11 @@ export interface TextFieldStyleUtilityProps
    * Use inputRef to pass a ref to the html input element.
    */
   inputRef?:
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     | React.MutableRefObject<HTMLInputElement | null>
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     | ((instance: HTMLInputElement | null) => void);
   /**
    * Max number of characters to allow
@@ -91,18 +95,26 @@ export interface TextFieldStyleUtilityProps
   /**
    * Callback fired on blur
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   /**
    * Callback fired when the value is changed.
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /**
    * Callback fired when the TextField is clicked on
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
   /**
    * Callback fired on focus
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   /**
    * The short hint displayed in the input before the user enters a value.

@@ -50,6 +50,8 @@ async function start(): Promise<void> {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {

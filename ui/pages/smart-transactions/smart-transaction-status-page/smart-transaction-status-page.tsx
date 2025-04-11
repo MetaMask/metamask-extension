@@ -137,10 +137,14 @@ const PortfolioSmartTransactionStatusUrl = ({
     return null;
   }
   const handleViewTransactionLinkClick = useCallback(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const isWiderThanNotificationWidth = window.innerWidth > NOTIFICATION_WIDTH;
     if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
       onCloseExtension();
     }
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform.openTab({
       url: portfolioSmartTransactionStatusUrl,
     });

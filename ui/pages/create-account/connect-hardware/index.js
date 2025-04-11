@@ -124,6 +124,8 @@ class ConnectHardwareForm extends Component {
 
   componentDidMount() {
     this.checkIfUnlocked();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const useAgent = window.navigator.userAgent;
     if (/Firefox/u.test(useAgent)) {
       this.setState({ isFirefox: true });

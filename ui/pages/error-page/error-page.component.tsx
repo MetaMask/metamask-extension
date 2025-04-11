@@ -74,7 +74,8 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
   };
 
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line id-length, no-restricted-globals
   const handleSubmitFeedback = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const eventId = Sentry.lastEventId();

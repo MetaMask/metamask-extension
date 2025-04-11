@@ -45,6 +45,8 @@ import { openWindow } from '../../../helpers/utils/window';
 // that supports usb. If not, the connection of the hardware wallet
 // to the browser will be handled by the Trezor connect screen. In
 // the case of Firefox, this will depend on the Trezor bridge software
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
 
 export default class SelectHardware extends Component {
@@ -73,6 +75,8 @@ export default class SelectHardware extends Component {
           trezorRequestDevicePending: true,
         });
         try {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           await window.navigator.usb.requestDevice({
             filters: [
               { vendorId: 0x534c, productId: 0x0001 },

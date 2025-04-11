@@ -45,6 +45,8 @@ describe('ExecutionServiceInit', () => {
   });
 
   it('initializes the offscreen execution service if `chrome.offscreen` is available', () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(global, 'chrome', {
       value: {
         offscreen: {},
@@ -56,6 +58,8 @@ describe('ExecutionServiceInit', () => {
   });
 
   it('passes the proper arguments to the service', () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(global, 'chrome', {
       value: {
         offscreen: {},

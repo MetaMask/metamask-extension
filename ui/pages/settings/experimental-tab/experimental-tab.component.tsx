@@ -70,6 +70,8 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   )
     .fill(undefined)
     .map(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       return React.createRef<HTMLSpanElement>();
     });
 
@@ -311,6 +313,8 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   render() {
     return (
       <div className="settings-page__body">
+        {/* TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888 */}
+        {/* eslint-disable-next-line no-restricted-globals */}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {/* Section: Account Management Snaps */}
         {

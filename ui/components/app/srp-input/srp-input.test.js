@@ -1632,6 +1632,8 @@ describe('srp-input', () => {
   describe('clear after paste', () => {
     it('should not clear clipboard after typing SRP', async () => {
       const onChange = jest.fn();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
@@ -1651,6 +1653,8 @@ describe('srp-input', () => {
 
     it('should not clear the clipboard after individually pasting SRP', async () => {
       const onChange = jest.fn();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
@@ -1670,6 +1674,8 @@ describe('srp-input', () => {
 
     it('should not clear the clipboard after pasting SRP with too many words', async () => {
       const onChange = jest.fn();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
@@ -1686,6 +1692,8 @@ describe('srp-input', () => {
 
     it('should clear the clipboard after pasting incomplete SRP', async () => {
       const onChange = jest.fn();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
@@ -1702,6 +1710,8 @@ describe('srp-input', () => {
 
     it('should clear the clipboard after pasting correct SRP', async () => {
       const onChange = jest.fn();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(

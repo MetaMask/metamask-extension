@@ -70,6 +70,8 @@ const SnapAccountRedirectContent = ({
                     variant={ButtonVariant.Link}
                     size={ButtonSize.Inherit}
                     onClick={() =>
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+                      // eslint-disable-next-line no-restricted-globals
                       global.platform.openTab({
                         url: learnMoreAboutBlockedUrls,
                       })

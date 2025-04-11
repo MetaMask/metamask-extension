@@ -16,6 +16,8 @@ export type SecurityAlertsAPIRequest = Omit<
   SecurityAlertsAPIRequestBody;
 
 export function isSecurityAlertsAPIEnabled() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
   return isEnabled?.toString() === 'true';
 }
@@ -51,6 +53,8 @@ async function request(endpoint: string, options?: RequestInit) {
 }
 
 function getUrl(endpoint: string) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const host = process.env.SECURITY_ALERTS_API_URL;
 
   if (!host) {

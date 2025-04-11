@@ -39,6 +39,8 @@ function transformState(state: Record<string, unknown>): void {
     log.warn(`Migration ${version}: Missing TransactionController state`);
     return;
   } else if (!isObject(state.TransactionController)) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       `Migration ${version}: Invalid TransactionController state of type '${typeof state.TransactionController}'`,
     );
@@ -68,6 +70,8 @@ function transformState(state: Record<string, unknown>): void {
     const invalidTransaction = transactions.find(
       (transaction) => !isObject(transaction),
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       `Migration ${version}: Invalid transaction of type '${typeof invalidTransaction}'`,
     );
@@ -81,6 +85,8 @@ function transformState(state: Record<string, unknown>): void {
     const invalidTransaction = validTransactions.find(
       (transaction) => !hasValidTransactionHistory(transaction),
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       `Migration ${version}: Invalid transaction history of type '${typeof invalidTransaction?.history}'`,
     );

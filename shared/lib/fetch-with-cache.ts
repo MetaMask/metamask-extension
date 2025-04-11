@@ -25,7 +25,11 @@ const fetchWithCache = async ({
   ) {
     throw new Error('fetchWithCache only supports GET requests');
   }
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   if (!(fetchOptions.headers instanceof window.Headers)) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fetchOptions.headers = new window.Headers(fetchOptions.headers);
   }
   if (

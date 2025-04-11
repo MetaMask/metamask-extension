@@ -42,6 +42,8 @@ type VisitSupportDataConsentModalProps = {
 const VisitSupportDataConsentModal: React.FC<
   VisitSupportDataConsentModalProps
 > = ({ isOpen, onClose }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const version = process.env.METAMASK_VERSION as string;
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
   // eslint-disable-next-line id-length

@@ -41,6 +41,8 @@ export const Toast = ({
   dataTestId?: string;
   className?: string;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { theme } = document.documentElement.dataset;
   const [shouldDisplay, setShouldDisplay] = useState(true);
   useEffect(

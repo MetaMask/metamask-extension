@@ -121,6 +121,8 @@ describe('Actions', () => {
 
   afterEach(() => {
     // Restore original window.navigator after each test
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(window, 'navigator', {
       value: originalNavigator,
       writable: true,
@@ -662,8 +664,12 @@ describe('Actions', () => {
       const mockHidDevice = { vendorId: 11415 };
       const mockRequestDevice = sinon.stub().resolves([mockHidDevice]);
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       Object.defineProperty(window, 'navigator', {
         value: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ...window.navigator,
           hid: {
             requestDevice: mockRequestDevice,
@@ -713,8 +719,12 @@ describe('Actions', () => {
 
       const mockRequestDevice = sinon.stub();
       mockRequestDevice.resolves([]);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       Object.defineProperty(window, 'navigator', {
         value: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ...window.navigator,
           hid: {
             requestDevice: mockRequestDevice,
@@ -765,8 +775,12 @@ describe('Actions', () => {
       });
 
       const mockRequestDevice = sinon.spy();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       Object.defineProperty(window, 'navigator', {
         value: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ...window.navigator,
           hid: {
             requestDevice: mockRequestDevice,
@@ -817,8 +831,12 @@ describe('Actions', () => {
       const mockHidDevice = { vendorId: 11415 };
       const mockRequestDevice = sinon.stub();
       mockRequestDevice.resolves([mockHidDevice]);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       Object.defineProperty(window, 'navigator', {
         value: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ...window.navigator,
           hid: {
             requestDevice: mockRequestDevice,
@@ -868,8 +886,12 @@ describe('Actions', () => {
       const store = mockStore();
 
       const mockRequestDevice = sinon.spy();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       Object.defineProperty(window, 'navigator', {
         value: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ...window.navigator,
           hid: {
             requestDevice: mockRequestDevice,
@@ -2107,6 +2129,8 @@ describe('Actions', () => {
 
   describe('#updateCurrentLocale', () => {
     beforeEach(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       sinon.stub(window, 'fetch').resolves({
         json: async () => enLocale,
       });

@@ -29,6 +29,8 @@ import type {
   UpdateSecurityAlertResponse,
 } from './types';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const { sentry } = global;
 
 const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';

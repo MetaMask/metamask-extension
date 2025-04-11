@@ -200,7 +200,8 @@ export const TokenListItemComponent = ({
           as: 'a',
           href: '#',
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line id-length, no-restricted-globals
           onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
             e.preventDefault();
 
@@ -293,7 +294,8 @@ export const TokenListItemComponent = ({
               <ButtonIcon
                 iconName={IconName.Danger}
                 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
-                // eslint-disable-next-line id-length
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+                // eslint-disable-next-line id-length, no-restricted-globals
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   e.stopPropagation();

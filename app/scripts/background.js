@@ -467,6 +467,8 @@ async function initialize() {
     // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
     // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
     // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (process.env.IN_TEST && window.navigator?.webdriver) {
       getSocketBackgroundToMocha();
     }
@@ -545,6 +547,8 @@ async function loadPhishingWarningPage() {
     // error.
     extensionStartupPhishingPageUrl.hash = '#extensionStartup';
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     iframe = window.document.createElement('iframe');
     iframe.setAttribute('src', extensionStartupPhishingPageUrl.href);
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
@@ -562,6 +566,8 @@ async function loadPhishingWarningPage() {
     iframe.addEventListener('load', deferredResolve);
 
     // This step initiates the page loading.
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.document.body.appendChild(iframe);
 
     // This timeout ensures that this iframe gets cleaned up in a reasonable
@@ -1342,6 +1348,8 @@ async function initBackground() {
           event: OffscreenCommunicationEvents.metamaskBackgroundReady,
         });
       } else {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }

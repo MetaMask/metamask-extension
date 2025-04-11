@@ -27,6 +27,8 @@ import type { MessageType } from './stream-utils';
 import { logStreamDisconnectWarning } from './stream-utils';
 
 const phishingPageUrl = new URL(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   process.env.PHISHING_WARNING_PAGE_URL as string,
 );
 
@@ -89,6 +91,8 @@ export const setupPhishingExtStreams = (): void => {
   phishingExtMux.setMaxListeners(25);
   pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err: Error) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.postMessage(
       {
         target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
@@ -101,6 +105,8 @@ export const setupPhishingExtStreams = (): void => {
           },
         },
       },
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.location.origin,
     );
   });
@@ -176,7 +182,11 @@ const onMessageSetUpPhishingStreams = (
 };
 
 export const isDetectedPhishingSite: boolean =
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.location.origin === phishingPageUrl.origin &&
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.location.pathname === phishingPageUrl.pathname;
 
 /**
@@ -184,10 +194,16 @@ export const isDetectedPhishingSite: boolean =
  */
 export function redirectToPhishingWarning(): void {
   console.debug('MetaMask: Routing to Phishing Warning page.');
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { hostname, href } = window.location;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
   const querystring = new URLSearchParams({ hostname, href });
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

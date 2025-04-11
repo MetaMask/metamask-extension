@@ -79,8 +79,12 @@ const LedgerInfo: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
           onClick={async () => {
             if (environmentTypeIsFullScreen) {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               window.location.reload();
             } else {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               global.platform.openExtensionInBrowser?.(null, null, true);
             }
           }}
@@ -98,6 +102,8 @@ const LedgerInfo: React.FC = () => {
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
                 const connectedDevices =
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line no-restricted-globals
                   await window.navigator.hid.requestDevice({
                     filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
                   });
@@ -112,6 +118,8 @@ const LedgerInfo: React.FC = () => {
                   ),
                 );
               } else {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+                // eslint-disable-next-line no-restricted-globals
                 global.platform.openExtensionInBrowser?.(null, null, true);
               }
             }}

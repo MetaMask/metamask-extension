@@ -111,9 +111,13 @@ export const AccountListItemMenu = ({
   );
 
   useEffect(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [handleClickOutside]);
@@ -241,6 +245,8 @@ AccountListItemMenu.propTypes = {
   /**
    * Element that the menu should display next to
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   anchorElement: PropTypes.instanceOf(window.Element),
   /**
    * Function that executes when the menu is closed
