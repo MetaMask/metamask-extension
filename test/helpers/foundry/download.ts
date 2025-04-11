@@ -30,6 +30,7 @@ export function startDownload(
   const MAX_REDIRECTS = options.maxRedirects ?? 5;
   const request = url.protocol === 'http:' ? httpRequest : httpsRequest;
   const stream = new DownloadStream();
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
   request(url, options, async (response) => {
     stream.once('close', () => {
       response.destroy();

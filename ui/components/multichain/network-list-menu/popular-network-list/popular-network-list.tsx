@@ -179,6 +179,7 @@ const PopularNetworkList = ({
                 className="add-network__add-button"
                 variant={ButtonVariant.Link}
                 data-testid="test-add-button"
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
                   await dispatch(

@@ -73,6 +73,7 @@ export function UpgradeCancelModal({
             gap={4}
           >
             <Button
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
               onClick={handleRejectUpgrade}
               variant={ButtonVariant.Secondary}
               data-testid="upgrade-cancel-reject-upgrade"

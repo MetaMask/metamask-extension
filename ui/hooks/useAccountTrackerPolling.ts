@@ -18,6 +18,7 @@ const useAccountTrackerPolling = () => {
 
   useMultiPolling({
     startPolling: accountTrackerStartPolling,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     stopPollingByPollingToken: accountTrackerStopPollingByPollingToken,
     input: canStartPolling ? networkClientIdsToPoll : [],
   });

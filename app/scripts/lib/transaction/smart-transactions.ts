@@ -392,6 +392,7 @@ class SmartTransactionHook {
   async #addListenerToUpdateStatusPage({ uuid }: { uuid: string }) {
     this.#controllerMessenger.subscribe(
       'SmartTransactionsController:smartTransaction',
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       async (smartTransaction: SmartTransaction) => {
         if (smartTransaction.uuid === uuid) {
           const { status } = smartTransaction;
@@ -412,6 +413,7 @@ class SmartTransactionHook {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         async (smartTransaction: SmartTransaction) => {
           if (smartTransaction.uuid === uuid) {
             const { status, statusMetadata } = smartTransaction;

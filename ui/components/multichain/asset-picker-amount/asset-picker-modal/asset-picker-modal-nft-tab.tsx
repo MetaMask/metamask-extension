@@ -137,6 +137,7 @@ export function AssetPickerModalNftTab({
       {hasAnyNfts ? (
         <>
           <Box>
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879 */}
             <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
           </Box>
           {nftsStillFetchingIndication && (

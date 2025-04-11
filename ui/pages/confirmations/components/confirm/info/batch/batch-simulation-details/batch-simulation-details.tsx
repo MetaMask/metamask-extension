@@ -85,6 +85,7 @@ export function BatchSimulationDetails() {
         <EditSpendingCapModal
           data={nestedTransactionToEdit?.data}
           isOpenEditSpendingCapModal={true}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
           onSubmit={handleEditSubmit}
           setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
           to={nestedTransactionToEdit?.to}

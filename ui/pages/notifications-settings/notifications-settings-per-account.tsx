@@ -93,6 +93,7 @@ export const NotificationsSettingsPerAccount = ({
     <>
       <NotificationsSettingsBox
         value={isEnabled ?? false}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         onToggle={handleToggleAccountNotifications}
         key={address}
         disabled={disabledSwitch}

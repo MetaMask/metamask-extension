@@ -117,6 +117,7 @@ export const NotificationsListTurnOnNotifications = () => {
       </Text>
       <Box>
         <Button
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
           onClick={async () => handleTurnOnNotifications()}
           size={ButtonSize.Md}
           disabled={loading}

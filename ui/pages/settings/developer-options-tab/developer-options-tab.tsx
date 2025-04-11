@@ -172,6 +172,7 @@ const DeveloperOptionsTab = () => {
         <div className="settings-page__content-item-col">
           <Button
             variant={ButtonVariant.Primary}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
             onClick={handleResetOnboardingClick}
           >
             Reset
@@ -204,6 +205,7 @@ const DeveloperOptionsTab = () => {
         title="Service Worker Keep Alive"
         description="Results in a timestamp being continuously saved to session.storage"
         isEnabled={isServiceWorkerKeptAlive}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         onToggle={async (value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
         settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}

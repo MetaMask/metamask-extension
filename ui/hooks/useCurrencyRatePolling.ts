@@ -27,6 +27,7 @@ const useCurrencyRatePolling = () => {
 
   usePolling({
     startPolling: currencyRateStartPolling,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     input: nativeCurrencies,
     enabled,

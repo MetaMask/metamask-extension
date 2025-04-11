@@ -176,6 +176,7 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'personal_sign:signed',
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'personal');
       },
@@ -183,6 +184,7 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'eth_signTypedData:signed',
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
@@ -190,6 +192,7 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'handshake',
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       async ({ channelId }: { channelId: string }) => {
         this.setChannelId(channelId);
       },
@@ -197,6 +200,7 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'connection.request',
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       async (payload: ConnectionRequest) => {
         this.setConnectionRequest(payload);
       },
@@ -246,6 +250,7 @@ export class MMIController {
       custodyController: this.custodyController,
       // @ts-expect-error not relevant
       trackTransactionEvent:
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         this.trackTransactionEventFromCustodianEvent.bind(this),
       captureException,
     });

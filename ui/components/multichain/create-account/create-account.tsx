@@ -173,6 +173,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       );
 
       return (
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
             data-testid="account-name-input"
@@ -216,6 +217,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               type={
                 'button' /* needs to be 'button' to prevent submitting form on cancel */
               }
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
               onClick={async () => await onActionComplete(false)}
               block
             >

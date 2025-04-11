@@ -614,6 +614,7 @@ export const AccountListMenu = ({
               paddingTop={0}
               style={{ overflowY: 'scroll' }}
             >
+              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879 */}
               <ImportSrp onActionComplete={onActionComplete} />
             </Box>
           )
@@ -673,6 +674,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
@@ -700,6 +702,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -726,6 +729,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -875,6 +879,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Eye}
                     startIconProps={{ size: IconSize.Md }}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                     onClick={handleAddWatchAccount}
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >

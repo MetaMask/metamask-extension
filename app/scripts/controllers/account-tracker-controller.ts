@@ -298,8 +298,10 @@ export default class AccountTrackerController extends BaseController<
     });
 
     // remove first to avoid double add
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
     // add listener
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     this.#blockTracker.addListener('latest', this.#updateForBlock);
     // fetch account balances
     // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
@@ -311,6 +313,7 @@ export default class AccountTrackerController extends BaseController<
    */
   stop(): void {
     // remove listener
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
   }
 
@@ -430,6 +433,7 @@ export default class AccountTrackerController extends BaseController<
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
     const updateForBlock = async (blockNumber: string) =>
       this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -448,6 +452,7 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     blockTracker.removeListener('latest', this.#listeners[networkClientId]);
 
     delete this.#listeners[networkClientId];

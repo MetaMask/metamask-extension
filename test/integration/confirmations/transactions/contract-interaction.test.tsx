@@ -346,6 +346,7 @@ describe('Contract Interaction Confirmation', () => {
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       createMockImplementation({ setPreference: {} }),
     );
 
@@ -385,6 +386,7 @@ describe('Contract Interaction Confirmation', () => {
 
   it('displays the advanced transaction details section', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       createMockImplementation({ setPreference: {} }),
     );
 

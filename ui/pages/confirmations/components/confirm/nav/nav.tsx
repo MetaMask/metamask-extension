@@ -112,6 +112,7 @@ export const Nav = ({ confirmationId }: NavProps) => {
         className="confirm_nav__reject_all"
         data-testid="confirm-nav__reject-all"
         fontWeight={FontWeight.Normal}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         onClick={onRejectAll}
         paddingLeft={3}
         paddingRight={3}

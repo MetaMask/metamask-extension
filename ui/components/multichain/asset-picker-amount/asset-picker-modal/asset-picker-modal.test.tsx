@@ -224,6 +224,7 @@ describe('AssetPickerModal', () => {
   });
 
   it('renders no NFTs message when there are no NFTs', () => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
     sinon.stub(actions, 'detectNfts').returns(async () => Promise.resolve());
     renderWithProvider(
       <AssetPickerModal

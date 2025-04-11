@@ -267,6 +267,7 @@ export const ReviewPermissions = () => {
               testNetworks={testNetworks}
               accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
@@ -346,6 +347,7 @@ export const ReviewPermissions = () => {
                     size={ButtonPrimarySize.Lg}
                     block
                     data-test-id="no-connections-button"
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}

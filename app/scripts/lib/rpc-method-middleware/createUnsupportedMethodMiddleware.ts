@@ -12,6 +12,7 @@ import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 export function createUnsupportedMethodMiddleware(
   methods: Set<string> = UNSUPPORTED_RPC_METHODS,
 ): JsonRpcMiddleware<JsonRpcParams, null> {
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
   return async function unsupportedMethodMiddleware(req, _res, next, end) {
     if (methods.has(req.method)) {
       return end(rpcErrors.methodNotSupported());

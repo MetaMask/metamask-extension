@@ -98,6 +98,7 @@ const AddRpcUrlModal = ({
           width={BlockSize.Full}
           disabled={Boolean(error)}
           size={ButtonPrimarySize.Lg}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
           onClick={async () => {
             if (url && !error && nameRef.current) {
               onAdded(url, nameRef.current.value || undefined);

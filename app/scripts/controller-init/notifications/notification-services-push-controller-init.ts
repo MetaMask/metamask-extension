@@ -44,6 +44,7 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
         subscribeToPushNotifications: createSubscribeToPushNotifications({
           messenger: controllerMessenger,
           onReceivedHandler: onPushNotificationReceived,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
           onClickHandler: onPushNotificationClicked,
         }),
       },

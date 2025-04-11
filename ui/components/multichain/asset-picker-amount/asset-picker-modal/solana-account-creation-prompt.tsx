@@ -95,6 +95,7 @@ export const SolanaAccountCreationPrompt = () => {
         block
         size={ButtonSize.Md}
         variant={ButtonVariant.Secondary}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
         onClick={handleCreateAccount}
         loading={isCreating}
         data-testid="create-solana-account-button"

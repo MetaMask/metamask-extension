@@ -166,6 +166,7 @@ export const BridgeCTAButton = ({
       variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
       onClick={async () => {
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
