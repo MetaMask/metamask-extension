@@ -46,6 +46,16 @@
     "ui/components/multichain/index.js"
   ],
   [
+    "ui/components/app/assets/defi-list/defi-list.tsx",
+    "ui/components/app/assets/defi-list/defi-tab.tsx",
+    "ui/components/multichain/account-overview/account-overview-eth.tsx",
+    "ui/components/multichain/account-overview/account-overview-layout.tsx",
+    "ui/components/multichain/account-overview/account-overview-tabs.tsx",
+    "ui/components/multichain/account-overview/account-overview.tsx",
+    "ui/components/multichain/account-overview/index.js",
+    "ui/components/multichain/index.js"
+  ],
+  [
     "ui/components/app/connected-status-indicator/connected-status-indicator.js",
     "ui/components/app/connected-status-indicator/index.js",
     "ui/components/multichain/app-header/app-header-unlocked-content.tsx",
