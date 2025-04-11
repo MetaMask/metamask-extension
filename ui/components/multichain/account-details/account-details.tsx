@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import {
   KeyringMetadata,
   KeyringObject,
   KeyringTypes,
 } from '@metamask/keyring-controller';
-///: END:ONLY_INCLUDE_IF
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -25,10 +23,8 @@ import {
   getHDEntropyIndex,
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskKeyrings,
   getMetaMaskKeyringsMetadata,
-  ///: END:ONLY_INCLUDE_IF
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -50,12 +46,11 @@ import {
   ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+
 import SRPQuiz from '../../app/srp-quiz-modal';
 import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
-///: END:ONLY_INCLUDE_IF
 import { AttemptExportState } from '../../../../shared/constants/accounts';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
@@ -76,23 +71,16 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const {
     metadata: {
       name,
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       keyring: { type: keyringType },
-      ///: END:ONLY_INCLUDE_IF
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     options: { entropySource },
-    ///: END:ONLY_INCLUDE_IF
   } = account;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const snapId = account.metadata.snap?.id;
-  ///: END:ONLY_INCLUDE_IF
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   let showModal = !showHoldToReveal;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   showModal = !showHoldToReveal && !srpQuizModalVisible;
 
@@ -114,7 +102,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const isAbleToExportSrp = isAbleToRevealSrp(account, keyrings);
   const displayExportSrpQuiz = keyringId && isAbleToExportSrp;
 
-  ///: END:ONLY_INCLUDE_IF
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
   );
@@ -174,11 +161,9 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
                 accountName={name}
                 address={address}
                 onExportClick={(attemptExportMode: AttemptExportState) => {
-                  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
                   if (attemptExportMode === AttemptExportState.SRP) {
                     setSrpQuizModalVisible(true);
                   }
-                  ///: END:ONLY_INCLUDE_IF
                   setAttemptingExport(attemptExportMode);
                 }}
                 onClose={onClose}
@@ -241,21 +226,17 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         }}
         holdToRevealType="PrivateKey"
       />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        displayExportSrpQuiz && (
-          <SRPQuiz
-            keyringId={keyringId}
-            isOpen={srpQuizModalVisible}
-            onClose={() => {
-              setSrpQuizModalVisible(false);
-              onClose();
-            }}
-            closeAfterCompleting
-          />
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {displayExportSrpQuiz && (
+        <SRPQuiz
+          keyringId={keyringId}
+          isOpen={srpQuizModalVisible}
+          onClose={() => {
+            setSrpQuizModalVisible(false);
+            onClose();
+          }}
+          closeAfterCompleting
+        />
+      )}
     </>
   );
 };

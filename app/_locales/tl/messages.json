@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Kanselahin ang transaksyon"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Kanselahin ang pag-update at transaksyon"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Kung ayaw mong i-update ang account mo, puwede mo itong kanselahin dito. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Kanselahin ang transaksyon"
-  },
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
   },

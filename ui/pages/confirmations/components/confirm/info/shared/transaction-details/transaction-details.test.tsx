@@ -4,6 +4,10 @@ import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import {
+  NestedTransactionMetadata,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
@@ -185,5 +189,81 @@ describe('<TransactionDetails />', () => {
       mockStore,
     );
     expect(container.firstChild).toBeNull();
+  });
+
+  describe('RecipientRow', () => {
+    it('renders when address is valid', () => {
+      const contractInteraction =
+        genUnapprovedContractInteractionConfirmation();
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render when address is invalid', () => {
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        address: '0xinvalid_address',
+      });
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders SmartContractWithLogo when transaction is a batch transaction', () => {
+      const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
+      const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        address: ADDRESS_MOCK,
+        nestedTransactions: [
+          {
+            to: ADDRESS_MOCK,
+            data: '0x1',
+            type: TransactionType.contractInteraction,
+          },
+          {
+            to: ADDRESS_2_MOCK,
+            data: '0x2',
+            type: TransactionType.contractInteraction,
+          },
+        ] as NestedTransactionMetadata[],
+      });
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByText } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(getByText('Smart contract')).toBeInTheDocument();
+    });
   });
 });

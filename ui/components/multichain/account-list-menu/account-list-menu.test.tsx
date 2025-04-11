@@ -31,6 +31,7 @@ const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -43,6 +44,7 @@ jest.mock('../../../store/actions', () => {
     ...jest.requireActual('../../../store/actions'),
     getNextAvailableAccountName: () => mockNextAccountName(),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
+    detectNfts: () => mockDetectNfts,
   };
 });
 
@@ -157,6 +159,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+
     expect(listItems).toHaveLength(6);
 
     const searchBox = document.querySelector('input[type=search]') as Element;
@@ -546,6 +549,17 @@ describe('AccountListMenu', () => {
     );
     const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('mock snap name (Beta)');
+  });
+
+  it('detects NFTs when an account is clicked', () => {
+    const { getAllByTestId } = render();
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    expect(listItems).toHaveLength(6);
+    const button = getAllByTestId('account-item');
+    button[0].click();
+    expect(mockDetectNfts).toHaveBeenCalled();
   });
 
   it('displays the correct label for named snap accounts', () => {
