@@ -223,6 +223,19 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
+    "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+      }
+    },
     "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/util": {
       "globals": {
         "console.warn": true
@@ -1004,6 +1017,12 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
@@ -1201,6 +1220,29 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/delegation-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/delegation-controller>@metamask/keyring-controller": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/delegation-toolkit": {
+      "packages": {
+        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-abis": true,
+        "@metamask/delegation-toolkit>@metamask/delegation-utils": true,
+        "viem": true
+      }
+    },
+    "@metamask/delegation-toolkit>@metamask/delegation-utils": {
+      "packages": {
+        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-abis": true,
+        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-deployments": true,
+        "browserify>buffer": true,
+        "viem": true,
+        "viem>webauthn-p256": true
       }
     },
     "@metamask/ens-controller": {
@@ -1401,6 +1443,18 @@
         "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-sig-util>tweetnacl": true
+      }
+    },
+    "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util": {
+      "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
+        "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
@@ -1610,6 +1664,24 @@
         "@metamask/browser-passworder": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "@metamask/name-controller>async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
+    "@metamask/delegation-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/browser-passworder": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
+        "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
@@ -2461,6 +2533,14 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "viem>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "viem>@noble/hashes": true
+      }
+    },
     "viem>webauthn-p256>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -2487,7 +2567,19 @@
         "crypto": true
       }
     },
+    "viem>@scure/bip39>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "viem>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2571,6 +2663,12 @@
       "packages": {
         "viem>@scure/bip32>@noble/curves": true,
         "viem>@scure/bip32>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true
+      }
+    },
+    "viem>@scure/bip39": {
+      "packages": {
+        "viem>@scure/bip39>@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
     },
@@ -4263,6 +4361,11 @@
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
       }
     },
+    "viem>isows": {
+      "globals": {
+        "WebSocket": true
+      }
+    },
     "@ensdomains/content-hash>js-base64": {
       "globals": {
         "Base64": "write",
@@ -5699,6 +5802,32 @@
         "react-markdown>vfile>vfile-message": true
       }
     },
+    "viem": {
+      "globals": {
+        "AbortController": true,
+        "Image": true,
+        "Request": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "atob": true,
+        "btoa": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "viem>@noble/curves": true,
+        "viem>@noble/hashes": true,
+        "viem>@scure/bip32": true,
+        "viem>@scure/bip39": true,
+        "viem>abitype": true,
+        "viem>isows": true,
+        "viem>webauthn-p256": true
+      }
+    },
     "browserify>vm-browserify": {
       "globals": {
         "document.body.appendChild": true,
@@ -5728,6 +5857,22 @@
     "@metamask/controllers>web3": {
       "globals": {
         "XMLHttpRequest": true
+      }
+    },
+    "viem>webauthn-p256": {
+      "globals": {
+        "atob": true,
+        "btoa": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true,
+        "document.title": true,
+        "location.hostname": true,
+        "navigator.credentials": true
+      },
+      "packages": {
+        "viem>webauthn-p256>@noble/curves": true,
+        "@noble/hashes": true
       }
     },
     "webextension-polyfill": {

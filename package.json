@@ -223,7 +223,8 @@
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch"
+    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
+    "@metamask/delegation-controller": "npm:@metamask-previews/delegation-controller@0.1.0-preview-c67b57f2"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -267,7 +268,8 @@
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.7.0",
-    "@metamask/delegation-controller": "file:.yalc/@metamask/delegation-controller",
+    "@metamask/delegation-controller": "^0.1.0",
+    "@metamask/delegation-toolkit": "^0.9.0",
     "@metamask/design-tokens": "^7.0.0",
     "@metamask/ens-controller": "^15.0.2",
     "@metamask/ens-resolver-snap": "^0.1.2",
