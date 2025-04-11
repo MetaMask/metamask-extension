@@ -1,8 +1,20 @@
 import { execFileSync } from 'child_process';
 import startCase from 'lodash/startCase';
+import { readFileSync } from 'node:fs';
 import { version as VERSION } from '../package.json';
 
 start().catch(console.error);
+
+const benchmarkPlatforms = ['chrome', 'firefox'];
+const buildTypes = ['browserify', 'webpack'];
+
+type BenchmarkResults = Record<
+  (typeof benchmarkPlatforms)[number],
+  Record<
+    (typeof buildTypes)[number],
+    Record<string, Record<string, Record<string, string>>>
+  >
+>;
 
 function getHumanReadableSize(bytes: number): string {
   if (!bytes) {
@@ -184,17 +196,6 @@ async function start(): Promise<void> {
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
-  const benchmarkPlatforms = ['chrome', 'firefox'];
-  const buildTypes = ['browserify', 'webpack'];
-
-  type BenchmarkResults = Record<
-    (typeof benchmarkPlatforms)[number],
-    Record<
-      (typeof buildTypes)[number],
-      Record<string, Record<string, Record<string, string>>>
-    >
-  >;
-
   const benchmarkResults: BenchmarkResults = {};
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
@@ -216,6 +217,8 @@ async function start(): Promise<void> {
       }
     }
   }
+
+  runBenchmarkGate(benchmarkResults);
 
   const summaryPlatform = benchmarkPlatforms[0];
   const summaryBuildType = buildTypes[0];
@@ -315,6 +318,8 @@ async function start(): Promise<void> {
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`;
       const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>\n\n`;
       commentBody += `${benchmarkBody}`;
+
+      commentBody += runBenchmarkGate(benchmarkResults);
     } catch (error) {
       console.error(`Error constructing benchmark results: '${error}'`);
     }
@@ -405,4 +410,48 @@ async function start(): Promise<void> {
   if (!response.ok) {
     throw new Error(`Post comment failed with status '${response.statusText}'`);
   }
+}
+
+function runBenchmarkGate(benchmarkResults: BenchmarkResults): string {
+  // Load benchmark-gate.json file from disk
+  const benchmarkGate = JSON.parse(
+    readFileSync('benchmark-gate.json', 'utf-8'),
+  );
+
+  let benchmarkGateBody = '';
+
+  // Compare benchmarkResults with benchmark-gate.json
+  for (const platform of Object.keys(benchmarkGate)) {
+    for (const buildType of Object.keys(benchmarkGate[platform])) {
+      for (const page of Object.keys(benchmarkGate[platform][buildType])) {
+        for (const measure of Object.keys(
+          benchmarkGate[platform][buildType][page],
+        )) {
+          for (const metric of Object.keys(
+            benchmarkGate[platform][buildType][page][measure],
+          )) {
+            const benchmarkValue =
+              benchmarkResults[platform][buildType][page][measure][metric];
+
+            const gateValue =
+              benchmarkGate[platform][buildType][page][measure][metric];
+
+            if (benchmarkValue > gateValue) {
+              const message = `Benchmark value ${benchmarkValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}`;
+
+              benchmarkGateBody += `${message}\n`;
+              console.error(message);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (benchmarkGateBody) {
+    // Soft gate, just pings @HowardBraham
+    benchmarkGateBody = `cc: @HowardBraham\n${benchmarkGateBody}`;
+  }
+
+  return benchmarkGateBody;
 }
