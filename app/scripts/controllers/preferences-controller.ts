@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
+  dismissSmartAccountSuggestionEnabled: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -148,7 +149,8 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
-  accountUpgradeDisabledChains?: string[];
+  manageInstitutionalWallets: boolean;
+  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -200,6 +202,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      dismissSmartAccountSuggestionEnabled: false,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
@@ -252,6 +255,8 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    manageInstitutionalWallets: false,
+    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -422,7 +427,8 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  accountUpgradeDisabledChains: { persist: true, anonymous: false },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
+  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -940,25 +946,39 @@ export class PreferencesController extends BaseController<
     });
   }
 
+  /**
+   * A setter for the user preference to manage institutional wallets
+   *
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
+   */
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
+    this.update((state) => {
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
+    });
+  }
+
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
     });
   }
 
-  getDisabledAccountUpgradeChains(): string[] {
-    return this.state.accountUpgradeDisabledChains ?? [];
+  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
+    return this.state.disabledUpgradeAccountsByChain ?? {};
   }
 
-  disableAccountUpgradeForChain(chainId: string): void {
+  disableAccountUpgrade(chainId: Hex, address: Hex): void {
     this.update((state) => {
-      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
+      const { disabledUpgradeAccountsByChain = {} } = state;
+      const addressLowerCase = address.toLowerCase() as Hex;
 
-      if (!existingDisabledChains?.includes(chainId)) {
-        state.accountUpgradeDisabledChains = [
-          ...(existingDisabledChains ?? []),
-          chainId,
-        ];
+      if (
+        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
+      ) {
+        if (!disabledUpgradeAccountsByChain[chainId]) {
+          disabledUpgradeAccountsByChain[chainId] = [];
+        }
+        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
       }
     });
   }

@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
+import  { DAPP_URL } from '../../constants'
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 class TestDapp {
   private readonly driver: Driver;
@@ -967,15 +965,6 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async request(method: string, params: any[]) {
-    await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
-        params,
-      )}`,
-    });
   }
 }
 

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
@@ -25,7 +25,7 @@ export function useSmartTransactionFeatureFlags() {
   );
 
   const currentChainSupportsSmartTransactions = useSelector(
-    getCurrentChainSupportsSmartTransactions,
+    getChainSupportsSmartTransactions,
   );
 
   useEffect(() => {
