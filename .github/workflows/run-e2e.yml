@@ -21,7 +21,7 @@ on:
         description: The test command to run
       test-timeout-minutes:
         type: number
-        default: 40
+        default: 30
         description: The timeout in minutes for the test command
       matrix-index:
         type: number
@@ -46,6 +46,7 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
+      JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     steps:
       - name: Install dependencies
         run: |
@@ -91,15 +92,41 @@ jobs:
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
+      - name: Get job id
+        id: get-job-id
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const { JOB_NAME, GITHUB_RUN_ATTEMPT } = process.env
+            const jobs = await github.paginate(
+              github.rest.actions.listJobsForWorkflowRunAttempt,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: context.runId,
+                attempt_number: GITHUB_RUN_ATTEMPT,
+              },
+            );
+            const job = jobs.find((job) => job.name.endsWith(JOB_NAME));
+            if (!job) {
+              throw new Error(`Job with name '${JOB_NAME}' not found`);
+            }
+            console.log(`The job id for '${JOB_NAME}' is '${job.id}'`)
+            return job.id;
+
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
+        env:
+          # The properties are picked up by mocha-junit-reporter and added to the XML test results
+          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ steps.get-job-id.outputs.result }}'
 
       - name: Upload test results and artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format('-{0}', inputs.matrix-index) || '' }}
+          name: ${{ env.JOB_NAME }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e
