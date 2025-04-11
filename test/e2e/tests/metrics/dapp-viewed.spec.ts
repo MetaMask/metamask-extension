@@ -1,19 +1,13 @@
-const { strict: assert } = require('assert');
-const {
-  connectToDapp,
-  withFixtures,
-  unlockWallet,
-  getEventPayloads,
-  openDapp,
-  logInWithBalanceValidation,
-  WINDOW_TITLES,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  MetaMetricsEventName,
-} = require('../../../../shared/constants/metametrics');
+import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-async function mockedDappViewedEndpointFirstVisit(mockServer) {
+async function mockedDappViewedEndpointFirstVisit(mockServer: Mockttp) {
   return await mockServer
     .forPost('https://api.segment.io/v1/batch')
     .withJsonBodyIncluding({
@@ -34,7 +28,7 @@ async function mockedDappViewedEndpointFirstVisit(mockServer) {
     });
 }
 
-async function mockedDappViewedEndpointReVisit(mockServer) {
+async function mockedDappViewedEndpointReVisit(mockServer: Mockttp) {
   return await mockServer
     .forPost('https://api.segment.io/v1/batch')
     .withJsonBodyIncluding({
@@ -55,7 +49,7 @@ async function mockedDappViewedEndpointReVisit(mockServer) {
     });
 }
 
-async function mockPermissionApprovedEndpoint(mockServer) {
+async function mockPermissionApprovedEndpoint(mockServer: Mockttp) {
   return await mockServer
     .forPost('https://api.segment.io/v1/batch')
     .withJsonBodyIncluding({
@@ -68,17 +62,10 @@ async function mockPermissionApprovedEndpoint(mockServer) {
     });
 }
 
-const waitForDappConnected = async (driver) => {
-  await driver.waitForSelector({
-    css: '#accounts',
-    text: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-  });
-};
-
 describe('Dapp viewed Event', function () {
   const validFakeMetricsId = 'fake-metrics-fd20';
   it('is not sent when metametrics ID is not valid', async function () {
-    async function mockSegment(mockServer) {
+    async function mockSegment(mockServer: Mockttp) {
       return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
 
@@ -91,12 +78,18 @@ describe('Dapp viewed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await connectToDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
+
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
       },
@@ -104,7 +97,7 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when navigating to dapp with no account connected', async function () {
-    async function mockSegment(mockServer) {
+    async function mockSegment(mockServer: Mockttp) {
       return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
 
@@ -117,13 +110,18 @@ describe('Dapp viewed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await logInWithBalanceValidation(driver);
-        await connectToDapp(driver);
-        await waitForDappConnected(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
+
         const events = await getEventPayloads(driver, mockedEndpoints);
         const dappViewedEventProperties = events[0].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, true);
@@ -134,7 +132,7 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when opening the dapp in a new tab with one account connected', async function () {
-    async function mockSegment(mockServer) {
+    async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
         await mockedDappViewedEndpointReVisit(mockServer),
@@ -151,15 +149,20 @@ describe('Dapp viewed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await logInWithBalanceValidation(driver);
-        await connectToDapp(driver);
-        await waitForDappConnected(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
         // open dapp in a new page
-        await openDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
         const events = await getEventPayloads(driver, mockedEndpoints);
         // events are original dapp viewed, new dapp viewed when refresh, and permission approved
         const dappViewedEventProperties = events[1].properties;
@@ -171,7 +174,7 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when refreshing dapp with one account connected', async function () {
-    async function mockSegment(mockServer) {
+    async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
         await mockedDappViewedEndpointReVisit(mockServer),
@@ -188,16 +191,20 @@ describe('Dapp viewed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await logInWithBalanceValidation(driver);
-        await connectToDapp(driver);
-        await waitForDappConnected(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
         // refresh dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.refresh();
+        await testDapp.check_pageIsLoaded();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
@@ -210,7 +217,7 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when navigating to a connected dapp', async function () {
-    async function mockSegment(mockServer) {
+    async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
         await mockedDappViewedEndpointReVisit(mockServer),
@@ -229,19 +236,21 @@ describe('Dapp viewed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await logInWithBalanceValidation(driver);
-        await connectToDapp(driver);
-        await waitForDappConnected(driver);
-        // open dapp in a new page
-        await openDapp(driver);
-        const windowHandles = await driver.getAllWindowHandles();
-        // switch to second connected dapp
-        await driver.switchToWindow(windowHandles[1]);
-        await driver.switchToWindow(windowHandles[2]);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
+        // open dapp in a new page and switch to second connected dapp
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+
         const events = await getEventPayloads(driver, mockedEndpoints);
         // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
         const dappViewedEventProperties = events[2].properties;
@@ -253,7 +262,7 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when reconnect to a dapp that has been connected before', async function () {
-    async function mockSegment(mockServer) {
+    async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
         await mockedDappViewedEndpointReVisit(mockServer),
@@ -269,48 +278,26 @@ describe('Dapp viewed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await logInWithBalanceValidation(driver);
-        await connectToDapp(driver);
-        await waitForDappConnected(driver);
+        await loginWithBalanceValidation(driver);
+        // connect to dapp and disconnect
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
+        await testDapp.disconnectAccount(DEFAULT_FIXTURE_ACCOUNT);
 
-        // close test dapp window to avoid future confusion
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.closeWindowHandle(windowHandles[1]);
-        // disconnect dapp in fullscreen view
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({
-          text: 'All Permissions',
-          tag: 'div',
+        // reconnect again on test dapp
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
-        await driver.clickElement({
-          text: '127.0.0.1:8080',
-          tag: 'p',
-        });
-        await driver.clickElement({
-          text: 'Disconnect',
-          tag: 'button',
-        });
-        await driver.clickElement('[data-testid ="disconnect-all"]');
-        // validate dapp is not connected
-        const noAccountConnected = await driver.isElementPresent({
-          text: 'MetaMask isn’t connected to this site',
-          tag: 'p',
-        });
-        assert.ok(
-          noAccountConnected,
-          'Account disconected from connections page',
-        );
-        // reconnect again
-        await connectToDapp(driver);
+
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 2);
         // events are original dapp viewed, new dapp viewed when reconnected
