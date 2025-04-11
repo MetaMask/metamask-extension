@@ -43,6 +43,11 @@ export default class PageContainerFooter extends Component {
       submitButtonIcon,
     } = this.props;
 
+    const submitVariant =
+    submitButtonType === 'confirm'
+      ? ButtonVariant.Primary
+      : submitButtonType;
+
     const cancelVariant =
       cancelButtonType === 'default'
         ? ButtonVariant.Secondary
@@ -70,7 +75,7 @@ export default class PageContainerFooter extends Component {
 
           <Button
             size={ButtonSize.Lg}
-            variant={submitButtonType ?? ButtonVariant.Primary}
+            variant={submitVariant ?? ButtonVariant.Primary}
             className={classnames(
               'page-container__footer-button',
               footerButtonClassName,
@@ -78,7 +83,7 @@ export default class PageContainerFooter extends Component {
             disabled={disabled}
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
-            icon={submitButtonIcon}
+            startIconName={submitButtonIcon}
             block
           >
             {submitText || this.context.t('next')}

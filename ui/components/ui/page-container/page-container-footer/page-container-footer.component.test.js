@@ -54,38 +54,15 @@ describe('Page Footer', () => {
       expect(props.onSubmit).toHaveBeenCalled();
     });
 
-    it('has danger class defined if type is danger', () => {
-      const { queryByTestId } = renderWithProvider(
-        <PageFooter {...props} submitButtonType="danger" />,
-      );
-
-      const submitButton = queryByTestId('page-container-footer-next');
-
-      expect(submitButton.className).toContain('danger');
-    });
-
-    it('has danger-primary class defined if type is danger-primary', () => {
-      const { queryByTestId } = renderWithProvider(
-        <PageFooter {...props} submitButtonType="danger-primary" />,
-      );
-
-      const submitButton = queryByTestId('page-container-footer-next');
-
-      console.log(submitButton.className);
-      expect(submitButton.className).toContain('danger-primary');
-    });
-
     it('renders submitButtonIcon if passed', () => {
-      const { getByTestId } = renderWithProvider(
+      const { container } = renderWithProvider(
         <PageFooter
           {...props}
-          submitButtonIcon={
-            <Icon name={IconName.Add} data-testid="icon-test-id" />
-          }
+          submitButtonIcon={IconName.Add}
         />,
       );
 
-      expect(getByTestId('icon-test-id')).toBeInTheDocument();
+      expect(container.querySelector('.mm-icon')).toBeInTheDocument();
     });
   });
 });

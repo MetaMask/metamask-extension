@@ -28,7 +28,7 @@ export const PermissionPageContainerFooter = ({
       submitText={t('confirm')}
       disabled={disabled}
       submitButtonIcon={
-        hasAlerts ? <Icon name={IconName.Info} size={IconSize.Sm} /> : undefined
+        hasAlerts ? IconName.Info : undefined
       }
     />
   );
