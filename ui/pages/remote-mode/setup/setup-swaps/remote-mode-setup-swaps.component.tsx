@@ -3,6 +3,8 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { createDelegation } from '@metamask/delegation-controller/sdk';
+import { hexToNumber } from '@metamask/utils';
 import {
   Box,
   Button,
@@ -43,6 +45,8 @@ import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
+import { getSelectedAccount, getSelectedNetwork } from '../../../../selectors';
+import { storeDelegationEntry } from '../../../../store/actions';
 
 const TOTAL_STEPS = 3;
 
@@ -96,6 +100,8 @@ export default function RemoteModeSetupSwaps({
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedNetwork = useSelector(getSelectedNetwork);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -151,6 +157,17 @@ export default function RemoteModeSetupSwaps({
   };
 
   const handleConfigureRemoteSwaps = () => {
+    const delegation = createDelegation({
+      caveats: [],
+      from: selectedAccount.address,
+      to: selectedAccount.address,
+    });
+    storeDelegationEntry({
+      data: delegation,
+      tags: ['swap'],
+      chainId: hexToNumber(selectedNetwork.configuration.chainId),
+    });
+
     history.replace(REMOTE_ROUTE);
   };
 
