@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { formatAddressToCaipReference } from '@metamask/bridge-controller';
 import {
   getFromToken,
   getFromChain,
@@ -11,7 +12,7 @@ import {
 } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
 import { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 
 export const useTokenAlerts = () => {
   const fromToken = useSelector(getFromToken);
@@ -26,7 +27,10 @@ export const useTokenAlerts = () => {
           toChain?.chainId as AllowedBridgeChainIds,
         );
         if (chainName) {
-          return await fetchTokenAlert(chainName, toToken.address);
+          return await fetchTokenAlert(
+            chainName,
+            formatAddressToCaipReference(toToken.address),
+          );
         }
       }
       return null;

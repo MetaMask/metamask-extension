@@ -2,10 +2,7 @@ import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useSelector } from 'react-redux';
-import {
-  AsyncResult,
-  useAsyncResult,
-} from '../../../../../../hooks/useAsyncResult';
+import { AsyncResult, useAsyncResult } from '../../../../../../hooks/useAsync';
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';

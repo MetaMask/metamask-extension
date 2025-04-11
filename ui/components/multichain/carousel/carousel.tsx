@@ -14,6 +14,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getSweepstakesCampaignActive } from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -41,12 +42,26 @@ export const Carousel = React.forwardRef(
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
       .sort((a, b) => {
+        const isSweepstakesActive = getSweepstakesCampaignActive(
+          new Date(new Date().toISOString()),
+        );
+
+        if (isSweepstakesActive) {
+          if (a.id === 'sweepStake') {
+            return -1;
+          }
+          if (b.id === 'sweepStake') {
+            return 1;
+          }
+        }
+
         if (a.undismissable && !b.undismissable) {
           return -1;
         }
         if (!a.undismissable && b.undismissable) {
           return 1;
         }
+
         return 0;
       })
       .slice(0, MAX_SLIDES);

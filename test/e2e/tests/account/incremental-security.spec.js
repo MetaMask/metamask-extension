@@ -1,35 +1,24 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../../helpers');
+const { withFixtures, openDapp } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 describe('Incremental Security', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x250F458997A364988956409A164BA4E16F0F99F916ACDD73ADCD3A1DE30CF8D1',
-        balance: convertToHexValue(0),
-      },
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
-      async ({ driver }) => {
+      async ({ driver, localNodes }) => {
+        // Seed Account
+        await localNodes[0].setAccountBalance(
+          '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3',
+          '0x100000000000000000000',
+        );
         await driver.navigate();
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');

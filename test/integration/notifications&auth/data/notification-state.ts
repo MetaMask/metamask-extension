@@ -53,5 +53,6 @@ export const getMockedNotificationsState = () => {
     useExternalServices: true,
     pendingApprovalCount: 0,
     pendingApprovals: {},
+    subscriptionAccountsSeen: [notificationsAccountAddress],
   };
 };

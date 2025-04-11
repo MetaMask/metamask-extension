@@ -10,7 +10,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';

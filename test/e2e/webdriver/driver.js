@@ -10,7 +10,7 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { debounce } = require('lodash');
+const lodash = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -671,7 +671,7 @@ class Driver {
    * @param {string} testTitle - The title of the test
    */
   #getArtifactDir(testTitle) {
-    return `./test-artifacts/${this.browser}/${testTitle}`;
+    return `./test-artifacts/${this.browser}/${lodash.escape(testTitle)}`;
   }
 
   /**
@@ -803,6 +803,26 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
+  }
+
+  /**
+   * Finds the element, scrolls the page until the element is in view, and clicks it.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} Promise resolving after scrolling and clicking
+   */
+  async findScrollToAndClickElement(rawLocator) {
+    try {
+      const element = await this.findElement(rawLocator);
+      await this.scrollToElement(element);
+      await this.clickElement(rawLocator);
+    } catch (error) {
+      console.error(
+        `Error finding, scrolling to, or clicking element with selector: ${rawLocator}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
@@ -1409,7 +1429,7 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     // Flush the event processing stack 50ms after the last event is added
-    const debounceEventProcessingStack = debounce(
+    const debounceEventProcessingStack = lodash.debounce(
       this.#flushEventProcessingStack.bind(this),
       50,
     );

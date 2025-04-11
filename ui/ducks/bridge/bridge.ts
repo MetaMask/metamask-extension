@@ -1,15 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { type Hex, type CaipChainId } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   type BridgeToken,
   ChainId,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-} from '../../../shared/types/bridge';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
-import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
+  BRIDGE_DEFAULT_SLIPPAGE,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
@@ -95,7 +95,9 @@ const bridgeSlice = createSlice({
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
           chainId: payload.chainId,
-          address: payload.address || zeroAddress(),
+          address:
+            payload.address ||
+            getNativeAssetForChainId(payload.chainId).address,
         };
       } else {
         state.toToken = payload;

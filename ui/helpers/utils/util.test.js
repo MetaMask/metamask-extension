@@ -1,11 +1,13 @@
 import Bowser from 'bowser';
 import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import * as util from './util';
 
 describe('util', () => {
@@ -1296,6 +1298,154 @@ describe('util', () => {
     it('succeed with no accounts', () => {
       const sortedAccount = util.sortSelectedInternalAccounts([]);
       expect(sortedAccount).toStrictEqual([]);
+    });
+  });
+
+  describe('isAbleToRevealSrp', () => {
+    const mockHDKeyring = {
+      accounts: [],
+      type: KeyringTypes.hd,
+      metadata: {
+        id: '01JKDQSHNJH3EP2N4MPR0S5RQS',
+        name: '',
+      },
+    };
+
+    const mockSnapKeyring = {
+      accounts: [],
+      type: KeyringTypes.snap,
+      metadata: {
+        id: '01JKDQSPB36DENHN7HWF8XED78',
+        name: '',
+      },
+    };
+
+    const mockLedgerKeyring = {
+      accounts: [],
+      type: KeyringTypes.ledger,
+      metadata: {
+        id: '01JKDQSWKN9AHG8DKX29QE3PGA',
+        name: '',
+      },
+    };
+
+    it('should return true for HD Key Tree accounts', () => {
+      const hdAccount = createMockInternalAccount();
+
+      expect(util.isAbleToRevealSrp(hdAccount, [mockHDKeyring])).toBe(true);
+    });
+
+    it('should return true for first party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: BITCOIN_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('returns true for first party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: BITCOIN_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('returns false for third party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: 'third-party-snap-id',
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('returns false for Snap accounts not derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: 'some-other-id',
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('should return false for hardware wallet accounts', () => {
+      const ledgerAccount = {
+        type: 'Ledger Hardware',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: mockLedgerKeyring.metadata.id,
+          },
+        },
+        options: {},
+      };
+
+      expect(util.isAbleToRevealSrp(ledgerAccount, [mockLedgerKeyring])).toBe(
+        false,
+      );
+    });
+
+    it('should return false for any other account type', () => {
+      const otherAccount = {
+        type: 'Simple Key Pair',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'simple-keyring-id',
+          },
+        },
+        options: {},
+      };
+
+      expect(util.isAbleToRevealSrp(otherAccount, [mockHDKeyring])).toBe(false);
     });
   });
 

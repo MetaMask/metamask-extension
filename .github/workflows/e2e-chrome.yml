@@ -1,0 +1,77 @@
+name: E2E Chrome
+
+on:
+  workflow_call:
+
+jobs:
+  test-e2e-chrome:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-chrome
+      build-artifact: prep-build-test-browserify-chrome
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-multiple-providers:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-multiple-providers
+      build-artifact: prep-build-test-browserify-chrome
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:multi-provider
+
+  test-e2e-chrome-rpc:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-rpc
+      build-artifact: prep-build-test-browserify-chrome
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:rpc
+
+  test-e2e-chrome-flask:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7]
+    with:
+      test-suite-name: test-e2e-chrome-flask
+      build-command: yarn build:test:flask
+      test-command: yarn test:e2e:chrome:flask
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-report:
+    needs:
+      - test-e2e-chrome
+      - test-e2e-chrome-multiple-providers
+      - test-e2e-chrome-rpc
+      - test-e2e-chrome-flask
+    runs-on: ubuntu-latest
+    if: always()
+    continue-on-error: true # soft launch
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-*
+          merge-multiple: true
+
+      - name: Test Report
+        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
+        with:
+          name: '📝 Consolidated E2E Tests Report'
+          path: './test/test-results/e2e/**/*.xml'
+          reporter: jest-junit
+          fail-on-empty: false
+          fail-on-error: false # soft launch

@@ -5,6 +5,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -80,7 +81,7 @@ export default function AssetList({
   const balanceValue = useMultichainSelector(
     getMultichainSelectedAccountCachedBalance,
   );
-  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,

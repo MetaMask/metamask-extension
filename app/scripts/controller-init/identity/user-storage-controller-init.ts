@@ -10,7 +10,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 /**
  * Initialize the UserStorage controller.
@@ -70,7 +69,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
       },
     },
     env: {
-      isAccountSyncingEnabled: isManifestV3,
+      isAccountSyncingEnabled: true,
     },
   });
 

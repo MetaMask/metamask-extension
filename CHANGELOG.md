@@ -6,6 +6,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.16.0]
+### Added
+- Include 'Bitcoin' and 'Watch-only' accounts in settings search results for easier access. ([#31257](https://github.com/MetaMask/metamask-extension/pull/31257))
+- Add an error message to prevent users from connecting multiple Ledger devices simultaneously. ([#31010](https://github.com/MetaMask/metamask-extension/pull/31010))
+- [Beta] Add 'What's New' modal for Solana feature introduction. ([#30682](https://github.com/MetaMask/metamask-extension/pull/30682))
+- Add Sweepstake banner to promote user engagement. ([#31246](https://github.com/MetaMask/metamask-extension/pull/31246))
+- Allow selecting an ERC-20 token to pay for gas fees on supported L2 networks via a new modal. ([#31259](https://github.com/MetaMask/metamask-extension/pull/31259), [#31218](https://github.com/MetaMask/metamask-extension/pull/31218))
+- Add 'Discover' button to the Portfolio network discovery page to improve network exploration. ([#30777](https://github.com/MetaMask/metamask-extension/pull/30777))
+- Enable Profile Sync feature for Manifest V2 extension builds. ([#31141](https://github.com/MetaMask/metamask-extension/pull/31141))
+- [Beta] Introduce component for creating Snap accounts (used for Solana). ([#30611](https://github.com/MetaMask/metamask-extension/pull/30611))
+- Show pending confirmation alert on the permissions page when switching networks to prevent accidental approvals. ([#30725](https://github.com/MetaMask/metamask-extension/pull/30725))
+- Introduce the ability to reveal the Secret Recovery Phrase (SRP) for specific accounts (part of multi-SRP support). ([#30641](https://github.com/MetaMask/metamask-extension/pull/30641))
+- Allow pasting external (non-MetaMask) addresses as the destination for cross-chain bridges. ([#30995](https://github.com/MetaMask/metamask-extension/pull/30995))
+- Add Linea and Base network support for Smart Transactions. ([#30999](https://github.com/MetaMask/metamask-extension/pull/30999), [#30678](https://github.com/MetaMask/metamask-extension/pull/30678))
+- Introduce new filters for the transaction activity list for better management. ([#28180](https://github.com/MetaMask/metamask-extension/pull/28180))
+- [Flask] Add transaction confirmation flow for revoking EIP-7702 authorizations. ([#30969](https://github.com/MetaMask/metamask-extension/pull/30969))
+- Allow adding new accounts associated with a specific Secret Recovery Phrase (SRP) (part of multi-SRP support). ([#30604](https://github.com/MetaMask/metamask-extension/pull/30604))
+- [Flask] Add support for atomic batch transactions via `wallet_sendCalls` (EIP-5792). ([#30271](https://github.com/MetaMask/metamask-extension/pull/30271))
+- Introduce the ability to import an existing Secret Recovery Phrase (SRP) (part of multi-SRP support). ([#30598](https://github.com/MetaMask/metamask-extension/pull/30598))
+- Pre-populate common swap destinations for improved user experience. ([#30929](https://github.com/MetaMask/metamask-extension/pull/30929))
+- Display token approvals and other details from nested transactions within the simulation results and transaction confirmation screens. ([#30511](https://github.com/MetaMask/metamask-extension/pull/30511), [#30447](https://github.com/MetaMask/metamask-extension/pull/30447))
+- [Flask] Add confirmation screen for account upgrades via EIP-7702. ([#30347](https://github.com/MetaMask/metamask-extension/pull/30347))
+- Allow editing the spending cap directly within the transaction simulation component. ([#30745](https://github.com/MetaMask/metamask-extension/pull/30745))
+- Add token alerts to warn users about potentially risky tokens, including more translations. ([#30557](https://github.com/MetaMask/metamask-extension/pull/30557), [#30877](https://github.com/MetaMask/metamask-extension/pull/30877))
+- Add informational alerts when a new confirmation originates from a different website or network than expected. ([#30550](https://github.com/MetaMask/metamask-extension/pull/30550), [#30577](https://github.com/MetaMask/metamask-extension/pull/30577))
+- [Beta] Add Solana support features to the Beta build. ([#30613](https://github.com/MetaMask/metamask-extension/pull/30613))
+
+### Changed
+- Update manifest to be compatible with more platforms ([#31812](https://github.com/MetaMask/metamask-extension/pull/31812))
+- Update NFT network badge styling for better visibility. ([#30888](https://github.com/MetaMask/metamask-extension/pull/30888))
+- Update styling for the empty NFT tab placeholder for a cleaner look. ([#30892](https://github.com/MetaMask/metamask-extension/pull/30892))
+- Update text color on the Unlock Page for improved readability. ([#30890](https://github.com/MetaMask/metamask-extension/pull/30890))
+- Disable certain action buttons (like Send, Swap) when a non-EVM account (e.g., Bitcoin) is selected. ([#31193](https://github.com/MetaMask/metamask-extension/pull/31193))
+- Update the default Bitcoin block explorer from Blockstream to Mempool.space. ([#31134](https://github.com/MetaMask/metamask-extension/pull/31134))
+- Update general banner styling for a more modern appearance. ([#30887](https://github.com/MetaMask/metamask-extension/pull/30887))
+- [Beta] Display Solana swap transactions in the main activity list. ([#30811](https://github.com/MetaMask/metamask-extension/pull/30811))
+- Update UI colors across the extension to align with the latest brand evolution guidelines. ([#31256](https://github.com/MetaMask/metamask-extension/pull/31256))
+- [Beta] Update the default Solana block explorer to Solscan. ([#31276](https://github.com/MetaMask/metamask-extension/pull/31276))
+- Update the UI for selecting accounts during transaction confirmations. ([#31195](https://github.com/MetaMask/metamask-extension/pull/31195))
+- Update Portfolio Value (PV) display logic on the NFT tab. ([#30903](https://github.com/MetaMask/metamask-extension/pull/30903))
+- Improve account tag display and use uppercase labels for OneKey hardware wallet accounts. ([#29999](https://github.com/MetaMask/metamask-extension/pull/29999))
+- Automatically resimulate transactions every 3 seconds when the MetaMask window is focused to provide more up-to-date simulation results. ([#29878](https://github.com/MetaMask/metamask-extension/pull/29878))
+- Update the user interface for importing a Secret Recovery Phrase (SRP). ([#31098](https://github.com/MetaMask/metamask-extension/pull/31098))
+- Update the text content within the security alert modal (powered by Blockaid). ([#30809](https://github.com/MetaMask/metamask-extension/pull/30809))
+- Automatically reject pending confirmations from a website ('origin') when its permissions are revoked by the user. ([#31074](https://github.com/MetaMask/metamask-extension/pull/31074))
+- Default the 'Sign-In With Ethereum' (SIWE) message details section to be expanded for better visibility. ([#31001](https://github.com/MetaMask/metamask-extension/pull/31001))
+- [Flask] Update support for `wallet_sendCalls` (EIP-5792) to align with the latest specification changes. ([#30967](https://github.com/MetaMask/metamask-extension/pull/30967))
+- Wait at least 10 minutes before showing the banner indicating a potential delay in bridge transactions. ([#30952](https://github.com/MetaMask/metamask-extension/pull/30952))
+
+### Removed
+- Remove the 'Use ENS Petnames' setting toggle (Petnames feature remains enabled by default). ([#31207](https://github.com/MetaMask/metamask-extension/pull/31207))
+
+### Fixed
+- Fix error message persistence when switching between 12 and 24 words during SRP import. ([#31273](https://github.com/MetaMask/metamask-extension/pull/31273))
+- Fix issue preventing Keystone hardware wallet accounts from being added correctly after the first one. ([#31130](https://github.com/MetaMask/metamask-extension/pull/31130))
+- Fix issue allowing invalid hexadecimal data (non `0x`-prefixed) to be entered in the transaction 'Hex data' field. ([#14716](https://github.com/MetaMask/metamask-extension/pull/14716))
+- Prevent repeated HID connection prompts when paginating through Ledger accounts during the connection process. ([#30384](https://github.com/MetaMask/metamask-extension/pull/30384))
+- Fix Profile Sync feature not appearing in settings search results. ([#30687](https://github.com/MetaMask/metamask-extension/pull/30687))
+- Fix balance display potentially showing incorrect values when only non-EVM accounts are present. ([#30671](https://github.com/MetaMask/metamask-extension/pull/30671))
+
 ## [12.15.2]
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
@@ -5891,7 +5951,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...HEAD
+[12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.16.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
 [12.15.1]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.15.1
 [12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0

@@ -397,6 +397,9 @@ export async function getSeedPhrase(
 
 export function requestRevealSeedWords(
   password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -404,7 +407,12 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await getSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      );
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -612,6 +620,7 @@ export function connectHardware(
   deviceName: HardwareDeviceNames,
   page: string,
   hdPath: string,
+  loadHid: boolean,
   t: (key: string) => string,
 ): ThunkAction<
   Promise<{ address: string }[]>,
@@ -630,6 +639,7 @@ export function connectHardware(
     let accounts: { address: string }[];
     try {
       if (
+        loadHid &&
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
@@ -1064,6 +1074,7 @@ export function updateTransaction(
  *
  * @param txParams - The transaction parameters
  * @param options
+ * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.sendFlowHistory - The history of the send flow at time of creation.
  * @param options.type - The type of the transaction being added.
  * @returns
@@ -1071,6 +1082,7 @@ export function updateTransaction(
 export function addTransactionAndRouteToConfirmationPage(
   txParams: TransactionParams,
   options?: {
+    networkClientId: NetworkClientId;
     sendFlowHistory?: DraftTransaction['history'];
     type?: TransactionType;
   },
@@ -1110,22 +1122,22 @@ export function addTransactionAndRouteToConfirmationPage(
  * @param txParams - the transaction parameters
  * @param options - Additional options for the transaction.
  * @param options.method
+ * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.requireApproval - Whether the transaction requires approval.
  * @param options.swaps - Options specific to swaps transactions.
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
- * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
   txParams: TransactionParams,
   options: {
     method?: string;
+    networkClientId: NetworkClientId;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
-    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransactionAndWaitForPublish');
@@ -1153,22 +1165,22 @@ export async function addTransactionAndWaitForPublish(
  * @param txParams - the transaction parameters
  * @param options - Additional options for the transaction.
  * @param options.method
+ * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.requireApproval - Whether the transaction requires approval.
  * @param options.swaps - Options specific to swaps transactions.
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
- * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransaction(
   txParams: TransactionParams,
   options: {
     method?: string;
+    networkClientId: NetworkClientId;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
-    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransaction');
@@ -2339,7 +2351,9 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
+    await dispatch(
+      setActiveNetworkConfigurationId(networkClientIdForThisDomain),
+    );
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2621,15 +2635,21 @@ export function setActiveNetworkWithError(
   };
 }
 
-export async function setActiveNetworkConfigurationId(
+export function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
-): Promise<undefined> {
-  log.debug(
-    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
-  );
-  await submitRequestToBackground('setActiveNetworkConfigurationId', [
-    networkConfigurationId,
-  ]);
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(
+      `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+    );
+    try {
+      await submitRequestToBackground('setActiveNetworkConfigurationId', [
+        networkConfigurationId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
@@ -3211,10 +3231,6 @@ export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
-export function setPetnamesEnabled(value: boolean) {
-  return setPreference('petnamesEnabled', value);
-}
-
 export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
 }
@@ -3588,17 +3604,15 @@ export function detectTokens(): ThunkAction<
   };
 }
 
-export function detectNfts(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+// TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
+export function detectNfts(
+  chainIds: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts');
+      await submitRequestToBackground('detectNfts', [chainIds]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
@@ -6090,4 +6104,16 @@ export async function getCode(address: Hex, networkClientId: string) {
     address,
     networkClientId,
   ]);
+}
+
+export function setTransactionActive(
+  transactionId: string,
+  isFocused: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setTransactionActive', [
+      transactionId,
+      isFocused,
+    ]);
+  };
 }

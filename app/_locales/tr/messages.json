@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Bu taleple ilerlemenizi önermiyoruz."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Varlıklarınızı korumak için talebi reddetmenizi öneririz."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Bu talep şüphelidir"
   },
   "confirmed": {
     "message": "Onaylandı"
@@ -3491,9 +3485,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Sadece güvendiğiniz sitelere bağlayın. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "Aldığınız:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Harcama üst limiti"
-  },
   "permitSimulationChange_transfer": {
     "message": "Gönderdiğiniz:"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Takma adlara izin ver"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Bu, dilediğiniz adrese takma ad atamanıza olanak sağlar. Mümkün olduğunda etkileşimde bulunduğunuz adresler için ad önerilerinde bulunacağız."
   },
   "pinToTop": {
     "message": "Yukarıya sabitle"
@@ -5140,13 +5122,6 @@
     "message": "$1 kilidini açmak için indirin, kurun ve şifrenizi girin.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "OneKey'nizi bağlayın"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "OneKey'nizi doğrudan bilgisayarınıza bağlayın ve kilidini açın. Doğru parolayı kullandığınızdan emin olun.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Trezor'unuzu bağlayın"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Bu işlem size ekstra ücretlere mal olacaktı, bu yüzden bunu durdurduk. Paranız hala cüzdanınızda."
-  },
   "transactionFlowNetwork": {
     "message": "Ağ"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12 sa.:"
-  },
-  "typeYourSRP": {
-    "message": "Gizli Kurtarma İfadenizi girin"
   },
   "u2f": {
     "message": "U2F",

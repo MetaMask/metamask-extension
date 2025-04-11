@@ -17,6 +17,7 @@ export default class PageContainerFooter extends Component {
     buttonSizeLarge: PropTypes.bool,
     footerClassName: PropTypes.string,
     footerButtonClassName: PropTypes.string,
+    submitButtonIcon: PropTypes.string,
   };
 
   static contextTypes = {
@@ -37,6 +38,7 @@ export default class PageContainerFooter extends Component {
       buttonSizeLarge = false,
       footerClassName,
       footerButtonClassName,
+      submitButtonIcon,
     } = this.props;
 
     return (
@@ -68,6 +70,7 @@ export default class PageContainerFooter extends Component {
             disabled={disabled}
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
+            icon={submitButtonIcon}
           >
             {submitText || this.context.t('next')}
           </Button>

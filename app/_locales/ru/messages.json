@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Мы не рекомендуем продолжать выполнение этого запроса."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, может похитить все ваши активы."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Этот запрос подозрительный"
   },
   "confirmed": {
     "message": "Подтвержден(-а/о)"
@@ -3491,9 +3485,6 @@
     "message": "1 Г",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "Вы получаете"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Лимит расходов"
-  },
   "permitSimulationChange_transfer": {
     "message": "Вы отправляете"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Разрешить псевдонимы"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Эта функция позволяет вам присвоить псевдоним любому адресу. По возможности мы будем предлагать имена адресов, с которыми вы взаимодействуете."
   },
   "pinToTop": {
     "message": "Закрепить вверху"
@@ -5140,13 +5122,6 @@
     "message": "Скачайте $1, настройте его и введите пароль для его разблокировки.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Подключите свой OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Подключите свой OneKey напрямую к компьютеру и разблокируйте его. Убедитесь, что вы используете правильную парольную фразу.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Подключить кошелек Trezor"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "Транзакция обнаружила ошибку."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Эта транзакция потребовала бы дополнительных комиссий, поэтому мы остановили ее. Ваши деньги все еще в Вашем кошельке."
-  },
   "transactionFlowNetwork": {
     "message": "Сеть"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12 ч:"
-  },
-  "typeYourSRP": {
-    "message": "Введите секретную фразу для восстановления"
   },
   "u2f": {
     "message": "U2F",

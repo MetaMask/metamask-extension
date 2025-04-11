@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup high risk environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
@@ -50,16 +50,6 @@ jobs:
 
           echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', build number '${build_num}', job id '${job_id}'"
 
-      - name: Get CircleCI job artifacts
-        env:
-          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
-        run: |
-          mkdir -p test-artifacts/chrome/benchmark
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/benchmark/pageload.json" > "test-artifacts/chrome/benchmark/pageload.json"
-
-          mkdir -p test-artifacts/chrome
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
-
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -69,4 +59,4 @@ jobs:
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
-        run: ./development/metamaskbot-build-announce.js
+        run: yarn tsx ./development/metamaskbot-build-announce.ts

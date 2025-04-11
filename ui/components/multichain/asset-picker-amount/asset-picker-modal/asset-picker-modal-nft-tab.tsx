@@ -65,7 +65,9 @@ export function AssetPickerModalNftTab({
     getNftIsStillFetchingIndication,
   );
 
-  const { currentlyOwnedNfts } = useNfts();
+  const { currentlyOwnedNfts } = useNfts({
+    overridePopularNetworkFilter: true,
+  });
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -154,11 +156,8 @@ export function AssetPickerModalNftTab({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Box justifyContent={JustifyContent.center}>
-              <img src="./images/no-nfts.svg" />
-            </Box>
             <Box
-              marginTop={4}
+              marginTop={12}
               marginBottom={12}
               display={Display.Flex}
               justifyContent={JustifyContent.center}
@@ -167,10 +166,9 @@ export function AssetPickerModalNftTab({
               className="nfts-tab__link"
             >
               <Text
-                color={TextColor.textMuted}
-                variant={TextVariant.headingSm}
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
                 textAlign={TextAlign.Center}
-                as="h4"
               >
                 {t('noNFTs')}
               </Text>

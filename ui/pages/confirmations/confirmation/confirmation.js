@@ -496,7 +496,7 @@ export default function ConfirmationPage({
   return (
     <ConfirmContextProvider>
       <TemplateAlertContextProvider
-        pendingConfirmation={pendingConfirmation}
+        confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
         <div className="confirmation-page">

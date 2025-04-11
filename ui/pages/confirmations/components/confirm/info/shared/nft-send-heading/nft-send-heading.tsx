@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../../../../../shared/modules/string-utils';
 import { Box, Text } from '../../../../../../../components/component-library';
 import { NftItem } from '../../../../../../../components/multichain/nft-item';
@@ -19,7 +20,15 @@ import {
 import { getNftImageAlt } from '../../../../../../../helpers/utils/nfts';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
+import { ellipsify } from '../../../../../send/send.utils';
+
+export const generateTokenIdDisplay = (tokenId: string) => {
+  if (tokenId.length >= 10) {
+    return ellipsify(tokenId, 4, 4);
+  }
+
+  return tokenId;
+};
 
 const NFTSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
@@ -51,6 +60,8 @@ const NFTSendHeading = () => {
   const nftSrcUrl = imageOriginal ?? (image || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const currentChain = networkConfigurations[chainId];
+  const tokenIdDisplay =
+    assetTokenId && `#${generateTokenIdDisplay(assetTokenId)}`;
 
   const TokenImage = (
     <Box style={{ width: '48px' }}>
@@ -83,7 +94,7 @@ const NFTSendHeading = () => {
 
   const TokenID = (
     <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-      {`#${assetTokenId}`}
+      {tokenIdDisplay}
     </Text>
   );
 

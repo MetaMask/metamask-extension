@@ -7,19 +7,21 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const SOLANA_URL_REGEX =
-  /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
-// const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
+const SOLANA_URL_REGEX_MAINNET =
+  /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
+const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SOLANA_SPOT_PRICE_API =
   /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
 const SOLANA_EXCHANGE_RATES_PRICE_API =
   /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
-const SOLANA_STATIC_TOKEN_IMAGE_REGEX =
-  /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\//u;
+const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
+  /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
+const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
+  /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc/u;
 export const SOLANA_TOKEN_API =
-  /^https:\/\/tokens\.(uat-api|api)\.cx\.metamask\.io\/v3\/assets/u;
+  /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
   /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
 export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
@@ -93,6 +95,25 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
         usd: 198.42,
       },
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
+        {
+          usd: 0.01157283,
+        },
+    },
+  };
+  return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
+    return response;
+  });
+}
+
+export async function mockPriceApiSpotPriceDevnet(mockServer: Mockttp) {
+  console.log('mockPriceApiSpotPrice');
+  const response = {
+    statusCode: 200,
+    json: {
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': {
+        usd: 198.42,
+      },
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
         {
           usd: 0.01157283,
         },
@@ -399,10 +420,10 @@ export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
     });
 }
 
-export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
+export async function mockStaticMetamaskTokenIconMainnet(mockServer: Mockttp) {
   console.log('mockStaticMetamaskTokenIcon');
   return await mockServer
-    .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX)
+    .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -410,21 +431,77 @@ export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
     });
 }
 
-export async function mockTokenApi(mockServer: Mockttp) {
+export async function mockStaticMetamaskTokenIconDevnet(mockServer: Mockttp) {
+  console.log('mockStaticMetamaskTokenIcon');
+  return await mockServer
+    .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
+export async function mockTokenApiMainnet(mockServer: Mockttp) {
   console.log('mockTokenApi');
   const response = {
     statusCode: 200,
-    json: {
-      decimals: 6,
-      assetId:
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-      name: 'PUMPKIN',
-      symbol: 'PKIN',
-    },
+    json: [
+      {
+        decimals: 9,
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+      {
+        decimals: 6,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+        name: 'PUMPKIN',
+        symbol: 'PKIN',
+      },
+    ],
   };
-  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
-    return response;
-  });
+  return await mockServer
+    .forGet(SOLANA_TOKEN_API)
+    .withQuery({
+      assetIds:
+        'solana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockTokenApiDevnet(mockServer: Mockttp) {
+  console.log('mockTokenApi');
+  const response = {
+    statusCode: 200,
+    json: [
+      {
+        decimals: 9,
+        assetId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+      {
+        decimals: 6,
+        assetId:
+          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+        name: 'PUMPKIN',
+        symbol: 'PKIN',
+      },
+    ],
+  };
+  return await mockServer
+    .forGet(SOLANA_TOKEN_API)
+    .withQuery({
+      assetIds:
+        'solana%EtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501%2Csolana%EtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+    })
+    .thenCallback(() => {
+      return response;
+    });
 }
 
 export async function mockMultiCoinPrice(mockServer: Mockttp) {
@@ -461,7 +538,7 @@ export async function mockSolanaBalanceQuote(
     },
   };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
@@ -470,57 +547,30 @@ export async function mockSolanaBalanceQuote(
     });
 }
 
-export async function mockFungibleAssets(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(`${SIMPLEHASH_URL}/api/v0/fungibles/assets`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          fungible_id: 'solana.2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-          name: 'PUMPKIN',
-          symbol: 'PKIN',
-          decimals: 6,
-          chain: 'solana',
-          previews: {
-            image_small_url: '',
-            image_medium_url: '',
-            image_large_url: '',
-            image_opengraph_url: '',
-            blurhash: 'U=Io~ufQ9_jtJTfQsTfQ0*fQ$$fQ#nfQX7fQ',
-            predominant_color: '#fb9f18',
-          },
-          image_url: '',
-          image_properties: {
-            width: 1024,
-            height: 1024,
-            size: 338371,
-            mime_type: 'image/png',
-            exif_orientation: null,
-          },
-          created_date: '2025-01-28T17:40:25Z',
-          created_by: '85c4VNwMhWtj5ygDgRjs2scmYRGetFeSf7RYNjtPErq1',
-          supply: '1000011299680610',
-          holder_count: 21675,
-          extra_metadata: {
-            twitter: '',
-            telegram: '',
-            is_mutable: true,
-            creators: [
-              {
-                address: '85c4VNwMhWtj5ygDgRjs2scmYRGetFeSf7RYNjtPErq1',
-                verified: true,
-                share: 100,
-              },
-            ],
-            token_program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-            extensions: [],
-            image_original_url: '',
-            animation_original_url: null,
-            metadata_original_url: '',
-          },
+export async function mockSolanaBalanceQuoteDevnet(
+  mockServer: Mockttp,
+  mockZeroBalance: boolean = false,
+) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.18',
+          slot: 308460925,
         },
-      };
+        value: mockZeroBalance ? 0 : SOL_BALANCE,
+      },
+      id: 1337,
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .withJsonBodyIncluding({
+      method: 'getBalance',
+    })
+    .thenCallback(() => {
+      return response;
     });
 }
 
@@ -587,7 +637,7 @@ export async function simulateSolanaTransaction(
         },
       };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'simulateTransaction',
     })
@@ -1164,7 +1214,7 @@ export async function mockGetFailedTransaction(mockServer: Mockttp) {
   };
 
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getTransaction')
     .thenCallback(() => {
       return response;
@@ -1232,7 +1282,7 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
   };
 
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getTransaction')
     .thenCallback(() => {
       return response;
@@ -1257,7 +1307,7 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getLatestBlockhash',
     })
@@ -1267,7 +1317,7 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
 }
 export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getSignaturesForAddress')
     .thenCallback(() => {
       return {
@@ -1292,7 +1342,7 @@ export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
 }
 export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getSignaturesForAddress')
     .thenCallback(() => {
       return {
@@ -1324,7 +1374,7 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'sendTransaction',
     })
@@ -1336,7 +1386,7 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
 /*
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getTokenAccountsByOwner',
     })
@@ -1393,7 +1443,7 @@ export async function mockGetFeeForMessage(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getFeeForMessage',
     })
@@ -1404,7 +1454,7 @@ export async function mockGetFeeForMessage(mockServer: Mockttp) {
 
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getTokenAccountsByOwner',
     })
@@ -1487,7 +1537,7 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
@@ -1537,7 +1587,7 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
@@ -1595,9 +1645,6 @@ export async function withSolanaAccountSnap(
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
 
-        // Default Solana mocks
-        mockList.push(await mockFungibleAssets(mockServer));
-
         if (mockGetTransactionSuccess && !mockGetTransactionFailed) {
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
@@ -1626,6 +1673,9 @@ export async function withSolanaAccountSnap(
             await mockPhishingDetectionApi(mockServer),
             await mockGetTokenAccountInfo(mockServer),
             await mockGetAccountInfo(mockServer),
+            await mockTokenApiMainnet(mockServer),
+            await mockTokenApiDevnet(mockServer),
+            await mockSolanaBalanceQuoteDevnet(mockServer),
           ]);
         }
         if (mockZeroBalance) {

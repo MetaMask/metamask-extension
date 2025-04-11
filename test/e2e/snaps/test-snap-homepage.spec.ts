@@ -2,10 +2,10 @@ import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap Homepage', function (this: Suite) {
   it('tests snap home page functionality', async function () {
@@ -17,12 +17,14 @@ describe('Test Snap Homepage', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
-        const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);
 
-        await testSnaps.openPage();
-        await testSnaps.installSnap('#connecthomepage');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectHomePageButton',
+          false,
+        );
 
         // switch to metamask page and open the three dots menu
         await driver.switchToWindowWithTitle(

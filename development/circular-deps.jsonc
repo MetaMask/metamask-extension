@@ -8,11 +8,6 @@
 
 [
   [
-    "app/scripts/lib/snap-keyring/index.ts",
-    "app/scripts/lib/snap-keyring/snap-keyring.ts",
-    "app/scripts/metamask-controller.js"
-  ],
-  [
     "shared/modules/selectors/account.ts",
     "shared/modules/selectors/index.ts",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",

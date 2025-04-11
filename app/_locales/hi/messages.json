@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "हम इस अनुरोध के साथ आगे बढ़ने का सुझाव नहीं देते।"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "यह अनुरोध संदिग्ध है"
   },
   "confirmed": {
     "message": "कन्फर्म किया गया"
@@ -3491,9 +3485,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं। $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "आप प्राप्त करते हैं"
   },
-  "permitSimulationChange_revoke": {
-    "message": "खर्च करने की लिमिट"
-  },
   "permitSimulationChange_transfer": {
     "message": "आप भेजते हैं"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
-  },
-  "petnamesEnabledToggle": {
-    "message": "उपनामों की अनुमति दें"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "यह आपको किसी भी एड्रेस पर एक उपनाम देने की सुविधा देता है। जब भी संभव होगा हम उन एड्रेसों के लिए नाम सुझाएंगे जिनसे आप इंटरैक्ट करते हैं।"
   },
   "pinToTop": {
     "message": "सबसे ऊपर ले जाएं"
@@ -5140,13 +5122,6 @@
     "message": "$1 अनलॉक करने के लिए डाउनलोड करें, सेट करें और अपना पासवर्ड डालें।",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "अपना OneKey कनेक्ट करें"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "अपने OneKey को सीधे अपने कंप्यूटर में प्लग करें और इसे अनलॉक करें। सुनिश्चित करें कि आप सही पासफ्रेज़ का इस्तेमाल कर रहे हैं।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "अपने Trezor को कनेक्ट करें"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
   },
-  "transactionFailedBannerMessage": {
-    "message": "इस ट्रांसेक्शन पर आपको अतिरिक्त शुल्क देना पड़ता, इसलिए हमने इसे रोक दिया। आपका पैसा अभी भी आपके वॉलेट में है।"
-  },
   "transactionFlowNetwork": {
     "message": "नेटवर्क"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12 घंटे:"
-  },
-  "typeYourSRP": {
-    "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"
   },
   "u2f": {
     "message": "U2F",

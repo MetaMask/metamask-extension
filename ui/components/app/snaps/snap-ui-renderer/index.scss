@@ -42,6 +42,10 @@
     }
   }
 
+  &__address-input > .mm-text-field {
+    border-color: var(--color-border-muted);
+  }
+
   &__panel {
     gap: 8px;
   }
@@ -81,10 +85,19 @@
     }
   }
 
-  &__form {
-    .snap-ui-renderer__panel {
-      .snap-ui-renderer__field {
-        flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+
+  &__panel.box--flex-direction-row {
+    .snap-ui-renderer__field {
+      flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+
+      // Asset Selector small state
+      .snap-ui-renderer__asset-selector {
+        padding-left: 8px;
+        padding-right: 8px;
+
+        .snap-ui-renderer__asset-selector-option__balance {
+          display: none; // Hide the balance in the asset selector selected value
+        }
       }
     }
   }

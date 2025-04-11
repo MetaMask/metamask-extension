@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "No le recomendamos que siga adelante con esta solicitud."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por realizar estafas podría tomar todos sus activos."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Esta solicitud es sospechosa"
   },
   "confirmed": {
     "message": "Confirmado"
@@ -3491,9 +3485,6 @@
     "message": "1 a",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "Usted recibe"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Límite de gasto"
-  },
   "permitSimulationChange_transfer": {
     "message": "Usted envía"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Permitir apodos"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Esto le permite asignar un apodo a cualquier dirección. Le sugeriremos nombres para las direcciones con las que interactúa cuando sea posible."
   },
   "pinToTop": {
     "message": "Anclar arriba"
@@ -5140,13 +5122,6 @@
     "message": "Descargue y configure la aplicación, e ingrese su contraseña para desbloquear $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Conecta tu OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Conecta tu OneKey directamente a tu equipo y desbloquéalo. Asegúrate de utilizar la frase de contraseña correcta.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Conecte su Trezor"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "La transacción encontró un error."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Esta transacción le hubiera generado tarifas adicionales, así que la interrumpimos. Su dinero sigue en su monedero."
-  },
   "transactionFlowNetwork": {
     "message": "Red"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12 horas:"
-  },
-  "typeYourSRP": {
-    "message": "Escriba la frase secreta de recuperación"
   },
   "u2f": {
     "message": "U2F",

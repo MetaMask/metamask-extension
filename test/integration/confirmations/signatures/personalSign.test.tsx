@@ -154,6 +154,7 @@ describe('PersonalSign Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             signature_type: ApprovalType.PersonalSign,
+            hd_entropy_index: 0,
           },
         }),
       ]),

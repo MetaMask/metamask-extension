@@ -102,7 +102,7 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
         }),
         this.driver.waitForSelector({
           css: this.networkFee,
-          text: `${expectedNetworkFee} ETH`,
+          text: `${expectedNetworkFee}`,
         }),
       ]);
       console.log(

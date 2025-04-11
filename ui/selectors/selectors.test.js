@@ -14,6 +14,8 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
@@ -1179,45 +1181,14 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  describe('#getPetnamesEnabled', () => {
-    function createMockStateWithPetnamesEnabled(petnamesEnabled) {
-      return { metamask: { preferences: { petnamesEnabled } } };
-    }
-
-    describe('usePetnamesEnabled', () => {
-      const tests = [
-        {
-          petnamesEnabled: true,
-          expectedResult: true,
-        },
-        {
-          petnamesEnabled: false,
-          expectedResult: false,
-        },
-        {
-          // Petnames is enabled by default.
-          petnamesEnabled: undefined,
-          expectedResult: true,
-        },
-      ];
-
-      tests.forEach(({ petnamesEnabled, expectedResult }) => {
-        it(`should return ${String(
-          expectedResult,
-        )} when petnames preference is ${String(petnamesEnabled)}`, () => {
-          const result = selectors.getPetnamesEnabled(
-            createMockStateWithPetnamesEnabled(petnamesEnabled),
-          );
-          expect(result).toBe(expectedResult);
-        });
-      });
-    });
-  });
-
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isOptimismSupported).toBeTruthy();
@@ -1225,9 +1196,27 @@ describe('Selectors', () => {
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: { '0xabc': { metadata: { keyring: {} } } },
+        },
       },
     });
     expect(isFantomSupported).toBeFalsy();
+
+    const isSolanaSupported = selectors.getIsBridgeChain({
+      metamask: {
+        ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
+        internalAccounts: {
+          selectedAccount: '0xabc',
+          accounts: {
+            '0xabc': { metadata: { keyring: {} } },
+            type: 'solana',
+          },
+        },
+      },
+    });
+    expect(isSolanaSupported).toBeTruthy();
   });
 
   it('returns proper values for snaps privacy warning shown status', () => {

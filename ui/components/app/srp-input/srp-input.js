@@ -125,40 +125,53 @@ export default function SrpInput({ onChange, srpText }) {
     });
   }
 
+  const handleNumberOfWordsChange = useCallback(
+    (newSelectedOption) => {
+      const newNumberOfWords = parseInt(newSelectedOption, 10);
+      if (Number.isNaN(newNumberOfWords)) {
+        throw new Error('Unable to parse option as integer');
+      }
+
+      let newDraftSrp = draftSrp.slice(0, newNumberOfWords);
+      if (newDraftSrp.length < newNumberOfWords) {
+        newDraftSrp = newDraftSrp.concat(
+          new Array(newNumberOfWords - newDraftSrp.length).fill(''),
+        );
+      }
+      setNumberOfWords(newNumberOfWords);
+      setShowSrp(new Array(newNumberOfWords).fill(false));
+      onSrpChange(newDraftSrp);
+    },
+    [draftSrp, onSrpChange],
+  );
+
   return (
     <div className="import-srp__container">
-      <label className="import-srp__srp-label">
-        <Text align={TextAlign.Left} variant={TextVariant.headingSm} as="h4">
-          {srpText}
-        </Text>
-      </label>
-      <BannerAlert
-        className="import-srp__paste-tip"
-        severity={Severity.Info}
-        description={t('srpPasteTip')}
-        descriptionProps={{ className: 'import-srp__banner-alert-text' }}
-      />
-      <Dropdown
-        className="import-srp__number-of-words-dropdown"
-        onChange={(newSelectedOption) => {
-          const newNumberOfWords = parseInt(newSelectedOption, 10);
-          if (Number.isNaN(newNumberOfWords)) {
-            throw new Error('Unable to parse option as integer');
-          }
-
-          let newDraftSrp = draftSrp.slice(0, newNumberOfWords);
-          if (newDraftSrp.length < newNumberOfWords) {
-            newDraftSrp = newDraftSrp.concat(
-              new Array(newNumberOfWords - newDraftSrp.length).fill(''),
-            );
-          }
-          setNumberOfWords(newNumberOfWords);
-          setShowSrp(new Array(newNumberOfWords).fill(false));
-          onSrpChange(newDraftSrp);
-        }}
-        options={numberOfWordsOptions}
-        selectedOption={`${numberOfWords}`}
-      />
+      <div className="import-srp__dropdown-container">
+        <label className="import-srp__srp-label">
+          {srpText && (
+            <Text
+              align={TextAlign.Left}
+              variant={TextVariant.headingSm}
+              as="h4"
+            >
+              {srpText}
+            </Text>
+          )}
+        </label>
+        <BannerAlert
+          className="import-srp__paste-tip"
+          severity={Severity.Info}
+          description={t('srpPasteTip')}
+          descriptionProps={{ className: 'import-srp__banner-alert-text' }}
+        />
+        <Dropdown
+          className="import-srp__number-of-words-dropdown"
+          onChange={handleNumberOfWordsChange}
+          options={numberOfWordsOptions}
+          selectedOption={`${numberOfWords}`}
+        />
+      </div>
       <div className="import-srp__srp">
         {[...Array(numberOfWords).keys()].map((index) => {
           const id = `import-srp__srp-word-${index}`;

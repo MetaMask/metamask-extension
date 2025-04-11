@@ -80,6 +80,8 @@ class TestDapp {
 
   private readonly mmlogo = '#mm-logo';
 
+  private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -614,6 +616,14 @@ class TestDapp {
       this.confirmDialogButton,
     );
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  }
+
+  async clickMaliciousERC20TransferButton() {
+    const sendTransactionButton = await this.driver.findElement(
+      this.maliciousERC20TransferButton,
+    );
+    await this.driver.scrollToElement(sendTransactionButton);
+    await this.driver.clickElement(this.maliciousERC20TransferButton);
   }
 
   /**

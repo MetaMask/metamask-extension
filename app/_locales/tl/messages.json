@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Hindi namin inirerekomendang magpatuloy sa hiling na ito."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng kunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Kahina-hinala ang kahilingang ito"
   },
   "confirmed": {
     "message": "Nakumpirma"
@@ -3491,9 +3485,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "Nakatanggap ka ng"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Limitasyon sa paggastos"
-  },
   "permitSimulationChange_transfer": {
     "message": "Nagpadala ka ng"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Pahintulutan ang mga palayaw"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Magbibigay-daan ito sa iyo na magtalaga ng palayaw sa anumang address. Magbibigay kami ng mungkahi para sa mga address na may ugnayan ka kapag posible."
   },
   "pinToTop": {
     "message": "I-pin sa itaas"
@@ -5140,13 +5122,6 @@
     "message": "Mag-download, mag-set up, at maglagay ng password para ma-unlock ang $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Ikonekta ang iyong OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Direktang ikonekta ang iyong OneKey sa iyong computer at i-unlock ito. Tiyaking ginagamit mo ang tamang passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Ikonekta ang iyong Trezor"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "Nagkaroon ng error sa transaksyon."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Gagastos ka sana ng dagdag na bayad sa transaksyong ito, kaya pinigilan namin ito. Nasa wallet mo pa rin ang iyong pera."
-  },
   "transactionFlowNetwork": {
     "message": "Network"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12 oras:"
-  },
-  "typeYourSRP": {
-    "message": "I-type ang iyong Lihim na Parirala sa Pagbawi"
   },
   "u2f": {
     "message": "U2F",

@@ -68,7 +68,6 @@ describe('Remove NFT', function () {
 
         // Check the imported NFT disappeared in the NFT tab
         const noNftInfo = await driver.waitForSelector({
-          css: 'h4',
           text: 'No NFTs yet',
         });
         assert.equal(await noNftInfo.isDisplayed(), true);

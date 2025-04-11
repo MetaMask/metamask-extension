@@ -8,11 +8,12 @@ import { Hex } from '@metamask/utils';
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {
-  const createMockedSwitchChain = () => {
+  const createMockedSwitchChain = (mks = {}) => {
     const end = jest.fn();
     const mocks = {
       origin: 'www.test.com',
       isAddFlow: false,
+      isSwitchFlow: false,
       autoApprove: false,
       setActiveNetwork: jest.fn(),
       getCaveat: jest.fn(),
@@ -23,6 +24,7 @@ describe('Ethereum Chain Utils', () => {
       hasApprovalRequestsForOrigin: jest.fn(),
       toNetworkConfiguration: {},
       fromNetworkConfiguration: {},
+      ...mks,
     };
     const response: { result?: true } = {};
     const switchChain = (chainId: Hex, networkClientId: string) =>
@@ -177,7 +179,9 @@ describe('Ethereum Chain Utils', () => {
 
     describe('with an existing CAIP-25 permission granted from the multichain flow (isMultichainOrigin: true) and the chainId is not already permissioned', () => {
       it('requests permittedChains approval', async () => {
-        const { mocks, switchChain } = createMockedSwitchChain();
+        const { mocks, switchChain } = createMockedSwitchChain({
+          isSwitchFlow: true,
+        });
         mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValue(
           new Error(
             "Cannot switch to or add permissions for chainId '0x1' because permissions were granted over the Multichain API.",
@@ -194,7 +198,13 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
+        ).toHaveBeenCalledWith({
+          chainId: '0x1',
+          autoApprove: false,
+          metadata: {
+            isSwitchEthereumChain: true,
+          },
+        });
       });
 
       it('does not switch the active network', async () => {

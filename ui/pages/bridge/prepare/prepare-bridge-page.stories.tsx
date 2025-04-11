@@ -10,7 +10,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { RequestStatus } from '../../../../shared/types/bridge';
+import { RequestStatus } from '@metamask/bridge-controller';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',

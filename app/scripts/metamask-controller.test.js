@@ -58,9 +58,7 @@ import {
 } from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
-import MetaMaskController, {
-  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
-} from './metamask-controller';
+import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
@@ -554,8 +552,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId:
-            metamaskController.networkController.state.selectedNetworkClientId,
+          networkClientId: undefined,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
@@ -1534,6 +1531,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledWith(
           { origin: 'test.com' },
           expectedCaip25Permission,
+          undefined,
         );
       });
 
@@ -1913,7 +1911,7 @@ describe('MetaMaskController', () => {
       });
 
       describe('getHardwareTypeForMetric', () => {
-        it.each(['ledger', 'lattice', 'trezor', 'qr'])(
+        it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
           'should return the correct type for %s',
           async (type) => {
             jest
@@ -1927,24 +1925,6 @@ describe('MetaMaskController', () => {
             expect(result).toBe(HardwareKeyringType[type]);
           },
         );
-
-        it('should handle special case for oneKey', async () => {
-          jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation((_, fn) => {
-              const keyring = {
-                type: 'trezor',
-                bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
-              };
-              return fn({ keyring });
-            });
-
-          const result = await metamaskController.getHardwareTypeForMetric(
-            '0x123',
-          );
-
-          expect(result).toBe('OneKey Hardware');
-        });
       });
 
       describe('forgetDevice', () => {

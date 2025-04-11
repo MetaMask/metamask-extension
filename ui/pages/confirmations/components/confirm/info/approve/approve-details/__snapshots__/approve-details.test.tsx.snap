@@ -44,58 +44,21 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81420"
-                    height="16"
-                    transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#E9F500"
-                    height="16"
-                    transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FAB300"
-                    height="16"
-                    transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x2e0D7...5d09B
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x2e0D7...5d09B
-          </p>
         </div>
       </div>
     </div>
@@ -194,58 +157,21 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81420"
-                    height="16"
-                    transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#E9F500"
-                    height="16"
-                    transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FAB300"
-                    height="16"
-                    transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x2e0D7...5d09B
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x2e0D7...5d09B
-          </p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from 'viem';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsPageObject,
@@ -30,6 +31,7 @@ export type TransactionMetricsRequest = {
     fragmentId: string,
     payload: Partial<MetaMetricsEventFragment>,
   ) => void;
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex;
   getAccountType: (
     address: string,
   ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
@@ -63,6 +65,7 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
+  getHDEntropyIndex: () => number;
 };
 
 export type TransactionEventPayload = {

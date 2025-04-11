@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "この要求を承諾することはお勧めしません。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "この要求は不審です"
   },
   "confirmed": {
     "message": "確認されました"
@@ -3491,9 +3485,6 @@
     "message": "1年",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "受取"
   },
-  "permitSimulationChange_revoke": {
-    "message": "使用上限"
-  },
   "permitSimulationChange_transfer": {
     "message": "送金"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
-  },
-  "petnamesEnabledToggle": {
-    "message": "ニックネームを許可する"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "これにより、すべてのアドレスにニックネームを割り当てられるようになります。可能な場合、やり取りがあるアドレスの名前が提案されます。"
   },
   "pinToTop": {
     "message": "最上部にピン留め"
@@ -5140,13 +5122,6 @@
     "message": "$1のロックを解除するには、ダウンロードして設定し、パスワードを入力してください。",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "OneKeyを接続する"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "OneKeyをコンピューターに直接接続し、ロックを解除します。必ず正しいパスフレーズを使用してください。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Trezorを接続する"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "トランザクションでエラーが発生しました。"
   },
-  "transactionFailedBannerMessage": {
-    "message": "このトランザクションには追加の手数料がかかるため、中止しました。資金はウォレットから移動していません。"
-  },
   "transactionFlowNetwork": {
     "message": "ネットワーク"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12時間:"
-  },
-  "typeYourSRP": {
-    "message": "シークレットリカバリーフレーズを入力してください"
   },
   "u2f": {
     "message": "U2F",
