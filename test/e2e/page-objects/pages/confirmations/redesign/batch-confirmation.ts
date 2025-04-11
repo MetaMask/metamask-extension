@@ -51,6 +51,8 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     await this.driver.clickElement(this.confirmUpgradeButton);
   }
   async tickSplashRejectUpgradeButton(): Promise<void> {
-    await this.driver.clickElement(this.rejectUpgradeButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.rejectUpgradeButton,
+    );
   }
 }
