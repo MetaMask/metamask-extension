@@ -3,6 +3,8 @@ import { NotificationServicesPushController } from '@metamask/notification-servi
 
 import { t as translate } from '../../translate';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const t = (...args: Parameters<typeof translate>) => translate(...args) ?? '';
 
 const translations: NotificationServicesPushController.Utils.TranslationKeys = {
@@ -57,6 +59,8 @@ const translations: NotificationServicesPushController.Utils.TranslationKeys = {
 };
 
 export function createNotificationMessage(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   n: NotificationServicesController.Types.INotification,
 ) {
   return NotificationServicesPushController.Utils.createOnChainPushNotificationMessage(

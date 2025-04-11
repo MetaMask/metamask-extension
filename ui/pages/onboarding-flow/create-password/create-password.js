@@ -55,6 +55,8 @@ export default function CreatePassword({
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -225,6 +227,8 @@ export default function CreatePassword({
 
   const createPasswordLink = (
     <a
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onClick={(e) => e.stopPropagation()}
       key="create-password__link-text"
       href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
@@ -287,6 +291,8 @@ export default function CreatePassword({
                 variant={TextVariant.bodySm}
                 data-testid="show-password"
                 className="create-password__form--password-button"
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onClick={(e) => {
                   e.preventDefault();
                   setShowPassword(!showPassword);
@@ -328,6 +334,8 @@ export default function CreatePassword({
               inputProps={{ 'data-testid': 'create-password-terms' }}
               alignItems={AlignItems.flexStart}
               isChecked={termsChecked}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => {
                 e.preventDefault();
                 setTermsChecked(!termsChecked);

@@ -29,6 +29,8 @@ import {
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 
 export const SiteCellTooltip = ({ accounts, networks }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;

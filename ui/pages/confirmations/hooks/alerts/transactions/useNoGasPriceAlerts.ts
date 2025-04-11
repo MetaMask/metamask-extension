@@ -15,6 +15,8 @@ import { getNoGasPriceFetched } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useNoGasPriceAlerts(): Alert[] {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

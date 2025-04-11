@@ -54,6 +54,8 @@ export default class PageContainerFooter extends Component {
                 'page-container__footer-button__cancel',
                 footerButtonClassName,
               )}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
             >
@@ -69,6 +71,8 @@ export default class PageContainerFooter extends Component {
               footerButtonClassName,
             )}
             disabled={disabled}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
             icon={submitButtonIcon}

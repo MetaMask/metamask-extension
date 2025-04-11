@@ -33,6 +33,8 @@ import { Content, Header, Page } from '../../../../multichain/pages/page';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftFullImage() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();
   const nfts = useSelector(getNfts);

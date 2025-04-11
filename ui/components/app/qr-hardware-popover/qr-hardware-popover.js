@@ -15,6 +15,8 @@ import QRHardwareSignRequest from './qr-hardware-sign-request';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 
 const QRHardwarePopover = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const qrHardware = useSelector(getCurrentQRHardwareState);

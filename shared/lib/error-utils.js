@@ -58,6 +58,8 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
 
   switchDirection(textDirection);
   const { currentLocaleMessages, enLocaleMessages } = response;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
   /**

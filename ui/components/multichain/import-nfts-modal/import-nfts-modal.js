@@ -58,6 +58,8 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 
 export const ImportNftsModal = ({ onClose }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -234,6 +236,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 id="address"
                 placeholder="0x..."
                 value={nftAddress}
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => {
                   validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
@@ -268,6 +272,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
                 value={tokenId}
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => {
                   validateAndSetTokenId(e.target.value);
                   setNftAddFailed(false);

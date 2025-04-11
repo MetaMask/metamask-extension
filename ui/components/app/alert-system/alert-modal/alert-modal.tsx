@@ -116,6 +116,8 @@ function AlertHeader({
   selectedAlert: Alert;
   customTitle?: string;
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { severity, reason } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
@@ -146,6 +148,8 @@ function AlertHeader({
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function BlockaidAlertDetails() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { securityAlertResponse } = currentConfirmation;
@@ -193,6 +197,8 @@ function AlertDetails({
   selectedAlert: Alert;
   customDetails?: React.ReactNode;
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
@@ -251,6 +257,8 @@ export function AcknowledgeCheckboxBase({
     return null;
   }
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
@@ -287,6 +295,8 @@ function AcknowledgeButton({
   hasActions?: boolean;
   isBlocking?: boolean;
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (

@@ -33,6 +33,8 @@ export default function TokenSearch({
   networkFilter,
   setSearchResults,
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const isTokenNetworkFilterEqualCurrentNetwork =
     Object.keys(networkFilter).length === 1;
@@ -86,6 +88,8 @@ export default function TokenSearch({
       className={searchClassName}
       placeholder={t('searchTokens')}
       value={searchQuery}
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onChange={(e) => handleSearch(e.target.value)}
       error={error}
       autoFocus

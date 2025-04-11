@@ -112,6 +112,8 @@ export function getStatusKey(transaction) {
  * @param {string} nativeCurrency - The native currency of the currently selected network
  * @returns {string} The transaction category title
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
   switch (type) {
     case TransactionType.tokenMethodTransfer: {

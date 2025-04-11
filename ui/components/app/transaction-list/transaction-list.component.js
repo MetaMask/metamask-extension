@@ -268,6 +268,8 @@ export default function TransactionList({
   hideNetworkFilter,
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const currentNetworkConfig = useSelector(getCurrentNetwork);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
@@ -691,6 +693,8 @@ const MultichainTransactionListItem = ({
   networkConfig,
   toggleShowDetails,
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { assetInputs, assetOutputs, isRedeposit } =
     useMultichainTransactionDisplay(transaction, networkConfig);

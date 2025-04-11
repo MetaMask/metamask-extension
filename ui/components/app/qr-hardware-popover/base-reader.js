@@ -25,6 +25,8 @@ const BaseReader = ({
   handleSuccess,
   setErrorTitle,
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [ready, setReady] = useState(READY_STATE.ACCESSING_CAMERA);
   const [error, setError] = useState(null);
@@ -53,6 +55,8 @@ const BaseReader = ({
         const currentRoute = currentHash ? currentHash.substring(1) : null;
         global.platform.openExtensionInBrowser(currentRoute);
       }
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (mounted.current) {
         setError(e);
@@ -78,6 +82,8 @@ const BaseReader = ({
         permissionChecker = setTimeout(checkPermissions, SECOND);
         setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
       }
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (mounted.current) {
         setError(e);
@@ -96,6 +102,8 @@ const BaseReader = ({
         const result = urDecoder.resultUR();
         handleSuccess(result).catch(setError);
       }
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (isReadingWallet) {
         setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
@@ -109,6 +117,8 @@ const BaseReader = ({
   const initCamera = () => {
     try {
       checkPermissions();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (!mounted.current) {
         return;

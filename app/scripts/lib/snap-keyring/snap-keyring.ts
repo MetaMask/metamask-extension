@@ -70,6 +70,8 @@ export async function showAccountCreationDialog(
       ),
     );
     return confirmationResult;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     throw new Error(
       `Error occurred while showing account creation dialog.\n${e}`,
@@ -103,6 +105,8 @@ export async function showAccountNameSuggestionDialog(
       true,
     )) as { success: boolean; name?: string };
     return confirmationResult;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     throw new Error(`Error occurred while showing name account dialog.\n${e}`);
   }
@@ -374,6 +378,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         }
 
         trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         // Error occurred while naming the account
         const error = (e as Error).message;
@@ -529,6 +535,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           trackSnapAccountEvent(
             MetaMetricsEventName.RemoveSnapAccountSuccessClicked,
           );
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         } catch (e) {
           const error = (e as Error).message;
 

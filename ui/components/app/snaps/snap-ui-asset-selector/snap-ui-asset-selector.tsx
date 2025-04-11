@@ -128,6 +128,8 @@ type SnapUIAssetSelectorProps = {
 export const SnapUIAssetSelector: FunctionComponent<
   SnapUIAssetSelectorProps
 > = ({ addresses, chainIds, disabled, ...props }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const assets = useSnapAssetSelectorData({ addresses, chainIds });
 

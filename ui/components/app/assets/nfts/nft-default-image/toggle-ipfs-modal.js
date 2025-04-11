@@ -25,6 +25,8 @@ import { ModalContent } from '../../../../component-library/modal-content/deprec
 import { ModalHeader } from '../../../../component-library/modal-header/deprecated';
 
 export const ToggleIpfsModal = ({ onClose }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 

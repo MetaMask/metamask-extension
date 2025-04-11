@@ -30,6 +30,8 @@ import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 
 export const OriginRow = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -54,6 +56,8 @@ export const OriginRow = () => {
 };
 
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const to = recipient ?? currentConfirmation?.txParams?.to;
@@ -78,6 +82,8 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
 };
 
 export const MethodDataRow = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { txParams } = currentConfirmation ?? {};
@@ -101,6 +107,8 @@ export const MethodDataRow = () => {
 };
 
 const AmountRow = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { currency } = useUserPreferencedCurrency(PRIMARY);
@@ -124,6 +132,8 @@ const AmountRow = () => {
 };
 
 const PaymasterRow = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 

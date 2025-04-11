@@ -66,6 +66,8 @@ export const useAccountSyncing = () => {
         return;
       }
       dispatch(syncInternalAccountsWithUserStorage());
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       log.error(e);
     }

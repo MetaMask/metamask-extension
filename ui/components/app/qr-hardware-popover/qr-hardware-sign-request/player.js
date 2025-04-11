@@ -18,6 +18,8 @@ const QR_FRAGMENT_SIZE = 200;
 const QR_REFRESH_RATE = 200;
 const QR_CODE_SIZE = 225;
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const urEncoder = useMemo(
     () =>

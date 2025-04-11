@@ -155,6 +155,8 @@ export function AssetPickerModal({
   autoFocus,
   ...tabProps
 }: AssetPickerModalProps) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [showSolanaAccountCreatedToast, setShowSolanaAccountCreatedToast] =
     useState(false);
@@ -615,6 +617,8 @@ export function AssetPickerModal({
                 isMultiselectEnabled && selectedChainIds
                   ? {
                       limit: 2,
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                      // eslint-disable-next-line id-length
                       members: selectedChainIds.map((c) => ({
                         avatarValue: getImageForChainId(c) ?? '',
                         symbol:

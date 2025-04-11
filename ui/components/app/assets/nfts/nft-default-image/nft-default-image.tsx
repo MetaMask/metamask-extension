@@ -25,6 +25,8 @@ export default function NftDefaultImage({
   className,
   clickable,
 }: NftDefaultImageProps) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -44,6 +46,8 @@ export default function NftDefaultImage({
         <ButtonLink
           block
           className="nft-default__button"
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick={(e: { stopPropagation: () => void }) => {
             e.stopPropagation();
             dispatch(showIpfsModal());

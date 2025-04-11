@@ -30,6 +30,8 @@ export function useEnableProfileSyncing(): {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(enableProfileSyncingAction());
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
@@ -64,6 +66,8 @@ export function useDisableProfileSyncing(): {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(disableProfileSyncingAction());
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');

@@ -19,6 +19,8 @@ type NftsDetectionNoticeImportNFTsProps = {
 export default function NftsDetectionNoticeImportNFTs({
   onActionButtonClick,
 }: NftsDetectionNoticeImportNFTsProps) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
 
@@ -26,6 +28,8 @@ export default function NftsDetectionNoticeImportNFTs({
     <BannerAlert
       className="nfts-detection-notice"
       actionButtonLabel={t('selectEnableDisplayMediaPrivacyPreference')}
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       actionButtonOnClick={(e) => {
         e.preventDefault();
         history.push(`${SECURITY_ROUTE}#display-nft-media`);

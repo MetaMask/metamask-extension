@@ -69,6 +69,8 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 const METRICS_LOCATION = 'Global Menu';
 
 export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);

@@ -30,6 +30,8 @@ const AddBlockExplorerModal = ({
 }: {
   onAdded: (url: string) => void;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [url, setUrl] = useState<string>();
   const [error, setError] = useState<string>();
@@ -64,6 +66,8 @@ const AddBlockExplorerModal = ({
             children: undefined,
             variant: TextVariant.bodyMdMedium,
           }}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onChange={(e) => setUrl(e.target.value)}
           autoFocus
         />

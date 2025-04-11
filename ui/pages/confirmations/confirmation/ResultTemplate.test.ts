@@ -36,6 +36,8 @@ function flattenContent(
   }
 
   if (isArray(content)) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     return content.map((t) => flattenContent(t)).flat();
   }
 
@@ -49,6 +51,8 @@ function expectContentToHaveKey(
 ) {
   expect(
     flattenContent(content).some(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       (t) => (t as TemplateRendererComponent).key === key,
     ),
   ).toBe(expected);
@@ -187,7 +191,8 @@ describe('ResultTemplate', () => {
         expect(
           flattenContent(content).some(
             // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
             (t: any) =>
               t.key === 'icon' &&
               t.props.iconName === IconName.Confirmation &&
@@ -209,7 +214,8 @@ describe('ResultTemplate', () => {
         expect(
           flattenContent(content).some(
             // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
             (t: any) =>
               t.key === 'icon' &&
               t.props.iconName === IconName.Warning &&

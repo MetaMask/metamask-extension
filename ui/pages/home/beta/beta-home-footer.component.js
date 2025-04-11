@@ -13,6 +13,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const BetaHomeFooter = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 

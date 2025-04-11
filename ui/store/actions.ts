@@ -638,6 +638,8 @@ export function connectHardware(
   page: string,
   hdPath: string,
   loadHid: boolean,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: (key: string) => string,
 ): ThunkAction<
   Promise<{ address: string }[]>,

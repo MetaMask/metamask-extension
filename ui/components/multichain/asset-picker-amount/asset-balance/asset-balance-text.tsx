@@ -40,6 +40,8 @@ export function AssetBalanceText({
   balanceColor,
   error,
 }: AssetBalanceTextProps) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const secondaryCurrency = useSelector(getCurrentCurrency);
 

@@ -29,6 +29,8 @@ async function getAlerts(_pendingApproval, state) {
   return alerts;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function getValues(pendingApproval, t, actions) {
   return {
     content: [

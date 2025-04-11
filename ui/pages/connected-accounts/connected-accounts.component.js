@@ -29,6 +29,8 @@ export default function ConnectedAccounts({
   originOfActiveTab,
   permissionSubjects,
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const internalAccounts = useSelector(getInternalAccounts);
   const connectedSubjectsMetadata = subjectMetadata[originOfActiveTab];

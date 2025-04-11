@@ -70,6 +70,8 @@ const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ �
 /* eslint-enable no-irregular-whitespace */
 
 export default function ExperimentalArea({ redirectTo }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const history = useHistory();
 

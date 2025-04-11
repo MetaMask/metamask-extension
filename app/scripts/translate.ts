@@ -23,6 +23,8 @@ export async function updateCurrentLocale(locale: string): Promise<void> {
   currentLocale = locale;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function t(key: string, ...substitutions: string[]): string | null {
   return (
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880

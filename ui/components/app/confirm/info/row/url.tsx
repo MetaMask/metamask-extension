@@ -56,6 +56,8 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   try {
     urlObject = new URL(url);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     console.log(`ConfirmInfoRowUrl: new URL(url) cannot parse ${url}`);
   }

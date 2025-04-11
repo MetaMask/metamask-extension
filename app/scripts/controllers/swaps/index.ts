@@ -1083,6 +1083,8 @@ export default class SwapsController extends BaseController<
 
     try {
       swapsNetworkConfig = await this._fetchSwapsNetworkConfig(network);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Request for Swaps network config failed: ', e);
     }
@@ -1154,6 +1156,8 @@ export default class SwapsController extends BaseController<
             resolve({ gasLimit, simulationFails });
           }
         })
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         .catch((e) => {
           captureException(e, {
             extra: {

@@ -82,6 +82,8 @@ type IntlFunction = (str: string) => string;
 // todo: getTitle and getDescription can be merged to remove code duplication.
 
 const getTitle = (
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
@@ -145,6 +147,8 @@ const getTitle = (
 };
 
 const getDescription = (
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
@@ -209,6 +213,8 @@ const getDescription = (
 };
 
 const ConfirmTitle: React.FC = memo(() => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 

@@ -47,6 +47,8 @@ import { SnapIcon } from '../snap-icon';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const subjectMetadata = useSelector((state) =>

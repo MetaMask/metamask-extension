@@ -96,6 +96,8 @@ export const mockInstallBinaries = async (
         source: target,
         target: path,
       });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (!(isCodedError(e) && ['EPERM', 'EXDEV'].includes(e.code))) {
         throw e;

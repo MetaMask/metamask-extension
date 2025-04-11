@@ -25,6 +25,8 @@ export const Copyable = ({
   marginTop,
   marginBottom,
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
   const [isVisible, setIsVisible] = useState(!sensitive);
@@ -32,11 +34,15 @@ export const Copyable = ({
 
   const startTimeout = useTimeout(() => setIsClicked(false), 3 * SECOND, false);
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleVisibilityClick = (e) => {
     e.stopPropagation();
     setIsVisible((state) => !state);
   };
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleCopyClick = (e) => {
     e.stopPropagation();
     handleCopy(text);

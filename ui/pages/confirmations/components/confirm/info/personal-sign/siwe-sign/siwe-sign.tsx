@@ -18,6 +18,8 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import type { SignatureRequestType } from '../../../../../types/confirm';
 
 const SIWESignInfo: React.FC = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 

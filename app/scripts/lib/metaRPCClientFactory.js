@@ -78,6 +78,8 @@ class MetaRPCClient {
     }
 
     if (error) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       const e = new JsonRpcError(error.code, error.message, error.data);
       // preserve the stack from serializeError
       e.stack = error.stack;
@@ -108,6 +110,8 @@ const metaRPCClientFactory = (connectionStream) => {
       if (object[property]) {
         return object[property];
       }
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       return (...p) => {
         const cb = p[p.length - 1];
         const params = p.slice(0, -1);

@@ -30,6 +30,8 @@ import {
 import TokenBalance from '../../ui/token-balance/token-balance';
 
 export const ImportTokensModalConfirm = ({ networkFilter }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);

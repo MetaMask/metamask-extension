@@ -33,6 +33,8 @@ const Tabs = ({
    * @private
    */
   const _findChildByKey = (tabKey) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     return _getValidChildren().findIndex((c) => c?.props.tabKey === tabKey);
   };
 

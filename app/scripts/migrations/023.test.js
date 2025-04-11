@@ -31,7 +31,8 @@ while (transactions.length <= 100) {
   status =
     txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))];
   // This is an old migration, let's allow it
-  // eslint-disable-next-line no-loop-func
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line no-loop-func, id-length
   if (!deletableTxStates.find((s) => s === status)) {
     nonDeletableCount += 1;
   }
@@ -60,6 +61,8 @@ describe('storage is migrated successfully and the proper transactions are remov
     const migratedTransactions =
       migratedData.data.TransactionController.transactions;
     migratedTransactions.forEach((tx) => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       if (!deletableTxStates.find((s) => s === tx.status)) {
         leftoverNonDeletableTxCount += 1;
       }

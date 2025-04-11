@@ -16,6 +16,8 @@ import { ButtonSecondary, Text, Box } from '../../component-library';
 
 function ExportTextContainer({ text = '', onClickCopy = null }) {
   const ONE_MINUTE = 1000 * 60;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard(ONE_MINUTE);
 

@@ -50,6 +50,8 @@ function PreviousButton({
   selectedIndex: number;
   onBackButtonClick: () => void;
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const showPreviousButton = selectedIndex + 1 > 1;
   if (!showPreviousButton) {
@@ -82,6 +84,8 @@ function NextButton({
   alertsLength: number;
   onNextButtonClick: () => void;
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const showNextButton = selectedIndex + 1 < alertsLength;
   if (!showNextButton) {
@@ -112,6 +116,8 @@ function PageNumber({
   selectedIndex: number;
   alertsLength: number;
 }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Text

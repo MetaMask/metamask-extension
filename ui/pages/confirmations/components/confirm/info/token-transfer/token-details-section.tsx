@@ -20,6 +20,8 @@ import { NetworkRow } from '../shared/network-row/network-row';
 import { OriginRow } from '../shared/transaction-details/transaction-details';
 
 export const TokenDetailsSection = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();

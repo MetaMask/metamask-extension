@@ -73,6 +73,8 @@ const LoadingIndicator: React.FC = () => {
  * @param props.error
  */
 const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   function getMessage() {
@@ -104,6 +106,8 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
  * Content when there are no balance changes.
  */
 const EmptyContent: React.FC = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
@@ -113,6 +117,8 @@ const EmptyContent: React.FC = () => {
 };
 
 const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (
@@ -130,6 +136,8 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
 };
 
 const LegacyHeader = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Box
@@ -275,6 +283,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   metricsOnly = false,
   staticRows = [],
 }: SimulationDetailsProps) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });

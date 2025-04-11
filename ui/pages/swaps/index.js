@@ -99,6 +99,8 @@ import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import SmartTransactionStatus from './smart-transaction-status';
 
 export default function Swap() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -359,6 +361,8 @@ export default function Swap() {
             marginLeft={4}
             width={FRACTIONS.ONE_TWELFTH}
             tabIndex="0"
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onKeyUp={(e) => {
               if (e.key === 'Enter') {
                 redirectToDefaultRoute();
@@ -385,6 +389,8 @@ export default function Swap() {
             marginRight={4}
             width={FRACTIONS.ONE_TWELFTH}
             tabIndex="0"
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onKeyUp={(e) => {
               if (e.key === 'Enter') {
                 dispatch(setTransactionSettingsOpened(true));

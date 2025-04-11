@@ -43,6 +43,8 @@ export const ImportSrp = ({
 }: {
   onActionComplete: (completed: boolean) => void;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -276,6 +278,8 @@ export const ImportSrp = ({
                     borderRadius={BorderRadius.LG}
                     error={invalidSrpWords[index]}
                     type={TextFieldType.Text}
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                    // eslint-disable-next-line id-length
                     onChange={(e) => {
                       e.preventDefault();
                       onSrpWordChange(index, e.target.value);
@@ -352,6 +356,8 @@ export const ImportSrp = ({
               await importWallet();
               onActionComplete(true);
               dispatch(setShowNewSrpAddedToast(true));
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             } catch (e) {
               setSrpError(
                 e instanceof Error ? e.message : 'An unknown error occurred',

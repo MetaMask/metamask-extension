@@ -65,6 +65,8 @@ import { Content, Footer, Page } from '../page';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();

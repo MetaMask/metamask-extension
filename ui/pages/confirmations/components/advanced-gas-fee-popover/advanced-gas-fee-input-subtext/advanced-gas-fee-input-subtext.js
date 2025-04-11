@@ -8,6 +8,8 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { isNullish } from '../../../../../helpers/utils/util';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function determineTrendInfo(trend, t) {
   switch (trend) {
     case 'up':
@@ -34,6 +36,8 @@ function determineTrendInfo(trend, t) {
 }
 
 const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const trendInfo = determineTrendInfo(trend, t);
   return (

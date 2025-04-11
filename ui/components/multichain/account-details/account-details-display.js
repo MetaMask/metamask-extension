@@ -46,6 +46,8 @@ import EditableLabel from '../../ui/editable-label/editable-label';
 import QrCodeView from '../../ui/qr-code-view';
 
 function SmartAccountPill({ address }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { isUpgraded } = useEIP7702Account();
 
@@ -85,6 +87,8 @@ function SmartAccountPill({ address }) {
 }
 
 function DowngradeAccountButton({ address, onClose }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { downgradeAccount, isUpgraded } = useEIP7702Account({
@@ -126,6 +130,8 @@ export const AccountDetailsDisplay = ({
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 

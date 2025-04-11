@@ -26,6 +26,8 @@ import {
 export default function ConfirmTurnOffProfileSyncing() {
   const { props, hideModal } = useModalProps();
   const { turnOffProfileSyncing } = props;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   const handleHideModal = () => {

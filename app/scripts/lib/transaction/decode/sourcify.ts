@@ -64,6 +64,8 @@ export async function decodeTransactionDataWithSourcify(
 
   try {
     functionData = contractInterface.getFunction(functionSignature);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     // Ignore
   }

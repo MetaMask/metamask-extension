@@ -148,6 +148,8 @@ describe('useSimulationMetrics', () => {
         enableMetrics: true,
       };
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       renderHook((p: UseSimulationMetricsProps) => useSimulationMetrics(p), {
         initialProps: props,
       });

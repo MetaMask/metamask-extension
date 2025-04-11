@@ -22,6 +22,8 @@ import { SnapIcon } from '../snaps/snap-icon';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -40,6 +42,8 @@ export default function ConnectedSnaps({ connectedSubjects }) {
       >
         <MenuItem
           iconName={IconName.Logout}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick={(e) => {
             e.preventDefault();
             onDisconnect(snapId);

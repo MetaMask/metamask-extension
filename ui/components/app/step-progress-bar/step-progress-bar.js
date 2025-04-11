@@ -21,6 +21,8 @@ export const twoStepStages = {
 };
 
 export function ThreeStepProgressBar({ stage, ...boxProps }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Box {...boxProps}>
@@ -55,6 +57,8 @@ export function ThreeStepProgressBar({ stage, ...boxProps }) {
 }
 
 export function TwoStepProgressBar({ stage, ...boxProps }) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Box width={BLOCK_SIZES.FULL} {...boxProps}>

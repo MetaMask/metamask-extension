@@ -31,6 +31,8 @@ const CustomizeNonce = ({
   const defaultNonce =
     customNonceValue || (typeof nextNonce === 'number' && nextNonce.toString());
   const [customNonce, setCustomNonce] = useState(defaultNonce);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (
@@ -111,6 +113,8 @@ const CustomizeNonce = ({
               data-testid="custom-nonce-input"
               min="0"
               placeholder={defaultNonce}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => {
                 // Prevent decimal nonce values
                 const sanitizedValue = e.target.value.replace(/[.,]/gu, '');

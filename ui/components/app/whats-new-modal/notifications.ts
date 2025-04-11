@@ -13,6 +13,8 @@ import {
 } from './solana';
 
 export const getTranslatedUINotifications = (
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: TranslationFunction,
 ): TranslatedUINotifications => {
   return {

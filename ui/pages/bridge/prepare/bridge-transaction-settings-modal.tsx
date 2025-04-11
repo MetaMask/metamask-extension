@@ -47,6 +47,8 @@ export const BridgeTransactionSettingsModal = ({
   onClose,
   isOpen,
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
@@ -105,6 +107,8 @@ export const BridgeTransactionSettingsModal = ({
                 <Button
                   key={hardcodedSlippage}
                   size={ButtonSize.Sm}
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -155,6 +159,8 @@ export const BridgeTransactionSettingsModal = ({
                     ? BackgroundColor.backgroundDefault
                     : BackgroundColor.primaryMuted
                 }
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -181,6 +187,8 @@ export const BridgeTransactionSettingsModal = ({
                 borderRadius={BorderRadius.pill}
                 type={TextFieldType.Text}
                 value={customSlippage}
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => {
                   const { value } = e.target;
                   if (value === '' || /^\d*[.,]?\d*$/u.test(value)) {

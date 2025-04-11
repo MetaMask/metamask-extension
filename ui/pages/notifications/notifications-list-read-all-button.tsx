@@ -26,6 +26,8 @@ export type NotificationsListReadAllButtonProps = {
 export const NotificationsListReadAllButton = ({
   notifications,
 }: NotificationsListReadAllButtonProps) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const trackEvent = useContext(MetaMetricsContext);

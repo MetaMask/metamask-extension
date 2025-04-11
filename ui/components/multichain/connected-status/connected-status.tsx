@@ -35,6 +35,8 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   address = '',
   isActive,
 }): JSX.Element => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   // Get the permitted accounts and the internal account for the address

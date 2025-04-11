@@ -98,6 +98,8 @@ function generateERC20TransferData({
           ['address', 'uint256'],
           [addHexPrefix(toAddress), addHexPrefix(amount)],
         ),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         (x) => `00${x.toString(16)}`.slice(-2),
       )
       .join('')
@@ -120,6 +122,8 @@ function generateERC721TransferData({
           ['address', 'address', 'uint256'],
           [addHexPrefix(fromAddress), addHexPrefix(toAddress), BigInt(tokenId)],
         ),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         (x) => `00${x.toString(16)}`.slice(-2),
       )
       .join('')
@@ -150,6 +154,8 @@ function generateERC1155TransferData({
             addHexPrefix(data),
           ],
         ),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         (x) => `00${x.toString(16)}`.slice(-2),
       )
       .join('')

@@ -12,6 +12,8 @@ import type { SignatureRequestType } from '../../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../../utils';
 
 export const SigningInWithRow = () => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext();

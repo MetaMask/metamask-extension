@@ -33,6 +33,8 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     const abortHandler = () => combinedAbortController.abort();
     abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const f = window.fetch(url, {
       ...opts,
       signal: combinedAbortController.signal,

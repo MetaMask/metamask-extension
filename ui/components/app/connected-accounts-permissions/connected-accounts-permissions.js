@@ -26,6 +26,8 @@ import {
 } from '../../component-library';
 
 const ConnectedAccountsPermissions = ({ permissions }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [expanded, setExpanded] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);

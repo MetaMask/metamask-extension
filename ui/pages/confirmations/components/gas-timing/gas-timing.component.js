@@ -31,6 +31,8 @@ import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransaction
 const SECOND_CUTOFF = 90;
 
 // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const toHumanReadableTime = (milliseconds = 1, t) => {
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
@@ -48,6 +50,8 @@ export default function GasTiming({
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const { estimateUsed } = useGasFeeContext();
 

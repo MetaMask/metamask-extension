@@ -83,12 +83,16 @@ const STAKING_PROVIDER_MAP = {
   [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: 'Rocket Pool-staked ETH',
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getTitle = (n: StakeNotification) => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const items = createTextItems([TITLE_MAP[n.type] || ''], TextVariant.bodySm);
   return items;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: StakeNotification) => {
   const direction = DIRECTION_MAP[n.type];
   const items = createTextItems(

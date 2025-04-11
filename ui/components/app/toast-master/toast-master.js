@@ -118,6 +118,8 @@ export function ToastMaster() {
 }
 
 function ConnectAccountToast() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -175,6 +177,8 @@ function ConnectAccountToast() {
 }
 
 function SurveyToastMayDelete() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const showSurveyToast = useSelector(selectShowSurveyToast);
@@ -203,6 +207,8 @@ function SurveyToastMayDelete() {
 }
 
 function PrivacyPolicyToast() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
@@ -235,6 +241,8 @@ function PrivacyPolicyToast() {
 }
 
 function SwitchedNetworkToast() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -280,6 +288,8 @@ function SwitchedNetworkToast() {
 }
 
 function NftEnablementToast() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -309,6 +319,8 @@ function NftEnablementToast() {
 }
 
 function PermittedNetworkToast() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -350,6 +362,8 @@ function PermittedNetworkToast() {
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 function NewSrpAddedToast() {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 

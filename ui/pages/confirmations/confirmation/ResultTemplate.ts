@@ -38,6 +38,8 @@ export class ResultTemplate {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pendingApproval: ApprovalRequest<any>,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     t: (key: string) => string,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +62,8 @@ export class ResultTemplate {
   #getContent(
     requestData: SuccessOptions | ErrorOptions,
     // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
     t: any,
   ): (undefined | string | TemplateRendererComponent)[] {
     // TODO: Replace `any` with type

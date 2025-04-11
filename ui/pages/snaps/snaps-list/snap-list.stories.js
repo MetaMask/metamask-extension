@@ -35,6 +35,8 @@ export const DefaultStory = (args) => {
         currentSnap={snap}
         onToggle={args.onToggle}
         onRemove={args.onRemove}
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onClick={(_, s) => {
           setSnap(s);
           setViewingSnap(true);

@@ -18,6 +18,8 @@ import configureStore from '../../ui/store/store';
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
@@ -146,6 +148,8 @@ export function renderControlledInput(InputComponent, props) {
     return (
       <InputComponent
         value={value}
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onChange={(e) => setValue(e.target.value)}
         {...props}
       />

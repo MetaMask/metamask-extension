@@ -130,6 +130,8 @@ const PortfolioSmartTransactionStatusUrl = ({
   isSmartTransactionPending: boolean;
   onCloseExtension: () => void;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   if (!portfolioSmartTransactionStatusUrl) {
     return null;
@@ -171,6 +173,8 @@ const CloseExtensionButton = ({
   isDapp: boolean;
   onCloseExtension: () => void;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   if (!isDapp) {
     return null;
@@ -194,6 +198,8 @@ const FooterText = ({
   isDapp: boolean;
   isSmartTransactionPending: boolean;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   if (!isDapp || !isSmartTransactionPending) {
     return null;
@@ -216,6 +222,8 @@ const ViewActivityButton = ({
   isDapp: boolean;
   onViewActivity: () => void;
 }) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   if (isDapp) {
     return null;
@@ -283,6 +291,8 @@ export const SmartTransactionStatusPage = ({
   onCloseExtension = () => null,
   onViewActivity = () => null,
 }: SmartTransactionStatusPageProps) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { smartTransaction, isDapp, txId } = requestState;
