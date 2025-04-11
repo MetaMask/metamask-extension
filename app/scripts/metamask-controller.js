@@ -264,7 +264,7 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -4821,23 +4821,23 @@ export default class MetamaskController extends EventEmitter {
 
       const {
         accounts,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
         entropySource,
-        ///: END:ONLY_INCLUDE_IF(multi-srp)
+        ///: END:ONLY_INCLUDE_IF
       } = await this.keyringController.withKeyring(
         keyringSelector,
         async ({
           keyring,
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
           metadata,
-          ///: END:ONLY_INCLUDE_IF(multi-srp)
+          ///: END:ONLY_INCLUDE_IF
         }) => {
           const keyringAccounts = await keyring.getAccounts();
           return {
             accounts: keyringAccounts,
-            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+            ///: BEGIN:ONLY_INCLUDE_IF(solana)
             entropySource: metadata.id,
-            ///: END:ONLY_INCLUDE_IF(multi-srp)
+            ///: END:ONLY_INCLUDE_IF
           };
         },
       );
@@ -4879,14 +4879,14 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       const keyring = await this.getSnapKeyring();
       await addDiscoveredSolanaAccounts(
         this.controllerMessenger,
         entropySource,
         keyring,
       );
-      ///: END:ONLY_INCLUDE_IF(multi-srp)
+      ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {

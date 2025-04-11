@@ -1,5 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SolScope } from '@metamask/keyring-api';
 import {
   KeyringInternalSnapClient,
@@ -35,7 +35,7 @@ export function getUniqueAccountName(
   return candidateName;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function addDiscoveredSolanaAccounts(
   controllerMessenger: KeyringInternalSnapClientMessenger,
   entropySource: string,
