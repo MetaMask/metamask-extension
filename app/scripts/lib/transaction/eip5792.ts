@@ -14,12 +14,15 @@ import { Messenger } from '@metamask/base-controller';
 import {
   GetCallsStatusCode,
   GetCallsStatusResult,
+  GetCapabilitiesResult,
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =
+  | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
   | TransactionControllerGetStateAction;
 
@@ -46,11 +49,11 @@ export async function processSendCalls(
   const {
     addTransactionBatch,
     getDisabledUpgradeAccountsByChain,
-    validateSecurity: validateSecurityHook,
     getDismissSmartAccountSuggestionEnabled,
+    validateSecurity: validateSecurityHook,
   } = hooks;
 
-  const { calls, from } = params;
+  const { calls, from: paramFrom } = params;
   const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
 
@@ -59,12 +62,18 @@ export async function processSendCalls(
     networkClientId,
   ).configuration.chainId;
 
+  const from =
+    paramFrom ??
+    (messenger.call('AccountsController:getSelectedAccount').address as Hex);
+
   const disabledUpgradeAccountsByChain = getDisabledUpgradeAccountsByChain();
+
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
 
   validateSendCalls(
     params,
+    from,
     dappChainId,
     disabledUpgradeAccountsByChain,
     dismissSmartAccountSuggestionEnabled,
@@ -122,18 +131,79 @@ export function getCallsStatus(
     version: VERSION_GET_CALLS_STATUS,
     id,
     chainId,
+    atomic: true, // Always atomic as we currently only support EIP-7702 batches
     status,
     receipts,
   };
 }
 
-export async function getCapabilities(_address: Hex, _chainIds?: Hex[]) {
-  // No capabilities currently supported
-  return {};
+export async function getCapabilities(
+  address: Hex,
+  chainIds: Hex[] | undefined,
+  hooks: {
+    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
+    getDismissSmartAccountSuggestionEnabled: () => boolean;
+    isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
+  },
+) {
+  const {
+    getDisabledUpgradeAccountsByChain,
+    getDismissSmartAccountSuggestionEnabled,
+    isAtomicBatchSupported,
+  } = hooks;
+
+  const addressNormalized = address.toLowerCase() as Hex;
+
+  const batchSupport = await isAtomicBatchSupported({
+    address,
+    chainIds,
+  });
+
+  const finalChainIds = chainIds ?? Object.keys(batchSupport);
+
+  return finalChainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
+    const chainIdNormalized = chainId.toLowerCase() as Hex;
+
+    const chainBatchSupport = batchSupport.find(
+      (batchSupportEntry) =>
+        batchSupportEntry.chainId.toLowerCase() === chainIdNormalized,
+    );
+
+    const { delegationAddress, isSupported, upgradeContractAddress } =
+      chainBatchSupport ?? {};
+
+    const isUpgradeDisabled =
+      getDisabledUpgradeAccountsByChain()[chainIdNormalized]?.includes(
+        addressNormalized,
+      ) || getDismissSmartAccountSuggestionEnabled();
+
+    const canUpgrade =
+      !isUpgradeDisabled &&
+      chainBatchSupport &&
+      upgradeContractAddress &&
+      !delegationAddress;
+
+    let status = 'unsupported';
+
+    if (isSupported) {
+      status = 'supported';
+    } else if (canUpgrade) {
+      status = 'ready';
+    }
+
+    acc[chainId as Hex] = {
+      atomic: {
+        status,
+      },
+    };
+
+    return acc;
+  }, {});
 }
 
 function validateSendCalls(
   sendCalls: SendCalls,
+  from: Hex,
   dappChainId: Hex,
   disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dismissSmartAccountSuggestionEnabled: boolean,
@@ -141,8 +211,9 @@ function validateSendCalls(
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
+
   validateUserDisabled(
-    sendCalls,
+    from,
     disabledUpgradeAccountsByChain,
     dappChainId,
     dismissSmartAccountSuggestionEnabled,
@@ -200,13 +271,13 @@ function validateCapabilities(sendCalls: SendCalls) {
 }
 
 function validateUserDisabled(
-  sendCalls: SendCalls,
+  from: Hex,
   disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
 ) {
-  const { from } = sendCalls;
   const addressLowerCase = from.toLowerCase() as Hex;
+
   const isDisabled =
     disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
 
