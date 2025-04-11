@@ -56,6 +56,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import {
+  BlockSize,
   Display,
   IconColor,
   JustifyContent,
@@ -359,7 +360,11 @@ const CoinButtons = ({
   ]);
 
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceEvenly}
+      width={BlockSize.Full}
+    >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
