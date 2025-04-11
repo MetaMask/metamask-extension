@@ -17,6 +17,8 @@ import {
  * @returns
  */
 export const useGetTokenStandardAndDetails = (
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   tokenAddress?: Hex | string | undefined,
 ) => {
   const { value: details } =
