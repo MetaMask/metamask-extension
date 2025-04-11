@@ -80,7 +80,7 @@ export function getAccountLabel(
   account,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   snapName,
-  snapId,
+  snapPreinstalled,
   ///: END:ONLY_INCLUDE_IF
 ) {
   if (!account) {
@@ -103,7 +103,7 @@ export function getAccountLabel(
       return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
-      if (isSnapPreinstalled(snapId)) {
+      if (snapPreinstalled) {
         return null;
       }
       if (snapName) {
