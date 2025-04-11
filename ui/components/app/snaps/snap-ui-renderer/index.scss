@@ -7,11 +7,11 @@
   $width-screen-lg-min: 62vw;
 
   &__container {
-    height: 100%;
-
     & > *:first-child {
       gap: 16px;
-      padding: 16px;
+      // Note: Do not replace margin with padding
+      // @see {@link https://github.com/MetaMask/metamask-extension/pull/29385}
+      margin: 16px;
     }
   }
 
