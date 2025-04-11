@@ -171,21 +171,24 @@ export async function getCapabilities(
 
   const addressNormalized = address.toLowerCase() as Hex;
 
+  const chainIdsNormalized = chainIds?.map(
+    (chainId) => chainId.toLowerCase() as Hex,
+  );
+
   const batchSupport = await isAtomicBatchSupported({
     address,
-    chainIds,
+    chainIds: chainIdsNormalized,
   });
 
   return batchSupport.reduce<GetCapabilitiesResult>(
     (acc, chainBatchSupport) => {
       const { chainId } = chainBatchSupport;
-      const chainIdNormalized = chainId.toLowerCase() as Hex;
 
       const { delegationAddress, isSupported, upgradeContractAddress } =
         chainBatchSupport;
 
       const isUpgradeDisabled =
-        getDisabledUpgradeAccountsByChain()?.[chainIdNormalized]?.includes(
+        getDisabledUpgradeAccountsByChain()?.[chainId]?.includes(
           addressNormalized,
         ) || getDismissSmartAccountSuggestionEnabled();
 
