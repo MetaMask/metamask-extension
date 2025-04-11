@@ -30,14 +30,12 @@ jobs:
         id: needs-beta-build
         run: |
           version="${BRANCH/Version-v/}"
-          commit_message=$(git show -s --format=%s HEAD)
-          beta_version_regex="Version v[0-9]+\.[0-9]+\.[0-9]+"
 
-          if [[ "$commit_message" =~ $beta_version_regex ]]; then
-              printf '%s\n' "Creating a build for $version with $commit_message"
+          if [[ "$BRANCH" == Version-v* ]]; then
+              printf '%s\n' "Creating a build for branch $BRANCH (version: $version)"
               echo "NEEDS_BETA_BUILD=true" >> "$GITHUB_OUTPUT"
           else
-              printf '%s\n' 'Commit message does not match commit message for beta pattern; skipping beta build'
+              printf '%s\n' 'Branch does not have Version-v prefix; skipping beta build'
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
