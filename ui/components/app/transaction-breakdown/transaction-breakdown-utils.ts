@@ -88,6 +88,8 @@ export const getTransactionBreakdownData = ({
       ? `${sourceTokenAmount} ${sourceTokenSymbol}`
       : undefined;
   const destinationAmountFormatted =
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     destinationTokenAmount && status === CONFIRMED_STATUS
       ? `${destinationTokenAmount} ${destinationTokenSymbol}`
       : undefined;

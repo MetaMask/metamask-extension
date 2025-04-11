@@ -41,6 +41,8 @@ const useTrackERC20WithoutDecimalInformation = (
     }
 
     const { decimals, standard } = tokenDetails || {};
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (standard !== TokenStandard.ERC20) {
       return;
     }

@@ -36,6 +36,8 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
   if (
     !request ||
     !isSignatureTransactionType(request) ||
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     request.type !== 'eth_signTypedData' ||
     request.msgParams?.version?.toUpperCase() === TYPED_SIGNATURE_VERSIONS.V1
   ) {
@@ -57,6 +59,8 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   if (
     !request ||
     !isSignatureTransactionType(request) ||
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     request.type !== 'eth_signTypedData' ||
     (request as SignatureRequestType).msgParams?.version?.toUpperCase() ===
       TYPED_SIGNATURE_VERSIONS.V1

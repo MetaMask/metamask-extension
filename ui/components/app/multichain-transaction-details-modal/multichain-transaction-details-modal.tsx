@@ -79,10 +79,16 @@ export function MultichainTransactionDetailsModal({
 
   const getStatusColor = (txStatus: string) => {
     switch (txStatus.toLowerCase()) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case TransactionStatus.Confirmed:
         return TextColor.successDefault;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case TransactionStatus.Unconfirmed:
         return TextColor.warningDefault;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case TransactionStatus.Failed:
         return TextColor.errorDefault;
       default:

@@ -35,6 +35,8 @@ export function useDecodedTransactionData({
       !hasTransactionData(transactionData) ||
       !transactionTo ||
       (transactionTypeFilter &&
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         currentTransactionType !== transactionTypeFilter)
     ) {
       return undefined;

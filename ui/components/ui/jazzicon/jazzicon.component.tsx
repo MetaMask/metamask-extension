@@ -73,6 +73,8 @@ function Jazzicon({
     // If the address is unknown, `getCaipNamespaceFromAddress` will defaults to "eip155".
     const namespace = namespace_ ?? getCaipNamespaceFromAddress(address);
     const iconFactory =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       namespace === KnownCaipNamespace.Eip155
         ? ethereumIconFactory
         : multichainIconFactory;

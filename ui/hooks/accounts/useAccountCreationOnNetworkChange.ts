@@ -25,11 +25,15 @@ export const useAccountCreationOnNetworkChange =
 
     const createAccount = async (chainId: CaipChainId) => {
       switch (chainId) {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         case MultichainNetworks.BITCOIN:
           await bitcoinWalletSnapClient.createAccount({
             scope: MultichainNetworks.BITCOIN,
           });
           break;
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         case MultichainNetworks.SOLANA:
           // TODO: We might wanna change this flow to let the use pick the SRP he wants to use.
           await solanaWalletSnapClient.createAccount({

@@ -216,6 +216,8 @@ export function createMockInternalAccount({
   let methods;
 
   switch (type) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case EthAccountType.Eoa:
       scopes = [EthScope.Eoa];
       methods = [
@@ -226,6 +228,8 @@ export function createMockInternalAccount({
         EthMethod.SignTypedDataV4,
       ];
       break;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case EthAccountType.Erc4337:
       // NOTE: This is not really valid here, cause a SC account might not be deployed on
       // every EVM chains, but for testing purposes we enable everything.
@@ -236,6 +240,8 @@ export function createMockInternalAccount({
         EthMethod.SignUserOperation,
       ];
       break;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case BtcAccountType.P2wpkh: {
       // If no address is given, we fallback to testnet
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
@@ -244,6 +250,8 @@ export function createMockInternalAccount({
       methods = [BtcMethod.SendBitcoin];
       break;
     }
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case SolAccountType.DataAccount:
       scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
       methods = [SolMethod.SendAndConfirmTransaction];
@@ -261,6 +269,8 @@ export function createMockInternalAccount({
       keyring: {
         type: keyringType,
       },
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       snap: keyringType === KeyringTypes.snap ? snapOptions : undefined,
       lastSelected,
     },

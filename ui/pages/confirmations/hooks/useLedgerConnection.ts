@@ -44,6 +44,8 @@ const useLedgerConnection = () => {
     }
     const initialConnectedDeviceCheck = async () => {
       if (
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         ledgerTransportType === LedgerTransportTypes.webhid &&
         webHidConnectedStatus !== WebHIDConnectedStatuses.connected
       ) {
@@ -64,6 +66,8 @@ const useLedgerConnection = () => {
     };
     const determineTransportStatus = async () => {
       if (
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         ledgerTransportType === LedgerTransportTypes.webhid &&
         webHidConnectedStatus === WebHIDConnectedStatuses.connected &&
         transportStatus === HardwareTransportStates.none

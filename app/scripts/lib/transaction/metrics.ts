@@ -823,6 +823,8 @@ async function buildEventFragmentProperties({
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
       gasParams.default_estimate =
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         estimateType === PriorityLevels.dAppSuggested
           ? MetaMetricsEventTransactionEstimateType.DappProposed
           : estimateType;

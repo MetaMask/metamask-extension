@@ -211,6 +211,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (namespace === KnownCaipNamespace.Eip155) {
       return TEST_CHAINS.includes(convertCaipToHexChainId(currentChainId));
     }
@@ -477,6 +479,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       const isDeletable =
         isUnlocked &&
         network.chainId !== currentChainId &&
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         network.chainId !== EthScope.Mainnet;
 
       return {

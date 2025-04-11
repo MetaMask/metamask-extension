@@ -51,6 +51,8 @@ export function useNames(requests: UseNameRequest[]): NameEntry[] {
 
 function normalizeValue(value: string, type: string): string {
   switch (type) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case NameType.ETHEREUM_ADDRESS:
       return value.toLowerCase();
 
