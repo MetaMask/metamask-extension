@@ -10,6 +10,7 @@ import {
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
+  BannerAlert,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -265,25 +266,21 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        {this.state.selectedDevice === HardwareDeviceNames.ledger && (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            marginTop={6}
-          >
-            <Text
-              className="hw-connect__error"
-              variant={TextVariant.bodyMd}
-              as="h5"
-              marginTop={5}
-              marginBottom={3}
+        <Box>
+          {this.state.selectedDevice === HardwareDeviceNames.ledger && (
+            <BannerAlert
+              marginTop={6}
+              title={this.context.t(
+                'ledgerMultipleDevicesUnsupportedInfoTitle',
+              )}
             >
-              {this.context.t('ledgerMultipleDevicesUnsupportedErrorMessage')}
-            </Text>
-          </Box>
-        )}
+              {this.context.t(
+                'ledgerMultipleDevicesUnsupportedInfoDescription',
+              )}
+            </BannerAlert>
+          )}
+        </Box>
+
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
