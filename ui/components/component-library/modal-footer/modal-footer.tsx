@@ -55,6 +55,7 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               size={ButtonSize.Lg} // TODO: There is a type issue with using variant, size and spreading props after size
               className={classnames(
                 'mm-modal-footer__button',
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                 cancelButtonProps?.className || '',
               )}
             />
@@ -67,6 +68,7 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               {...submitButtonProps}
               className={classnames(
                 'mm-modal-footer__button',
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                 submitButtonProps?.className || '',
               )}
             />

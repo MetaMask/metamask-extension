@@ -22,6 +22,7 @@ export function processError(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
 ): TemplateRendererComponent | (string | TemplateRendererComponent)[] {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const currentInput = convertResultComponents(input) || fallback;
 
   if (typeof currentInput !== 'string') {
@@ -47,6 +48,7 @@ export function processString(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
 ): TemplateRendererComponent | (string | TemplateRendererComponent)[] {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const currentInput = convertResultComponents(input) || fallback;
 
   if (typeof currentInput !== 'string') {

@@ -33,6 +33,7 @@ async function sleep(ms: number) {
 
 const SentryTest = () => {
   const currentLocale: string =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     useSelector(getCurrentLocale) || FALLBACK_LOCALE;
 
   return (
@@ -187,6 +188,7 @@ function TestButton({
       hasError = true;
       throw error;
     } finally {
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       if (expectError || !hasError) {
         setIsComplete(true);
       }

@@ -252,22 +252,27 @@ export const NotificationDetailNetworkFee: FC<
         >
           <FeeDetail
             label={t('notificationDetailGasLimit')}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             value={networkFees?.gasLimitUnits.toString() || ''}
           />
           <FeeDetail
             label={t('notificationDetailGasUsed')}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             value={networkFees?.gasUsedUnits.toString() || ''}
           />
           <FeeDetail
             label={t('notificationDetailBaseFee')}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             value={networkFees?.baseFee || ''}
           />
           <FeeDetail
             label={t('notificationDetailPriorityFee')}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             value={networkFees?.priorityFee || ''}
           />
           <FeeDetail
             label={t('notificationDetailMaxFee')}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             value={networkFees?.maxFeePerGas || ''}
           />
         </Box>

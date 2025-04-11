@@ -141,6 +141,7 @@ const defaultFormatOptions = {
 export const getLeadingZeroCount = (num: number | string) => {
   const numToString = new BigNumber(num, 10).toString(10);
   const fractionalPart = numToString.split('.')[1] ?? '';
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   return fractionalPart.match(/^0*/u)?.[0]?.length || 0;
 };
 
@@ -444,6 +445,7 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
         parseFloat(value) *
           parseFloat(notification.data.network_fee.native_token_price_in_usd),
         {
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           decimalPlaces: decimalPlaces || 4,
         },
       );

@@ -121,6 +121,7 @@ export const EditSpendingCapModal = ({
       finalTransactionMeta?.txParams?.data,
       {
         customPermissionAmount: customSpendingCapInputValue || '0',
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         decimals: decimals || '0',
       },
     ) as Hex;
@@ -226,6 +227,7 @@ export const EditSpendingCapModal = ({
           >
             {t('editSpendingCapAccountBalance', [
               accountBalance,
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               tokenSymbol || '',
             ])}
           </Text>
@@ -238,6 +240,7 @@ export const EditSpendingCapModal = ({
             children: t('save'),
             loading: isModalSaving,
             disabled:
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               showDecimalError ||
               showSpecialCharacterError ||
               customSpendingCapInputValue === '',

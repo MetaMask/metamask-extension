@@ -83,6 +83,7 @@ const STAKING_PROVIDER_MAP = {
 };
 
 const getTitle = (n: StakeNotification) => {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const items = createTextItems([TITLE_MAP[n.type] || ''], TextVariant.bodySm);
   return items;
 };
@@ -158,6 +159,7 @@ export const components: NotificationComponent<StakeNotification> = {
         }
         return (
           <NotificationDetailAddress
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             side={t('account') || ''}
             address={notification.address}
           />
@@ -180,7 +182,9 @@ export const components: NotificationComponent<StakeNotification> = {
             }}
             label={
               direction === 'staked'
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                 ? t('notificationItemStaked') || ''
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                 : t('notificationItemUnStaked') || ''
             }
             detail={notification.data.stake_in.symbol}
@@ -211,6 +215,7 @@ export const components: NotificationComponent<StakeNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationItemReceived') || ''}
             detail={notification.data.stake_out.symbol}
             fiatValue={`$${getUsdAmount(
@@ -233,12 +238,15 @@ export const components: NotificationComponent<StakeNotification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           label={t('notificationItemStatus') || ''}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
               notification={notification}
               text={notification.tx_hash}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               displayText={t('notificationItemTransactionId') || ''}
             />
           }
@@ -259,6 +267,7 @@ export const components: NotificationComponent<StakeNotification> = {
                     : notification.data.stake_in.image,
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationItemStakingProvider') || ''}
             detail={provider}
           />

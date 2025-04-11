@@ -38,6 +38,7 @@ export const SendPageRecipient = () => {
   const trackEvent = useContext(MetaMetricsContext);
 
   const recipient = useSelector(getRecipient);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const userInput = useSelector(getRecipientUserInput) || '';
 
   const domainResolutions = useSelector(getDomainResolutions) || [];

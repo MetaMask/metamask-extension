@@ -47,7 +47,9 @@ function getSecurityApiScanTokenRequestBody(
  */
 function getFirstTokenAlert(features: TokenFeature[]): TokenFeature | null {
   return (
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     features.find((feature) => feature.type === TokenFeatureType.MALICIOUS) ||
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     features.find((feature) => feature.type === TokenFeatureType.WARNING) ||
     null
   );

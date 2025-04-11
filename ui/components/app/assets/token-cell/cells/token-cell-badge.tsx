@@ -31,6 +31,7 @@ export const TokenCellBadge = React.memo(
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
             name={allNetworks?.[token.chainId as Hex]?.name}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             src={getImageForChainId(token.chainId) || undefined}
             backgroundColor={BackgroundColor.backgroundMuted}
             borderWidth={2}

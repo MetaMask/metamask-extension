@@ -67,6 +67,7 @@ export function getBuildName(
   args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow' | 'lockdown'>,
 ) {
   const buildName =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     build.buildNameOverride ||
     `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {

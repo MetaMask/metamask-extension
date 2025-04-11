@@ -45,6 +45,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
 
     // If no title is provided, use the label as the title only if the label is a string
     const sanitizedTitle =
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       !title && typeof label === 'string' ? label : title || id;
 
     return (
@@ -82,11 +83,13 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             margin={0}
             marginRight={label ? 2 : 0}
             backgroundColor={
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               isChecked || isIndeterminate
                 ? BackgroundColor.primaryDefault
                 : BackgroundColor.backgroundDefault
             }
             borderColor={
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               isChecked || isIndeterminate
                 ? BorderColor.primaryDefault
                 : BorderColor.borderDefault
@@ -106,6 +109,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
               },
             )}
           />
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880 */}
           {(isChecked || isIndeterminate) && (
             <Icon
               color={IconColor.primaryInverse}

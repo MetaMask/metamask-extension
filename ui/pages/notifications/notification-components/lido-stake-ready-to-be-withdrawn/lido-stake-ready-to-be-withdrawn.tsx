@@ -52,6 +52,7 @@ const getDescription = (n: LidoReadyWithDrawnNotification) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     t('notificationItemLidoStakeReadyToBeWithdrawnMessage', [
       `${amount} ${n.data.staked_eth.symbol}`,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;
@@ -59,6 +60,7 @@ const getDescription = (n: LidoReadyWithDrawnNotification) => {
 
 const getTitle = () => {
   const items = createTextItems(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     [t('notificationItemLidoStakeReadyToBeWithdrawn') || ''],
     TextVariant.bodySm,
   );
@@ -91,6 +93,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
     details: {
       title: ({ notification }) => (
         <NotificationDetailTitle
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           title={t('notificationItemLidoStakeReadyToBeWithdrawn') || ''}
           date={formatIsoDateString(notification.createdAt)}
         />
@@ -103,6 +106,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           }
           return (
             <NotificationDetailAddress
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               side={t('account') || ''}
               address={notification.address}
             />
@@ -115,7 +119,9 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
               color: TextColor.successDefault,
               backgroundColor: BackgroundColor.successMuted,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationItemStatus') || ''}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             detail={t('notificationItemConfirmed') || ''}
           />
         ),
@@ -133,6 +139,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               label={t('notificationItemLidoStakeReadyToBeWithdrawn') || ''}
               detail={notification.data.staked_eth.symbol}
               fiatValue={`$${formatAmount(
@@ -160,6 +167,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               label={t('notificationItemStakingProvider') || ''}
               detail={notification.data.staked_eth.symbol}
             />

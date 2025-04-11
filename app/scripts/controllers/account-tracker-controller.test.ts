@@ -115,6 +115,7 @@ async function withController<ReturnValue>(
     } as InternalAccount);
   messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     getSelectedAccount || getSelectedAccountStub,
   );
 
@@ -146,6 +147,7 @@ async function withController<ReturnValue>(
   });
   messenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     getNetworkClientById || getNetworkClientByIdStub,
   );
 

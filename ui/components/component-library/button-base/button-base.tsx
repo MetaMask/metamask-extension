@@ -46,6 +46,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     }: ButtonBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     const tag = href ? 'a' : as || 'button';
     const tagProps = href && tag === 'a' ? { href, ...props } : props;
 
@@ -69,8 +70,11 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           {
             [`mm-button-base--size-${size}`]:
               Object.values(ButtonBaseSize).includes(size),
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             'mm-button-base--loading': loading || false,
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             'mm-button-base--disabled': disabled || false,
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             'mm-button-base--block': block || false,
             'mm-button-base--ellipsis': ellipsis,
           },

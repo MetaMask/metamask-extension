@@ -49,6 +49,7 @@ const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
 
 const getTitle = () => {
   const items = createTextItems(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     [t('notificationItemUnStakingRequested') || ''],
     TextVariant.bodySm,
   );
@@ -64,6 +65,7 @@ const getDescription = (n: LidoWithdrawalRequestedNotification) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     t('notificationItemLidoWithdrawalRequestedMessage', [
       `${amount} ${n.data.stake_in.symbol}`,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;
@@ -101,6 +103,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       title: ({ notification }) => {
         return (
           <NotificationDetailTitle
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             title={t('notificationItemUnStakingRequested') || ''}
             date={formatIsoDateString(notification.createdAt)}
           />
@@ -114,6 +117,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           }
           return (
             <NotificationDetailAddress
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               side={t('account') || ''}
               address={notification.address}
             />
@@ -126,12 +130,15 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
               color: TextColor.successDefault,
               backgroundColor: BackgroundColor.successMuted,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationItemStatus') || ''}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             detail={t('notificationItemConfirmed') || ''}
             action={
               <NotificationDetailCopyButton
                 notification={notification}
                 text={notification.tx_hash}
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                 displayText={t('notificationItemTransactionId') || ''}
               />
             }
@@ -151,6 +158,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               label={t('notificationItemUnStakingRequested') || ''}
               detail={notification.data.stake_in.symbol}
               fiatValue={`$${getUsdAmount(
@@ -180,6 +188,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               label={t('notificationItemStakingProvider') || ''}
               detail="Lido-staked ETH"
             />

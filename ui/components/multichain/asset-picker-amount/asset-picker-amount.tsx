@@ -194,6 +194,7 @@ export const AssetPickerAmount = ({
       type: asset.type as AssetType.NFT,
       tokenId: asset.details.tokenId,
       image: asset.details.image,
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       symbol: (asset.details.symbol || asset.details.name) ?? undefined,
       address: asset.details.address,
     };
@@ -233,6 +234,7 @@ export const AssetPickerAmount = ({
       <Box display={Display.Flex}>
         {/* Only show balance if mutable */}
         {onAmountChange && (
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           <AssetBalance asset={asset} error={passedError || error} />
         )}
         {isSwapsErrorShown && (

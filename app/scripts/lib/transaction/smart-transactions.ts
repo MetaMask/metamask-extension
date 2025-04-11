@@ -508,6 +508,7 @@ class SmartTransactionHook {
 
     const transactionsWithChainId = unsignedTransactions.map((tx) => ({
       ...tx,
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       chainId: tx.chainId || this.#chainId,
     }));
 

@@ -60,6 +60,7 @@ const title = (n: ERC20Notification) =>
 
 const getTitle = (n: ERC20Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
@@ -134,12 +135,15 @@ export const components: NotificationComponent<ERC20Notification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           label={t('notificationItemStatus') || ''}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
               notification={notification}
               text={notification.tx_hash}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               displayText={t('notificationItemTransactionId') || ''}
             />
           }
@@ -159,6 +163,7 @@ export const components: NotificationComponent<ERC20Notification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('asset') || ''}
             detail={notification.data.token.symbol}
             fiatValue={`$${getUsdAmount(
@@ -186,6 +191,7 @@ export const components: NotificationComponent<ERC20Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />

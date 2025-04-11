@@ -306,6 +306,7 @@ const TokenButtons = ({
           label={t('buyAndSell')}
           data-testid="token-overview-buy"
           onClick={handleBuyAndSellOnClick}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           disabled={token.isERC721 || !isBuyableChain}
           tooltipRender={null}
         />

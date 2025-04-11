@@ -38,6 +38,7 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         paddingRight={0}
         size={size === ButtonLinkSize.Inherit ? null : size}
         backgroundColor={BackgroundColor.transparent}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         color={color || (danger ? Color.errorDefault : Color.primaryDefault)}
         borderRadius={null}
         startIconProps={{
@@ -47,6 +48,7 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           className:
             size === ButtonLinkSize.Inherit
               ? `mm-button-link--size-inherit__icon ${
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                   startIconProps?.className || ''
                 }`
               : '',
@@ -58,6 +60,7 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           className:
             size === ButtonLinkSize.Inherit
               ? `mm-button-link--size-inherit__icon ${
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                   endIconProps?.className || ''
                 }`
               : '',
@@ -65,6 +68,7 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         iconLoadingProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Md,
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           color: color || (danger ? Color.errorDefault : Color.primaryDefault),
         }}
         ref={ref}

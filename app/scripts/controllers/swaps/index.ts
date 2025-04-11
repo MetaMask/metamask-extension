@@ -409,6 +409,7 @@ export default class SwapsController extends BaseController<
                   // approvalNeeded is guaranteed to be defined here because of the conditional above, since all quotes are from the same source token
                   // the approvalNeeded object will be present for all quotes
                   ...quote.approvalNeeded,
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                   gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS,
                 },
               }
@@ -530,6 +531,7 @@ export default class SwapsController extends BaseController<
       ).toDenomination(EtherDenomination.WEI);
 
       usedGasPrice = new Numeric(
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         customMaxPriorityFeePerGas || suggestedMaxPriorityFeePerGasInHexWEI,
         16,
       )
@@ -538,9 +540,11 @@ export default class SwapsController extends BaseController<
         .toString();
     } else if (gasEstimateType === GasEstimateTypes.legacy) {
       usedGasPrice =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         customGasPrice || decGWEIToHexWEI(Number(gasFeeEstimates.high));
     } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
       usedGasPrice =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         customGasPrice || decGWEIToHexWEI(Number(gasFeeEstimates.gasPrice));
     }
 
@@ -572,6 +576,7 @@ export default class SwapsController extends BaseController<
         : new BigNumber(averageGas || MAX_GAS_LIMIT, 10);
 
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16);
 
@@ -582,6 +587,7 @@ export default class SwapsController extends BaseController<
       if (multiLayerL1TradeFeeTotal !== null) {
         gasTotalInWeiHex = sumHexes(
           gasTotalInWeiHex || '0x0',
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           multiLayerL1TradeFeeTotal || '0x0',
         );
       }
@@ -634,6 +640,7 @@ export default class SwapsController extends BaseController<
         ? tokenConversionRates[tokenConversionRateKey]
         : null;
 
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       const conversionRateForSorting = tokenConversionRate?.price || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
@@ -1075,19 +1082,25 @@ export default class SwapsController extends BaseController<
     }
     this.update((_state) => {
       _state.swapsState.swapsQuoteRefreshTime =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME;
       _state.swapsState.swapsQuotePrefetchingRefreshTime =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME;
       _state.swapsState.swapsStxGetTransactionsRefreshTime =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         swapsNetworkConfig?.stxGetTransactions ||
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
       _state.swapsState.swapsStxBatchStatusRefreshTime =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         swapsNetworkConfig?.stxBatchStatus ||
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
       _state.swapsState.swapsStxMaxFeeMultiplier =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         swapsNetworkConfig?.stxMaxFeeMultiplier ||
         FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER;
       _state.swapsState.swapsStxStatusDeadline =
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         swapsNetworkConfig?.stxStatusDeadline ||
         FALLBACK_SMART_TRANSACTIONS_DEADLINE;
     });

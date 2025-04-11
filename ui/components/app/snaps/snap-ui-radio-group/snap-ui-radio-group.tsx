@@ -68,11 +68,13 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
             checked={value === option.value}
             onChange={() => handleChange(option.value)}
             style={{ margin: '0' }} // radio buttons have default margins that need to be stripped to ensure proper centering
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             disabled={disabled || option.disabled}
           />
           <Text
             className={classnames({
               'snap-ui-renderer__radio-label--disabled':
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                 disabled || option.disabled,
             })}
             as="label"

@@ -285,6 +285,7 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             image: srcAsset.icon || srcAsset.iconUrl || '',
             address: srcAsset.address,
           }),
@@ -538,6 +539,7 @@ const PrepareBridgePage = () => {
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
@@ -671,9 +673,11 @@ const PrepareBridgePage = () => {
                   }
             }
             customTokenListGenerator={
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               toChain || isSwap ? toTokenListGenerator : undefined
             }
             amountInFiat={
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               activeQuote?.toTokenAmount?.valueInCurrency || undefined
             }
             amountFieldProps={{

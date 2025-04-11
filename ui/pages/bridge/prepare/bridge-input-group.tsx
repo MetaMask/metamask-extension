@@ -110,6 +110,7 @@ export const BridgeInputGroup = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const isAmountReadOnly =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
 
   useEffect(() => {

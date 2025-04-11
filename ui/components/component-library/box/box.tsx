@@ -73,13 +73,16 @@ const generateClassNames = memoize(
         : undefined;
     // single digit equals single value or single array item
     let singleValue;
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     if (singleValueProp || singleValueProp === 0) {
       singleValue = singleValueProp;
     }
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     if (singleArrayItemProp || singleArrayItemProp === 0) {
       singleValue = singleArrayItemProp;
     }
     // 0 is an acceptable value but is falsy in js
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     if (singleValue || singleValue === 0) {
       // add base style without any breakpoint prefixes to classObject
       classNamesObject[
@@ -175,6 +178,7 @@ export const Box: BoxComponent = React.forwardRef(
     }: BoxProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     const Component = as || 'div';
     const boxClassName = classnames(
       BASE_CLASS_NAME,

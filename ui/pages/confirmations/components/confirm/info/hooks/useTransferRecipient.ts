@@ -14,6 +14,7 @@ export function useTransferRecipient() {
   const transactionType = transactionMetadata?.type;
   const transactionTo = transactionMetadata?.txParams?.to;
   const transferTo =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     (transactionData?.args?._to as string | undefined) ||
     transactionData?.args?.to;
 

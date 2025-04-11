@@ -61,6 +61,7 @@ const title = (n: ERC721Notification) =>
 
 const getTitle = (n: ERC721Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
@@ -150,7 +151,9 @@ export const components: NotificationComponent<ERC721Notification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           label={t('notificationItemStatus') || ''}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           detail={t('notificationItemConfirmed') || ''}
         />
       ),
@@ -165,6 +168,7 @@ export const components: NotificationComponent<ERC721Notification> = {
               src: notification.data.nft.image,
               badgeSrc: nativeCurrencyLogo,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationItemCollection') || ''}
             collection={`${notification.data.nft.collection.name} (${notification.data.nft.token_id})`}
           />
@@ -180,6 +184,7 @@ export const components: NotificationComponent<ERC721Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />

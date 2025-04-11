@@ -42,6 +42,7 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
             [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
               !positionObj,
           },
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           badgeContainerProps?.className || '',
         )}
         style={{ ...positionObj }}

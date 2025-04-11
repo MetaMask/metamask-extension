@@ -66,6 +66,7 @@ const getNativeCurrency = (n: ETHNotification) => {
 
 const getTitle = (n: ETHNotification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
@@ -147,12 +148,15 @@ export const components: NotificationComponent<ETHNotification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           label={t('notificationItemStatus') || ''}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
               notification={notification}
               text={notification.tx_hash}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               displayText={t('notificationItemTransactionId') || ''}
             />
           }
@@ -171,6 +175,7 @@ export const components: NotificationComponent<ETHNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('asset') || ''}
             detail={nativeCurrencySymbol}
             fiatValue={`$${formatAmount(
@@ -195,6 +200,7 @@ export const components: NotificationComponent<ETHNotification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />

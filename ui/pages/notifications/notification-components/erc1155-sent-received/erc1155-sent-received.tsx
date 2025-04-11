@@ -62,12 +62,14 @@ const title = (n: ERC1155Notification) =>
 
 const getTitle = (n: ERC1155Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: ERC1155Notification) => {
   const items = createTextItems(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     [n.data.nft?.collection.name || ''],
     TextVariant.bodyMd,
   );
@@ -84,6 +86,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
         type: notification.data.nft?.image
           ? NotificationListItemIconType.Nft
           : NotificationListItemIconType.Token,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         value: notification.data.nft?.image || 'http://foo.com/bar.png',
         badge: {
           icon: isSent(notification)
@@ -95,6 +98,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
       title={getTitle(notification)}
       description={getDescription(notification)}
       createdAt={new Date(notification.createdAt)}
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       amount={notification.data.nft?.token_id || ''}
       onClick={onClick}
     />
@@ -121,8 +125,11 @@ export const components: NotificationComponent<ERC1155Notification> = {
         return (
           <NotificationDetailNft
             networkSrc={nativeCurrencyLogo}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             tokenId={notification.data.nft?.token_id || ''}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             tokenName={notification.data.nft?.name || ''}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             tokenSrc={notification.data.nft?.image || ''}
             networkName={nativeCurrencyName}
           />
@@ -151,7 +158,9 @@ export const components: NotificationComponent<ERC1155Notification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           label={t('notificationItemStatus') || ''}
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           detail={t('notificationItemConfirmed') || ''}
         />
       ),
@@ -163,9 +172,11 @@ export const components: NotificationComponent<ERC1155Notification> = {
         return (
           <NotificationDetailCollection
             icon={{
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               src: notification.data.nft?.image || '',
               badgeSrc: nativeCurrencyLogo,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationItemCollection') || ''}
             collection={`${notification.data.nft?.collection.name} (${notification.data.nft?.token_id})`}
           />
@@ -181,6 +192,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />

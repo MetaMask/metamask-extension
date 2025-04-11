@@ -54,10 +54,12 @@ function createMockMessenger({
   >;
 } = {}): SnapsNameProviderMessenger {
   const getAllSnapsMock =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     getAllSnaps ||
     jest.fn().mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3]);
 
   const getSnapMock =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     getSnap ||
     jest
       .fn()
@@ -66,9 +68,11 @@ function createMockMessenger({
       );
 
   const handleSnapRequestMock =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     handleSnapRequest || jest.fn().mockResolvedValue(Promise.resolve());
 
   const getPermissionControllerStateMock =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     getPermissionControllerState ||
     jest.fn().mockReturnValue({
       subjects: {

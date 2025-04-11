@@ -13,6 +13,7 @@ export function useMultichainSelector<
   return useSelector((state: TState) => {
     // We either pass an account or fallback to the currently selected one
     // @ts-expect-error state types don't match
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     return selector(state, account || getSelectedInternalAccount(state));
   });
 }

@@ -71,6 +71,7 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
             { ...buttonAddressValue }
           ) : (
             <Text
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               color={valueColor || TextColor.textDefault}
               variant={TextVariant.bodyMdMedium}
             >
@@ -81,6 +82,7 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
         </Box>
       ) : (
         <Text
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           color={valueColor || TextColor.textDefault}
           variant={TextVariant.bodyMdMedium}
         >

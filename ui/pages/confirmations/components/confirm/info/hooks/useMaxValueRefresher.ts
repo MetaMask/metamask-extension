@@ -37,7 +37,9 @@ export const useMaxValueRefresher = () => {
   const dispatch = useDispatch();
   const { id: transactionId } = transactionMeta;
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isMaxAmountMode = useSelector((state) =>

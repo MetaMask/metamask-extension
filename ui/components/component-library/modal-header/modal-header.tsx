@@ -35,6 +35,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         width: BlockSize.Full,
       }}
       startAccessory={
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         startAccessory ||
         (onBack && (
           <ButtonIcon
@@ -47,6 +48,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         ))
       }
       endAccessory={
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         endAccessory ||
         (onClose && (
           <ButtonIcon

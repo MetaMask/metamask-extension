@@ -74,6 +74,7 @@ export function normalizeProviderAlert(
   reportUrl?: string,
 ): Alert {
   return {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     key: securityAlertResponse.securityAlertId || '',
     reason: t(
       REASON_TO_TITLE_TKEY[

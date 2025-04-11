@@ -33,6 +33,7 @@ export function useIsGaslessSupported() {
   const supportsGasless7702 =
     process.env.TRANSACTION_RELAY_API_URL &&
     Boolean(atomicBatchChainSupport) &&
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     (atomicBatchChainSupport?.isSupported ||
       !atomicBatchChainSupport?.delegationAddress);
 

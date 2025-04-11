@@ -20,10 +20,12 @@ export const calcHexGasTotal = (txMeta: TransactionMeta) => {
   // use the effectiveGasPrice from the receipt, which will ultimately represent to true cost
   // of the transaction. Either of these are used the same way with gasLimit to calculate total
   // cost. effectiveGasPrice will be available on the txReciept for all EIP1559 networks
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const usedGasPrice = gasPrice || effectiveGasPrice;
   const hexGasTotal =
     (gasLimit &&
       usedGasPrice &&
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
     '0x0';
 

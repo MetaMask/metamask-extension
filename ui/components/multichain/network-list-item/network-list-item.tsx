@@ -92,6 +92,7 @@ export const NetworkListItem = ({
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
   const renderButton = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}

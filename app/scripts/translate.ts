@@ -26,6 +26,7 @@ export async function updateCurrentLocale(locale: string): Promise<void> {
 
 export function t(key: string, ...substitutions: string[]): string | null {
   return (
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     getMessage(currentLocale, translations, key, substitutions) ||
     getMessage(FALLBACK_LOCALE, enTranslations, key, substitutions)
   );

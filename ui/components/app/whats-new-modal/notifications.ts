@@ -24,6 +24,7 @@ export const getTranslatedUINotifications = (
         width: 'auto',
         height: '70px',
       },
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       date: UI_NOTIFICATIONS[NOTIFICATION_SOLANA_ON_METAMASK].date || '',
       modal: {
         header: {

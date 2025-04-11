@@ -65,6 +65,7 @@ const NFTSendHeading = () => {
   const imageOriginal = (nft as Nft | undefined)?.imageOriginal;
   const image = getNftImage((nft as Nft | undefined)?.image);
   const nftImageAlt = nft ? getNftImageAlt(nft) : '';
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
   const nftSrcUrl = imageOriginal ?? (image || imageFromTokenURI || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const currentChain = networkConfigurations[chainId];
@@ -74,9 +75,12 @@ const NFTSendHeading = () => {
   const TokenImage = (
     <Box style={{ width: '48px' }}>
       <NftItem
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         src={tokenImage || imageFromTokenURI}
         alt={nftImageAlt}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         name={assetName || nameFromTokenURI}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={

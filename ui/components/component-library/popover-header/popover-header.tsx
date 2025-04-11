@@ -29,6 +29,7 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
     <HeaderBase
       className={classnames('mm-popover-header', className)}
       startAccessory={
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         startAccessory ||
         (onBack && (
           <ButtonIcon
@@ -42,6 +43,7 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
         ))
       }
       endAccessory={
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
         endAccessory ||
         (onClose && (
           <ButtonIcon

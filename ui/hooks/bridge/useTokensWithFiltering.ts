@@ -145,6 +145,7 @@ export const useTokensWithFiltering = (
           CHAIN_ID_TOKEN_IMAGE_MAP[
             sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
           ] ??
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           (token.iconUrl || token.icon || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
@@ -219,7 +220,9 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                   (getNativeAssetForChainId(token.chainId)?.icon ||
+                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
                     getNativeAssetForChainId(token.chainId)?.iconUrl ||
                     getAssetImageUrl(
                       token.address,

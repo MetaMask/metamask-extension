@@ -126,6 +126,7 @@ async function walletCreateSessionHandler(
 
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
     const requiredScopesWithSupportedMethodsAndNotifications =

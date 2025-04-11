@@ -89,6 +89,7 @@ export function txParamsAreDappSuggested(
     transactionMeta?.txParams || {};
   return Boolean(
     (gasPrice &&
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       gasPrice === transactionMeta?.dappSuggestedGasFees?.gasPrice) ||
       (maxPriorityFeePerGas &&
         maxFeePerGas &&
@@ -247,6 +248,7 @@ export async function determineTransactionAssetType(
   ].find((methodName) => methodName === inferrableType);
 
   if (
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     isTokenMethod ||
     // We can also check any contract interaction type to see if the to address
     // is a token contract. If it isn't, then the method will throw and we can
@@ -316,6 +318,7 @@ export const parseTypedDataMessage = (dataToParse: string) => {
 
   const messageValue = extractLargeMessageValue(dataToParse);
   if (result.message?.value) {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     result.message.value = messageValue || String(result.message.value);
   }
 

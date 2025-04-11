@@ -90,6 +90,7 @@ export function getManifestFlags(): ManifestFlags {
   }
 
   return (
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
     (browser.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
     {}
   );

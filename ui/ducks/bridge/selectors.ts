@@ -456,16 +456,20 @@ const _getQuotesWithMetadata = createSelector(
         totalEstimatedNetworkFee = {
           amount: gasFee.amount.plus(relayerFee.amount),
           valueInCurrency:
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
             gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
             null,
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
         };
         totalMaxNetworkFee = {
           amount: gasFee.amountMax.plus(relayerFee.amount),
           valueInCurrency:
             gasFee.valueInCurrencyMax?.plus(
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
               relayerFee.valueInCurrency || '0',
             ) ?? null,
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
           usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
         };
       }
