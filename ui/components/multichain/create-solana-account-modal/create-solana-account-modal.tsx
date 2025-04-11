@@ -57,6 +57,7 @@ export const CreateSolanaAccountModal = ({
                   onClose();
                 } else {
                   setShowCreateAccount(false);
+                  onClose();
                 }
               }}
               selectedKeyringId={selectedKeyringId}

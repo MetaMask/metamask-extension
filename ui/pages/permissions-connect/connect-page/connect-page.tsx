@@ -489,7 +489,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     color={TextColor.textAlternative}
                     textAlign={TextAlign.Center}
                   >
-                    {t('solanaAccountRequired')}
+                    {selectedAccounts.length === 0
+                      ? t('solanaAccountRequired')
+                      : t('solanaAccountRequested')}
                   </Text>
                   <Button
                     variant={ButtonVariant.Secondary}

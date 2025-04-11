@@ -296,7 +296,7 @@ describe('ConnectPage', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render Solana account required message when promptToCreateSolanaAccount is true', () => {
+  it('should render Solana account requested message when promptToCreateSolanaAccount is true', () => {
     const { getByText } = render({
       props: {
         request: {
@@ -334,7 +334,7 @@ describe('ConnectPage', () => {
     });
 
     expect(
-      getByText('A Solana account is required to connect to this site.'),
+      getByText('This site is requesting a Solana account.'),
     ).toBeDefined();
     expect(getByText('Create Solana account')).toBeDefined();
   });
