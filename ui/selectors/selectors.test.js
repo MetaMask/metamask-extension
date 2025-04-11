@@ -1352,6 +1352,30 @@ describe('Selectors', () => {
             balance: '0x0',
           },
         },
+        accountsByChainId: {
+          '0x5': {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              balance: '0x0',
+            },
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+              address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+              balance: '0x0',
+            },
+            '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+              address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+              balance: '0x0',
+            },
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+              address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+              balance: '0x0',
+            },
+            '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+              address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+              balance: '0x0',
+            },
+          },
+        },
         permissionHistory: {
           'https://test.dapp': {
             eth_accounts: {

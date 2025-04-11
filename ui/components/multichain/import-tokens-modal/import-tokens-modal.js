@@ -31,6 +31,7 @@ import {
   getPendingTokens,
   selectERC20TokensByChain,
   getTokenNetworkFilter,
+  getAllTokens,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -182,7 +183,9 @@ export const ImportTokensModal = ({ onClose }) => {
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
-  const tokens = useSelector((state) => state.metamask.tokens);
+  const chainId = useSelector(getCurrentChainId);
+  const allTokens = useSelector(getAllTokens);
+  const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allOpts = useSelector(getIsAllNetworksFilterEnabled);
@@ -207,7 +210,6 @@ export const ImportTokensModal = ({ onClose }) => {
         ?.defaultBlockExplorerUrlIndex
     ] ?? null;
 
-  const chainId = useSelector(getCurrentChainId);
   const blockExplorerTokenLink = getTokenTrackerLink(
     customAddress,
     selectedNetworkForCustomImport,
