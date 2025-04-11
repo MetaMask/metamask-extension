@@ -1,11 +1,11 @@
 export const PREINSTALLED_SNAPS = [
-  '@metamask/message-signing-snap',
-  '@metamask/ens-resolver-snap',
-  '@metamask/institutional-wallet-snap',
-  '@metamask/account-watcher',
-  '@metamask/preinstalled-example-snap',
-  '@metamask/bitcoin-wallet-snap',
-  '@metamask/solana-wallet-snap',
+  'npm:@metamask/message-signing-snap',
+  'npm:@metamask/ens-resolver-snap',
+  'npm:@metamask/institutional-wallet-snap',
+  'npm:@metamask/account-watcher',
+  'npm:@metamask/preinstalled-example-snap',
+  'npm:@metamask/bitcoin-wallet-snap',
+  'npm:@metamask/solana-wallet-snap',
 ];
 
 // Needed for webpack to analyze the preinstalled snaps

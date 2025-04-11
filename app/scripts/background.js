@@ -530,6 +530,10 @@ async function initialize() {
   }
 }
 
+/**
+ * Loads the preinstalled snaps from urls and returns them as an array.
+ * It fails if any Snap fails to load in the expected time range.
+ */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
