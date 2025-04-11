@@ -12,6 +12,7 @@ import {
   usePrimaryCurrencyProperties,
 } from '../hooks';
 import TokenList from '../token-list';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
@@ -27,6 +28,7 @@ const TokenListContainer = React.memo(
 
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string) => {
+        trace({ name: TraceName.AssetDetails });
         onClickAsset(chainId, tokenAddress);
         trackEvent({
           event: MetaMetricsEventName.TokenScreenOpened,
