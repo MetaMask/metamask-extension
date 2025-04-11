@@ -285,6 +285,7 @@ function maybeDetectPhishing(theController) {
       // is shipped.
       if (
         details.initiator &&
+        details.initiator !== 'null' &&
         // compare normalized URLs
         new URL(details.initiator).host === phishingPageUrl.host
       ) {
@@ -529,6 +530,10 @@ async function initialize() {
   }
 }
 
+/**
+ * Loads the preinstalled snaps from urls and returns them as an array.
+ * It fails if any Snap fails to load in the expected time range.
+ */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
@@ -792,7 +797,7 @@ function trackAppOpened(environment) {
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
- * @param preinstalledSnaps
+ * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  */
 export function setupController(
   initState,

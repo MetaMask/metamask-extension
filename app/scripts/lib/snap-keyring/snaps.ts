@@ -13,7 +13,7 @@ import { SnapKeyringBuilderMessenger } from './types';
  * @returns True if Snap is a preinstalled Snap, false otherwise.
  */
 export function isSnapPreinstalled(snapId: SnapId) {
-  return PREINSTALLED_SNAPS.some((snap) => `npm:${snap}` === snapId);
+  return PREINSTALLED_SNAPS.some((snap) => snap === snapId);
 }
 
 /**

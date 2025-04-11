@@ -15,10 +15,16 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   },
 }));
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  getNextAvailableAccountName: () => 'Test Account',
+}));
+
 describe('WhatsNewModal', () => {
   const mockOnClose = jest.fn();
   const mockCreateAccount = jest.fn();
   const KEYRING_ID = '01JKAF3DSGM3AB87EM9N0K41AJ';
+  const MOCK_ADDRESS = '0x1234567890123456789012345678901234567891';
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -41,11 +47,55 @@ describe('WhatsNewModal', () => {
         },
         keyrings: [
           {
+            accounts: [MOCK_ADDRESS],
             metadata: {
               id: KEYRING_ID,
             },
           },
         ],
+        internalAccounts: {
+          accounts: {
+            [KEYRING_ID]: {
+              address: MOCK_ADDRESS,
+              id: KEYRING_ID,
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: KEYRING_ID,
+        },
+        accounts: {
+          [MOCK_ADDRESS]: {
+            address: MOCK_ADDRESS,
+            balance: '0x0',
+            nonce: '0x0',
+            code: '0x',
+          },
+        },
+        accountsByChainId: {
+          '0x5': {
+            [MOCK_ADDRESS]: {
+              address: MOCK_ADDRESS,
+              balance: '0x0',
+              nonce: '0x0',
+              code: '0x',
+            },
+          },
+        },
       },
     });
     return renderWithProvider(<WhatsNewModal onClose={mockOnClose} />, store);
@@ -73,13 +123,26 @@ describe('WhatsNewModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('calls createAccount when clicking the create account button', async () => {
+    it('opens the create solana account modal and handles account creation', async () => {
       const createButton = screen.getByTestId('create-solana-account-button');
       fireEvent.click(createButton);
 
-      expect(mockCreateAccount).toHaveBeenCalledWith({
+      expect(screen.queryByTestId('whats-new-modal')).not.toBeInTheDocument();
+
+      expect(
+        screen.getByTestId('create-solana-account-modal'),
+      ).toBeInTheDocument();
+
+      const accountNameInput = screen.getByLabelText(/account name/iu);
+      fireEvent.change(accountNameInput, { target: { value: 'Test Account' } });
+
+      const submitButton = screen.getByTestId('submit-add-account-with-name');
+      fireEvent.click(submitButton);
+
+      await expect(mockCreateAccount).toHaveBeenCalledWith({
         scope: MultichainNetworks.SOLANA,
         entropySource: KEYRING_ID,
+        accountNameSuggestion: 'Test Account',
       });
       expect(mockOnClose).toHaveBeenCalled();
     });

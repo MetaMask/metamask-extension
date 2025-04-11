@@ -14,7 +14,6 @@ type CreateSnapAccountProps = {
    * Executes when the Create button is clicked
    */
   onActionComplete: (completed: boolean) => Promise<void>;
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   /**
    * Callback to select the SRP
    */
@@ -23,7 +22,6 @@ type CreateSnapAccountProps = {
    * The keyring ID to create the account
    */
   selectedKeyringId?: string;
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
   /**
    * The type of snap client to use
    */
@@ -36,10 +34,8 @@ type CreateSnapAccountProps = {
 
 export const CreateSnapAccount = ({
   onActionComplete,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSrp,
   selectedKeyringId,
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
   clientType,
   chainId,
 }: CreateSnapAccountProps) => {
@@ -57,10 +53,8 @@ export const CreateSnapAccount = ({
         await snapClient.createAccount(
           {
             scope: chainId,
-            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
             entropySource: selectedKeyringId,
             accountNameSuggestion: _accountNameSuggestion,
-            ///: END:ONLY_INCLUDE_IF(multi-srp)
           },
           {
             displayAccountNameSuggestion: false, // This will skip the naming dialog.
@@ -110,10 +104,8 @@ export const CreateSnapAccount = ({
       onActionComplete={onActionComplete}
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAccountName}
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
-      ///: END:ONLY_INCLUDE_IF(multi-srp)
     />
   );
 };

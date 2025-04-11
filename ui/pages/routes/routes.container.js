@@ -149,7 +149,10 @@ function mapDispatchToProps(dispatch) {
     clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
-    clearEditedNetwork: () => dispatch(setEditedNetwork()),
+    networkMenuClose: () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(setEditedNetwork());
+    },
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
