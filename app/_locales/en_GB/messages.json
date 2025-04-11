@@ -5298,6 +5298,9 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "solanaAccountRequired": {
+    "message": "A Solana account is required to connect to this site."
+  },
   "solanaImportAccounts": {
     "message": "Import Solana accounts"
   },

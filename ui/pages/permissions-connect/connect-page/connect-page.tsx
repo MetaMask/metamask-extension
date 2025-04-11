@@ -40,6 +40,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -71,6 +72,7 @@ import {
 } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -81,6 +83,9 @@ export type ConnectPageRequest = {
   id: string;
   origin: string;
   permissions?: PermissionsRequest;
+  metadata?: {
+    promptToCreateSolanaAccount?: boolean;
+  };
 };
 
 export type ConnectPageProps = {
@@ -118,6 +123,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
+
+  const promptToCreateSolanaAccount =
+    request.metadata?.promptToCreateSolanaAccount;
 
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -157,6 +165,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
+  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
+    useState(false);
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
@@ -290,6 +300,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       return selectedCaipAccountId === caipAccountId;
     });
   });
+
+  const solanaAccountCreated = useMemo(() => {
+    return selectedCaipAccountAddresses.some((caipAccountId) => {
+      const { chain } = parseCaipAccountId(caipAccountId);
+      return chain.namespace === KnownCaipNamespace.Solana;
+    });
+  }, [selectedCaipAccountAddresses]);
 
   const onConfirm = () => {
     const _request = {
@@ -426,22 +443,23 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     selected={false}
                   />
                 ))}
-                {selectedAccounts.length === 0 && (
-                  <Box
-                    className="connect-page__accounts-empty"
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.center}
-                    alignItems={AlignItems.center}
-                    borderRadius={BorderRadius.XL}
-                  >
-                    <ButtonLink
-                      onClick={() => handleOpenAccountsModal()}
-                      data-testid="edit"
+                {selectedAccounts.length === 0 &&
+                  !promptToCreateSolanaAccount && (
+                    <Box
+                      className="connect-page__accounts-empty"
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.center}
+                      alignItems={AlignItems.center}
+                      borderRadius={BorderRadius.XL}
                     >
-                      {t('selectAccountToConnect')}
-                    </ButtonLink>
-                  </Box>
-                )}
+                      <ButtonLink
+                        onClick={() => handleOpenAccountsModal()}
+                        data-testid="edit"
+                      >
+                        {t('selectAccountToConnect')}
+                      </ButtonLink>
+                    </Box>
+                  )}
               </Box>
               {selectedAccounts.length > 0 && (
                 <Box
@@ -456,6 +474,40 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     {t('editAccounts')}
                   </ButtonLink>
                 </Box>
+              )}
+              {promptToCreateSolanaAccount && !solanaAccountCreated && (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  marginTop={4}
+                  gap={2}
+                >
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                    textAlign={TextAlign.Center}
+                  >
+                    {t('solanaAccountRequired')}
+                  </Text>
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    width={BlockSize.Full}
+                    size={ButtonSize.Lg}
+                    onClick={() => setShowCreateSolanaAccountModal(true)}
+                    data-testid="create-solana-account"
+                  >
+                    {t('createSolanaAccount')}
+                  </Button>
+                </Box>
+              )}
+              {showCreateSolanaAccountModal && (
+                <CreateSolanaAccountModal
+                  onClose={() => {
+                    setShowCreateSolanaAccountModal(false);
+                  }}
+                />
               )}
               {showEditAccountsModal && (
                 <EditAccountsModal
