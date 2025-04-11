@@ -382,7 +382,7 @@
     "submitHistory": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string",
-    "allDeFiPositions": { "allDeFiPositions": "object" }
+    "allDeFiPositions": "object"
   },
   "ramps": "object",
   "send": "object",
