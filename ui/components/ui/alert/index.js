@@ -44,6 +44,8 @@ function Alert(props) {
 
 Alert.propTypes = {
   visible: PropTypes.bool.isRequired,
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   msg: PropTypes.string,
 };
 

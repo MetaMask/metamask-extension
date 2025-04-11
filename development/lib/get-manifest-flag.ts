@@ -1,8 +1,16 @@
 import { hasProperty } from '@metamask/utils';
 import { merge } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { exec as callbackExec } from 'node:child_process';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import fs from 'node:fs/promises';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import path from 'node:path';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { promisify } from 'node:util';
 
 import type { ManifestFlags } from '../../shared/lib/manifestFlags';

@@ -28,7 +28,11 @@ export const SensitiveText = React.forwardRef<
   );
 
   const isValidCustomLength = (value: string): boolean => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const num = Number(value);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     return !Number.isNaN(num) && num > 0;
   };
 

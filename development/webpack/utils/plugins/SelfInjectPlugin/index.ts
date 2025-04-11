@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { dirname, relative } from 'node:path';
 import { validate } from 'schema-utils';
 import { ModuleFilenameHelpers, Compilation, sources } from 'webpack';

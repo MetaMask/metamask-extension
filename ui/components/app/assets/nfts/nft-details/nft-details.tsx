@@ -248,6 +248,8 @@ export function NftDetailsComponent({
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
       isSuccessfulEvent = true;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('error'));
@@ -328,10 +330,16 @@ export function NftDetailsComponent({
             networkClientId: networkConfigurationId,
           }),
         );
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(`Failed to switch chains for NFT.
           Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
-          ${err}`);
+          ${          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
+err}`);
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         throw err;
       }
     }

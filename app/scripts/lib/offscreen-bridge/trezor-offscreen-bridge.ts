@@ -38,12 +38,22 @@ export class TrezorOffscreenBridge implements TrezorBridge {
       manifest: Manifest;
     } & Partial<ConnectSettings>,
   ) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     chrome.runtime.onMessage.addListener((msg) => {
       if (
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg.target === OffscreenCommunicationTarget.extension &&
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
       ) {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         this.model = msg.payload.model;
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         this.minorVersion = msg.payload.minorVersion;
       }
     });

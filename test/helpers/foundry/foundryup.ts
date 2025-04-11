@@ -1,11 +1,25 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { createHash } from 'node:crypto';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import type { Dir } from 'node:fs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { readFileSync } from 'node:fs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { copyFile, opendir, rm, symlink, unlink } from 'node:fs/promises';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { homedir } from 'node:os';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { join, relative } from 'node:path';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { cwd, exit } from 'node:process';
 import { parse as parseYaml } from 'yaml';
 

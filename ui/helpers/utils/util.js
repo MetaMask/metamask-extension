@@ -457,6 +457,8 @@ export function bnLessThanEqualTo(a, b) {
 export function getURL(url) {
   try {
     return new URL(url);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     return '';
   }
@@ -570,6 +572,8 @@ const isArrayType = (potentialArrayType) =>
 
 const isSolidityType = (type) => SOLIDITY_TYPES.includes(type);
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export const sanitizeMessage = (msg, primaryType, types) => {
   if (!types) {
     throw new Error(`Invalid types definition`);
@@ -579,12 +583,16 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   const isArray = primaryType && isArrayType(primaryType);
   if (isArray) {
     return {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       value: msg.map((value) =>
         sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
       ),
       type: primaryType,
     };
   } else if (isSolidityType(primaryType)) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     return { value: msg, type: primaryType };
   }
 
@@ -608,6 +616,8 @@ export const sanitizeMessage = (msg, primaryType, types) => {
     }
 
     sanitizedStruct[msgKey] = sanitizeMessage(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg[msgKey],
       definedType.type,
       types,
@@ -827,22 +837,34 @@ export const fetchTokenExchangeRates = async (
       tokenAddresses,
       chainId,
     });
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     return {};
   }
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export const hexToText = (hex) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (!hex) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     return hex;
   }
   try {
     const stripped = stripHexPrefix(hex);
     const buff = Buffer.from(stripped, 'hex');
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     return buff.length === 32 ? hex : buff.toString('utf8');
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
   // eslint-disable-next-line id-length
   } catch (e) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     return hex;
   }
 };

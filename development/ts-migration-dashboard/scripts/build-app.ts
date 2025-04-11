@@ -6,6 +6,8 @@ import gulp from 'gulp';
 import autoprefixer from 'gulp-autoprefixer';
 import gulpSass from 'gulp-sass';
 import sourcemaps from 'gulp-sourcemaps';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import path from 'path';
 import pify from 'pify';
 

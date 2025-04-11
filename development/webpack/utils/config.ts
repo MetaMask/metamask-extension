@@ -1,5 +1,9 @@
 import { parse } from 'dotenv';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { readFileSync } from 'node:fs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 

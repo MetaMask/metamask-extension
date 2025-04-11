@@ -18,12 +18,16 @@ class MetaRPCClient {
     this.DisconnectError = DisconnectError;
   }
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   send(id, payload, cb) {
     this.requests.set(id, cb);
     this.connectionStream.write(payload);
     this.responseHandled[id] = false;
     if (payload.method === 'getState') {
       setTimeout(() => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (!this.responseHandled[id] && cb) {
           delete this.responseHandled[id];
           return cb(new Error('No response from RPC'), null);
@@ -63,6 +67,8 @@ class MetaRPCClient {
   handleResponse(data) {
     const { id, result, error, method, params } = data;
     const isNotification = id === undefined && error === undefined;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const cb = this.requests.get(id);
 
     this.responseHandled[id] = true;
@@ -83,6 +89,8 @@ class MetaRPCClient {
       const e = new JsonRpcError(error.code, error.message, error.data);
       // preserve the stack from serializeError
       e.stack = error.stack;
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       if (cb) {
         this.requests.delete(id);
         cb(e);
@@ -92,6 +100,8 @@ class MetaRPCClient {
       return;
     }
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     if (!cb) {
       // not found in request list
       return;
@@ -113,6 +123,8 @@ const metaRPCClientFactory = (connectionStream) => {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31887
       // eslint-disable-next-line id-length
       return (...p) => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const cb = p[p.length - 1];
         const params = p.slice(0, -1);
         const id = createRandomId();

@@ -491,6 +491,8 @@ class Driver {
         until.elementIsNotPresent(locator),
         timeout - waitAtLeastGuard,
       );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       throw new Error(
         `Found element ${JSON.stringify(
@@ -873,6 +875,8 @@ class Driver {
     try {
       await this.findElement(rawLocator);
       return true;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       return false;
     }
@@ -888,6 +892,8 @@ class Driver {
     try {
       await this.findVisibleElement(rawLocator);
       return true;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       return false;
     }

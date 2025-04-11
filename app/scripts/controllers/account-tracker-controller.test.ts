@@ -1,5 +1,7 @@
 import { Messenger } from '@metamask/base-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31892
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { BlockTracker, Provider } from '@metamask/network-controller';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

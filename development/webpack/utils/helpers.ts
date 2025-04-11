@@ -1,4 +1,8 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { readdirSync } from 'node:fs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { parse, join, relative, sep } from 'node:path';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -208,7 +212,11 @@ export const { colors, toGreen, toOrange, toPurple } = ((depth, esc) => {
  * @param err - If not `undefined`, logs the error to `process.stderr`.
  * @param stats - If not `undefined`, logs the stats to `process.stderr`.
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export function logStats(err?: Error | null, stats?: Stats) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (err) {
     console.error(err);
     return;

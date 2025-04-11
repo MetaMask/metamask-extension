@@ -54,6 +54,8 @@ export function useTokenTracker({
     [hideZeroBalanceTokens, memoizedTokens],
   );
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const showError = useCallback((err) => {
     setError(err);
     setLoading(false);

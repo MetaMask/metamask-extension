@@ -2327,6 +2327,8 @@ export default class MetamaskController extends EventEmitter {
     resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(err);
       }
@@ -5542,12 +5544,18 @@ export default class MetamaskController extends EventEmitter {
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
       );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       if (err instanceof PermissionDoesNotExistError) {
         // suppress expected error in case that the origin
         // does not have the target permission yet
         return [];
       }
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       throw err;
     }
 
@@ -5976,6 +5984,8 @@ export default class MetamaskController extends EventEmitter {
           params: [estimateGasParams],
         })
         .then((result) => resolve(result.toString(16)))
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .catch((err) => reject(err));
     });
   }
@@ -6415,11 +6425,15 @@ export default class MetamaskController extends EventEmitter {
       dupeReqFilterStream,
       providerStream,
       outStream,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       (err) => {
         // handle any middleware cleanup
         engine.destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
@@ -6499,11 +6513,15 @@ export default class MetamaskController extends EventEmitter {
       dupeReqFilterStream,
       providerStream,
       outStream,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       (err) => {
         // handle any middleware cleanup
         engine.destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
@@ -7249,6 +7267,8 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       // noop
     }
@@ -7294,9 +7314,13 @@ export default class MetamaskController extends EventEmitter {
   setupPublicConfig(outStream) {
     const configStream = storeAsStream(this.publicConfigStore);
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     pipeline(configStream, outStream, (err) => {
       configStream.destroy();
       // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       if (err && !err.message?.match('Premature close')) {
         log.error(err);
       }
@@ -7426,6 +7450,8 @@ export default class MetamaskController extends EventEmitter {
         }
         try {
           this.notifyConnection(conn, await getPayload(origin));
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         } catch (err) {
           console.error(err);
         }
@@ -7449,6 +7475,8 @@ export default class MetamaskController extends EventEmitter {
       if (connection.engine) {
         connection.engine.emit('notification', payload);
       }
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       console.error(err);
     }
@@ -7957,8 +7985,14 @@ export default class MetamaskController extends EventEmitter {
   updateNetworksList = (chainIds) => {
     try {
       this.networkOrderController.updateNetworksList(chainIds);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       log.error(err.message);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       throw err;
     }
   };
@@ -7966,8 +8000,14 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       log.error(err.message);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       throw err;
     }
   };
@@ -7975,8 +8015,14 @@ export default class MetamaskController extends EventEmitter {
   updateHiddenAccountsList = (hiddenAccountList) => {
     try {
       this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       log.error(err.message);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       throw err;
     }
   };
@@ -8285,6 +8331,8 @@ export default class MetamaskController extends EventEmitter {
                 contract: singleLog.address,
                 ...parsedLog,
               });
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             } catch (err) {
               // ignore
             }

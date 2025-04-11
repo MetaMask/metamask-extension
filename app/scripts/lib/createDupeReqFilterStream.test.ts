@@ -1,6 +1,7 @@
 import type { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line @typescript-eslint/naming-convention, import/no-nodejs-modules
 import NodeStream from 'node:stream';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -23,6 +24,8 @@ const { Transform } = OurReadableStream;
 function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
   const transformStream = createDupeReqFilterStream();
   const testOutStream = new S({
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     transform: (chunk: JsonRpcRequest, _, cb) => {
       output.push(chunk);
       cb();
@@ -48,6 +51,8 @@ async function runStreamTest(
 
     testStream
       .on('finish', () => resolve(output))
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       .on('error', (err) => reject(err));
 
     requests.forEach((request) => testStream.write(request));
@@ -385,6 +390,8 @@ describe('createDupeReqFilterStream', () => {
           const output: JsonRpcRequest[] = [];
           const testStream = createDupeReqFilterStream();
           const testOutStream = new S({
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             transform: (chunk: JsonRpcRequest, _, cb) => {
               output.push(chunk);
               cb();

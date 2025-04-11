@@ -108,9 +108,13 @@ describe('Send Slice', () => {
   beforeEach(() => {
     setBackgroundConnection({
       addPollingTokenToAppState: jest.fn(),
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       addTransaction: jest.fn((_u, _v, cb) => {
         cb(null, { transactionMeta: null });
       }),
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
     });
 
@@ -2224,6 +2228,8 @@ describe('Send Slice', () => {
         );
         getBalancesInSingleCallStub.mockImplementation((_, [tokenAddress]) =>
           Promise.resolve({
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             [tokenAddress]: { hex: '0x0' },
           }),
         );
@@ -3076,6 +3082,8 @@ describe('Send Slice', () => {
             addTransaction: jest.fn((_u, _v) => {
               throw new Error(ERROR);
             }),
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) =>
               cb(null),
             ),

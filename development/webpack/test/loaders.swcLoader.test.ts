@@ -1,4 +1,8 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import assert from 'node:assert';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { describe, it, afterEach } from 'node:test';
 import type { LoaderContext } from 'webpack';
 
@@ -52,6 +56,8 @@ describe('swcLoader', () => {
     const returnValue = swcLoader.call(context, source);
 
     assert.strictEqual(returnValue, undefined, 'should return undefined');
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const [err, content, map] = await deferredPromise;
     assert.strictEqual(err, null);
     assert.strictEqual(content, expected);
@@ -78,8 +84,12 @@ describe('swcLoader', () => {
     const { context, deferredPromise } = generateData();
     const brokenSource = 'this is not real code;';
     swcLoader.call(context, brokenSource);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const [err, content, map] = await deferredPromise;
     assert(err);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     assert.match(err.message, /Syntax Error/u);
     assert.strictEqual(content, undefined);
     assert.strictEqual(map, undefined);

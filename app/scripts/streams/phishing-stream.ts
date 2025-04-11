@@ -55,6 +55,8 @@ function setupPhishingPageStreams(): void {
   // so we can handle the channels individually
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(phishingPageMux, phishingPageStream, phishingPageMux, (err: Error) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
@@ -89,6 +91,8 @@ export const setupPhishingExtStreams = (): void => {
   // create and connect channel muxers so we can handle the channels individually
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err: Error) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
@@ -139,6 +143,8 @@ export const setupPhishingExtStreams = (): void => {
  * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyPhishingStreams = (): void => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const err = checkForLastError();
 
   phishingExtPort.onDisconnect.removeListener(
@@ -154,7 +160,11 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    * may cause issues. We suspect that this is a chromium bug as this event should only be called
    * once the port and connections are ready. Delay time is arbitrary.
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (err) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -168,8 +178,12 @@ const onDisconnectDestroyPhishingStreams = (): void => {
  * @param msg.name - Custom property and name to identify the message received
  */
 const onMessageSetUpPhishingStreams = (
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   msg: MessageType,
 ): Promise<string | undefined> | undefined => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();

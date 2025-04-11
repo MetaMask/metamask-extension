@@ -126,6 +126,8 @@ const tearDownMockMiddlewareLog = () => {
 const createLoggerMiddlewareMock = () => (req, res, next) => {
   if (loggerMiddlewareMock) {
     loggerMiddlewareMock.requests.push(req);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     next((cb) => {
       loggerMiddlewareMock.responses.push(res);
       cb();
@@ -2293,6 +2295,8 @@ describe('MetaMaskController', () => {
         const { promise, resolve } = deferredPromise();
         const { promise: promiseStream, resolve: resolveStream } =
           deferredPromise();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'metamask-phishing-safelist') {
             cb();
@@ -2365,6 +2369,8 @@ describe('MetaMaskController', () => {
         const { promise, resolve } = deferredPromise();
         const { promise: promiseStream, resolve: resolveStream } =
           deferredPromise();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== METAMASK_COOKIE_HANDLER) {
             cb();
@@ -2414,6 +2420,8 @@ describe('MetaMaskController', () => {
         };
 
         const { promise, resolve } = deferredPromise();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
@@ -2450,6 +2458,8 @@ describe('MetaMaskController', () => {
         };
 
         const { resolve } = deferredPromise();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
@@ -2483,6 +2493,8 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
@@ -2534,6 +2546,8 @@ describe('MetaMaskController', () => {
         const messageSender = {
           url: 'http://mycrypto.com',
         };
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
@@ -2580,6 +2594,8 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
@@ -2675,6 +2691,8 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
@@ -2727,6 +2745,8 @@ describe('MetaMaskController', () => {
         const messageSender = {
           url: 'http://mycrypto.com',
         };
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
@@ -2779,6 +2799,8 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
@@ -2843,6 +2865,8 @@ describe('MetaMaskController', () => {
           tab: {},
         };
         const { promise, resolve } = deferredPromise();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           resolve();
@@ -2858,6 +2882,8 @@ describe('MetaMaskController', () => {
       it('uses a new multiplex to set up a connection', () => {
         jest.spyOn(metamaskController, 'setupControllerConnection');
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const streamTest = createThroughStream((chunk, _, cb) => {
           cb(chunk);
         });
@@ -2882,6 +2908,8 @@ describe('MetaMaskController', () => {
         } = deferredPromise();
         const { promise: onStreamEndPromise, resolve: onStreamEndResolve } =
           deferredPromise();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const testStream = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           onStreamEndResolve();

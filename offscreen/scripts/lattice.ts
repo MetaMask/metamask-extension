@@ -30,13 +30,18 @@ export default function init() {
    * is then sent back to the offscreen bridge for lattice, which extends from
    * the eth-lattice-keyring Keyring class.
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     if (msg.target !== OffscreenCommunicationTarget.latticeOffscreen) {
       return;
     }
 
     // Open the tab
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises, id-denylist -- TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     openConnectorTab(msg.params.url).then((browserTab) => {
       // Watch for the open window closing before creds are sent back
       const listenInterval = setInterval(() => {
@@ -80,8 +85,12 @@ export default function init() {
             sendResponse({
               result: creds,
             });
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           } catch (err) {
             sendResponse({
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+              // eslint-disable-next-line id-denylist
               error: err,
             });
           }

@@ -1,5 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { randomUUID } from 'crypto';
 import nock from 'nock';
 

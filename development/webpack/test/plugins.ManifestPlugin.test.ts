@@ -1,5 +1,11 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import assert from 'node:assert';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { join } from 'node:path';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { describe, it, afterEach } from 'node:test';
 import { type Compilation } from 'webpack';
 
@@ -328,13 +334,16 @@ describe('ManifestPlugin', () => {
     const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+    // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
     const fs = require('node:fs');
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+    // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
     const { mock } = require('node:test');
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+    // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
     const { resolve } = require('node:path');
 
     afterEach(() => mock.restoreAll());

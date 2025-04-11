@@ -50,10 +50,12 @@ export function transformManifest(
     if (manifestOverridesPath) {
       try {
         // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-        // eslint-disable-next-line no-restricted-globals
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+        // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
         const fs = require('node:fs');
         // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888
-        // eslint-disable-next-line no-restricted-globals
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+        // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
         const path = require('node:path');
         const manifestFlagsContent = fs.readFileSync(
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31888

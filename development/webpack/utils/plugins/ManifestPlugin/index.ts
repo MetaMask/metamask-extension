@@ -4,7 +4,11 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { readFileSync } from 'node:fs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { extname, join } from 'node:path/posix';
 import { validate } from 'schema-utils';
 import {

@@ -94,6 +94,8 @@ export default class ExtensionPlatform {
     }
   }
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   getPlatformInfo(cb) {
     try {
       const platformInfo = browser.runtime.getPlatformInfo();

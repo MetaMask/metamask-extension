@@ -35,11 +35,17 @@ export function getPermissionBackgroundApiMethods({
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
       );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       if (err instanceof PermissionDoesNotExistError) {
         // suppress expected error in case that the origin
         // does not have the target permission yet
       } else {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         throw err;
       }
     }
@@ -101,6 +107,8 @@ export function getPermissionBackgroundApiMethods({
           try {
             const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
             return accountNamespace === chainNamespace;
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           } catch (err) {
             return false;
           }
@@ -112,6 +120,8 @@ export function getPermissionBackgroundApiMethods({
           try {
             const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
             return accountNamespace === chainNamespace;
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           } catch (err) {
             return false;
           }

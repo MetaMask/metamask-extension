@@ -3,7 +3,11 @@
 import chalk from 'chalk';
 import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import micromatch from 'micromatch';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { stderr } from 'node:process';
 import prettier from 'prettier';
 

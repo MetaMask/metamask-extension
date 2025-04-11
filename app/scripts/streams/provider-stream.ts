@@ -56,6 +56,8 @@ const setupPageStreams = () => {
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(pageMux, pageStream, pageMux, (err: Error) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
@@ -83,6 +85,8 @@ export const setupExtensionStreams = () => {
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(extensionMux, extensionStream, extensionMux, (err: Error) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     notifyInpageOfStreamFailure();
@@ -133,6 +137,8 @@ const setupLegacyPageStreams = () => {
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(legacyPageMux, legacyPageStream, legacyPageMux, (err: Error) =>
     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
   );
@@ -159,6 +165,8 @@ const setupLegacyExtensionStreams = () => {
     extensionStream,
     notificationTransformStream,
     legacyExtMux,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     (err: Error) => {
       logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
       notifyInpageOfStreamFailure();
@@ -221,7 +229,11 @@ const destroyLegacyExtensionStreams = () => {
  * @param msg.name - custom property and name to identify the message received
  * @returns
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 const onMessageSetUpExtensionStreams = async (msg: MessageType) => {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!extensionStream) {
       setupExtensionStreams();
@@ -257,7 +269,11 @@ export function destroyStreams() {
  *
  * @param [err] - Stream connection error
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export function onDisconnectDestroyStreams(err: unknown) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const lastErr = err || checkForLastError();
 
   destroyStreams();
@@ -295,6 +311,8 @@ function getNotificationTransformStream() {
   const stream = new Transform({
     highWaterMark: 16,
     objectMode: true,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     transform: (chunk, _, cb) => {
       if (chunk?.name === METAMASK_PROVIDER) {
         if (chunk.data?.method === 'metamask_accountsChanged') {
@@ -317,9 +335,13 @@ function getNotificationTransformStream() {
  *
  * @param msg - instance of message received
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 function extensionStreamMessageListener(msg: MessageType) {
   if (
     METAMASK_EXTENSION_CONNECT_SENT &&
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     msg.data.method === 'metamask_chainChanged'
   ) {
     METAMASK_EXTENSION_CONNECT_SENT = false;

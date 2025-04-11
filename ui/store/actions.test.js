@@ -93,6 +93,8 @@ describe('Actions', () => {
     originalNavigator = global.navigator;
 
     background = sinon.createStubInstance(MetaMaskController, {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       getState: sinon.stub().callsFake((cb) => cb(null, [])),
     });
 
@@ -101,6 +103,8 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
@@ -139,6 +143,8 @@ describe('Actions', () => {
     it('calls submitPassword', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const submitPassword = background.submitPassword.callsFake((_, cb) =>
         cb(),
       );
@@ -162,6 +168,8 @@ describe('Actions', () => {
     it('errors on submitPassword will fail', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.submitPassword.callsFake((_, cb) => cb(new Error('error')));
 
       setBackgroundConnection(background);
@@ -190,8 +198,12 @@ describe('Actions', () => {
       const store = mockStore();
 
       const createNewVaultAndRestore =
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         background.createNewVaultAndRestore.callsFake((_, __, cb) => cb());
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
@@ -205,7 +217,11 @@ describe('Actions', () => {
     it('calls the expected actions', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.createNewVaultAndRestore.callsFake((_, __, cb) => cb());
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
@@ -226,6 +242,8 @@ describe('Actions', () => {
     it('errors when callback in createNewVaultAndRestore throws', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.createNewVaultAndRestore.callsFake((_, __, cb) =>
         cb(new Error('error')),
       );
@@ -254,9 +272,13 @@ describe('Actions', () => {
     it('calls verifyPassword in background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const getSeedPhrase = background.getSeedPhrase.callsFake((_, _2, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
@@ -271,7 +293,11 @@ describe('Actions', () => {
     it('displays warning error message then callback in background errors', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.verifyPassword.callsFake((_, cb) => cb());
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.getSeedPhrase.callsFake((_, _2, cb) => {
         cb(new Error('error'));
       });
@@ -299,6 +325,8 @@ describe('Actions', () => {
     it('calls removeAccount in background and expect actions to show account', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const removeAccount = background.removeAccount.callsFake((_, cb) => cb());
 
       setBackgroundConnection(background);
@@ -320,6 +348,8 @@ describe('Actions', () => {
     it('displays warning error message when removeAccount callback errors', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.removeAccount.callsFake((_, cb) => {
         cb(new Error('error'));
       });
@@ -350,6 +380,8 @@ describe('Actions', () => {
     it('resets account', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const resetAccount = background.resetAccount.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
@@ -368,6 +400,8 @@ describe('Actions', () => {
     it('throws if resetAccount throws', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.resetAccount.callsFake((cb) => {
         cb(new Error('error'));
       });
@@ -397,6 +431,8 @@ describe('Actions', () => {
       const store = mockStore();
 
       const importAccountWithStrategy =
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         background.importAccountWithStrategy.callsFake((_, __, cb) => {
           cb();
         });
@@ -416,6 +452,8 @@ describe('Actions', () => {
     it('displays warning error message when importAccount in background callback errors', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.importAccountWithStrategy.callsFake((_, __, cb) =>
         cb(new Error('error')),
       );
@@ -445,6 +483,8 @@ describe('Actions', () => {
       });
 
       const addNewAccount = background.addNewAccount.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, _secondUnusedVar, cb) =>
           cb(null, {
             addedAccountAddress: '0x123',
@@ -460,6 +500,8 @@ describe('Actions', () => {
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.addNewAccount.callsFake((_, _secondUnusedVar, cb) => {
         cb(new Error('error'));
       });
@@ -485,6 +527,8 @@ describe('Actions', () => {
       });
 
       const addNewAccount = background.addNewAccount.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, _secondUnusedVar, cb) =>
           cb(null, {
             addedAccountAddress: '0x123',
@@ -503,6 +547,8 @@ describe('Actions', () => {
       });
 
       const addNewAccount = background.addNewAccount.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, _secondUnusedVar, cb) =>
           cb(null, {
             addedAccountAddress: '0x123',
@@ -527,6 +573,8 @@ describe('Actions', () => {
       const store = mockStore();
 
       const checkHardwareStatus = background.checkHardwareStatus.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, __, cb) => {
           cb();
         },
@@ -546,6 +594,8 @@ describe('Actions', () => {
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.checkHardwareStatus.callsFake((_, __, cb) =>
         cb(new Error('error')),
       );
@@ -574,6 +624,8 @@ describe('Actions', () => {
     it('calls forgetDevice in background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const forgetDevice = background.forgetDevice.callsFake((_, cb) => cb());
 
       setBackgroundConnection(background);
@@ -585,6 +637,8 @@ describe('Actions', () => {
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.forgetDevice.callsFake((_, cb) => cb(new Error('error')));
 
       setBackgroundConnection(background);
@@ -612,6 +666,8 @@ describe('Actions', () => {
       const store = mockStore();
 
       const connectHardware = background.connectHardware.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, __, ___, cb) => cb(),
       );
 
@@ -630,6 +686,8 @@ describe('Actions', () => {
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.connectHardware.callsFake((_, __, ___, cb) =>
         cb(new Error('error')),
       );
@@ -679,6 +737,8 @@ describe('Actions', () => {
       });
 
       const connectHardware = background.connectHardware.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, __, ___, cb) => cb(null, [{ address: '0xLedgerAddress' }]),
       );
 
@@ -790,6 +850,8 @@ describe('Actions', () => {
       });
 
       const connectHardware = background.connectHardware.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, __, ___, cb) => cb(null, [{ address: '0xLedgerAddress' }]),
       );
 
@@ -846,6 +908,8 @@ describe('Actions', () => {
       });
 
       const deviceOpenError = new Error('Failed to open the device');
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.connectHardware.callsFake((_, __, ___, cb) =>
         cb(deviceOpenError),
       );
@@ -901,6 +965,8 @@ describe('Actions', () => {
       });
 
       const connectHardware = background.connectHardware.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, __, ___, cb) => cb(null, [{ address: '0xTrezorAddress' }]),
       );
 
@@ -940,6 +1006,8 @@ describe('Actions', () => {
       const store = mockStore();
       const unlockHardwareWalletAccount =
         background.unlockHardwareWalletAccount.callsFake(
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           (_, __, ___, ____, cb) => cb(),
         );
 
@@ -959,6 +1027,8 @@ describe('Actions', () => {
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.unlockHardwareWalletAccount.callsFake((_, __, ___, ____, cb) =>
         cb(new Error('error')),
       );
@@ -986,6 +1056,8 @@ describe('Actions', () => {
 
     it('calls setCurrentCurrency', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.setCurrentCurrency = sinon.stub().callsFake((_, cb) => cb());
       setBackgroundConnection(background);
 
@@ -997,6 +1069,8 @@ describe('Actions', () => {
       const store = mockStore();
       background.setCurrentCurrency = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(new Error('error')));
       setBackgroundConnection(background);
 
@@ -1034,10 +1108,14 @@ describe('Actions', () => {
     it('updates transaction', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const updateTransactionStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1061,6 +1139,8 @@ describe('Actions', () => {
         updateTransaction: (_, callback) => {
           callback(new Error('error'));
         },
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1099,6 +1179,8 @@ describe('Actions', () => {
     it('calls setLocked', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const backgroundSetLocked = background.setLocked.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
@@ -1110,6 +1192,8 @@ describe('Actions', () => {
     it('returns display warning error with value when setLocked in background callback errors', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.setLocked.callsFake((cb) => {
         cb(new Error('error'));
       });
@@ -1168,6 +1252,8 @@ describe('Actions', () => {
 
       const setSelectedInternalAccountSpy = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -1215,6 +1301,8 @@ describe('Actions', () => {
 
       const setSelectedInternalAccountSpy = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
@@ -1244,10 +1332,14 @@ describe('Actions', () => {
 
       const addTokenStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, __, ___, ____, cb) => cb());
 
       background.getApi.returns({
         addToken: addTokenStub,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1275,10 +1367,14 @@ describe('Actions', () => {
 
       const addTokenStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(null, tokenDetails));
 
       background.getApi.returns({
         addToken: addTokenStub,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1310,10 +1406,14 @@ describe('Actions', () => {
     it('calls ignoreTokens in background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const ignoreTokensStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1331,7 +1431,11 @@ describe('Actions', () => {
       background.getApi.returns({
         ignoreTokens: sinon
           .stub()
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           .callsFake((_, __, cb) => cb(new Error('error'))),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1359,6 +1463,8 @@ describe('Actions', () => {
     it('calls setActiveNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -1377,6 +1483,8 @@ describe('Actions', () => {
 
       const setCurrentNetworkStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
@@ -1404,6 +1512,8 @@ describe('Actions', () => {
     it('calls updateNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -1443,6 +1553,8 @@ describe('Actions', () => {
     it('updateNetwork has empty object for default options', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -1488,6 +1600,8 @@ describe('Actions', () => {
     it('calls requestUserApproval in the background with the correct arguments', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const requestUserApprovalStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -1529,6 +1643,8 @@ describe('Actions', () => {
     it('calls removeNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const removeNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -1610,10 +1726,14 @@ describe('Actions', () => {
 
       const setAddressBookStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, __, ___, ____, cb) => cb());
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -1635,10 +1755,14 @@ describe('Actions', () => {
 
       const testPrivKey = 'a-test-priv-key';
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const verifyPasswordStub = sinon.stub().callsFake((_, cb) => cb());
 
       const exportAccountStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, _2, cb) => cb(null, testPrivKey));
 
       background.getApi.returns({
@@ -1672,6 +1796,8 @@ describe('Actions', () => {
 
       const verifyPasswordStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
@@ -1696,10 +1822,14 @@ describe('Actions', () => {
     it('returns action errors when second func callback errors', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const verifyPasswordStub = sinon.stub().callsFake((_, cb) => cb());
 
       const exportAccountStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, _2, cb) => cb(new Error('error')));
 
       background.getApi.returns({
@@ -1734,6 +1864,8 @@ describe('Actions', () => {
     it('calls setAccountLabel', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setAccountLabelStub = sinon.stub().callsFake((_, __, cb) => cb());
 
       background.getApi.returns({
@@ -1757,6 +1889,8 @@ describe('Actions', () => {
       background.getApi.returns({
         setAccountLabel: sinon
           .stub()
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           .callsFake((_, __, cb) => cb(new Error('error'))),
       });
 
@@ -1789,6 +1923,8 @@ describe('Actions', () => {
     it('calls setFeatureFlag in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setFeatureFlagStub = sinon.stub().callsFake((_, __, cb) => cb());
 
       background.getApi.returns({
@@ -1807,6 +1943,8 @@ describe('Actions', () => {
       background.getApi.returns({
         setFeatureFlag: sinon
           .stub()
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           .callsFake((_, __, cb) => cb(new Error('error'))),
       });
 
@@ -1833,6 +1971,8 @@ describe('Actions', () => {
 
     it('completes onboarding', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const completeOnboardingStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -1851,6 +1991,8 @@ describe('Actions', () => {
       background.getApi.returns({
         completeOnboarding: sinon
           .stub()
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           .callsFake((cb) => cb(new Error('error'))),
       });
 
@@ -1879,6 +2021,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setServiceWorkerKeepAlivePreferenceStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
 
       setBackgroundConnection({
@@ -1899,6 +2043,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setServiceWorkerKeepAlivePreferenceStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => {
           cb(new Error('error'));
         });
@@ -1922,6 +2068,8 @@ describe('Actions', () => {
   describe('#setParticipateInMetaMetrics', () => {
     it('sets participateInMetaMetrics to true', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
 
       background.getApi.returns({
@@ -1945,6 +2093,8 @@ describe('Actions', () => {
 
     it('calls setUseBlockie in background', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setUseBlockieStub = sinon.stub().callsFake((_, cb) => cb());
       setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
@@ -1954,6 +2104,8 @@ describe('Actions', () => {
 
     it('errors when setUseBlockie in background throws', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setUseBlockieStub = sinon.stub().callsFake((_, cb) => {
         cb(new Error('error'));
       });
@@ -1978,6 +2130,8 @@ describe('Actions', () => {
 
     it('calls setUsePhishDetect in background', () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setUsePhishDetectStub = sinon.stub().callsFake((_, cb) => cb());
       setBackgroundConnection({
         setUsePhishDetect: setUsePhishDetectStub,
@@ -1989,6 +2143,8 @@ describe('Actions', () => {
 
     it('errors when setUsePhishDetect in background throws', () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setUsePhishDetectStub = sinon.stub().callsFake((_, cb) => {
         cb(new Error('error'));
       });
@@ -2017,6 +2173,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setUseMultiAccountBalanceCheckerStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
       setBackgroundConnection({
         setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
@@ -2030,6 +2188,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setUseMultiAccountBalanceCheckerStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => {
           cb(new Error('error'));
         });
@@ -2056,6 +2216,8 @@ describe('Actions', () => {
 
     it('calls setUse4ByteResolution in background', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => cb());
       setBackgroundConnection({
         setUse4ByteResolution: setUse4ByteResolutionStub,
@@ -2067,6 +2229,8 @@ describe('Actions', () => {
 
     it('errors when setUse4ByteResolution in background throws', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => {
         cb(new Error('error'));
       });
@@ -2095,6 +2259,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setUseSafeChainsListValidationStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
       setBackgroundConnection({
         setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
@@ -2108,6 +2274,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setUseSafeChainsListValidationStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => {
           cb(new Error('error'));
         });
@@ -2142,6 +2310,8 @@ describe('Actions', () => {
 
     it('calls expected actions', async () => {
       const store = mockStore();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const setCurrentLocaleStub = sinon.stub().callsFake((_, cb) => cb());
       setBackgroundConnection({
         setCurrentLocale: setCurrentLocaleStub,
@@ -2165,6 +2335,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setCurrentLocaleStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(new Error('error')));
       setBackgroundConnection({
         setCurrentLocale: setCurrentLocaleStub,
@@ -2190,6 +2362,8 @@ describe('Actions', () => {
     it('calls markPasswordForgotten', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.markPasswordForgotten.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
@@ -2202,6 +2376,8 @@ describe('Actions', () => {
     it('errors when markPasswordForgotten throws', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.markPasswordForgotten.callsFake((cb) =>
         cb(new Error('error')),
       );
@@ -2222,6 +2398,8 @@ describe('Actions', () => {
     it('calls unMarkPasswordForgotten', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
@@ -2254,9 +2432,13 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         rejectPendingApproval: sinon.stub().callsFake((_1, _2, cb) => {
           cb();
         }),
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -2297,6 +2479,8 @@ describe('Actions', () => {
 
       const createCancelTransactionStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_1, _2, _3, cb) =>
           cb(new Error('Previous transaction is already confirmed')),
         );
@@ -2365,6 +2549,8 @@ describe('Actions', () => {
     it('calls performSignIn in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const performSignInStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2385,6 +2571,8 @@ describe('Actions', () => {
     it('calls performSignOut in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const performSignOutStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2405,6 +2593,8 @@ describe('Actions', () => {
     it('calls enableProfileSyncing in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const enableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2425,6 +2615,8 @@ describe('Actions', () => {
     it('calls disableProfileSyncing in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const disableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2445,6 +2637,8 @@ describe('Actions', () => {
     it('calls createOnChainTriggers in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const createOnChainTriggersStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2462,6 +2656,8 @@ describe('Actions', () => {
 
       const createOnChainTriggersStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((cb) => cb(error));
 
       background.getApi.returns({
@@ -2492,6 +2688,8 @@ describe('Actions', () => {
 
       const deleteOnChainTriggersByAccountStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -2512,6 +2710,8 @@ describe('Actions', () => {
 
       const deleteOnChainTriggersByAccountStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
@@ -2536,6 +2736,8 @@ describe('Actions', () => {
 
       const updateOnChainTriggersByAccountStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -2556,6 +2758,8 @@ describe('Actions', () => {
 
       const updateOnChainTriggersByAccountStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
@@ -2579,7 +2783,11 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const forceUpdateMetamaskStateStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2601,9 +2809,13 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(error));
       const forceUpdateMetamaskStateStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((cb) => cb(error));
 
       background.getApi.returns({
@@ -2646,6 +2858,8 @@ describe('Actions', () => {
 
       const markMetamaskNotificationsAsReadStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -2685,6 +2899,8 @@ describe('Actions', () => {
 
       const markMetamaskNotificationsAsReadStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
@@ -2715,6 +2931,8 @@ describe('Actions', () => {
 
       const setFeatureAnnouncementsEnabledStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
@@ -2737,6 +2955,8 @@ describe('Actions', () => {
 
       const setFeatureAnnouncementsEnabledStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
@@ -2759,6 +2979,8 @@ describe('Actions', () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const checkAccountsPresenceStub = sinon.stub().callsFake((_, cb) => cb());
 
       setBackgroundConnection({
@@ -2775,6 +2997,8 @@ describe('Actions', () => {
 
       const checkAccountsPresenceStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(error));
 
       setBackgroundConnection({
@@ -2853,6 +3077,8 @@ describe('Actions', () => {
     it('calls createMetaMetricsDataDeletionTask in background', async () => {
       const createMetaMetricsDataDeletionTaskStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((cb) => cb());
       background.getApi.returns({
         createMetaMetricsDataDeletionTask:
@@ -2873,6 +3099,8 @@ describe('Actions', () => {
     it('calls updateDataDeletionTaskStatus in background', async () => {
       const updateDataDeletionTaskStatusStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((cb) => cb());
       background.getApi.returns({
         updateDataDeletionTaskStatus: updateDataDeletionTaskStatusStub,
@@ -2895,6 +3123,8 @@ describe('Actions', () => {
 
       const syncInternalAccountsWithUserStorageStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2920,6 +3150,8 @@ describe('Actions', () => {
 
       const deleteAccountSyncingDataFromUserStorageStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => {
           return cb();
         });
@@ -2947,6 +3179,8 @@ describe('Actions', () => {
     it('calls removePermittedChain in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.removePermittedChain.callsFake((_, __, cb) => cb());
       setBackgroundConnection(background);
 
@@ -2971,6 +3205,8 @@ describe('Actions', () => {
     it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
       const store = mockStore();
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       background.requestAccountsAndChainPermissionsWithId.callsFake((_, cb) =>
         cb(),
       );
@@ -3000,6 +3236,8 @@ describe('Actions', () => {
       const refreshInterval = 1000;
 
       background = {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
       };
       setBackgroundConnection(background);
@@ -3020,6 +3258,8 @@ describe('Actions', () => {
       const store = mockStore();
 
       background = {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
       };
       setBackgroundConnection(background);
@@ -3035,6 +3275,8 @@ describe('Actions', () => {
       const store = mockStore();
 
       background = {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
       };
       setBackgroundConnection(background);
@@ -3050,6 +3292,8 @@ describe('Actions', () => {
       const store = mockStore();
       const generateNewMnemonicAndAddToVaultStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((cb) => cb(null, {}));
       background.getApi.returns({
         generateNewMnemonicAndAddToVault: generateNewMnemonicAndAddToVaultStub,
@@ -3074,6 +3318,8 @@ describe('Actions', () => {
       const store = mockStore();
       const importMnemonicToVaultStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb(null, {}));
       background.getApi.returns({
         importMnemonicToVault: importMnemonicToVaultStub,
@@ -3104,6 +3350,8 @@ describe('Actions', () => {
     it('calls getTokenStandardAndDetailsByChain in background', async () => {
       const getTokenStandardAndDetailsByChain =
         background.getTokenStandardAndDetailsByChain.callsFake(
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           (_, _2, _3, _4, cb) => cb(null, {}),
         );
 
@@ -3115,6 +3363,8 @@ describe('Actions', () => {
 
     it('throw error when getTokenStandardAndDetailsByChain in background with error', async () => {
       background.getTokenStandardAndDetailsByChain.callsFake(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         (_, _2, _3, _4, cb) => cb(new Error('error')),
       );
 
@@ -3131,6 +3381,8 @@ describe('Actions', () => {
       const store = mockStore();
       const setManageInstitutionalWalletsStub = sinon
         .stub()
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .callsFake((_, cb) => cb());
       background.getApi.returns({
         setManageInstitutionalWallets: setManageInstitutionalWalletsStub,

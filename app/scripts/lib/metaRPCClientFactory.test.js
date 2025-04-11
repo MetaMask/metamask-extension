@@ -35,8 +35,14 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     metaRPCClient.foo('bar', (err) => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       expect(err.message).toStrictEqual('foo-message');
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       expect(err.code).toStrictEqual(1);
       done();
     });
@@ -61,6 +67,8 @@ describe('metaRPCClientFactory', () => {
     // make a "foo" method call, followed by "baz" call on metaRPCClient2
     metaRPCClient.foo('bar', (_, result) => {
       expect(result).toStrictEqual('foobarbaz');
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       metaRPCClient2.baz('bar', (err) => {
         expect(err).toBeNull();
         done();
@@ -161,8 +169,12 @@ describe('metaRPCClientFactory', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     metaRPCClient.foo('bar', (err) => {
       expect(err).toBeInstanceOf(metaRPCClient.DisconnectError);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       expect(err.message).toStrictEqual('disconnected');
       done();
     });

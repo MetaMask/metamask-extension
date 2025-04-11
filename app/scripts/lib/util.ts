@@ -9,6 +9,8 @@ import { parseCaipAssetType } from '@metamask/utils';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import BN from 'bn.js';
 import { memoize } from 'lodash';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import urlLib from 'url';
 
 import {
