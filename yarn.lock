@@ -5801,33 +5801,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^0.1.0":
-  version: 0.1.2
-  resolution: "@metamask/multichain-network-controller@npm:0.1.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@solana/addresses": "npm:^2.0.0"
-  peerDependencies:
-    "@metamask/accounts-controller": ^24.0.0
-    "@metamask/network-controller": ^22.0.0
-  checksum: 10/4f5423a6de319db540a13e5dc5d637b5e55cf7af901cbe040353912c4aaba640a9454abcecb93fa53ca397f5c40d097835b001f40963f8624c02961dbf29931a
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-network-controller@npm:^0.3.0":
+"@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.3.0
-  resolution: "@metamask/multichain-network-controller@npm:0.3.0"
+  resolution: "@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller#../core/packages/multichain-network-controller::hash=0a768a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/utils": "npm:^11.2.0"
     "@solana/addresses": "npm:^2.0.0"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/network-controller": ^23.0.0
-  checksum: 10/eed3a230271bfe610027b6739d383151a573fe10db66f407ec8c673cceaab3c2b50a5fcc3fb2cc0dcfa4fbb9748d63f615799bd27bb5b4303260321ec9d07757
+  checksum: 10/f999c09c41af05f13405c709525805ae2a7614161fb5af174d5602b44c079a7cbb6838048d9c8d7cafa129a588cb16213ec35e5f1a7f064c08f703d0dafc8dc0
   languageName: node
   linkType: hard
 
@@ -27388,7 +27373,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-api-client": "npm:^0.1.1"
     "@metamask/multichain-api-middleware": "npm:^0.1.1"
-    "@metamask/multichain-network-controller": "npm:^0.1.0"
+    "@metamask/multichain-network-controller": "npm:^0.3.0"
     "@metamask/multichain-transactions-controller": "npm:^0.7.2"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch"

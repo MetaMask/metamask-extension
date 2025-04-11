@@ -6,6 +6,7 @@ import { toggleNetworkMenu } from '../../../../store/actions';
 import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MultichainNetworks,
+  NETWORK_TO_ACCOUNT_TYPE_MAP,
 } from '../../../../../shared/constants/multichain/networks';
 import {
   Box,
@@ -39,7 +40,19 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
     clientType: WalletClientType.Bitcoin,
     chainId: MultichainNetworks.BITCOIN_TESTNET,
   },
+  [MultichainNetworks.BITCOIN_SIGNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_SIGNET,
+  },
   [MultichainNetworks.SOLANA]: {
+    clientType: WalletClientType.Solana,
+    chainId: MultichainNetworks.SOLANA,
+  },
+  [MultichainNetworks.SOLANA_TESTNET]: {
+    clientType: WalletClientType.Solana,
+    chainId: MultichainNetworks.SOLANA,
+  },
+  [MultichainNetworks.SOLANA_DEVNET]: {
     clientType: WalletClientType.Solana,
     chainId: MultichainNetworks.SOLANA,
   },
@@ -132,6 +145,7 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
         <Text textAlign={TextAlign.Left} variant={TextVariant.bodyMd}>
           {t('addNonEvmAccountFromNetworkPicker', [
             MULTICHAIN_NETWORK_TO_NICKNAME[chainId],
+            NETWORK_TO_ACCOUNT_TYPE_MAP[chainId],
           ])}
         </Text>
       </Box>
