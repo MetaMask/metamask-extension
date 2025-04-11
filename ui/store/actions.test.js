@@ -2300,6 +2300,7 @@ describe('Actions', () => {
   });
 
   describe('#removeAndIgnoreNft', () => {
+    // TODO: add test for networkClientId
     afterEach(() => {
       sinon.restore();
     });
