@@ -305,6 +305,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
         >
            
         </p>
