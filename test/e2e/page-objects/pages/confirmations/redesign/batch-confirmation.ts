@@ -49,6 +49,20 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
+  async rejectBatch(): Promise<void> {
+      await this.driver.clickElement(this.footerCancelButton);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.rejectBatchButton,
+      );
+  }
+
+  async rejectBatchRejectUpgrade(): Promise<void> {
+    await this.driver.clickElement(this.footerCancelButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.rejectBatchRejectUpgradeButton,
+    );
+  }
+
   async tickSplashUpgradeButton(): Promise<void> {
     await this.driver.clickElement({
       text: this.confirmUpgradeButton,
