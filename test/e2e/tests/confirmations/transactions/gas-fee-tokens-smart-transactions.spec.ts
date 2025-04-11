@@ -127,7 +127,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
   });
 });
 
-export async function mockSimulationResponse(mockServer: MockttpServer) {
+async function mockSimulationResponse(mockServer: MockttpServer) {
   return [
     await mockServer.forPost(TX_SENTINEL_URL).thenCallback(() => {
       return {
