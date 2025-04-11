@@ -18,6 +18,7 @@ buildTypes:
     features:
       - build-main
       - keyring-snaps
+      - multi-srp
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -367,3 +368,12 @@ env:
   # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
   ###
   - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
+
+  # URL of transaction relay API
+  - TRANSACTION_RELAY_API_URL: null
+
+  # Address of DelegationManager smart contract
+  - DELEGATION_MANAGER_ADDRESS: null
+
+  # Address of enforcer used for gasless EIP-7702 transactions
+  - GASLESS_7702_ENFORCER_ADDRESS: null

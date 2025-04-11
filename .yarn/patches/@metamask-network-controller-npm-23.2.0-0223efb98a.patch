@@ -9,10 +9,10 @@ index 0000000000000000000000000000000000000000..376255036ca54b83a3f3c3e0277c2666
 +This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
 +You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index cc9793f576eb39a51ab141b7d03de57cf99e5570..184153067f2bbd58ea76d7db33c2af56245cd8c0 100644
+index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..c6044c6799a3e444b249c1a1607688cc94758397 100644
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
-@@ -422,7 +422,6 @@ class NetworkController extends base_controller_1.BaseController {
+@@ -515,7 +515,6 @@ class NetworkController extends base_controller_1.BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
@@ -21,10 +21,10 @@ index cc9793f576eb39a51ab141b7d03de57cf99e5570..184153067f2bbd58ea76d7db33c2af56
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-index 806f32edeffaad9f7eb1cafa4184368ec95f63e7..7ba60e613ec8de7d273c32282be564f36873cbd2 100644
+index 0efca6773120ea8be324446febfbcee68ca4281d..aecd1d9bf31433742d315c616355924fbd8dc3b7 100644
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
-@@ -397,7 +397,6 @@ export class NetworkController extends BaseController {
+@@ -491,7 +491,6 @@ export class NetworkController extends BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
