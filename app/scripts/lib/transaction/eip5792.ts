@@ -1,5 +1,5 @@
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
   IsAtomicBatchSupportedResultEntry,
   Log,
@@ -33,6 +33,13 @@ export enum AtomicCapabilityStatus {
   Supported = 'supported',
   Ready = 'ready',
   Unsupported = 'unsupported',
+}
+
+export enum EIP5792ErrorCode {
+  UnsupportedNonOptionalCapability = 5700,
+  UnsupportedChainId = 5710,
+  UnknownBundleId = 5730,
+  RejectedUpgrade = 5750,
 }
 
 const VERSION_SEND_CALLS = '2.0';
@@ -120,7 +127,10 @@ export function getCallsStatus(
     .transactions.filter((tx) => tx.batchId === id);
 
   if (!transactions?.length) {
-    throw rpcErrors.invalidInput(`No matching calls found`);
+    throw new JsonRpcError(
+      EIP5792ErrorCode.UnknownBundleId,
+      `No matching bundle found`,
+    );
   }
 
   const transaction = transactions[0];
@@ -224,7 +234,7 @@ function validateSendCalls(
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
 ) {
   validateSendCallsVersion(sendCalls);
-  validateSendCallsChainId(sendCalls, dappChainId);
+  validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
 
   validateUserDisabled(
@@ -246,15 +256,26 @@ function validateSendCallsVersion(sendCalls: SendCalls) {
   }
 }
 
-function validateSendCallsChainId(sendCalls: SendCalls, dappChainId: Hex) {
+function validateSendCallsChainId(
+  sendCalls: SendCalls,
+  dappChainId: Hex,
+  chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
+) {
   const { chainId: requestChainId } = sendCalls;
 
   if (
     requestChainId &&
     requestChainId.toLowerCase() !== dappChainId.toLowerCase()
   ) {
-    throw rpcErrors.invalidInput(
+    throw rpcErrors.invalidParams(
       `Chain ID must match the dApp selected network: Got ${requestChainId}, expected ${dappChainId}`,
+    );
+  }
+
+  if (!chainBatchSupport) {
+    throw new JsonRpcError(
+      EIP5792ErrorCode.UnsupportedChainId,
+      `EIP-7702 not supported on chain: ${dappChainId}`,
     );
   }
 }
@@ -278,7 +299,8 @@ function validateCapabilities(sendCalls: SendCalls) {
   ];
 
   if (requiredCapabilities?.length) {
-    throw rpcErrors.invalidInput(
+    throw new JsonRpcError(
+      EIP5792ErrorCode.UnsupportedNonOptionalCapability,
       `Unsupported non-optional capabilities: ${requiredCapabilities.join(
         ', ',
       )}`,
@@ -303,8 +325,9 @@ function validateUserDisabled(
     disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
 
   if (isDisabled || dismissSmartAccountSuggestionEnabled) {
-    throw rpcErrors.methodNotSupported(
-      `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
+    throw new JsonRpcError(
+      EIP5792ErrorCode.RejectedUpgrade,
+      `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );
   }
 }

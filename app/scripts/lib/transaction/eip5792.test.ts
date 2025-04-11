@@ -152,7 +152,15 @@ describe('EIP-5792', () => {
 
     getDisabledUpgradeAccountsByChainMock.mockReturnValue({});
     getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(false);
-    isAtomicBatchSupportedMock.mockResolvedValue([]);
+
+    isAtomicBatchSupportedMock.mockResolvedValue([
+      {
+        chainId: CHAIN_ID_MOCK,
+        delegationAddress: undefined,
+        isSupported: false,
+        upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
+      },
+    ]);
   });
 
   describe('processSendCalls', () => {
@@ -241,7 +249,7 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
-        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
+        `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
       );
     });
 
@@ -279,7 +287,7 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
-        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
+        `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
       );
     });
 
@@ -344,6 +352,19 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow('Unsupported non-optional capabilities: test, test3');
+    });
+
+    it('throws if chain does not support EIP-7702', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([]);
+
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          SEND_CALLS_MOCK,
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(`EIP-7702 not supported on chain: ${CHAIN_ID_MOCK}`);
     });
   });
 
@@ -491,7 +512,7 @@ describe('EIP-5792', () => {
       } as unknown as TransactionControllerState);
 
       expect(() => getCallsStatus(messenger, BATCH_ID_MOCK)).toThrow(
-        `No matching calls found`,
+        `No matching bundle found`,
       );
     });
   });
