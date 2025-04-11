@@ -1,9 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getNativeAssetForChainId,
-  isQuoteExpired as isQuoteExpiredUtil,
-} from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -18,7 +15,6 @@ import {
   getBridgeQuotes,
   getValidationErrors,
   getWasTxDeclined,
-  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -55,14 +51,8 @@ export const BridgeCTAButton = ({
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
+  const { isLoading, activeQuote, isQuoteExpired } =
     useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
