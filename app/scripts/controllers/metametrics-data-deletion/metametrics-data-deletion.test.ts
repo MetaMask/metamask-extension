@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/base-controller';
+import type {
+  AllowedActions} from './metametrics-data-deletion';
 import {
-  AllowedActions,
   MetaMetricsDataDeletionController,
   type MetaMetricsDataDeletionControllerMessengerActions,
 } from './metametrics-data-deletion';

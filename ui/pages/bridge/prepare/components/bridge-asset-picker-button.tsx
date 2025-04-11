@@ -1,6 +1,7 @@
 import React from 'react';
+import type {
+  SelectButtonProps} from '../../../../components/component-library/select-button/select-button.types';
 import {
-  SelectButtonProps,
   SelectButtonSize,
 } from '../../../../components/component-library/select-button/select-button.types';
 import {
@@ -22,7 +23,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
+import type { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import { getNftImage } from '../../../../helpers/utils/nfts';
 
 export const BridgeAssetPickerButton = ({

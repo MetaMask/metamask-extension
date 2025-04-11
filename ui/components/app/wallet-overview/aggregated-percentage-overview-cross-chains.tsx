@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -26,7 +26,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { TokenWithBalance } from '../assets/types';
+import type { TokenWithBalance } from '../assets/types';
 
 export const AggregatedPercentageOverviewCrossChains = () => {
   const locale = useSelector(getIntlLocale);

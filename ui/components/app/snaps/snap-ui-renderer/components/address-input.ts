@@ -1,5 +1,5 @@
-import { AddressInputElement } from '@metamask/snaps-sdk/jsx';
-import { UIComponentFactory } from './types';
+import type { AddressInputElement } from '@metamask/snaps-sdk/jsx';
+import type { UIComponentFactory } from './types';
 
 export const addressInput: UIComponentFactory<AddressInputElement> = ({
   element,

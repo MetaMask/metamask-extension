@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,
@@ -12,12 +12,13 @@ import {
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import type {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload} from '../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
-  MetaMetricsEventName,
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
+  MetaMetricsEventName
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
 import { getBlockExplorerLinkText } from '../../../selectors';

@@ -1,6 +1,6 @@
-import { Hex } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
+import type { Hex } from '@metamask/utils';
+import type { BigNumber } from 'bignumber.js';
+import type { TokenStandard } from '../../../../../shared/constants/transaction';
 
 /**
  * Describes an amount of fiat.

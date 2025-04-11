@@ -1,20 +1,21 @@
 import React, { useRef, useState } from 'react';
+import type {
+  ChartOptions,
+  Point} from 'chart.js';
 import {
   Chart,
   LineElement,
   LinearScale,
   PointElement,
   Filler,
-  ChartOptions,
-  Decimation,
-  Point,
+  Decimation
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -31,7 +32,8 @@ import {
   ButtonBaseSize,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TimeRange, useHistoricalPrices } from '../../useHistoricalPrices';
+import type { TimeRange} from '../../useHistoricalPrices';
+import { useHistoricalPrices } from '../../useHistoricalPrices';
 import { loadingOpacity } from '../../util';
 import AssetPrice from '../asset-price';
 import ChartTooltip from './chart-tooltip';

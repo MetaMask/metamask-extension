@@ -30,7 +30,8 @@ import {
   AvatarBase,
   AvatarBaseSize,
 } from '../../component-library/avatar-base';
-import { AvatarGroupProps, AvatarType } from './avatar-group.types';
+import type { AvatarGroupProps} from './avatar-group.types';
+import { AvatarType } from './avatar-group.types';
 
 export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   className = '',

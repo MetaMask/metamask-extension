@@ -1,11 +1,12 @@
 import { type Hex, type CaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
+import type {
+  ChainId} from '@metamask/bridge-controller';
 import {
   isSolanaChainId,
   calcLatestSrcBalance,
   formatChainIdToCaip,
   formatChainIdToHex,
-  ChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { getSelectedInternalAccount } from '../../selectors';

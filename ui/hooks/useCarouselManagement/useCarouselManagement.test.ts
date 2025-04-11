@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateSlides } from '../../store/actions';
 import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
-import { CarouselSlide } from '../../../shared/constants/app-state';
+import type { CarouselSlide } from '../../../shared/constants/app-state';
 import {
   getSweepstakesCampaignActive,
   useCarouselManagement,

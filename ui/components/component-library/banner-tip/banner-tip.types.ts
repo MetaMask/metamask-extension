@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import type { BannerBaseStyleUtilityProps } from '../banner-base/banner-base.types';
 import type { PolymorphicComponentPropWithRef, BoxProps } from '../box';
 

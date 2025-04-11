@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';

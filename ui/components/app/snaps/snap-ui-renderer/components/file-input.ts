@@ -1,6 +1,6 @@
-import { FileInputElement } from '@metamask/snaps-sdk/jsx';
+import type { FileInputElement } from '@metamask/snaps-sdk/jsx';
 
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const fileInput: UIComponentFactory<FileInputElement> = ({
   element,

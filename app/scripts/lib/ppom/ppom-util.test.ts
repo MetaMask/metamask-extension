@@ -1,23 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PPOMController } from '@metamask/ppom-validator';
-import { PPOM } from '@blockaid/ppom_release';
-import {
+import type { PPOMController } from '@metamask/ppom-validator';
+import type { PPOM } from '@blockaid/ppom_release';
+import type {
   TransactionController,
-  TransactionParams,
+  TransactionParams} from '@metamask/transaction-controller';
+import {
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import {
+import type {
   SignatureController,
   SignatureRequest,
 } from '@metamask/signature-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
-import { AppStateController } from '../../controllers/app-state-controller';
+import type { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
   METHOD_SIGN_TYPED_DATA_V3,
@@ -25,7 +26,7 @@ import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
-import { SecurityAlertResponse } from './types';
+import type { SecurityAlertResponse } from './types';
 import * as securityAlertAPI from './security-alerts-api';
 
 jest.mock('@metamask/transaction-controller', () => ({

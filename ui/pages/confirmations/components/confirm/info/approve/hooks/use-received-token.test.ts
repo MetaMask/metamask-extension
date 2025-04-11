@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { CONTRACT_INTERACTION_SENDER_ADDRESS } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';

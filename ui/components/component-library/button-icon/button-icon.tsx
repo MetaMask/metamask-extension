@@ -10,12 +10,14 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box, BoxProps, PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box';
 import { Icon, IconSize } from '../icon';
-import {
-  ButtonIconSize,
+import type {
   ButtonIconProps,
-  ButtonIconComponent,
+  ButtonIconComponent} from './button-icon.types';
+import {
+  ButtonIconSize
 } from './button-icon.types';
 
 const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {

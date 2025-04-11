@@ -1,6 +1,6 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { GasFeeToken } from '@metamask/transaction-controller';
+import type { GasFeeToken } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';

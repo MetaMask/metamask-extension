@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
+import type { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import Card from '../../../ui/card';
 import {
   Box,
@@ -22,7 +22,7 @@ import {
   getMetaMaskAccounts,
   getMetaMaskHdKeyrings,
 } from '../../../../selectors/selectors';
-import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import type { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,

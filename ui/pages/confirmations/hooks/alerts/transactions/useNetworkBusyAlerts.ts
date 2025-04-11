@@ -1,8 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { getIsNetworkBusyByChainId } from '../../../../../ducks/metamask/metamask';

@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 import { Box } from '../../component-library';
 import { NftItem } from '../nft-item';
 import {

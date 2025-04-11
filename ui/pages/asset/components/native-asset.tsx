@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { Token } from '@metamask/assets-controllers';
+import type { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,

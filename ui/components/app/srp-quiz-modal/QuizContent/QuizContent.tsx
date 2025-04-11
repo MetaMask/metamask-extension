@@ -10,7 +10,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Button, Box, Text } from '../../../component-library';
-import { IQuizInformationProps } from '../types';
+import type { IQuizInformationProps } from '../types';
 
 export default function QuizContent({
   icon,

@@ -3,8 +3,8 @@ import {
   BtcAccountType,
   SolAccountType,
 } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import {
   isBtcMainnetAddress,

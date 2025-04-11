@@ -1,4 +1,4 @@
-import { CarouselSlide } from '../../../../shared/constants/app-state';
+import type { CarouselSlide } from '../../../../shared/constants/app-state';
 
 export type CarouselProps = {
   slides: CarouselSlide[];

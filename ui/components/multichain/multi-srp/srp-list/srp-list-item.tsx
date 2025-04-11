@@ -1,5 +1,5 @@
 import React from 'react';
-import { InternalAccountWithBalance } from '../../../../selectors';
+import type { InternalAccountWithBalance } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import {
   Display,

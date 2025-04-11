@@ -4,12 +4,12 @@ import {
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import { Severity } from '../../../../helpers/constants/design-system';
-import {
+import type {
   Alert,
   AlertSeverity,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SecurityAlertResponse } from '../../types/confirm';
+import type { useI18nContext } from '../../../../hooks/useI18nContext';
+import type { SecurityAlertResponse } from '../../types/confirm';
 
 /** Reason to description translation key mapping. Grouped by translations. */
 export const REASON_TO_DESCRIPTION_TKEY = Object.freeze({

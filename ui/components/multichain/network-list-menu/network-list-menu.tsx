@@ -5,11 +5,12 @@ import React, {
   useState,
   useCallback,
 } from 'react';
+import type {
+  DropResult} from 'react-beautiful-dnd';
 import {
   DragDropContext,
   Droppable,
-  Draggable,
-  DropResult,
+  Draggable
 } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';

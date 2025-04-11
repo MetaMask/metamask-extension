@@ -1,11 +1,11 @@
-import { Provider } from '@metamask/network-controller';
+import type { Provider } from '@metamask/network-controller';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { CHAIN_IDS } from '../constants/network';
-import { TransactionMetricsRequest } from '../types/metametrics';
+import type { TransactionMetricsRequest } from '../types/metametrics';
 import { getSmartTransactionMetricsProperties } from './metametrics';
 
 const txHash =

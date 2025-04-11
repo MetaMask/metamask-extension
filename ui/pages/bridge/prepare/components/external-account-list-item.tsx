@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { ExternalAccount } from '../types';
+import type { ExternalAccount } from '../types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   AvatarAccount,

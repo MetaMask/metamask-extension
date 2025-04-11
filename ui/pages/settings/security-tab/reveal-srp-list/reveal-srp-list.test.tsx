@@ -1,5 +1,6 @@
 import React from 'react';
-import configureStore, { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/store';
+import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { RevealSrpList } from './reveal-srp-list';

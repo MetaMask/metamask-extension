@@ -1,15 +1,16 @@
-import {
+import type {
   AuthorizationList,
   BatchTransactionParams,
-  CHAIN_IDS,
   GasFeeToken,
   SimulationData,
-  TransactionMeta,
+  TransactionMeta} from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import {
+import type { Hex } from '@metamask/utils';
+import type {
   Confirmation,
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';

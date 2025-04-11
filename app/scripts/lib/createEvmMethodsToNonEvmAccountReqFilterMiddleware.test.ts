@@ -1,8 +1,10 @@
-import { jsonrpc2, Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { jsonrpc2 } from '@metamask/utils';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
-import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
+import type {
   EvmMethodsToNonEvmAccountFilterMessenger,
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
+import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
   const getMockRequest = (

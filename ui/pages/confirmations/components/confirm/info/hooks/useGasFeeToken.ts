@@ -1,5 +1,6 @@
-import { Hex, add0x } from '@metamask/utils';
-import {
+import type { Hex} from '@metamask/utils';
+import { add0x } from '@metamask/utils';
+import type {
   BatchTransactionParams,
   GasFeeToken,
   TransactionMeta,

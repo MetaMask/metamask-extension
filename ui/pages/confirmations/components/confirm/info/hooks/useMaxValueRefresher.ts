@@ -10,7 +10,8 @@ import {
   type GasPriceGasFeeEstimates,
   type LegacyGasFeeEstimates,
 } from '@metamask/transaction-controller';
-import { add0x, Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
+import { add0x } from '@metamask/utils';
 
 import {
   getSelectedAccountCachedBalance,

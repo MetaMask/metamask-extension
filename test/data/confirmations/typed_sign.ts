@@ -1,6 +1,6 @@
 import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
+import type { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const unapprovedTypedSignMsgV1 = {
   id: '82ab2400-e2c6-11ee-9627-73cc88f00492',

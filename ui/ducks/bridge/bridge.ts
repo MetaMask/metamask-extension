@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { type Hex, type CaipChainId } from '@metamask/utils';
+import type {
+  ChainId} from '@metamask/bridge-controller';
 import {
   type BridgeToken,
-  ChainId,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,

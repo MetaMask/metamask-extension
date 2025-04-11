@@ -1,6 +1,7 @@
-import {
+import type {
   TranslationFunction,
-  TranslatedUINotifications,
+  TranslatedUINotifications} from '../../../../shared/notifications';
+import {
   UI_NOTIFICATIONS,
   NOTIFICATION_SOLANA_ON_METAMASK,
 } from '../../../../shared/notifications';

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { TokenListMap } from '@metamask/assets-controllers';
+import type { TokenListMap } from '@metamask/assets-controllers';
 ///: END:ONLY_INCLUDE_IF
 import {
   BannerAlert,
@@ -20,8 +20,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getSendHexDataFeatureFlagState,
 } from '../../../../../ducks/metamask/metamask';
+import type {
+  Asset} from '../../../../../ducks/send';
 import {
-  Asset,
   acknowledgeRecipientWarning,
   getBestQuote,
   getCurrentDraftTransaction,
@@ -50,7 +51,7 @@ import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
+import type { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { SendPageRow } from './send-page-row';
 import { QuoteCard } from './quote-card';

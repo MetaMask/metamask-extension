@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TokensControllerState } from '@metamask/assets-controllers';
+import type { TokensControllerState } from '@metamask/assets-controllers';
 import { migrate, version } from './133.1';
 
 const sentryCaptureExceptionMock = jest.fn();

@@ -1,5 +1,6 @@
+import type {
+  DecodingData} from '@metamask/signature-controller';
 import {
-  DecodingData,
   DecodingDataChangeType,
 } from '@metamask/signature-controller';
 

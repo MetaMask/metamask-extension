@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
-import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { Severity } from '../../helpers/constants/design-system';
+import type { ReactNode } from 'react';
+import type { SecurityProvider } from '../../../shared/constants/security-provider';
+import type { Severity } from '../../helpers/constants/design-system';
 
 export type AlertSeverity = Severity.Danger | Severity.Warning | Severity.Info;
 

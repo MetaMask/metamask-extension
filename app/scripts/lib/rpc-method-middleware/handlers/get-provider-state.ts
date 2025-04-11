@@ -8,7 +8,7 @@ import type {
   Hex,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
+import type {
   HandlerWrapper,
   HandlerRequestType as ProviderStateHandlerRequest,
 } from './types';

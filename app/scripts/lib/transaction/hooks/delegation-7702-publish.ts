@@ -1,4 +1,4 @@
-import {
+import type {
   AuthorizationList,
   GasFeeToken,
   IsAtomicBatchSupportedRequest,
@@ -8,23 +8,26 @@ import {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, add0x, createProjectLogger, remove0x } from '@metamask/utils';
+import type { Hex} from '@metamask/utils';
+import { add0x, createProjectLogger, remove0x } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { Interface } from '@ethersproject/abi';
-import {
-  ANY_BENEFICIARY,
+import type {
   Caveat,
   Delegation,
   Execution,
+  UnsignedDelegation} from '../delegation';
+import {
+  ANY_BENEFICIARY,
   ExecutionMode,
   ROOT_AUTHORITY,
-  UnsignedDelegation,
   encodeRedeemDelegations,
   signDelegation,
 } from '../delegation';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import type { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import type {
+  RelaySubmitRequest} from '../transaction-relay';
 import {
-  RelaySubmitRequest,
   submitRelayTransaction,
 } from '../transaction-relay';
 

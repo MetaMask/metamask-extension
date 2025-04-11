@@ -1,7 +1,7 @@
 import { createProjectLogger } from '@metamask/utils';
-import { Patch } from 'immer';
+import type { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
-import ComposableObservableStore from './ComposableObservableStore';
+import type ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');

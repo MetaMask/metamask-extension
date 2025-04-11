@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 
-import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import NftGrid from './nft-grid';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

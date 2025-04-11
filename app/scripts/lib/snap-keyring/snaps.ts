@@ -1,10 +1,10 @@
-import { SnapId } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
 import {
   getLocalizedSnapManifest,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
 import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
-import { SnapKeyringBuilderMessenger } from './types';
+import type { SnapKeyringBuilderMessenger } from './types';
 
 /**
  * Check if a Snap is a preinstalled Snap.

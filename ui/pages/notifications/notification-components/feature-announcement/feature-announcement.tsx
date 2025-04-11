@@ -22,7 +22,7 @@ import {
   BorderRadius,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
-import { FeatureAnnouncementNotification } from './types';
+import type { FeatureAnnouncementNotification } from './types';
 import {
   ExtensionLinkButton,
   ExternalLinkButton,

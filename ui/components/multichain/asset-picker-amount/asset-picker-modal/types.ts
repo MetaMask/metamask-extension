@@ -1,15 +1,15 @@
-import { Token, TokenListToken } from '@metamask/assets-controllers';
+import type { Token, TokenListToken } from '@metamask/assets-controllers';
 import { type Hex, type CaipChainId } from '@metamask/utils';
 import type {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
 import type { Asset } from '../../../../ducks/send';
-import {
+import type {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../../shared/constants/network';
-import { TokenWithFiatAmount } from '../../../app/assets/types';
+import type { TokenWithFiatAmount } from '../../../app/assets/types';
 
 export type NFT = {
   address: string;

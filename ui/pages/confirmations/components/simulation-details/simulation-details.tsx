@@ -1,7 +1,8 @@
-import {
+import type {
   SimulationError,
-  SimulationErrorCode,
-  TransactionMeta,
+  TransactionMeta} from '@metamask/transaction-controller';
+import {
+  SimulationErrorCode
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -31,7 +32,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
 
 export type StaticRow = {
   label: string;

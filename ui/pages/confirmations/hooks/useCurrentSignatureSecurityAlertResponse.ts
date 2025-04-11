@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import { SecurityAlertResponse } from '../types/confirm';
+import type { SecurityAlertResponse } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
 
 type SecurityAlertResponsesState = {

@@ -1,8 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { remove0x } from '@metamask/utils';
 import { BN } from 'bn.js';
-import { TransactionDescription } from '@ethersproject/abi';
+import type { TransactionDescription } from '@ethersproject/abi';
 import {
   BackgroundColor,
   TextColor,

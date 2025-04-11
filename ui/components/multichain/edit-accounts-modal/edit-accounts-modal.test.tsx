@@ -1,10 +1,10 @@
 import React from 'react';
-import { CaipAccountId } from '@metamask/utils';
+import type { CaipAccountId } from '@metamask/utils';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import type { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { EditAccountsModal } from '.';
 
 const render = (

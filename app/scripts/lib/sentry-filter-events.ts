@@ -1,4 +1,4 @@
-import { Event as SentryEvent, Integration } from '@sentry/types';
+import type { Event as SentryEvent, Integration } from '@sentry/types';
 
 const NAME = 'FilterEvents';
 

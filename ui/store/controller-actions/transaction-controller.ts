@@ -1,4 +1,4 @@
-import {
+import type {
   IsAtomicBatchSupportedResult,
   TransactionController,
 } from '@metamask/transaction-controller';

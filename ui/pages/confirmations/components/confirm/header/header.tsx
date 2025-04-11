@@ -1,5 +1,6 @@
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
@@ -22,7 +23,7 @@ import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
 import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { Confirmation } from '../../../types/confirm';
+import type { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';

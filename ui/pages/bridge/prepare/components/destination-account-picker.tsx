@@ -24,7 +24,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-import { DestinationAccount } from '../types';
+import type { DestinationAccount } from '../types';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';

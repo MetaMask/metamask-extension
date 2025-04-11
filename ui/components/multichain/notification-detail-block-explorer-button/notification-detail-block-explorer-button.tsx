@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkDetailsByChainId } from '../../../helpers/utils/notification.util';

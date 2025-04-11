@@ -1,4 +1,5 @@
-import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+import React from 'react';
 import {
   ButtonType,
   ButtonVariant,
@@ -7,9 +8,10 @@ import {
 import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import type {
+  ButtonProps} from '../../../component-library';
 import {
   Button,
-  ButtonProps,
   ButtonSize,
   Icon,
   IconName,

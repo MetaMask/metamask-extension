@@ -10,7 +10,7 @@ import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewUnknown } from './account-overview-unknown';
-import { AccountOverviewCommonProps } from './common';
+import type { AccountOverviewCommonProps } from './common';
 import { AccountOverviewNonEvm } from './account-overview-non-evm';
 
 export type AccountOverviewProps = AccountOverviewCommonProps & {

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import type {
+  NetworkConfiguration} from '@metamask/network-controller';
 import {
-  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import {

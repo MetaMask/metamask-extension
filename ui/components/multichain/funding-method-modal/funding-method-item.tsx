@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text, Icon, IconName } from '../../component-library';
+import type { IconName } from '../../component-library';
+import { Box, Text, Icon } from '../../component-library';
 import {
   Display,
   FlexDirection,

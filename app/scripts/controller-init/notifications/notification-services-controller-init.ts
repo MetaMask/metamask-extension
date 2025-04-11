@@ -1,5 +1,5 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
-import { ControllerInitFunction } from '../types';
+import type { ControllerInitFunction } from '../types';
 import { type NotificationServicesControllerMessenger } from '../messengers/notifications';
 
 export const NotificationServicesControllerInit: ControllerInitFunction<

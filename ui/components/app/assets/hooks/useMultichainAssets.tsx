@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 import { getSelectedInternalAccount } from '../../../../selectors';
+import type {
+  TranslateFunction} from '../util/networkTitleOverrides';
 import {
-  TranslateFunction,
   networkTitleOverrides,
 } from '../util/networkTitleOverrides';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -14,7 +15,7 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
-import { TokenWithFiatAmount } from '../types';
+import type { TokenWithFiatAmount } from '../types';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 
 const useMultiChainAssets = () => {

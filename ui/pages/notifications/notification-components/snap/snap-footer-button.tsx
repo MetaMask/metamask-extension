@@ -8,7 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { DetailedViewData, SnapNotification } from './types';
+import type { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const trackEvent = useContext(MetaMetricsContext);

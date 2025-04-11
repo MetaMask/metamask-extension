@@ -1,4 +1,4 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
+import type { ApprovalRequest } from '@metamask/approval-controller';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';

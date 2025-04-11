@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import { getHexGasTotal } from '../../ui/helpers/utils/confirm-tx.util';
 

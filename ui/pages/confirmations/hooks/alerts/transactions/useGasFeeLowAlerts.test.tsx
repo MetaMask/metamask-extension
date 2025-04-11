@@ -1,6 +1,7 @@
-import React, { ReactChildren } from 'react';
+import type { ReactChildren } from 'react';
+import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';

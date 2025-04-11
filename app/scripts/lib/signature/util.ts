@@ -4,7 +4,7 @@ import type {
   TypedMessageParams,
 } from '@metamask/message-manager';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import type { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 export type SignatureParams = [TypedMessageParams, OriginalRequest];
 

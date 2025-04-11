@@ -1,6 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { SnapId } from '@metamask/snaps-sdk';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { SnapId } from '@metamask/snaps-sdk';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,

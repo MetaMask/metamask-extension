@@ -12,7 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
+import type {
   ModalComponent,
   ModalHeaderProps,
   ModalBodyProps,

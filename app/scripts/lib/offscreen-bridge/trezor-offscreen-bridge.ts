@@ -1,4 +1,4 @@
-import { TrezorBridge } from '@metamask/eth-trezor-keyring';
+import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
 import type {
   EthereumSignMessage,
   EthereumSignTransaction,

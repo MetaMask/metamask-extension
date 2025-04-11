@@ -10,12 +10,13 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 
-import { Box, BoxProps } from '../../box';
-import type { PolymorphicRef } from '../../box';
-import {
+import { Box } from '../../box';
+import type { PolymorphicRef , BoxProps } from '../../box';
+import type {
   ModalContentProps,
-  ModalContentSize,
-  ModalContentComponent,
+  ModalContentComponent} from '../modal-content.types';
+import {
+  ModalContentSize
 } from '../modal-content.types';
 import { useModalContext } from '../../modal/modal.context';
 import { ModalFocus } from '../../modal-focus';

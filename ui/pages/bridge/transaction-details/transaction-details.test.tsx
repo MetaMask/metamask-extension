@@ -1,6 +1,7 @@
 import { MINUTE } from '../../../../shared/constants/time';
+import type {
+  BridgeHistoryItem} from '../../../../shared/types/bridge-status';
 import {
-  BridgeHistoryItem,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
 import { getIsDelayed } from './transaction-details';

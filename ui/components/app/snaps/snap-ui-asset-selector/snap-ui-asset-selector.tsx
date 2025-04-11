@@ -1,5 +1,6 @@
-import React, { FunctionComponent } from 'react';
-import { CaipAccountId, CaipChainId } from '@metamask/utils';
+import type { FunctionComponent } from 'react';
+import React from 'react';
+import type { CaipAccountId, CaipChainId } from '@metamask/utils';
 
 import { SnapUISelector } from '../snap-ui-selector';
 
@@ -23,7 +24,8 @@ import {
 } from '../../../component-library';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';
+import type { SnapUIAsset} from './useSnapAssetDisplay';
+import { useSnapAssetSelectorData } from './useSnapAssetDisplay';
 
 /**
  * An option for the SnapUIAssetSelector.

@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
 // TODO: Remove restricted import

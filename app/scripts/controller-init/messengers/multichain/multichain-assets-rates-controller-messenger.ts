@@ -1,19 +1,19 @@
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import {
+import type {
   CurrencyRateStateChange,
   GetCurrencyRateState,
   MultichainAssetsControllerStateChangeEvent,
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
-import {
+import type {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 
 type Actions =
   | HandleSnapRequest

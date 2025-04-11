@@ -1,5 +1,5 @@
 import React from 'react';
-import { BigNumber } from 'bignumber.js';
+import type { BigNumber } from 'bignumber.js';
 
 import { calcTokenAmount } from '../../../../../../shared/lib/transactions-controller-utils';
 import {

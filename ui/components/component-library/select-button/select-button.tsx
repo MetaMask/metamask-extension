@@ -18,9 +18,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Label } from '../label';
 import { Icon, IconName, IconSize } from '../icon';
-import {
+import type {
   SelectButtonProps,
-  SelectButtonComponent,
+  SelectButtonComponent} from './select-button.types';
+import {
   SelectButtonSize,
 } from './select-button.types';
 

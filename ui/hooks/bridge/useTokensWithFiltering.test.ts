@@ -1,5 +1,6 @@
+import type {
+  BridgeToken} from '@metamask/bridge-controller';
 import {
-  BridgeToken,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';

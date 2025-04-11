@@ -1,8 +1,8 @@
-import { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { mapToTemplate } from '../utils';
-import { UIComponent, UIComponentFactory } from './types';
+import type { UIComponent, UIComponentFactory } from './types';
 
 export const form: UIComponentFactory<FormElement> = ({
   element,

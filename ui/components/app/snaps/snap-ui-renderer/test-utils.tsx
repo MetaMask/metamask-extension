@@ -1,8 +1,9 @@
 import React from 'react';
-import { Reducer } from 'redux';
-import { RenderResult } from '@testing-library/react';
-import { JSXElement } from '@metamask/snaps-sdk/jsx';
-import configureStore, { MetaMaskReduxState } from '../../../../store/store';
+import type { Reducer } from 'redux';
+import type { RenderResult } from '@testing-library/react';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { MetaMaskReduxState } from '../../../../store/store';
+import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';

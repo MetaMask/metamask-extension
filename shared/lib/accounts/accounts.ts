@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 /**
  * Get the next available account name based on the suggestion and the list of

@@ -1,7 +1,7 @@
 import React from 'react';
 import { EthOverview } from '../../app/wallet-overview';
 import { AccountOverviewLayout } from './account-overview-layout';
-import { AccountOverviewCommonProps } from './common';
+import type { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewEthProps = AccountOverviewCommonProps;
 

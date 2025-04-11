@@ -1,20 +1,22 @@
-import {
+import type {
   CaveatSpecificationConstraint,
-  MethodNames,
   PermissionController,
-  PermissionSpecificationConstraint,
+  PermissionSpecificationConstraint} from '@metamask/permission-controller';
+import {
+  MethodNames
 } from '@metamask/permission-controller';
+import type {
+  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
-  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import {
+import type {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
-import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import {
   CaveatTypes,

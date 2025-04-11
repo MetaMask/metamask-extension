@@ -4,7 +4,7 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
 } from '@metamask/bridge-controller';
 import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
-import {
+import type {
   MetricsBackgroundState,
   BridgeHistoryItem,
 } from '../../types/bridge-status';

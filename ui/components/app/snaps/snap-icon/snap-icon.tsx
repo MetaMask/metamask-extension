@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
+import React from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -6,17 +7,19 @@ import {
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
+import type {
+  AvatarBaseSize,
+  AvatarFaviconProps,
+  AvatarFaviconSize} from '../../../component-library';
 import {
   AvatarBase,
-  AvatarBaseSize,
   AvatarFavicon,
-  AvatarFaviconProps,
-  AvatarFaviconSize,
   IconSize,
 } from '../../../component-library';
+import type {
+  BackgroundColor} from '../../../../helpers/constants/design-system';
 import {
   AlignItems,
-  BackgroundColor,
   Display,
   JustifyContent,
   TextColor,

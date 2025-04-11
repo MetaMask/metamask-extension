@@ -1,10 +1,11 @@
+import type {
+  TokenRatesControllerMessenger} from '@metamask/assets-controllers';
 import {
-  TokenRatesController,
-  TokenRatesControllerMessenger,
+  TokenRatesController
 } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
 import { getTokenRatesControllerMessenger } from '../messengers/assets';
 import { TokenRatesControllerInit } from './token-rates-controller-init';
 

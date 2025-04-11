@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { getNextAvailableAccountName } from '../../../store/actions';
 import { CreateAccount } from '../create-account';

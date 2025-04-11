@@ -1,8 +1,9 @@
 import nock from 'nock';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import type {
+  SwapsTokenObject} from '../../../shared/constants/swaps';
 import {
-  ETH_SWAPS_TOKEN_OBJECT,
-  SwapsTokenObject,
+  ETH_SWAPS_TOKEN_OBJECT
 } from '../../../shared/constants/swaps';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';

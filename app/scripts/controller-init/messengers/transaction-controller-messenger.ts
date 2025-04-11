@@ -1,16 +1,16 @@
-import {
+import type {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
-import { ApprovalControllerActions } from '@metamask/approval-controller';
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { ApprovalControllerActions } from '@metamask/approval-controller';
+import type { Messenger } from '@metamask/base-controller';
+import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import {
+import type {
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerTransactionApprovedEvent,
@@ -23,17 +23,17 @@ import {
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
-import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import {
+import type { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
-import {
+import type {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
-import {
+import type {
   InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
 } from './accounts/institutional-snap-controller-messenger';

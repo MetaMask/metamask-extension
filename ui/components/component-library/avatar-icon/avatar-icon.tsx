@@ -12,10 +12,11 @@ import {
 
 import { Icon } from '../icon';
 import type { PolymorphicRef } from '../box';
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
-import type { AvatarIconComponent } from './avatar-icon.types';
+import type { AvatarBaseProps } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
+import type { AvatarIconComponent ,
+  AvatarIconProps} from './avatar-icon.types';
 import {
-  AvatarIconProps,
   AvatarIconSize,
   avatarIconSizeToIconSize,
 } from './avatar-icon.types';

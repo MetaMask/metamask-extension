@@ -1,13 +1,15 @@
-import React, {
+import type {
   ChangeEvent,
-  FunctionComponent,
+  FunctionComponent} from 'react';
+import React, {
   useEffect,
   useRef,
   useState,
 } from 'react';
 import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { FormTextField, FormTextFieldProps } from '../../../component-library';
+import type { FormTextFieldProps } from '../../../component-library';
+import { FormTextField } from '../../../component-library';
 
 export type SnapUIInputProps = {
   name: string;

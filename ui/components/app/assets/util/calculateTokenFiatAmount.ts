@@ -1,5 +1,5 @@
-import { Hex } from '@metamask/utils';
-import {
+import type { Hex } from '@metamask/utils';
+import type {
   ChainAddressMarketData,
   SymbolCurrencyRateMapping,
   Token,

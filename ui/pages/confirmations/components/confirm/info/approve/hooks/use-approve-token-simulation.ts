@@ -1,8 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';

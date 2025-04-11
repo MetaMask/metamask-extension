@@ -1,8 +1,9 @@
-import React, { ReactNode, useCallback, useContext } from 'react';
+import type { ReactNode} from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box, Text } from '../../../../component-library';
-import { SortOrder, SortingCallbacksT } from '../../util/sort';
+import type { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
   BackgroundColor,

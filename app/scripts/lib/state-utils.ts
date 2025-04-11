@@ -1,5 +1,5 @@
-import { SnapControllerState } from '@metamask/snaps-controllers';
-import { Snap } from '@metamask/snaps-utils';
+import type { SnapControllerState } from '@metamask/snaps-controllers';
+import type { Snap } from '@metamask/snaps-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlattenedUIState = Record<string, any>;

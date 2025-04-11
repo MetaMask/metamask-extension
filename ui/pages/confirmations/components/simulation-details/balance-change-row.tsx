@@ -17,7 +17,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
 import { AmountPill } from './amount-pill';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
 import { IndividualFiatDisplay } from './fiat-display';
 
 /**

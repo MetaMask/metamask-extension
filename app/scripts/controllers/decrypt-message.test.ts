@@ -1,12 +1,13 @@
 import {
-  DecryptMessageManager,
-  DecryptMessageParams,
+  DecryptMessageManager
 } from '@metamask/message-manager';
-import type { DecryptMessageManagerMessenger } from '@metamask/message-manager';
+import type { DecryptMessageManagerMessenger ,
+  DecryptMessageParams} from '@metamask/message-manager';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import DecryptMessageController, {
+import type {
   DecryptMessageControllerMessenger,
-  DecryptMessageControllerOptions,
+  DecryptMessageControllerOptions} from './decrypt-message';
+import DecryptMessageController, {
   getDefaultState,
 } from './decrypt-message';
 

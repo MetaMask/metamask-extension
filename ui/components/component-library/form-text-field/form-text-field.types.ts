@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 import type { PolymorphicComponentPropWithRef } from '../box';
-import {
+import type {
   TextFieldStyleUtilityProps,
   TextFieldProps,
 } from '../text-field/text-field.types';

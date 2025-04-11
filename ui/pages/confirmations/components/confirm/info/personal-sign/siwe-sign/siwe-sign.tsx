@@ -4,7 +4,7 @@ import { toHex } from '@metamask/controller-utils';
 
 import { NETWORK_TO_NAME_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../../types/confirm';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,

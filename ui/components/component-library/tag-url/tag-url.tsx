@@ -10,11 +10,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
-import { Box, BoxProps, PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { AvatarFavicon } from '../avatar-favicon';
 import { Icon, IconName, IconSize } from '../icon';
-import { TagUrlComponent, TagUrlProps } from './tag-url.types';
+import type { TagUrlComponent, TagUrlProps } from './tag-url.types';
 
 export const TagUrl: TagUrlComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

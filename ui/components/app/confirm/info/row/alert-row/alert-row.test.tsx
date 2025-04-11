@@ -5,7 +5,8 @@ import { Text } from '../../../../../component-library';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { ConfirmInfoAlertRow, ConfirmInfoAlertRowProps } from './alert-row';
+import type { ConfirmInfoAlertRowProps } from './alert-row';
+import { ConfirmInfoAlertRow } from './alert-row';
 
 const onProcessActionMock = jest.fn();
 

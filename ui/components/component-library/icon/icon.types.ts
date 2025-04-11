@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import { IconColor } from '../../../helpers/constants/design-system';
+import type { IconColor } from '../../../helpers/constants/design-system';
 
 import type {
   StyleUtilityProps,

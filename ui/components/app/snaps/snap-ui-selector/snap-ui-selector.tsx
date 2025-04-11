@@ -1,10 +1,11 @@
+import type {
+  MouseEvent as ReactMouseEvent} from 'react';
 import React, {
   useState,
-  useEffect,
-  MouseEvent as ReactMouseEvent,
+  useEffect
 } from 'react';
 import classnames from 'classnames';
-import { State } from '@metamask/snaps-sdk';
+import type { State } from '@metamask/snaps-sdk';
 import { isObject } from '@metamask/utils';
 import {
   Box,

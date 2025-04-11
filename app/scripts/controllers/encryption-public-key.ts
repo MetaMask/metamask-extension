@@ -1,21 +1,22 @@
 import log from 'loglevel';
 import {
-  EncryptionPublicKeyManager,
-  EncryptionPublicKeyParamsMetamask,
-  AbstractMessage,
-  MessageManagerState,
-  AbstractMessageParams,
-  AbstractMessageParamsMetamask,
-  OriginalRequest,
+  EncryptionPublicKeyManager
 } from '@metamask/message-manager';
 import type {
   EncryptionPublicKeyManagerMessenger,
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
-} from '@metamask/message-manager';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
-import { Patch } from 'immer';
-import {
+
+  EncryptionPublicKeyParamsMetamask,
+  AbstractMessage,
+  MessageManagerState,
+  AbstractMessageParams,
+  AbstractMessageParamsMetamask,
+  OriginalRequest} from '@metamask/message-manager';
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import type { Patch } from 'immer';
+import type {
   AcceptRequest,
   AddApprovalRequest,
   RejectRequest,

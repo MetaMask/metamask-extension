@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
+import type {
+  BannerAlertSeverity} from '../../../components/component-library';
 import {
   Button,
   ButtonPrimary,
@@ -18,7 +20,6 @@ import {
   TextField,
   TextFieldType,
   BannerAlert,
-  BannerAlertSeverity,
   Box,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';

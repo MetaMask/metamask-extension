@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from './network';
 
 export enum EXPERIENCES_TYPE {

@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';

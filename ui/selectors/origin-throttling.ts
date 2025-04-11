@@ -1,4 +1,4 @@
-import { ThrottledOriginsState } from '../../shared/types/origin-throttling';
+import type { ThrottledOriginsState } from '../../shared/types/origin-throttling';
 
 export type OriginThrottlingState = {
   metamask: ThrottledOriginsState;

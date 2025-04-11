@@ -1,13 +1,14 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
-import { BatchTransactionParams } from '@metamask/transaction-controller';
+import type { BatchTransactionParams } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import type {
+  ApprovalBalanceChange} from '../../hooks/useBatchApproveBalanceChanges';
 import {
-  ApprovalBalanceChange,
   useBatchApproveBalanceChanges,
 } from '../../hooks/useBatchApproveBalanceChanges';
 import { AlertMetricsProvider } from '../../../../../../../components/app/alert-system/contexts/alertMetricsContext';
@@ -16,7 +17,7 @@ import { TokenStandard } from '../../../../../../../../shared/constants/transact
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
 import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
-import { Confirmation } from '../../../../../types/confirm';
+import type { Confirmation } from '../../../../../types/confirm';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { BatchSimulationDetails } from './batch-simulation-details';
 

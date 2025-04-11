@@ -5,10 +5,11 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { Text } from '../../../../component-library';
-import { TokenFiatDisplayInfo } from '../../types';
+import type { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
+import type {
+  TranslateFunction} from '../../util/networkTitleOverrides';
 import {
-  TranslateFunction,
   networkTitleOverrides,
 } from '../../util/networkTitleOverrides';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';

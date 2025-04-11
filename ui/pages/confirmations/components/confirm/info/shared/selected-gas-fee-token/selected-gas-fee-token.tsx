@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import {
   Box,

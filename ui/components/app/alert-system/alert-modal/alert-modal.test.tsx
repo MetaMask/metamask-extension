@@ -8,7 +8,7 @@ import {
 import mockState from '../../../../../test/data/mock-state.json';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';

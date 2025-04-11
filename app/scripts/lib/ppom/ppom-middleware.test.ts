@@ -1,5 +1,6 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
-import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
+import type { SIWEMessage } from '@metamask/controller-utils';
+import { detectSIWE } from '@metamask/controller-utils';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
@@ -8,13 +9,14 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
+import type { PPOMMiddlewareRequest } from './ppom-middleware';
+import { createPPOMMiddleware } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
 } from './ppom-util';
-import { SecurityAlertResponse } from './types';
+import type { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
 jest.mock('@metamask/controller-utils', () => ({

@@ -2,7 +2,8 @@
 
 import { join, relative } from 'node:path';
 import { homedir } from 'node:os';
-import { Dir, readFileSync } from 'node:fs';
+import type { Dir} from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { copyFile, opendir, rm, symlink, unlink } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { cwd, exit } from 'node:process';
@@ -16,7 +17,8 @@ import {
 } from './utils';
 import { extractFrom } from './extract';
 import { parseArgs, printBanner } from './options';
-import { Architecture, Binary, Checksums, Extension, Platform } from './types';
+import type { Architecture, Binary, Checksums} from './types';
+import { Extension, Platform } from './types';
 
 export function getCacheDirectory(): string {
   let enableGlobalCache = false;

@@ -1,18 +1,20 @@
 import { useCallback, useContext } from 'react';
-import { SortOrder } from '@metamask/bridge-controller';
+import type { SortOrder } from '@metamask/bridge-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
+import type {
   MetaMetricsEventName,
-  MetaMetricsSwapsEventSource,
-} from '../../../shared/constants/metametrics';
+  MetaMetricsSwapsEventSource} from '../../../shared/constants/metametrics';
 import {
+  MetaMetricsEventCategory
+} from '../../../shared/constants/metametrics';
+import type {
   RequestParams,
   RequestMetadata,
   TradeData,
   QuoteFetchData,
-  ActionType,
-  TxStatusData,
+  TxStatusData} from './events/types';
+import {
+  ActionType
 } from './events/types';
 
 export type CrossChainSwapsEventProperties = {

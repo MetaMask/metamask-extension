@@ -1,8 +1,10 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
-import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import type { CaipAssetType, Hex} from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
-import React, { ReactNode, useMemo } from 'react';
+import type { ReactNode} from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -64,7 +66,7 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { getPricePrecision, localizeLargeNumber } from '../util';
-import { TokenWithFiatAmount } from '../../../components/app/assets/types';
+import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 

@@ -1,6 +1,6 @@
-import { IconName, IconProps } from '../icon';
-import { IconColor } from '../../../helpers/constants/design-system';
-import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
+import type { IconName, IconProps } from '../icon';
+import type { IconColor } from '../../../helpers/constants/design-system';
+import type { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
 
 export enum ButtonIconSize {
   Sm = 'sm',

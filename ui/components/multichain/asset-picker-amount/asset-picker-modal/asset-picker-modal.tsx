@@ -83,7 +83,7 @@ import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
-import { AssetPickerModalNetwork } from './asset-picker-modal-network';
+import type { AssetPickerModalNetwork } from './asset-picker-modal-network';
 import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
 
 type AssetPickerModalProps = {

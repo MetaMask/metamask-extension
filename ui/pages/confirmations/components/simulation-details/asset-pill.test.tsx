@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -11,7 +11,7 @@ import { AvatarNetwork } from '../../../../components/component-library/avatar-n
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
-import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
+import type { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 
 jest.mock('../../../../components/component-library/avatar-network', () => ({
   AvatarNetworkSize: { Sm: 'Sm' },

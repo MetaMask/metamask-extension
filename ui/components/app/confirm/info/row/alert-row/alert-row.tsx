@@ -5,9 +5,10 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
+import type {
+  ConfirmInfoRowProps} from '../row';
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
 import { Box } from '../../../../../component-library';

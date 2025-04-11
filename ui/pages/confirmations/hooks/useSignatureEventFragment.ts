@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { updateEventFragment } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 
 import type { MetaMetricsEventFragment } from '../../../../shared/constants/metametrics';

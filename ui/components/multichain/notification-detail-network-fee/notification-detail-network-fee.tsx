@@ -9,7 +9,7 @@ import {
   getNetworkDetailsByChainId,
 } from '../../../helpers/utils/notification.util';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

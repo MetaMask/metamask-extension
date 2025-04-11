@@ -1,5 +1,5 @@
 import React from 'react';
-import { BigNumber } from 'bignumber.js';
+import type { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../components/component-library';
 import {
@@ -17,7 +17,7 @@ import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AssetIdentifier } from './types';
+import type { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
 /**

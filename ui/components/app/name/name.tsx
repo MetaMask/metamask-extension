@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { NameType } from '@metamask/name-controller';
+import type { NameType } from '@metamask/name-controller';
 import { Box } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

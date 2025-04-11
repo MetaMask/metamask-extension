@@ -1,6 +1,7 @@
-import { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex, add0x } from '@metamask/utils';
+import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex} from '@metamask/utils';
+import { add0x } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../shared/constants/common';

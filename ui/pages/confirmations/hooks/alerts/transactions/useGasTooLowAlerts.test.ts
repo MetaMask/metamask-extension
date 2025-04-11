@@ -1,4 +1,4 @@
-import {
+import type {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
@@ -17,7 +17,7 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
-import { Confirmation } from '../../../types/confirm';
+import type { Confirmation } from '../../../types/confirm';
 import { useGasTooLowAlerts } from './useGasTooLowAlerts';
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({

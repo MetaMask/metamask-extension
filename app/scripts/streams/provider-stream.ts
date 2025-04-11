@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { Substream } from '@metamask/object-multiplex/dist/Substream';
+import type { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import PortStream from 'extension-port-stream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -20,7 +20,8 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
-import { logStreamDisconnectWarning, MessageType } from './stream-utils';
+import type { MessageType } from './stream-utils';
+import { logStreamDisconnectWarning } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
 let legacyExtMux: ObjectMultiplex,

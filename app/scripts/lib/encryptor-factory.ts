@@ -1,3 +1,6 @@
+import type {
+  EncryptionKey,
+  KeyDerivationOptions} from '@metamask/browser-passworder';
 import {
   encrypt,
   encryptWithDetail,
@@ -9,9 +12,7 @@ import {
   keyFromPassword,
   importKey,
   exportKey,
-  generateSalt,
-  EncryptionKey,
-  KeyDerivationOptions,
+  generateSalt
 } from '@metamask/browser-passworder';
 
 /**

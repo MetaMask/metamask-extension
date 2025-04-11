@@ -7,7 +7,7 @@ import {
   SolMethod,
   SolScope,
 } from '@metamask/keyring-api';
-import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
+import type { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';

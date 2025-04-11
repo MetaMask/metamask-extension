@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';

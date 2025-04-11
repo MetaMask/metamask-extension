@@ -1,20 +1,21 @@
-import {
+import type {
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
-import { CaipAssetId } from '@metamask/keyring-api';
-import {
+import type { CaipAssetId } from '@metamask/keyring-api';
+import type {
   CaipAssetType,
   CaipChainId,
-  Hex,
+  Hex} from '@metamask/utils';
+import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
+import type { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { getTokenBalances } from '../ducks/metamask/metamask';

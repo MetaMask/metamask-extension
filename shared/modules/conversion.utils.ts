@@ -1,9 +1,10 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import BN from 'bn.js';
+import type BN from 'bn.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
-import { Numeric, NumericValue } from './Numeric';
+import type { NumericValue } from './Numeric';
+import { Numeric } from './Numeric';
 
 export function decGWEIToHexWEI(decGWEI: NumericValue) {
   return new Numeric(decGWEI, 10, EtherDenomination.GWEI)

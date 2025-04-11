@@ -1,5 +1,6 @@
+import type {
+  ReactNode} from 'react';
 import React, {
-  ReactNode,
   useCallback,
   useEffect,
   useRef,

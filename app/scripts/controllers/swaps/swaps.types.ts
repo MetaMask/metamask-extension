@@ -1,23 +1,23 @@
-import { TokenRatesControllerGetStateAction } from '@metamask/assets-controllers';
-import {
+import type { TokenRatesControllerGetStateAction } from '@metamask/assets-controllers';
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import { GasFeeState } from '@metamask/gas-fee-controller';
-import {
+import type { GasFeeState } from '@metamask/gas-fee-controller';
+import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { TransactionParams } from '@metamask/transaction-controller';
+import type { TransactionParams } from '@metamask/transaction-controller';
 import type {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
-import { controllerName } from './swaps.constants';
-import SwapsController from '.';
+import type { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
+import type { controllerName } from './swaps.constants';
+import type SwapsController from '.';
 
 export type SwapsControllerState = {
   swapsState: {

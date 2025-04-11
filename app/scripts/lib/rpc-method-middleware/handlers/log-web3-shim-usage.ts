@@ -4,7 +4,7 @@ import type {
 } from '@metamask/json-rpc-engine';
 import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
+import type {
   HandlerWrapper,
   HandlerRequestType as LogWeb3ShimUsageHandlerRequest,
 } from './types';

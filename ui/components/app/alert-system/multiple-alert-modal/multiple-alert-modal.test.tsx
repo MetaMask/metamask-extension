@@ -5,9 +5,10 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
+import type {
+  MultipleAlertModalProps} from './multiple-alert-modal';
 import {
-  MultipleAlertModal,
-  MultipleAlertModalProps,
+  MultipleAlertModal
 } from './multiple-alert-modal';
 
 jest.mock('../contexts/alertMetricsContext', () => ({

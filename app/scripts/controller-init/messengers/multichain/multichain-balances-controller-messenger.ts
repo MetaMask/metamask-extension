@@ -1,16 +1,16 @@
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerAccountBalancesUpdatesEvent,
 } from '@metamask/accounts-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import {
+import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type {
   MultichainAssetsControllerGetStateAction,
   MultichainAssetsControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
-import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import type { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction

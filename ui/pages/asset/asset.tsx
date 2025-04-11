@@ -1,5 +1,5 @@
-import { Nft } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import type { Nft } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';

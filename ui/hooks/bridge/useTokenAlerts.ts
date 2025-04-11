@@ -10,8 +10,8 @@ import {
   convertChainIdToBlockAidChainName,
   fetchTokenAlert,
 } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
-import { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
+import type { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
+import type { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
 import { useAsyncResult } from '../useAsync';
 
 export const useTokenAlerts = () => {

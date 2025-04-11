@@ -6,7 +6,7 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
-import { FeatureAnnouncementNotification } from './types';
+import type { FeatureAnnouncementNotification } from './types';
 
 const useAnalyticEventCallback = (props: {
   id: string;

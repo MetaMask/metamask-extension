@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import type { AvatarBaseProps } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
 import { IconName, Icon, IconSize } from '../icon';
 import {
   BorderColor,
@@ -10,10 +11,11 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { PolymorphicRef } from '../box';
-import {
+import type { PolymorphicRef } from '../box';
+import type {
   AvatarFaviconComponent,
-  AvatarFaviconProps,
+  AvatarFaviconProps} from './avatar-favicon.types';
+import {
   AvatarFaviconSize,
 } from './avatar-favicon.types';
 

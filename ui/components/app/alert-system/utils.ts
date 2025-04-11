@@ -1,4 +1,4 @@
-import {
+import type {
   Alert,
   AlertSeverity,
 } from '../../../ducks/confirm-alerts/confirm-alerts';

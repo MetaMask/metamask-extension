@@ -1,5 +1,6 @@
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { getShouldShowFiat } from '../../../selectors';
@@ -15,7 +16,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
-import { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/store';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 
 export const getTransactionBreakdownData = ({

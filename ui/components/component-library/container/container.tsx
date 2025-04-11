@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import type { PolymorphicRef, BoxProps } from '../box';
 import { Box } from '../box';
 
-import { ContainerProps, ContainerComponent } from './container.types';
+import type { ContainerProps, ContainerComponent } from './container.types';
 
 export const Container: ContainerComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

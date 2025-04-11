@@ -5,7 +5,7 @@ import { createMockSnapNotification } from '@metamask/notification-services-cont
 import * as SnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SnapFooterButton } from './snap-footer-button';
-import { DetailedViewData, SnapNotification } from './types';
+import type { DetailedViewData, SnapNotification } from './types';
 
 // Type Util for testing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,16 +1,16 @@
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   NetworkControllerGetStateAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import {
+import type {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerGetAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-import {
+import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
+import type {
   TokensControllerGetStateAction,
   TokensControllerStateChangeEvent,
 } from '@metamask/assets-controllers';

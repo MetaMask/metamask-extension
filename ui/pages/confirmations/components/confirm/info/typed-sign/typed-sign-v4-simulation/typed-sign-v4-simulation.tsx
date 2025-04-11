@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SignatureRequestType } from '../../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../../types/confirm';
 import { isPermitSignatureRequest } from '../../../../../utils';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDecodedSignatureMetrics } from '../../../../../hooks/useDecodedSignatureMetrics';

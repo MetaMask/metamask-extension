@@ -1,12 +1,14 @@
-import { CaipNamespace, Hex, parseCaipAccountId } from '@metamask/utils';
+import type { CaipNamespace, Hex} from '@metamask/utils';
+import { parseCaipAccountId } from '@metamask/utils';
+import type {
+  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
-  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
+import type { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import { sortSelectedInternalAccounts } from '../../../helpers/utils/util';
 
 export type PermissionsRequest = Record<

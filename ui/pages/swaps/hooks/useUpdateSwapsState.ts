@@ -18,7 +18,7 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
+import type { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 
 export default function useUpdateSwapsState() {
   const dispatch = useDispatch();

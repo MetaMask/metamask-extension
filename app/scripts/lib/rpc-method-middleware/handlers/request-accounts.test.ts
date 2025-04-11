@@ -1,5 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
+import type {
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,

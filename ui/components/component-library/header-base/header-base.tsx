@@ -8,7 +8,7 @@ import { Box } from '../box';
 
 import type { PolymorphicRef, BoxProps } from '../box';
 
-import { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
+import type { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 
 export const HeaderBase: HeaderBaseComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

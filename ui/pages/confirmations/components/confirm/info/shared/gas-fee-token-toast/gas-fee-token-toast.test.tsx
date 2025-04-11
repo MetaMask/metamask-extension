@@ -1,6 +1,6 @@
 import React from 'react';
 import { toHex } from '@metamask/controller-utils';
-import { GasFeeToken } from '@metamask/transaction-controller';
+import type { GasFeeToken } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 

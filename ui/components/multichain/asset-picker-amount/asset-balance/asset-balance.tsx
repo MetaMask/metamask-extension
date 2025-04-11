@@ -6,7 +6,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Asset } from '../../../../ducks/send';
+import type { Asset } from '../../../../ducks/send';
 import { AssetBalanceText } from './asset-balance-text';
 
 type AssetBalanceProps = {

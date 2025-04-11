@@ -4,7 +4,7 @@ import {
   BlockaidReason,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   AlignItems,
   BackgroundColor,

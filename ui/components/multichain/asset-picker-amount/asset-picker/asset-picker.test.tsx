@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
@@ -13,7 +13,7 @@ import {
 } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 
-import { ERC20Asset, NativeAsset, NFT } from '../asset-picker-modal/types';
+import type { ERC20Asset, NativeAsset, NFT } from '../asset-picker-modal/types';
 import { AssetPicker } from './asset-picker';
 
 const unknownChainId = '0x2489078';

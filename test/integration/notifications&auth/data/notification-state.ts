@@ -1,5 +1,6 @@
+import type {
+  INotification} from '@metamask/notification-services-controller/notification-services';
 import {
-  INotification,
   TRIGGER_TYPES,
   processNotification,
 } from '@metamask/notification-services-controller/notification-services';

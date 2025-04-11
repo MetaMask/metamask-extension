@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import BN from 'bn.js';
-import { Token } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import type { Token } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   tokenBalancesStartPolling,

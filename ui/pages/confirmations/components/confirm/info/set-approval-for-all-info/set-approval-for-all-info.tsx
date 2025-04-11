@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useConfirmContext } from '../../../../context/confirm';
 import { ApproveDetails } from '../approve/approve-details/approve-details';

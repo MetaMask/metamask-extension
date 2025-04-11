@@ -3,8 +3,8 @@ import type {
   LedgerBridge,
   LedgerBridgeOptions,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { KeyringClass, Json } from '@metamask/utils';
-import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
+import type { KeyringClass, Json } from '@metamask/utils';
+import type { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 
 /**
  * A transport bridge between the keyring and the hardware device.

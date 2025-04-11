@@ -1,5 +1,5 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionMetricsRequest } from '../types/metametrics';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMetricsRequest } from '../types/metametrics';
 
 type SmartTransactionMetricsProperties = {
   is_smart_transaction: boolean;

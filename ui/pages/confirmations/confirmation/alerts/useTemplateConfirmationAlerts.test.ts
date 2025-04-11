@@ -1,4 +1,4 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
+import type { ApprovalRequest } from '@metamask/approval-controller';
 import { useDispatch } from 'react-redux';
 
 import mockState from '../../../../../test/data/mock-state.json';

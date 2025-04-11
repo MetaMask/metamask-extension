@@ -14,14 +14,15 @@ import {
 } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+import type {
+  KeyringAccountType} from '@metamask/keyring-api';
 import {
   BtcAccountType,
   EthAccountType,
-  SolAccountType,
-  KeyringAccountType,
+  SolAccountType
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import {
   Box,
@@ -114,22 +115,24 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import {
+import type {
   MultichainWalletSnapClient,
-  MultichainWalletSnapOptions,
+  MultichainWalletSnapOptions} from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
-import {
+import type {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import type {
+  AccountOverviewTabKey} from '../../../../shared/constants/app-state';
 import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
-  AccountOverviewTabKey,
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)

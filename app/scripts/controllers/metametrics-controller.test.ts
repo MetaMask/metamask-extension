@@ -3,24 +3,26 @@ import type {
   NetworkClientId,
   NetworkState,
 } from '@metamask/network-controller';
-import { NameEntry, NameType } from '@metamask/name-controller';
-import { AddressBookEntry } from '@metamask/address-book-controller';
-import {
+import type { NameEntry} from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
+import type { AddressBookEntry } from '@metamask/address-book-controller';
+import type {
   Nft,
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Browser } from 'webextension-polyfill';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { Browser } from 'webextension-polyfill';
 import { Messenger } from '@metamask/base-controller';
 import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
+import type {
+  MetaMetricsUserTraits} from '../../../shared/constants/metametrics';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  MetaMetricsUserTrait,
-  MetaMetricsUserTraits,
+  MetaMetricsUserTrait
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { KeyringType } from '../../../shared/constants/keyring';
@@ -28,14 +30,16 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import MetaMetricsController, {
+import type {
   AllowedActions,
   AllowedEvents,
   MetaMetricsControllerOptions,
 } from './metametrics-controller';
+import MetaMetricsController from './metametrics-controller';
+import type {
+  PreferencesControllerState} from './preferences-controller';
 import {
-  getDefaultPreferencesControllerState,
-  PreferencesControllerState,
+  getDefaultPreferencesControllerState
 } from './preferences-controller';
 
 const segmentMock = createSegmentMock(2);

@@ -26,7 +26,7 @@ import {
 import Tooltip from '../../ui/tooltip/tooltip';
 import { getURLHost } from '../../../helpers/utils/util';
 import { addPermittedAccounts } from '../../../store/actions';
-import { ConnectAccountsListProps } from './connect-account-modal.types';
+import type { ConnectAccountsListProps } from './connect-account-modal.types';
 
 export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   onClose,

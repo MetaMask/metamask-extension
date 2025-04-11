@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { TextVariant } from '../constants/design-system';
+import type { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,

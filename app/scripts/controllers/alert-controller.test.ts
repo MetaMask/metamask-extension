@@ -3,14 +3,15 @@
  */
 import { Messenger } from '@metamask/base-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import {
-  AlertController,
+import type {
   AllowedActions,
   AllowedEvents,
   AlertControllerMessenger,
   AlertControllerGetStateAction,
   AlertControllerStateChangeEvent,
-  AlertControllerOptions,
+  AlertControllerOptions} from './alert-controller';
+import {
+  AlertController,
   getDefaultAlertControllerState,
 } from './alert-controller';
 

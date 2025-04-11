@@ -11,7 +11,8 @@ import { extract as extractTar } from 'tar';
 import { Open, type Source, type Entry } from 'unzipper';
 import { say, noop } from './utils';
 import { startDownload } from './download';
-import { Extension, Binary } from './types';
+import type { Binary } from './types';
+import { Extension } from './types';
 
 /**
  * Extracts the binaries from the given URL and writes them to the destination.

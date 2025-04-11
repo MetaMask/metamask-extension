@@ -1,9 +1,11 @@
-import { Hex, createProjectLogger } from '@metamask/utils';
+import type { Hex} from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
 import type { Provider } from '@metamask/network-controller';
-import {
+import type {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam,
-  DecodedTransactionDataResponse,
+  DecodedTransactionDataResponse} from '../../../../../shared/types/transaction-decode';
+import {
   DecodedTransactionDataSource,
 } from '../../../../../shared/types/transaction-decode';
 import { decodeUniswapRouterTransactionData } from './uniswap';

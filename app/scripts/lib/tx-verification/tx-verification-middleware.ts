@@ -7,8 +7,8 @@ import type {
   JsonRpcParams,
   JsonRpcResponse,
   Hex,
-} from '@metamask/utils';
-import { hasProperty, isObject, JsonRpcRequest } from '@metamask/utils';
+ JsonRpcRequest } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,

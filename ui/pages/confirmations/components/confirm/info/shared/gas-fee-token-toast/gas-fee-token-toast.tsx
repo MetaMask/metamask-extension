@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { Box } from '../../../../../../../components/component-library';
 import { Toast } from '../../../../../../../components/multichain';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';

@@ -17,7 +17,7 @@ import {
   IconSize,
 } from '../../component-library';
 import Preloader from '../icon/preloader/preloader-icon.component';
-import { DelineatorProps, DelineatorType } from './delineator.types';
+import type { DelineatorProps, DelineatorType } from './delineator.types';
 import { getIconPropsByType, overrideTextComponentColorByType } from './utils';
 
 const Loader = () => (

@@ -1,5 +1,5 @@
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -13,7 +13,7 @@ import {
   IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import {
   Display,

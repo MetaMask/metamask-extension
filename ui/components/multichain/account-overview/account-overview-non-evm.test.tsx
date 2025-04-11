@@ -4,9 +4,10 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type {
+  AccountOverviewNonEvmProps} from './account-overview-non-evm';
 import {
-  AccountOverviewNonEvm,
-  AccountOverviewNonEvmProps,
+  AccountOverviewNonEvm
 } from './account-overview-non-evm';
 
 jest.mock('../../../store/actions', () => ({

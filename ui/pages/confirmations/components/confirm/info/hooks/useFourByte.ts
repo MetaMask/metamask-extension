@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   getKnownMethodData,
   use4ByteResolutionSelector,

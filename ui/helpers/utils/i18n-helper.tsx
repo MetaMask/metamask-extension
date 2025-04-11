@@ -1,8 +1,9 @@
 import React from 'react';
 import * as Sentry from '@sentry/browser';
-import {
+import type {
   I18NMessageDict,
-  I18NSubstitution,
+  I18NSubstitution} from '../../../shared/modules/i18n';
+import {
   getMessage as getMessageShared,
 } from '../../../shared/modules/i18n';
 import { NETWORK_TYPES } from '../../../shared/constants/network';

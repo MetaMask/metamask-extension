@@ -1,15 +1,18 @@
 import React, { useCallback, useState } from 'react';
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
+import type {
+  StaticRow} from '../../../../simulation-details/simulation-details';
 import {
-  SimulationDetails,
-  StaticRow,
+  SimulationDetails
 } from '../../../../simulation-details/simulation-details';
+import type {
+  ApprovalBalanceChange} from '../../hooks/useBatchApproveBalanceChanges';
 import {
-  ApprovalBalanceChange,
   useBatchApproveBalanceChanges,
 } from '../../hooks/useBatchApproveBalanceChanges';
 import { useConfirmContext } from '../../../../../context/confirm';

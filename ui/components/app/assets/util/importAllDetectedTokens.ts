@@ -1,8 +1,8 @@
-import {
+import type {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { Token } from '../types';
+import type { Token } from '../types';
 
 export const importAllDetectedTokens = async (
   isOnCurrentNetwork: boolean,

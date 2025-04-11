@@ -2,9 +2,11 @@ import React from 'react';
 import type { FC } from 'react';
 
 import { NotificationDetail } from '../notification-detail';
-import { AvatarIcon, IconName, Text } from '../../component-library';
+import type { IconName} from '../../component-library';
+import { AvatarIcon, Text } from '../../component-library';
+import type {
+  BackgroundColor} from '../../../helpers/constants/design-system';
 import {
-  BackgroundColor,
   FontWeight,
   TextVariant,
   TextColor,

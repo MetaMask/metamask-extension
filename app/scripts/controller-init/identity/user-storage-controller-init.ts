@@ -1,10 +1,11 @@
-import {
+import type {
   UserStorageControllerMessenger,
-  UserStorageControllerState,
+  UserStorageControllerState} from '@metamask/profile-sync-controller/user-storage';
+import {
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
 import { captureException } from '@sentry/browser';
-import { ControllerInitFunction } from '../types';
+import type { ControllerInitFunction } from '../types';
 import { isProduction } from '../../../../shared/modules/environment';
 import {
   MetaMetricsEventCategory,

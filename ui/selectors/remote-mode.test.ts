@@ -1,5 +1,5 @@
-import { FeatureFlags } from '@metamask/remote-feature-flag-controller';
-import { RemoteFeatureFlagsState } from './remote-feature-flags';
+import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
+import type { RemoteFeatureFlagsState } from './remote-feature-flags';
 import { getIsRemoteModeEnabled } from './remote-mode';
 
 function getMockState(vaultRemoteMode?: boolean): RemoteFeatureFlagsState {

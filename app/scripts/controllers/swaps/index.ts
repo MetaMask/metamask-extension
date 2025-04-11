@@ -1,14 +1,15 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BaseController, StateMetadata } from '@metamask/base-controller';
-import { GasFeeState } from '@metamask/gas-fee-controller';
-import { TransactionParams } from '@metamask/transaction-controller';
+import type { StateMetadata } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import type { GasFeeState } from '@metamask/gas-fee-controller';
+import type { TransactionParams } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
-import { NetworkClient, NetworkClientId } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import type { NetworkClient, NetworkClientId } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {

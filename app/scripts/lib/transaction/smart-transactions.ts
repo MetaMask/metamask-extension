@@ -1,23 +1,26 @@
-import SmartTransactionsController, {
+import type {
   SmartTransactionsControllerSmartTransactionEvent,
 } from '@metamask/smart-transactions-controller';
-import {
+import type SmartTransactionsController from '@metamask/smart-transactions-controller';
+import type {
   Fee,
   Fees,
-  SmartTransactionStatuses,
-  SmartTransaction,
+  SmartTransaction} from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionStatuses
 } from '@metamask/smart-transactions-controller/dist/types';
 import type { Hex } from '@metamask/utils';
-import {
+import type {
   TransactionController,
   TransactionMeta,
-  TransactionParams,
+  TransactionParams} from '@metamask/transaction-controller';
+import {
   TransactionType,
   type PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
-import { RestrictedMessenger } from '@metamask/base-controller';
-import {
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import type {
   AddApprovalRequest,
   UpdateRequestState,
   StartFlow,

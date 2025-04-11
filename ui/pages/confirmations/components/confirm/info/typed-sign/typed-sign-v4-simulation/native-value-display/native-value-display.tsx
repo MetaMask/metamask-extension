@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 

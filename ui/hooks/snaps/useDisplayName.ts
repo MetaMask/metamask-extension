@@ -1,14 +1,16 @@
-import {
+import type {
   CaipChainId,
-  KnownCaipNamespace,
-  CaipNamespace,
+  CaipNamespace} from '@metamask/utils';
+import {
+  KnownCaipNamespace
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import type {
+  AddressBookMetaMaskState,
+  AccountsMetaMaskState} from '../../selectors/snaps';
 import {
   getMemoizedAccountName,
-  getAddressBookEntryByNetwork,
-  AddressBookMetaMaskState,
-  AccountsMetaMaskState,
+  getAddressBookEntryByNetwork
 } from '../../selectors/snaps';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';

@@ -9,18 +9,19 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import type {
+  BoxProps} from '../../component-library';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
   BadgeWrapper,
-  Box,
-  BoxProps,
+  Box
 } from '../../component-library';
 import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 
-import { BadgeStatusProps } from './badge-status.types';
+import type { BadgeStatusProps } from './badge-status.types';
 
 const TooltipStyle = { display: 'flex' };
 

@@ -1,6 +1,6 @@
 import { invalidParams } from '@metamask/permission-controller';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
-import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { revokePermissionsHandler } from './wallet-revokePermissions';

@@ -1,7 +1,8 @@
-import { JSXElement, Text, TooltipElement } from '@metamask/snaps-sdk/jsx';
+import type { JSXElement, TooltipElement } from '@metamask/snaps-sdk/jsx';
+import { Text } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const tooltip: UIComponentFactory<TooltipElement> = ({
   element,

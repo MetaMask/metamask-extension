@@ -84,8 +84,9 @@ import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
+import type {
+  CrossChainSwapsEventProperties} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import {
-  CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
 } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
@@ -127,7 +128,7 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
-import { TmpBridgeToken } from './types';
+import type { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();

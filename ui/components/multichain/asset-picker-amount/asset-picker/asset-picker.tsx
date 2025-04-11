@@ -30,7 +30,7 @@ import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
-import {
+import type {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,

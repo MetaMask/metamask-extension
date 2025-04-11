@@ -5,13 +5,13 @@ import type {
   NetworkState,
 } from '@metamask/network-controller';
 import { SolAccountType } from '@metamask/keyring-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import { CaipChainId, Hex } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
   type L1GasFees,

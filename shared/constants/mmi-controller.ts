@@ -1,33 +1,34 @@
-import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
-import { CustodyController } from '@metamask-institutional/custody-controller';
-import { SignatureController } from '@metamask/signature-controller';
-import {
+import type { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+import type { CustodyController } from '@metamask-institutional/custody-controller';
+import type { SignatureController } from '@metamask/signature-controller';
+import type {
   NetworkController,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerSetActiveNetworkAction,
 } from '@metamask/network-controller';
-import {
+import type {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerListAccountsAction,
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
+import type { RestrictedMessenger } from '@metamask/base-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { AppStateController } from '../../app/scripts/controllers/app-state-controller';
+import type { AppStateController } from '../../app/scripts/controllers/app-state-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
-import MetaMetricsController, {
+import type AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
+import type {
   MetaMetricsControllerGetStateAction,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../app/scripts/controllers/metametrics-controller';
+import type MetaMetricsController from '../../app/scripts/controllers/metametrics-controller';
 
 // Unique name for the controller
 const controllerName = 'MMIController';

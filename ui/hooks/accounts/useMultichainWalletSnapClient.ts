@@ -1,9 +1,9 @@
-import { Sender } from '@metamask/keyring-snap-client';
+import type { Sender } from '@metamask/keyring-snap-client';
 import { HandlerType } from '@metamask/snaps-utils';
-import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
-import { SnapId } from '@metamask/snaps-sdk';
+import type { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { useMemo } from 'react';
-import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
+import type { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import {
   createSnapAccount,
   handleSnapRequest,

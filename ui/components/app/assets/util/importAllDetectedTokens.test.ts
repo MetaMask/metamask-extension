@@ -1,5 +1,5 @@
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { Token } from '../types';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { Token } from '../types';
 import { importAllDetectedTokens } from './importAllDetectedTokens';
 
 describe('importAllDetectedTokens with PORTFOLIO_VIEW true', () => {

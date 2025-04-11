@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { zeroAddress } from 'ethereumjs-util';
-import { MarketDataDetails } from '@metamask/assets-controllers';
+import type { MarketDataDetails } from '@metamask/assets-controllers';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
   getSelectedAccountCachedBalance,

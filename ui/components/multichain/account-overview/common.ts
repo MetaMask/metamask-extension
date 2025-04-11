@@ -1,4 +1,4 @@
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
+import type { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 
 export type AccountOverviewCommonProps = {
   onTabClick: (tabName: string) => void;

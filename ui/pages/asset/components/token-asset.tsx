@@ -1,7 +1,8 @@
-import { Token } from '@metamask/assets-controllers';
+import type { Token } from '@metamask/assets-controllers';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { CaipAssetType, Hex} from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';

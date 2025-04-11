@@ -1,5 +1,6 @@
-import { SnapId } from '@metamask/snaps-sdk';
-import { parseCaipAssetType, CaipAssetType } from '@metamask/utils';
+import type { SnapId } from '@metamask/snaps-sdk';
+import type { CaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';

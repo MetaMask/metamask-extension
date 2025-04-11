@@ -3,16 +3,17 @@ import { describe, it, afterEach, before, after, mock } from 'node:test';
 import assert from 'node:assert';
 import process from 'node:process';
 import { resolve } from 'node:path';
+import type {
+  Compiler,
+  WebpackPluginInstance} from 'webpack';
 import {
   type Configuration,
-  webpack,
-  Compiler,
-  WebpackPluginInstance,
+  webpack
 } from 'webpack';
 import { noop } from '../utils/helpers';
-import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
+import type { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
-import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
+import type { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback

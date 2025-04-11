@@ -1,5 +1,5 @@
 import React from 'react';
-import {
+import type {
   BatchTransactionParams,
   TransactionMeta,
 } from '@metamask/transaction-controller';

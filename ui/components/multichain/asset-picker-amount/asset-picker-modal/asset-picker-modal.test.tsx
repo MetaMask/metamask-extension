@@ -4,8 +4,9 @@ import configureStore from 'redux-mock-store';
 import { useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
+import type {
+  NetworkConfiguration} from '@metamask/network-controller';
 import {
-  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -42,7 +43,7 @@ import {
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AssetPickerModal } from './asset-picker-modal';
-import { ERC20Asset } from './types';
+import type { ERC20Asset } from './types';
 
 const mockAssetList = jest.fn();
 jest.mock('./AssetList', () => (props: unknown) => {

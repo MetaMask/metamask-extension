@@ -1,13 +1,14 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { ApprovalRequest } from '@metamask/approval-controller';
+import type { ApprovalRequest } from '@metamask/approval-controller';
 import { isArray } from 'lodash';
 import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { IconName } from '../../../components/component-library';
-import { ResultTemplate, ResultTemplateActions } from './ResultTemplate';
-import { TemplateRendererComponent } from './util';
+import type { ResultTemplateActions } from './ResultTemplate';
+import { ResultTemplate } from './ResultTemplate';
+import type { TemplateRendererComponent } from './util';
 
 const PENDING_APPROVAL_MOCK = {
   id: 'testApprovalId',

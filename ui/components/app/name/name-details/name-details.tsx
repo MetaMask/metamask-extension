@@ -7,11 +7,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {
+import type {
   NameControllerState,
   NameEntry,
-  NameType,
-  UpdateProposedNamesResult,
+  UpdateProposedNamesResult} from '@metamask/name-controller';
+import {
+  NameType
 } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
@@ -42,9 +43,10 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import FormComboField, {
+import type {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
+import FormComboField from '../../../ui/form-combo-field/form-combo-field';
 import { getNameSources } from '../../../../selectors';
 import {
   setName as saveName,

@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
 

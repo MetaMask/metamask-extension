@@ -17,7 +17,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { useAssetDetails } from '../hooks/useAssetDetails';
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 

@@ -3,8 +3,8 @@ import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
-import { Browser } from 'webextension-polyfill';
+import type { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
+import type { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,

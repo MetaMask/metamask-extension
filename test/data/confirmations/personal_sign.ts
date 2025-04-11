@@ -1,5 +1,5 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
+import type { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const PERSONAL_SIGN_SENDER_ADDRESS =
   '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';

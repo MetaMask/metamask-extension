@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
@@ -19,8 +19,8 @@ import {
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { TokenWithFiatAmount } from '../types';
-import { TokenCellProps } from './token-cell';
+import type { TokenWithFiatAmount } from '../types';
+import type { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {

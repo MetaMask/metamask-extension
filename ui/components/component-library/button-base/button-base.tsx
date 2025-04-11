@@ -14,10 +14,11 @@ import {
 import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
 import { Icon, IconName, IconSize } from '../icon';
-import {
+import type {
   ButtonBaseProps,
-  ButtonBaseSize,
-  ButtonBaseComponent,
+  ButtonBaseComponent} from './button-base.types';
+import {
+  ButtonBaseSize
 } from './button-base.types';
 
 export const ButtonBase: ButtonBaseComponent = React.forwardRef(

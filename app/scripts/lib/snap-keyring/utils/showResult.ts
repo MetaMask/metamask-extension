@@ -4,8 +4,8 @@ import type {
 } from '@metamask/approval-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { IconName } from '../../../../../ui/components/component-library/icon';
-import { SnapKeyringBuilderMessenger } from '../types';
+import type { IconName } from '../../../../../ui/components/component-library/icon';
+import type { SnapKeyringBuilderMessenger } from '../types';
 
 const snapAuthorshipHeader = (snapId: string): ResultComponent => {
   return {

@@ -1,7 +1,8 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react-hooks';
+import type {
+  SimulationData} from '@metamask/transaction-controller';
 import {
-  SimulationData,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';

@@ -7,10 +7,10 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   Box,
@@ -44,6 +44,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
+import type {
+  SwapsEthToken} from '../../../selectors';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
@@ -55,8 +57,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
   getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  SwapsEthToken,
+  getParticipateInMetaMetrics
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -72,7 +73,7 @@ import {
 } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';

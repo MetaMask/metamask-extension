@@ -35,7 +35,7 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
-import { SignatureRequestType } from '../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';

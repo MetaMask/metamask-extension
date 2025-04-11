@@ -1,5 +1,5 @@
-import React from 'react';
-import {
+import type React from 'react';
+import type {
   FontWeight,
   FontStyle,
   TextVariant,

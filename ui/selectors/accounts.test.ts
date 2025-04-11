@@ -8,8 +8,9 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
+import type {
+  AccountsState} from './accounts';
 import {
-  AccountsState,
   isSelectedInternalAccountEth,
   isSelectedInternalAccountBtc,
   hasCreatedBtcMainnetAccount,

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getMetaMaskAccountsOrdered } from '../../selectors';
 import {

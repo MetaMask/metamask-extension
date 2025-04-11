@@ -1,14 +1,15 @@
 import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
-import {
+import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { toChecksumAddress } from 'ethereumjs-util';
+import type {
+  ChainId} from '@metamask/bridge-controller';
 import {
   isSolanaChainId,
-  ChainId,
   type TxData,
   formatChainIdToHex,
   BridgeClientId,

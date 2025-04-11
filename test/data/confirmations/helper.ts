@@ -2,7 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
+import type {
   Confirmation,
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';

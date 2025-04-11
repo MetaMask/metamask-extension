@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import type { ApprovalRequest } from '@metamask/approval-controller';
+import type { Json } from '@metamask/utils';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,

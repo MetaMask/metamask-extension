@@ -1,5 +1,5 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';

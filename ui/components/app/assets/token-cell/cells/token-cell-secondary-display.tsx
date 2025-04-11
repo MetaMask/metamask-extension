@@ -16,7 +16,7 @@ import {
 } from '../../../../component-library';
 import { getCurrencyRates } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { TokenFiatDisplayInfo } from '../../types';
+import type { TokenFiatDisplayInfo } from '../../types';
 
 type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;

@@ -4,9 +4,10 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type {
+  AccountOverviewEthProps} from './account-overview-eth';
 import {
-  AccountOverviewEth,
-  AccountOverviewEthProps,
+  AccountOverviewEth
 } from './account-overview-eth';
 
 jest.mock('../../../store/actions', () => ({

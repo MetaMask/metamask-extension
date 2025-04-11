@@ -7,7 +7,7 @@ import {
   getTokenList,
   selectERC20TokensByChain,
 } from '../../../../selectors';
-import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
+import type { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   getMultichainIsEvm,

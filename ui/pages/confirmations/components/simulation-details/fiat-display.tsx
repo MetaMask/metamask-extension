@@ -1,17 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import type {
+  TextAlign} from '../../../../helpers/constants/design-system';
 import {
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
-import { SizeNumber } from '../../../../components/component-library/box/box.types';
+import type { SizeNumber } from '../../../../components/component-library/box/box.types';
 import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getShouldShowFiat } from '../../../../selectors';
-import { FIAT_UNAVAILABLE, FiatAmount } from './types';
+import type { FiatAmount } from './types';
+import { FIAT_UNAVAILABLE } from './types';
 
 const textStyle = {
   color: TextColor.textAlternative,

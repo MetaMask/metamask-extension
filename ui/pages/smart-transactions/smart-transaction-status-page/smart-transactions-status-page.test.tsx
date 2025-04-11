@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import type {
+  SmartTransaction} from '@metamask/smart-transactions-controller/dist/types';
 import {
-  SmartTransaction,
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller/dist/types';
 
@@ -12,9 +13,10 @@ import {
   createSwapsMockStore,
 } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type {
+  RequestState} from './smart-transaction-status-page';
 import {
-  SmartTransactionStatusPage,
-  RequestState,
+  SmartTransactionStatusPage
 } from './smart-transaction-status-page';
 
 // Mock the SmartTransactionStatusAnimation component and capture props

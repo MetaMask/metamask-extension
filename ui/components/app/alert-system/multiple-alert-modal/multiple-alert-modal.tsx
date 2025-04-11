@@ -19,7 +19,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */

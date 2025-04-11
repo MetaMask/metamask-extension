@@ -1,7 +1,8 @@
-import {
+import type {
   CaipAccountId,
   CaipAssetType,
-  CaipChainId,
+  CaipChainId} from '@metamask/utils';
+import {
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
@@ -9,7 +10,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
-import { TokenWithFiatAmount } from '../../assets/types';
+import type { TokenWithFiatAmount } from '../../assets/types';
 
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
@@ -17,8 +18,9 @@ import {
   getImageForChainId,
   getMemoizedMultichainNetworkConfigurationsByChainId,
 } from '../../../../selectors/multichain';
+import type {
+  AllowedBridgeChainIds} from '../../../../../shared/constants/bridge';
 import {
-  AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../shared/constants/bridge';
 import { getMemoizedCurrentCurrency } from '../../../../selectors/snaps';

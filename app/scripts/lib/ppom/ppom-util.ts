@@ -1,13 +1,14 @@
-import { PPOMController } from '@metamask/ppom-validator';
-import {
+import type { PPOMController } from '@metamask/ppom-validator';
+import type {
   TransactionController,
-  TransactionParams,
+  TransactionParams} from '@metamask/transaction-controller';
+import {
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
-import { PPOM } from '@blockaid/ppom_release';
-import { SignatureController } from '@metamask/signature-controller';
+import type { PPOM } from '@blockaid/ppom_release';
+import type { SignatureController } from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -15,13 +16,14 @@ import {
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { AppStateController } from '../../controllers/app-state-controller';
+import type { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
-import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
+import type { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
+import type {
+  SecurityAlertsAPIRequest} from './security-alerts-api';
 import {
   isSecurityAlertsAPIEnabled,
-  SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
 

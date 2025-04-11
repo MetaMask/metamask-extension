@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';

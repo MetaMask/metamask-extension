@@ -16,7 +16,7 @@ import {
 } from '../../../../../../../test/data/confirmations/personal_sign';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
-import { SignatureRequestType } from '../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../types/confirm';
 import * as utils from '../../../../utils';
 import PersonalSignInfo from './personal-sign';
 

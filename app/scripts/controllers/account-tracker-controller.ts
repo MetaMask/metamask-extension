@@ -14,7 +14,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { cloneDeep } from 'lodash';
-import {
+import type {
   BlockTracker,
   NetworkClientConfiguration,
   NetworkClientId,
@@ -23,18 +23,19 @@ import {
   Provider,
 } from '@metamask/network-controller';
 import { hasProperty, type Hex, type JsonRpcParams } from '@metamask/utils';
-import {
-  BaseController,
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+  RestrictedMessenger} from '@metamask/base-controller';
 import {
+  BaseController
+} from '@metamask/base-controller';
+import type {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
@@ -43,7 +44,7 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
-import { PreferencesControllerGetStateAction } from './preferences-controller';
+import type { PreferencesControllerGetStateAction } from './preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';

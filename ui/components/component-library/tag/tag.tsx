@@ -13,7 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { Icon, IconSize } from '../icon';
-import { TagComponent, TagProps } from './tag.types';
+import type { TagComponent, TagProps } from './tag.types';
 
 export const Tag: TagComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

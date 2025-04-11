@@ -1,19 +1,21 @@
 import configureStore from 'redux-mock-store';
 import React from 'react';
 import { screen } from '@testing-library/react';
-import {
+import type {
   SimulationData,
-  SimulationErrorCode,
-  TransactionMeta,
+  TransactionMeta} from '@metamask/transaction-controller';
+import {
+  SimulationErrorCode
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { SimulationDetails, StaticRow } from './simulation-details';
+import type { StaticRow } from './simulation-details';
+import { SimulationDetails } from './simulation-details';
 import { useBalanceChanges } from './useBalanceChanges';
 import { BalanceChangeList } from './balance-change-list';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
 
 const store = configureStore()(mockState);
 

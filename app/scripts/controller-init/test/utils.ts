@@ -1,4 +1,4 @@
-import {
+import type {
   BaseRestrictedControllerMessenger,
   ControllerInitRequest,
 } from '../types';

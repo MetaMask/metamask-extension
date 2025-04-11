@@ -11,11 +11,12 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
-import { Box, BoxProps, PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { IconName } from '../icon';
-import { BannerBaseComponent, BannerBaseProps } from './banner-base.types';
+import type { BannerBaseComponent, BannerBaseProps } from './banner-base.types';
 
 export const BannerBase: BannerBaseComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

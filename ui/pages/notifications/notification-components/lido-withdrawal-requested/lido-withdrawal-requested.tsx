@@ -37,7 +37,7 @@ import {
   IconName,
 } from '../../../../components/component-library';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import type { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

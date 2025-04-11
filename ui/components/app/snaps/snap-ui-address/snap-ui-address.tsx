@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
+import type {
+  CaipAccountId} from '@metamask/utils';
 import {
-  CaipAccountId,
   isHexString,
   parseCaipAccountId,
 } from '@metamask/utils';

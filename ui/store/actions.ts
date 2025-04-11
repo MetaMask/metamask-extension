@@ -3,47 +3,47 @@
 // TypeScript 5.3.3. We can't update them because we rely on an old version of
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
 // I don't want to try to figure that one out.
-import { ReactFragment } from 'react';
+import type { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
-import { ThunkAction } from 'redux-thunk';
-import { Action, AnyAction } from 'redux';
+import type { ThunkAction } from 'redux-thunk';
+import type { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
-import {
+import type {
   AssetsContractController,
   BalanceMap,
   Collection,
   Nft,
   Token,
 } from '@metamask/assets-controllers';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { GasFeeController } from '@metamask/gas-fee-controller';
-import { PermissionsRequest } from '@metamask/permission-controller';
-import { NonEmptyArray } from '@metamask/controller-utils';
-import {
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { GasFeeController } from '@metamask/gas-fee-controller';
+import type { PermissionsRequest } from '@metamask/permission-controller';
+import type { NonEmptyArray } from '@metamask/controller-utils';
+import type {
   SetNameRequest,
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
-import {
+import type {
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
+import type {
   AddNetworkFields,
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import type { InterfaceState } from '@metamask/snaps-sdk';
+import type { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { Patch } from 'immer';
+import type { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -75,14 +75,15 @@ import {
   getSelectedNetworkClientId,
   getProviderConfig,
 } from '../../shared/modules/selectors/networks';
+import type {
+  // NOTE: Until the send duck is typescript that this is importing a typedef
+  // that does not have an explicit export statement. lets see if it breaks the
+  // compiler
+  DraftTransaction} from '../ducks/send';
 import {
   computeEstimatedGasLimit,
   initializeSendState,
   resetSendState,
-  // NOTE: Until the send duck is typescript that this is importing a typedef
-  // that does not have an explicit export statement. lets see if it breaks the
-  // compiler
-  DraftTransaction,
   SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -93,14 +94,15 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
-import {
+import type {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
-  MetaMetricsReferrerObject,
+  MetaMetricsReferrerObject} from '../../shared/constants/metametrics';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
@@ -112,20 +114,20 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
-import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
+import type { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
-import { ThemeType } from '../../shared/constants/preferences';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import type { ThemeType } from '../../shared/constants/preferences';
+import type { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
-import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
-import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
-import { EndTraceRequest } from '../../shared/lib/trace';
+import type { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
+import type { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
+import type { EndTraceRequest } from '../../shared/lib/trace';
 import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { SortCriteria } from '../components/app/assets/util/sort';
+import type { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
 
@@ -134,7 +136,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from './background-connection';
-import {
+import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
   TemporaryMessageDataType,

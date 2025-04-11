@@ -1,9 +1,10 @@
-import {
+import type {
   CaipAssetType,
+  CaipChainId,
+  Hex} from '@metamask/utils';
+import {
   parseCaipChainId,
   CaipAssetTypeStruct,
-  CaipChainId,
-  Hex,
   isCaipAssetType,
   isCaipChainId,
   isStrictHexString,

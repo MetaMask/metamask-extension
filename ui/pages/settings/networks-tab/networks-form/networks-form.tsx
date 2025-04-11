@@ -5,7 +5,8 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import type { Hex} from '@metamask/utils';
+import { isStrictHexString } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -69,7 +70,7 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import { getTokenNetworkFilter } from '../../../../selectors';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
-import { useNetworkFormState } from './networks-form-state';
+import type { useNetworkFormState } from './networks-form-state';
 
 export const NetworksForm = ({
   networkFormState,

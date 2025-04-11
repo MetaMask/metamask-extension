@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import React, { memo } from 'react';
 
 import {

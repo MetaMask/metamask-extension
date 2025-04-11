@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';

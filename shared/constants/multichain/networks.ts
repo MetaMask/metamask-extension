@@ -1,11 +1,11 @@
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isSolanaAddress,
 } from '../../lib/multichain/accounts';
-import { MultichainBlockExplorerFormatUrls } from '../../lib/multichain/networks';
+import type { MultichainBlockExplorerFormatUrls } from '../../lib/multichain/networks';
 
 export type ProviderConfigWithImageUrl = {
   rpcUrl?: string;

@@ -1,19 +1,22 @@
-import {
+import type {
   AddressBookController,
   AddressBookControllerStateChangeEvent,
   AddressBookControllerActions,
 } from '@metamask/address-book-controller';
+import type {
+  NameController} from '@metamask/name-controller';
 import {
-  NameController,
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import type { Hex} from '@metamask/utils';
+import { isStrictHexString } from '@metamask/utils';
+import type {
+  PetnamesBridgeMessenger,
+  PetnameEntry} from './AbstractPetnamesBridge';
 import {
   AbstractPetnamesBridge,
-  PetnamesBridgeMessenger,
-  ChangeType,
-  PetnameEntry,
+  ChangeType
 } from './AbstractPetnamesBridge';
 
 export type AddressBookPetnamesBridgeEvens =

@@ -1,5 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import {
+import type {
   ApprovalRequest,
   ErrorOptions,
   SuccessOptions,
@@ -16,12 +16,13 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { resolvePendingApproval } from '../../../store/actions';
+import type { resolvePendingApproval } from '../../../store/actions';
+import type {
+  TemplateRendererComponent} from './util';
 import {
   processError,
   processHeader,
-  processString,
-  TemplateRendererComponent,
+  processString
 } from './util';
 
 export type ResultTemplateActions = {

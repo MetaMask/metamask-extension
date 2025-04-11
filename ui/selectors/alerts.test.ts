@@ -1,9 +1,10 @@
 import { Severity } from '../helpers/constants/design-system';
+import type {
+  AlertsState} from './alerts';
 import {
   selectAlerts,
   selectGeneralAlerts,
   selectConfirmedAlertKeys,
-  AlertsState,
   selectFieldAlerts,
 } from './alerts';
 

@@ -5,13 +5,15 @@ import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdentic
 
 import type { PolymorphicRef } from '../box';
 
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import type { AvatarBaseProps } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
+import type {
+  AvatarAccountComponent,
+  AvatarAccountProps} from './avatar-account.types';
 import {
   AvatarAccountDiameter,
   AvatarAccountVariant,
-  AvatarAccountSize,
-  AvatarAccountComponent,
-  AvatarAccountProps,
+  AvatarAccountSize
 } from './avatar-account.types';
 
 export const AvatarAccount: AvatarAccountComponent = React.forwardRef(

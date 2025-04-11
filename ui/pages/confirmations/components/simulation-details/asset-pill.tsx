@@ -1,7 +1,7 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -21,7 +21,7 @@ import Name from '../../../../components/app/name';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
-import { AssetIdentifier } from './types';
+import type { AssetIdentifier } from './types';
 
 const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
   const imgSrc =

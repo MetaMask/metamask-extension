@@ -1,12 +1,12 @@
-import React from 'react';
+import type React from 'react';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
-import { AvatarFaviconProps } from '../avatar-favicon';
-import { IconProps } from '../icon';
-import { TextProps } from '../text';
-import { ButtonLinkProps } from '../button-link';
+import type { AvatarFaviconProps } from '../avatar-favicon';
+import type { IconProps } from '../icon';
+import type { TextProps } from '../text';
+import type { ButtonLinkProps } from '../button-link';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

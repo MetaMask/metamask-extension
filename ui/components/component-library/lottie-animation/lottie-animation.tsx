@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import {
+import type {
   AnimationConfigWithData,
   AnimationConfigWithPath,
   AnimationItem,

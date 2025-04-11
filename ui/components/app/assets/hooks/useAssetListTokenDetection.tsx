@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { Token } from '../types';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { Token } from '../types';
 import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,

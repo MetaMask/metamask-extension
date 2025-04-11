@@ -1,21 +1,23 @@
+import type {
+  NameController,
+  NameControllerState} from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
-  NameController,
-  NameControllerState,
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
 import { cloneDeep } from 'lodash';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import {
+import type {
   AccountIdentitiesPetnamesBridgeActions,
   AccountIdentitiesPetnamesBridgeEvents,
-  AccountIdentitiesPetnamesBridge,
-  AccountIdentitiesPetnamesBridgeMessenger,
-} from './AccountIdentitiesPetnamesBridge';
+  AccountIdentitiesPetnamesBridgeMessenger} from './AccountIdentitiesPetnamesBridge';
 import {
+  AccountIdentitiesPetnamesBridge
+} from './AccountIdentitiesPetnamesBridge';
+import type {
   PetnameEntry,
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';

@@ -1,4 +1,4 @@
-import { NetworkConfiguration } from '@metamask/network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import React, { useContext } from 'react';
 import type { Hex } from '@metamask/utils';
 import {

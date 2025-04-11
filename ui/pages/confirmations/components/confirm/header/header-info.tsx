@@ -36,7 +36,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { SignatureRequestType } from '../../../types/confirm';
+import type { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import Identicon from '../../../../../components/ui/identicon';

@@ -1,7 +1,8 @@
+import type {
+  NameControllerState,
+  NameEntry} from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
-  NameControllerState,
-  NameEntry,
   NameOrigin,
   NameType,
 } from '@metamask/name-controller';

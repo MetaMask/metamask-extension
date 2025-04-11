@@ -23,7 +23,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 import PermissionCell from '../../app/permission-cell';
-import {
+import type {
   Identity,
   Permission,
 } from '../connected-accounts-menu/connected-accounts-menu.types';

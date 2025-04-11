@@ -1,6 +1,6 @@
 import React from 'react';
-import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';

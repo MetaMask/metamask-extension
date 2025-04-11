@@ -1,4 +1,5 @@
-import { hasProperty, Hex, isObject, isStrictHexString } from '@metamask/utils';
+import type { Hex} from '@metamask/utils';
+import { hasProperty, isObject, isStrictHexString } from '@metamask/utils';
 import BN from 'bn.js';
 import { cloneDeep, mapKeys } from 'lodash';
 import log from 'loglevel';

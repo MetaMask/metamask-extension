@@ -1,5 +1,6 @@
 import log from 'loglevel';
-import { Component, ReactNode, ErrorInfo } from 'react';
+import type { ReactNode, ErrorInfo } from 'react';
+import { Component } from 'react';
 
 type ErrorBoundaryProps = { children: ReactNode; fallback: () => ReactNode };
 type ErrorBoundaryState = { hasError: boolean };

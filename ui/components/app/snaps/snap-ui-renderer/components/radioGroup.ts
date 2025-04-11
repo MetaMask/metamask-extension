@@ -1,7 +1,7 @@
-import { RadioGroupElement, RadioElement } from '@metamask/snaps-sdk/jsx';
+import type { RadioGroupElement, RadioElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const radioGroup: UIComponentFactory<RadioGroupElement> = ({
   element,

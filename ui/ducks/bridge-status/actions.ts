@@ -1,10 +1,11 @@
+import type {
+  StartPollingForBridgeTxStatusArgsSerialized} from '../../../shared/types/bridge-status';
 import {
-  BridgeStatusAction,
-  StartPollingForBridgeTxStatusArgsSerialized,
+  BridgeStatusAction
 } from '../../../shared/types/bridge-status';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 
 const callBridgeStatusControllerMethod = <T extends unknown[]>(
   bridgeAction: BridgeStatusAction,

@@ -6,10 +6,10 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 
-import { Box, BoxProps } from '../box';
-import type { PolymorphicRef } from '../box';
+import { Box } from '../box';
+import type { PolymorphicRef , BoxProps } from '../box';
 
-import {
+import type {
   ModalOverlayProps,
   ModalOverlayComponent,
 } from './modal-overlay.types';

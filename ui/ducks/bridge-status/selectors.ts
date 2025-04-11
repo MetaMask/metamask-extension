@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
-import { Hex } from '@metamask/utils';
-import {
+import type { Hex } from '@metamask/utils';
+import type {
   BridgeHistoryItem,
   BridgeStatusAppState,
 } from '../../../shared/types/bridge-status';

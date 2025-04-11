@@ -1,9 +1,10 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
-import {
+import type {
   CaipAccountId,
-  CaipChainId,
+  CaipChainId} from '@metamask/utils';
+import {
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
@@ -61,7 +62,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
+import type {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
@@ -71,8 +72,9 @@ import {
 } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import type {
+  PermissionsRequest} from './utils';
 import {
-  PermissionsRequest,
   getRequestedCaip25CaveatValue,
   getDefaultAccounts,
 } from './utils';

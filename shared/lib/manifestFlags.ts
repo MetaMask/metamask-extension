@@ -1,4 +1,4 @@
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import browser from 'webextension-polyfill';
 
 /**

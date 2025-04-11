@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react';
+import type {
+  BatchTransactionParams} from '@metamask/transaction-controller';
 import {
-  BatchTransactionParams,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -14,7 +15,7 @@ import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { TokenStandard } from '../../../../../../../shared/constants/transaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { BalanceChange } from '../../../simulation-details/types';
+import type { BalanceChange } from '../../../simulation-details/types';
 import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../shared/constants';
 import { buildSetApproveForAllTransactionData } from '../../../../../../../test/data/confirmations/set-approval-for-all';

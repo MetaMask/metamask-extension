@@ -8,13 +8,13 @@ import {
 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
 import {
-  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { TransactionParams } from '@metamask/transaction-controller';
+import type { TransactionParams ,
+  TransactionMeta} from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';

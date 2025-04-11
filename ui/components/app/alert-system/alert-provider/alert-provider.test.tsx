@@ -2,7 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { TextAlign } from '../../../../helpers/constants/design-system';
-import { AlertProvider, AlertProviderProps } from './alert-provider';
+import type { AlertProviderProps } from './alert-provider';
+import { AlertProvider } from './alert-provider';
 
 describe('AlertProvider', () => {
   const defaultProps: AlertProviderProps = {

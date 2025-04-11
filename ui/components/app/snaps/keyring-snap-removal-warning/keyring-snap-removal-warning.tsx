@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { Snap } from '@metamask/snaps-utils';
+import type { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {
   BannerAlert,

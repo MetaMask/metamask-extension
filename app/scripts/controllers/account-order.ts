@@ -1,4 +1,5 @@
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';

@@ -7,7 +7,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
 import { useEffect } from 'react';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
 import type { ChainId } from '@metamask/bridge-controller';
 import {

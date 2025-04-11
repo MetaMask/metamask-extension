@@ -10,9 +10,10 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
-import type { AvatarNetworkComponent } from './avatar-network.types';
-import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
+import type { AvatarBaseProps } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
+import type { AvatarNetworkComponent , AvatarNetworkProps} from './avatar-network.types';
+import { AvatarNetworkSize } from './avatar-network.types';
 
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

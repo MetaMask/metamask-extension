@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import useCurrencyRatePolling from '../hooks/useCurrencyRatePolling';
 import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
 import useAccountTrackerPolling from '../hooks/useAccountTrackerPolling';

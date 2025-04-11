@@ -1,6 +1,6 @@
 import { CronjobController } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
-import { CronjobControllerMessenger } from '../messengers/snaps';
+import type { ControllerInitFunction } from '../types';
+import type { CronjobControllerMessenger } from '../messengers/snaps';
 
 /**
  * Initialize the cronjob controller.

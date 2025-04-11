@@ -1,10 +1,11 @@
-import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useSelector } from 'react-redux';
-import { AsyncResult, useAsyncResult } from '../../../../../../hooks/useAsync';
+import type { AsyncResult} from '../../../../../../hooks/useAsync';
+import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { decodeTransactionData } from '../../../../../../store/actions';
-import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
+import type { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import { use4ByteResolutionSelector } from '../../../../../../selectors';

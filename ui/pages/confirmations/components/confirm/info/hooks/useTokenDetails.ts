@@ -1,9 +1,9 @@
-import { TokenListMap } from '@metamask/assets-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TokenListMap } from '@metamask/assets-controllers';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getTokenList, getWatchedToken } from '../../../../../../selectors';
-import { MultichainState } from '../../../../../../selectors/multichain';
+import type { MultichainState } from '../../../../../../selectors/multichain';
 
 export const useTokenDetails = (transactionMeta: TransactionMeta) => {
   const t = useI18nContext();

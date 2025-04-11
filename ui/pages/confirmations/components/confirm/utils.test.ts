@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedContractInteractionConfirmation,
@@ -7,7 +7,7 @@ import {
   PERSONAL_SIGN_SENDER_ADDRESS,
   unapprovedPersonalSignMsg,
 } from '../../../../../test/data/confirmations/personal_sign';
-import { SignatureRequestType } from '../../types/confirm';
+import type { SignatureRequestType } from '../../types/confirm';
 import { getConfirmationSender } from './utils';
 
 describe('confirm - utils', () => {

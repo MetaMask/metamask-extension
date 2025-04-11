@@ -8,7 +8,7 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
+import type {
   SignatureRequestType,
   TypedSignDataV1Type,
 } from '../../../../types/confirm';

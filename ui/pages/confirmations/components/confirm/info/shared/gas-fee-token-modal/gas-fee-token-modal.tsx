@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import type { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import {
   Modal,
   ModalBody,

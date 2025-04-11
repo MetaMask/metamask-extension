@@ -1,4 +1,4 @@
-import { AggregatorNetwork } from './types';
+import type { AggregatorNetwork } from './types';
 
 export const defaultBuyableChains: AggregatorNetwork[] = [
   {

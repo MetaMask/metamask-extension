@@ -1,5 +1,5 @@
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import { AggregatorNetwork } from '../../../ducks/ramps/types';
+import type { AggregatorNetwork } from '../../../ducks/ramps/types';
 
 const fetchWithTimeout = getFetchWithTimeout();
 

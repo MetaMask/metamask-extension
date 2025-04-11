@@ -3,7 +3,7 @@ import { screen, act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest';
-import { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';

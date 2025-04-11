@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
-import { Nft } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import type { Nft } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
 import {
   TextColor,
   IconColor,

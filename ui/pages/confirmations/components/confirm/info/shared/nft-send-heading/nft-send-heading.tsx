@@ -1,5 +1,5 @@
-import { Nft } from '@metamask/assets-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Nft } from '@metamask/assets-controllers';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';

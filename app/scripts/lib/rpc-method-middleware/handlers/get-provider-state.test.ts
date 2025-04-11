@@ -1,10 +1,11 @@
-import { PendingJsonRpcResponse } from '@metamask/utils';
-import { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import getProviderState, {
+import type { PendingJsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
   GetProviderState,
   ProviderStateHandlerResult,
 } from './get-provider-state';
-import { HandlerRequestType } from './types';
+import getProviderState from './get-provider-state';
+import type { HandlerRequestType } from './types';
 
 describe('getProviderState', () => {
   let mockEnd: JsonRpcEngineEndCallback;

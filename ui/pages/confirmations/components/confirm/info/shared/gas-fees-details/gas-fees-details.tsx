@@ -1,5 +1,6 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction } from 'react';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '../../../../../../../components/component-library';
 import {

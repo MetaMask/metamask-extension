@@ -1,7 +1,7 @@
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
-import { Platform } from '../../../../types/global';
+import type { Platform } from '../../../../types/global';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import useConfirmationAlertActions from './useConfirmationAlertActions';
 

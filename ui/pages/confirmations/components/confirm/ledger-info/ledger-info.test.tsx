@@ -13,7 +13,7 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { SignatureRequestType } from '../../../types/confirm';
+import type { SignatureRequestType } from '../../../types/confirm';
 import LedgerInfo from './ledger-info';
 
 describe('LedgerInfo', () => {

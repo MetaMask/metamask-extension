@@ -1,4 +1,5 @@
-import { filterAssets, FilterCriteria } from './filter';
+import type { FilterCriteria } from './filter';
+import { filterAssets } from './filter';
 
 describe('filterAssets function - balance and chainId filtering', () => {
   type MockToken = {

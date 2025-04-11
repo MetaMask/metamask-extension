@@ -1,8 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   AlertActionKey,
   RowAlertKey,

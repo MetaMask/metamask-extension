@@ -1,4 +1,4 @@
-import {
+import type {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';

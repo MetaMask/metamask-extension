@@ -1,6 +1,7 @@
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { sortBalanceChanges } from './sortBalanceChanges';
-import { BalanceChange, FIAT_UNAVAILABLE } from './types';
+import type { BalanceChange} from './types';
+import { FIAT_UNAVAILABLE } from './types';
 
 describe('sortBalanceChanges', () => {
   // Create a mock balance change object.

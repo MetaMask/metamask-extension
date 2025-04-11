@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { PolymorphicComponentPropWithRef } from '../box';
-import { IconColor } from '../../../helpers/constants/design-system';
-import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
-import { IconName } from '../icon';
+import type { IconColor } from '../../../helpers/constants/design-system';
+import type { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
+import type { IconName } from '../icon';
 import type { IconProps } from '../icon';
 
 export enum ButtonBaseSize {

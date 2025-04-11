@@ -1,11 +1,12 @@
-import {
+import type {
   ApprovalController,
   ApprovalRequest,
 } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
-import { createProjectLogger, Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF

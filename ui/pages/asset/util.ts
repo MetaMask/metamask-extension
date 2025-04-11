@@ -1,5 +1,5 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>

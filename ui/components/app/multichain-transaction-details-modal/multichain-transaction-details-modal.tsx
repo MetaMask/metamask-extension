@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
+import type {
+  Transaction} from '@metamask/keyring-api';
 import {
-  Transaction,
   TransactionStatus,
   TransactionType,
 } from '@metamask/keyring-api';
@@ -46,7 +47,7 @@ import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
-import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
+import type { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
   formatTimestamp,
   getTransactionUrl,

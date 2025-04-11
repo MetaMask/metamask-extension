@@ -1,4 +1,4 @@
-import { FormState, InterfaceState, State } from '@metamask/snaps-sdk';
+import type { FormState, InterfaceState, State } from '@metamask/snaps-sdk';
 
 /**
  * Merge a new input value in the interface state.

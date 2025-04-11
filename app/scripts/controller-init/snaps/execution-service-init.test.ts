@@ -3,10 +3,11 @@ import {
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 import { Messenger } from '@metamask/base-controller';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
+import type {
+  ExecutionServiceMessenger} from '../messengers/snaps';
 import {
-  ExecutionServiceMessenger,
   getExecutionServiceMessenger,
 } from '../messengers/snaps';
 import { ExecutionServiceInit } from './execution-service-init';

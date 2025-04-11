@@ -1,10 +1,11 @@
 import { SnapInsightsController } from '@metamask/snaps-controllers';
 import { Messenger } from '@metamask/base-controller';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
+import type {
+  SnapInsightsControllerMessenger} from '../messengers/snaps';
 import {
-  getSnapInsightsControllerMessenger,
-  SnapInsightsControllerMessenger,
+  getSnapInsightsControllerMessenger
 } from '../messengers/snaps';
 import { SnapInsightsControllerInit } from './snap-insights-controller-init';
 

@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { TokenDetailsERC20 } from '../utils/token';
+import type { TokenDetailsERC20 } from '../utils/token';
 import useTrackERC20WithoutDecimalInformation from './useTrackERC20WithoutDecimalInformation';
 
 jest.mock('react-redux', () => ({

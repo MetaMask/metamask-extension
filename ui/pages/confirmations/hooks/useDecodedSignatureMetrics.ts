@@ -1,7 +1,7 @@
-import { DecodingDataStateChange } from '@metamask/signature-controller';
+import type { DecodingDataStateChange } from '@metamask/signature-controller';
 import { useEffect } from 'react';
 
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
 import { useLoadingTime } from '../components/simulation-details/useLoadingTime';
 import { useSignatureEventFragment } from './useSignatureEventFragment';

@@ -1,26 +1,29 @@
 import { useContext, useEffect, useState } from 'react';
+import type {
+  SimulationData} from '@metamask/transaction-controller';
 import {
-  SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { renderHook } from '@testing-library/react-hooks';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import type {
+  UseDisplayNameResponse} from '../../../../hooks/useDisplayName';
 import {
-  UseDisplayNameResponse,
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
+import type {
+  UseSimulationMetricsProps} from './useSimulationMetrics';
 import {
   AssetType,
   FiatType,
   PetnameType,
-  UseSimulationMetricsProps,
   useSimulationMetrics,
 } from './useSimulationMetrics';
 import { useLoadingTime } from './useLoadingTime';

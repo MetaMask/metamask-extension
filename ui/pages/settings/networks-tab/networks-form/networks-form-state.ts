@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
+import type {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';

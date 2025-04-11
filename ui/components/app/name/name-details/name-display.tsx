@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import { NameType } from '@metamask/name-controller';
+import type { NameType } from '@metamask/name-controller';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconName, IconSize } from '../../../component-library';
 import { useDisplayName } from '../../../../hooks/useDisplayName';

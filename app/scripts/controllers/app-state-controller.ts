@@ -1,19 +1,20 @@
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
-import {
-  BaseController,
+import type { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+  RestrictedMessenger} from '@metamask/base-controller';
 import {
+  BaseController
+} from '@metamask/base-controller';
+import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
-import { Browser } from 'webextension-polyfill';
+import type { Json } from '@metamask/utils';
+import type { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -26,9 +27,9 @@ import {
   ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
-import { SecurityAlertResponse } from '../lib/ppom/types';
-import {
+import type { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
+import type { SecurityAlertResponse } from '../lib/ppom/types';
+import type {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';

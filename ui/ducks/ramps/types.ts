@@ -1,4 +1,4 @@
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 
 export type AggregatorNetwork = {
   active: boolean;

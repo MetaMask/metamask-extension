@@ -1,4 +1,4 @@
-import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {

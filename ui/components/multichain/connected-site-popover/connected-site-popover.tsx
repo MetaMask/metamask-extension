@@ -1,4 +1,5 @@
-import React, { useContext, RefObject } from 'react';
+import type { RefObject } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarNetwork,

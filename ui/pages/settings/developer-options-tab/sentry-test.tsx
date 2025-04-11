@@ -1,4 +1,5 @@
-import React, { useState, useCallback, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,

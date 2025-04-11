@@ -2,7 +2,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCaip25PermissionsResponse } from './utils';
 

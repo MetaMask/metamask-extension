@@ -1,4 +1,4 @@
-import { ResultComponent } from '@metamask/approval-controller';
+import type { ResultComponent } from '@metamask/approval-controller';
 
 export type TemplateRendererComponent = {
   key: string;

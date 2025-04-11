@@ -1,6 +1,6 @@
 import { MultichainBalancesController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
-import { MultichainBalancesControllerMessenger } from '../messengers/multichain';
+import type { ControllerInitFunction } from '../types';
+import type { MultichainBalancesControllerMessenger } from '../messengers/multichain';
 
 /**
  * Initialize the Multichain Balances controller.

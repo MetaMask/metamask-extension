@@ -1,4 +1,4 @@
-import { IconProps } from '../icon';
+import type { IconProps } from '../icon';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,

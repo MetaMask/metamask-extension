@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
-import { Json } from '@metamask/utils';
-import { ApprovalFlowState } from '@metamask/approval-controller';
+import type { Json } from '@metamask/utils';
+import type { ApprovalFlowState } from '@metamask/approval-controller';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {

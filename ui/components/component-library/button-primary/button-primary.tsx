@@ -8,10 +8,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import type { ButtonBaseProps } from '../button-base';
-import type { ButtonPrimaryProps } from './button-primary.types';
+import type { ButtonPrimaryProps ,
+  ButtonPrimaryComponent} from './button-primary.types';
 import {
-  ButtonPrimarySize,
-  ButtonPrimaryComponent,
+  ButtonPrimarySize
 } from './button-primary.types';
 
 export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(

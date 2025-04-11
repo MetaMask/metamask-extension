@@ -52,8 +52,9 @@ import {
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
+import type {
+  SafeChain} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
-  SafeChain,
   useSafeChains,
 } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';

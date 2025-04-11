@@ -1,14 +1,15 @@
 import { NameType } from '@metamask/name-controller';
 import { HandlerType } from '@metamask/snaps-utils';
-import {
+import type {
   GetAllSnaps,
   GetSnap,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import { GetPermissionControllerState } from '@metamask/permission-controller';
+import type { GetPermissionControllerState } from '@metamask/permission-controller';
+import type {
+  SnapsNameProviderMessenger} from './SnapsNameProvider';
 import {
-  SnapsNameProvider,
-  SnapsNameProviderMessenger,
+  SnapsNameProvider
 } from './SnapsNameProvider';
 
 const VALUE_MOCK = 'TestValue';

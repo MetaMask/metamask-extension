@@ -1,11 +1,12 @@
 import { act } from 'react-dom/test-utils';
+import type {
+  TransactionParams} from '@metamask/transaction-controller';
 import {
-  TransactionParams,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   TRANSACTION_DATA_FOUR_BYTE,
   TRANSACTION_DATA_UNISWAP,

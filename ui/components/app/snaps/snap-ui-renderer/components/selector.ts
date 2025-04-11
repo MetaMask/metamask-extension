@@ -1,4 +1,4 @@
-import {
+import type {
   JSXElement,
   SelectorElement,
   SelectorOptionElement,
@@ -6,7 +6,7 @@ import {
 import { getJsxChildren } from '@metamask/snaps-utils';
 
 import { mapToTemplate } from '../utils';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const selector: UIComponentFactory<SelectorElement> = ({
   element,

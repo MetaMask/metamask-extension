@@ -14,11 +14,11 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import type { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getBannerAlertSeverity } from '../utils';
 import { AlertProvider } from '../alert-provider';
-import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type GeneralAlertProps = {
   description?: string;

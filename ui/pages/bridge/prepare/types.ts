@@ -1,5 +1,5 @@
-import { BridgeToken } from '@metamask/bridge-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { BridgeToken } from '@metamask/bridge-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 export type ExternalAccount = {
   address: string;

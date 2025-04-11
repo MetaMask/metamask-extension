@@ -2,8 +2,8 @@ import {
   CodefiTokenPricesServiceV2,
   TokenRatesController,
 } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
-import { TokenRatesControllerMessenger } from '../messengers/assets';
+import type { ControllerInitFunction } from '../types';
+import type { TokenRatesControllerMessenger } from '../messengers/assets';
 
 /**
  * Initialize the Token Rates controller.

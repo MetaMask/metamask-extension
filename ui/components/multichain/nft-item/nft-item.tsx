@@ -26,7 +26,7 @@ import {
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
-import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
+import type { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 
 type NftItemProps = {
   nft?: NFT;

@@ -1,6 +1,6 @@
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { SecurityAlertResponse } from '../../types/confirm';
+import type { SecurityAlertResponse } from '../../types/confirm';
 import { getProviderAlertSeverity, normalizeProviderAlert } from './utils';
 
 describe('Utils', () => {

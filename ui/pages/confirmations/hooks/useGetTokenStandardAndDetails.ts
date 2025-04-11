@@ -1,12 +1,13 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
+import type {
+  TokenDetailsERC20} from '../utils/token';
 import {
   ERC20_DEFAULT_DECIMALS,
   parseTokenDetailDecimals,
-  memoizedGetTokenStandardAndDetails,
-  TokenDetailsERC20,
+  memoizedGetTokenStandardAndDetails
 } from '../utils/token';
 
 /**

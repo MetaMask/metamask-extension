@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
-import { Point } from 'chart.js';
+import type { Point } from 'chart.js';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../shared/constants/time';
 import { getShouldShowFiat } from '../../selectors';

@@ -1,4 +1,4 @@
-import { FooterElement, ButtonElement } from '@metamask/snaps-sdk/jsx';
+import type { FooterElement, ButtonElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
 import {
@@ -8,7 +8,7 @@ import {
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
 import { ButtonVariant } from '../../../../component-library';
-import { UIComponent, UIComponentFactory, UIComponentParams } from './types';
+import type { UIComponent, UIComponentFactory, UIComponentParams } from './types';
 import { button as buttonFn } from './button';
 
 export const DEFAULT_FOOTER = {

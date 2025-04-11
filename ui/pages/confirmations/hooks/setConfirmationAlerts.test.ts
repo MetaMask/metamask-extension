@@ -2,8 +2,9 @@ import { useDispatch } from 'react-redux';
 import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
+import type {
+  Alert} from '../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  Alert,
   clearAlerts,
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';

@@ -1,5 +1,5 @@
-import { AuthorizationList } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { AuthorizationList } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 
 export type RelaySubmitRequest = {
   authorizationList?: AuthorizationList;

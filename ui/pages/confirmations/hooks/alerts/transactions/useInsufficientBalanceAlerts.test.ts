@@ -1,7 +1,8 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import {
+import type {
   TransactionMeta,
-  TransactionParams,
+  TransactionParams} from '@metamask/transaction-controller';
+import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';

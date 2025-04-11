@@ -21,7 +21,7 @@ import {
 
 import { getUseBlockie } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { DestinationAccount } from '../types';
+import type { DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
   account: DestinationAccount;

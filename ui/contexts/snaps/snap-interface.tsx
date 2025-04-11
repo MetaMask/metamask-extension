@@ -1,13 +1,15 @@
-import {
+import type {
   File as FileObject,
   FormState,
   InterfaceState,
-  State,
+  State} from '@metamask/snaps-sdk';
+import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
+import type {
+  FunctionComponent} from 'react';
 import React, {
-  FunctionComponent,
   createContext,
   useContext,
   useEffect,

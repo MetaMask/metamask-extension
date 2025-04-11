@@ -1,9 +1,9 @@
-import { HeadingElement } from '@metamask/snaps-sdk/jsx';
+import type { HeadingElement } from '@metamask/snaps-sdk/jsx';
 import {
   OverflowWrap,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const generateSize = (size: HeadingElement['props']['size']) => {
   switch (size) {

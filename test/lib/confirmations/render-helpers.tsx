@@ -1,4 +1,5 @@
-import React, { ReactChildren, ReactElement } from 'react';
+import type { ReactChildren, ReactElement } from 'react';
+import React from 'react';
 
 import { ConfirmContextProvider } from '../../../ui/pages/confirmations/context/confirm';
 import { renderHookWithProvider, renderWithProvider } from '../render-helpers';

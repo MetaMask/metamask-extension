@@ -1,4 +1,4 @@
-import ComposableObservableStore from './ComposableObservableStore';
+import type ComposableObservableStore from './ComposableObservableStore';
 import { PatchStore } from './PatchStore';
 import { sanitizeUIState } from './state-utils';
 

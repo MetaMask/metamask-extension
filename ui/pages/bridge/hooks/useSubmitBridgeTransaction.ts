@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { createProjectLogger, Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
@@ -25,8 +26,9 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import type {
+  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
 import {
-  MetricsBackgroundState,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';

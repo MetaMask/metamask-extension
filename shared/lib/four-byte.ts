@@ -1,5 +1,5 @@
 import { MethodRegistry } from 'eth-method-registry';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { hasTransactionData } from '../modules/transaction.utils';
 import { stripHexPrefix } from '../modules/hexstring-utils';
 import fetchWithCache from './fetch-with-cache';

@@ -10,44 +10,42 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { NameControllerState, NameType } from '@metamask/name-controller';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import type { NameControllerState} from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type {
+  Hex} from '@metamask/utils';
 import {
   getErrorMessage,
-  Hex,
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
-import {
+import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { Browser } from 'webextension-polyfill';
-import {
+import type { Browser } from 'webextension-polyfill';
+import type {
   Nft,
   NftControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { captureException as sentryCaptureException } from '@sentry/browser';
-import {
-  BaseController,
+import type { captureException as sentryCaptureException } from '@sentry/browser';
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+  RestrictedMessenger} from '@metamask/base-controller';
 import {
-  METAMETRICS_ANONYMOUS_ID,
-  METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
+  BaseController
+} from '@metamask/base-controller';
+import type { AddressBookControllerState } from '@metamask/address-book-controller';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import type {
   MetaMetricsEventFragment,
-  MetaMetricsUserTrait,
   MetaMetricsUserTraits,
   SegmentEventPayload,
   MetaMetricsContext,
@@ -56,7 +54,13 @@ import {
   MetaMetricsPagePayload,
   MetaMetricsPageOptions,
   MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
+  MetaMetricsReferrerObject} from '../../../shared/constants/metametrics';
+import {
+  METAMETRICS_ANONYMOUS_ID,
+  METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -66,8 +70,8 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import Analytics from '../lib/segment/analytics';
+import type { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import type Analytics from '../lib/segment/analytics';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { ENVIRONMENT } from '../../../development/build/constants';

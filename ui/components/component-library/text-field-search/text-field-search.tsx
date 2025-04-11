@@ -1,12 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TextFieldProps, TextFieldType } from '../text-field/text-field.types';
-import { PolymorphicRef } from '../box';
+import type { TextFieldProps} from '../text-field/text-field.types';
+import { TextFieldType } from '../text-field/text-field.types';
+import type { PolymorphicRef } from '../box';
 import { TextField } from '../text-field';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { Icon, IconName, IconSize } from '../icon';
-import {
+import type {
   TextFieldSearchProps,
   TextFieldSearchComponent,
 } from './text-field-search.types';

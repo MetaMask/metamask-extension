@@ -6,7 +6,7 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalHeaderProps } from '../modal-header.types';
+import type { ModalHeaderProps } from '../modal-header.types';
 import { HeaderBase } from '../../header-base';
 import { ButtonIcon, ButtonIconSize } from '../../button-icon';
 import { IconName } from '../../icon';

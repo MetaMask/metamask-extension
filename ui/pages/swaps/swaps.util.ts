@@ -1,10 +1,12 @@
 import { BigNumber } from 'bignumber.js';
-import { Hex, Json } from '@metamask/utils';
-import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
-import {
+import type { Hex, Json } from '@metamask/utils';
+import type { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
+import type {
   FeeMarketGasFeeEstimates,
   TransactionParams,
 } from '@metamask/transaction-controller';
+import type {
+  SwapsTokenObject} from '../../../shared/constants/swaps';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
@@ -20,8 +22,7 @@ import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
-  SwapsTokenObject,
+  SWAPS_DEV_API_V2_BASE_URL
 } from '../../../shared/constants/swaps';
 import {
   isSwapsDefaultTokenAddress,

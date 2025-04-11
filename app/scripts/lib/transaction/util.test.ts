@@ -1,11 +1,12 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
-import {
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { TransactionParams } from '@metamask/eth-json-rpc-middleware';
+import type {
   TransactionController,
-  TransactionMeta,
+  TransactionMeta} from '@metamask/transaction-controller';
+import {
   TransactionType,
 } from '@metamask/transaction-controller';
-import { UserOperationController } from '@metamask/user-operation-controller';
+import type { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import {
   generateSecurityAlertId,
@@ -17,10 +18,11 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import {
+import type {
   AddDappTransactionRequest,
   AddTransactionOptions,
-  AddTransactionRequest,
+  AddTransactionRequest} from './util';
+import {
   addDappTransaction,
   addTransaction,
 } from './util';

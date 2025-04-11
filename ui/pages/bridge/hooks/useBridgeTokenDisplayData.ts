@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import type { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,

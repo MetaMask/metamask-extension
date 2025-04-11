@@ -1,5 +1,5 @@
-import { Hex } from '@metamask/utils';
-import { TransactionDescription } from '@ethersproject/abi';
+import type { Hex } from '@metamask/utils';
+import type { TransactionDescription } from '@ethersproject/abi';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import {

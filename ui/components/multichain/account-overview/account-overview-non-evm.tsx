@@ -1,7 +1,7 @@
 import React from 'react';
 import { NonEvmOverview } from '../../app/wallet-overview';
 import { AccountOverviewLayout } from './account-overview-layout';
-import { AccountOverviewCommonProps } from './common';
+import type { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewNonEvmProps = AccountOverviewCommonProps;
 

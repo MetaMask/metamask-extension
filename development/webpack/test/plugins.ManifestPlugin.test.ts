@@ -3,8 +3,8 @@ import assert from 'node:assert';
 import { join } from 'node:path';
 import { type Compilation } from 'webpack';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
-import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
-import { Manifest } from '../utils/helpers';
+import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
+import type { Manifest } from '../utils/helpers';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 

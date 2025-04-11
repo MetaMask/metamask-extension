@@ -1,22 +1,22 @@
-import {
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import {
+import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
-import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
-import {
+import type { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import type { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
+import type {
   BridgeHistoryItem,
   BridgeStatusAction,
   BridgeStatusControllerState,
 } from '../../../../shared/types/bridge-status';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
-import BridgeStatusController from './bridge-status-controller';
+import type { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
+import type BridgeStatusController from './bridge-status-controller';
 
 // Actions
 type BridgeStatusControllerAction<

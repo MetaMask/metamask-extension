@@ -1,5 +1,7 @@
-import React, { FunctionComponent } from 'react';
-import { BannerAlert, BannerAlertSeverity } from '../../../component-library';
+import type { FunctionComponent } from 'react';
+import React from 'react';
+import type { BannerAlertSeverity } from '../../../component-library';
+import { BannerAlert } from '../../../component-library';
 
 export type SnapUIBannerProps = {
   severity: BannerAlertSeverity | undefined;

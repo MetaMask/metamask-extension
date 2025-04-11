@@ -9,19 +9,20 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { toHex } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
+import type {
+  ///: END:ONLY_INCLUDE_IF
+  CaipChainId} from '@metamask/utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isCaipChainId,
-  ///: END:ONLY_INCLUDE_IF
-  CaipChainId,
+  isCaipChainId
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { ChainId } from '../../../../shared/constants/network';
+import type { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -31,9 +32,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
+import type {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  SwapsEthToken,
+  SwapsEthToken} from '../../../selectors';
+import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,

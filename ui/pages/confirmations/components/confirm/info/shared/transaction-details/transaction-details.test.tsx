@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import {
   getMockConfirmState,

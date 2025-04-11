@@ -1,6 +1,6 @@
 import { InstitutionalSnapController } from '../../controllers/institutional-snap/InstitutionalSnapController';
-import { InstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
-import { ControllerInitFunction } from '../types';
+import type { InstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
+import type { ControllerInitFunction } from '../types';
 
 export const InstitutionalSnapControllerInit: ControllerInitFunction<
   InstitutionalSnapController,

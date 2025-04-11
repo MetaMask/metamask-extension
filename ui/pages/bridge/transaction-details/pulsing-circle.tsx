@@ -1,11 +1,13 @@
 import React from 'react';
-import { Box, IconSize } from '../../../components/component-library';
+import type { IconSize } from '../../../components/component-library';
+import { Box } from '../../../components/component-library';
+import type {
+  IconColor} from '../../../helpers/constants/design-system';
 import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
   Display,
-  IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import HollowCircle from './hollow-circle';

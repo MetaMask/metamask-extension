@@ -1,4 +1,4 @@
-import {
+import type {
   Caip25CaveatValue,
   InternalScopesObject,
   InternalScopeString,

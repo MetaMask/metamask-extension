@@ -8,12 +8,13 @@ import { type NetworkConfiguration as InternalNetworkConfiguration } from '@meta
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 
+import type {
+  MultichainNetworkConfigurationsByChainIdState} from '../../../shared/modules/selectors/networks';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
   getProviderConfig,
-  getNetworkConfigurationsByChainId,
-  MultichainNetworkConfigurationsByChainIdState,
+  getNetworkConfigurationsByChainId
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {

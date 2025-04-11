@@ -1,11 +1,11 @@
-import { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 import { DEFAULT_FOOTER } from './footer';
 
 export const container: UIComponentFactory<ContainerElement> = ({

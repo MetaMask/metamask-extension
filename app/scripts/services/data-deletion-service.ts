@@ -10,7 +10,7 @@ import {
   CircuitState,
 } from 'cockatiel';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
+import type { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
 
 const inTest = process.env.IN_TEST;
 const fallbackSourceId = 'test';

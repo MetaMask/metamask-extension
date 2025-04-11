@@ -5,7 +5,7 @@ import {
   isPermitSignatureRequest,
   isSignatureTransactionType,
 } from '../utils';
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';

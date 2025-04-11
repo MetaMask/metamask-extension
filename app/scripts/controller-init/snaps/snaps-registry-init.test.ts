@@ -1,10 +1,11 @@
 import { Messenger } from '@metamask/base-controller';
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
+import type {
+  SnapsRegistryMessenger} from '../messengers/snaps';
 import {
-  getSnapsRegistryMessenger,
-  SnapsRegistryMessenger,
+  getSnapsRegistryMessenger
 } from '../messengers/snaps';
 import { SnapsRegistryInit } from './snaps-registry-init';
 

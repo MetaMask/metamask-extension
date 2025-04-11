@@ -1,5 +1,6 @@
+import type {
+  RelaySubmitRequest} from './transaction-relay';
 import {
-  RelaySubmitRequest,
   submitRelayTransaction,
 } from './transaction-relay';
 

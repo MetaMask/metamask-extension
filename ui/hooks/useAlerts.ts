@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
+import type {
+  AlertsState} from '../selectors/alerts';
 import {
-  AlertsState,
   selectAlerts,
   selectConfirmedAlertKeys,
   selectFieldAlerts,
   selectGeneralAlerts,
 } from '../selectors/alerts';
+import type {
+  Alert} from '../ducks/confirm-alerts/confirm-alerts';
 import {
-  Alert,
   setAlertConfirmed as setAlertConfirmedAction,
 } from '../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../helpers/constants/design-system';

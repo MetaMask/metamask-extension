@@ -1,5 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   SnapInstalled,
   SnapUpdated,
   SnapDisabled,
@@ -8,11 +8,11 @@ import {
   HandleSnapRequest,
   GetAllSnaps,
 } from '@metamask/snaps-controllers';
-import {
+import type {
   GetPermissions,
   GetSubjectMetadataState,
 } from '@metamask/permission-controller';
-import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
+import type { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
 
 type Actions = GetPermissions | HandleSnapRequest | GetAllSnaps;
 

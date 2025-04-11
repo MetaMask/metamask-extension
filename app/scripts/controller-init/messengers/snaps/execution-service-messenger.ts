@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/base-controller';
 
 export type ExecutionServiceMessenger = ReturnType<
   typeof getExecutionServiceMessenger

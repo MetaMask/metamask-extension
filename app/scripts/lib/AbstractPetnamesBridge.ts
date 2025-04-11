@@ -1,10 +1,11 @@
-import {
+import type {
   NameController,
   NameStateChange,
-  NameType,
-  SetNameRequest,
-} from '@metamask/name-controller';
+  SetNameRequest} from '@metamask/name-controller';
 import {
+  NameType
+} from '@metamask/name-controller';
+import type {
   ActionConstraint,
   EventConstraint,
   RestrictedMessenger,

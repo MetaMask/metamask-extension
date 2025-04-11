@@ -1,5 +1,6 @@
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';

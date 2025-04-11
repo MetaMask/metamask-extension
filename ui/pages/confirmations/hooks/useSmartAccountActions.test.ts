@@ -6,7 +6,7 @@ import {
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { upgradeAccountConfirmation } from '../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../types/confirm';
+import type { Confirmation } from '../types/confirm';
 import { useSmartAccountActions } from './useSmartAccountActions';
 
 jest.mock('../../../store/actions', () => ({

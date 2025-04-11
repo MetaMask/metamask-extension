@@ -2,7 +2,7 @@ import { ChainId } from '@metamask/bridge-controller';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import BridgeStatusController from './bridge-status-controller';
-import { BridgeStatusControllerMessenger } from './types';
+import type { BridgeStatusControllerMessenger } from './types';
 import { DEFAULT_BRIDGE_STATUS_STATE } from './constants';
 import * as bridgeStatusUtils from './utils';
 import {

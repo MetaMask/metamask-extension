@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useSelector } from 'react-redux';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';

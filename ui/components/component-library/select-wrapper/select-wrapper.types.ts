@@ -2,7 +2,7 @@ import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
 } from '../box';
-import { PopoverStyleUtilityProps } from '../popover';
+import type { PopoverStyleUtilityProps } from '../popover';
 
 export type SelectContextType = {
   isOpen: boolean | undefined;

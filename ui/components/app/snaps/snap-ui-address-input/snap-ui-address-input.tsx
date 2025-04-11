@@ -1,21 +1,24 @@
-import React, {
+import type {
   ChangeEvent,
-  FunctionComponent,
+  FunctionComponent} from 'react';
+import React, {
   useEffect,
   useRef,
   useState,
 } from 'react';
 import classnames from 'classnames';
-import {
+import type {
   CaipAccountId,
-  CaipChainId,
+  CaipChainId} from '@metamask/utils';
+import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import type {
+  FormTextFieldProps} from '../../../component-library';
 import {
   Box,
   FormTextField,
-  FormTextFieldProps,
   FormTextFieldSize,
   Icon,
   IconName,

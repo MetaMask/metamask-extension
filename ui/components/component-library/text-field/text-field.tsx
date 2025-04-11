@@ -8,11 +8,14 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
-import { Box, BoxProps, PolymorphicRef } from '../box';
-import { Input, InputProps } from '../input';
-import {
+import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box';
+import type { InputProps } from '../input';
+import { Input } from '../input';
+import type {
   TextFieldComponent,
-  TextFieldProps,
+  TextFieldProps} from './text-field.types';
+import {
   TextFieldSize,
   TextFieldType,
 } from './text-field.types';

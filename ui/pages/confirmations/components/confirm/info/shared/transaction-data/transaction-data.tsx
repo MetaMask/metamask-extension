@@ -1,8 +1,8 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
@@ -20,14 +20,15 @@ import { Box } from '../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
-import {
+import type {
   DecodedTransactionDataMethod,
-  DecodedTransactionDataParam,
+  DecodedTransactionDataParam} from '../../../../../../../../shared/types/transaction-decode';
+import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
+import type { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';

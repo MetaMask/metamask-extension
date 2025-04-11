@@ -1,5 +1,6 @@
-import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
-import { migrate, VersionedData } from './135';
+import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import type { VersionedData } from './135';
+import { migrate } from './135';
 
 const prevVersion = 134;
 

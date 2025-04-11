@@ -1,4 +1,4 @@
-import { MessageTypes } from '@metamask/eth-sig-util';
+import type { MessageTypes } from '@metamask/eth-sig-util';
 import { sanitizeMessageRecursively } from './typed-signature';
 
 describe('typed-signature utils', () => {

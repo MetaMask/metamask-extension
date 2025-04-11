@@ -1,9 +1,9 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   selectTransactionAvailableBalance,
   selectTransactionFeeById,

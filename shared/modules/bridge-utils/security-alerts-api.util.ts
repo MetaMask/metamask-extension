@@ -1,10 +1,11 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { AllowedBridgeChainIds } from '../../constants/bridge';
-import {
+import type { AllowedBridgeChainIds } from '../../constants/bridge';
+import type {
   ScanTokenRequest,
   TokenFeature,
-  TokenFeatureType,
-  TokenAlertWithLabelIds,
+  TokenAlertWithLabelIds} from '../../types/security-alerts-api';
+import {
+  TokenFeatureType
 } from '../../types/security-alerts-api';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 

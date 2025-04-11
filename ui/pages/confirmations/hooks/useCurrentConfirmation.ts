@@ -1,10 +1,11 @@
-import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { ApprovalType } from '@metamask/controller-utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import type {
+  ApprovalsMetaMaskState} from '../../../selectors';
 import {
-  ApprovalsMetaMaskState,
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,
   selectPendingApproval,

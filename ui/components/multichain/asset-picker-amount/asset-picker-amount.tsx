@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { TokenListMap } from '@metamask/assets-controllers';
+import type { TokenListMap } from '@metamask/assets-controllers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {

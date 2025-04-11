@@ -1,6 +1,7 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
-import {
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import type {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';

@@ -1,7 +1,8 @@
 import enTranslations from '../_locales/en/messages.json';
+import type {
+  I18NMessageDict} from '../../shared/modules/i18n';
 import {
   FALLBACK_LOCALE,
-  I18NMessageDict,
   fetchLocale,
   getMessage,
 } from '../../shared/modules/i18n';

@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { NetworkState } from '@metamask/network-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import { infuraProjectId } from '../../../shared/constants/network';
 import { migrate, version } from './131.1';
 

@@ -1,4 +1,4 @@
-import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import {
   BackgroundColor,
   Severity,

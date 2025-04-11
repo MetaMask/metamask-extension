@@ -15,9 +15,10 @@ import {
 import type { PolymorphicRef } from '../box';
 import { Text } from '../text';
 import type { TextProps } from '../text';
-import {
+import type {
   AvatarBaseComponent,
-  AvatarBaseProps,
+  AvatarBaseProps} from './avatar-base.types';
+import {
   AvatarBaseSize,
 } from './avatar-base.types';
 

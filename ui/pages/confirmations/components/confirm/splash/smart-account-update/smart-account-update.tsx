@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { SMART_ACCOUNT_INFO_LINK } from '../../../../../../../shared/lib/ui-utils';
 import {

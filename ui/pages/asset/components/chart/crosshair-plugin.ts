@@ -1,5 +1,5 @@
 // @ts-expect-error suppress CommonJS vs ECMAScript error
-import { Chart, Point, ChartEvent } from 'chart.js';
+import type { Chart, Point, ChartEvent } from 'chart.js';
 
 type CrosshairChart = Chart & { crosshairX?: number };
 

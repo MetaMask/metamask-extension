@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionType } from '@metamask/transaction-controller';
+import type { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BannerAlert,

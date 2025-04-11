@@ -9,7 +9,7 @@ import {
 import { type PolymorphicRef, type BoxProps, Box } from '../box';
 import { Button, ButtonSize, ButtonVariant, type ButtonProps } from '../button';
 import { Container, ContainerMaxWidth } from '../container';
-import { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
+import type { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
 export const ModalFooter: ModalFooterComponent = React.forwardRef(
   <C extends React.ElementType = 'footer'>(

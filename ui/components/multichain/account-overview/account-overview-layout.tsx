@@ -21,8 +21,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
+import type {
+  AccountOverviewTabsProps} from './account-overview-tabs';
 import {
-  AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
 

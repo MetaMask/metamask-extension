@@ -1,5 +1,5 @@
-import { ChangeEvent as ReactChangeEvent } from 'react';
-import { JSXElement, SnapsChildren } from '@metamask/snaps-sdk/jsx';
+import type { ChangeEvent as ReactChangeEvent } from 'react';
+import type { JSXElement, SnapsChildren } from '@metamask/snaps-sdk/jsx';
 import type { COMPONENT_MAPPING } from '.';
 
 export type UIComponentParams<T extends JSXElement> = {

@@ -3,7 +3,7 @@ import { getMockPersonalSignConfirmStateForRequest } from '../../../../../../tes
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { signatureRequestSIWE } from '../../../../../../test/data/confirmations/personal_sign';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { SignatureRequestType } from '../../../types/confirm';
+import type { SignatureRequestType } from '../../../types/confirm';
 import useAccountMismatchAlerts from './useAccountMismatchAlerts';
 
 const mockExpectedState =

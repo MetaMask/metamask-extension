@@ -1,7 +1,8 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { KeyringAccountType } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getUpdatedAndSortedAccounts,
   getSelectedInternalAccount,
@@ -17,7 +18,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import type { MergedInternalAccount } from '../../../../../selectors/selectors.types';
 import { SendPageRow } from './send-page-row';
 
 type SendPageYourAccountsProps = {

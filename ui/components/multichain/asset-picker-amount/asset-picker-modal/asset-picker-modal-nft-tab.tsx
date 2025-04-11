@@ -39,7 +39,7 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
-import { NFT } from './types';
+import type { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
   collectionName: string;

@@ -1,5 +1,6 @@
-import { IconColor, TextColor } from '../../../helpers/constants/design-system';
-import { IconName, IconProps, IconSize } from '../icon';
+import type { IconColor, TextColor } from '../../../helpers/constants/design-system';
+import type { IconName, IconProps} from '../icon';
+import { IconSize } from '../icon';
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 

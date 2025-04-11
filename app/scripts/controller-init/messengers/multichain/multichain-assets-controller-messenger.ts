@@ -1,12 +1,12 @@
-import {
+import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountAssetListUpdatedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import { Messenger } from '@metamask/base-controller';
-import { GetPermissions } from '@metamask/permission-controller';
-import { GetAllSnaps, HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { Messenger } from '@metamask/base-controller';
+import type { GetPermissions } from '@metamask/permission-controller';
+import type { GetAllSnaps, HandleSnapRequest } from '@metamask/snaps-controllers';
 
 type Actions =
   | HandleSnapRequest

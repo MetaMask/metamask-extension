@@ -17,7 +17,7 @@ import {
 } from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
-import {
+import type {
   Alert,
   ConfirmAlertsState,
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';

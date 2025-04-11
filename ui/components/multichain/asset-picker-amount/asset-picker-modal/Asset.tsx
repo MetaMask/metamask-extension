@@ -12,7 +12,7 @@ import {
   getImageForChainId,
 } from '../../../../selectors/multichain';
 import { selectERC20TokensByChain } from '../../../../selectors/selectors';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
+import type { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   tooltipText?: string;

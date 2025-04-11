@@ -1,14 +1,15 @@
+import type {
+  TransactionControllerMessenger,
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
   CHAIN_IDS,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
-  TransactionController,
-  TransactionControllerMessenger,
-  TransactionMeta,
+  TransactionController
 } from '@metamask/transaction-controller';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import type SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   getCurrentChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
@@ -16,8 +17,9 @@ import {
   getSmartTransactionsPreferenceEnabled,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
+import type {
+  SmartTransactionHookMessenger} from '../../lib/transaction/smart-transactions';
 import {
-  SmartTransactionHookMessenger,
   submitSmartTransactionHook,
   submitBatchSmartTransactionHook,
 } from '../../lib/transaction/smart-transactions';
@@ -34,14 +36,14 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
 } from '../../lib/transaction/metrics';
-import {
+import type {
   ControllerInitFunction,
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
-import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import type { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
+import type { ControllerFlatState } from '../controller-list';
+import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 
 export const TransactionControllerInit: ControllerInitFunction<

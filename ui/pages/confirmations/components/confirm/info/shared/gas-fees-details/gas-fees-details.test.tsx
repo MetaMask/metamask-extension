@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import React from 'react';
 
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';

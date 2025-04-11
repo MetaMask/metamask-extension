@@ -1,6 +1,6 @@
 import React from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';

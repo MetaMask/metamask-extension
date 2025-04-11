@@ -10,7 +10,7 @@ import {
   NETWORK_TYPES,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import type { MultichainNetwork } from '../../../selectors/multichain';
 import {
   getMultichainBlockExplorerUrl,
   getMultichainAccountUrl,

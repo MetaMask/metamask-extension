@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import {
+import type {
   AlignItems,
   BackgroundColor,
   BlockSize,

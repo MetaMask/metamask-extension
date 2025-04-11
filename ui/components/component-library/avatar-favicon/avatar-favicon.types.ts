@@ -1,7 +1,7 @@
-import { BorderColor } from '../../../helpers/constants/design-system';
+import type { BorderColor } from '../../../helpers/constants/design-system';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
-import { PolymorphicComponentPropWithRef } from '../box';
-import { IconProps } from '../icon';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { IconProps } from '../icon';
 
 export enum AvatarFaviconSize {
   Xs = 'xs',

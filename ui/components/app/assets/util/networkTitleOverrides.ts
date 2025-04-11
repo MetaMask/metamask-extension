@@ -2,7 +2,7 @@ import {
   CURRENCY_SYMBOLS,
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../../shared/constants/network';
-import { TokenFiatDisplayInfo } from '../types';
+import type { TokenFiatDisplayInfo } from '../types';
 
 export type TranslateFunction = (arg: string) => string;
 

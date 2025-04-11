@@ -1,29 +1,31 @@
 import log from 'loglevel';
 import {
-  AbstractMessage,
-  AbstractMessageParams,
-  AbstractMessageParamsMetamask,
-  MessageManagerState,
-  OriginalRequest,
-  DecryptMessageManager,
-  DecryptMessageParams,
-  DecryptMessageParamsMetamask,
+  DecryptMessageManager
 } from '@metamask/message-manager';
 import type {
   DecryptMessageManagerMessenger,
   DecryptMessageManagerState,
   DecryptMessageManagerUnapprovedMessageAddedEvent,
-} from '@metamask/message-manager';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
-import {
+
+  AbstractMessage,
+  AbstractMessageParams,
+  AbstractMessageParamsMetamask,
+  MessageManagerState,
+  OriginalRequest,
+  DecryptMessageParams,
+  DecryptMessageParamsMetamask} from '@metamask/message-manager';
+import type { RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import type {
   AcceptRequest,
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
-import { Patch } from 'immer';
+import type { Patch } from 'immer';
 import type { KeyringControllerDecryptMessageAction } from '@metamask/keyring-controller';
-import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
+import type { Eip1024EncryptedData} from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 

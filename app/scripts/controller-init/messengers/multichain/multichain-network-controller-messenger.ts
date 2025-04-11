@@ -1,5 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
-import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
+import type { Messenger } from '@metamask/base-controller';
+import type { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   type NetworkControllerSetActiveNetworkAction,
   type NetworkControllerGetStateAction,

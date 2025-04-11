@@ -1,10 +1,11 @@
+import type {
+  AuthenticationControllerState} from '@metamask/profile-sync-controller/auth';
 import {
-  AuthenticationControllerState,
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
-import { ControllerInitFunction } from '../types';
-import { AuthenticationControllerMessenger } from '../messengers/identity';
+import type { ControllerInitFunction } from '../types';
+import type { AuthenticationControllerMessenger } from '../messengers/identity';
 
 /**
  * Initialize the Authentication controller.

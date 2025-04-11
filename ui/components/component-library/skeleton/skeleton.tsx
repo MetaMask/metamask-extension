@@ -8,7 +8,7 @@ import {
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
 
-import { SkeletonProps, SkeletonComponent } from './skeleton.types';
+import type { SkeletonProps, SkeletonComponent } from './skeleton.types';
 
 export const Skeleton: SkeletonComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

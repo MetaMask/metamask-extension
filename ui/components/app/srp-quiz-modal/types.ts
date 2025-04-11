@@ -1,4 +1,4 @@
-import { ButtonSize, ButtonVariant } from '../../component-library';
+import type { ButtonSize, ButtonVariant } from '../../component-library';
 
 export enum QuizStage {
   introduction = 'introduction',

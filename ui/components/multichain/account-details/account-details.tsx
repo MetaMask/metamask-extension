@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import {
+import type {
   KeyringMetadata,
-  KeyringObject,
+  KeyringObject} from '@metamask/keyring-controller';
+import {
   KeyringTypes,
 } from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF

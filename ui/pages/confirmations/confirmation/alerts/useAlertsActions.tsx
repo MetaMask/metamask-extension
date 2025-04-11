@@ -1,11 +1,12 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
+import type { ApprovalRequest } from '@metamask/approval-controller';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
 import { useConfirmationNavigation } from '../../hooks/useConfirmationNavigation';
+import type {
+  ApprovalsMetaMaskState} from '../../../../selectors';
 import {
-  ApprovalsMetaMaskState,
   getApprovalsByOrigin,
 } from '../../../../selectors';
 

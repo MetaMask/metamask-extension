@@ -9,11 +9,12 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
-import { Box, BoxProps, PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box';
 import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
 import { Icon, IconName, IconSize } from '../icon';
-import {
+import type {
   PickerNetworkComponent,
   PickerNetworkProps,
 } from './picker-network.types';

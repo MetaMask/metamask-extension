@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { isPermitSignatureRequest } from '../utils';
 import { selectUseTransactionSimulations } from '../selectors/preferences';
 import { useConfirmContext } from '../context/confirm';

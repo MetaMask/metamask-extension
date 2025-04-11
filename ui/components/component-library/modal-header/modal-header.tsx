@@ -10,7 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { IconName } from '../icon';
 import { HeaderBase } from '../header-base';
-import { ModalHeaderProps } from './modal-header.types';
+import type { ModalHeaderProps } from './modal-header.types';
 
 export const ModalHeader: React.FC<ModalHeaderProps> = ({
   children,

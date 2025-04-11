@@ -4,7 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import {
+import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
@@ -29,7 +29,7 @@ import {
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import AssetComponent from './Asset';
-import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
+import type { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
 type AssetListProps = {
   handleAssetChange: (

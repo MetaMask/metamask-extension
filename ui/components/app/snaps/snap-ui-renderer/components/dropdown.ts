@@ -1,7 +1,7 @@
-import { DropdownElement, OptionElement } from '@metamask/snaps-sdk/jsx';
+import type { DropdownElement, OptionElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const dropdown: UIComponentFactory<DropdownElement> = ({
   element,

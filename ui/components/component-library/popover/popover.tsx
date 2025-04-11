@@ -14,9 +14,10 @@ import {
 import { Box } from '../box';
 import type { BoxProps, PolymorphicRef } from '../box';
 
-import {
+import type {
   PopoverProps,
-  PopoverComponent,
+  PopoverComponent} from './popover.types';
+import {
   PopoverPosition,
   PopoverRole,
 } from './popover.types';

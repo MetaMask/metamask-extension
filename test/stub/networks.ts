@@ -1,12 +1,13 @@
-import {
+import type {
   NetworkMetadata,
-  NetworkState,
+  NetworkState} from '@metamask/network-controller';
+import {
   NetworkStatus,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { v4 as uuidv4 } from 'uuid';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import {
   NETWORK_TO_NAME_MAP,

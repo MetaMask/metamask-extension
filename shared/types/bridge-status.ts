@@ -1,4 +1,4 @@
-import {
+import type {
   TransactionControllerState,
   TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -8,11 +8,11 @@ import type {
   QuoteMetadata,
   QuoteResponse,
 } from '@metamask/bridge-controller';
-import {
+import type {
   NetworkState,
   ProviderConfigState,
 } from '../modules/selectors/networks';
-import { SmartTransactionsMetaMaskState } from '../modules/selectors';
+import type { SmartTransactionsMetaMaskState } from '../modules/selectors';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error

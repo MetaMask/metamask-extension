@@ -1,5 +1,5 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { UserOperationControllerState } from '@metamask/user-operation-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import { createSelector } from 'reselect';
 
 export type AccountAbstractionState = {

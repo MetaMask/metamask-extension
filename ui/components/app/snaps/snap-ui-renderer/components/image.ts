@@ -1,5 +1,5 @@
-import { ImageElement } from '@metamask/snaps-sdk/jsx';
-import { UIComponentFactory } from './types';
+import type { ImageElement } from '@metamask/snaps-sdk/jsx';
+import type { UIComponentFactory } from './types';
 
 function generateBorderRadius(
   borderRadius?: ImageElement['props']['borderRadius'],

@@ -1,6 +1,6 @@
 import { BridgeClientId, type Quote } from '@metamask/bridge-controller';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import {
+import type {
   StatusResponse,
   StatusRequestWithSrcTxHash,
   StatusRequestDto,

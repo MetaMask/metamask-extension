@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { ChainId } from '@metamask/controller-utils';
+import type { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,

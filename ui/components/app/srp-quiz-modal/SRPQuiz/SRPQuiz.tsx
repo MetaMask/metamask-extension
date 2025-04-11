@@ -30,7 +30,8 @@ import {
 import { ModalContent } from '../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import QuizContent from '../QuizContent';
-import { JSXDict, QuizStage } from '../types';
+import type { JSXDict} from '../types';
+import { QuizStage } from '../types';
 import { getHDEntropyIndex } from '../../../../selectors/selectors';
 
 const wrongAnswerIcon = (

@@ -1,10 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
+import type {
+  KeyringAccountType} from '@metamask/keyring-api';
 import {
   BtcAccountType,
-  EthAccountType,
-  KeyringAccountType,
+  EthAccountType
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';

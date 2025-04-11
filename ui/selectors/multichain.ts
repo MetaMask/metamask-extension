@@ -4,23 +4,27 @@ import type {
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
-import { NetworkType } from '@metamask/controller-utils';
-import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import type { NetworkType } from '@metamask/controller-utils';
+import type { Transaction } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import type {
+  NetworkConfiguration} from '@metamask/network-controller';
 import {
-  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
+import type { CaipChainId, Hex} from '@metamask/utils';
+import { KnownCaipNamespace } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
+import type {
+  MultichainProviderConfig} from '../../shared/constants/multichain/networks';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
   MULTICHAIN_TOKEN_IMAGE_MAP,
-  MultichainNetworks,
-  MultichainProviderConfig,
+  MultichainNetworks
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
@@ -37,17 +41,19 @@ import {
   CHAIN_IDS,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import type {
+  NetworkState} from '../../shared/modules/selectors/networks';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-  getProviderConfig,
-  NetworkState,
+  getProviderConfig
 } from '../../shared/modules/selectors/networks';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import type {
+  AccountsState} from './accounts';
 import {
-  AccountsState,
   getInternalAccounts,
   getSelectedInternalAccount,
   isSolanaAccount,

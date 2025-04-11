@@ -1,4 +1,4 @@
-import { Token } from '@metamask/assets-controllers';
+import type { Token } from '@metamask/assets-controllers';
 import { findAssetByAddress } from './util';
 
 describe('findAssetByAddress', () => {

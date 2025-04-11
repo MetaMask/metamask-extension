@@ -1,7 +1,8 @@
+import type {
+  DependencyList} from 'react';
 import {
   useState,
   useEffect,
-  DependencyList,
   useCallback,
   useRef,
 } from 'react';

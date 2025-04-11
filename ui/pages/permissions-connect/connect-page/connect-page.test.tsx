@@ -7,7 +7,8 @@ import {
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { ConnectPage, ConnectPageProps } from './connect-page';
+import type { ConnectPageProps } from './connect-page';
+import { ConnectPage } from './connect-page';
 
 const mockTestDappUrl = 'https://test.dapp';
 

@@ -7,7 +7,7 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from './constants';
-import { AggregatorNetwork } from './types';
+import type { AggregatorNetwork } from './types';
 
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',

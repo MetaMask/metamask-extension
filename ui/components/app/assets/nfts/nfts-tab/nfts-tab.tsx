@@ -39,7 +39,7 @@ import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
-import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,

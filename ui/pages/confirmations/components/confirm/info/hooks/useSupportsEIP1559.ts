@@ -1,6 +1,7 @@
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionEnvelopeType,
-  TransactionMeta,
+  TransactionEnvelopeType
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { isLegacyTransaction } from '../../../../../../helpers/utils/transactions.util';

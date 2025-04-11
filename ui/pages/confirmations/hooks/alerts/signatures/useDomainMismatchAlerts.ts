@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
+import type {
+  WrappedSIWERequest} from '@metamask/controller-utils';
 import {
-  isValidSIWEOrigin,
-  WrappedSIWERequest,
+  isValidSIWEOrigin
 } from '@metamask/controller-utils';
 
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-import { SignatureRequestType } from '../../../types/confirm';
+import type { SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 

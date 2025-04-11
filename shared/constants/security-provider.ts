@@ -1,5 +1,6 @@
+import type {
+  SecurityAlertResponse} from '@metamask/transaction-controller';
 import {
-  SecurityAlertResponse,
   TransactionType,
 } from '@metamask/transaction-controller';
 

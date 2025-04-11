@@ -1,13 +1,14 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import {
+import type {
   SimulationBalanceChange,
   SimulationData,
-  SimulationTokenBalanceChange,
+  SimulationTokenBalanceChange} from '@metamask/transaction-controller';
+import {
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import { ContractExchangeRates } from '@metamask/assets-controllers';
+import type { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
@@ -15,11 +16,12 @@ import { selectConversionRateByChainId } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 
-import {
+import type {
   BalanceChange,
-  FIAT_UNAVAILABLE,
   NativeAssetIdentifier,
-  TokenAssetIdentifier,
+  TokenAssetIdentifier} from './types';
+import {
+  FIAT_UNAVAILABLE
 } from './types';
 
 const NATIVE_DECIMALS = 18;

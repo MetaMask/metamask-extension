@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { CaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { toggleNetworkMenu } from '../../../../store/actions';

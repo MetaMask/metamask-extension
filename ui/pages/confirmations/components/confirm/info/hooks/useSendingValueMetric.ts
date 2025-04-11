@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect } from 'react';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 

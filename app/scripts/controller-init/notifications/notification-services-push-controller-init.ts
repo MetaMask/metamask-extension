@@ -7,7 +7,7 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
-import { ControllerInitFunction } from '../types';
+import type { ControllerInitFunction } from '../types';
 import { type NotificationServicesPushControllerMessenger } from '../messengers/notifications';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {

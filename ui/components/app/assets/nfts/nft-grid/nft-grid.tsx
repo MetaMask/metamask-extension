@@ -10,7 +10,7 @@ import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
 import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
-import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import type { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
   getIpfsGateway,
   getNftIsStillFetchingIndication,

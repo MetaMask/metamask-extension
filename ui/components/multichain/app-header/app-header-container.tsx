@@ -6,7 +6,8 @@ import {
   BlockSize,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Box, BoxProps } from '../../component-library';
+import type { BoxProps } from '../../component-library';
+import { Box } from '../../component-library';
 
 type AppHeaderContainerProps = {
   isUnlocked: boolean;

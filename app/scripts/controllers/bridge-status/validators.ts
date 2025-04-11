@@ -1,9 +1,10 @@
 import { truthyString, validateData } from '../../../../shared/lib/swaps-utils';
-import {
+import type {
   BridgeId,
   DestChainStatus,
   SrcChainStatus,
-  Asset,
+  Asset} from '../../../../shared/types/bridge-status';
+import {
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
 import { BRIDGE_STATUS_BASE_URL } from './constants';

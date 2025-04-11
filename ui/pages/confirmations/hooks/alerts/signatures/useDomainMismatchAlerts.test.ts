@@ -7,7 +7,7 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { SignatureRequestType } from '../../../types/confirm';
+import type { SignatureRequestType } from '../../../types/confirm';
 import useDomainMismatchAlert from './useDomainMismatchAlerts';
 
 const MOCK_ORIGIN = 'https://example-dapp.example';

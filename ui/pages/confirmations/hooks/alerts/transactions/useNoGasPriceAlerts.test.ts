@@ -1,6 +1,7 @@
-import {
+import type {
   TransactionMeta,
-  TransactionParams,
+  TransactionParams} from '@metamask/transaction-controller';
+import {
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';

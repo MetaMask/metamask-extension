@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import type { IconName} from '../../component-library';
+import { Box, Icon, IconSize, Text } from '../../component-library';
 import {
   BlockSize,
   Display,

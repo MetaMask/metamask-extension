@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import type {
+  DecodingDataStateChanges} from '@metamask/signature-controller';
 import {
-  DecodingDataChangeType,
-  DecodingDataStateChanges,
+  DecodingDataChangeType
 } from '@metamask/signature-controller';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../../test/data/confirmations/helper';

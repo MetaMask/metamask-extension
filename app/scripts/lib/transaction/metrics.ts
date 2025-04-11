@@ -1,13 +1,15 @@
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
-import {
+import type {
   NestedTransactionMetadata,
-  TransactionMeta,
+  TransactionMeta} from '@metamask/transaction-controller';
+import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json, add0x } from '@metamask/utils';
-import { Hex } from 'viem';
+import type { Json} from '@metamask/utils';
+import { add0x } from '@metamask/utils';
+import type { Hex } from 'viem';
 import { errorCodes } from '@metamask/rpc-errors';
 import {
   MESSAGE_TYPE,

@@ -1,5 +1,5 @@
-import { SnapId } from '@metamask/snaps-sdk';
-import { GetSnapKeyring } from './types';
+import type { SnapId } from '@metamask/snaps-sdk';
+import type { GetSnapKeyring } from './types';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.

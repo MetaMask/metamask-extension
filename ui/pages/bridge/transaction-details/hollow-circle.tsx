@@ -1,10 +1,11 @@
 import * as React from 'react';
 import classnames from 'classnames';
+import type {
+  IconProps,
+  PolymorphicRef} from '../../../components/component-library';
 import {
   Box,
-  IconProps,
-  IconSize,
-  PolymorphicRef,
+  IconSize
 } from '../../../components/component-library';
 import {
   BackgroundColor,

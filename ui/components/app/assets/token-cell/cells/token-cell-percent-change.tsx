@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { Box } from '../../../../component-library';
 import { getMarketData } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { TokenFiatDisplayInfo } from '../../types';
+import type { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
 
 type TokenCellPercentChangeProps = {

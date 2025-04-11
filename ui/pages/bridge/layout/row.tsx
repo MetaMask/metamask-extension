@@ -1,7 +1,8 @@
 import React from 'react';
+import type {
+  ContainerProps} from '../../../components/component-library';
 import {
-  Container,
-  ContainerProps,
+  Container
 } from '../../../components/component-library';
 import {
   AlignItems,

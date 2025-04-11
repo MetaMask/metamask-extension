@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from 'react-dom/test-utils';
+import type {
+  DecodingData} from '@metamask/signature-controller';
 import {
-  DecodingData,
   DecodingDataChangeType,
 } from '@metamask/signature-controller';
 import { waitFor } from '@testing-library/dom';

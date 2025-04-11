@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -58,7 +58,7 @@ import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
-import {
+import type {
   AccountType,
   ConnectedSites,
   SubjectsType,

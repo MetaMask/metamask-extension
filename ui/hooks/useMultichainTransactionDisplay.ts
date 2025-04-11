@@ -1,5 +1,6 @@
+import type {
+  Transaction} from '@metamask/keyring-api';
 import {
-  Transaction,
   TransactionStatus as KeyringTransactionStatus,
   TransactionType,
 } from '@metamask/keyring-api';
@@ -8,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
+import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,

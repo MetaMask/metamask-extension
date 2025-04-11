@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
-import { MeasurementUnit, StartSpanOptions } from '@sentry/types';
+import type * as Sentry from '@sentry/browser';
+import type { MeasurementUnit, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

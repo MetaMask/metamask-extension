@@ -1,4 +1,4 @@
-import { MessageTypes } from '@metamask/eth-sig-util';
+import type { MessageTypes } from '@metamask/eth-sig-util';
 
 /**
  * Recursively sanitizes a message object based on the provided types and primary type.

@@ -1,6 +1,7 @@
+import type {
+  NameEntry} from '@metamask/name-controller';
 import {
   FALLBACK_VARIATION,
-  NameEntry,
   NameType,
 } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';

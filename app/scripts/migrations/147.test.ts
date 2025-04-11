@@ -1,4 +1,5 @@
-import { migrate, version, VersionedData } from './147';
+import type { VersionedData } from './147';
+import { migrate, version } from './147';
 
 const oldVersion = 146;
 

@@ -1,5 +1,5 @@
 import { useContext, createContext } from 'react';
-import { SelectContextType } from './select-wrapper.types';
+import type { SelectContextType } from './select-wrapper.types';
 
 export const SelectContext = createContext<SelectContextType | undefined>(
   undefined,

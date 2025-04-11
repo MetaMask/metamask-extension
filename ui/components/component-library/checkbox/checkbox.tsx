@@ -1,4 +1,5 @@
-import React, { ChangeEvent, KeyboardEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
 import {

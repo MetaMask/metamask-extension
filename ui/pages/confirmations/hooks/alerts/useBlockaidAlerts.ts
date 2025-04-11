@@ -2,7 +2,7 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
+import type {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -12,12 +12,12 @@ import {
   FALSE_POSITIVE_REPORT_BASE_URL,
   SECURITY_PROVIDER_UTM_SOURCE,
 } from '../../../../../shared/constants/security-provider';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SIGNATURE_TRANSACTION_TYPES } from '../../utils';
 import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
-import {
+import type {
   SecurityAlertResponse,
   SignatureRequestType,
 } from '../../types/confirm';

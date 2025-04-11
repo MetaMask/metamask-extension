@@ -4,7 +4,7 @@ import log from 'loglevel';
 
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
-import { MetaMaskStateType } from './base-store';
+import type { MetaMaskStateType } from './base-store';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 

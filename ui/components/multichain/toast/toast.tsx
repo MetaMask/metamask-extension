@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { BannerBase, Box, ButtonLink, Text } from '../../component-library';
-import {
+import type {
   BorderRadius,
-  Display,
-  TextVariant,
+  TextVariant} from '../../../helpers/constants/design-system';
+import {
+  Display
 } from '../../../helpers/constants/design-system';
 
 export const ToastContainer = ({

@@ -1,25 +1,25 @@
 import { EthAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type {
   TransactionController,
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
+import type {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
-import { PPOMController } from '@metamask/ppom-validator';
+import type { PPOMController } from '@metamask/ppom-validator';
 
 import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
-import {
+import type {
   SecurityAlertResponse,
   UpdateSecurityAlertResponse,
 } from '../ppom/types';

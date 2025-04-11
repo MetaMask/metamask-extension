@@ -1,13 +1,15 @@
+import type {
+  SimulationData} from '@metamask/transaction-controller';
 import {
-  SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
-import {
+import type {
   UseDisplayNameRequest,
-  UseDisplayNameResponse,
+  UseDisplayNameResponse} from '../../../../hooks/useDisplayName';
+import {
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
@@ -17,7 +19,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { calculateTotalFiat } from './fiat-display';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
 import { useLoadingTime } from './useLoadingTime';
 
 export type UseSimulationMetricsProps = {

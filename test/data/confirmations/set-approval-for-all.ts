@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
 import {
   CHAIN_ID,

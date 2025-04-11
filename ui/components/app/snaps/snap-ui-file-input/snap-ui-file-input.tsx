@@ -1,8 +1,9 @@
-import React, {
+import type {
   ChangeEvent,
   // eslint-disable-next-line @typescript-eslint/no-shadow
   DragEvent,
-  FunctionComponent,
+  FunctionComponent} from 'react';
+import React, {
   useRef,
   useState,
 } from 'react';

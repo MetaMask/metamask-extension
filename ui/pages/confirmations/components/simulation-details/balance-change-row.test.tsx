@@ -4,7 +4,7 @@ import { BalanceChangeRow } from './balance-change-row';
 import { AmountPill } from './amount-pill';
 import { AssetPill } from './asset-pill';
 import { IndividualFiatDisplay } from './fiat-display';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
 
 jest.mock('./amount-pill', () => ({
   AmountPill: jest.fn(() => null),

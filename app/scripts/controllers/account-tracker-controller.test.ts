@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import { Messenger } from '@metamask/base-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { BlockTracker, Provider } from '@metamask/network-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';

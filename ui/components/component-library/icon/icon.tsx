@@ -3,10 +3,11 @@ import classnames from 'classnames';
 
 import { IconColor, Display } from '../../../helpers/constants/design-system';
 
-import { Box, BoxProps } from '../box';
-import type { PolymorphicRef } from '../box';
+import { Box } from '../box';
+import type { PolymorphicRef , BoxProps } from '../box';
 
-import { IconSize, IconProps, IconComponent } from './icon.types';
+import type { IconProps, IconComponent } from './icon.types';
+import { IconSize } from './icon.types';
 
 export const Icon: IconComponent = React.forwardRef(
   <C extends React.ElementType = 'span'>(

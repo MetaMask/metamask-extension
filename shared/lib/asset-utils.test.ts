@@ -1,8 +1,9 @@
-import {
+import type {
   CaipAssetType,
-  CaipAssetTypeStruct,
   CaipChainId,
-  Hex,
+  Hex} from '@metamask/utils';
+import {
+  CaipAssetTypeStruct
 } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';

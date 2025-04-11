@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId, Hex } from '@metamask/utils';
-import { ChainId } from '../../../../shared/constants/network';
+import type { CaipChainId, Hex } from '@metamask/utils';
+import type { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getDataCollectionForMarketing,

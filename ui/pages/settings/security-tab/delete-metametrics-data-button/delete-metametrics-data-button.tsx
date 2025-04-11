@@ -2,14 +2,15 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
+import type {
+  PolymorphicComponentPropWithRef,
+  PolymorphicRef} from '../../../../components/component-library';
 import {
   Box,
   ButtonPrimary,
   Icon,
   IconName,
   IconSize,
-  PolymorphicComponentPropWithRef,
-  PolymorphicRef,
   Text,
 } from '../../../../components/component-library';
 import {

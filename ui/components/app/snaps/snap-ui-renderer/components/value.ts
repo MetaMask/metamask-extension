@@ -1,6 +1,6 @@
-import { ValueElement } from '@metamask/snaps-sdk/jsx';
+import type { ValueElement } from '@metamask/snaps-sdk/jsx';
 import { mapToTemplate } from '../utils';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const value: UIComponentFactory<ValueElement> = ({
   element,

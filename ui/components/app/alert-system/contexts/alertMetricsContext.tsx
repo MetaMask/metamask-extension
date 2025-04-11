@@ -1,4 +1,5 @@
-import React, { createContext, useContext, ReactNode, useMemo } from 'react';
+import type { ReactNode} from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 type TrackFunctionType = (alertKey: string) => void;
 

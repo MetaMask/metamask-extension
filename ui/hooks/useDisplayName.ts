@@ -1,8 +1,9 @@
 import { NameType } from '@metamask/name-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import type {
+  EXPERIENCES_TYPE} from '../../shared/constants/first-party-contracts';
 import {
-  EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';

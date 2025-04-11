@@ -1,13 +1,14 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { ButtonBase, ButtonBaseProps } from '../button-base';
+import type { ButtonBaseProps } from '../button-base';
+import { ButtonBase } from '../button-base';
 import { Color } from '../../../helpers/constants/design-system';
-import { PolymorphicRef } from '../box';
-import type { ButtonSecondaryProps } from './button-secondary.types';
+import type { PolymorphicRef } from '../box';
+import type { ButtonSecondaryProps ,
+  ButtonSecondaryComponent} from './button-secondary.types';
 import {
-  ButtonSecondarySize,
-  ButtonSecondaryComponent,
+  ButtonSecondarySize
 } from './button-secondary.types';
 
 export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(

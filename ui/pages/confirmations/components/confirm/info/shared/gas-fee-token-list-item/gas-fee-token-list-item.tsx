@@ -1,7 +1,7 @@
 import React from 'react';
-import { GasFeeToken } from '@metamask/transaction-controller';
+import type { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   Box,

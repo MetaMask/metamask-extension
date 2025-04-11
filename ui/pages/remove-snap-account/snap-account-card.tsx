@@ -4,7 +4,7 @@ import { getMetaMaskAccountsOrdered } from '../../selectors';
 import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library';
 import { AccountListItem } from '../../components/multichain/account-list-item';
-import { MergedInternalAccount } from '../../selectors/selectors.types';
+import type { MergedInternalAccount } from '../../selectors/selectors.types';
 
 // Wrapper component of AccountListItem with proper styling and auto populating information for the selected account
 export const SnapAccountCard = ({

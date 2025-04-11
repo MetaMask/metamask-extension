@@ -1,4 +1,4 @@
-import {
+import type {
   FieldElement,
   InputElement,
   JSXElement,
@@ -16,7 +16,7 @@ import { radioGroup as radioGroupFn } from './radioGroup';
 import { checkbox as checkboxFn } from './checkbox';
 import { selector as selectorFn } from './selector';
 import { assetSelector as assetSelectorFn } from './asset-selector';
-import { UIComponentFactory, UIComponentParams } from './types';
+import type { UIComponentFactory, UIComponentParams } from './types';
 import { constructInputProps } from './input';
 
 export const field: UIComponentFactory<FieldElement> = ({

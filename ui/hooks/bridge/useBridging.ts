@@ -8,6 +8,8 @@ import {
   type SwapsTokenObject,
 } from '@metamask/bridge-controller';
 import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
+import type {
+  SwapsEthToken} from '../../selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
@@ -15,8 +17,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getUseExternalServices,
-  SwapsEthToken,
+  getUseExternalServices
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';

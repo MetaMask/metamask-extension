@@ -1,6 +1,6 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
-import { TransactionDescription } from '@ethersproject/abi';
+import type { TransactionDescription } from '@ethersproject/abi';
 import {
   getIsRevokeSetApprovalForAll,
   hasValueAndNativeBalanceMismatch,

@@ -1,6 +1,6 @@
-import { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
+import type { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   Display,
@@ -9,7 +9,7 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../utils';
-import { UIComponent, UIComponentFactory } from './types';
+import type { UIComponent, UIComponentFactory } from './types';
 
 function generateJustifyContent(alignment?: BoxProps['alignment']) {
   switch (alignment) {

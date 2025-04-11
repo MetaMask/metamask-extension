@@ -3,7 +3,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import { orderSignatureMsg } from '../../../../test/data/confirmations/typed_sign';
 import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { updateEventFragment } from '../../../store/actions';
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
 
 const renderUseSignatureEventFragment = (signature: SignatureRequestType) => {

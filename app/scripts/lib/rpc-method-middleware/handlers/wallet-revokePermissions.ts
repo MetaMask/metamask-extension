@@ -1,12 +1,13 @@
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
-import {
-  isNonEmptyArray,
+import type {
   Json,
   JsonRpcRequest,
-  PendingJsonRpcResponse,
+  PendingJsonRpcResponse} from '@metamask/utils';
+import {
+  isNonEmptyArray
 } from '@metamask/utils';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
-import {
+import type {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';

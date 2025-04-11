@@ -10,7 +10,8 @@ import {
   Display,
   IconColor,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
+import type { ConfirmInfoRowProps } from './row';
+import { ConfirmInfoRow } from './row';
 
 export type ConfirmInfoExpandableRowProps = ConfirmInfoRowProps & {
   content: React.ReactNode | string;

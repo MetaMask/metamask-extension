@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import getFetchWithTimeout from './fetch-with-timeout';
 
 const fetchWithTimeout = getFetchWithTimeout();

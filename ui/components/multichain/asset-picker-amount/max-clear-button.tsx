@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import type {
+  Asset} from '../../../ducks/send';
 import {
-  Asset,
   getSendAnalyticProperties,
   getSendMaxModeState,
   toggleSendMaxMode,

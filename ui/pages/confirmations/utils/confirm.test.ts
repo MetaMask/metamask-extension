@@ -5,7 +5,7 @@ import {
   permitSignatureMsg,
   unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
-import { SignatureRequestType } from '../types/confirm';
+import type { SignatureRequestType } from '../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,

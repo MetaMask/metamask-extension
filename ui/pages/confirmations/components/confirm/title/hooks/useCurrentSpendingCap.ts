@@ -1,8 +1,9 @@
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Confirmation } from '../../../../types/confirm';
+import type { Confirmation } from '../../../../types/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../../info/approve/hooks/use-approve-token-simulation';
 

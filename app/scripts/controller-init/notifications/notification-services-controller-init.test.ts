@@ -1,7 +1,7 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
 import {
   getNotificationServicesControllerMessenger,
   type NotificationServicesControllerMessenger,

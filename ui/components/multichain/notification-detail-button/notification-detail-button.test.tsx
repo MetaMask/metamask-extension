@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ButtonVariant } from '../../component-library';
+import type {
+  NotificationDetailButtonProps} from './notification-detail-button';
 import {
-  NotificationDetailButton,
-  NotificationDetailButtonProps,
+  NotificationDetailButton
 } from './notification-detail-button';
 
 jest.mock('react-router-dom', () => {

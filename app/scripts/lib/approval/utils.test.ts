@@ -1,8 +1,8 @@
-import {
+import type {
   ApprovalController,
   ApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';

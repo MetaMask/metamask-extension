@@ -1,4 +1,5 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import { AlertActionHandlerProvider } from '../../../../../components/app/alert-system/contexts/alertActionHandler';
 import useConfirmationAlertActions from '../../../hooks/useConfirmationAlertActions';
 import setConfirmationAlerts from '../../../hooks/setConfirmationAlerts';

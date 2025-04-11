@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
+import type { CaipAccountId} from '@metamask/utils';
+import { parseCaipAccountId } from '@metamask/utils';
 import BlockieIdenticon from '../../../ui/identicon/blockieIdenticon';
 import Jazzicon from '../../../ui/jazzicon';
 import { getUseBlockie } from '../../../../selectors';

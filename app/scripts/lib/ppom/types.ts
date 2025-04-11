@@ -1,4 +1,4 @@
-import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
+import type { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type SecurityAlertResponse = {
   block?: number;

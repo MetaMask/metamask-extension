@@ -3,7 +3,7 @@ import { validate as isUuid } from 'uuid';
 
 import useAlerts from '../../../hooks/useAlerts';
 import { isSignatureTransactionType } from '../utils';
-import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
 import { useSignatureEventFragment } from './useSignatureEventFragment';

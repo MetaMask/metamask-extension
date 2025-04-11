@@ -1,13 +1,13 @@
-import { BoldElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { BoldElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { mapTextToTemplate } from '../utils';
 import {
   TextVariant,
   OverflowWrap,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const bold: UIComponentFactory<BoldElement> = ({
   element,

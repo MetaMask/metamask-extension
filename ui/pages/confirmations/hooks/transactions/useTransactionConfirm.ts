@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';

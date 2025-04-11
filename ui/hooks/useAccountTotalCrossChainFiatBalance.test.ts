@@ -11,8 +11,9 @@ import {
   getTokenBalances,
 } from '../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import type {
+  FormattedTokensWithBalances} from './useAccountTotalCrossChainFiatBalance';
 import {
-  FormattedTokensWithBalances,
   useAccountTotalCrossChainFiatBalance,
 } from './useAccountTotalCrossChainFiatBalance';
 

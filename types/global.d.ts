@@ -5,8 +5,8 @@
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
 
-import * as Sentry from '@sentry/browser';
-import {
+import type * as Sentry from '@sentry/browser';
+import type {
   Success,
   Unsuccessful,
   PROTO,
@@ -18,7 +18,7 @@ import {
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
-import {
+import type {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';

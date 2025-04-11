@@ -1,6 +1,7 @@
+import type {
+  SubjectMetadataController} from '@metamask/permission-controller';
 import {
-  SubjectType,
-  SubjectMetadataController,
+  SubjectType
 } from '@metamask/permission-controller';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
 

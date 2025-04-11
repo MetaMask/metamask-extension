@@ -1,6 +1,6 @@
 import { AssetsContractController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
-import { AssetsContractControllerMessenger } from '../messengers/assets/assets-contract-controller-messenger';
+import type { ControllerInitFunction } from '../types';
+import type { AssetsContractControllerMessenger } from '../messengers/assets/assets-contract-controller-messenger';
 
 /**
  * Initialize the AssetsContractController.

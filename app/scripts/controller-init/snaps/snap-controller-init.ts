@@ -1,6 +1,6 @@
 import { SnapController } from '@metamask/snaps-controllers';
 import { hasProperty } from '@metamask/utils';
-import { ControllerInitFunction } from '../types';
+import type { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
@@ -9,7 +9,7 @@ import {
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import {
+import type {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';

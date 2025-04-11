@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
+import type PropTypes from 'prop-types';
 import type { TextStyleUtilityProps } from '../text';
 import type { PolymorphicComponentPropWithRef } from '../box';
-import { Severity, TextColor } from '../../../helpers/constants/design-system';
+import type { TextColor } from '../../../helpers/constants/design-system';
+import { Severity } from '../../../helpers/constants/design-system';
 
 export enum HelpTextSeverity {
   Danger = Severity.Danger,

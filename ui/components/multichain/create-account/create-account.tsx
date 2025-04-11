@@ -1,6 +1,7 @@
-import React, {
+import type {
   ChangeEvent,
-  KeyboardEvent,
+  KeyboardEvent} from 'react';
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -8,18 +9,19 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { KeyringTypes } from '@metamask/keyring-controller';
+import type { KeyringTypes } from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF
 
+import type {
+  PolymorphicComponentPropWithRef,
+  PolymorphicRef} from '../../component-library';
 import {
   Box,
   ButtonPrimary,
   ButtonSecondary,
-  FormTextFieldSize,
-  PolymorphicComponentPropWithRef,
-  PolymorphicRef,
+  FormTextFieldSize
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/form-text-field';
 import { useI18nContext } from '../../../hooks/useI18nContext';

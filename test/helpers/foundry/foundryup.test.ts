@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
-import { Dir, readFileSync } from 'fs';
+import type { Dir} from 'fs';
+import { readFileSync } from 'fs';
 import { join, relative } from 'path';
 import { parse as parseYaml } from 'yaml';
 import nock from 'nock';

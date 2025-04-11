@@ -1,6 +1,6 @@
-import { DividerElement } from '@metamask/snaps-sdk/jsx';
+import type { DividerElement } from '@metamask/snaps-sdk/jsx';
 import { BorderColor } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 export const divider: UIComponentFactory<DividerElement> = () => ({
   element: 'Box',

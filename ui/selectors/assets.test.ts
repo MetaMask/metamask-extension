@@ -1,8 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type {
   AssetsRatesState,
-  AssetsState,
+  AssetsState} from './assets';
+import {
   getAccountAssets,
   getTokenByAccountAndAddressAndChainId,
   getAssetsMetadata,

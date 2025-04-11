@@ -4,11 +4,12 @@ import classnames from 'classnames';
 import { Display } from '../../../helpers/constants/design-system';
 
 import { Box, type BoxProps, type PolymorphicRef } from '../box';
+import type {
+  BadgeWrapperProps,
+  BadgeWrapperComponent} from './badge-wrapper.types';
 import {
   BadgeWrapperPosition,
-  BadgeWrapperAnchorElementShape,
-  BadgeWrapperProps,
-  BadgeWrapperComponent,
+  BadgeWrapperAnchorElementShape
 } from './badge-wrapper.types';
 
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(

@@ -1,25 +1,27 @@
 /* eslint-disable camelcase */
-import { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
+import type { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
 import { formatChainIdToHex, isEthUsdt } from '@metamask/bridge-controller';
 // eslint-disable-next-line import/no-restricted-paths
-import {
+import type {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
   BridgeStatusControllerBridgeTransactionFailedEvent,
 } from '../../controllers/bridge-status/types';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
+import type {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload} from '../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
+  MetaMetricsEventName
 } from '../../../../shared/constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
-import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
+import type { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
+import type {
+  MetricsBackgroundState} from '../../../../shared/types/bridge-status';
 import {
-  StatusTypes,
-  MetricsBackgroundState,
+  StatusTypes
 } from '../../../../shared/types/bridge-status';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
 // eslint-disable-next-line import/no-restricted-paths

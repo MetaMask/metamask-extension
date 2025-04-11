@@ -1,4 +1,4 @@
-import { SnapId } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 

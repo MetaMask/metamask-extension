@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../types/confirm';
+import type { SignatureRequestType } from '../../types/confirm';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 import { isSignatureTransactionType } from '../../utils';
 import { useConfirmContext } from '../../context/confirm';

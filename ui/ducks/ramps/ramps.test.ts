@@ -1,4 +1,5 @@
-import { configureStore, Store } from '@reduxjs/toolkit';
+import type { Store } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { getUseExternalServices } from '../../selectors';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';

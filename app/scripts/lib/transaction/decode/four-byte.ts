@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { addHexPrefix } from 'ethereumjs-util';
-import { Interface, ParamType } from '@ethersproject/abi';
-import { Hex, createProjectLogger } from '@metamask/utils';
-import {
+import type { ParamType } from '@ethersproject/abi';
+import { Interface } from '@ethersproject/abi';
+import type { Hex} from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
+import type {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam,
 } from '../../../../../shared/types/transaction-decode';

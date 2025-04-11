@@ -1,10 +1,11 @@
-import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
+import type { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { hasChildren } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
-import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
+import type { NonEmptyArray} from '@metamask/utils';
+import { bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
-import { ChangeEvent as ReactChangeEvent } from 'react';
+import type { ChangeEvent as ReactChangeEvent } from 'react';
 import {
   BackgroundColor,
   BorderRadius,

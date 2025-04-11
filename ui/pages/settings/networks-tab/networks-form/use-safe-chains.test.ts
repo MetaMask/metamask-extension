@@ -1,4 +1,5 @@
-import { rpcIdentifierUtility, SafeChain } from './use-safe-chains';
+import type { SafeChain } from './use-safe-chains';
+import { rpcIdentifierUtility } from './use-safe-chains';
 
 describe('rpcIdentifierUtility', () => {
   let safeChains: SafeChain[];

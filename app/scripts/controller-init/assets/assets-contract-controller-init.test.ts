@@ -1,9 +1,10 @@
 import { Messenger } from '@metamask/base-controller';
 import { AssetsContractController } from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
+import type {
+  AssetsContractControllerMessenger} from '../messengers/assets';
 import {
-  AssetsContractControllerMessenger,
   getAssetsContractControllerMessenger,
 } from '../messengers/assets';
 import { AssetsContractControllerInit } from './assets-contract-controller-init';

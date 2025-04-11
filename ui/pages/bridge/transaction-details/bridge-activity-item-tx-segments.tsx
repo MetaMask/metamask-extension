@@ -1,10 +1,12 @@
 import React from 'react';
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import type {
+  BridgeHistoryItem} from '../../../../shared/types/bridge-status';
 import {
-  BridgeHistoryItem,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
 import { Box, Text } from '../../../components/component-library';
@@ -14,7 +16,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {

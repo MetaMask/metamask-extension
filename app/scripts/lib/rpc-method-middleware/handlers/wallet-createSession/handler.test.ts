@@ -1,14 +1,15 @@
 import { JsonRpcError } from '@metamask/rpc-errors';
+import type {
+  Caip25Authorization,
+  NormalizedScopesObject} from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  Caip25Authorization,
-  NormalizedScopesObject,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import * as Multichain from '@metamask/chain-agnostic-permission';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
+import type { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
 

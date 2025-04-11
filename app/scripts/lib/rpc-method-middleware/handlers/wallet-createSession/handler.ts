@@ -1,47 +1,51 @@
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
+import type {
+  Caip25Authorization,
+  NormalizedScopesObject,
+  Caip25CaveatValue} from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   bucketScopes,
   validateAndNormalizeScopes,
-  Caip25Authorization,
   getInternalScopesObject,
   getSessionScopes,
-  NormalizedScopesObject,
   getSupportedScopeObjects,
-  Caip25CaveatValue,
   setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
+import type {
+  RequestedPermissions} from '@metamask/permission-controller';
 import {
-  invalidParams,
-  RequestedPermissions,
+  invalidParams
 } from '@metamask/permission-controller';
-import {
+import type {
   CaipAccountId,
   CaipChainId,
   Hex,
-  isPlainObject,
   Json,
   JsonRpcRequest,
-  JsonRpcSuccess,
+  JsonRpcSuccess} from '@metamask/utils';
+import {
+  isPlainObject,
   KnownCaipNamespace,
   parseCaipAccountId,
 } from '@metamask/utils';
-import { NetworkController } from '@metamask/network-controller';
-import {
+import type { NetworkController } from '@metamask/network-controller';
+import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import type {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload} from '../../../../../../shared/constants/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
+  MetaMetricsEventName
 } from '../../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
-import { GrantedPermissions } from '../types';
+import type { GrantedPermissions } from '../types';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';

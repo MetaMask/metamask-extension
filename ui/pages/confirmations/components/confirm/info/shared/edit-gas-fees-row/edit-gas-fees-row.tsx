@@ -1,7 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction } from 'react';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';

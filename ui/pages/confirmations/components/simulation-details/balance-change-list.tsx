@@ -5,7 +5,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { BalanceChangeRow } from './balance-change-row';
-import { BalanceChange } from './types';
+import type { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
 import { sortBalanceChanges } from './sortBalanceChanges';
 

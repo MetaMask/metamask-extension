@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { LastInteractedConfirmationInfo } from '../../../../../shared/types/confirm';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { LastInteractedConfirmationInfo } from '../../../../../shared/types/confirm';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import {
@@ -13,7 +13,7 @@ import {
 import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
-import { SignatureRequestType } from '../../types/confirm';
+import type { SignatureRequestType } from '../../types/confirm';
 
 const CHANGE_THRESHOLD_MS = 60 * 1000; // 1 Minute
 

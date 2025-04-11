@@ -1,9 +1,10 @@
 import { renderHook, act } from '@testing-library/react-hooks';
+import type {
+  AsyncResult} from './useAsync';
 import {
   useAsyncResult,
   useAsyncResultOrThrow,
   useAsyncCallback,
-  AsyncResult,
   RESULT_IDLE,
   RESULT_PENDING,
 } from './useAsync';

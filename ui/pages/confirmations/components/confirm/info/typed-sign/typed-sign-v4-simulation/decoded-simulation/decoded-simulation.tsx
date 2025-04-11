@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react';
-import {
-  DecodingDataChangeType,
+import type {
   DecodingDataStateChange,
-  DecodingDataStateChanges,
+  DecodingDataStateChanges} from '@metamask/signature-controller';
+import {
+  DecodingDataChangeType
 } from '@metamask/signature-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 import { Text } from '../../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import TokenValueDisplay from '../value-display/value-display';

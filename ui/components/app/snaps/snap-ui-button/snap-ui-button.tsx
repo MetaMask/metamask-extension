@@ -1,8 +1,10 @@
-import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
+import type {
+  ButtonLinkProps} from '../../../component-library';
 import {
-  ButtonLinkProps,
   Icon,
   IconName,
   Text,

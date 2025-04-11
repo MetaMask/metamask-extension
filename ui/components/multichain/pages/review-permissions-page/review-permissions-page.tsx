@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import {
+import type {
   CaipAccountId,
   CaipChainId,
-  NonEmptyArray,
+  NonEmptyArray} from '@metamask/utils';
+import {
   parseCaipAccountId,
   KnownCaipNamespace,
 } from '@metamask/utils';
@@ -48,14 +49,14 @@ import {
 import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Page } from '../page';
-import { SubjectsType } from '../connections/components/connections.types';
+import type { SubjectsType } from '../connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import {
+import type {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';

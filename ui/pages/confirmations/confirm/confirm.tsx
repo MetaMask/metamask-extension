@@ -1,5 +1,6 @@
-import { ReactNodeLike } from 'prop-types';
-import React, { ReactNode } from 'react';
+import type { ReactNodeLike } from 'prop-types';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';

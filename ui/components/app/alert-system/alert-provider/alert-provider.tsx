@@ -1,7 +1,8 @@
 import React from 'react';
+import type {
+  SecurityProvider} from '../../../../../shared/constants/security-provider';
 import {
-  SECURITY_PROVIDER_CONFIG,
-  SecurityProvider,
+  SECURITY_PROVIDER_CONFIG
 } from '../../../../../shared/constants/security-provider';
 import {
   Box,
@@ -12,12 +13,13 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { SizeNumber } from '../../../component-library/box/box.types';
+import type { SizeNumber } from '../../../component-library/box/box.types';
+import type {
+  TextAlign} from '../../../../helpers/constants/design-system';
 import {
   AlignItems,
   Display,
   IconColor,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';

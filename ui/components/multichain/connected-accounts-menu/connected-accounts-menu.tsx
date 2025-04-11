@@ -22,7 +22,7 @@ import {
 } from '../../../store/actions';
 import { getPermissionsForActiveTab } from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
-import { Identity } from './connected-accounts-menu.types';
+import type { Identity } from './connected-accounts-menu.types';
 
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

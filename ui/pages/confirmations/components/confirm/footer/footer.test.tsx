@@ -20,12 +20,12 @@ import { permitSignatureMsg } from '../../../../../../test/data/confirmations/ty
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
-import { SignatureRequestType } from '../../../types/confirm';
+import type { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import Footer from './footer';
 

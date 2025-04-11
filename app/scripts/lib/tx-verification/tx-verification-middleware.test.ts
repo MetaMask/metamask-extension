@@ -1,13 +1,15 @@
-import { NetworkController } from '@metamask/network-controller';
-import { JsonRpcParams, jsonrpc2, Hex } from '@metamask/utils';
+import type { NetworkController } from '@metamask/network-controller';
+import type { JsonRpcParams, Hex } from '@metamask/utils';
+import { jsonrpc2 } from '@metamask/utils';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../../../shared/constants/first-party-contracts';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import type {
+  TxParams} from './tx-verification-middleware';
 import {
-  createTxVerificationMiddleware,
-  TxParams,
+  createTxVerificationMiddleware
 } from './tx-verification-middleware';
 
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>

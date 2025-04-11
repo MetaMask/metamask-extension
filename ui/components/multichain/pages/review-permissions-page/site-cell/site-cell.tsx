@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { CaipAccountId, CaipChainId } from '@metamask/utils';
+import type { CaipAccountId, CaipChainId } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,
@@ -13,7 +13,7 @@ import {
   IconName,
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
-import { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
+import type { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

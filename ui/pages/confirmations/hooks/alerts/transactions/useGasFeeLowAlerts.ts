@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   AlertActionKey,
   RowAlertKey,

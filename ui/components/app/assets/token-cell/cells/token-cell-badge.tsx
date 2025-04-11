@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -14,7 +14,7 @@ import {
   getMultichainIsEvm,
 } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { TokenFiatDisplayInfo } from '../../types';
+import type { TokenFiatDisplayInfo } from '../../types';
 
 type TokenCellBadgeProps = {
   token: TokenFiatDisplayInfo;

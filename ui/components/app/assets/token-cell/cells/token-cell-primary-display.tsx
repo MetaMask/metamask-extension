@@ -8,7 +8,7 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { TokenFiatDisplayInfo } from '../../types';
+import type { TokenFiatDisplayInfo } from '../../types';
 
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;

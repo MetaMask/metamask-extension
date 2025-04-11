@@ -1,11 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import { PPOMControllerMessenger } from '@metamask/ppom-validator';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
+import type { PPOMControllerMessenger } from '@metamask/ppom-validator';
+import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 
 type MessengerActions = NetworkControllerGetNetworkClientByIdAction;
 

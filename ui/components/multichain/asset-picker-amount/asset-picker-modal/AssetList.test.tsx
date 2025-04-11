@@ -21,7 +21,7 @@ import {
   getMultichainCurrentNetwork,
 } from '../../../../selectors/multichain';
 import AssetList from './AssetList';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
+import type { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 jest.mock('../../../../hooks/useMultichainSelector', () => ({
   useMultichainSelector: jest.fn(),

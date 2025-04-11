@@ -1,4 +1,4 @@
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 

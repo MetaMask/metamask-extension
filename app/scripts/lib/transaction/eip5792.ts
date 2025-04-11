@@ -1,21 +1,23 @@
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import type { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
+import type {
   Log,
   TransactionController,
   TransactionControllerGetStateAction,
   TransactionMeta,
   TransactionReceipt,
-  TransactionStatus,
-  ValidateSecurityRequest,
-} from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
-import { Messenger } from '@metamask/base-controller';
+  ValidateSecurityRequest} from '@metamask/transaction-controller';
 import {
-  GetCallsStatusCode,
+  TransactionStatus
+} from '@metamask/transaction-controller';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
+import type { Messenger } from '@metamask/base-controller';
+import type {
   GetCallsStatusResult,
   SendCalls,
-  SendCallsResult,
+  SendCallsResult} from '@metamask/eth-json-rpc-middleware';
+import {
+  GetCallsStatusCode
 } from '@metamask/eth-json-rpc-middleware';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 

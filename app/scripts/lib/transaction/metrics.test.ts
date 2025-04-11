@@ -1,7 +1,8 @@
-import { Provider } from '@metamask/network-controller';
-import {
+import type { Provider } from '@metamask/network-controller';
+import type {
   GasFeeToken,
-  TransactionMeta,
+  TransactionMeta} from '@metamask/transaction-controller';
+import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -32,7 +33,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import {
+import type {
   TransactionEventPayload,
   TransactionMetaEventPayload,
   TransactionMetricsRequest,

@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 
 import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,

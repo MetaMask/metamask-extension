@@ -1,25 +1,25 @@
 import type { UserStorageControllerStateChangeEvent } from '@metamask/profile-sync-controller/user-storage';
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   KeyringControllerGetStateAction,
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import {
+import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerGetSessionProfile,
   AuthenticationControllerIsSignedIn,
   AuthenticationControllerPerformSignIn,
 } from '@metamask/profile-sync-controller/auth';
-import {
+import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRenamedEvent,
   AccountsControllerListAccountsAction,
   AccountsControllerUpdateAccountMetadataAction,
 } from '@metamask/accounts-controller';
-import {
+import type {
   NetworkControllerAddNetworkAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,

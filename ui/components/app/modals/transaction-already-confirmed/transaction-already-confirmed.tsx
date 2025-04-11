@@ -22,7 +22,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
-import { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/store';
 
 export default function TransactionAlreadyConfirmed() {
   const {

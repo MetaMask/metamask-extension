@@ -1,13 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import type {
+  BatchTransactionParams} from '@metamask/transaction-controller';
 import {
-  BatchTransactionParams,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { decodeTransactionData } from '../../../../../../../store/actions';
@@ -16,9 +17,9 @@ import {
   TRANSACTION_DECODE_NESTED,
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
-import { Confirmation } from '../../../../../types/confirm';
+import type { Confirmation } from '../../../../../types/confirm';
 import * as useDecodedTransactionDataModule from '../../hooks/useDecodedTransactionData';
-import { DecodedTransactionDataSource } from '../../../../../../../../shared/types/transaction-decode';
+import type { DecodedTransactionDataSource } from '../../../../../../../../shared/types/transaction-decode';
 import { TransactionData } from './transaction-data';
 
 const DATA_MOCK = '0x123456';

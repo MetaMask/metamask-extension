@@ -1,4 +1,4 @@
-import { StorageBackend } from '@metamask/ppom-validator';
+import type { StorageBackend } from '@metamask/ppom-validator';
 
 type StorageKey = {
   name: string;

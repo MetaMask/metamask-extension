@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { Text } from '../text';
+import type {
+  SensitiveTextProps} from './sensitive-text.types';
 import {
-  SensitiveTextProps,
   SensitiveTextLength,
 } from './sensitive-text.types';
 

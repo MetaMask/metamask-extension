@@ -1,4 +1,4 @@
-import {
+import type {
   AccountsControllerChangeEvent,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -6,14 +6,15 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
-import {
-  BaseController,
+import type { Json } from '@metamask/utils';
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  RestrictedMessenger} from '@metamask/base-controller';
+import {
+  BaseController
 } from '@metamask/base-controller';
-import { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
   type PreferencesState,

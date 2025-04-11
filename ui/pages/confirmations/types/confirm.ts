@@ -1,12 +1,12 @@
-import { ApprovalControllerState } from '@metamask/approval-controller';
-import { DecodingData } from '@metamask/signature-controller';
-import { SIWEMessage } from '@metamask/controller-utils';
-import {
+import type { ApprovalControllerState } from '@metamask/approval-controller';
+import type { DecodingData } from '@metamask/signature-controller';
+import type { SIWEMessage } from '@metamask/controller-utils';
+import type {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 
-import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
+import type { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type TypedSignDataV1Type = {
   name: string;

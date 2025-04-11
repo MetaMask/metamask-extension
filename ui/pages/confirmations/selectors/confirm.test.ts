@@ -1,6 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
-import { ConfirmMetamaskState } from '../types/confirm';
+import type { ConfirmMetamaskState } from '../types/confirm';
 import {
   oldestPendingConfirmationSelector,
   pendingConfirmationsSelector,

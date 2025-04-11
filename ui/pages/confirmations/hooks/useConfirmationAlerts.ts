@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';

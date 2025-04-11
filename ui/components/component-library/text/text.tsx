@@ -9,7 +9,7 @@ import {
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
 
-import { TextProps, TextComponent } from './text.types';
+import type { TextProps, TextComponent } from './text.types';
 
 const getTextElementDefault = (variant: TextVariant) => {
   switch (variant) {

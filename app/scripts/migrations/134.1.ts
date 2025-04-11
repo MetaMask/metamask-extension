@@ -1,5 +1,5 @@
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 

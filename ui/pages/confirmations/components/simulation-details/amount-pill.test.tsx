@@ -5,7 +5,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../confirm/info/shared/constants';
 import { AmountPill } from './amount-pill';
-import {
+import type {
   AssetIdentifier,
   NativeAssetIdentifier,
   TokenAssetIdentifier,

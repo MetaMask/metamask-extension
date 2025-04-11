@@ -1,5 +1,6 @@
+import type {
+  ReactElement} from 'react';
 import React, {
-  ReactElement,
   createContext,
   useContext,
   useMemo,
@@ -8,7 +9,7 @@ import React, {
 
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import syncConfirmPath from '../../hooks/syncConfirmPath';
-import { Confirmation } from '../../types/confirm';
+import type { Confirmation } from '../../types/confirm';
 
 type ConfirmContextType = {
   currentConfirmation: Confirmation;

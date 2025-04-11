@@ -1,9 +1,9 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
 import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AlertActionKey,

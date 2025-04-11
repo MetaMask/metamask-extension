@@ -1,9 +1,10 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
-import ExtensionStore from './extension-store';
-import ReadOnlyNetworkStore from './read-only-network-store';
+import type { MetaMaskStorageStructure } from './base-store';
+import { type MetaMaskStateType } from './base-store';
+import type ExtensionStore from './extension-store';
+import type ReadOnlyNetworkStore from './read-only-network-store';
 
 /**
  * The PersistenceManager class serves as a high-level manager for handling

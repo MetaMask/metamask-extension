@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
-import { AddNetworkFields } from '@metamask/network-controller';
+import type { AddNetworkFields } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,

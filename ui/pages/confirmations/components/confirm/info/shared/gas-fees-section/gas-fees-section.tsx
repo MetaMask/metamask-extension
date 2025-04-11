@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';

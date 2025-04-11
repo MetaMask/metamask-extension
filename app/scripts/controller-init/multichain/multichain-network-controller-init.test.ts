@@ -1,9 +1,10 @@
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
+import type {
+  MultichainNetworkControllerMessenger} from '../messengers/multichain';
 import {
-  MultichainNetworkControllerMessenger,
   getMultichainNetworkControllerMessenger,
 } from '../messengers/multichain';
 import { MultichainNetworkControllerInit } from './multichain-network-controller-init';

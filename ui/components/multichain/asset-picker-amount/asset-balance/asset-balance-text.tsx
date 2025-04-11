@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Text } from '../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
-import { Asset } from '../../../../ducks/send';
+import type { Asset } from '../../../../ducks/send';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -18,7 +18,7 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { TokenWithBalance } from '../asset-picker-modal/types';
+import type { TokenWithBalance } from '../asset-picker-modal/types';
 
 export type AssetBalanceTextProps = {
   asset: Asset;

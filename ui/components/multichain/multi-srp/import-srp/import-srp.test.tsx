@@ -1,8 +1,9 @@
 import React from 'react';
+import type {
+  RenderResult} from '@testing-library/react';
 import {
   createEvent,
   fireEvent,
-  RenderResult,
   waitFor,
 } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';

@@ -7,9 +7,11 @@ import {
   BorderStyle,
 } from '../../../helpers/constants/design-system';
 
-import { Text, TextProps } from '../text';
-import { PolymorphicRef } from '../box';
-import { InputProps, InputType, InputComponent } from './input.types';
+import type { TextProps } from '../text';
+import { Text } from '../text';
+import type { PolymorphicRef } from '../box';
+import type { InputProps, InputComponent } from './input.types';
+import { InputType } from './input.types';
 
 export const Input: InputComponent = React.forwardRef(
   <C extends React.ElementType = 'input'>(

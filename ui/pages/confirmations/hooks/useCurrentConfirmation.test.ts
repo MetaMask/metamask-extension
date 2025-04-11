@@ -1,14 +1,15 @@
 // eslint-disable-next-line import/no-named-as-default
 import Router from 'react-router-dom';
 
-import { AbstractMessage } from '@metamask/message-manager';
-import { ApprovalRequest } from '@metamask/approval-controller';
+import type { AbstractMessage } from '@metamask/message-manager';
+import type { ApprovalRequest } from '@metamask/approval-controller';
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';

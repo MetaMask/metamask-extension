@@ -1,5 +1,5 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
-import { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
+import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
 export enum AvatarAccountVariant {
   Jazzicon = 'jazzicon',

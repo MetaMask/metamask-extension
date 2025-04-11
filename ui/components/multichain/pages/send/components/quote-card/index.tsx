@@ -19,7 +19,7 @@ import {
 } from '../../../../../../ducks/send';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SECOND } from '../../../../../../../shared/constants/time';
-import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
+import type { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
 import {

@@ -13,7 +13,7 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../types/confirm';
 import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
 import {
   isOrderSignatureRequest,

@@ -8,8 +8,9 @@ import {
 } from '../../../../components/multichain';
 import { getSnapsMetadata } from '../../../../selectors';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
+import type {
+  NotificationComponent} from '../types/notifications/notifications';
 import {
-  NotificationComponent,
   NotificationComponentType,
 } from '../types/notifications/notifications';
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
@@ -26,7 +27,7 @@ import { isOfTypeNodeGuard } from '../node-guard';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
 import { SnapUIMarkdown } from '../../../../components/app/snaps/snap-ui-markdown';
-import { DetailedViewData, SnapNotification } from './types';
+import type { DetailedViewData, SnapNotification } from './types';
 import { SnapFooterButton } from './snap-footer-button';
 
 export const components: NotificationComponent<SnapNotification> = {

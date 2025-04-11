@@ -1,12 +1,12 @@
-import { Messenger } from '@metamask/base-controller';
-import {
+import type { Messenger } from '@metamask/base-controller';
+import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
+import type { AddApprovalRequest } from '@metamask/approval-controller';
 
 type Actions =
   | AddApprovalRequest

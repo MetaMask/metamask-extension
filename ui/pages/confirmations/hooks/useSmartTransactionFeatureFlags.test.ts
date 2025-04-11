@@ -1,7 +1,8 @@
 import { act } from 'react-dom/test-utils';
 import { useDispatch } from 'react-redux';
-import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import {
   fetchSmartTransactionsLiveness,
   setSwapsFeatureFlags,

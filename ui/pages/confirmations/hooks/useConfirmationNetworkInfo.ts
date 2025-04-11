@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,

@@ -9,7 +9,7 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
-import { LabelProps, LabelComponent } from './label.types';
+import type { LabelProps, LabelComponent } from './label.types';
 
 export const Label: LabelComponent = React.forwardRef(
   <C extends React.ElementType = 'label'>(

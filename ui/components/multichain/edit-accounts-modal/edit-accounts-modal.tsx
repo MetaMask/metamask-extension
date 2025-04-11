@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CaipAccountId } from '@metamask/utils';
+import type { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -30,7 +30,7 @@ import {
   AlignItems,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
+import type { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

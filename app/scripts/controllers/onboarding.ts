@@ -1,11 +1,12 @@
-import {
-  BaseController,
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  RestrictedMessenger} from '@metamask/base-controller';
+import {
+  BaseController
 } from '@metamask/base-controller';
 import log from 'loglevel';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import type { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 // Unique name for the controller
 const controllerName = 'OnboardingController';

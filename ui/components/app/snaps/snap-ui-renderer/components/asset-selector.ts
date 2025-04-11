@@ -1,5 +1,5 @@
-import { AssetSelectorElement } from '@metamask/snaps-sdk/jsx';
-import { UIComponentFactory } from './types';
+import type { AssetSelectorElement } from '@metamask/snaps-sdk/jsx';
+import type { UIComponentFactory } from './types';
 
 export const assetSelector: UIComponentFactory<AssetSelectorElement> = ({
   element,

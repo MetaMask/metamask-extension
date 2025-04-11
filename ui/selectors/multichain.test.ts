@@ -1,15 +1,16 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { Hex } from '@metamask/utils';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getCurrentCurrency,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
+import type {
+  MultichainProviderConfig} from '../../shared/constants/multichain/networks';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
-  MultichainNetworks,
-  MultichainProviderConfig,
+  MultichainNetworks
 } from '../../shared/constants/multichain/networks';
 import {
   MOCK_ACCOUNTS,
@@ -25,9 +26,10 @@ import {
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { AccountsState } from './accounts';
+import type { AccountsState } from './accounts';
+import type {
+  MultichainState} from './multichain';
 import {
-  MultichainState,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,

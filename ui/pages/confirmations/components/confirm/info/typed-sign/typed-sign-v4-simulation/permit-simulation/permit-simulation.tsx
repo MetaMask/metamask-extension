@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { PrimaryType } from '../../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../../shared/modules/transaction.utils';
@@ -10,7 +10,7 @@ import {
 } from '../../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../../context/confirm';
-import { SignatureRequestType } from '../../../../../../types/confirm';
+import type { SignatureRequestType } from '../../../../../../types/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from '../value-display/value-display';
 

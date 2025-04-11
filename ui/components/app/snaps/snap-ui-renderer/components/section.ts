@@ -1,9 +1,9 @@
-import { SectionElement, BoxElement } from '@metamask/snaps-sdk/jsx';
+import type { SectionElement, BoxElement } from '@metamask/snaps-sdk/jsx';
 import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory, UIComponentParams } from './types';
+import type { UIComponentFactory, UIComponentParams } from './types';
 import { box } from './box';
 
 export const section: UIComponentFactory<SectionElement> = ({

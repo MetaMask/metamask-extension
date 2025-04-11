@@ -14,7 +14,8 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
-import { noop, type Manifest, Browser } from '../../helpers';
+import type { Browser } from '../../helpers';
+import { noop, type Manifest } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 

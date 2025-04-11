@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box } from '../../../../../../components/component-library';
 import { BlockSize } from '../../../../../../helpers/constants/design-system';
-import { TypedSignDataV1Type } from '../../../../types/confirm';
+import type { TypedSignDataV1Type } from '../../../../types/confirm';
 import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignDataV1 = ({

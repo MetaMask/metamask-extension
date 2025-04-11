@@ -1,6 +1,6 @@
 import { MultichainAssetsController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
-import { MultichainAssetsControllerMessenger } from '../messengers/multichain';
+import type { ControllerInitFunction } from '../types';
+import type { MultichainAssetsControllerMessenger } from '../messengers/multichain';
 
 /**
  * Initialize the Multichain Assets controller.

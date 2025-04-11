@@ -3,7 +3,7 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 
-import { TextVariant } from '../../../helpers/constants/design-system';
+import type { TextVariant } from '../../../helpers/constants/design-system';
 
 export enum InputType {
   Text = 'text',

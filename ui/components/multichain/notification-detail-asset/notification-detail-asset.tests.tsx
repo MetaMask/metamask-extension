@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import type {
+  NotificationDetailAssetProps} from './notification-detail-asset';
 import {
-  NotificationDetailAsset,
-  NotificationDetailAssetProps,
+  NotificationDetailAsset
 } from './notification-detail-asset';
 
 describe('NotificationDetailAsset', () => {

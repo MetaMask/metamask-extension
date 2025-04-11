@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import {
+import type {
   BridgeHistoryItem,
-  Step,
+  Step} from '../../../../shared/types/bridge-status';
+import {
   ActionTypes,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
@@ -20,8 +22,9 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import type {
+  AllowedBridgeChainIds} from '../../../../shared/constants/bridge';
 import {
-  AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
 

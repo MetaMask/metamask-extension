@@ -1,4 +1,4 @@
-import { ResultComponent } from '@metamask/approval-controller';
+import type { ResultComponent } from '@metamask/approval-controller';
 import { processError, processHeader, processString } from './util';
 
 const FALLBACK_MESSAGE = 'Fallback Message';

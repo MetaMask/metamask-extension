@@ -1,4 +1,4 @@
-import { StatusResponse } from '../../../../shared/types/bridge-status';
+import type { StatusResponse } from '../../../../shared/types/bridge-status';
 import { validateResponse, validators } from './validators';
 
 const BridgeTxStatusResponses = {

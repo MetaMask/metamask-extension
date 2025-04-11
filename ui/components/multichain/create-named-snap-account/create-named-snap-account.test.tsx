@@ -7,9 +7,10 @@ import mockState from '../../../../test/data/mock-state.json';
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import type {
+  CreateNamedSnapAccountProps} from './create-named-snap-account';
 import {
-  CreateNamedSnapAccount,
-  CreateNamedSnapAccountProps,
+  CreateNamedSnapAccount
 } from './create-named-snap-account';
 
 const mockSnapSuggestedAccountName = 'Suggested Account Name';

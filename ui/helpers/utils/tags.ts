@@ -10,7 +10,7 @@ import {
 } from '../../selectors';
 import { getMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { selectAllNftsFlat } from '../../selectors/nft';
-import { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/store';
 
 /**
  * Generate the required tags for the UI startup trace.

@@ -1,7 +1,7 @@
-import { SkeletonElement } from '@metamask/snaps-sdk/jsx';
+import type { SkeletonElement } from '@metamask/snaps-sdk/jsx';
 import { BorderRadius } from '../../../../../helpers/constants/design-system';
 import { mapSnapBorderRadiusToExtensionBorderRadius } from '../utils';
-import { UIComponentFactory } from './types';
+import type { UIComponentFactory } from './types';
 
 const DEFAULT_SKELETON_WIDTH = '100%';
 const DEFAULT_SKELETON_HEIGHT = 22;

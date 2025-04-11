@@ -1,8 +1,9 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import type {
+  SmartTransaction} from '@metamask/smart-transactions-controller/dist/types';
 import {
-  SmartTransactionStatuses,
-  SmartTransaction,
+  SmartTransactionStatuses
 } from '@metamask/smart-transactions-controller/dist/types';
 
 import {

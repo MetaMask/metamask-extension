@@ -1,8 +1,8 @@
-import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
-import { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
+import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
+import type { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
+import type { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
 
 const controllerName = 'InstitutionalSnapController';
 

@@ -1,14 +1,16 @@
 import urlLib from 'url';
-import { AccessList } from '@ethereumjs/tx';
+import type { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
+import type {
+  TransactionMeta} from '@metamask/transaction-controller';
 import {
-  TransactionEnvelopeType,
-  TransactionMeta,
+  TransactionEnvelopeType
 } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
-import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
-import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
+import type { CaipAssetType} from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
+import type { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
