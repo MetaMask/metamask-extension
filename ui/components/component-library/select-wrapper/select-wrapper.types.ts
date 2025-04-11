@@ -101,14 +101,7 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    * The trigger component that will commonly be used with components like SelectButton.
    * SelectWrapper's popover will be anchored to this component.
    */
-  triggerComponent: React.ReactElement<
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    string | React.JSXElementConstructor<any>
-  > | null;
+  triggerComponent: React.ReactElement | null;
 
   /**
    * Use props from the Popover component to customize the SelectWrapper popover via popoverProps.

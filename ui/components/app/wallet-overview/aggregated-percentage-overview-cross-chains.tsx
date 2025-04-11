@@ -123,7 +123,7 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   let formattedAmountChangeCrossChains = '';
   if (isValidAmount(amountChangeCrossChains)) {
     formattedAmountChangeCrossChains =
-      (amountChangeCrossChains as number) >= 0 ? '+' : '';
+      (amountChangeCrossChains) >= 0 ? '+' : '';
 
     const options = {
       notation: 'compact',
@@ -137,23 +137,23 @@ export const AggregatedPercentageOverviewCrossChains = () => {
         ...options,
         style: 'currency',
         currency: fiatCurrency,
-      }).format(amountChangeCrossChains as number)} `;
+      }).format(amountChangeCrossChains)} `;
     } catch {
       // Non-standard Currency Codes
       formattedAmountChangeCrossChains += `${Intl.NumberFormat(locale, {
         ...options,
         minimumFractionDigits: 2,
         style: 'decimal',
-      }).format(amountChangeCrossChains as number)} `;
+      }).format(amountChangeCrossChains)} `;
     }
   }
 
   let color = TextColor.textDefault;
 
   if (!privacyMode && isValidAmount(amountChangeCrossChains)) {
-    if ((amountChangeCrossChains as number) === 0) {
+    if ((amountChangeCrossChains) === 0) {
       color = TextColor.textDefault;
-    } else if ((amountChangeCrossChains as number) > 0) {
+    } else if ((amountChangeCrossChains) > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;

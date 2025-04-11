@@ -71,7 +71,7 @@ function runHook({
   currentConfirmation?: TransactionMeta;
 } = {}) {
   const state = currentConfirmation
-    ? getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta)
+    ? getMockConfirmStateForTransaction(currentConfirmation)
     : {};
 
   const response = renderHookWithConfirmContextProvider(

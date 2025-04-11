@@ -99,7 +99,7 @@ export default function KeyringRemovalSnapWarning({
             <BannerAlert severity={BannerAlertSeverity.Warning}>
               {t('backupKeyringSnapReminder')}
             </BannerAlert>
-            {showConfirmation === false ? (
+            {!showConfirmation ? (
               <>
                 <Box
                   display={Display.Flex}

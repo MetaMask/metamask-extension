@@ -35,7 +35,7 @@ export const NotificationsListReadAllButton = ({
       notificationsRead = notifications
         .filter(
           (notification): notification is Notification =>
-            (notification as Notification).id !== undefined,
+            (notification).id !== undefined,
         )
         .map((notification: Notification) => ({
           id: notification.id,

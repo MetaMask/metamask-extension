@@ -37,7 +37,7 @@ export const RevokeStaticSimulation = () => {
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex}>
           <Name
-            value={transactionMeta.txParams.from as string}
+            value={transactionMeta.txParams.from}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}

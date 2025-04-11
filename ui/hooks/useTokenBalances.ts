@@ -41,7 +41,7 @@ export const useTokenTracker = ({
 }) => {
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
 
-  const tokensWithBalances = tokens.reduce((acc, token) => {
+  const tokensWithBalances = tokens.reduce<(Token & { balance: string; string: string; balanceError: unknown })[]>((acc, token) => {
     const hexBalance =
       tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
     if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
@@ -59,7 +59,7 @@ export const useTokenTracker = ({
       });
     }
     return acc;
-  }, [] as (Token & { balance: string; string: string; balanceError: unknown })[]);
+  }, []);
 
   return {
     tokensWithBalances,

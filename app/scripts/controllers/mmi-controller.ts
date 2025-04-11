@@ -73,41 +73,41 @@ export class MMIController {
 
   public transactionUpdateController: TransactionUpdateController;
 
-  private custodyController: CustodyController;
+  private readonly custodyController: CustodyController;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private getState: () => any;
+  private readonly getState: () => any;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private getPendingNonce: (address: string) => Promise<any>;
+  private readonly getPendingNonce: (address: string) => Promise<any>;
 
-  private accountTrackerController: AccountTrackerController;
+  private readonly accountTrackerController: AccountTrackerController;
 
-  #networkControllerState: NetworkState;
-
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private permissionController: any;
-
-  private signatureController: SignatureController;
-
-  private messagingSystem: MMIControllerMessenger;
+  readonly #networkControllerState: NetworkState;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private platform: any;
+  private readonly permissionController: any;
+
+  private readonly signatureController: SignatureController;
+
+  private readonly messagingSystem: MMIControllerMessenger;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private extension: any;
+  private readonly platform: any;
 
-  private updateTransactionHash: (txId: string, txHash: string) => void;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly extension: any;
 
-  private setChannelId: (channelId: string) => void;
+  private readonly updateTransactionHash: (txId: string, txHash: string) => void;
 
-  private setConnectionRequest: (payload: ConnectionRequest | null) => void;
+  private readonly setChannelId: (channelId: string) => void;
+
+  private readonly setConnectionRequest: (payload: ConnectionRequest | null) => void;
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
@@ -116,7 +116,7 @@ export class MMIController {
     event: any,
   ) => void;
 
-  private txStateManager: {
+  private readonly txStateManager: {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];

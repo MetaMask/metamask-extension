@@ -41,7 +41,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
       paddingInlineStart={1}
       paddingInlineEnd={1}
       tabIndex={0}
-      onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
         const url = getPortfolioUrl(

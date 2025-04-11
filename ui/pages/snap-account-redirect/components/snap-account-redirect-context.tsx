@@ -76,7 +76,7 @@ const SnapAccountRedirectContent = ({
             </BannerAlert>
           </Box>
         ) : null}
-        {isBlockedUrl === false ? (
+        {!isBlockedUrl ? (
           <Text
             data-testid="snap-account-redirect-content-description"
             textAlign={TextAlign.Center}
@@ -85,7 +85,7 @@ const SnapAccountRedirectContent = ({
             {t('snapAccountRedirectSiteDescription', [snapName])}
           </Text>
         ) : null}
-        {(url.length > 0 || message.length > 0) && isBlockedUrl === false ? (
+        {(url.length > 0 || message.length > 0) && !isBlockedUrl ? (
           <SnapAccountRedirectMessage
             snapName={snapName}
             url={url}

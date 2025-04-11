@@ -37,7 +37,7 @@ export type SnapsNameProviderMessenger = RestrictedMessenger<
 >;
 
 export class SnapsNameProvider implements NameProvider {
-  #messenger: SnapsNameProviderMessenger;
+  readonly #messenger: SnapsNameProviderMessenger;
 
   constructor({ messenger }: { messenger: SnapsNameProviderMessenger }) {
     this.#messenger = messenger;

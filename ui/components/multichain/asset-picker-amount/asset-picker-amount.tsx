@@ -170,7 +170,7 @@ export const AssetPickerAmount = ({
     standardizedAsset = {
       type: asset.type,
       image: nativeCurrencyImageUrl,
-      symbol: nativeCurrencySymbol as string,
+      symbol: nativeCurrencySymbol,
       chainId: currentChainId,
     };
   } else if (asset?.type === AssetType.token && asset?.details?.symbol) {

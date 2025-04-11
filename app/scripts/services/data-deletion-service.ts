@@ -143,15 +143,15 @@ function createRetryPolicy({
  * A serivce for requesting the deletion of analytics data.
  */
 export class DataDeletionService {
-  #analyticsDataDeletionEndpoint: string;
+  readonly #analyticsDataDeletionEndpoint: string;
 
-  #analyticsDataDeletionSourceId: string;
+  readonly #analyticsDataDeletionSourceId: string;
 
-  #fetchStatusPolicy: IPolicy;
+  readonly #fetchStatusPolicy: IPolicy;
 
-  #createDataDeletionTaskPolicy: IPolicy;
+  readonly #createDataDeletionTaskPolicy: IPolicy;
 
-  #fetchWithTimeout: ReturnType<typeof getFetchWithTimeout>;
+  readonly #fetchWithTimeout: ReturnType<typeof getFetchWithTimeout>;
 
   /**
    * Construct a data deletion service.

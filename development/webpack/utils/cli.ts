@@ -17,8 +17,8 @@ import {
 import { type BuildConfig } from './config';
 
 const ENV_PREFIX = 'BUNDLE';
-const addFeat = 'addFeature' as const;
-const omitFeat = 'omitFeature' as const;
+const addFeat = 'addFeature';
+const omitFeat = 'omitFeature';
 type YargsOptionsMap = { [key: string]: YargsOptions };
 type OptionsKeys = keyof Omit<Options, typeof addFeat | typeof omitFeat>;
 

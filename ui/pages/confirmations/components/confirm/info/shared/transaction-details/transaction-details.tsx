@@ -132,7 +132,7 @@ const PaymasterRow = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const paymasterAddress = useSelector((state: any) =>
-    selectPaymasterAddress(state, userOperationId as string),
+    selectPaymasterAddress(state, userOperationId),
   );
 
   if (!isUserOperation || !paymasterAddress) {

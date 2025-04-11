@@ -43,7 +43,7 @@ export function createTxVerificationMiddleware(
   trustedSigners = TRUSTED_SIGNERS,
 ) {
   return function txVerificationMiddleware(
-    req: JsonRpcRequest<JsonRpcParams>,
+    req: JsonRpcRequest,
     _res: JsonRpcResponse<Json>,
     next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,

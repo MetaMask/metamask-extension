@@ -102,7 +102,7 @@ describe('DataTree', () => {
   it('should match snapshot for order signature type', () => {
     const { container } = renderWithProvider(
       <DataTree
-        data={JSON.parse(orderSignatureMsg.msgParams?.data as string)}
+        data={JSON.parse(orderSignatureMsg.msgParams?.data)}
         chainId={CHAIN_ID_MOCK}
       />,
       store,

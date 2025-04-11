@@ -129,7 +129,7 @@ export function NftDetailsComponent({
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
   const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
-  const nftChainImage = getImageForChainId(nftChainId as string);
+  const nftChainImage = getImageForChainId(nftChainId);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string

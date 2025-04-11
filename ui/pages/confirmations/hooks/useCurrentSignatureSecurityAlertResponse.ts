@@ -26,7 +26,7 @@ const useCurrentSignatureSecurityAlertResponse = ():
         return undefined;
       }
       return state.metamask.signatureSecurityAlertResponses?.[
-        securityAlertId as string
+        securityAlertId
       ];
     },
   );

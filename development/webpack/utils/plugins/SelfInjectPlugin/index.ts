@@ -60,7 +60,7 @@ const defaultOptions = {
  * ```
  */
 export class SelfInjectPlugin {
-  private options: SelfInjectPluginOptions & typeof defaultOptions;
+  private readonly options: SelfInjectPluginOptions & typeof defaultOptions;
 
   constructor(options: SelfInjectPluginOptions) {
     validate(schema, options, { name: SelfInjectPlugin.name });

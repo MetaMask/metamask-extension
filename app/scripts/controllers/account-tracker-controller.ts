@@ -184,18 +184,18 @@ export default class AccountTrackerController extends BaseController<
   AccountTrackerControllerState,
   AccountTrackerControllerMessenger
 > {
-  #pollingTokenSets = new Map<NetworkClientId, Set<string>>();
+  readonly #pollingTokenSets = new Map<NetworkClientId, Set<string>>();
 
   #listeners: Record<NetworkClientId, (blockNumber: string) => Promise<void>> =
     {};
 
-  #provider: Provider;
+  readonly #provider: Provider;
 
-  #blockTracker: BlockTracker;
+  readonly #blockTracker: BlockTracker;
 
   #currentBlockNumberByChainId: Record<Hex, string | null> = {};
 
-  #getNetworkIdentifier: AccountTrackerControllerOptions['getNetworkIdentifier'];
+  readonly #getNetworkIdentifier: AccountTrackerControllerOptions['getNetworkIdentifier'];
 
   #selectedAccount: InternalAccount;
 
@@ -588,7 +588,7 @@ export default class AccountTrackerController extends BaseController<
    * @param blockNumber - the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
    */
-  #updateForBlock = async (blockNumber: string): Promise<void> => {
+  readonly #updateForBlock = async (blockNumber: string): Promise<void> => {
     await this.#updateForBlockByNetworkClientId(undefined, blockNumber);
   };
 

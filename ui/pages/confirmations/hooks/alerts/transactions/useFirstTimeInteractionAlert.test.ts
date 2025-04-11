@@ -42,7 +42,7 @@ function runHook({
 
   const state = currentConfirmation
     ? getMockConfirmStateForTransaction(
-        currentConfirmation as TransactionMeta,
+        currentConfirmation,
         {
           metamask: {
             internalAccounts,

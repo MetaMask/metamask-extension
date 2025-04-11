@@ -44,7 +44,7 @@ const render = (
   const accountsWithCaipAccountId = accounts.map((account) => {
     return {
       ...account,
-      caipAccountId: `${account.scopes[0]}:${account.address}` as CaipAccountId,
+      caipAccountId: `${account.scopes[0]}:${account.address}`,
     };
   });
 

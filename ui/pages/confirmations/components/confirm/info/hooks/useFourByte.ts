@@ -11,8 +11,8 @@ import { hasTransactionData } from '../../../../../../../shared/modules/transact
 export const useFourByte = ({ to, data }: { to?: Hex; data?: Hex }) => {
   const dispatch = useDispatch();
   const isFourByteEnabled = useSelector(use4ByteResolutionSelector);
-  const transactionTo = to as Hex | undefined;
-  const transactionData = data as Hex | undefined;
+  const transactionTo = to;
+  const transactionData = data;
 
   useEffect(() => {
     if (

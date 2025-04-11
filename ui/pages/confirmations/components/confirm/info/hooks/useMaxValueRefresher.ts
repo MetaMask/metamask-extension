@@ -119,5 +119,5 @@ function getMaxFeePerGasFromGasFeeEstimates(
   return ((gasFeeEstimates as FeeMarketGasFeeEstimates)?.[userFeeLevel]
     ?.maxFeePerGas ||
     (gasFeeEstimates as LegacyGasFeeEstimates)?.[userFeeLevel] ||
-    (gasFeeEstimates as GasPriceGasFeeEstimates)?.gasPrice) as Hex;
+    (gasFeeEstimates as GasPriceGasFeeEstimates)?.gasPrice);
 }

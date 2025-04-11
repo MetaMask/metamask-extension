@@ -45,7 +45,7 @@ function transformState(
   }
 
   const accountsControllerState =
-    state.AccountsController as unknown as AccountsControllerState;
+    state.AccountsController as AccountsControllerState;
   if (!isObject(accountsControllerState)) {
     global.sentry?.captureException?.(
       new Error(

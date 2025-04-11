@@ -113,7 +113,7 @@ export function MultichainTransactionDetailsModal({
               color={IconColor.primaryDefault}
               onClick={async () =>
                 navigator.clipboard.writeText(
-                  getAddressUrl(address as string, transaction.chain),
+                  getAddressUrl(address, transaction.chain),
                 )
               }
             />

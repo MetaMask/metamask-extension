@@ -75,7 +75,7 @@ export const components: NotificationComponent<SnapNotification> = {
     title: ({ notification }) => (
       <NotificationDetailTitle
         title={
-          (notification.data as DetailedViewData).detailedView.title as string
+          (notification.data as DetailedViewData).detailedView.title
         }
         date={formatIsoDateString(notification.createdAt)}
       />
@@ -115,7 +115,7 @@ export const components: NotificationComponent<SnapNotification> = {
                 snapId={notification.data.origin}
                 interfaceId={
                   (notification.data as DetailedViewData).detailedView
-                    .interfaceId as string
+                    .interfaceId
                 }
                 contentBackgroundColor={BackgroundColor.backgroundDefault}
               />

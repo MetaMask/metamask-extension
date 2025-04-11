@@ -24,7 +24,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
   /**
    * Internal map to store keys and their corresponding weakly referenced object values.
    */
-  private map: Map<string, WeakRefObject<RecordType>>;
+  private readonly map: Map<string, WeakRefObject<RecordType>>;
 
   constructor() {
     this.map = new Map();

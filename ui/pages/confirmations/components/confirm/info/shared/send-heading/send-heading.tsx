@@ -39,7 +39,7 @@ const SendHeading = () => {
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
   const isTestnet = TEST_CHAINS.includes(
-    transactionMeta.chainId as TestNetChainId,
+    transactionMeta.chainId,
   );
   const { showFiatInTestnets } = useSelector(getPreferences);
 

@@ -50,7 +50,7 @@ const ProfileSyncToggle = () => {
   );
 
   useEffect(() => {
-    if (basicFunctionality === false) {
+    if (!basicFunctionality) {
       disableProfileSyncing();
     }
   }, [basicFunctionality, disableProfileSyncing]);

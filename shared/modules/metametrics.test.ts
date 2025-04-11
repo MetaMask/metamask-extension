@@ -34,7 +34,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getParticipateInMetrics: jest.fn(),
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
-    provider: provider as Provider,
+    provider: provider,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,

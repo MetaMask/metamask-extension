@@ -162,7 +162,7 @@ export const TransactionControllerInit: ControllerInitFunction<
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
           flatState: getFlatState(),
-          transactions: _request.transactions as PublishBatchHookTransaction[],
+          transactions: _request.transactions,
         }),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction

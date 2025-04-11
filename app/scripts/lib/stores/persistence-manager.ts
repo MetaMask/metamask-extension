@@ -62,7 +62,7 @@ export class PersistenceManager {
 
   #isExtensionInitialized: boolean = false;
 
-  #localStore: ExtensionStore | ReadOnlyNetworkStore;
+  readonly #localStore: ExtensionStore | ReadOnlyNetworkStore;
 
   constructor({
     localStore,

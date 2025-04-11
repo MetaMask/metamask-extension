@@ -32,7 +32,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
   AddressBookPetnamesBridgeEvens,
   AddressBookPetnamesBridgeActions
 > {
-  #addressBookController: AddressBookController;
+  readonly #addressBookController: AddressBookController;
 
   constructor({
     addressBookController,

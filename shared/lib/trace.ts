@@ -322,7 +322,7 @@ function tryCatchMaybePromise<T>(
   let isPromise = false;
 
   try {
-    const result = tryFn() as T;
+    const result = tryFn();
 
     if (result instanceof Promise) {
       isPromise = true;

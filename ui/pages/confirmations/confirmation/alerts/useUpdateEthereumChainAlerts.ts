@@ -36,8 +36,8 @@ export function useUpdateEthereumChainAlerts(
       (!VALIDATED_APPROVAL_TYPES.includes(
         pendingConfirmation.type as ApprovalType,
       ) &&
-        (pendingConfirmation?.requestData?.metadata as Record<string, boolean>)
-          ?.isSwitchEthereumChain !== true)
+        !((pendingConfirmation?.requestData?.metadata as Record<string, boolean>)
+          ?.isSwitchEthereumChain))
     ) {
       return [];
     }

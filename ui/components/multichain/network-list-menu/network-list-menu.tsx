@@ -314,10 +314,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
     } else {
-      const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
+      const allOpts = Object.keys(evmNetworks).reduce<Record<string, boolean>>((acc, id) => {
         acc[id] = true;
         return acc;
-      }, {} as Record<string, boolean>);
+      }, {});
       dispatch(setTokenNetworkFilter(allOpts));
     }
 

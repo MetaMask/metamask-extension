@@ -12,7 +12,7 @@ const setConfirmationAlerts = () => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext();
   const alerts = useConfirmationAlerts();
-  const ownerId = currentConfirmation?.id as string;
+  const ownerId = currentConfirmation?.id;
 
   useEffect(() => {
     dispatch(updateAlerts(ownerId, alerts));

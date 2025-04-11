@@ -132,7 +132,7 @@ function getOptions(
       alias: 'a',
       description: 'Specify the architecture',
       // if `defaultArch` is not a supported Architecture yargs will throw an error
-      default: defaultArch as Architecture,
+      default: defaultArch,
       choices: Object.values(Architecture) as ArchitecturesTuple,
     },
     platform: {

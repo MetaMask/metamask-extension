@@ -40,7 +40,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         symbol,
         image,
         decimals: token.decimals,
-        isOriginalNativeSymbol: isOriginalNativeSymbol === true,
+        isOriginalNativeSymbol: isOriginalNativeSymbol,
       }}
       optionsButton={
         <AssetOptions

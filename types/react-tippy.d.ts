@@ -52,7 +52,7 @@ declare module 'react-tippy' {
     popperOptions?: any;
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    html?: React.ReactElement<any>;
+    html?: React.ReactElement;
     unmountHTMLWhenHide?: boolean;
     size?: Size;
     sticky?: boolean;

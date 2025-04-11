@@ -33,7 +33,7 @@ export function mockWebpack(
   maps: (string | null)[],
   devtool: 'source-map' | 'hidden-source-map' | false = 'source-map',
 ) {
-  const assets = files.reduce((acc, name, i) => {
+  const assets = files.reduce<Record<string, Asset>>((acc, name, i) => {
     const source = contents[i];
     const map = maps?.[i];
     const webpackSource = map
@@ -47,7 +47,7 @@ export function mockWebpack(
       source: webpackSource,
     };
     return acc;
-  }, {} as Record<string, Asset>);
+  }, {});
   let done: () => void;
   const promise = new Promise<void>((resolve) => {
     done = resolve;
