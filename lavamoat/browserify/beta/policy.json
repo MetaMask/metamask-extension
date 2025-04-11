@@ -46,17 +46,17 @@
         "TextEncoder": true
       }
     },
+    "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
     "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -74,7 +74,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -93,12 +93,12 @@
         "webpack>events": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": {
       "globals": {
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -106,12 +106,12 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": {
       "globals": {
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -124,7 +124,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -137,7 +137,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -150,7 +150,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -163,7 +163,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -189,7 +189,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -202,7 +202,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -215,7 +215,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -228,7 +228,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -241,7 +241,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -254,7 +254,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -728,12 +728,12 @@
         "@open-rpc/test-coverage>isomorphic-fetch": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
-        "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
-        "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": true,
         "browserify>buffer": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "uuid": true
@@ -748,19 +748,19 @@
         "uuid": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
-        "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "browserify>buffer": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "uuid": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
-        "@metamask/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "browserify>buffer": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "uuid": true
@@ -778,7 +778,7 @@
         "tslib": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
       "globals": {
         "define": true
       },
@@ -790,7 +790,7 @@
         "tslib": true
       }
     },
-    "@metamask/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
       "globals": {
         "define": true
       },
@@ -800,6 +800,18 @@
         "buffer": true,
         "browserify>buffer": true,
         "tslib": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring": {
+      "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@ethereumjs/tx": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": true,
+        "@metamask/obs-store": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "uuid": true
       }
     },
     "chart.js>@kurkle/color": {
@@ -1077,7 +1089,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -1135,6 +1147,27 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/bridge-controller": {
+      "globals": {
+        "AbortController": true,
+        "URLSearchParams": true,
+        "console.log": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/snaps-utils": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/browser-passworder": {
@@ -1315,7 +1348,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1327,7 +1360,7 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1339,7 +1372,7 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/utils": true,
@@ -1363,7 +1396,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1375,7 +1408,7 @@
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1387,7 +1420,7 @@
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1399,7 +1432,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1411,7 +1444,7 @@
     },
     "@metamask/signature-controller>@metamask/eth-sig-util": {
       "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1690,18 +1723,6 @@
         "uuid": true
       }
     },
-    "@metamask/metamask-airgapped-keyring": {
-      "packages": {
-        "@metamask/metamask-airgapped-keyring>@ethereumjs/rlp": true,
-        "@ethereumjs/tx": true,
-        "@metamask/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
-        "@metamask/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": true,
-        "@metamask/obs-store": true,
-        "browserify>buffer": true,
-        "webpack>events": true,
-        "uuid": true
-      }
-    },
     "@metamask/multichain": {
       "globals": {
         "console.error": true
@@ -1727,6 +1748,15 @@
         "@metamask/network-controller": true,
         "@metamask/utils": true,
         "@metamask/multichain-network-controller>@solana/addresses": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/utils": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true
       }
     },
     "@metamask/multichain-transactions-controller": {
@@ -1795,6 +1825,7 @@
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
@@ -1862,6 +1893,30 @@
       }
     },
     "@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2178,6 +2233,41 @@
       }
     },
     "@metamask/assets-controllers>@metamask/snaps-utils": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "chalk": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/snaps-utils": {
       "globals": {
         "File": true,
         "FileReader": true,
@@ -2794,6 +2884,20 @@
       }
     },
     "@metamask/multichain-network-controller>@solana/addresses": {
+      "globals": {
+        "Intl.Collator": true,
+        "TextEncoder": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.exportKey": true
+      },
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": {
       "globals": {
         "Intl.Collator": true,
         "TextEncoder": true,

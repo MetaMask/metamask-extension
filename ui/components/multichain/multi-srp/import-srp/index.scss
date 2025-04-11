@@ -1,22 +1,23 @@
 @use "design-system";
 
-.import-srp {
+.import-multi-srp {
   &__srp {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-area: input;
+    gap: 0 24px;
   }
 
-  &__srp-label {
+  &__multi-srp-label {
     min-width: 16px;
     max-width: 16px;
     flex-shrink: 0;
-    margin-right: 4px;
   }
 
   &__srp-word {
     display: flex;
     align-items: center;
+    width: "80%";
 
     input {
       flex: 1;

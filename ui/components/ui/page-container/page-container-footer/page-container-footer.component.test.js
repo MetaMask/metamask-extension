@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { Icon, IconName } from '../../../component-library';
 import PageFooter from '.';
 
 describe('Page Footer', () => {
@@ -71,6 +73,19 @@ describe('Page Footer', () => {
 
       console.log(submitButton.className);
       expect(submitButton.className).toContain('danger-primary');
+    });
+
+    it('renders submitButtonIcon if passed', () => {
+      const { getByTestId } = renderWithProvider(
+        <PageFooter
+          {...props}
+          submitButtonIcon={
+            <Icon name={IconName.Add} data-testid="icon-test-id" />
+          }
+        />,
+      );
+
+      expect(getByTestId('icon-test-id')).toBeInTheDocument();
     });
   });
 });

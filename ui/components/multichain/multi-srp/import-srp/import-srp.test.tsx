@@ -27,12 +27,13 @@ jest.mock('../../../../store/actions', () => ({
     .mockReturnValue(jest.fn().mockResolvedValue(null)),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
+  hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
 }));
 
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
   const [firstWord] = srp.split(' ');
 
-  const firstSrpWordDiv = render.getByTestId('import-srp__srp-word-0');
+  const firstSrpWordDiv = render.getByTestId('import-multi-srp__srp-word-0');
   // This is safe because the input is always present in the word div.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const firstSrpWordInput = firstSrpWordDiv.querySelector('input')!;
@@ -56,6 +57,49 @@ describe('ImportSrp', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
+  });
+
+  it('should not show error messages until all words are provided', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { queryByText } = render;
+
+    // Initially, no error message should be shown
+    expect(
+      queryByText('Word 1 is incorrect or misspelled.'),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+    ).not.toBeInTheDocument();
+
+    // Paste a partial SRP (first 6 words)
+    const partialSrp = VALID_SECRET_RECOVERY_PHRASE.split(' ')
+      .slice(0, 6)
+      .join(' ');
+    pasteSrpIntoFirstInput(render, partialSrp);
+
+    // Still no error message should be shown
+    expect(
+      queryByText('Word 1 is incorrect or misspelled.'),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+    ).not.toBeInTheDocument();
+
+    // Paste the complete SRP
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+
+    // Now error messages should be shown if there are any issues
+    await waitFor(() => {
+      expect(
+        queryByText('Word 1 is incorrect or misspelled.'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByText('Secret Recovery Phrases contain 12, or 24 words'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('enables the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
@@ -107,7 +151,10 @@ describe('ImportSrp', () => {
         VALID_SECRET_RECOVERY_PHRASE,
       );
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions[0]).toStrictEqual({
+      expect(dispatchedActions).toContainEqual({
+        type: 'HIDE_WARNING',
+      });
+      expect(dispatchedActions).toContainEqual({
         type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
         payload: true,
       });
@@ -181,5 +228,30 @@ describe('ImportSrp', () => {
       );
       expect(onActionComplete).not.toHaveBeenCalled();
     });
+  });
+
+  it('clears validation errors when switching to 24-word seed phrase mode', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { getByText, getByTestId } = render;
+
+    // First paste an invalid SRP to trigger validation errors
+    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
+    pasteSrpIntoFirstInput(render, invalidSRP);
+
+    // Verify that validation errors are present
+    const firstInput = getByTestId(
+      'import-multi-srp__srp-word-0',
+    ).querySelector('input');
+    expect(firstInput).toBeInvalid();
+
+    // Click the "I have a 24 word seed phrase" button
+    const switchTo24WordsButton = getByText('I have a 24 word recovery phrase');
+    fireEvent.click(switchTo24WordsButton);
+
+    // Verify that validation errors are cleared
+    expect(firstInput).not.toBeInvalid();
   });
 });

@@ -1,0 +1,58 @@
+name: E2E Firefox
+
+on:
+  workflow_call:
+
+jobs:
+  test-e2e-firefox:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        # prettier-ignore
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    with:
+      test-suite-name: test-e2e-firefox
+      build-command: yarn build:test:mv2
+      test-command: yarn test:e2e:firefox
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-flask:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    with:
+      test-suite-name: test-e2e-firefox-flask
+      build-command: yarn build:test:flask:mv2
+      test-command: yarn test:e2e:firefox:flask
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-report:
+    needs:
+      - test-e2e-firefox
+      - test-e2e-firefox-flask
+    runs-on: ubuntu-latest
+    if: always()
+    continue-on-error: true # soft launch
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-*
+          merge-multiple: true
+
+      - name: Test Report
+        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
+        with:
+          name: '📝 Consolidated Firefox E2E Tests Report'
+          path: './test/test-results/e2e/**/*.xml'
+          reporter: jest-junit
+          fail-on-empty: false
+          fail-on-error: false # soft launch

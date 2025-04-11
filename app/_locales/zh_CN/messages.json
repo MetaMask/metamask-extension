@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "我们不建议继续处理此请求。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "此请求可疑"
   },
   "confirmed": {
     "message": "已确认"
@@ -3491,9 +3485,6 @@
     "message": "1 年",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "仅连接您信任的网站。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "您收到"
   },
-  "permitSimulationChange_revoke": {
-    "message": "支出上限"
-  },
   "permitSimulationChange_transfer": {
     "message": "您发送"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
-  },
-  "petnamesEnabledToggle": {
-    "message": "允许昵称"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "这样可以协助您为任何地址添加昵称。我们将在可能的情况下为您与之交互的地址提供名称建议。"
   },
   "pinToTop": {
     "message": "置顶"
@@ -5140,13 +5122,6 @@
     "message": "下载、设置并输入您的密码以解锁 $1。",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "关联您的 OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "将您的 OneKey 直接插入电脑并解锁。确保使用正确的密语。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "关联您的 Trezor"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "交易出现错误。"
   },
-  "transactionFailedBannerMessage": {
-    "message": "此次交易会收取额外费用，因此我们终止了该交易。您的钱仍在您的钱包中。"
-  },
   "transactionFlowNetwork": {
     "message": "网络"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12小时："
-  },
-  "typeYourSRP": {
-    "message": "输入私钥助记词"
   },
   "u2f": {
     "message": "U2F",

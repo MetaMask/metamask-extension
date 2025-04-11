@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Sebaiknya jangan lanjutkan permintaan ini."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Permintaan ini mencurigakan"
   },
   "confirmed": {
     "message": "Dikonfirmasikan"
@@ -3491,9 +3485,6 @@
     "message": "1T",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "Anda menerima"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Batas penggunaan"
-  },
   "permitSimulationChange_transfer": {
     "message": "Anda mengirim"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Izinkan nama panggilan"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Ini memungkinkan Anda untuk menetapkan nama panggilan ke alamat mana pun. Kami akan menyarankan nama untuk alamat tempat Anda berinteraksi, jika memungkinkan."
   },
   "pinToTop": {
     "message": "Sematkan ke atas"
@@ -5140,13 +5122,6 @@
     "message": "Unduh, atur, dan masukkan kata sandi Anda untuk membuka $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Hubungkan OneKey Anda"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Pasang OneKey langsung ke komputer dan buka. Pastikan Anda menggunakan passphrase yang benar.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Hubungkan Trezor Anda"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Transaksi ini akan dikenakan biaya tambahan, jadi kami menghentikannya. Uang Anda masih ada di dompet."
-  },
   "transactionFlowNetwork": {
     "message": "Jaringan"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12 j:"
-  },
-  "typeYourSRP": {
-    "message": "Ketik Frasa Pemulihan Rahasia"
   },
   "u2f": {
     "message": "U2F",

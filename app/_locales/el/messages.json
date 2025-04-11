@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Δεν συνιστούμε να προχωρήσετε σε αυτό το αίτημα."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, ένα τρίτο μέρος που είναι γνωστό για απάτες μπορεί να πάρει όλα τα περιουσιακά σας στοιχεία."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Αυτό το αίτημα είναι ύποπτο"
   },
   "confirmed": {
     "message": "Επιβεβαιωμένο"
@@ -3491,9 +3485,6 @@
     "message": "1Ε",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "Θα λάβετε"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ανώτατο όριο δαπανών"
-  },
   "permitSimulationChange_transfer": {
     "message": "Θα στείλετε"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Επιτρέψτε τα ψευδώνυμα"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Αυτό σας επιτρέπει να εκχωρήσετε ένα ψευδώνυμο σε οποιαδήποτε διεύθυνση. Θα σας προτείνουμε ονόματα για διευθύνσεις με τις οποίες αλληλεπιδράτε, όπου είναι δυνατόν."
   },
   "pinToTop": {
     "message": "Καρφίτσωμα στην κορυφή"
@@ -5140,13 +5122,6 @@
     "message": "Κατεβάστε, εγκαταστήστε και πληκτρολογήστε τον κωδικό πρόσβασής σας για να ξεκλειδώσετε το $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Συνδέστε το OneKey σας"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Συνδέστε το OneKey απευθείας στον υπολογιστή σας και ξεκλειδώστε το. Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή φράση πρόσβασης.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Συνδέστε το Trezor σας"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Αυτή η συναλλαγή θα σας κόστιζε επιπλέον τέλη, οπότε τη σταματήσαμε. Τα χρήματά σας βρίσκονται ακόμα στο πορτοφόλι σας."
-  },
   "transactionFlowNetwork": {
     "message": "Δίκτυο"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12ώρες:"
-  },
-  "typeYourSRP": {
-    "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"
   },
   "u2f": {
     "message": "U2F",

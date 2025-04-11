@@ -2,6 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
+import PrivacySettings from './settings/privacy-settings';
+import HeaderNavbar from './header-navbar';
+import SettingsPage from './settings/settings-page';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -142,11 +145,21 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSrpInput = '#import-srp__srp-word-0';
+  private readonly importSrpInput = '#import-multi-srp__srp-word-0';
 
   private readonly importSrpConfirmButton = {
     text: 'Import wallet',
     tag: 'button',
+  };
+
+  private readonly exportSrpButton = {
+    text: 'Show Secret Recovery Phrase',
+    tag: 'button',
+  };
+
+  private readonly srpListTitle = {
+    text: 'Select Secret Recovery Phrase',
+    tag: 'label',
   };
 
   private readonly viewAccountOnExplorerButton = {
@@ -280,6 +293,7 @@ class AccountListPage {
    * @param options - Options for adding a new account
    * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
    * @param [options.accountName] - Optional custom name for the new account
+   * @param [options.srpIndex] - Optional SRP index for the new account
    * @throws {Error} If the specified account type is not supported
    * @example
    * // Add a new Ethereum account with default name
@@ -291,9 +305,11 @@ class AccountListPage {
   async addAccount({
     accountType,
     accountName,
+    srpIndex,
   }: {
     accountType: ACCOUNT_TYPE;
     accountName?: string;
+    srpIndex?: number;
   }) {
     console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
     await this.driver.clickElement(this.createAccountButton);
@@ -313,6 +329,20 @@ class AccountListPage {
     }
 
     await this.driver.clickElement(addAccountButton);
+
+    // Run if there are multiple srps
+    if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
+      const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
+      // First, we first click here to go to the SRP List.
+      await this.driver.clickElement({
+        text: 'Secret Recovery Phrase 1',
+      });
+      // Then, we select the SRP that we want to add the account to.
+      await this.driver.clickElement({
+        text: srpName,
+      });
+    }
+
     if (accountName) {
       console.log(
         `Customize the new account with account name: ${accountName}`,
@@ -720,6 +750,38 @@ class AccountListPage {
     await this.driver.waitForSelector(this.importSrpModalTitle);
     await this.driver.pasteIntoField(this.importSrpInput, srp);
     await this.driver.clickElement(this.importSrpConfirmButton);
+  }
+
+  async startExportSrpForAccount(accountLabel: string): Promise<void> {
+    console.log(`Exporting SRP for account ${accountLabel}`);
+    await this.openAccountDetailsModal(accountLabel);
+    await this.driver.delay(500);
+    await this.driver.clickElement(this.exportSrpButton);
+  }
+
+  async check_accountBelongsToSrp(
+    accountName: string,
+    srpIndex: number,
+  ): Promise<void> {
+    console.log(`Check that current account is an imported account`);
+    await new HeaderNavbar(this.driver).openSettingsPage();
+    const settingsPage = new SettingsPage(this.driver);
+    await settingsPage.check_pageIsLoaded();
+    await settingsPage.goToPrivacySettings();
+
+    const privacySettings = new PrivacySettings(this.driver);
+    await privacySettings.openSrpList();
+
+    if (srpIndex === 0) {
+      throw new Error('SRP index must be > 0');
+    }
+    const srps = await this.driver.findElements('.select-srp__container');
+    const selectedSrp = srps[srpIndex - 1];
+
+    await this.driver.findNestedElement(selectedSrp, {
+      text: accountName,
+      tag: 'p',
+    });
   }
 }
 

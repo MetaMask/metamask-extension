@@ -9,15 +9,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
-import MetamaskController from '../../metamask-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
-import { SnapKeyringBuilderMessenger } from './types';
 import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
@@ -35,21 +34,6 @@ export type SnapKeyringHelpers = {
   trackEvent: MetaMetricsController['trackEvent'];
   persistKeyringHelper: () => Promise<void>;
   removeAccountHelper: (address: string) => Promise<void>;
-};
-
-/**
- * Get the addresses of the accounts managed by a given Snap.
- *
- * @param controller - Instance of the MetaMask Controller.
- * @param snapId - Snap ID to get accounts for.
- * @returns The addresses of the accounts.
- */
-export const getAccountsBySnapId = async (
-  controller: MetamaskController,
-  snapId: SnapId,
-) => {
-  const snapKeyring: SnapKeyring = await controller.getSnapKeyring();
-  return await snapKeyring.getAccountsBySnapId(snapId);
 };
 
 /**

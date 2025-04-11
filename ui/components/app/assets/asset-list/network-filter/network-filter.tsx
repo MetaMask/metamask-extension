@@ -40,9 +40,13 @@ import InfoTooltip from '../../../../ui/info-tooltip';
 
 type SortControlProps = {
   handleClose: () => void;
+  showTokenFiatBalance?: boolean;
 };
 
-const NetworkFilter = ({ handleClose }: SortControlProps) => {
+const NetworkFilter = ({
+  handleClose,
+  showTokenFiatBalance = true,
+}: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
@@ -121,20 +125,22 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             >
               {t('popularNetworks')}
             </Text>
-            <Text
-              variant={TextVariant.bodySmMedium}
-              color={TextColor.textAlternative}
-              data-testid="network-filter-all__total"
-            >
-              <UserPreferencedCurrencyDisplay
-                value={selectedAccountBalanceForAllNetworks}
-                type="PRIMARY"
-                ethNumberOfDecimals={4}
-                hideTitle
-                showFiat
-                isAggregatedFiatOverviewBalance
-              />
-            </Text>
+            {showTokenFiatBalance && (
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={TextColor.textAlternative}
+                data-testid="network-filter-all__total"
+              >
+                <UserPreferencedCurrencyDisplay
+                  value={selectedAccountBalanceForAllNetworks}
+                  type="PRIMARY"
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  showFiat
+                  isAggregatedFiatOverviewBalance
+                />
+              </Text>
+            )}
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <InfoTooltip
@@ -191,14 +197,16 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
             >
-              <UserPreferencedCurrencyDisplay
-                value={selectedAccountBalance}
-                type="PRIMARY"
-                ethNumberOfDecimals={4}
-                hideTitle
-                showFiat
-                isAggregatedFiatOverviewBalance
-              />
+              {showTokenFiatBalance && (
+                <UserPreferencedCurrencyDisplay
+                  value={selectedAccountBalance}
+                  type="PRIMARY"
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  showFiat
+                  isAggregatedFiatOverviewBalance
+                />
+              )}
             </Text>
           </Box>
           <AvatarNetwork

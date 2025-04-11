@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "이 요청은 진행하지 않는 것이 좋습니다."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "이 요청을 승인하면 스캠으로 알려진 타사가 회원님의 모든 자산을 가져갈 수 있습니다."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "의심스러운 요청입니다"
   },
   "confirmed": {
     "message": "컨펌됨"
@@ -3491,9 +3485,6 @@
     "message": "1년",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3851,9 +3842,6 @@
   "permitSimulationChange_receive": {
     "message": "받음:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "지출 한도"
-  },
   "permitSimulationChange_transfer": {
     "message": "보냄:"
   },
@@ -3865,12 +3853,6 @@
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
-  },
-  "petnamesEnabledToggle": {
-    "message": "닉네임 허용"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "이 기능을 사용하면 모든 주소에 닉네임을 지정할 수 있습니다. 가능한 경우 상호 작용하는 주소에 닉네임을 추천합니다."
   },
   "pinToTop": {
     "message": "맨 위에 고정"
@@ -5140,13 +5122,6 @@
     "message": "$1의 잠금을 해제하려면 다운로드, 설정 및 비밀번호를 입력하세요.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "OneKey 연결"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "OneKey를 컴퓨터에 직접 연결하고 잠금을 해제하세요. 올바른 패스프레이즈를 사용하세요.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Trezor 지갑 연결"
   },
@@ -5836,9 +5811,6 @@
   "transactionErrored": {
     "message": "트랜잭션에 오류가 발생했습니다."
   },
-  "transactionFailedBannerMessage": {
-    "message": "이 트랜잭션은 추가 수수료가 발생할 가능성이 있어 중단했습니다. 자금은 여전히 지갑에 있습니다."
-  },
   "transactionFlowNetwork": {
     "message": "네트워크"
   },
@@ -5961,9 +5933,6 @@
   },
   "twelveHrTitle": {
     "message": "12시간:"
-  },
-  "typeYourSRP": {
-    "message": "비밀복구구문을 입력하세요"
   },
   "u2f": {
     "message": "U2F",

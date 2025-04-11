@@ -8,9 +8,7 @@ import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
 const splTokenName = 'PKIN';
 describe('Send flow', function (this: Suite) {
-  // Temporarily disabled on Mar 26, 2025 because of CI failures.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('user with more than 1 token in the token list', async function () {
+  it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -137,9 +135,7 @@ describe('Send flow', function (this: Suite) {
   });
 });
 describe('Send flow', function (this: Suite) {
-  // Temporarily disabled on Mar 26, 2025 because of CI failures.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('and send transaction fails', async function () {
+  it('and send transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {
@@ -208,9 +204,7 @@ describe('Send flow', function (this: Suite) {
 });
 
 describe('Send flow', function (this: Suite) {
-  // Temporarily disabled on Mar 26, 2025 because of CI failures.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('and Transaction simulation fails', async function () {
+  it('and Transaction simulation fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {

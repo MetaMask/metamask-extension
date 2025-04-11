@@ -18,6 +18,7 @@ import type {
   StartFlow,
 } from '@metamask/approval-controller';
 import { GetSnap, HandleSnapRequest } from '@metamask/snaps-controllers';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type SnapKeyringBuilderAllowActions =
@@ -47,3 +48,9 @@ export type SnapKeyringBuilderMessenger = RestrictedMessenger<
   SnapKeyringBuilderAllowActions['type'],
   never
 >;
+
+/**
+ * Interface for the MetaMask Controller used by the snap keyring.
+ * This interface defines only the methods needed from the controller.
+ */
+export type GetSnapKeyring = () => Promise<SnapKeyring>;

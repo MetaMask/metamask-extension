@@ -2775,7 +2775,7 @@ SOFTWARE.
 ******************************
 
 caniuse-lite
-1.0.30001669 <https://github.com/browserslist/caniuse-lite>
+1.0.30001707 <https://github.com/browserslist/caniuse-lite>
 Attribution 4.0 International
 
 =======================================================================
@@ -14628,7 +14628,7 @@ SOFTWARE.
 ******************************
 
 @keystonehq/base-eth-keyring
-0.15.0 <https://github.com/KeystoneHQ/keystone-airgaped-base>
+0.15.1 <https://github.com/KeystoneHQ/keystone-airgaped-base>
 license: MIT
 authors: aaronisme <aarondongchen@gmail.com>
 
@@ -15059,6 +15059,13 @@ authors: soralit <soralitria@gmail.com>
 0.21.0 <>
 license: ISC
 authors: soralit <soralitria@gmail.com>
+
+******************************
+
+@keystonehq/metamask-airgapped-keyring
+0.15.2 <https://github.com/KeystoneHQ/keystone-airgaped-base>
+license: MIT
+authors: aaronisme <aarondongchen@gmail.com>
 
 ******************************
 
@@ -17357,7 +17364,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/assets-controllers
-53.1.1 <https://github.com/MetaMask/core>
+55.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -17441,6 +17448,32 @@ authors: undefined
 
 ******************************
 
+@metamask/bridge-controller
+11.0.0 <https://github.com/MetaMask/core>
+MIT License
+
+Copyright (c) 2025 MetaMask
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+
+
+******************************
+
 @metamask/browser-passworder
 4.3.0 <https://github.com/MetaMask/browser-passworder>
 ISC License
@@ -17510,7 +17543,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/design-tokens
-5.0.0 <https://github.com/MetaMask/metamask-design-system>
+5.1.0 <https://github.com/MetaMask/metamask-design-system>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -17816,7 +17849,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/eth-hd-keyring
-12.0.0 <https://github.com/MetaMask/eth-hd-keyring>
+12.1.0 <https://github.com/MetaMask/eth-hd-keyring>
 ISC License
 
 Copyright (c) 2020 MetaMask
@@ -18793,7 +18826,7 @@ authors: undefined
 ******************************
 
 @metamask/key-tree
-10.0.2 <https://github.com/MetaMask/key-tree>
+10.1.1 <https://github.com/MetaMask/key-tree>
 MIT License
 
 Copyright (c) 2021 MetaMask
@@ -18898,13 +18931,6 @@ If you have any questions, comments or interest in pursuing any other use cases,
 
 ******************************
 
-@metamask/metamask-airgapped-keyring
-0.15.0 <https://github.com/KeystoneHQ/keystone-airgaped-base>
-license: MIT
-authors: aaronisme <aarondongchen@gmail.com>
-
-******************************
-
 @metamask/metamask-eth-abis
 3.1.1 <https://github.com/MetaMask/metamask-eth-abis>
 ISC License
@@ -18952,7 +18978,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/multichain-network-controller
-0.1.1 <https://github.com/MetaMask/core>
+0.1.2 <https://github.com/MetaMask/core>
+MIT License
+
+Copyright (c) 2025 MetaMask
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+
+
+******************************
+
+@metamask/multichain-network-controller
+0.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -19083,7 +19135,7 @@ SOFTWARE.
 ******************************
 
 @metamask/notification-services-controller
-1.0.0 <https://github.com/MetaMask/core>
+5.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -19228,7 +19280,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/phishing-controller
-12.4.0 <https://github.com/MetaMask/core>
+12.4.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -19255,6 +19307,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 @metamask/polling-controller
 12.0.3 <https://github.com/MetaMask/core>
+MIT License
+
+Copyright (c) 2018 MetaMask
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+
+
+******************************
+
+@metamask/polling-controller
+13.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -19515,7 +19593,7 @@ authors: undefined
 ******************************
 
 @metamask/profile-sync-controller
-9.0.0 <https://github.com/MetaMask/core>
+10.1.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -19542,6 +19620,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 @metamask/providers
 20.0.0 <https://github.com/MetaMask/providers>
+MIT License
+
+Copyright (c) 2020 MetaMask
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+******************************
+
+@metamask/providers
+21.0.0 <https://github.com/MetaMask/providers>
 MIT License
 
 Copyright (c) 2020 MetaMask
@@ -19765,7 +19870,7 @@ authors: Dan Finlay <dan@danfinlay.com>
 ******************************
 
 @metamask/smart-transactions-controller
-16.1.0 <https://github.com/MetaMask/smart-transactions-controller>
+16.3.1 <https://github.com/MetaMask/smart-transactions-controller>
 Copyright ConsenSys Software Inc. 2020. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -19789,7 +19894,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-controllers
-10.0.1 <https://github.com/MetaMask/snaps>
+11.1.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -19813,7 +19918,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-execution-environments
-7.0.0 <https://github.com/MetaMask/snaps>
+7.1.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
 
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20046,7 +20151,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-rpc-methods
-11.13.1 <https://github.com/MetaMask/snaps>
+12.0.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20070,7 +20175,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-sdk
-6.19.0 <https://github.com/MetaMask/snaps>
+6.21.0 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2023 MetaMask
@@ -20112,7 +20217,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/snaps-utils
-9.0.1 <https://github.com/MetaMask/snaps>
+9.1.0 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2022 MetaMask
@@ -20162,7 +20267,7 @@ authors: undefined
 ******************************
 
 @metamask/transaction-controller
-50.0.0 <https://github.com/MetaMask/core>
+52.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -20801,7 +20906,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 nanoid
-3.3.8 <https://github.com/ai/nanoid>
+3.3.11 <https://github.com/ai/nanoid>
 The MIT License (MIT)
 
 Copyright 2017 Andrey Sitnik <andrey@sitnik.ru>

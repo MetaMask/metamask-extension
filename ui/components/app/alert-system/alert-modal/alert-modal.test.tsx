@@ -1,11 +1,17 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { Severity } from '../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import * as useAlertsModule from '../../../../hooks/useAlerts';
+import {
+  BlockaidReason,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../helpers/constants/design-system';
+import * as useAlertsModule from '../../../../hooks/useAlerts';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
@@ -25,6 +31,16 @@ jest.mock('../contexts/alertMetricsContext', () => ({
     trackAlertActionClicked: mockTrackAlertActionClicked,
     trackInlineAlertClicked: jest.fn(),
     trackAlertRender: mockTrackAlertRender,
+  })),
+}));
+
+jest.mock('../../../../pages/confirmations/context/confirm', () => ({
+  useConfirmContext: jest.fn(() => ({
+    currentConfirmation: {
+      securityAlertResponse: {
+        reason: '',
+      },
+    },
   })),
 }));
 
@@ -290,6 +306,133 @@ describe('AlertModal', () => {
       expect(mockTrackAlertActionClicked).toHaveBeenCalledWith(
         CONTRACT_ALERT_KEY_MOCK,
       );
+    });
+  });
+
+  describe('BlockaidAlertDetails', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const blockaidAlertMock: Alert = {
+      key: FROM_ALERT_KEY_MOCK,
+      field: FROM_ALERT_KEY_MOCK,
+      severity: Severity.Warning,
+      message: ALERT_MESSAGE_MOCK,
+      provider: SecurityProvider.Blockaid,
+      reason: 'Reason 1',
+    };
+
+    const blockaidStateMock = {
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: [blockaidAlertMock] },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [FROM_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    };
+    const blockaidMockStore = configureMockStore([])(blockaidStateMock);
+
+    const testCases = [
+      {
+        reason: BlockaidReason.rawSignatureFarming,
+        expectedKey: 'blockaidAlertInfoDescription3',
+      },
+      {
+        reason: BlockaidReason.approvalFarming,
+        expectedKey: 'blockaidAlertInfoDescription2',
+      },
+      {
+        reason: BlockaidReason.setApprovalForAll,
+        expectedKey: 'blockaidAlertInfoDescription2',
+      },
+      {
+        reason: BlockaidReason.permitFarming,
+        expectedKey: 'blockaidAlertInfoDescription2',
+      },
+      {
+        reason: BlockaidReason.transferFarming,
+        expectedKey: 'blockaidAlertInfoDescription',
+      },
+      {
+        reason: BlockaidReason.transferFromFarming,
+        expectedKey: 'blockaidAlertInfoDescription',
+      },
+      {
+        reason: BlockaidReason.rawNativeTokenTransfer,
+        expectedKey: 'blockaidAlertInfoDescription',
+      },
+      {
+        reason: BlockaidReason.seaportFarming,
+        expectedKey: 'blockaidAlertInfoDescription4',
+      },
+      {
+        reason: BlockaidReason.blurFarming,
+        expectedKey: 'blockaidAlertInfoDescription5',
+      },
+      {
+        reason: BlockaidReason.maliciousDomain,
+        expectedKey: 'blockaidAlertInfoDescription6',
+      },
+      {
+        reason: BlockaidReason.tradeOrderFarming,
+        expectedKey: 'blockaidAlertInfoDescription7',
+      },
+      {
+        reason: BlockaidReason.other,
+        expectedKey: 'blockaidAlertInfoDescription7',
+      },
+      {
+        reason: 'unknown reason',
+        expectedKey: 'blockaidAlertInfoDescription7',
+      },
+    ];
+
+    testCases.forEach(({ reason, expectedKey }) => {
+      it(`displays correct message for ${reason}`, () => {
+        (useConfirmContext as jest.Mock).mockImplementation(() => ({
+          currentConfirmation: {
+            securityAlertResponse: {
+              reason,
+            },
+          },
+        }));
+
+        const { getByText } = renderWithProvider(
+          <AlertModal
+            ownerId={OWNER_ID_MOCK}
+            onAcknowledgeClick={onAcknowledgeClickMock}
+            onClose={onCloseMock}
+            alertKey={FROM_ALERT_KEY_MOCK}
+          />,
+          blockaidMockStore,
+        );
+
+        expect(getByText(tEn(expectedKey) as string)).toBeInTheDocument();
+      });
+    });
+
+    it('handles undefined securityAlertResponse', () => {
+      (useConfirmContext as jest.Mock).mockImplementation(() => ({
+        currentConfirmation: {},
+      }));
+
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        blockaidMockStore,
+      );
+
+      expect(
+        getByText(tEn('blockaidAlertInfoDescription7') as string),
+      ).toBeInTheDocument();
     });
   });
 });

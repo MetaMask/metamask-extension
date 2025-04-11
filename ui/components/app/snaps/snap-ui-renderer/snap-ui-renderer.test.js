@@ -10,6 +10,7 @@ import {
   Field,
   Checkbox,
   FileInput,
+  AddressInput,
 } from '@metamask/snaps-sdk/jsx';
 import { fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -688,6 +689,154 @@ describe('SnapUIRenderer', () => {
       ],
     );
 
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports address inputs', () => {
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+        }),
+      }),
+    );
+
+    const input = getByRole('textbox');
+    expect(input).toBeDefined();
+    expect(input.value).toStrictEqual('');
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports address inputs with existing state', () => {
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+        }),
+      }),
+      {
+        state: { input: 'eip155:0:0x1234567890123456789012345678901234567890' },
+      },
+    );
+
+    const input = getByRole('textbox');
+    expect(input).toBeDefined();
+    expect(input.value).toStrictEqual(
+      '0x1234567890123456789012345678901234567890',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports address inputs with a placeholder', () => {
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          placeholder: 'Enter an address',
+          chainId: 'eip155:0',
+        }),
+      }),
+    );
+
+    const input = getByRole('textbox');
+    expect(input).toBeDefined();
+    expect(input.placeholder).toStrictEqual('Enter an address');
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports address inputs with a disabled prop', () => {
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          disabled: true,
+          chainId: 'eip155:0',
+        }),
+      }),
+    );
+
+    const input = getByRole('textbox');
+    expect(input).toBeDefined();
+    expect(input).toBeDisabled();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports address inputs within a field', () => {
+    const { container, getByRole, getByText } = renderInterface(
+      Box({
+        children: [
+          Field({
+            label: 'Address',
+            children: AddressInput({
+              name: 'input',
+              chainId: 'eip155:0',
+            }),
+          }),
+        ],
+      }),
+    );
+
+    const input = getByRole('textbox');
+    expect(input).toBeDefined();
+    const label = getByText('Address');
+    expect(label).toBeDefined();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('will render a matched address name', () => {
+    const { container, getByRole, getByText } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+        }),
+      }),
+    );
+
+    const input = getByRole('textbox');
+    fireEvent.change(input, {
+      target: {
+        value: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      },
+    });
+
+    const matchedAddressName = getByText('Test Account');
+    const matchedAddress = getByText(
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    );
+    const avatar = container.querySelector('svg');
+    expect(matchedAddressName).toBeDefined();
+    expect(matchedAddress).toBeDefined();
+    expect(avatar).toBeDefined();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('will render avatar when displayAvatar is true', () => {
+    const testAddress = '0xabcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+    const { container, getByDisplayValue } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          displayAvatar: true,
+        }),
+      }),
+      { state: { input: `eip155:0:${testAddress}` } },
+    );
+
+    const matchedAddress = getByDisplayValue(testAddress);
+    expect(matchedAddress).toBeDefined();
+    const avatar = container.querySelector('svg');
+    expect(avatar).toBeDefined();
     expect(container).toMatchSnapshot();
   });
 });

@@ -25,6 +25,7 @@ import {
   SEND_ROUTE,
   SWAPS_ROUTE,
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -79,6 +80,8 @@ export function ToastMaster() {
   const onSwapsScreen =
     location.pathname === SWAPS_ROUTE ||
     location.pathname === PREPARE_SWAP_ROUTE;
+  const onBridgeScreen =
+    location.pathname === `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
   if (onHomeScreen) {
     return (
@@ -99,7 +102,7 @@ export function ToastMaster() {
     );
   }
 
-  if (onSendScreen || onSwapsScreen) {
+  if (onSendScreen || onSwapsScreen || onBridgeScreen) {
     return (
       <ToastContainer>
         <SwitchedNetworkToast />

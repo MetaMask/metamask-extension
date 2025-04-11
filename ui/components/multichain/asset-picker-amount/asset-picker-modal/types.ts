@@ -26,6 +26,7 @@ export type NFT = {
   imageOriginal?: string;
   ipfsImageUpdated?: string;
   collection?: Record<string, string | number | boolean>;
+  chainId: string;
 };
 
 /**
