@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { createDelegation } from '@metamask/delegation-toolkit';
 
 import { createDelegation } from '@metamask/delegation-controller/sdk';
 import { hexToNumber } from '@metamask/utils';
@@ -45,7 +46,10 @@ import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
-import { storeDelegationEntry } from '../../../../store/actions';
+import {
+  signDelegation,
+  storeDelegationEntry,
+} from '../../../../store/actions';
 import { getSelectedNetwork, getSelectedAccount } from '../../../../selectors';
 
 const TOTAL_STEPS = 3;
@@ -153,12 +157,19 @@ export default function RemoteModeSetupDailyAllowance({
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = () => {
+  const handleConfigureRemoteSwaps = async () => {
+    const chainId = hexToNumber(selectedNetwork.configuration.chainId);
+
     const delegation = createDelegation({
       caveats: [],
       from: selectedAccount.address,
       to: selectedAccount.address,
     });
+
+    const signature = await signDelegation(delegation, chainId);
+
+    delegation.signature = signature;
+
     storeDelegationEntry({
       data: delegation,
       tags: ['daily-allowance'],

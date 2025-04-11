@@ -46,7 +46,10 @@ import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
 import { getSelectedAccount, getSelectedNetwork } from '../../../../selectors';
-import { storeDelegationEntry } from '../../../../store/actions';
+import {
+  signDelegation,
+  storeDelegationEntry,
+} from '../../../../store/actions';
 
 const TOTAL_STEPS = 3;
 
@@ -156,16 +159,23 @@ export default function RemoteModeSetupSwaps({
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = () => {
+  const handleConfigureRemoteSwaps = async () => {
+    const chainId = hexToNumber(selectedNetwork.configuration.chainId);
+
     const delegation = createDelegation({
       caveats: [],
       from: selectedAccount.address,
       to: selectedAccount.address,
     });
+
+    const signature = await signDelegation(delegation, chainId);
+
+    delegation.signature = signature;
+
     storeDelegationEntry({
       data: delegation,
       tags: ['swap'],
-      chainId: hexToNumber(selectedNetwork.configuration.chainId),
+      chainId,
     });
 
     history.replace(REMOTE_ROUTE);

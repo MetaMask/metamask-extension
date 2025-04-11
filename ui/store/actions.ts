@@ -45,6 +45,11 @@ import type { NotificationServicesController } from '@metamask/notification-serv
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Delegation } from '@metamask/delegation-controller/sdk';
 import { DelegationEntry } from '@metamask/delegation-controller';
+import {
+  getDelegationHashOffchain,
+  getDeleGatorEnvironment,
+} from '@metamask/delegation-toolkit';
+
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6182,14 +6187,19 @@ export function setTransactionActive(
 
 export const signDelegation = async (
   delegation: Delegation,
-): Promise<string> => {
-  return await submitRequestToBackground('signDelegation', [delegation]);
+  chainId: number,
+): Promise<Hex> => {
+  const verifyingContract = getDeleGatorEnvironment(chainId).DelegationManager;
+  return await submitRequestToBackground('signDelegation', [
+    { delegation, verifyingContract, chainId },
+  ]);
 };
 
 export const storeDelegationEntry = async (
   entry: DelegationEntry,
 ): Promise<void> => {
-  return await submitRequestToBackground('storeDelegationEntry', [entry]);
+  const hash = getDelegationHashOffchain(entry.data);
+  return await submitRequestToBackground('storeDelegationEntry', [hash, entry]);
 };
 
 export const listDelegationEntries = async (

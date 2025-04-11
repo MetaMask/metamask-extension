@@ -4853,33 +4853,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^27.0.0":
-  version: 27.0.0
-  resolution: "@metamask/accounts-controller@npm:27.0.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/eth-snap-keyring": "npm:^12.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^6.0.0"
-    "@metamask/keyring-utils": "npm:^3.0.0"
-    "@metamask/snaps-sdk": "npm:^6.17.1"
-    "@metamask/snaps-utils": "npm:^8.10.0"
-    "@metamask/utils": "npm:^11.2.0"
-    deepmerge: "npm:^4.2.2"
-    ethereum-cryptography: "npm:^2.1.2"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/keyring-controller": ^21.0.0
-    "@metamask/network-controller": ^23.0.0
-    "@metamask/providers": ^18.1.0
-    "@metamask/snaps-controllers": ^9.19.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b56c67bad0f454458b8c8d1bf85bfa25514570bb45d53f6d17c98b5b1bdf3477b49c49c015c6d261bcd3bc89909e8f00afde2c4981e0a03adba23ac2f41df07f
-  languageName: node
-  linkType: hard
-
 "@metamask/address-book-controller@npm:^6.0.3":
   version: 6.0.3
   resolution: "@metamask/address-book-controller@npm:6.0.3"
@@ -5186,16 +5159,14 @@ __metadata:
 
 "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.1.0
-  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=c53b46&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/delegation-controller@file:.yalc/@metamask/delegation-controller#.yalc/@metamask/delegation-controller::hash=c90ec0&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/accounts-controller": "npm:^27.0.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/delegation-toolkit": "npm:^0.9.0"
-    "@metamask/keyring-controller": "npm:^21.0.1"
-    "@metamask/utils": "npm:^11.3.0"
+    "@metamask/keyring-controller": "npm:^21.0.2"
+    "@metamask/utils": "npm:^11.2.0"
   peerDependencies:
-    viem: ">=2.18.2 <3.0.0"
-  checksum: 10/d0a9bb36a2e0be52a677025a8ecc038c81f3e1fff1a90474d4513eee28dc4c538b88689e5838fcc1d81f5ff518af161bf4bae7a3152c9756981c6affecc00b6a
+    "@metamask/accounts-controller": ^27.0.0
+  checksum: 10/d4737347e8a2f84d295630be77f84839b06317005c3253b1ea0b291e5d196bef3dd9f5316ace1463b7900f5330bb72cead45557858cd274171da7f539bc7f951
   languageName: node
   linkType: hard
 
@@ -5774,6 +5745,28 @@ __metadata:
     immer: "npm:^9.0.6"
     ulid: "npm:^2.3.0"
   checksum: 10/9406eb60ab111a9896a4e2db0ef009fcdd5dbe6daac1b06b77561af60e7463fcfc139727e0891203c0c135f744ac7bc5900b2e6f0bfe8dc5a218689be43bf266
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-controller@npm:^21.0.2":
+  version: 21.0.2
+  resolution: "@metamask/keyring-controller@npm:21.0.2"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/browser-passworder": "npm:^4.3.0"
+    "@metamask/eth-hd-keyring": "npm:^12.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-simple-keyring": "npm:^10.0.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.1"
+    "@metamask/utils": "npm:^11.2.0"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+    ulid: "npm:^2.3.0"
+  checksum: 10/174b6e5821f97892e33d2bb60924cc4412f8a9f4ee676a896865b733ef7943e8c2e67f5d5fa8b5d8bd6cff3f0ce4c3a88dcad85d9c2a0aba6c8a1e090f1fb6e6
   languageName: node
   linkType: hard
 
@@ -6812,23 +6805,6 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/9cc2cb6af4627085e72a310ba9b8921c69757d94e2992d4664627e5a0d99b1f2f7f8069c6f22262515135e1172bd66b82d00512d90ea2ec6da4e768f3d7d4ae2
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^11.3.0":
-  version: 11.4.0
-  resolution: "@metamask/utils@npm:11.4.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-    "@scure/base": "npm:^1.1.3"
-    "@types/debug": "npm:^4.1.7"
-    debug: "npm:^4.3.4"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.5.4"
-    uuid: "npm:^9.0.1"
-  checksum: 10/7c976268e944b542b5e936bae89f58a50eef58501bd3512944995c6d416cb1a7dd3f712aec8c7ca0969dcee889ab963b815fbc3e863dc80ccf16e9258eaec3ff
   languageName: node
   linkType: hard
 
@@ -27473,6 +27449,7 @@ __metadata:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/delegation-controller": "file:.yalc/@metamask/delegation-controller"
+    "@metamask/delegation-toolkit": "npm:^0.9.0"
     "@metamask/design-tokens": "npm:^7.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"

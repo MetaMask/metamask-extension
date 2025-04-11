@@ -11,5 +11,5 @@ import {
  */
 export function getIsRemoteModeEnabled(state: RemoteFeatureFlagsState) {
   const { vaultRemoteMode } = getRemoteFeatureFlags(state);
-  return Boolean(vaultRemoteMode);
+  return true;
 }
