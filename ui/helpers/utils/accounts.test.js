@@ -170,7 +170,6 @@ describe('Accounts', () => {
 
     describe('Snap Account Label', () => {
       const mockSnapName = 'Test Snap Name';
-      const mockSnapId = 'test-snap-id';
       const mockSnapAccountWithName = {
         ...mockAccount,
         metadata: {
