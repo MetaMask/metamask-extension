@@ -119,6 +119,7 @@
       }
     }
   },
+  "DeFiPositionsController": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0

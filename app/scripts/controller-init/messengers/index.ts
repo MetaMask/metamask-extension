@@ -40,6 +40,7 @@ import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
+import { getDeFiPositionsControllerMessenger } from './defi-positions';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -48,6 +49,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+    getInitMessenger: noop,
+  },
+  DeFiPositionsController: {
+    getMessenger: getDeFiPositionsControllerMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {

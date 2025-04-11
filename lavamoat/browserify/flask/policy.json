@@ -1053,6 +1053,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
+        "fetch": true,
         "setInterval": true,
         "setTimeout": true
       },
