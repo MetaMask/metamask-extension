@@ -815,15 +815,6 @@
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
-  "priceImpactAlertTitle": {
-    "message": "High price impact"
-  },
-  "priceImpactAlertDescription": {
-    "message": "This trade has high price impact, means you may get a worse rate than expected or pay higher gas fees. It doesn't always mean something's wrong, but it's worth double-checking before you proceed."
-  },
-  "priceImpactAlertAcknowledge": {
-    "message": "I understand"
-  },
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
   },
@@ -4212,6 +4203,15 @@
   },
   "price": {
     "message": "Price"
+  },
+  "priceImpactAlertAcknowledge": {
+    "message": "I understand"
+  },
+  "priceImpactAlertDescription": {
+    "message": "This trade has high price impact, means you may get a worse rate than expected or pay higher gas fees. It doesn't always mean something's wrong, but it's worth double-checking before you proceed."
+  },
+  "priceImpactAlertTitle": {
+    "message": "High price impact"
   },
   "priceUnavailable": {
     "message": "price unavailable"

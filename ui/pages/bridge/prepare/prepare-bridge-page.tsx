@@ -227,6 +227,7 @@ const PrepareBridgePage = () => {
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [priceImpactAcknowledged, setPriceImpactAcknowledged] = useState(false);
+  useEffect(() => setPriceImpactAcknowledged(false), [activeQuote?.quote]);
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
