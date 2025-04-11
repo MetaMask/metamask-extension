@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Ακύρωση συναλλαγής"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Ακύρωση αναβάθμισης & συναλλαγής"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Αν δεν θέλετε να αναβαθμίσετε τον λογαριασμό σας, μπορείτε να το ακυρώσετε εδώ.\n\nΓια να ολοκληρώσετε αυτή τη συναλλαγή χωρίς αναβάθμιση, θα πρέπει να υποβάλετε ξανά αυτό το αίτημα στον ιστότοπο. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Ακύρωση συναλλαγής"
-  },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
   },

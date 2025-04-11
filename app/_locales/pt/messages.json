@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Solicitação de transação"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancelar transação"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancelar atualização e transação"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Se você não deseja atualizar sua conta, pode cancelar a atualização aqui.\n\nPara terminar esta transação sem uma atualização, é necessário fazer esta solicitação novamente no site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancelar transação"
-  },
   "confirmationAlertDetails": {
     "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
   },
