@@ -35,6 +35,7 @@ import useHandleApprovalTx, {
   ALLOWANCE_RESET_ERROR,
 } from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
+import useSnapConfirmation from './useSnapConfirmation';
 
 const debugLog = createProjectLogger('bridge');
 const LINEA_DELAY_MS = 5000;
@@ -82,6 +83,9 @@ export default function useSubmitBridgeTransaction() {
   const selectedAddress = useSelector(getSelectedAddress);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const isEvm = useMultichainSelector(getMultichainIsEvm);
+
+  // This redirects to the confirmation page if an unapproved snap confirmation exists
+  useSnapConfirmation();
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -180,15 +184,24 @@ export default function useSubmitBridgeTransaction() {
     let bridgeTxMeta: TransactionMeta | undefined;
     try {
       if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
-        dispatch(submitBridgeTx(quoteResponse));
-        // TODO see what else eeds to be done after
+        // Move to activity tab before submitting a transaction
+        // This is a temporary solution to avoid the transaction not being shown in the activity tab
+        // We should find a better solution in the future
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        await dispatch(submitBridgeTx(quoteResponse));
+        // The useSnapConfirmation hook redirects to the confirmation page right after
+        // submitting the tx so everything below is unnecessary and we can return early
         return;
       }
+
+      // EVM only
       bridgeTxMeta = await handleBridgeTx({
         quoteResponse,
         approvalTxId: approvalTxMeta?.id,
       });
+      console.log('======bridge tx meta', bridgeTxMeta);
     } catch (e) {
+      console.error('======bridge tx failed', e);
       debugLog('Bridge transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
