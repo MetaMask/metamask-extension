@@ -13,18 +13,16 @@ import {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.getGlobalChainId - The function to get the global chain id.
  * @param request.trackEvent - The function to track events.
  * @returns The initialized controller.
  */
 export const NftControllerInit: ControllerInitFunction<
   NftController,
   NftControllerMessenger
-> = ({ controllerMessenger, persistedState, getGlobalChainId, trackEvent }) => {
+> = ({ controllerMessenger, persistedState, trackEvent }) => {
   const controller = new NftController({
     state: persistedState.NftController,
     messenger: controllerMessenger,
-    chainId: getGlobalChainId(),
     onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
       trackEvent({
         event: MetaMetricsEventName.NftAdded,
