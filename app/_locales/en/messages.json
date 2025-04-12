@@ -2601,6 +2601,9 @@
   "interactingWithTransactionDescription": {
     "message": "This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
   },
+  "interaction": {
+    "message": "Interaction"
+  },
   "invalidAddress": {
     "message": "Invalid address"
   },
@@ -5058,6 +5061,12 @@
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
+  },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases"
   },
   "slideRemoteModeDescription": {
     "message": "Access your hardware wallet without plugging it in"
