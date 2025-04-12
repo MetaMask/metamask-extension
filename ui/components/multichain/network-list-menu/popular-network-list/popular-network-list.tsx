@@ -106,7 +106,6 @@ const PopularNetworkList = ({
               onMouseLeave={handleMouseLeave}
               style={{
                 width: '326px',
-                width: '326px',
               }}
             >
               <Text variant={TextVariant.bodyMd}>
