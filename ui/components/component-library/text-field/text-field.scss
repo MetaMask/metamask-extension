@@ -1,5 +1,5 @@
 .mm-text-field {
-  --text-field-height: var(--size, 40px);
+  --text-field-height: var(--size, 48px);
 
   &--size-sm {
     --size: 32px;
@@ -17,8 +17,7 @@
   border-color: var(--color-border-default);
 
   &--focused {
-    outline: 5px auto Highlight; // firefox
-    outline: 5px auto -webkit-focus-ring-color; // chrome
+    border: 2px var(--color-primary-default);
   }
 
   &--error {
