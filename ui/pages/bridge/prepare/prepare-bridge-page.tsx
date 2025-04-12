@@ -719,7 +719,12 @@ const PrepareBridgePage = () => {
               </>
             ) : null}
           </Column>
-
+          {!wasTxDeclined && activeQuote && (
+            <PriceImpactAlert
+              acknowledged={priceImpactAcknowledged}
+              setAcknowledged={setPriceImpactAcknowledged}
+            />
+          )}
           <Row padding={6} paddingTop={activeQuote ? 0 : 6}>
             <Column
               gap={3}
@@ -752,12 +757,6 @@ const PrepareBridgePage = () => {
                     transition: 'width 1s linear',
                   }}
                   backgroundColor={BackgroundColor.primaryMuted}
-                />
-              )}
-              {!wasTxDeclined && activeQuote && (
-                <PriceImpactAlert
-                  acknowledged={priceImpactAcknowledged}
-                  setAcknowledged={setPriceImpactAcknowledged}
                 />
               )}
               {!wasTxDeclined &&
