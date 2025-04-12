@@ -1649,6 +1649,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
+          'SnapController:handleRequest',
           'TransactionController:getState',
         ],
         allowedEvents: [],
@@ -1656,6 +1657,15 @@ export default class MetamaskController extends EventEmitter {
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
       state: initState.BridgeStatusController,
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+        }),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
     });
 
     const smartTransactionsControllerMessenger =
@@ -4088,6 +4098,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS}`,
         ),
+      // Bridge Tx submission
+      [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.SUBMIT_TX}`,
+      ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
