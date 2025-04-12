@@ -75,7 +75,11 @@ export const useCarouselManagement = ({
     // 2. Sweepstakes campaign is active
     // 3. Slide has not been dismissed by user
     if (!inTest && isSweepstakesActive && !isSweepstakesSlideDismissed) {
-      defaultSlides.unshift(SWEEPSTAKES_SLIDE);
+      const newSweepstakesSlide = {
+        ...SWEEPSTAKES_SLIDE,
+        dismissed: false,
+      };
+      defaultSlides.unshift(newSweepstakesSlide);
     } else if (existingSweepstakesSlide?.dismissed) {
       // Add the sweepstakes slide with the dismissed state preserved
       // We need this to maintain the persisted dismissed state
