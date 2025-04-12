@@ -13,7 +13,6 @@ import {
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -67,7 +66,9 @@ export const useTokensWithFiltering = (
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances(accountId);
 
-  const cachedTokens = useSelector(selectERC20TokensByChain);
+  const cachedTokens = useSelector(
+    (state: BridgeAppState) => state.metamask.tokensChainsCache,
+  );
 
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, BridgeAsset>

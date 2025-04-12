@@ -5,6 +5,7 @@ import type {
   NetworkState,
 } from '@metamask/network-controller';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
+import { TokenDetectionState } from '@metamask/assets-controllers';
 import {
   isSolanaChainId,
   type BridgeToken,
@@ -72,6 +73,7 @@ import type { BridgeState } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
+    TokenDetectionState &
     GasFeeState &
     NetworkState &
     AccountsControllerState & {
@@ -418,13 +420,11 @@ export const getIsQuoteExpired = (
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
-    ({ bridge: { sortOrder, selectedQuote } }: BridgeAppState) => ({
-      sortOrder,
-      selectedQuote,
-    }),
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
     _getBridgeFeesPerGas,
   ],
-  (controllerStates, { sortOrder, selectedQuote }, bridgeFeesPerGas) =>
+  (controllerStates, sortOrder, selectedQuote, bridgeFeesPerGas) =>
     selectBridgeQuotes(controllerStates, {
       bridgeFeesPerGas,
       sortOrder,
