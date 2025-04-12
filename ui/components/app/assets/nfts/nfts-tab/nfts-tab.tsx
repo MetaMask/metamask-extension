@@ -38,7 +38,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../../../ducks/locale/locale';
-import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
@@ -58,6 +57,7 @@ import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import PulseLoader from '../../../../ui/pulse-loader';
 
 export default function NftsTab() {
   const history = useHistory();
@@ -161,10 +161,9 @@ export default function NftsTab() {
         display={Display.Flex}
         marginTop={4}
       >
-        <Spinner
-          color="var(--color-warning-default)"
-          className="loading-overlay__spinner"
-        />
+        <Box marginTop={4} marginBottom={4}>
+          <PulseLoader />
+        </Box>
       </Box>
     );
   }
