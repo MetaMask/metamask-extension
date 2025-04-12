@@ -20,15 +20,16 @@ import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { isInternalAccountInPermittedAccountIds } from '../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getOriginOfCurrentTab,
-  getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
+  getAllPermittedAccountsForCurrentTab,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -130,9 +131,16 @@ export async function setupInitialStore(
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress =
-      getSelectedInternalAccount(draftInitialState)?.address ?? '';
+      getAllPermittedAccountsForCurrentTab(draftInitialState);
+
+    const selectedAccount = getSelectedInternalAccount(draftInitialState);
+
+    const currentTabIsConnectedToSelectedAddress =
+      isInternalAccountInPermittedAccountIds(
+        selectedAccount,
+        permittedAccountsForCurrentTab,
+      );
+
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -143,7 +151,7 @@ export async function setupInitialStore(
       unconnectedAccountAlertIsEnabled &&
       !unconnectedAccountAlertShownOrigins[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
-      !permittedAccountsForCurrentTab.includes(selectedAddress)
+      !currentTabIsConnectedToSelectedAddress
     ) {
       draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
