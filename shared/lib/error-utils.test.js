@@ -6,9 +6,6 @@ jest.mock('../modules/i18n', () => ({
   fetchLocale: jest.fn(),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
-jest.mock('./deep-linking', () => ({
-  openCustomProtocol: jest.fn(),
-}));
 
 jest.mock('webextension-polyfill', () => {
   return {
