@@ -4,15 +4,12 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
-import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
-import { TokenDetectionState } from '@metamask/assets-controllers';
 import {
   isSolanaChainId,
   type BridgeToken,
   BridgeFeatureFlagsKey,
   isNativeAddress,
   formatChainIdToCaip,
-  BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   type BridgeAppState as BridgeAppStateFromController,
@@ -23,10 +20,7 @@ import { SolAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
-import type {
-  GasFeeEstimates,
-  GasFeeState,
-} from '@metamask/gas-fee-controller';
+import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import { CaipChainId, Hex } from '@metamask/utils';
@@ -49,7 +43,6 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate } from '../metamask/metamask';
 import {} from '../../pages/bridge/utils/quote';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
@@ -73,7 +66,6 @@ import type { BridgeState } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
-    TokenDetectionState &
     GasFeeState &
     NetworkState &
     AccountsControllerState & {
@@ -374,39 +366,6 @@ export const getToTokenConversionRate = createDeepEqualSelector(
   },
 );
 
-/* This is a duplicate of the {@link getGasFeeEstimates} selector in metamask/metamask.js */
-const _getGasFeeEstimates = createSelector(
-  [
-    (state: BridgeAppState) => state.metamask.gasFeeEstimates,
-    (state) => state.confirmTransaction?.txData?.gasFeeEstimates,
-  ],
-  (gasFeeControllerEstimates, transactionGasFeeEstimates): GasFeeEstimates => {
-    if (transactionGasFeeEstimates) {
-      return mergeGasFeeEstimates({
-        gasFeeControllerEstimates: gasFeeControllerEstimates as GasFeeEstimates,
-        transactionGasFeeEstimates,
-      }) as GasFeeEstimates;
-    }
-
-    return gasFeeControllerEstimates as unknown as GasFeeEstimates;
-  },
-);
-
-const _getBridgeFeesPerGas = createSelector(
-  [_getGasFeeEstimates],
-  (gasFeeEstimates) => ({
-    estimatedBaseFeeInDecGwei: gasFeeEstimates?.estimatedBaseFee,
-    maxPriorityFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.[
-      BRIDGE_PREFERRED_GAS_ESTIMATE
-    ]?.suggestedMaxPriorityFeePerGas,
-    maxFeePerGasInDecGwei: gasFeeEstimates?.high?.suggestedMaxFeePerGas,
-    maxFeePerGas: decGWEIToHexWEI(gasFeeEstimates?.high?.suggestedMaxFeePerGas),
-    maxPriorityFeePerGas: decGWEIToHexWEI(
-      gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas,
-    ),
-  }),
-);
-
 export const getIsQuoteExpired = (
   { metamask }: BridgeAppState,
   currentTimeInMs: number,
@@ -422,11 +381,9 @@ export const getBridgeQuotes = createSelector(
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
-    _getBridgeFeesPerGas,
   ],
-  (controllerStates, sortOrder, selectedQuote, bridgeFeesPerGas) =>
+  (controllerStates, sortOrder, selectedQuote) =>
     selectBridgeQuotes(controllerStates, {
-      bridgeFeesPerGas,
       sortOrder,
       selectedQuote,
       featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG,
