@@ -39,6 +39,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
 
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
+import { getSnapAccountsByKeyringId } from '../../../selectors/multi-srp/multi-srp';
 
 type Props = {
   /**
@@ -120,6 +121,10 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const selectedKeyring = useSelector((state) =>
         getSelectedKeyringByIdOrDefault(state, selectedKeyringId),
       );
+      const firstPartySnapAccounts = useSelector((state) =>
+        getSnapAccountsByKeyringId(state, selectedKeyringId),
+      );
+
       const selectedHdKeyringIndex = useSelector((state) =>
         getHdKeyringIndexByIdOrDefault(state, selectedKeyringId),
       );
@@ -137,6 +142,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
                 hd_entropy_index: hdEntropyIndex,
+                is_suggested_name:
+                  !trimmedAccountName ||
+                  trimmedAccountName === defaultAccountName,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -184,7 +192,10 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 srpName={t('secretRecoveryPhrasePlusNumber', [
                   selectedHdKeyringIndex + 1,
                 ])}
-                srpAccounts={selectedKeyring.accounts.length}
+                srpAccounts={
+                  selectedKeyring.accounts.length +
+                  firstPartySnapAccounts.length
+                }
               />
             </Box>
           ) : null}
