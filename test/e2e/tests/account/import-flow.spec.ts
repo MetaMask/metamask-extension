@@ -9,11 +9,62 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
+
+async function mockAccountsApi(mockServer) {
+  return [
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x0961ca10d49b9b8e371aa0bcf77fe5730b18f2e4/balances')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          },
+        };
+      }),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v1/accounts/0x0961ca10d49b9b8e371aa0bcf77fe5730b18f2e4/transactions')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            data: [],
+            unprocessedNetworks: [],
+            pageInfo: {
+              hasNextPage: false,
+              cursor: null,
+              count: 0,
+            }
+          },
+        };
+      }),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x0961ca10d49b9b8e371aa0bcf77fe5730b18f2e4/transactions')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            data: [],
+            unprocessedNetworks: [],
+            pageInfo: {
+              hasNextPage: false,
+              cursor: null,
+              count: 0,
+            }
+          },
+        };
+      }),
+  ]
+};
+
 describe('Import flow', function () {
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        testSpecificMock: mockAccountsApi,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -50,6 +101,7 @@ describe('Import flow', function () {
           .withPreferencesControllerImportedAccountIdentities()
           .withAccountsControllerImportedAccount()
           .build(),
+        testSpecificMock: mockAccountsApi,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -96,6 +148,7 @@ describe('Import flow', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),
+        testSpecificMock: mockAccountsApi,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

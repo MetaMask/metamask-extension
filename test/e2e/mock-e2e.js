@@ -886,6 +886,24 @@ async function setupMocking(
       };
     });
 
+  // Accounts API: transactions
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v1/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/transactions')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          data: [],
+          unprocessedNetworks:[],
+          pageInfo: {
+            hasNextPage: false,
+            cursor: null,
+            count:0,
+          },
+        }
+      };
+    });
+
   // Bridge Feature Flags
   const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
     BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
