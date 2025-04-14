@@ -5,6 +5,8 @@ import type { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 export type UserPrefrencedCurrencyDisplayProps = OverridingUnion<
   CurrencyDisplayProps,
   {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     type?: PRIMARY | SECONDARY;
     account?: InternalAccount;
     currency?: string;

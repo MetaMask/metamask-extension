@@ -155,6 +155,8 @@ export const validators = [
   {
     property: 'destChain',
     type: 'object|undefined',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     validator: (v: unknown): v is object | unknown =>
       v === undefined || destChainStatusValidator(v),
   },

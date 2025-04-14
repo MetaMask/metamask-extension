@@ -52,6 +52,8 @@ type PermitSimulationValueDisplayParams = {
    * We currently accept strings since we have a patch that accepts a custom string
    * {@see .yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch}
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   tokenContract: Hex | string;
 
   /** The token amount */

@@ -2653,6 +2653,8 @@ export function createRetryTransaction(
 }
 
 export function addNetwork(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
 ): ThunkAction<
   Promise<NetworkConfiguration>,
@@ -2675,6 +2677,8 @@ export function addNetwork(
 }
 
 export function updateNetwork(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
   options: { replacementSelectedRpcEndpointIndex?: number } = {},
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
@@ -2993,6 +2997,8 @@ export function updateNftDropDownState(
 
 type QrCodeData = {
   // Address when a Ethereum Address has been detected
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   type?: 'address' | string;
   // contains an address key when Ethereum Address detected
   values?: { address?: string } & Json;
@@ -6315,6 +6321,8 @@ export async function multichainUpdateTransactions(
 ///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   LastInteractedConfirmationInfo | undefined
 > {
   return await submitRequestToBackground<void>(

@@ -9,26 +9,31 @@ export type SelectContextType = {
   onOpenChange: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   isUncontrolledOpen: boolean;
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   setIsUncontrolledOpen: React.Dispatch<React.SetStateAction<any | null>>;
   toggleUncontrolledOpen: () => void;
   isDanger?: boolean;
   isDisabled?: boolean;
   isMultiSelect?: boolean;
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   value: any | null;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onValueChange?: any;
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   uncontrolledValue: any | null;
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   setUncontrolledValue: React.Dispatch<React.SetStateAction<any | null>>;
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   defaultValue: any | null;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
