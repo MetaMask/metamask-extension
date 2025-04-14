@@ -8,7 +8,9 @@ import { MultichainRouterInitMessenger } from '../messengers/multichain/multicha
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.persistedState - The persisted state of the extension.
+ * @param request.initMessenger - The init messenger. This has access to
+ * different functions than the controller messenger, and should be used for
+ * initialization purposes only.
  * @returns The initialized controller.
  */
 export const MultichainRouterInit: ControllerInitFunction<
@@ -27,8 +29,8 @@ export const MultichainRouterInit: ControllerInitFunction<
           type: 'Snap Keyring',
         },
         // @ts-expect-error mistmatch with the withSnapKeyring signature and withKeyring.
-        ...args
-      )
+        ...args,
+      ),
   });
 
   return {
