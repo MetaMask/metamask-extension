@@ -44,7 +44,7 @@ export function getMultichainRouterMessenger(
 type InitActions = KeyringControllerWithKeyringAction;
 
 export type MultichainRouterInitMessenger = ReturnType<
-  typeof getRateLimitControllerInitMessenger
+  typeof getMultichainRouterInitMessenger
 >;
 
 /**
@@ -54,7 +54,7 @@ export type MultichainRouterInitMessenger = ReturnType<
  * @param messenger - The messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getRateLimitControllerInitMessenger(
+export function getMultichainRouterInitMessenger(
   messenger: Messenger<InitActions, never>,
 ) {
   return messenger.getRestricted({
