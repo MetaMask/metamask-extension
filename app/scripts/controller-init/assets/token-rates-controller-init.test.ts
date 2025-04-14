@@ -16,6 +16,8 @@ jest.mock('@metamask/assets-controllers');
  *
  * This returns a partial mock that includes the state property
  * expected by the TokenRatesController (for example, `useCurrencyRateCheck`).
+ * @param {Partial<PreferencesController>} partialMock - The partial mock to be merged with the default mock.
+ * @returns {PreferencesController} The mock PreferencesController.
  */
 function buildControllerMock(
   partialMock?: Partial<PreferencesController>,
