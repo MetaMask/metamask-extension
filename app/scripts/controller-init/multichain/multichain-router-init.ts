@@ -1,6 +1,7 @@
-import { MultichainRouter, MultichainRouterArgs } from '@metamask/snaps-controllers';
+import { MultichainRouter } from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
 import { MultichainRouterMessenger } from '../messengers/multichain';
+import { MultichainRouterInitMessenger } from '../messengers/multichain/multichain-router-messenger';
 
 /**
  * Initialize the Multichain Network controller.
@@ -12,19 +13,22 @@ import { MultichainRouterMessenger } from '../messengers/multichain';
  */
 export const MultichainRouterInit: ControllerInitFunction<
   MultichainRouter,
-  MultichainRouterMessenger
-> = ({ controllerMessenger}) => {
+  MultichainRouterMessenger,
+  MultichainRouterInitMessenger
+> = ({ controllerMessenger, initMessenger }) => {
   const controller = new MultichainRouter({
     messenger: controllerMessenger,
     // Binding the call to provide the selector only giving the controller the option to pass the operation
-    withSnapKeyring: (...args: Parameters<MultichainRouterArgs['withSnapKeyring']>) =>
-      controllerMessenger.call(
+    withSnapKeyring: (...args) =>
+      // @ts-expect-error mistmatch with the withSnapKeyring signature and withKeyring.
+      initMessenger.call(
         'KeyringController:withKeyring',
         {
           type: 'Snap Keyring',
         },
+        // @ts-expect-error mistmatch with the withSnapKeyring signature and withKeyring.
         ...args
-      ) as unknown as ReturnType<MultichainRouterArgs['withSnapKeyring']>
+      )
   });
 
   return {

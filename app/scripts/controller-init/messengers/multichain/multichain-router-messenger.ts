@@ -8,7 +8,6 @@ type Actions =
   | HandleSnapRequest
   | GetPermissions
   | AccountsControllerListMultichainAccountsAction
-  | KeyringControllerWithKeyringAction
 
 
 type Events = never;
@@ -34,7 +33,31 @@ export function getMultichainRouterMessenger(
       `SnapController:handleRequest`,
       `PermissionController:getPermissions`,
       `AccountsController:listMultichainAccounts`,
-      `KeyringController:withKeyring`,
+    ],
+    allowedEvents: [],
+  });
+}
+
+type InitActions = KeyringControllerWithKeyringAction
+
+export type MultichainRouterInitMessenger = ReturnType<
+  typeof getRateLimitControllerInitMessenger
+>;
+
+/**
+ * Get a restricted controller messenger for Multichain Router initialization. This is
+ * scoped to the actions and events that the Multichain Router needs for instantiation.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
+export function getRateLimitControllerInitMessenger(
+  messenger: Messenger<InitActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'MultichainRouter',
+    allowedActions: [
+      'KeyringController:withKeyring',
     ],
     allowedEvents: [],
   });
