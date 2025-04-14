@@ -221,7 +221,6 @@ describe('SnapUIAddressInput', () => {
       { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
     );
 
-    // Use queryByText instead of getByText to check for absence without throwing
     const matchedAddressName = queryByText('Test Account');
     expect(matchedAddressName).toBeNull();
 
@@ -250,7 +249,6 @@ describe('SnapUIAddressInput', () => {
     const input = getByRole('textbox') as HTMLInputElement;
     expect(input.value).toBe('0x1234567890123456789012345678901234567890');
 
-    // Find the clear icon by its IconName.Close
     const clearIcon = container.querySelector(
       '.snap-ui-renderer__address-input__clear-button',
     );
@@ -276,7 +274,6 @@ describe('SnapUIAddressInput', () => {
     const matchedAddressName = getByText('Test Account');
     expect(matchedAddressName).toBeDefined();
 
-    // Find the clear icon in the matched address info
     const clearIcon = container.querySelector(
       '.snap-ui-renderer__matched-account-info__clear-button',
     );
@@ -284,7 +281,6 @@ describe('SnapUIAddressInput', () => {
 
     fireEvent.click(clearIcon as Element);
 
-    // Verify the matched address info is still visible after attempted clearing
     const matchedAddressNameAfterClick = getByText('Test Account');
     expect(matchedAddressNameAfterClick).toBeDefined();
   });
