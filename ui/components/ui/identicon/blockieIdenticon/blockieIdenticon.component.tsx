@@ -5,7 +5,7 @@ type BlockieIdenticonProps = {
   diameter: number;
   alt?: string;
   borderRadius?: string | number;
-}
+};
 
 const BlockieIdenticon: React.FC<BlockieIdenticonProps> = ({
   address,
