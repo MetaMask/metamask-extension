@@ -23,7 +23,6 @@
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
     "showKeyringRemovalSnapModal": "boolean",
-    "showNewSrpAddedToast": "boolean",
     "importTokensModalOpen": "boolean",
     "deprecatedNetworkModalOpen": "boolean",
     "accountDetail": "object",
@@ -65,7 +64,8 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
-    "errorInSettings": null
+    "errorInSettings": null,
+    "showNewSrpAddedToast": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -279,8 +279,8 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingEnabled": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
     "isAccountSyncingInProgress": "boolean",
     "subscriptionAccountsSeen": "object",
