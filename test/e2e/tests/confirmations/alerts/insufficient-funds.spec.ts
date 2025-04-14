@@ -34,7 +34,7 @@ describe('Alert for insufficient funds', function () {
         const confirmation = new Confirmation(driver);
         const alertModal = new AlertModal(driver);
         await confirmation.clickInlineAlert();
-        await alertModal.check_AlertInsufficientBalance();
+        await alertModal.check_messageForInsufficientBalance();
       },
     );
   });
