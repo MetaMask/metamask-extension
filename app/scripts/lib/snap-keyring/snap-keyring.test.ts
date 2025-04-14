@@ -311,6 +311,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: false,
         },
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
@@ -353,6 +354,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: false,
         },
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
@@ -425,6 +427,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: true,
         },
       });
       expect(mockSetAccountName).toHaveBeenCalledWith([
@@ -474,6 +477,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: true,
         },
       });
       expect(mockSetAccountName).toHaveBeenCalledTimes(1);
@@ -550,6 +554,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: true,
         },
       });
       expect(mockSetAccountName).toHaveBeenCalledTimes(1);
