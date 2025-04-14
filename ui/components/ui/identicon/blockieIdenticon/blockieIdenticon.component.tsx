@@ -7,12 +7,12 @@ type BlockieIdenticonProps = {
   borderRadius?: string | number;
 };
 
-const BlockieIdenticon: React.FC<BlockieIdenticonProps> = ({
+const BlockieIdenticon = ({
   address,
   diameter,
   alt = '',
   borderRadius,
-}) => {
+}: BlockieIdenticonProps) => {
   const [src, setSrc] = useState<string>('');
 
   useEffect(() => {
