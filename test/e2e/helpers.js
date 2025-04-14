@@ -443,6 +443,7 @@ const WINDOW_TITLES = Object.freeze({
   TestDApp: 'E2E Test Dapp',
   TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
+  SolanaTestDApp: 'Solana Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });

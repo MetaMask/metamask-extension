@@ -40,6 +40,7 @@
     "test": "yarn lint && yarn test:unit",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
     "dapp-multichain": "node development/static-server.js node_modules/@metamask/test-dapp-multichain/build --port 8080",
+    "dapp-solana": "node development/static-server.js node_modules/@metamask/test-dapp-solana/dist --port 8080",
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
@@ -449,6 +450,7 @@
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.2.0",
     "@metamask/test-dapp-multichain": "^0.6.0",
+    "@metamask/test-dapp-solana": "file:../wallet-adapter-demo",
     "@octokit/core": "^3.6.0",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
@@ -748,7 +750,8 @@
       "@metamask/test-dapp-multichain>react-scripts>react-app-polyfill>core-js": false,
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
+      "@metamask/test-dapp-solana>@solana/web3.js>bigint-buffer": false
     }
   },
   "packageManager": "yarn@4.7.0",
