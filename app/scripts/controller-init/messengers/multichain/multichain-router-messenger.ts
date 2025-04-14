@@ -1,5 +1,9 @@
 import { Messenger } from '@metamask/base-controller';
-import { AccountsControllerListMultichainAccountsAction, GetAllSnaps, HandleSnapRequest } from '@metamask/snaps-controllers';
+import {
+  AccountsControllerListMultichainAccountsAction,
+  GetAllSnaps,
+  HandleSnapRequest,
+} from '@metamask/snaps-controllers';
 import { GetPermissions } from '@metamask/permission-controller';
 import { KeyringControllerWithKeyringAction } from '@metamask/keyring-controller';
 
@@ -7,8 +11,7 @@ type Actions =
   | GetAllSnaps
   | HandleSnapRequest
   | GetPermissions
-  | AccountsControllerListMultichainAccountsAction
-
+  | AccountsControllerListMultichainAccountsAction;
 
 type Events = never;
 
@@ -38,7 +41,7 @@ export function getMultichainRouterMessenger(
   });
 }
 
-type InitActions = KeyringControllerWithKeyringAction
+type InitActions = KeyringControllerWithKeyringAction;
 
 export type MultichainRouterInitMessenger = ReturnType<
   typeof getRateLimitControllerInitMessenger
@@ -56,9 +59,7 @@ export function getRateLimitControllerInitMessenger(
 ) {
   return messenger.getRestricted({
     name: 'MultichainRouter',
-    allowedActions: [
-      'KeyringController:withKeyring',
-    ],
+    allowedActions: ['KeyringController:withKeyring'],
     allowedEvents: [],
   });
 }
