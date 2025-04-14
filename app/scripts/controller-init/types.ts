@@ -8,6 +8,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
+import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
@@ -193,6 +194,11 @@ export type ControllerInitRequest<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ) => void;
+
+  /**
+   * A list of preinstalled Snaps loaded from disk during boot.
+   */
+  preinstalledSnaps: PreinstalledSnap[];
 
   /**
    * Required initialization messenger instance.
