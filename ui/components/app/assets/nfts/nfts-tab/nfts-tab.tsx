@@ -94,7 +94,6 @@ export default function NftsTab() {
         .networkClientId;
     },
   );
-  console.log('allNetworkClientIds', allNetworkClientIds);
 
   useEffect(() => {
     if (nftsLoading || !showNftBanner) {

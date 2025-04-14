@@ -132,7 +132,6 @@ export function NftDetailsComponent({
   const { defaultRpcEndpointIndex } = nftChainNetwork;
   const { networkClientId: nftNetworkClientId } =
     nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
-  console.log('nftNetworkClientId', nftNetworkClientId);
   const nftChainImage = getImageForChainId(nftChainId as string);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
@@ -251,9 +250,9 @@ export function NftDetailsComponent({
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
-      checkAndUpdateSingleNftOwnershipStatus(nft);
+      checkAndUpdateSingleNftOwnershipStatus(nft, nftNetworkClientId);
     }
-  }, [nft, prevNft]);
+  }, [nft, nftNetworkClientId, prevNft]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {

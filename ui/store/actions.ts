@@ -2296,10 +2296,14 @@ export async function isNftOwner(
   ]);
 }
 
-export async function checkAndUpdateSingleNftOwnershipStatus(nft: Nft) {
+export async function checkAndUpdateSingleNftOwnershipStatus(
+  nft: Nft,
+  networkClientId: NetworkClientId,
+) {
   await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
     nft,
     false,
+    networkClientId,
   ]);
 }
 
