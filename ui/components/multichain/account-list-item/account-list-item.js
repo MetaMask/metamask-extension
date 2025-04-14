@@ -114,11 +114,7 @@ const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
 
-  const snaps = useSelector(getSnaps);
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === account.metadata?.snap?.id);
-
+  const snaps = useSelector((state) => getSnap(state, account.metadata?.snap?.id));
   const snapMetadata = useSelector(getSnapsMetadata);
   const accountLabel = getAccountLabel(
     account.metadata.keyring.type,
