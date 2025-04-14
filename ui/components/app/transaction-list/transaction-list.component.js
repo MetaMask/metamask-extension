@@ -41,9 +41,7 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  getMultichainNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedAccountMultichainTransactions,
   ///: END:ONLY_INCLUDE_IF
@@ -104,7 +102,7 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import { NETWORKS_EXTRA_DATA } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
@@ -731,7 +729,7 @@ const MultichainTransactionListItem = ({
   const { assetInputs, assetOutputs, isRedeposit } =
     useMultichainTransactionDisplay(transaction, networkConfig);
   const { chainId } = networkConfig;
-  const { networkLogo } = NETWORKS_EXTRA_DATA[chainId];
+  const networkLogo = MULTICHAIN_TOKEN_IMAGE_MAP[chainId];
   let title = capitalize(transaction.type);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 

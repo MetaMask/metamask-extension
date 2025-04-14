@@ -4,14 +4,12 @@ import {
   TransactionType,
 } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import {
-  NETWORKS_EXTRA_DATA,
-  type MultichainProviderConfig,
-} from '../../shared/constants/multichain/networks';
+import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
@@ -44,19 +42,19 @@ export function useMultichainTransactionDisplay(
 ) {
   const locale = useSelector(getIntlLocale);
   const { chainId } = networkConfig;
-  const { decimal } = NETWORKS_EXTRA_DATA[chainId];
+  const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[chainId];
 
   const assetInputs = aggregateAmount(
     transaction.from as Movement[],
     true,
     locale,
-    decimal,
+    decimalPlaces,
   );
   const assetOutputs = aggregateAmount(
     transaction.to as Movement[],
     transaction.type === TransactionType.Send,
     locale,
-    decimal,
+    decimalPlaces,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],

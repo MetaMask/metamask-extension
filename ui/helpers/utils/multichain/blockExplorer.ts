@@ -4,7 +4,7 @@ import { MultichainNetwork } from '../../../selectors/multichain';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { NETWORKS_EXTRA_DATA } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 
 export const getMultichainBlockExplorerUrl = (
@@ -19,7 +19,8 @@ export const getMultichainAccountUrl = (
 ): string => {
   const { chainId } = network;
   const { namespace } = parseCaipChainId(chainId);
-  const { blockExplorerFormatUrls } = NETWORKS_EXTRA_DATA[chainId];
+  const blockExplorerFormatUrls =
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainId];
   if (namespace === KnownCaipNamespace.Eip155) {
     return getAccountLink(
       normalizeSafeAddress(address),
