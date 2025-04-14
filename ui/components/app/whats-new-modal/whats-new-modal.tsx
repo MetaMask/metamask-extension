@@ -116,7 +116,7 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   return (
     <>
       <Modal
-        onClose={() => null}
+        onClose={handleModalClose}
         data-testid="whats-new-modal"
         isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}
         isClosedOnOutsideClick
