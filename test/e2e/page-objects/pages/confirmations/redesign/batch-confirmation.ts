@@ -47,10 +47,11 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
-  async tickSplashUpgradeButton(): Promise<void> {
+  async clickUseSmartAccountButton(): Promise<void> {
     await this.driver.clickElement(this.confirmUpgradeButton);
   }
-  async tickSplashRejectUpgradeButton(): Promise<void> {
+
+  async clickDontUseSmartAccountButton(): Promise<void> {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.rejectUpgradeButton,
     );

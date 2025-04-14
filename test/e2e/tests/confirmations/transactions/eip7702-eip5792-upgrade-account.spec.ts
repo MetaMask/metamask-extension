@@ -49,7 +49,7 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // acknowledge splash page
-        await upgradeAndBatchTxConfirmation.tickSplashUpgradeButton();
+        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
 
         await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
           'Smart account',
@@ -119,7 +119,7 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject upgrade and batch tx
-        await upgradeAndBatchTxConfirmation.tickSplashRejectUpgradeButton();
+        await upgradeAndBatchTxConfirmation.clickDontUseSmartAccountButton();
 
         // We check that we continue to have an EOA account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
@@ -170,7 +170,7 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject batch tx
-        await upgradeAndBatchTxConfirmation.tickSplashUpgradeButton();
+        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
         await upgradeAndBatchTxConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         // We check that we continue to have an EOA account
