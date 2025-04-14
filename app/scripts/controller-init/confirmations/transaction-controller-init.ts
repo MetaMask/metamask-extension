@@ -55,9 +55,17 @@ export const TransactionControllerInit: ControllerInitFunction<
     controllerMessenger,
     initMessenger,
     getFlatState,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     getGlobalChainId,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     getPermittedAccounts,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     getTransactionMetricsRequest,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;

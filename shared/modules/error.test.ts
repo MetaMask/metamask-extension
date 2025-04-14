@@ -21,11 +21,15 @@ describe('error module', () => {
   describe('logErrorWithMessage', () => {
     it('calls loglevel.error with the error.message when passed an instance of Error', () => {
       logErrorWithMessage(new Error('test'));
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(log.error).toHaveBeenCalledWith('test');
     });
 
     it('calls loglevel.error with string representation of parameter passed in when parameter is not an instance of Error', () => {
       logErrorWithMessage({ test: 'test' });
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(log.error).toHaveBeenCalledWith({ test: 'test' });
     });
   });

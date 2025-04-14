@@ -171,11 +171,17 @@ describe('EncryptionPublicKeyController', () => {
     it('rejects all messages in the message manager', () => {
       encryptionPublicKeyController.rejectUnapproved('Test Reason');
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.rejectMessage,
       ).toHaveBeenCalledTimes(2);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(encryptionPublicKeyManagerMock.rejectMessage).toHaveBeenCalledWith(
         messageIdMock,
       );
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(encryptionPublicKeyManagerMock.rejectMessage).toHaveBeenCalledWith(
         messageIdMock2,
       );
@@ -228,9 +234,13 @@ describe('EncryptionPublicKeyController', () => {
       );
 
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.addUnapprovedMessageAsync,
       ).toHaveBeenCalledTimes(1);
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.addUnapprovedMessageAsync,
       ).toHaveBeenCalledWith({ from: addressMock }, requestMock);
     });
@@ -256,9 +266,13 @@ describe('EncryptionPublicKeyController', () => {
       );
 
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.setMessageStatusAndResult,
       ).toHaveBeenCalledTimes(1);
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.setMessageStatusAndResult,
       ).toHaveBeenCalledWith(
         messageParamsMock.metamaskId,
@@ -281,7 +295,11 @@ describe('EncryptionPublicKeyController', () => {
         messageParamsMock,
       );
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messengerMock.call).toHaveBeenCalledTimes(1);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messengerMock.call).toHaveBeenCalledWith(
         'ApprovalController:acceptRequest',
         messageParamsMock.metamaskId,
@@ -297,8 +315,12 @@ describe('EncryptionPublicKeyController', () => {
       ).rejects.toThrow('Test Error');
 
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.rejectMessage,
       ).toHaveBeenCalledTimes(1);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(encryptionPublicKeyManagerMock.rejectMessage).toHaveBeenCalledWith(
         messageParamsMock.metamaskId,
       );
@@ -312,7 +334,11 @@ describe('EncryptionPublicKeyController', () => {
         encryptionPublicKeyController.encryptionPublicKey(messageParamsMock),
       ).rejects.toThrow('Test Error');
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messengerMock.call).toHaveBeenCalledTimes(1);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messengerMock.call).toHaveBeenCalledWith(
         'ApprovalController:rejectRequest',
         messageParamsMock.metamaskId,
@@ -326,8 +352,12 @@ describe('EncryptionPublicKeyController', () => {
       encryptionPublicKeyController.cancelEncryptionPublicKey(messageIdMock);
 
       expect(
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         encryptionPublicKeyManagerMock.rejectMessage,
       ).toHaveBeenCalledTimes(1);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(encryptionPublicKeyManagerMock.rejectMessage).toHaveBeenCalledWith(
         messageParamsMock.metamaskId,
       );
@@ -336,7 +366,11 @@ describe('EncryptionPublicKeyController', () => {
     it('rejects approval using approval controller', async () => {
       encryptionPublicKeyController.cancelEncryptionPublicKey(messageIdMock);
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messengerMock.call).toHaveBeenCalledTimes(1);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messengerMock.call).toHaveBeenCalledWith(
         'ApprovalController:rejectRequest',
         messageParamsMock.metamaskId,

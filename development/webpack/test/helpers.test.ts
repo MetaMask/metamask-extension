@@ -337,6 +337,8 @@ describe('./utils/helpers.ts', () => {
       const { colorDepth, level, env, hasErrors, hasWarnings } = settings;
 
       let testHelpers: typeof import('../utils/helpers');
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       const originalGetColorDepth = process.stderr.getColorDepth;
       beforeEach(() => {
         // getColorDepth is undefined sometimes, so we need to mock it like this

@@ -55,6 +55,8 @@ describe('useNotifications', () => {
 
     store.dispatch = jest.fn().mockImplementation((action) => {
       if (typeof action === 'function') {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         return action(store.dispatch, store.getState);
       }
       return Promise.resolve();

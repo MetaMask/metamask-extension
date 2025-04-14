@@ -134,16 +134,24 @@ describe('InstitutionalSnapController', () => {
 
   describe('constructor', () => {
     it('should initialize correctly', () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.registerActionHandler).toHaveBeenCalledTimes(3);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:getState',
         expect.any(Function),
       );
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:publishHook',
         expect.any(Function),
       );
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.registerActionHandler).toHaveBeenCalledWith(
         'InstitutionalSnapController:beforeCheckPendingTransactionHook',
         expect.any(Function),
@@ -156,6 +164,8 @@ describe('InstitutionalSnapController', () => {
       const result = await controller.deferPublicationHook(mockTransactionMeta);
 
       expect(result).toBe(false);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.call).toHaveBeenCalledWith(
         'SnapController:handleRequest',
         expect.objectContaining({
@@ -169,6 +179,8 @@ describe('InstitutionalSnapController', () => {
         }),
       );
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.call).toHaveBeenCalledWith(
         'TransactionController:updateCustodialTransaction',
         expect.objectContaining({
