@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
@@ -13,6 +15,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';

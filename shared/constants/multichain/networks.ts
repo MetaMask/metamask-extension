@@ -35,10 +35,16 @@ export type MultichainNetworkIds = `${MultichainNetworks}`;
 
 export enum MultichainNetworks {
   BITCOIN = 'bip122:000000000019d6689c085ae165831e93',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_TESTNET = 'bip122:000000000933ea01ad0ee984209779ba',
 
   SOLANA = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_DEVNET = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
 }
 

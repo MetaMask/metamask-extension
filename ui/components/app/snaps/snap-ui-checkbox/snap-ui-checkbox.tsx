@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
@@ -13,6 +15,8 @@ import {
   HelpTextSeverity,
   Checkbox,
 } from '../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ToggleButton from '../../../ui/toggle-button';
 
 export type SnapUICheckboxProps = {

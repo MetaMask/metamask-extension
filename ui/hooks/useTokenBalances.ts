@@ -1,4 +1,6 @@
 import { useSelector } from 'react-redux';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';

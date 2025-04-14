@@ -67,6 +67,8 @@ import {
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Analytics from '../lib/segment/analytics';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -156,6 +158,8 @@ export type MetaMaskState = {
   theme: string;
   participateInMetaMetrics: boolean;
   dataCollectionForMarketing: boolean;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ShowNativeTokenAsMainBalance: boolean;
   useNftDetection: PreferencesControllerState['useNftDetection'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
@@ -163,6 +167,8 @@ export type MetaMaskState = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
   names: NameControllerState['names'];
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
@@ -892,7 +898,11 @@ export default class MetaMetricsController extends BaseController<
         properties: {
           params,
           locale: this.locale,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: this.chainId,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
         },
         context: this.#buildContext(referrer, page),
@@ -1145,12 +1155,16 @@ export default class MetaMetricsController extends BaseController<
         currency,
         category,
         locale: this.locale,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id:
           properties &&
           'chain_id' in properties &&
           typeof properties.chain_id === 'string'
             ? properties.chain_id
             : this.chainId,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,

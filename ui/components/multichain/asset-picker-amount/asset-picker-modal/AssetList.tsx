@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import classnames from 'classnames';
 import {
@@ -17,6 +19,8 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -28,6 +32,8 @@ import {
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -57,6 +63,8 @@ type AssetListProps = {
   >;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AssetList({
   handleAssetChange,
   asset,

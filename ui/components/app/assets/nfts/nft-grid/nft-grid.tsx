@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
@@ -7,6 +9,8 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Spinner from '../../../../ui/spinner';
 import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
@@ -22,6 +26,8 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -67,6 +73,8 @@ const NFTGridItem = (props: {
   );
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftGrid({
   nfts,
   handleNftClick,

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
@@ -35,6 +37,8 @@ import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmatio
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,

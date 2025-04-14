@@ -1,9 +1,15 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ClearMetaMetricsData from './clear-metametrics-data';
 
 const mockCloseDeleteMetaMetricsDataModal = jest.fn().mockImplementation(() => {

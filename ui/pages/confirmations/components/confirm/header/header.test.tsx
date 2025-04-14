@@ -1,4 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
 
@@ -9,6 +11,8 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Header from './header';
 
 const render = (state: DefaultRootState = getMockTypedSignConfirmState()) => {

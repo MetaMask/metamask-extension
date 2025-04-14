@@ -37,6 +37,8 @@ type OnChainRawNotificationsWithNetworkFields =
  * @param key - The key to check for.
  * @returns True if the key is present, false otherwise.
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function isKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
   return key in object;
 }

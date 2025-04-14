@@ -5,6 +5,8 @@
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Sentry from '@sentry/browser';
 import {
   Success,
@@ -68,6 +70,8 @@ type ResponseType =
  * input values so that the correct type can be inferred in the callback
  * method
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type sendMessage = {
   (
     extensionId: string,
@@ -82,6 +86,8 @@ type sendMessage = {
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
   ): void;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <T extends EthereumSignTypedDataTypes>(
     message: {
       target: OffscreenCommunicationTarget.trezorOffscreen;
@@ -275,7 +281,8 @@ export declare global {
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
@@ -285,6 +292,8 @@ export declare global {
   /**
    * Unions T with U; U's properties will override T's properties
    */
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 
   function setPreference(key: keyof Preferences, value: boolean);

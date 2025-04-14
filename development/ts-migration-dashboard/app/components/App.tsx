@@ -1,7 +1,13 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState } from 'react';
 import { readPartitionsFile } from '../../common/partitions-file';
 import type { ModulePartitionChild } from '../../common/build-module-partitions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Box from './Box';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Connections from './Connections';
 import type { BoxRect, BoxModel } from './types';
 
@@ -30,6 +36,8 @@ const overallTotal = {
   numModules: allModules.length,
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function App() {
   const [boxRectsByModuleId, setBoxRectsById] = useState<Record<
     string,

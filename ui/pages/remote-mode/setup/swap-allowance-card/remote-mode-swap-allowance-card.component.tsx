@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 
 import {
@@ -31,6 +33,8 @@ import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
  * @param props.onRemove - Callback function triggered when the remove button is clicked
  * @returns A card component displaying swap allowance info
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSwapAllowanceCard({
   swapAllowance,
   onRemove,

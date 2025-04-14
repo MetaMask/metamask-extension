@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useRef, useState } from 'react';
 import {
   Chart,
@@ -33,7 +35,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TimeRange, useHistoricalPrices } from '../../useHistoricalPrices';
 import { loadingOpacity } from '../../util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetPrice from '../asset-price';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 

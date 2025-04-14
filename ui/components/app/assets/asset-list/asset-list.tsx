@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -6,13 +8,21 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DetectedToken from '../../detected-token/detected-token';
 import {
   useAssetListTokenDetection,
   usePrimaryCurrencyProperties,
 } from '../hooks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TokenList from '../token-list';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetListControlBar from './asset-list-control-bar';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetListFundingModals from './asset-list-funding-modals';
 
 type AssetListProps = {
@@ -32,6 +42,8 @@ const TokenListContainer = React.memo(
           event: MetaMetricsEventName.TokenScreenOpened,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: primaryCurrencyProperties.suffix,
             location: 'Home',
           },

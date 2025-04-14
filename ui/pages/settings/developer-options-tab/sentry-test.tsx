@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useCallback, ReactElement } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -49,6 +51,8 @@ const SentryTest = () => {
   );
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateUIError() {
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestError?.('Developer Options');
@@ -68,6 +72,8 @@ function GenerateUIError() {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateBackgroundError() {
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestBackgroundError?.('Developer Options');
@@ -87,6 +93,8 @@ function GenerateBackgroundError() {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateTrace() {
   const handleClick = useCallback(async () => {
     await trace(
@@ -132,6 +140,8 @@ function GenerateTrace() {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   const dispatch = useDispatch();
   const handleClick = async () => {
@@ -162,6 +172,8 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function TestButton({
   name,
   description,

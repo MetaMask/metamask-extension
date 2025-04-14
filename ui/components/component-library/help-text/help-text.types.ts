@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
 import type { TextStyleUtilityProps } from '../text';
 import type { PolymorphicComponentPropWithRef } from '../box';
@@ -29,9 +31,13 @@ export interface HelpTextStyleUtilityProps extends TextStyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type HelpTextProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, HelpTextStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type HelpTextComponent = <C extends React.ElementType = 'span'>(
   props: HelpTextProps<C>,
 ) => React.ReactElement | null;

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
@@ -160,6 +162,8 @@ type BridgeStepProps = {
 // 1. Bridge: usually for cases like Optimism ETH to Arbitrum ETH
 // 2. Swap > Bridge
 // 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeStepDescription({
   step,
   networkConfigurationsByChainId,

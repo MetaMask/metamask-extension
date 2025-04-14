@@ -13,6 +13,8 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {

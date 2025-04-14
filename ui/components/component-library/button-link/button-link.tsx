@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import classnames from 'classnames';
 import {
@@ -11,6 +13,8 @@ import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     {
       className = '',

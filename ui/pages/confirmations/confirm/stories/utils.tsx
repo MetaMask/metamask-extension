@@ -1,6 +1,10 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ConfirmPage from '../confirm';
 
 export const CONFIRM_PAGE_DECORATOR = [
@@ -16,6 +20,8 @@ export const ARG_TYPES_SIGNATURE = {
   },
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ConfirmStoryTemplate(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
@@ -35,6 +41,8 @@ export function ConfirmStoryTemplate(
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SignatureStoryTemplate(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},

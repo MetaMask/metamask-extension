@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
@@ -55,6 +57,8 @@ import {
   isIpAddress,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   MetaMetricsEventCategory,

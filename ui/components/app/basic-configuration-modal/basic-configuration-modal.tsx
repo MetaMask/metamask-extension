@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,6 +50,8 @@ import {
 } from '../../../ducks/app/app';
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BasicConfigurationModal() {
   const t = useI18nContext();
   const [hasAgreed, setHasAgreed] = useState(false);
@@ -156,10 +160,20 @@ export function BasicConfigurationModal() {
                       category: MetaMetricsEventCategory.Onboarding,
                       event: MetaMetricsEventName.SettingsUpdated,
                       properties: {
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_group: 'onboarding_advanced_configuration',
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_type: 'basic_functionality',
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         old_value: true,
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         new_value: false,
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         was_profile_syncing_on: isProfileSyncingEnabled,
                       },
                     }
@@ -167,11 +181,23 @@ export function BasicConfigurationModal() {
                       category: MetaMetricsEventCategory.Settings,
                       event: MetaMetricsEventName.SettingsUpdated,
                       properties: {
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_group: 'security_privacy',
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         settings_type: 'basic_functionality',
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         old_value: isExternalServicesEnabled,
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         new_value: !isExternalServicesEnabled,
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         was_notifications_on: isMetamaskNotificationsEnabled,
+                        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         was_profile_syncing_on: isProfileSyncingEnabled,
                       },
                     };

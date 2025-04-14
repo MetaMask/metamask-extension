@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
@@ -14,7 +16,11 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetOptions from './asset-options';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetPage from './asset-page';
 
 const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
@@ -50,8 +56,12 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
               event: 'Clicked Block Explorer Link',
               category: MetaMetricsEventCategory.Navigation,
               properties: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 link_type: 'Account Tracker',
                 action: 'Asset Options',
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 block_explorer_domain: getURLHostName(accountLink),
               },
             });

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import type {
@@ -27,9 +29,13 @@ export type SkeletonStyleUtilityProps = Omit<
   children?: React.ReactNode;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SkeletonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SkeletonStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SkeletonComponent = <C extends React.ElementType = 'span'>(
   props: SkeletonProps<C>,
 ) => React.ReactElement | null;

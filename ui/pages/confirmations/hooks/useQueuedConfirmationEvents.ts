@@ -19,9 +19,15 @@ export const useQueuedConfirmationsEvent = (queueType: QueueType) => {
   useEffect(() => {
     if (pendingApprovals.length > 0 && queuedRequestCount > 0) {
       const properties = {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmation_type: pendingApprovals[0].type,
         referrer: pendingApprovals[0].origin,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         queue_size: queuedRequestCount,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         queue_type: queueType,
       };
 

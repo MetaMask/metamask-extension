@@ -1,5 +1,7 @@
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -34,6 +36,8 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({

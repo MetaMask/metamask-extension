@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState, useCallback } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Box } from '../../../components/component-library';

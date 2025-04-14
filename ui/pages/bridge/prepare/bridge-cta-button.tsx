@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
@@ -67,8 +69,14 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientBalance: isInsufficientBalance_,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasBalance: isInsufficientGasBalance_,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasForQuote: isInsufficientGasForQuote_,
   } = useSelector(getValidationErrors);
 

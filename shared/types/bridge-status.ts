@@ -167,8 +167,14 @@ export type BridgeHistoryItem = {
 };
 
 export enum BridgeStatusAction {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   WIPE_BRIDGE_STATUS = 'wipeBridgeStatus',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   GET_STATE = 'getState',
 }
 

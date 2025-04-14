@@ -2,7 +2,11 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ExtensionStore from './extension-store';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ReadOnlyNetworkStore from './read-only-network-store';
 
 /**

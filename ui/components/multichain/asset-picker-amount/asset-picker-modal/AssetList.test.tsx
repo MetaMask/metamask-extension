@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
@@ -20,6 +22,8 @@ import {
   getMultichainCurrentChainId,
   getMultichainCurrentNetwork,
 } from '../../../../selectors/multichain';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetList from './AssetList';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import type { ContainerProps } from '../container';
 
@@ -40,9 +42,13 @@ export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
   containerProps?: ContainerProps<'div'>;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalFooterProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalFooterStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalFooterComponent = <C extends React.ElementType = 'footer'>(
   props: ModalFooterProps<C>,
 ) => React.ReactElement | null;

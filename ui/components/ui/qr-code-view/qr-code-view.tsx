@@ -1,4 +1,8 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
@@ -35,11 +39,15 @@ function mapStateToProps(state: CombinedBackgroundAndReduxState) {
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
   warning,
   accountName,
 }: {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Qr: { message: string; data: string };
   warning: null | string;
   accountName?: string;
@@ -89,6 +97,8 @@ function QrCodeView({
           data-testid="qr-code-image"
           className="qr-code__image"
           dangerouslySetInnerHTML={{
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __html: qrImage.createTableTag(5, 16),
           }}
         />

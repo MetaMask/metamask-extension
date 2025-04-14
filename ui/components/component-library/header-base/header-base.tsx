@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
@@ -11,6 +13,8 @@ import type { PolymorphicRef, BoxProps } from '../box';
 import { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 
 export const HeaderBase: HeaderBaseComponent = React.forwardRef(
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       startAccessory,

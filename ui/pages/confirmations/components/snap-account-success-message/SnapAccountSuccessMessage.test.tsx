@@ -1,8 +1,12 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureStore from '../../../../store/store';
 // Use mock-send-state to have some identites being populated
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SnapAccountSuccessMessage from './SnapAccountSuccessMessage';
 
 const store = configureStore(mockState);

@@ -244,7 +244,11 @@ describe('Contract Interaction Confirmation', () => {
             properties: {
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               transaction_type: TransactionType.contractInteraction,
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: 0,
             },
           }),
@@ -528,6 +532,8 @@ describe('Contract Interaction Confirmation', () => {
       expect.arrayContaining([
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             external_link_clicked: 'security_alert_support_link',
           }),
         }),

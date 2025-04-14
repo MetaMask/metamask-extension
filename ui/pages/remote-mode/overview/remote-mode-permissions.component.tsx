@@ -1,6 +1,10 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import { Box, Text } from '../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Card from '../../../components/ui/card';
 import {
   FontWeight,
@@ -11,6 +15,8 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModePermissions({
   setStartEnableRemoteSwap,
   setStartEnableDailyAllowance,

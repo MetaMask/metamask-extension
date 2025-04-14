@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -67,6 +69,8 @@ describe('Connections Content', () => {
       },
       permissionHistory: {
         'https://metamask.github.io': {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,

@@ -1,8 +1,14 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import { ORIGIN_METAMASK } from '@metamask/approval-controller';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Popover from '../../../ui/popover';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
 import { getUnapprovedConfirmations } from '../../../../selectors';
 

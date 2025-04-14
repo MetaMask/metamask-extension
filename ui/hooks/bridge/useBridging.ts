@@ -79,8 +79,14 @@ const useBridging = () => {
               location === 'Home'
                 ? MetaMetricsSwapsEventSource.MainView
                 : MetaMetricsSwapsEventSource.TokenView,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_source: formatChainIdToCaip(providerConfig.chainId),
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_source: token.symbol,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_address_source: token.address,
           },
         });
@@ -88,9 +94,13 @@ const useBridging = () => {
           event: MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: token.symbol,
             location,
             text: 'Bridge',
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: providerConfig.chainId,
           },
         });
@@ -124,7 +134,11 @@ const useBridging = () => {
             location,
             text: 'Bridge',
             url: portfolioUrl,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: providerConfig.chainId,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: token.symbol,
           },
         });

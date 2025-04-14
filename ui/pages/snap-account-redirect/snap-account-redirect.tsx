@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { Box } from '../../components/component-library';
 import {
@@ -7,7 +9,11 @@ import {
   Display,
   FlexDirection,
 } from '../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SnapAccountRedirectContent from './components/snap-account-redirect-context';
 
 export type SnapAccountRedirectProps = {

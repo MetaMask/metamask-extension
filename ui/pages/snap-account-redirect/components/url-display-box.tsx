@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
@@ -10,6 +12,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RedirectUrlIcon from './redirect-url-icon';
 
 const UrlDisplayBox = ({

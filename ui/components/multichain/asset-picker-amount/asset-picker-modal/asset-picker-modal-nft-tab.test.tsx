@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -9,6 +11,8 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 
 jest.mock('../../../../hooks/useGetAssetImageUrl', () => ({
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => 'mock-image-url.png',
 }));

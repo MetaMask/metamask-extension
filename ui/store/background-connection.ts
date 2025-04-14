@@ -3,6 +3,8 @@ import pify from 'pify';
 let background:
   | ({
       connectionStream: { readable: boolean };
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       DisconnectError: typeof Error;
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,6 +26,8 @@ export const generateActionId = () => Date.now() + Math.random();
  * @param [args] - arguments to that method, if any
  * @returns
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export async function submitRequestToBackground<R>(
   method: string,
   // TODO: Replace `any` with type
@@ -35,6 +39,8 @@ export async function submitRequestToBackground<R>(
   ) as unknown as Promise<R>;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
 
 /**
@@ -46,6 +52,8 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  * @param [args] - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const callBackgroundMethod = <R>(
   method: string,
   // TODO: Replace `any` with type

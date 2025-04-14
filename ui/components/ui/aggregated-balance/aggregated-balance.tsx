@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -29,6 +31,8 @@ import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Spinner from '../spinner';
 
 export const AggregatedBalance = ({

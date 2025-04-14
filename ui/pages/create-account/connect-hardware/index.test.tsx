@@ -1,5 +1,7 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -10,6 +12,8 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ConnectHardwareForm from '.';
 
 const mockConnectHardware = jest.fn();

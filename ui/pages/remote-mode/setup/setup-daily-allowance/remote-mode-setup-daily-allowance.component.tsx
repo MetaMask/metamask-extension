@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -14,8 +16,14 @@ import {
   IconSize,
   Tag,
 } from '../../../../components/component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../components/ui/tooltip';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UnitInput from '../../../../components/ui/unit-input';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Dropdown from '../../../../components/ui/dropdown';
 import {
   AlignItems,
@@ -31,6 +39,8 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
@@ -40,8 +50,14 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import StepIndicator from '../step-indicator/step-indicator.component';
 
 const TOTAL_STEPS = 3;
@@ -74,6 +90,8 @@ const account: InternalAccount = {
  * @param [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
  * @returns The rendered component
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSetupDailyAllowance({
   accounts = [account],
 }: {

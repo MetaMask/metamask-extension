@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
@@ -15,6 +17,8 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 jest.mock('react-redux', () => ({

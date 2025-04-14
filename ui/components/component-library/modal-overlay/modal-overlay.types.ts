@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import type {
   StyleUtilityProps,
@@ -18,9 +20,13 @@ export interface ModalOverlayStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalOverlayProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalOverlayStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalOverlayComponent = <C extends React.ElementType = 'div'>(
   props: ModalOverlayProps<C>,
 ) => React.ReactElement | null;

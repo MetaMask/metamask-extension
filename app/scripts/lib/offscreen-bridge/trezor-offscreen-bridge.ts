@@ -120,6 +120,8 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<PROTO.MessageSignature>;
   }
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
   ) {

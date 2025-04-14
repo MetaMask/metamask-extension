@@ -1,10 +1,14 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PortStream from 'extension-port-stream';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';

@@ -189,6 +189,8 @@ describe('Accounts Selectors', () => {
           ...MOCK_STATE.metamask,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_EOA.id,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             accounts: { mock_account_eoa: MOCK_ACCOUNT_EOA },
           },
         },
@@ -207,7 +209,11 @@ describe('Accounts Selectors', () => {
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
             accounts: {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               mock_account_bip122_pwpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               mock_account_bip122_p2wpkh_testnet:
                 MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
             },
@@ -226,6 +232,8 @@ describe('Accounts Selectors', () => {
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
             accounts: {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               mock_account_bip122_p2wpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
             },
           },

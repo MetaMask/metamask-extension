@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -18,6 +20,8 @@ import {
   BoxProps,
 } from '../../component-library';
 import { getUseBlockie } from '../../../selectors';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../ui/tooltip';
 
 import { BadgeStatusProps } from './badge-status.types';

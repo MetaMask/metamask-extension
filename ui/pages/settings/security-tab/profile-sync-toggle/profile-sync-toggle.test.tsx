@@ -1,9 +1,17 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as Redux from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as ProfileSyncingHook from '../../../../hooks/identity/useProfileSyncing/useProfileSyncing';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ProfileSyncToggle from './profile-sync-toggle';
 
 const mockStore = configureMockStore();

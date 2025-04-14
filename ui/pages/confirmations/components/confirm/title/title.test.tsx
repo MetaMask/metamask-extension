@@ -1,4 +1,6 @@
 import { waitFor } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
@@ -23,6 +25,8 @@ import {
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ConfirmTitle from './title';
 
 jest.mock('../info/approve/hooks/use-approve-token-simulation', () => ({

@@ -1,7 +1,11 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as SnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SnapFooterButton } from './snap-footer-button';

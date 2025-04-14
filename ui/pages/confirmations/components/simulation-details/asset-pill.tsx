@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
@@ -17,6 +19,8 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Name from '../../../../components/app/name';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';

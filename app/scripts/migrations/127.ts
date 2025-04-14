@@ -2,6 +2,8 @@ import { hasProperty, isObject, RuntimeObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 // Note: This is the library the network controller uses for URL
 // validity / equality. Using here to ensure we match its validations.
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as URI from 'uri-js';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,

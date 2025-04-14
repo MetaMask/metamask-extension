@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
@@ -30,6 +32,8 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../../component-library';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -37,6 +41,8 @@ import {
 } from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InfoTooltip from '../../../../ui/info-tooltip';
 
 type SortControlProps = {

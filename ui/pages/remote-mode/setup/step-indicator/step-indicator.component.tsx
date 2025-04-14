@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { Box, Text } from '../../../../components/component-library';
 import {
@@ -22,6 +24,8 @@ type StepIndicatorProps = {
  * @param props.currentStep - The current step number in the process
  * @param props.totalSteps - The total number of steps in the process
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function StepIndicator({
   currentStep,
   totalSteps,

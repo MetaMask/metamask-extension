@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
@@ -12,9 +14,15 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TransactionIcon from '../transaction-icon';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
   Display,

@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback } from 'react';
 
 import {
@@ -30,6 +32,8 @@ import { DailyAllowance } from '../../remote.types';
  * @param props.onRemove - Callback function triggered when the allowance is removed
  * @returns A card component displaying the daily allowance information
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeDailyAllowanceCard({
   dailyAllowance,
   onRemove,

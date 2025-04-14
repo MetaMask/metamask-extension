@@ -1,4 +1,8 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UnitInput from '../../../ui/unit-input';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 
@@ -10,6 +14,8 @@ type NFTInputProps = {
 
 const NUMBERS_REGEX = /^[0-9]*$/u;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NFTInput({ integerValue, onChange, className }: NFTInputProps) {
   const handleChange = (newValueAsString: number) => {
     if (!onChange) {

@@ -321,6 +321,8 @@ export const getFeeForSmartTransaction = ({
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   currentCurrency: string;
   conversionRate: number;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   USDConversionRate?: number;
   nativeCurrencySymbol: string;
   feeInWeiDec: number;
@@ -381,6 +383,8 @@ export function getRenderableNetworkFeesForQuote({
   gasPriceApprove: string;
   currentCurrency: string;
   conversionRate: number;
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   USDConversionRate?: number;
   tradeValue: number;
   sourceSymbol: string;
@@ -768,8 +772,14 @@ export const showRemainingTimeInMinAndSec = (
 };
 
 export enum StxErrorTypes {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   unavailable = 'unavailable',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   notEnoughFunds = 'not_enough_funds',
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   regularTxPending = 'regular_tx_pending',
 }
 

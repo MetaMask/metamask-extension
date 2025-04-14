@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import {
   FontWeight,
@@ -136,9 +138,13 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
   ellipsis?: boolean;
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TextStyleUtilityProps>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextComponent = <C extends React.ElementType = 'span'>(
   props: TextProps<C>,
 ) => React.ReactElement | null;

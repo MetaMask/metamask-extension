@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type Jazzicon from '@metamask/jazzicon';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 

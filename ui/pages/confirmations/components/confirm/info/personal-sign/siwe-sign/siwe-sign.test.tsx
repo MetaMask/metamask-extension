@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
@@ -7,6 +9,8 @@ import {
   SignatureRequestSIWEWithResources,
   signatureRequestSIWE,
 } from '../../../../../../../../test/data/confirmations/personal_sign';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SIWESignInfo from './siwe-sign';
 
 describe('SIWESignInfo', () => {

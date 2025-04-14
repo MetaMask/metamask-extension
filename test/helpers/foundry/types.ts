@@ -4,16 +4,22 @@ import type { InferredOptionTypes, Options } from 'yargs';
 
 // #region utils
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type UnionToIntersection<U> = ((k: U) => void) extends (k: infer I) => void
   ? I
   : never;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type LastInUnion<U extends PropertyKey> = UnionToIntersection<
   U extends PropertyKey ? () => U : never
 > extends () => infer Last
   ? Last
   : never;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type UnionToTuple<U extends PropertyKey, Last = LastInUnion<U>> = [U] extends [
   never,
 ]
@@ -86,6 +92,8 @@ export type PlatformArchChecksums = {
 /**
  * Given a map of raw yargs options config, returns a map of inferred types.
  */
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ParsedOptions<O extends { [key: string]: Options }> = {
   [key in keyof O]: InferredOptionTypes<O>[key];
 };

@@ -319,6 +319,8 @@ describe('I18N Module', () => {
 
       global.Intl = {
         RelativeTimeFormat: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           __addLocaleData: addMock,
         },
         // TODO: Replace `any` with type
@@ -338,6 +340,8 @@ describe('I18N Module', () => {
 
       global.Intl = {
         RelativeTimeFormat: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           __addLocaleData: addMock,
         },
         // TODO: Replace `any` with type

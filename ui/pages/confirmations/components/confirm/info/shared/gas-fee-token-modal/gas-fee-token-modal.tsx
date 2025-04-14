@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -18,6 +20,8 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

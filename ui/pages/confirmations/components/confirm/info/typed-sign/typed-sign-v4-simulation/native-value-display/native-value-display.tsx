@@ -1,5 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -16,6 +18,8 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Tooltip from '../../../../../../../../components/ui/tooltip';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { selectConversionRateByChainId } from '../../../../../../../../selectors';

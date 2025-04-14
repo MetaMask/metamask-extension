@@ -4,6 +4,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as ConfirmationNavigation from '../../hooks/useConfirmationNavigation';
 import { useAlertsActions } from './useAlertsActions';
 

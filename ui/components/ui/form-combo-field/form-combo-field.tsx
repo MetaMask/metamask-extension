@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useCallback,
   useContext,
@@ -47,6 +49,8 @@ export type FormComboFieldProps<Option extends FormComboFieldOption> = {
   value: string;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function Option({
   option,
   onClick,
@@ -85,6 +89,8 @@ function Option({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function Dropdown<Option extends FormComboFieldOption>({
   hideDropdownIfNoOptions,
   maxDropdownHeight,
@@ -142,6 +148,8 @@ function Dropdown<Option extends FormComboFieldOption>({
   );
 }
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FormComboField<Option extends FormComboFieldOption>({
   hideDropdownIfNoOptions = false,
   maxDropdownHeight,

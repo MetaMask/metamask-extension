@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   memo,
   useCallback,
@@ -14,7 +16,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NameDisplay from './name-details/name-display';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NameDetails from './name-details/name-details';
 
 export type NameProps = {
@@ -54,7 +60,11 @@ const Name = memo(
         event: MetaMetricsEventName.PetnameDisplayed,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: type,
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_petname: Boolean(name?.length),
         },
       });

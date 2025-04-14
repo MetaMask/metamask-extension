@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
@@ -20,6 +22,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RpcListItem from '../rpc-list-item';
 
 export const SelectRpcUrlModal = ({

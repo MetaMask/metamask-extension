@@ -1,6 +1,10 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,

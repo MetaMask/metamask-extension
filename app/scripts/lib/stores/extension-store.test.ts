@@ -1,4 +1,6 @@
 import browser from 'webextension-polyfill';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ExtensionStore from './extension-store';
 
 const MOCK_STATE = { data: {}, meta: { version: 1 } };

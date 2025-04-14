@@ -90,8 +90,14 @@ describe('useQueuedConfirmationsAlerts', () => {
       category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.ConfirmationQueued,
       properties: {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmation_type: 'transaction',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         queue_size: 5,
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         queue_type: QueueType.QueueController,
         referrer: 'http://127.0.0.1:8080',
       },

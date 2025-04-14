@@ -1,4 +1,6 @@
 import { webpack } from 'webpack';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import type WebpackDevServerType from 'webpack-dev-server';
 import { noop, logStats, __HMR_READY__ } from './utils/helpers';
 import config from './webpack.config';

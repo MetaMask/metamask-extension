@@ -1,3 +1,5 @@
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, {
   useState,
   useCallback,
@@ -81,6 +83,8 @@ import type {
 } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
@@ -130,6 +134,8 @@ type AssetPickerModalProps = {
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModal({
   header,
   isOpen,
