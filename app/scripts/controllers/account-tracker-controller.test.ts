@@ -190,7 +190,7 @@ async function withController<ReturnValue>(
 
   const controller = new AccountTrackerController({
     state: getDefaultAccountTrackerControllerState(),
-    provider: provider,
+    provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
     messenger: messenger.getRestricted({

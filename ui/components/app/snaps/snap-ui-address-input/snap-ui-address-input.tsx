@@ -152,7 +152,7 @@ export const SnapUIAddressInput: FunctionComponent<
      * it will be a valid CAIP-10 account ID.
      */
     if (isCaipAccountId(value)) {
-      const { address } = parseCaipAccountId(value as CaipAccountId);
+      const { address } = parseCaipAccountId(value);
       return address;
     }
 

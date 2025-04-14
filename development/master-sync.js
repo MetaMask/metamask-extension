@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 // USAGE:
 // Simply run `yarn master-sync` from any branch.

@@ -75,4 +75,4 @@ export type Collection = {
  */
 export type TokenWithBalance = Token & { balance?: string; string?: string };
 
-export { Asset };
+export type { Asset };
