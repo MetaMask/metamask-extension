@@ -163,6 +163,8 @@ export default function KeyringRemovalSnapWarning({
           </ModalBody>
           <ModalFooter
             onCancel={onCancel}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={async () => {
               if (!showConfirmation) {
                 setShowConfirmation(true);

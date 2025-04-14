@@ -61,6 +61,8 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
 
   return (
     <Box padding={4} className="name-snap-account-page">
+      {/* TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879 */}
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <ModalHeader padding={4} onClose={onClose}>
         {t('addAccountToMetaMask')}
       </ModalHeader>

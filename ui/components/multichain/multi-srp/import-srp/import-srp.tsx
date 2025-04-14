@@ -311,6 +311,8 @@ export const ImportSrp = ({
             <ButtonLink
               width={BlockSize.Full}
               loading={loading}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => {
                 setNumberOfWords(numberOfWords === 12 ? 24 : 12);
                 setSrpError('');
@@ -341,6 +343,8 @@ export const ImportSrp = ({
           width={BlockSize.Full}
           disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
           loading={loading}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             try {
               setLoading(true);

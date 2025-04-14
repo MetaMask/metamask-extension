@@ -391,6 +391,8 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => requestAccountsPermission()}
             >
               {t('connectAccounts')}

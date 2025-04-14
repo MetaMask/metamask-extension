@@ -55,6 +55,8 @@ export default function ConfirmTurnOffProfileSyncing() {
         <ModalFooter
           paddingTop={4}
           onSubmit={handleHideModal}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onCancel={handleTurnOffProfileSyncing}
           containerProps={{
             flexDirection: FlexDirection.Row,

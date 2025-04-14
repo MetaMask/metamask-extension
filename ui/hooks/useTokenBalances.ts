@@ -19,6 +19,8 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
 
   useMultiPolling({
     startPolling: tokenBalancesStartPolling,
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
     input: chainIds ?? Object.keys(networkConfigurations),
   });
