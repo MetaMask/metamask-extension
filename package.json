@@ -225,8 +225,8 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
-    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@npm%253A23.2.0%23~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch%3A%3Aversion=23.2.0&hash=61b816#~/.yarn/patches/@metamask-network-controller-patch-dd54cfd5e3.patch",
-    "@metamask/network-controller@npm:^22.2.1": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@npm%253A23.2.0%23~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch%3A%3Aversion=23.2.0&hash=61b816#~/.yarn/patches/@metamask-network-controller-patch-dd54cfd5e3.patch"
+    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@patch%253A@metamask/network-controller@npm%25253A23.2.0%2523~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch%253A%253Aversion=23.2.0&hash=61b816%23~/.yarn/patches/@metamask-network-controller-patch-dd54cfd5e3.patch%3A%3Aversion=23.2.0&hash=a95e51#~/.yarn/patches/@metamask-network-controller-patch-c21b658258.patch",
+    "@metamask/network-controller@npm:^22.2.1": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@patch%253A@metamask/network-controller@npm%25253A23.2.0%2523~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch%253A%253Aversion=23.2.0&hash=61b816%23~/.yarn/patches/@metamask-network-controller-patch-dd54cfd5e3.patch%3A%3Aversion=23.2.0&hash=a95e51#~/.yarn/patches/@metamask-network-controller-patch-c21b658258.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -301,7 +301,7 @@
     "@metamask/multichain-network-controller": "^0.5.1",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
-    "@metamask/network-controller": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@npm%253A23.2.0%23~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch%3A%3Aversion=23.2.0&hash=61b816#~/.yarn/patches/@metamask-network-controller-patch-dd54cfd5e3.patch",
+    "@metamask/network-controller": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@patch%253A@metamask/network-controller@npm%25253A23.2.0%2523~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch%253A%253Aversion=23.2.0&hash=61b816%23~/.yarn/patches/@metamask-network-controller-patch-dd54cfd5e3.patch%3A%3Aversion=23.2.0&hash=a95e51#~/.yarn/patches/@metamask-network-controller-patch-c21b658258.patch",
     "@metamask/notification-services-controller": "^5.0.1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",

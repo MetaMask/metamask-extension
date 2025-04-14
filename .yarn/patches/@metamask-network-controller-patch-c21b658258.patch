@@ -1,0 +1,26 @@
+diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
+index aecd1d9bf31433742d315c616355924fbd8dc3b7..b9511090e0a57c59b9b3ca10d220cc0e57b680e5 100644
+--- a/dist/NetworkController.mjs
++++ b/dist/NetworkController.mjs
+@@ -372,6 +372,7 @@ export class NetworkController extends BaseController {
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+         `${this.name}:getNetworkClientById`, this.getNetworkClientById.bind(this));
++        this.messagingSystem.registerActionHandler(`${this.name}:getNetworkClientIdByChainId`, this.getNetworkClientIdByChainId.bind(this));
+         this.messagingSystem.registerActionHandler(
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+@@ -777,6 +778,13 @@ export class NetworkController extends BaseController {
+     async resetConnection() {
+         await __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_refreshNetwork).call(this, this.state.selectedNetworkClientId);
+     }
++    getNetworkClientIdByChainId(chainId) {
++        const networkConfiguration = this.getNetworkConfigurationByChainId(chainId);
++        if (networkConfiguration) {
++            return networkConfiguration.rpcEndpoints[networkConfiguration.defaultRpcEndpointIndex]?.networkClientId;
++        }
++        return undefined;
++    }
+     /**
+      * Returns the network configuration that has been filed under the given chain
+      * ID.
