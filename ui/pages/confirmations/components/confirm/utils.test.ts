@@ -7,6 +7,8 @@ import {
   PERSONAL_SIGN_SENDER_ADDRESS,
   unapprovedPersonalSignMsg,
 } from '../../../../../test/data/confirmations/personal_sign';
+// https://github.com/MetaMask/metamask-extension/issues/31892
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SignatureRequestType } from '../../types/confirm';
 import { getConfirmationSender } from './utils';
 

@@ -26,6 +26,8 @@ import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
 import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+// https://github.com/MetaMask/metamask-extension/issues/31892
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

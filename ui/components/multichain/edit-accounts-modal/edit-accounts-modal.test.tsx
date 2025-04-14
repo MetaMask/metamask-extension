@@ -1,6 +1,8 @@
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
+// https://github.com/MetaMask/metamask-extension/issues/31892
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CaipAccountId } from '@metamask/utils';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';

@@ -4,6 +4,8 @@ import type { NetworkController } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   Json,
+  // https://github.com/MetaMask/metamask-extension/issues/31892
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   JsonRpcParams,
   JsonRpcResponse,
   Hex,
