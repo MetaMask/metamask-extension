@@ -110,6 +110,7 @@ async function bridgeUserActions(): Promise<any> {
   await withFixtures(
     {
       fixtures: fixtureBuilder.build(),
+      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-bridgeUserActions',
       testSpecificMock: async (mockServer: Mockttp) => [
