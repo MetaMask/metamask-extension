@@ -191,6 +191,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                 >
                   <div
                     class="mm-box multichain-account-list-item multichain-account-list-item--selected multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
+                    data-testid="account-item"
                   >
                     <div
                       class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
