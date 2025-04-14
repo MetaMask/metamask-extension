@@ -1,11 +1,9 @@
 import React from 'react';
-import { act } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
-import * as EIP7702NetworksInfo from '../../../hooks/useEIP7702Networks';
 import { SmartAccountTab } from './smart-account-tab';
 
 jest.mock('../../../hooks/useEIP7702Networks', () => ({
