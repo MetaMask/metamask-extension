@@ -51,6 +51,7 @@ import {
   REMOTE_ROUTE,
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+  SAMPLE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -82,6 +83,7 @@ import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
+import { SamplePage } from '../sample/sample-page';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -391,6 +393,7 @@ export default class Routes extends Component {
             exact
           />
 
+          <Authenticated path={SAMPLE_ROUTE} component={SamplePage} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

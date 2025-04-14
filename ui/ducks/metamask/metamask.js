@@ -60,6 +60,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
+  namesByChainIdAndAddress: {},
 };
 
 /**

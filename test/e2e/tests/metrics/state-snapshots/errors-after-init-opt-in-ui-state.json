@@ -23,7 +23,6 @@
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
     "showKeyringRemovalSnapModal": "boolean",
-    "showNewSrpAddedToast": "boolean",
     "importTokensModalOpen": "boolean",
     "deprecatedNetworkModalOpen": "boolean",
     "accountDetail": "object",
@@ -65,7 +64,8 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
-    "errorInSettings": null
+    "errorInSettings": null,
+    "showNewSrpAddedToast": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -126,6 +126,7 @@
       }
     },
     "throttledOrigins": "object",
+    "namesByChainIdAndAddress": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -384,6 +385,7 @@
     "encryptionSalt": "string"
   },
   "ramps": "object",
+  "sample": "object",
   "send": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }

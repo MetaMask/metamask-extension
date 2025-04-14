@@ -231,7 +231,6 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
-
 import {
   getStorageItem,
   setStorageItem,
@@ -415,6 +414,7 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
+import { SamplePetnamesControllerInit } from './controller-init/sample/sample-petnames-controller-init';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import {
@@ -1862,6 +1862,7 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
+      SamplePetnamesController: SamplePetnamesControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
@@ -1905,6 +1906,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
+    this.samplePetnamesController = controllersByName.SamplePetnamesController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
@@ -2131,6 +2133,7 @@ export default class MetamaskController extends EventEmitter {
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
+      SamplePetnamesController: this.samplePetnamesController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:
@@ -2188,6 +2191,7 @@ export default class MetamaskController extends EventEmitter {
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         MultichainRatesController: this.multichainRatesController,
+        SamplePetnamesController: this.samplePetnamesController,
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,

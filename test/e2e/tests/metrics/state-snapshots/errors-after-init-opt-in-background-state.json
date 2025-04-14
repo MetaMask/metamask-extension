@@ -283,6 +283,7 @@
     },
     "cacheTimestamp": "number"
   },
+  "SamplePetnamesController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "signatureRequests": "object",
