@@ -204,8 +204,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             ? convertCaipToHexChainId(id as CaipChainId)
             : id;
           if (network.isEvm) {
-            const hexChainId = convertCaipToHexChainId(id as CaipChainId);
-            isTest = (TEST_CHAINS as string[]).includes(hexChainId);
+            isTest = (TEST_CHAINS as string[]).includes(chainId);
           } else {
             isTest = NON_EVM_TESTNET_IDS.includes(chainId);
           }

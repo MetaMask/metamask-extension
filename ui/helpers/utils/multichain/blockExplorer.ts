@@ -26,7 +26,7 @@ export const getMultichainAccountUrl = (
       normalizeSafeAddress(address),
       chainId,
       // @ts-expect-error - ignore error
-      blockExplorerFormatUrls.url,
+      blockExplorerFormatUrls?.url,
     );
   }
 

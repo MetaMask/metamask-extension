@@ -25,7 +25,6 @@ import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes'
  * @returns A function that triggers the send flow for non-EVM accounts.
  */
 export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
-  // update selector to use testnet native asset
   const selectedNetwork = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
