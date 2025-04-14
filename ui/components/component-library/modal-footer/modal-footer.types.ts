@@ -2,8 +2,8 @@ import React from 'react';
 import type { ContainerProps } from '../container';
 
 import type {
-  StyleUtilityProps,
   PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
 } from '../box';
 import type { ButtonProps } from '../button';
 
