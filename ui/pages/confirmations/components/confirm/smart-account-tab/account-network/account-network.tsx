@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Hex } from '@metamask/utils';
 
 import { getNetworkIcon } from '../../../../../../../shared/modules/network.utils';
@@ -36,19 +36,37 @@ export const AccountNetwork = ({
   const { downgradeAccount, upgradeAccount } = useEIP7702Account();
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfiguration;
+  const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
+    useState(isSupported);
   const networkIcon = getNetworkIcon(networkConfiguration);
+  const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
     address,
     chainIdHex,
   );
 
+  useEffect(() => {
+    if (prevHasPendingRequests.current) {
+      if (prevHasPendingRequests.current !== hasPendingRequests) {
+        setAddressSupportSmartAccount(!addressSupportSmartAccount);
+      }
+    } else {
+      prevHasPendingRequests.current = hasPendingRequests;
+    }
+  }, [hasPendingRequests, prevHasPendingRequests]);
+
   const onSwitch = useCallback(async () => {
-    if (isSupported) {
+    if (addressSupportSmartAccount) {
       await downgradeAccount(address);
     } else if (upgradeContractAddress) {
       await upgradeAccount(address, upgradeContractAddress);
     }
-  }, [address, downgradeAccount, isSupported, upgradeContractAddress]);
+  }, [
+    address,
+    downgradeAccount,
+    addressSupportSmartAccount,
+    upgradeContractAddress,
+  ]);
 
   return (
     <Box
@@ -81,7 +99,7 @@ export const AccountNetwork = ({
             {name}
           </Text>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
-            {isSupported
+            {addressSupportSmartAccount
               ? t('confirmAccountTypeSmartContract')
               : t('confirmAccountTypeStandard')}
           </Text>
