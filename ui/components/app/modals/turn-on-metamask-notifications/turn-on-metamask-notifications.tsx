@@ -147,7 +147,7 @@ export default function TurnOnMetamaskNotifications() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
-          onSubmit={() => handleTurnOnNotifications()}
+          onSubmit={async () => handleTurnOnNotifications()}
           containerProps={{
             flexDirection: FlexDirection.Column,
             alignItems: AlignItems.stretch,

@@ -22,7 +22,7 @@ const NON_PERMIT_SUPPORTED_TYPES_SIGNS = [
 const isNonPermitSupportedByDecodingAPI = (
   signatureRequest: SignatureRequestType,
 ) => {
-  const data = (signatureRequest as SignatureRequestType).msgParams
+  const data = (signatureRequest).msgParams
     ?.data as string;
   if (!data) {
     return false;

@@ -79,12 +79,12 @@ export function useSimulationMetrics({
 
   const displayNames = useDisplayNames(displayNameRequests);
 
-  const displayNamesByAddress = displayNames.reduce(
+  const displayNamesByAddress = displayNames.reduce<{ [address: string]: UseDisplayNameResponse }>(
     (acc, displayNameResponse, index) => ({
       ...acc,
       [balanceChanges[index].asset.address ?? '']: displayNameResponse,
     }),
-    {} as { [address: string]: UseDisplayNameResponse },
+    {},
   );
 
   const { updateTransactionEventFragment } = useTransactionEventFragment();

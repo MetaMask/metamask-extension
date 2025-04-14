@@ -76,7 +76,7 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   const sourceTxRawStatus = isBridgeOriginated
     ? TransactionStatus.submitted
-    : (transaction as ExtendedTransaction).status;
+    : (transaction).status;
   const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
 
   const finalDisplayStatusKey = getBridgeStatusKey(

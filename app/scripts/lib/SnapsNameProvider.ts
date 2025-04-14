@@ -36,7 +36,7 @@ export type SnapsNameProviderMessenger = RestrictedMessenger<
 >;
 
 export class SnapsNameProvider implements NameProvider {
-  #messenger: SnapsNameProviderMessenger;
+  readonly #messenger: SnapsNameProviderMessenger;
 
   constructor({ messenger }: { messenger: SnapsNameProviderMessenger }) {
     this.#messenger = messenger;
@@ -74,7 +74,7 @@ export class SnapsNameProvider implements NameProvider {
     const nameSnaps = this.#getNameLookupSnaps();
 
     const snapResults = await Promise.all(
-      nameSnaps.map((snap) => this.#getSnapProposedName(snap, request)),
+      nameSnaps.map(async (snap) => this.#getSnapProposedName(snap, request)),
     );
 
     const results = snapResults.reduce(

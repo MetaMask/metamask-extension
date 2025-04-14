@@ -55,7 +55,7 @@ const useAssetListTokenDetection = () => {
     tokens: Token[],
     networkClientIdProp: string,
   ) => {
-    await dispatch(addImportedTokens(tokens as Token[], networkClientIdProp));
+    await dispatch(addImportedTokens(tokens, networkClientIdProp));
   };
 
   const trackTokenAddedEvent = (importedToken: Token, chainId: string) => {

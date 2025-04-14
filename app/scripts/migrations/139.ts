@@ -105,7 +105,7 @@ export async function migrate(
   versionedData.meta.version = version;
 
   const newState = transformState(versionedData.data);
-  versionedData.data = newState as Record<string, unknown>;
+  versionedData.data = newState;
   return versionedData;
 }
 

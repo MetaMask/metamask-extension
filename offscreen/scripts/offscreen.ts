@@ -68,6 +68,6 @@ init().then(() => {
 
     // This message is being sent from the Offscreen Document to the Service Worker.
     // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
-    webdriverPresent: navigator.webdriver === true,
+    webdriverPresent: navigator.webdriver,
   });
 });

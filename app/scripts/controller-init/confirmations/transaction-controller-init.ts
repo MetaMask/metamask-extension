@@ -70,14 +70,14 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
-    getCurrentNetworkEIP1559Compatibility: () =>
+    getCurrentNetworkEIP1559Compatibility: async () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
     getCurrentAccountEIP1559Compatibility: async () => true,
     // @ts-expect-error Mismatched types
     getExternalPendingTransactions: (address) =>
       getExternalPendingTransactions(smartTransactionsController(), address),
-    getGasFeeEstimates: (...args) =>
+    getGasFeeEstimates: async (...args) =>
       gasFeeController().fetchGasFeeEstimates(...args),
     getNetworkClientRegistry: (...args) =>
       networkController().getNetworkClientRegistry(...args),
@@ -123,7 +123,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      beforePublish: (transactionMeta: TransactionMeta) => {
+      beforePublish: async (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
           transactionMeta,
@@ -131,7 +131,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
 
-      beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
+      beforeCheckPendingTransactions: async (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:beforeCheckPendingTransactionHook',
           transactionMeta,
@@ -140,7 +140,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
       // @ts-expect-error Controller type does not support undefined return value
-      publish: (transactionMeta, signedTx) =>
+      publish: async (transactionMeta, signedTx) =>
         publishHook({
           flatState: getFlatState(),
           initMessenger,
@@ -156,11 +156,11 @@ export const TransactionControllerInit: ControllerInitFunction<
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
           flatState: getFlatState(),
-          transactions: _request.transactions as PublishBatchHookTransaction[],
+          transactions: _request.transactions,
         }),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
-    sign: (...args) => keyringController().signTransaction(...args),
+    sign: async (...args) => keyringController().signTransaction(...args),
     state: persistedState.TransactionController,
   });
 
@@ -310,7 +310,7 @@ async function publishSmartTransactionHook(
   });
 }
 
-function publishBatchSmartTransactionHook({
+async function publishBatchSmartTransactionHook({
   transactionController,
   smartTransactionsController,
   hookControllerMessenger,
@@ -395,7 +395,7 @@ function addTransactionControllerListeners(
 
   initMessenger.subscribe(
     'TransactionController:unapprovedTransactionAdded',
-    (transactionMeta) =>
+    async (transactionMeta) =>
       handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
   );
 

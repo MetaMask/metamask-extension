@@ -71,7 +71,7 @@ export const SnapControllerInit: ControllerInitFunction<
     const preferences = initMessenger.call('PreferencesController:getState');
 
     return {
-      disableSnaps: preferences.useExternalServices === false,
+      disableSnaps: !preferences.useExternalServices,
     };
   }
 

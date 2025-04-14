@@ -84,7 +84,7 @@ const getTokenContractInDataTree = (
     return undefined;
   }
 
-  const tokenContract = (dataTreeData as Record<string, TreeData>).token
+  const tokenContract = (dataTreeData).token
     ?.value as Hex;
   if (!tokenContract || !isValidHexAddress(tokenContract)) {
     return undefined;

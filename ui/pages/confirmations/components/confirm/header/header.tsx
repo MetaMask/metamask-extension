@@ -39,7 +39,7 @@ const Header = () => {
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
-  const { currentConfirmation } = useConfirmContext<Confirmation>();
+  const { currentConfirmation } = useConfirmContext();
 
   const DefaultHeader = (
     <Box

@@ -24,7 +24,7 @@ export const generateActionId = () => Date.now() + Math.random();
  * @param [args] - arguments to that method, if any
  * @returns
  */
-export function submitRequestToBackground<R>(
+export async function submitRequestToBackground<R>(
   method: string,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

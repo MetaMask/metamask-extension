@@ -96,7 +96,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
   MetaMetricsDataDeletionState,
   MetaMetricsDataDeletionControllerMessenger
 > {
-  #dataDeletionService: PublicInterface<DataDeletionService>;
+  readonly #dataDeletionService: PublicInterface<DataDeletionService>;
 
   /**
    * Creates a MetaMetricsDataDeletionController instance.

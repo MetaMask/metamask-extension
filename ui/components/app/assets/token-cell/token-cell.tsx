@@ -77,7 +77,7 @@ export default function TokenCell({
   });
 
   const handleClick = useCallback(
-    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    (e?: React.MouseEvent<HTMLAnchorElement>) => {
       e?.preventDefault();
 
       // If the scam warning modal is open, do nothing

@@ -8,8 +8,8 @@ import { MetamaskNotificationsProvider } from '../../contexts/metamask-notificat
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 
 jest.mock('../../store/actions', () => ({
-  deleteExpiredSnapNotifications: jest.fn(() => () => Promise.resolve()),
-  fetchAndUpdateMetamaskNotifications: jest.fn(() => () => Promise.resolve()),
+  deleteExpiredSnapNotifications: jest.fn(() => async () => Promise.resolve()),
+  fetchAndUpdateMetamaskNotifications: jest.fn(() => async () => Promise.resolve()),
 }));
 
 const middlewares = [thunk];

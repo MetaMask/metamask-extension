@@ -19,7 +19,7 @@ export const NonContractAddressAlertMessage = (
 
   const networkName =
     currentConfirmation?.chainId &&
-    networkConfigurations[currentConfirmation.chainId as Hex].name;
+    networkConfigurations[currentConfirmation.chainId].name;
   const recipientAddress = ellipsify(currentConfirmation?.txParams.to);
 
   return (

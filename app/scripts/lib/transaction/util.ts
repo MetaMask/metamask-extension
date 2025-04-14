@@ -153,7 +153,7 @@ async function addTransactionWithController(
 
   return {
     transactionMeta,
-    waitForHash: () => result,
+    waitForHash: async () => result,
   };
 }
 

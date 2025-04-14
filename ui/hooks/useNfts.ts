@@ -66,7 +66,7 @@ export function useNfts({
       const allNfts: NFT[] = Object.values(nfts).flat() as NFT[];
 
       allNfts.forEach((nft: NFT) => {
-        if (nft?.isCurrentlyOwned === false) {
+        if (!(nft?.isCurrentlyOwned)) {
           previousNfts.push(nft);
         } else {
           currentNfts.push(nft);

@@ -73,13 +73,13 @@ function changeShapeAndRemoveOldAdvancedGasFeePreference(
     ) {
       state.PreferencesController.advancedGasFee = {};
     }
-  } else if (isObject(state.AppStateController) === false) {
+  } else if (!isObject(state.AppStateController)) {
     global.sentry?.captureException?.(
       new Error(
         `typeof state.AppStateController is ${typeof state.AppStateController}`,
       ),
     );
-  } else if (isObject(state.PreferencesController) === false) {
+  } else if (!isObject(state.PreferencesController)) {
     global.sentry?.captureException?.(
       new Error(
         `typeof state.PreferencesController is ${typeof state.PreferencesController}`,

@@ -8,7 +8,7 @@ import useCurrencyRatePolling from './useCurrencyRatePolling';
 let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
-  currencyRateStartPolling: jest.fn().mockImplementation((input) => {
+  currencyRateStartPolling: jest.fn().mockImplementation(async (input) => {
     const promise = Promise.resolve(`${input}_rates`);
     mockPromises.push(promise);
     return promise;

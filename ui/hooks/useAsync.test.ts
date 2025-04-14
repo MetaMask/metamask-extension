@@ -81,7 +81,7 @@ describe('useAsyncCallback', () => {
   it('handles errors correctly', async () => {
     const error = new Error('Custom test error');
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncCallback(() => Promise.reject(error)),
+      useAsyncCallback(async () => Promise.reject(error)),
     );
 
     act(() => {
@@ -158,7 +158,7 @@ describe('useAsyncCallback', () => {
 
     for (const error of errors) {
       const { result, waitForNextUpdate } = renderHook(() =>
-        useAsyncCallback(() => Promise.reject(error)),
+        useAsyncCallback(async () => Promise.reject(error)),
       );
 
       act(() => {
@@ -268,7 +268,7 @@ describe('useAsyncResultOrThrow', () => {
   it('throws errors for error boundaries to catch', async () => {
     const error = new Error('Boundary error');
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncResultOrThrow(() => Promise.reject(error)),
+      useAsyncResultOrThrow(async () => Promise.reject(error)),
     );
 
     await waitForNextUpdate();
@@ -281,7 +281,7 @@ describe('useAsyncResultOrThrow', () => {
     error.code = 'CUSTOM_CODE';
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useAsyncResultOrThrow(() => Promise.reject(error)),
+      useAsyncResultOrThrow(async () => Promise.reject(error)),
     );
 
     await waitForNextUpdate();

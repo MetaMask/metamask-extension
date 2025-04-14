@@ -119,7 +119,7 @@ export const LegacyAggregatedBalance = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const allChainIDs = useSelector(getChainIdsToPoll) as string[];
+  const allChainIDs = useSelector(getChainIdsToPoll);
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
     account,

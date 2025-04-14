@@ -88,7 +88,7 @@ describe('useSimulationMetrics', () => {
     });
 
     it('Does not updates the event property if fiat value is empty string', async () => {
-      const MOCK_FIAT_VALUE = '' as const;
+      const MOCK_FIAT_VALUE = '';
       const transactionMeta = genUnapprovedTokenTransferConfirmation(
         {},
       ) as TransactionMeta;

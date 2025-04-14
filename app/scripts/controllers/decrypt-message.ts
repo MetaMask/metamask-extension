@@ -147,13 +147,13 @@ export default class DecryptMessageController extends BaseController<
 > {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _getState: () => any;
+  private readonly _getState: () => any;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _metricsEvent: (payload: any, options?: any) => void;
+  private readonly _metricsEvent: (payload: any, options?: any) => void;
 
-  private _decryptMessageManager: DecryptMessageManager;
+  private readonly _decryptMessageManager: DecryptMessageManager;
 
   /**
    * Construct a DecryptMessage controller.

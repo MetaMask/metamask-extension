@@ -65,7 +65,7 @@ const dummyBalanceChange = {
   newBalance: '0xIGNORE' as Hex,
 };
 
-const PENDING_PROMISE = () =>
+const PENDING_PROMISE = async () =>
   new Promise(() => {
     /* unresolved promise */
   });
@@ -73,7 +73,7 @@ const PENDING_PROMISE = () =>
 describe('useBalanceChanges', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetTokenStandardAndDetails.mockImplementation((address: Hex) => {
+    mockGetTokenStandardAndDetails.mockImplementation(async (address: Hex) => {
       const decimalMap: Record<Hex, number | string> = {
         [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_DECIMALS_1_MOCK,
         [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_DECIMALS_2_MOCK,

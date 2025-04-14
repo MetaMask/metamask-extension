@@ -25,7 +25,7 @@ function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
   return transformStream;
 }
 
-function runStreamTest(
+async function runStreamTest(
   requests: (JsonRpcRequest | JsonRpcNotification)[] = [],
   advanceTimersTime = 10,
   S = Transform,

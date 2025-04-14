@@ -49,7 +49,7 @@ describe('useSelectedAccountAlerts', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useSelectedAccountAlerts(),
       getMockPersonalSignConfirmStateForRequest(
-        unapprovedPersonalSignMsg as SignatureRequestType,
+        unapprovedPersonalSignMsg,
       ),
     );
     expect(result.current).toEqual([]);

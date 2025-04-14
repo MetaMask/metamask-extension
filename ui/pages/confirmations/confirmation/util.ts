@@ -120,7 +120,7 @@ function findMarkdown(
 
     elements.push(formattedElement);
 
-    position = (match.index as number) + match[0].length;
+    position = (match.index) + match[0].length;
     index += 1;
   }
 

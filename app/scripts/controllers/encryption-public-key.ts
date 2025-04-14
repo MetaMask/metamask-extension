@@ -112,19 +112,19 @@ export default class EncryptionPublicKeyController extends BaseController<
   EncryptionPublicKeyControllerState,
   EncryptionPublicKeyControllerMessenger
 > {
-  private _getEncryptionPublicKey: (address: string) => Promise<string>;
+  private readonly _getEncryptionPublicKey: (address: string) => Promise<string>;
 
-  private _getAccountKeyringType: (account: string) => Promise<string>;
-
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _getState: () => any;
-
-  private _encryptionPublicKeyManager: EncryptionPublicKeyManager;
+  private readonly _getAccountKeyringType: (account: string) => Promise<string>;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _metricsEvent: (payload: any, options?: any) => void;
+  private readonly _getState: () => any;
+
+  private readonly _encryptionPublicKeyManager: EncryptionPublicKeyManager;
+
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly _metricsEvent: (payload: any, options?: any) => void;
 
   /**
    * Construct a EncryptionPublicKey controller.

@@ -260,7 +260,7 @@ describe('Transaction Utils', () => {
           {
             id: TRANSACTION_META_MOCK.id,
             hash: undefined as never,
-            transactionHash: () =>
+            transactionHash: async () =>
               new Promise(() => {
                 /* Intentionally not resolved */
               }),
@@ -283,8 +283,8 @@ describe('Transaction Utils', () => {
         userOperationController.addUserOperationFromTransaction.mockResolvedValue(
           {
             id: TRANSACTION_META_MOCK.id,
-            hash: () => Promise.resolve(TRANSACTION_META_MOCK.hash),
-            transactionHash: () => transactionHashPromise,
+            hash: async () => Promise.resolve(TRANSACTION_META_MOCK.hash),
+            transactionHash: async () => transactionHashPromise,
           },
         );
 

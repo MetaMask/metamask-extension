@@ -223,7 +223,7 @@ describe('AssetPickerModal', () => {
   });
 
   it('renders no NFTs message when there are no NFTs', () => {
-    sinon.stub(actions, 'detectNfts').returns(() => Promise.resolve());
+    sinon.stub(actions, 'detectNfts').returns(async () => Promise.resolve());
     renderWithProvider(
       <AssetPickerModal
         {...defaultProps}

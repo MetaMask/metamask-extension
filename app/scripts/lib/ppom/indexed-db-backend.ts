@@ -21,16 +21,16 @@ const validateChecksum = async (
 };
 
 export class IndexedDBPPOMStorage implements StorageBackend {
-  private storeName: string;
+  private readonly storeName: string;
 
-  private dbVersion: number;
+  private readonly dbVersion: number;
 
   constructor(storeName: string, dbVersion: number) {
     this.storeName = storeName;
     this.dbVersion = dbVersion;
   }
 
-  #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
+  async #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
 
@@ -105,7 +105,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     const event = await this.objectStoreAction('get', [key.name, key.chainId]);
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = (event.target as any)?.result?.data;
+    const data = (event.target)?.result?.data;
     await validateChecksum(key, data, checksum);
     return data;
   }
@@ -131,7 +131,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     const event = await this.objectStoreAction('getAllKeys');
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (event.target as any)?.result.map(([name, chainId]: string[]) => ({
+    return (event.target)?.result.map(([name, chainId]: string[]) => ({
       name,
       chainId,
     }));

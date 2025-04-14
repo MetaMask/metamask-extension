@@ -454,7 +454,7 @@ export class AppStateController extends BaseController<
    * @returns A promise that resolves when the extension is
    * unlocked, or immediately if the extension is already unlocked.
    */
-  getUnlockPromise(shouldShowUnlockRequest: boolean): Promise<void> {
+  async getUnlockPromise(shouldShowUnlockRequest: boolean): Promise<void> {
     return new Promise((resolve) => {
       if (this.isUnlocked()) {
         resolve();

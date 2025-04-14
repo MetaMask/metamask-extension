@@ -988,7 +988,7 @@ describe('SwapsController', function () {
       });
 
       it('copies network config from the Swaps API into state', async () => {
-        const chainId = '0x64' as const; // Gnosis
+        const chainId = '0x64'; // Gnosis
         const networkClientId = InfuraNetworkType.mainnet;
         const { provider } = createTestProviderTools({
           scaffold: {

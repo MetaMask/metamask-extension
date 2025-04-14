@@ -42,7 +42,7 @@ export const TokenCellSecondaryDisplay = React.memo(
       return (
         <ButtonIcon
           iconName={IconName.Danger}
-          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             e.stopPropagation();
             handleScamWarningModal(true);

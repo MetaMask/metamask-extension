@@ -99,7 +99,7 @@ const mockTransactionMetricsRequest = {
   getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
-  provider: provider as Provider,
+  provider: provider,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
@@ -291,7 +291,7 @@ describe('Transaction metrics', () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMetaWithBlockaid as any,
+        transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
       });
 
@@ -385,7 +385,7 @@ describe('Transaction metrics', () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        transactionMeta: mockTransactionMetaWithBlockaid as any,
+        transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
       });
 
@@ -734,7 +734,7 @@ describe('Transaction metrics', () => {
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
+      });
 
       const expectedUniqueId = 'transaction-submitted-1';
 
@@ -1270,7 +1270,7 @@ describe('Transaction metrics', () => {
     ['if submitted', handleTransactionSubmitted],
     [
       'if confirmed',
-      (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+      async (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
         handleTransactionConfirmed(
           request,
           args.transactionMeta as TransactionMetaEventPayload,

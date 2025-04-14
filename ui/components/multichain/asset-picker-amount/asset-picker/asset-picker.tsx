@@ -134,7 +134,7 @@ export function AssetPicker({
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   // These 2 have similar data but different types
   const currentNetworkConfiguration =
-    allNetworks[currentChainId as keyof typeof allNetworks];
+    allNetworks[currentChainId];
   const currentNetworkProviderConfig = useMultichainSelector(
     getMultichainCurrentNetwork,
   );
@@ -227,7 +227,7 @@ export function AssetPicker({
           // If isMultiselectEnabled=true, update the network when a token is selected
           if (isMultiselectEnabled && networkProps?.onNetworkChange) {
             const networkFromToken = token.chainId
-              ? allNetworks[token.chainId as keyof typeof allNetworks]
+              ? allNetworks[token.chainId]
               : undefined;
             if (networkFromToken) {
               networkProps.onNetworkChange(networkFromToken);

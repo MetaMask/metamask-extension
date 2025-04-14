@@ -119,7 +119,7 @@ function getOptions(
       coerce: (
         rawVersion: string,
       ): { version: 'nightly' | `v${string}`; tag: string } => {
-        if (/^nightly/u.test(rawVersion)) {
+        if (rawVersion.startsWith("nightly")) {
           return { version: 'nightly', tag: rawVersion };
           // we don't validate the version much, we just trust the user
         } else if (isVersionString(rawVersion)) {
@@ -132,7 +132,7 @@ function getOptions(
       alias: 'a',
       description: 'Specify the architecture',
       // if `defaultArch` is not a supported Architecture yargs will throw an error
-      default: defaultArch as Architecture,
+      default: defaultArch,
       choices: Object.values(Architecture) as ArchitecturesTuple,
     },
     platform: {

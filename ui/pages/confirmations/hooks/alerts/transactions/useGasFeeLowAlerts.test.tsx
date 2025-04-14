@@ -34,7 +34,7 @@ function buildState({
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
-      [currentConfirmation.id as string]: {
+      [currentConfirmation.id]: {
         id: currentConfirmation.id,
         type: ApprovalType.Transaction,
       },

@@ -24,7 +24,7 @@ describe('getFetchWithTimeout', () => {
     const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
     await expect(async () => {
-      await fetchWithTimeout('https://api.infura.io/moon').then((r) =>
+      await fetchWithTimeout('https://api.infura.io/moon').then(async (r) =>
         r.json(),
       );
     }).rejects.toThrow('The user aborted a request.');
@@ -39,7 +39,7 @@ describe('getFetchWithTimeout', () => {
     const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
     await expect(async () => {
-      await fetchWithTimeout('https://api.infura.io/moon').then((r) =>
+      await fetchWithTimeout('https://api.infura.io/moon').then(async (r) =>
         r.json(),
       );
     }).rejects.toThrow('The user aborted a request.');
@@ -58,7 +58,7 @@ describe('getFetchWithTimeout', () => {
     await expect(async () => {
       await fetchWithTimeout('https://api.infura.io/moon', {
         signal: abortSignal.signal,
-      }).then((r) => r.json());
+      }).then(async (r) => r.json());
     }).rejects.toThrow('The user aborted a request.');
   });
 

@@ -153,7 +153,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
+    (caipChainId) => allNetworksList.includes(caipChainId),
   );
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
@@ -179,7 +179,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       : defaultSelectedNetworkList;
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    defaultSelectedChainIds as CaipChainId[],
+    defaultSelectedChainIds,
   );
 
   const allAccounts = useSelector(
@@ -201,7 +201,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   // all requested accounts that are found in the wallet
-  const supportedRequestedAccounts = requestedCaipAccountIds.reduce(
+  const supportedRequestedAccounts = requestedCaipAccountIds.reduce<MergedInternalAccountWithCaipAccountId[]>(
     (acc, account) => {
       const supportedRequestedAccount =
         supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
@@ -219,7 +219,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       }
       return acc;
     },
-    [] as MergedInternalAccountWithCaipAccountId[],
+    [],
   );
 
   const defaultAccounts = getDefaultAccounts(

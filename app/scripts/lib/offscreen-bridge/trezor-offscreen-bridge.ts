@@ -32,7 +32,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
 
   minorVersion: number | undefined;
 
-  init(
+  async init(
     settings: {
       manifest: Manifest;
     } & Partial<ConnectSettings>,
@@ -61,7 +61,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     });
   }
 
-  dispose() {
+  async dispose() {
     return new Promise<void>((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -75,7 +75,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     });
   }
 
-  getPublicKey(params: { path: string; coin: string }) {
+  async getPublicKey(params: { path: string; coin: string }) {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -90,7 +90,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<{ publicKey: string; chainCode: string }>;
   }
 
-  ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
+  async ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -105,7 +105,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<EthereumSignedTx>;
   }
 
-  ethereumSignMessage(params: Params<EthereumSignMessage>) {
+  async ethereumSignMessage(params: Params<EthereumSignMessage>) {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
@@ -120,7 +120,7 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<PROTO.MessageSignature>;
   }
 
-  ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
+  async ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
   ) {
     return new Promise((resolve) => {

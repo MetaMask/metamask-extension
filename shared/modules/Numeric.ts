@@ -53,7 +53,7 @@ function isDecimalHex(value: string): boolean {
  */
 function hexadecimalToBigNumber(value: string | number): BigNumber {
   const stringified = typeof value === 'number' ? `${value}` : value;
-  const isNegative = stripHexPrefix(stringified)[0] === '-';
+  const isNegative = stripHexPrefix(stringified).startsWith('-');
   const valueWithoutNegation = stringified.replace('-', '');
 
   const valueAsBigNumber = new BigNumber(
@@ -137,7 +137,7 @@ function numberToBigNumber(value: number, numericBase: NumericBase) {
  * @returns A BigNumber representation of the BN's underlying value
  */
 function bnToBigNumber(value: BN) {
-  if (value instanceof BN === false) {
+  if (!(value instanceof BN)) {
     throw new Error(
       `value passed to bnToBigNumber is not a BN. Received type ${typeof value}`,
     );
@@ -155,7 +155,7 @@ function bnToBigNumber(value: BN) {
 function valueToBigNumber(value: string | number, numericBase: NumericBase) {
   if (typeof value === 'string') {
     return stringToBigNumber(value, numericBase);
-  } else if (typeof value === 'number' && isNaN(value) === false) {
+  } else if (typeof value === 'number' && !isNaN(value)) {
     return numberToBigNumber(value, numericBase);
   }
 
@@ -592,7 +592,7 @@ export class Numeric {
   }
 
   isPositive() {
-    return this.isNegative() === false;
+    return !this.isNegative();
   }
 
   isFloat() {

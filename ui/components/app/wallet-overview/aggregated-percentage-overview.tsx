@@ -89,7 +89,7 @@ export const AggregatedPercentageOverview = () => {
 
   let formattedAmountChange = '';
   if (isValidAmount(amountChange)) {
-    formattedAmountChange = (amountChange as number) >= 0 ? '+' : '';
+    formattedAmountChange = (amountChange) >= 0 ? '+' : '';
 
     const options = {
       notation: 'compact',
@@ -103,23 +103,23 @@ export const AggregatedPercentageOverview = () => {
         ...options,
         style: 'currency',
         currency: fiatCurrency,
-      }).format(amountChange as number)} `;
+      }).format(amountChange)} `;
     } catch {
       // Non-standard Currency Codes
       formattedAmountChange += `${Intl.NumberFormat(locale, {
         ...options,
         minimumFractionDigits: 2,
         style: 'decimal',
-      }).format(amountChange as number)} `;
+      }).format(amountChange)} `;
     }
   }
 
   let color = TextColor.textAlternative;
 
   if (!privacyMode && isValidAmount(amountChange)) {
-    if ((amountChange as number) === 0) {
+    if ((amountChange) === 0) {
       color = TextColor.textAlternative;
-    } else if ((amountChange as number) > 0) {
+    } else if ((amountChange) > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;

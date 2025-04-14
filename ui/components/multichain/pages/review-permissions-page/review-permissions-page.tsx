@@ -106,7 +106,7 @@ export const ReviewPermissions = () => {
       const permissionMethodNames = Object.values(subject.permissions).map(
         ({ parentCapability }: { parentCapability: string }) =>
           parentCapability,
-      ) as string[];
+      );
       if (permissionMethodNames.length > 0) {
         const permissionsRecord = {
           [activeTabOrigin]: permissionMethodNames as NonEmptyArray<string>,
@@ -145,7 +145,7 @@ export const ReviewPermissions = () => {
 
   const connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as CaipChainId[];
+  );
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -170,7 +170,7 @@ export const ReviewPermissions = () => {
 
   const nonRemappedConnectedAccountAddresses = useSelector((state) =>
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
-  ) as CaipAccountId[];
+  );
 
   // This remaps EVM caip account addresses to match the 'eip155:0'
   // value that is currently set in InternalAccount.scopes[0] for

@@ -193,7 +193,7 @@ export const TokenListItemComponent = ({
         {...(onClick && {
           as: 'a',
           href: '#',
-          onClick: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+          onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
             e.preventDefault();
 
             if (showScamWarningModal) {
@@ -279,7 +279,7 @@ export const TokenListItemComponent = ({
               <ButtonIcon
                 iconName={IconName.Danger}
                 onClick={(
-                  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                  e: React.MouseEvent<HTMLButtonElement>,
                 ) => {
                   e.preventDefault();
                   e.stopPropagation();

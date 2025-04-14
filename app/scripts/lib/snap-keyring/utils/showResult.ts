@@ -40,7 +40,7 @@ export type ResultComponentOptions = {
  * @returns Returns a promise that resolves once the user clicks the confirm
  * button.
  */
-export const showError = (
+export const showError = async (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
@@ -70,7 +70,7 @@ export const showError = (
  * @returns Returns a promise that resolves once the user clicks the confirm
  * button.
  */
-export const showSuccess = (
+export const showSuccess = async (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,

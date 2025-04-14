@@ -80,11 +80,11 @@ class SmartTransactionHook {
 
   #approvalFlowId: string;
 
-  #chainId: Hex;
+  readonly #chainId: Hex;
 
-  #controllerMessenger: SmartTransactionHookMessenger;
+  readonly #controllerMessenger: SmartTransactionHookMessenger;
 
-  #featureFlags: {
+  readonly #featureFlags: {
     extensionActive: boolean;
     mobileActive: boolean;
     smartTransactions: {
@@ -94,23 +94,23 @@ class SmartTransactionHook {
     };
   };
 
-  #isDapp: boolean;
+  readonly #isDapp: boolean;
 
-  #isSmartTransaction: boolean;
+  readonly #isSmartTransaction: boolean;
 
-  #smartTransactionsController: SmartTransactionsController;
+  readonly #smartTransactionsController: SmartTransactionsController;
 
-  #transactionController: TransactionController;
+  readonly #transactionController: TransactionController;
 
-  #transactionMeta: TransactionMeta;
+  readonly #transactionMeta: TransactionMeta;
 
-  #signedTransactionInHex?: string;
+  readonly #signedTransactionInHex?: string;
 
-  #transactions?: PublishBatchHookTransaction[];
+  readonly #transactions?: PublishBatchHookTransaction[];
 
-  #txParams: TransactionParams;
+  readonly #txParams: TransactionParams;
 
-  #shouldShowStatusPage: boolean;
+  readonly #shouldShowStatusPage: boolean;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -125,7 +125,7 @@ class SmartTransactionHook {
     } = request;
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
-    this.#transactionMeta = transactionMeta as TransactionMeta;
+    this.#transactionMeta = transactionMeta;
     this.#signedTransactionInHex = signedTransactionInHex;
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
@@ -404,7 +404,7 @@ class SmartTransactionHook {
     );
   }
 
-  #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
+  async #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
@@ -512,14 +512,14 @@ class SmartTransactionHook {
   }
 }
 
-export const submitSmartTransactionHook = (
+export const submitSmartTransactionHook = async (
   request: SubmitSmartTransactionRequest,
 ) => {
   const smartTransactionHook = new SmartTransactionHook(request);
   return smartTransactionHook.submit();
 };
 
-export const submitBatchSmartTransactionHook = (
+export const submitBatchSmartTransactionHook = async (
   request: SubmitSmartTransactionRequest,
 ) => {
   const smartTransactionHook = new SmartTransactionHook(request);

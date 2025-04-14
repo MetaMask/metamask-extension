@@ -16,7 +16,7 @@ const errorMock = 'TestError';
 jest.mock('loglevel');
 
 jest.mock('./fetch-with-timeout', () =>
-  jest.fn(() => (url: string) => {
+  jest.fn(() => async (url: string) => {
     return Promise.resolve({
       json: () => {
         if (url.includes(errorLocaleMock)) {

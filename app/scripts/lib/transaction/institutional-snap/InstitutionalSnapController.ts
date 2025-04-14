@@ -129,7 +129,7 @@ export class InstitutionalSnapController extends BaseController<
 
   async #getUpdatedTransactionParameters(transactionMeta: TransactionMeta) {
     const searchParams: InstitutionalSnapRequestSearchParameters = {
-      from: transactionMeta.txParams.from as string,
+      from: transactionMeta.txParams.from,
       to: transactionMeta.txParams.to as string,
       value: transactionMeta.txParams.value as string,
       data: transactionMeta.txParams.data as string,
@@ -202,7 +202,7 @@ export class InstitutionalSnapController extends BaseController<
   async #shouldDeferPublication(transactionMeta: TransactionMeta) {
     const account = (await this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
-      transactionMeta.txParams.from as string,
+      transactionMeta.txParams.from,
     )) as unknown as DeferrableTransactionAccount;
 
     return account?.options.custodian?.deferPublication;

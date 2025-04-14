@@ -18,7 +18,7 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
 export default class ReadOnlyNetworkStore extends BaseStore {
   #initialized: boolean = false;
 
-  #initializing?: Promise<void>;
+  readonly #initializing?: Promise<void>;
 
   #state: MetaMaskStateType | null = null;
 

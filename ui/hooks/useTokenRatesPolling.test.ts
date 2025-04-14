@@ -8,7 +8,7 @@ import useTokenRatesPolling from './useTokenRatesPolling';
 let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
-  tokenRatesStartPolling: jest.fn().mockImplementation((input) => {
+  tokenRatesStartPolling: jest.fn().mockImplementation(async (input) => {
     const promise = Promise.resolve(`${input}_rates`);
     mockPromises.push(promise);
     return promise;

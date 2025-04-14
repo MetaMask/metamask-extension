@@ -113,19 +113,19 @@ export default class SwapsController extends BaseController<
 
   #pollingTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  #getEIP1559GasFeeEstimates: (options?: {
+  readonly #getEIP1559GasFeeEstimates: (options?: {
     networkClientId?: NetworkClientId;
     shouldUpdateState?: boolean;
   }) => Promise<GasFeeState>;
 
-  #getLayer1GasFee: (params: {
+  readonly #getLayer1GasFee: (params: {
     transactionParams: TransactionParams;
     networkClientId: NetworkClientId;
   }) => Promise<string>;
 
   #network: Network | undefined;
 
-  private _fetchTradesInfo: (
+  private readonly _fetchTradesInfo: (
     fetchParams: FetchTradesInfoParams,
     fetchMetadata: { chainId: Hex },
   ) => Promise<{
@@ -1090,7 +1090,7 @@ export default class SwapsController extends BaseController<
     });
   }
 
-  private _timedoutGasReturn(
+  private async _timedoutGasReturn(
     tradeTxParams: Trade,
     aggregator = '',
   ): Promise<{ gasLimit: string | null; simulationFails: boolean }> {

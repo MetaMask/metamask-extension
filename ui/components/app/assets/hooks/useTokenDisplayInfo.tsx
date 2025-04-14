@@ -121,7 +121,7 @@ export const useTokenDisplayInfo = ({
     primary: formattedPrimary,
     secondary: token.secondary,
     isStakeable: false,
-    tokenChainImage: token.image as string,
+    tokenChainImage: token.image,
   };
 };
 

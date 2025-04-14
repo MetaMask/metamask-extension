@@ -24,7 +24,7 @@ main().catch((error) => {
 async function main(): Promise<void> {
   const entrypoints = (
     await Promise.all(
-      ENTRYPOINT_PATTERNS.map((entrypointPattern) => {
+      ENTRYPOINT_PATTERNS.map(async (entrypointPattern) => {
         return fg(
           path.resolve(ROOT_DIRECTORY_PATH, `${entrypointPattern}.{js,ts,tsx}`),
         );

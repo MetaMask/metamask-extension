@@ -155,7 +155,7 @@ function FiatValue({
 function useShowFiat(chainId: Hex): boolean {
   type TestNetChainId = (typeof TEST_CHAINS)[number];
 
-  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
+  const isTestnet = TEST_CHAINS.includes(chainId);
   const { showFiatInTestnets } = useSelector(getPreferences);
 
   return !isTestnet || showFiatInTestnets;

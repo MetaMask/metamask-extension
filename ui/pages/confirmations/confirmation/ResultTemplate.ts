@@ -31,7 +31,7 @@ export type ResultTemplateActions = {
 export type ResultType = ApprovalType.ResultSuccess | ApprovalType.ResultError;
 
 export class ResultTemplate {
-  #type: ResultType;
+  readonly #type: ResultType;
 
   constructor(type: ResultType) {
     this.#type = type;

@@ -85,7 +85,7 @@ describe('Keyring Snap Remove Warning', () => {
       // translation is broken into three pieces
       expect(getByText(/Type/u)).toBeInTheDocument();
       expect(
-        getByText(mockSnap.manifest?.proposedName as string),
+        getByText(mockSnap.manifest?.proposedName),
       ).toBeInTheDocument();
       expect(
         getByText(/to confirm you want to remove this snap:/u),

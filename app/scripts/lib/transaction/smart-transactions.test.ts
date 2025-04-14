@@ -79,7 +79,7 @@ function withRequest<ReturnValue>(
   const startFlowSpy = jest.fn().mockResolvedValue({ id: 'approvalId' });
   messenger.registerActionHandler('ApprovalController:startFlow', startFlowSpy);
 
-  const addRequestSpy = jest.fn().mockImplementation(() => {
+  const addRequestSpy = jest.fn().mockImplementation(async () => {
     return Promise.resolve().then(() => {
       if (typeof addRequestCallback === 'function') {
         addRequestCallback();
@@ -554,7 +554,7 @@ describe('submitSmartTransactionHook', () => {
 
     const endFlowSpy = jest.fn();
     const acceptRequestSpy = jest.fn();
-    const addRequestSpy = jest.fn(() => Promise.resolve());
+    const addRequestSpy = jest.fn(async () => Promise.resolve());
 
     // Create a mock messenger
     const mockMessenger = {

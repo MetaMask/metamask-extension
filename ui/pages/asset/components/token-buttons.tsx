@@ -353,7 +353,7 @@ const TokenButtons = ({
               />
             }
             label={t('bridge')}
-            onClick={() => handleBridgeOnClick(false)}
+            onClick={async () => handleBridgeOnClick(false)}
             tooltipRender={null}
           />
         )

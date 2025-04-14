@@ -24,7 +24,7 @@ describe('Transaction Relay Utils', () => {
     process.env.TRANSACTION_RELAY_API_URL = URL_MOCK;
 
     fetchMock = jest.spyOn(global, 'fetch').mockReturnValue({
-      json: () => Promise.resolve({ transactionHash: TRANSACTION_HASH_MOCK }),
+      json: async () => Promise.resolve({ transactionHash: TRANSACTION_HASH_MOCK }),
       ok: true,
     });
   });
@@ -53,7 +53,7 @@ describe('Transaction Relay Utils', () => {
       fetchMock.mockReturnValueOnce({
         ok: false,
         status: ERROR_STATUS_MOCK,
-        text: () => Promise.resolve(ERROR_BODY_MOCK),
+        text: async () => Promise.resolve(ERROR_BODY_MOCK),
       });
 
       await expect(submitRelayTransaction(SUBMIT_REQUEST_MOCK)).rejects.toThrow(

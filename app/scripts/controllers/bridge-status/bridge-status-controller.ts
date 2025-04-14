@@ -116,7 +116,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
-  #restartPollingForIncompleteHistoryItems = () => {
+  readonly #restartPollingForIncompleteHistoryItems = () => {
     // Check for historyItems that do not have a status of complete and restart polling
     const { bridgeStatusState } = this.state;
     const historyItems = Object.values(bridgeStatusState.txHistory);
@@ -220,7 +220,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     );
   }
 
-  #fetchBridgeTxStatus = async ({
+  readonly #fetchBridgeTxStatus = async ({
     bridgeTxMetaId,
   }: FetchBridgeTxStatusArgs) => {
     const { bridgeStatusState } = this.state;
@@ -293,7 +293,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
-  #getSrcTxHash = (bridgeTxMetaId: string): string | undefined => {
+  readonly #getSrcTxHash = (bridgeTxMetaId: string): string | undefined => {
     const { bridgeStatusState } = this.state;
     // Prefer the srcTxHash from bridgeStatusState so we don't have to l ook up in TransactionController
     // But it is possible to have bridgeHistoryItem in state without the srcTxHash yet when it is an STX
@@ -314,7 +314,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     return txMeta?.hash;
   };
 
-  #updateSrcTxHash = (bridgeTxMetaId: string, srcTxHash: string) => {
+  readonly #updateSrcTxHash = (bridgeTxMetaId: string, srcTxHash: string) => {
     const { bridgeStatusState } = this.state;
     if (bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash) {
       return;
@@ -342,7 +342,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
   // Wipes the bridge status for the given address and chainId
   // Will match only source chainId to the selectedChainId
-  #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
+  readonly #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
     const sourceTxMetaIdsToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
     ).filter((txMetaId) => {

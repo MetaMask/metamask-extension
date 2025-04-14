@@ -157,7 +157,7 @@ export function goHome() {
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
     log.debug(`background.submitPassword`);
@@ -172,14 +172,14 @@ export function tryUnlockMetamask(
         resolve();
       });
     })
-      .then(() => {
+      .then(async () => {
         dispatch(unlockSucceeded());
         return forceUpdateMetamaskState(dispatch);
       })
       .then(() => {
         dispatch(hideLoadingIndication());
       })
-      .catch((err) => {
+      .catch(async (err) => {
         dispatch(unlockFailed(getErrorMessage(err)));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
@@ -199,7 +199,7 @@ export function createNewVaultAndRestore(
   password: string,
   seedPhrase: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
 
@@ -227,7 +227,7 @@ export function createNewVaultAndRestore(
         dispatch(showAccountsPage());
         dispatch(hideLoadingIndication());
       })
-      .catch((err) => {
+      .catch(async (err) => {
         dispatch(displayWarning(err));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
@@ -238,7 +238,7 @@ export function createNewVaultAndRestore(
 export function importMnemonicToVault(
   mnemonic: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
@@ -254,7 +254,7 @@ export function importMnemonicToVault(
       .then(async () => {
         dispatch(hideLoadingIndication());
       })
-      .catch((err) => {
+      .catch(async (err) => {
         dispatch(displayWarning(err));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
@@ -268,7 +268,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.generateNewMnemonicAndAddToVault`);
 
@@ -284,7 +284,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
       .then(async () => {
         dispatch(hideLoadingIndication());
       })
-      .catch((err) => {
+      .catch(async (err) => {
         dispatch(displayWarning(err));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
@@ -338,7 +338,7 @@ export function unlockAndGetSeedPhrase(
   };
 }
 
-export function submitPassword(password: string): Promise<void> {
+export async function submitPassword(password: string): Promise<void> {
   return new Promise((resolve, reject) => {
     callBackgroundMethod('submitPassword', [password], (error) => {
       if (error) {
@@ -351,7 +351,7 @@ export function submitPassword(password: string): Promise<void> {
   });
 }
 
-export function createNewVault(password: string): Promise<boolean> {
+export async function createNewVault(password: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     callBackgroundMethod('createNewVaultAndKeychain', [password], (error) => {
       if (error) {
@@ -364,7 +364,7 @@ export function createNewVault(password: string): Promise<boolean> {
   });
 }
 
-export function verifyPassword(password: string): Promise<boolean> {
+export async function verifyPassword(password: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     callBackgroundMethod('verifyPassword', [password], (error) => {
       if (error) {
@@ -406,7 +406,7 @@ export function requestRevealSeedWords(
 export function tryReverseResolveAddress(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return () => {
+  return async () => {
     return new Promise<void>((resolve) => {
       callBackgroundMethod('tryReverseResolveAddress', [address], (err) => {
         if (err) {
@@ -424,7 +424,7 @@ export function resetAccount(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
     return new Promise<string>((resolve, reject) => {
@@ -1184,7 +1184,7 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch, getState) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
 
@@ -1215,7 +1215,7 @@ export function updateAndApproveTx(
         },
       );
     })
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(async () => forceUpdateMetamaskState(dispatch))
       .then(() => {
         if (!getIsSendActive()) {
           dispatch(resetSendState());
@@ -1228,7 +1228,7 @@ export function updateAndApproveTx(
         ///: END:ONLY_INCLUDE_IF
         return txMeta;
       })
-      .catch((err) => {
+      .catch(async (err) => {
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
@@ -1494,7 +1494,7 @@ export function cancelTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -1510,7 +1510,7 @@ export function cancelTx(
         },
       );
     })
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(async () => forceUpdateMetamaskState(dispatch))
       .then(() => {
         dispatch(resetSendState());
         dispatch(completedTx(txMeta.id));
@@ -1541,7 +1541,7 @@ export function cancelTxs(
     try {
       const txIds = txMetaList.map(({ id }) => id);
       const cancellations = txIds.map(
-        (id) =>
+        async (id) =>
           new Promise<void>((resolve, reject) => {
             callBackgroundMethod(
               'rejectPendingApproval',
@@ -1607,12 +1607,12 @@ export function unMarkPasswordForgotten(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     return new Promise<void>((resolve) => {
       callBackgroundMethod('unMarkPasswordForgotten', [], () => {
         resolve();
       });
-    }).then(() => forceUpdateMetamaskState(dispatch));
+    }).then(async () => forceUpdateMetamaskState(dispatch));
   };
 }
 
@@ -1704,14 +1704,14 @@ export function updateMetamaskState(
 
     // Also emit an event for the selected account changing, either due to a
     // property update or if the entire account changes.
-    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+    if (!isEqual(oldSelectedAccount, newSelectedAccount)) {
       dispatch({
         type: actionConstants.SELECTED_ACCOUNT_CHANGED,
         payload: { account: newSelectedAccount },
       });
     }
     // We need to keep track of changing address book entries
-    if (isEqual(oldAddressBook, newAddressBook) === false) {
+    if (!isEqual(oldAddressBook, newAddressBook)) {
       dispatch({
         type: actionConstants.ADDRESS_BOOK_UPDATED,
         payload: { addressBook: newAddressBook },
@@ -1720,7 +1720,7 @@ export function updateMetamaskState(
 
     // track when gasFeeEstimates change
     if (
-      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+      !isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates)
     ) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
@@ -1751,7 +1751,7 @@ export function updateMetamaskState(
   };
 }
 
-const backgroundSetLocked = (): Promise<void> => {
+const backgroundSetLocked = async (): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     callBackgroundMethod('setLocked', [], (error) => {
       if (error) {
@@ -1771,12 +1771,12 @@ export function lockMetamask(): ThunkAction<
 > {
   log.debug(`background.setLocked`);
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
-      .then(() => forceUpdateMetamaskState(dispatch))
-      .catch((error) => {
+      .then(async () => forceUpdateMetamaskState(dispatch))
+      .catch(async (error) => {
         dispatch(displayWarning(getErrorMessage(error)));
         return Promise.reject(error);
       })
@@ -2458,7 +2458,7 @@ export function createCancelTransaction(
   log.debug('background.createCancelTransaction');
   let newTxId: string;
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
     return new Promise<MetaMaskReduxState['metamask']>((resolve, reject) => {
       callBackgroundMethod<MetaMaskReduxState['metamask']>(
@@ -2494,7 +2494,7 @@ export function createCancelTransaction(
         },
       );
     })
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(async () => forceUpdateMetamaskState(dispatch))
       .then(() => newTxId);
   };
 }
@@ -2507,7 +2507,7 @@ export function createSpeedUpTransaction(
   log.debug('background.createSpeedUpTransaction');
   let newTx: TransactionMeta;
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
     return new Promise<MetaMaskReduxState['metamask']>((resolve, reject) => {
       callBackgroundMethod<MetaMaskReduxState['metamask']>(
@@ -2529,7 +2529,7 @@ export function createSpeedUpTransaction(
         },
       );
     })
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(async () => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
   };
 }
@@ -2540,7 +2540,7 @@ export function createRetryTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   let newTx: TransactionMeta;
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     return new Promise<MetaMaskReduxState['metamask']>((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod<MetaMaskReduxState['metamask']>(
@@ -2561,7 +2561,7 @@ export function createRetryTransaction(
         },
       );
     })
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(async () => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
   };
 }
@@ -3009,7 +3009,7 @@ export function exportAccount(
   setPrivateKey: (key: string) => void,
   setShowHoldToReveal: (show: boolean) => void,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return function (dispatch) {
+  return async function (dispatch) {
     dispatch(showLoadingIndication());
 
     log.debug(`background.verifyPassword`);
@@ -3050,7 +3050,7 @@ export function exportAccounts(
   password: string,
   addresses: string[],
 ): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
-  return function (dispatch) {
+  return async function (dispatch) {
     log.debug(`background.verifyPassword`);
     return new Promise<string[]>((resolve, reject) => {
       callBackgroundMethod('verifyPassword', [password], function (err) {
@@ -3061,7 +3061,7 @@ export function exportAccounts(
         }
         log.debug(`background.exportAccounts`);
         const accountPromises = addresses.map(
-          (address) =>
+          async (address) =>
             new Promise<string>((resolve2, reject2) =>
               callBackgroundMethod<string>(
                 'exportAccount',
@@ -3097,7 +3097,7 @@ export function setAccountLabel(
   account: string,
   label: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setAccountLabel`);
 
@@ -3151,7 +3151,7 @@ export function setFeatureFlag(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       callBackgroundMethod<TemporaryFeatureFlagDef>(
@@ -3182,7 +3182,7 @@ export function setPreference(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     showLoading && dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
@@ -3401,7 +3401,7 @@ export function setParticipateInMetaMetrics(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     return new Promise((resolve, reject) => {
       callBackgroundMethod<string>(
@@ -4054,7 +4054,7 @@ export function approvePermissionsRequest(
 export function rejectPermissionsRequest(
   requestId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     return new Promise((resolve, reject) => {
       callBackgroundMethod('rejectPermissionsRequest', [requestId], (err) => {
         if (err) {
@@ -4465,7 +4465,7 @@ export function getContractMethodData(
 export function setSeedPhraseBackedUp(
   seedPhraseBackupState: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setSeedPhraseBackedUp`);
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
@@ -4612,7 +4612,7 @@ export function captureSingleException(
  * point in the future.
  */
 
-export function estimateGas(params: TransactionParams): Promise<Hex> {
+export async function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
@@ -4846,7 +4846,7 @@ export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export function getGasFeeTimeEstimate(
+export async function getGasFeeTimeEstimate(
   maxPriorityFeePerGas: string,
   maxFeePerGas: string,
 ): Promise<ReturnType<GasFeeController['getTimeEstimate']>> {
@@ -4905,7 +4905,7 @@ export async function attemptCloseNotificationPopup() {
  * @param options - options for routing/handling of event
  * @returns
  */
-export function trackMetaMetricsEvent(
+export async function trackMetaMetricsEvent(
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) {
@@ -4915,7 +4915,7 @@ export function trackMetaMetricsEvent(
   ]);
 }
 
-export function createEventFragment(
+export async function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {
   const actionId = generateActionId();
@@ -4924,7 +4924,7 @@ export function createEventFragment(
   ]);
 }
 
-export function createTransactionEventFragment(
+export async function createTransactionEventFragment(
   transactionId: string,
 ): Promise<string> {
   const actionId = generateActionId();
@@ -4936,14 +4936,14 @@ export function createTransactionEventFragment(
   ]);
 }
 
-export function updateEventFragment(
+export async function updateEventFragment(
   id: string,
   payload: Partial<MetaMetricsEventFragment>,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
 }
 
-export function finalizeEventFragment(
+export async function finalizeEventFragment(
   id: string,
   options?: {
     abandoned?: boolean;
@@ -4958,7 +4958,7 @@ export function finalizeEventFragment(
  * @param payload - details of the page viewed
  * @param options - options for handling the page view
  */
-export function trackMetaMetricsPage(
+export async function trackMetaMetricsPage(
   payload: MetaMetricsPagePayload,
   options: MetaMetricsPageOptions,
 ) {
@@ -4968,11 +4968,11 @@ export function trackMetaMetricsPage(
   ]);
 }
 
-export function resetViewedNotifications() {
+export async function resetViewedNotifications() {
   return submitRequestToBackground('resetViewedNotifications');
 }
 
-export function updateViewedNotifications(notificationIdViewedStatusMap: {
+export async function updateViewedNotifications(notificationIdViewedStatusMap: {
   [notificationId: string]: boolean;
 }) {
   return submitRequestToBackground('updateViewedNotifications', [
@@ -5205,23 +5205,23 @@ export function dismissSmartTransactionsErrorMessage(): Action {
 }
 
 // App state
-export function hideTestNetMessage() {
+export async function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
 }
 
-export function hideBetaHeader() {
+export async function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
-export function hidePermissionsTour() {
+export async function hidePermissionsTour() {
   return submitRequestToBackground('setShowPermissionsTour', [false]);
 }
 
-export function hideAccountBanner() {
+export async function hideAccountBanner() {
   return submitRequestToBackground('setShowAccountBanner', [false]);
 }
 
-export function hideNetworkBanner() {
+export async function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
@@ -5231,7 +5231,7 @@ export function hideNetworkBanner() {
  * @param selectedTabOrigin - The origin to set the new networkClientId for
  * @param networkClientId - The new networkClientId
  */
-export function setNetworkClientIdForDomain(
+export async function setNetworkClientIdForDomain(
   selectedTabOrigin: string,
   networkClientId: string,
 ): Promise<void> {

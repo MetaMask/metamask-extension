@@ -22,7 +22,7 @@ export function useDecodedTransactionData({
   const isDecodeEnabled = useSelector(use4ByteResolutionSelector);
 
   const currentTransactionType = currentConfirmation?.type;
-  const chainId = currentConfirmation?.chainId as Hex;
+  const chainId = currentConfirmation?.chainId;
   const currentTransactionData = currentConfirmation?.txParams?.data as Hex;
   const currentTransactionTo = currentConfirmation?.txParams?.to as Hex;
   const transactionData = data ?? currentTransactionData;

@@ -103,7 +103,7 @@ const createMockedHandler = () => {
     sessionProperties?: Record<string, Json>;
   }>;
   const getNonEvmAccountAddresses = jest.fn().mockReturnValue([]);
-  const handler = (
+  const handler = async (
     request: JsonRpcRequest<Caip25Authorization> & { origin: string },
   ) =>
     walletCreateSession.implementation(request, response, next, end, {

@@ -143,7 +143,7 @@ export const Connections = () => {
       const permissionMethodNames = Object.values(subject.permissions).map(
         ({ parentCapability }: { parentCapability: string }) =>
           parentCapability,
-      ) as string[];
+      );
       if (permissionMethodNames.length > 0) {
         const permissionsRecord: Record<string, string[]> = {
           [activeTabOrigin]: permissionMethodNames,
@@ -389,7 +389,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={() => requestAccountsPermission()}
+              onClick={async () => requestAccountsPermission()}
             >
               {t('connectAccounts')}
             </ButtonPrimary>

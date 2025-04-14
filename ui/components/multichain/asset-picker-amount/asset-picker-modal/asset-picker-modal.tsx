@@ -174,7 +174,7 @@ export function AssetPickerModal({
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const selectedNetwork =
     network ??
-    (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
+    (currentChainId && allNetworks[currentChainId]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   // This indicates whether tokens in the wallet's active network are displayed
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
@@ -208,10 +208,10 @@ export function AssetPickerModal({
   // watches for needsSolanaAccount changes to show the Solana Account created toast
   useEffect(() => {
     if (
-      prevNeedsSolanaAccountRef.current === true &&
+      prevNeedsSolanaAccountRef.current &&
       !needsSolanaAccount &&
       hasSolanaAccount &&
-      showSolanaAccountCreatedToast === false
+      !showSolanaAccountCreatedToast
     ) {
       setShowSolanaAccountCreatedToast(true);
     }

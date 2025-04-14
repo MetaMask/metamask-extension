@@ -37,11 +37,11 @@ const EMPTY_RESULT = {
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
-  #isAtomicBatchSupported: (
+  readonly #isAtomicBatchSupported: (
     request: IsAtomicBatchSupportedRequest,
   ) => Promise<IsAtomicBatchSupportedResult>;
 
-  #messenger: TransactionControllerInitMessenger;
+  readonly #messenger: TransactionControllerInitMessenger;
 
   constructor({
     isAtomicBatchSupported,
@@ -296,7 +296,7 @@ export class Delegation7702PublishHook {
 
   #decodeAuthorizationSignature(signature: Hex) {
     const r = signature.slice(0, 66) as Hex;
-    const s = `0x${signature.slice(66, 130)}` as Hex;
+    const s = `0x${signature.slice(66, 130)}`;
     const v = parseInt(signature.slice(130, 132), 16);
     const yParity = v - 27 === 0 ? ('0x' as const) : ('0x1' as const);
 

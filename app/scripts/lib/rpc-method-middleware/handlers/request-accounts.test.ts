@@ -48,8 +48,8 @@ const createMockedHandler = () => {
     id: 0,
     result: undefined,
   };
-  const handler = (
-    request: JsonRpcRequest<JsonRpcParams> & { origin: string },
+  const handler = async (
+    request: JsonRpcRequest & { origin: string },
   ) =>
     requestEthereumAccounts.implementation(request, response, next, end, {
       getAccounts,

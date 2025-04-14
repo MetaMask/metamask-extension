@@ -48,7 +48,7 @@ describe('<GasFeesDetails />', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (getGasFeeTimeEstimate as jest.Mock).mockImplementation(() =>
+    (getGasFeeTimeEstimate as jest.Mock).mockImplementation(async () =>
       Promise.resolve({ upperTimeBound: '1000' }),
     );
   });

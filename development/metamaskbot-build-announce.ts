@@ -345,18 +345,18 @@ async function start(): Promise<void> {
       common: prBundleSizeStats.common.size,
     };
 
-    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
+    const devSizes = Object.keys(prSizes).reduce<Record<keyof typeof prSizes, number>>((sizes, part) => {
       sizes[part as keyof typeof prSizes] =
         devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
       return sizes;
-    }, {} as Record<keyof typeof prSizes, number>);
+    }, {});
 
-    const diffs = Object.keys(prSizes).reduce((output, part) => {
+    const diffs = Object.keys(prSizes).reduce<Record<string, number>>((output, part) => {
       output[part] =
         prSizes[part as keyof typeof prSizes] -
         devSizes[part as keyof typeof prSizes];
       return output;
-    }, {} as Record<string, number>);
+    }, {});
 
     const sizeDiffRows = Object.keys(diffs).map(
       (part) =>

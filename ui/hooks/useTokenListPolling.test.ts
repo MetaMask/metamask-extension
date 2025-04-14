@@ -8,7 +8,7 @@ import useTokenListPolling from './useTokenListPolling';
 let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
-  tokenListStartPolling: jest.fn().mockImplementation((input) => {
+  tokenListStartPolling: jest.fn().mockImplementation(async (input) => {
     const promise = Promise.resolve(`${input}_token`);
     mockPromises.push(promise);
     return promise;

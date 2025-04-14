@@ -22,10 +22,10 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
   it('should return when fetch fails', async () => {
     jest.spyOn(global, 'fetch').mockImplementation(
-      jest.fn(() =>
+      jest.fn(async () =>
         Promise.resolve({
           ok: false,
-          text: () => Promise.reject(new Error('Fetch failed')),
+          text: async () => Promise.reject(new Error('Fetch failed')),
         }),
       ) as jest.Mock,
     );
@@ -53,10 +53,10 @@ describe('useFetchNftDetailsFromTokenURI', () => {
     };
 
     jest.spyOn(global, 'fetch').mockImplementation(
-      jest.fn(() =>
+      jest.fn(async () =>
         Promise.resolve({
           ok: true,
-          text: () => Promise.resolve(JSON.stringify(mockData)),
+          text: async () => Promise.resolve(JSON.stringify(mockData)),
         }),
       ) as jest.Mock,
     );

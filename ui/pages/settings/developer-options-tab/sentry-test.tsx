@@ -26,7 +26,7 @@ import {
 import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/modules/i18n';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
-function sleep(ms: number) {
+async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -103,7 +103,7 @@ function GenerateTrace() {
             tags: { 'test.tag.boolean': true },
             parentContext: context,
           },
-          () => sleep(1000),
+          async () => sleep(1000),
         );
 
         await trace(
@@ -113,7 +113,7 @@ function GenerateTrace() {
             tags: { 'test.tag.string': 'test' },
             parentContext: context,
           },
-          () => sleep(500),
+          async () => sleep(500),
         );
       },
     );

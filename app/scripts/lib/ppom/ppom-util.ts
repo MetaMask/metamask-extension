@@ -250,7 +250,7 @@ async function validateWithController(
 ): Promise<SecurityAlertResponse> {
   try {
     const response = (await ppomController.usePPOM(
-      (ppom: PPOM) => ppom.validateJsonRpc(request),
+      async (ppom: PPOM) => ppom.validateJsonRpc(request),
       chainId,
     )) as SecurityAlertResponse;
 

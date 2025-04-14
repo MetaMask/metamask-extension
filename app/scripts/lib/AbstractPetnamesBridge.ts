@@ -67,9 +67,9 @@ export abstract class AbstractPetnamesBridge<
   Event extends EventConstraint = never,
   Action extends ActionConstraint = never,
 > {
-  #isTwoWay: boolean;
+  readonly #isTwoWay: boolean;
 
-  #nameController: NameController;
+  readonly #nameController: NameController;
 
   #synchronizingDirection: SyncDirection | null = null;
 

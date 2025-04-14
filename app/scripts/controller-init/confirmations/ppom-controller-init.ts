@@ -31,7 +31,7 @@ export const PPOMControllerInit: ControllerInitFunction<
     ppomProvider: {
       // @ts-expect-error Controller and PPOM wrapper have different argument types in `new` and `validateJsonRpc`
       PPOM: PPOMModule.PPOM,
-      ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
+      ppomInit: async () => PPOMModule.default(process.env.PPOM_URI),
     },
     // @ts-expect-error State type is not `Partial` in controller.
     state: persistedState.PPOMController,

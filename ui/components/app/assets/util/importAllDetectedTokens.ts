@@ -28,7 +28,7 @@ export const importAllDetectedTokens = async (
         const { networkClientId: networkInstanceId } =
           chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
 
-        await addImportedTokens(tokens as Token[], networkInstanceId);
+        await addImportedTokens(tokens, networkInstanceId);
 
         tokens.forEach((importedToken) => {
           // when multichain is fully integrated, we should change these event signatures for analytics

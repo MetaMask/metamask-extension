@@ -25,10 +25,10 @@ function sanitizeSnapData(state: FlattenedUIState) {
     return;
   }
 
-  state.snaps = Object.values(snapsData).reduce((acc, snap) => {
+  state.snaps = Object.values(snapsData).reduce<SnapControllerState['snaps']>((acc, snap) => {
     acc[snap.id] = stripLargeSnapData(snap) as Snap;
     return acc;
-  }, {} as SnapControllerState['snaps']);
+  }, {});
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {

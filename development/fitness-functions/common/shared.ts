@@ -104,7 +104,7 @@ function filterDiffFileCreations(diff: string): string {
           // get the second line of the block which has the file mode
           .split('\n')[1]
           .trim()
-          .substring(0, 13) === 'new file mode';
+          .startsWith('new file mode');
 
       return isFileCreationLine;
     })

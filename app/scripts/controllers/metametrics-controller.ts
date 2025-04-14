@@ -343,7 +343,7 @@ export default class MetaMetricsController extends BaseController<
   MetaMetricsControllerState,
   MetaMetricsControllerMessenger
 > {
-  #captureException: CaptureException;
+  readonly #captureException: CaptureException;
 
   chainId: Hex;
 
@@ -353,15 +353,15 @@ export default class MetaMetricsController extends BaseController<
 
   version: MetaMetricsControllerOptions['version'];
 
-  #extension: MetaMetricsControllerOptions['extension'];
+  readonly #extension: MetaMetricsControllerOptions['extension'];
 
-  #environment: MetaMetricsControllerOptions['environment'];
+  readonly #environment: MetaMetricsControllerOptions['environment'];
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  #selectedAddress: PreferencesControllerState['selectedAddress'];
+  readonly #selectedAddress: PreferencesControllerState['selectedAddress'];
   ///: END:ONLY_INCLUDE_IF
 
-  #segment: MetaMetricsControllerOptions['segment'];
+  readonly #segment: MetaMetricsControllerOptions['segment'];
 
   /**
    * @param options
@@ -1306,7 +1306,7 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param allNfts
    */
-  #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
+  readonly #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
     return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
       return result.concat(...Object.values(chainNFTs));
     }, []);
@@ -1431,7 +1431,7 @@ export default class MetaMetricsController extends BaseController<
    * @param payload - properties to attach to event
    * @param options - options for routing and handling the event
    */
-  #track(
+  async #track(
     payload: SegmentEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {

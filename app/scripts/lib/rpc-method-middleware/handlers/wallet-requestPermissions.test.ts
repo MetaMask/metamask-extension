@@ -43,7 +43,7 @@ const createMockedHandler = () => {
     jsonrpc: '2.0' as const,
     id: 0,
   };
-  const handler = (request: unknown) =>
+  const handler = async (request: unknown) =>
     requestPermissionsHandler.implementation(
       request as JsonRpcRequest<[RequestedPermissions]> & { origin: string },
       response,
