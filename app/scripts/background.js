@@ -141,7 +141,17 @@ export const statePersistenceEvents = new EventEmitter();
 
 let updatePending = false;
 
-browser.runtime.onUpdateAvailable.addListener(() => {
+/**
+ * Listens for extension update availability and marks an update as pending.
+ * This listener is removed after the first update notification to prevent duplicate handlers.
+ * When an update is available, it sets the `updatePending` flag which will be checked during
+ * idle periods to determine if the extension should be reloaded.
+ *
+ * @see {@link onExtensionIdle} - Function that checks this flag and reloads the extension
+ * @listens browser.runtime.onUpdateAvailable
+ */
+browser.runtime.onUpdateAvailable.addListener(function onUpdateAvailable() {
+  browser.runtime.onUpdateAvailable.removeListener(onUpdateAvailable);
   updatePending = true;
 });
 
