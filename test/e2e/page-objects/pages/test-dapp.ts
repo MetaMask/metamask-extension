@@ -48,6 +48,8 @@ class TestDapp {
 
   private readonly depositPiggyBankContractButton = '#depositButton';
 
+  private readonly eip5792SendCallsError = '#eip5792SendCallsError';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
   private readonly encryptButton = '#encryptButton';
@@ -245,6 +247,18 @@ class TestDapp {
       await this.driver.waitForSelector({
         css: this.decryptedMessage,
         text: message,
+      });
+    }
+
+  /**
+    * Verify the EIP-5792 send calls error message on the test dapp.
+    *
+    * @param expectedMessage - The expected error message to verify.
+    */
+    async checkEip5792SendCallsError(expectedMessage: string) {
+      await this.driver.waitForSelector({
+        css: this.eip5792SendCallsError,
+        text: expectedMessage,
       });
     }
 
