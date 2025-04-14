@@ -182,4 +182,110 @@ describe('SnapUIAddressInput', () => {
     fireEvent.change(input, { target: { value: testAddress } });
     expect(container).toMatchSnapshot();
   });
+
+  it('renders the matched address info in a disabled state', () => {
+    const { getByText, container } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          disabled: true,
+        }),
+      }),
+      { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
+    );
+
+    const matchedAddressName = getByText('Test Account');
+    expect(matchedAddressName).toBeDefined();
+
+    const matchedAccountInfo = container.querySelector(
+      '.snap-ui-renderer__matched-account-info',
+    );
+
+    expect(matchedAccountInfo?.getAttribute('style')).toContain('opacity: 0.5');
+    expect(container).toMatchSnapshot();
+  });
+
+  it('does not render the matched address info if there is an error', () => {
+    const { getByText, queryByText, getByRole } = renderInterface(
+      Box({
+        children: Field({
+          label: 'Address',
+          error: 'Invalid address',
+          children: AddressInput({
+            name: 'input',
+            chainId: 'eip155:0',
+          }),
+        }),
+      }),
+      { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
+    );
+
+    // Use queryByText instead of getByText to check for absence without throwing
+    const matchedAddressName = queryByText('Test Account');
+    expect(matchedAddressName).toBeNull();
+
+    const error = getByText('Invalid address');
+    expect(error).toBeDefined();
+
+    const input = getByRole('textbox') as HTMLInputElement;
+    expect(input).toBeDefined();
+    expect(input.value).toBe('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+  });
+
+  it('disables clear button for the input when disabled', () => {
+    const { getByRole, container } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          disabled: true,
+        }),
+      }),
+      {
+        state: { input: 'eip155:0:0x1234567890123456789012345678901234567890' },
+      },
+    );
+
+    const input = getByRole('textbox') as HTMLInputElement;
+    expect(input.value).toBe('0x1234567890123456789012345678901234567890');
+
+    // Find the clear icon by its IconName.Close
+    const clearIcon = container.querySelector(
+      '.snap-ui-renderer__address-input__clear-button',
+    );
+    expect(clearIcon).not.toBeNull();
+
+    fireEvent.click(clearIcon as Element);
+
+    expect(input.value).toBe('0x1234567890123456789012345678901234567890');
+  });
+
+  it('disables clear button for the matched address info when disabled', () => {
+    const { getByText, container } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          disabled: true,
+        }),
+      }),
+      { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
+    );
+
+    const matchedAddressName = getByText('Test Account');
+    expect(matchedAddressName).toBeDefined();
+
+    // Find the clear icon in the matched address info
+    const clearIcon = container.querySelector(
+      '.snap-ui-renderer__matched-account-info__clear-button',
+    );
+    expect(clearIcon).not.toBeNull();
+
+    fireEvent.click(clearIcon as Element);
+
+    // Verify the matched address info is still visible after attempted clearing
+    const matchedAddressNameAfterClick = getByText('Test Account');
+    expect(matchedAddressNameAfterClick).toBeDefined();
+  });
 });
