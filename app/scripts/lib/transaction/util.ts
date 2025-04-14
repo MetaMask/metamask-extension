@@ -226,7 +226,7 @@ function getTransactionByHash(
   );
 }
 
-async function validateSecurity(request: AddTransactionRequest) {
+export async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
     ppomController,

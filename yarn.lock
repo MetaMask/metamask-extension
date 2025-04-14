@@ -5032,7 +5032,7 @@ __metadata:
 
 "@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
   version: 13.0.0
-  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=82b02e&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=949d3a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5054,13 +5054,13 @@ __metadata:
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
     reselect: ^5.1.1
-  checksum: 10/5ab7eaeb8ac3989f53d34977e77f6dfbad591ea671ff9f3d50e9a1ec7e7f039ffc82528947d93d06513ad666202576f72bfa95efb6d1ad1d9acffc7cb588a201
+  checksum: 10/fdb08375b6c9d7511f5705b4dd1afdea83cacbc5fd2c598dcf2f9d86efb545e7f75e6803e0a233ea76f9e7f2aad5671ea3e278fd942db7366281961efa6a3670
   languageName: node
   linkType: hard
 
 "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
   version: 12.0.1
-  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=440551&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=aa1252&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bridge-controller": "npm:^13.0.0"
@@ -5068,12 +5068,13 @@ __metadata:
     "@metamask/polling-controller": "npm:^13.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.2.0"
+    uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/5fcd9c6a1f7081757f350e3c155cfdf70350588ecf304ea40b057e58298d611bdf6d1616a0d0ee5d1e9df2387c5d799db10d3d3da2a7a001b1040dd2cdfe154c
+  checksum: 10/b4cc7e19d9a16c96236db721937838e5f2b0880d020f497a054a28890eb24217e2c8a9f96022aff08445ca1f159c269175bdcb11233b76133f1b1d726bd08de4
   languageName: node
   linkType: hard
 

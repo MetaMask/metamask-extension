@@ -254,6 +254,7 @@ import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
+  DEFAULT_SMART_TRANSACTIONS_ENABLED,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -353,7 +354,11 @@ import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-b
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
-import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import {
+  addDappTransaction,
+  addTransaction,
+  validateSecurity,
+} from './lib/transaction/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
@@ -1649,6 +1654,8 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
+          'TokensController:addToken',
+          'PreferencesController:getState',
           'SnapController:handleRequest',
           'TransactionController:getState',
         ],
@@ -1663,8 +1670,11 @@ export default class MetamaskController extends EventEmitter {
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
+      validateTransactionFn: validateSecurity,
+      addTransactionFn: this.txController.addTransaction,
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+        smartTransactionsEnabledByDefault: DEFAULT_SMART_TRANSACTIONS_ENABLED,
       },
     });
 
