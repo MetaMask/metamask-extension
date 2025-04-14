@@ -20,14 +20,14 @@ export function NestedTransactionTag() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
+  const functionNames = useNestedTransactionLabels({ nestedTransactions });
 
   const isBatch = Boolean(nestedTransactions?.length);
 
-  if (!isBatch || !nestedTransactions) {
+  if (!isBatch) {
     return null;
   }
 
-  const functionNames = useNestedTransactionLabels({ nestedTransactions });
   const tooltip = t('transactionIncludesTypes', [functionNames.join(', ')]);
 
   return (
