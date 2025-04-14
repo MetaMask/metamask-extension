@@ -52,6 +52,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
   // Then it forwards the message to the live ledger iframe
   chrome.runtime.onMessage.addListener(
     (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg: {
         target: string;
         action: LedgerAction;
@@ -62,6 +64,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
       _sender,
       sendResponse,
     ) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
         return;
       }
@@ -84,6 +88,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
       // the messageId which will be included in the response so that it can be
       // routed accordingly through the callback-processor.
       const iframeMsg = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         ...msg,
         target: LEDGER_FRAME_TARGET,
         messageId,

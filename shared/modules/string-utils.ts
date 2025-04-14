@@ -24,6 +24,10 @@ export function isEqualCaseInsensitive(
  * @param num
  * @param maxLength
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export function prependZero(num: number, maxLength: number): string {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   return num.toString().padStart(maxLength, '0');
 }

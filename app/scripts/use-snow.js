@@ -11,6 +11,8 @@ Changing this code must be done cautiously to avoid breaking the app!
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
   // eslint-disable-next-line no-undef, no-restricted-globals
   const isWorker = !self.document;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const msg =
     'Snow detected a new realm creation attempt in MetaMask. Performing scuttling on new realm.';
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888

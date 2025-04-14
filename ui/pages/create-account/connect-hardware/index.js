@@ -522,6 +522,8 @@ const mapDispatchToProps = (dispatch) => {
         ),
       );
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
   };

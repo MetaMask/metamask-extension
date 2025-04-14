@@ -73,6 +73,8 @@ export default class Backup {
 
     const date = new Date();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const prefixZero = (num) => prependZero(num, 2);
 
     /*

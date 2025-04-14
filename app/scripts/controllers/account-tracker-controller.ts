@@ -653,6 +653,8 @@ export default class AccountTrackerController extends BaseController<
 
     try {
       await this.updateAccounts(networkClientId);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       log.error(err);
     }

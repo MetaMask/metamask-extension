@@ -68,11 +68,15 @@ export function getVersion(binPath: string): Buffer {
   try {
     return execFileSync(binPath, ['--version']).subarray(0, -1); // ignore newline
   } catch (error: unknown) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const msg = `Failed to get version for ${binPath}
 
 Your selected platform or architecture may be incorrect, or the binary may not
 support your system. If you believe this is an error, please report it.`;
     if (error instanceof Error) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       error.message = `${msg}\n\n${error.message}`;
       throw error;
     }

@@ -67,6 +67,8 @@ describe('permission background API methods', () => {
         setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccount('foo.com', '0x1');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -134,6 +136,8 @@ describe('permission background API methods', () => {
           permissionController,
           accountsController,
         }).addPermittedAccount('foo.com', '0x4');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -319,6 +323,8 @@ describe('permission background API methods', () => {
         setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedAccounts('foo.com', ['0x1']);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -386,6 +392,8 @@ describe('permission background API methods', () => {
           permissionController,
           accountsController,
         }).addPermittedAccounts('foo.com', ['0x4', '0x5']);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -592,6 +600,8 @@ describe('permission background API methods', () => {
         setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedAccount('foo.com', '0x1');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -659,6 +669,8 @@ describe('permission background API methods', () => {
           permissionController,
           accountsController,
         }).removePermittedAccount('foo.com', '0x1');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -942,6 +954,8 @@ describe('permission background API methods', () => {
         setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChain('foo.com', 'eip155:1');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -1060,6 +1074,8 @@ describe('permission background API methods', () => {
         setupPermissionBackgroundApiMethods({
           permissionController,
         }).addPermittedChains('foo.com', ['eip155:1']);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }
@@ -1181,6 +1197,8 @@ describe('permission background API methods', () => {
         setupPermissionBackgroundApiMethods({
           permissionController,
         }).removePermittedChain('foo.com', 'eip155:1');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         // noop
       }

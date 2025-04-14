@@ -80,12 +80,16 @@ function QrCodeView({
     <div className="qr-code">
       {Array.isArray(message) ? (
         <div className="qr-code__message-container">
+          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889 */}
+          {/* eslint-disable-next-line id-denylist */}
           {message.map((msg, index) => (
             <Text
               key={index}
               variant={TextVariant.bodyXs}
               color={TextColor.warningDefault}
             >
+              {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889 */}
+              {/* eslint-disable-next-line id-denylist */}
               {msg}
             </Text>
           ))}

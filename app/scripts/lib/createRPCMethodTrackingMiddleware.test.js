@@ -121,6 +121,8 @@ function getNext(timeout = 500) {
       resolve,
     };
   });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const cb = () => deferred.resolve();
   let triggerNext;
   setTimeout(() => {

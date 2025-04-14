@@ -3356,6 +3356,8 @@ export function getAllPermittedChainsForSelectedTab(state, activeTab) {
     try {
       const { namespace } = parseCaipChainId(caipChainId);
       return namespace !== KnownCaipNamespace.Wallet;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       return false;
     }

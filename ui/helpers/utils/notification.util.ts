@@ -140,6 +140,8 @@ const defaultFormatOptions = {
  * of a number or a string.
  * @returns The count of leading zeros in the fractional part of the number.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export const getLeadingZeroCount = (num: number | string) => {
   const numToString = new BigNumber(num, 10).toString(10);
   const fractionalPart = numToString.split('.')[1] ?? '';

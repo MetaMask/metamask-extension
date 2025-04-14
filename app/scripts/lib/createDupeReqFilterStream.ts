@@ -51,6 +51,8 @@ const makeExpirySet = () => {
 export default function createDupeReqFilterStream() {
   const seenRequestIds = makeExpirySet();
   return new Transform({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     transform(chunk: JsonRpcRequest, _, cb) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
       const hasNoId = chunk.id === undefined;

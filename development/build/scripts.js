@@ -998,6 +998,8 @@ function setupReloadOnChange({ bundlerOpts, events }) {
   events.on('configurePipeline', ({ bundleStream }) => {
     // Handle build error to avoid breaking build process
     // (eg on syntax error)
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     bundleStream.on('error', (err) => {
       gracefulError(err);
     });
@@ -1262,6 +1264,8 @@ function beep() {
   process.stdout.write('\x07');
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 function gracefulError(err) {
   console.warn(err);
   beep();

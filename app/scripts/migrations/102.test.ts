@@ -56,6 +56,8 @@ describe('migration #102', () => {
         transactions: {
           tx1: {
             to: '0x9ef57335bc7d5b6cbc06dca6064a604b75e09ace',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             err: {
               message: 'nonce too high',
               rpc: 'rpc_error',
@@ -69,6 +71,8 @@ describe('migration #102', () => {
           },
           tx3: {
             to: '0x9ef57335bc7d5b6cbc06dca6064a604b75e09ace',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             err: {
               message: 'mocked error',
               rpc: 'rpc_error',

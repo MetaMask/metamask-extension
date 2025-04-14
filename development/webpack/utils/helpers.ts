@@ -208,7 +208,11 @@ export const { colors, toGreen, toOrange, toPurple } = ((depth, esc) => {
  * @param err - If not `undefined`, logs the error to `process.stderr`.
  * @param stats - If not `undefined`, logs the stats to `process.stderr`.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 export function logStats(err?: Error | null, stats?: Stats) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (err) {
     console.error(err);
     return;

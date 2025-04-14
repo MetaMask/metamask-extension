@@ -640,6 +640,8 @@ export async function loadStateFromPersistence() {
     migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   migrator.on('error', (err) => {
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
@@ -996,9 +998,15 @@ export function setupController(
 
         trackDappView(remotePort);
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         remotePort.onMessage.addListener((msg) => {
           if (
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             msg.data &&
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS
           ) {
             requestAccountTabIds[origin] = tabId;

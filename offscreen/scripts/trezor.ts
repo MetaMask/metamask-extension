@@ -17,6 +17,8 @@ import {
 export default function init() {
   chrome.runtime.onMessage.addListener(
     (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg: {
         target: string;
         action: TrezorAction;
@@ -27,10 +29,14 @@ export default function init() {
       _sender,
       sendResponse,
     ) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       if (msg.target !== OffscreenCommunicationTarget.trezorOffscreen) {
         return;
       }
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       switch (msg.action) {
         case TrezorAction.init:
           TrezorConnectSDK.on(DEVICE_EVENT, (event) => {
@@ -55,6 +61,8 @@ export default function init() {
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           TrezorConnectSDK.init({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             ...msg.params,
             env: 'webextension',
           }).then(() => {
@@ -75,7 +83,8 @@ export default function init() {
 
         case TrezorAction.getPublicKey:
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises, id-denylist
           TrezorConnectSDK.getPublicKey(msg.params).then((result) => {
             sendResponse(result);
           });
@@ -84,7 +93,8 @@ export default function init() {
 
         case TrezorAction.signTransaction:
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises, id-denylist
           TrezorConnectSDK.ethereumSignTransaction(msg.params).then(
             (result) => {
               sendResponse(result);
@@ -95,7 +105,8 @@ export default function init() {
 
         case TrezorAction.signMessage:
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises, id-denylist
           TrezorConnectSDK.ethereumSignMessage(msg.params).then((result) => {
             sendResponse(result);
           });
@@ -104,7 +115,8 @@ export default function init() {
 
         case TrezorAction.signTypedData:
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises, id-denylist
           TrezorConnectSDK.ethereumSignTypedData(msg.params).then((result) => {
             sendResponse(result);
           });

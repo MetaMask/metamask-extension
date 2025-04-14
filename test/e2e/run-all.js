@@ -252,8 +252,14 @@ async function main() {
       path.resolve('dist/chrome'),
       path.resolve('dist/chrome2'),
       { recursive: true },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       (err) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (err) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           throw err;
         }
       },

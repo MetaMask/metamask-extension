@@ -208,6 +208,8 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   snapOptions: undefined,
 });
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,

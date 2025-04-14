@@ -147,8 +147,11 @@ export default class AdvancedTab extends PureComponent {
               data-testid="advanced-setting-state-logs-button"
               onClick={() => {
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-                // eslint-disable-next-line no-restricted-globals
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+                // eslint-disable-next-line no-restricted-globals, id-denylist
                 window.logStateString(async (err, result) => {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+                  // eslint-disable-next-line id-denylist
                   if (err) {
                     displayErrorInSettings(t('stateLogError'));
                   } else {

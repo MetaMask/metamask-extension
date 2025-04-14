@@ -23,6 +23,8 @@ const { Transform } = OurReadableStream;
 function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
   const transformStream = createDupeReqFilterStream();
   const testOutStream = new S({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     transform: (chunk: JsonRpcRequest, _, cb) => {
       output.push(chunk);
       cb();
@@ -48,6 +50,8 @@ async function runStreamTest(
 
     testStream
       .on('finish', () => resolve(output))
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       .on('error', (err) => reject(err));
 
     requests.forEach((request) => testStream.write(request));
@@ -385,6 +389,8 @@ describe('createDupeReqFilterStream', () => {
           const output: JsonRpcRequest[] = [];
           const testStream = createDupeReqFilterStream();
           const testOutStream = new S({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             transform: (chunk: JsonRpcRequest, _, cb) => {
               output.push(chunk);
               cb();

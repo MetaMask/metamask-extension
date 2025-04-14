@@ -256,6 +256,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               const { namespace: chainNamespace } =
                 parseCaipChainId(caipChainId);
               return accountNamespace === chainNamespace;
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             } catch (err) {
               return false;
             }
@@ -268,6 +270,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               const { namespace: chainNamespace } =
                 parseCaipChainId(caipChainId);
               return accountNamespace === chainNamespace;
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             } catch (err) {
               return false;
             }

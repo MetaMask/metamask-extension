@@ -52,6 +52,8 @@ const tearDownMockMiddlewareLog = () => {
 const createLoggerMiddlewareMock = () => (req, res, next) => {
   if (loggerMiddlewareMock) {
     loggerMiddlewareMock.requests.push(req);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     next((cb) => {
       loggerMiddlewareMock.responses.push(res);
       cb();

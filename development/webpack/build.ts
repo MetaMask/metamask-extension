@@ -53,12 +53,20 @@ export function build(onComplete: () => void = noop) {
     console.error(`🦊 Running ${options.mode} build…`);
     if (watch) {
       // once HMR is ready (__HMR_READY__ variable), this section should be removed.
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       compiler.watch(options.watchOptions, (err, stats) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         logStats(err ?? undefined, stats);
         console.error('🦊 Watching for changes…');
       });
     } else {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       compiler.run((err, stats) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         logStats(err ?? undefined, stats);
         // `onComplete` must be called synchronously _before_ `compiler.close`
         // or the caller might observe output from the `close` command.

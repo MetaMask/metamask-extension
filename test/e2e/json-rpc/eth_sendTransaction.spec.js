@@ -95,7 +95,11 @@ describe('eth_sendTransaction', function () {
           .then((data) => {
             return data;
           })
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           .catch((err) => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             return err;
           });
         assert.ok(

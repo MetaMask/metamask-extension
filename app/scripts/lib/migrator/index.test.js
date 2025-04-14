@@ -53,13 +53,18 @@ describe('migrations', () => {
           }
           return acc;
         }, [])
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .map((num) => parseInt(num, 10));
     });
 
     it('should include all migrations', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       migrationNumbers.forEach((num) => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-length, id-denylist
         const migration = liveMigrations.find((m) => m.version === num);
         expect(migration.version).toStrictEqual(num);
       });
@@ -76,9 +81,15 @@ describe('migrations', () => {
           }
           return acc;
         }, [])
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .map((num) => parseInt(num, 10));
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       migrationNumbers.forEach((num) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (num >= 33) {
           expect(testNumbers).toContain(num);
         }

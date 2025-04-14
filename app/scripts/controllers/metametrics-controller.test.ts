@@ -1876,6 +1876,8 @@ describe('MetaMetricsController', function () {
     it('should remove event from store when callback is invoked', async function () {
       const segmentInstance = createSegmentMock(2);
       const stubFn = (...args: unknown[]) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         const cb = args[1] as () => void;
         cb();
       };

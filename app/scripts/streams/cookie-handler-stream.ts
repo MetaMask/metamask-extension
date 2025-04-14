@@ -57,6 +57,8 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
     cookieHandlerPageMux,
     cookieHandlerPageStream,
     cookieHandlerPageMux,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     (err: Error) =>
       logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
@@ -89,6 +91,8 @@ export const setupCookieHandlerExtStreams = (): void => {
     cookieHandlerMux,
     cookieHandlerExtStream,
     cookieHandlerMux,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     (err: Error) => {
       logStreamDisconnectWarning('MetaMask Background Multiplex', err);
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
@@ -156,6 +160,8 @@ const destroyCookieExtStreams = () => {
  * so that streams may be re-established later the phishing extension port is reconnected.
  */
 const onDisconnectDestroyCookieStreams = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const err = checkForLastError();
 
   cookieHandlerExtPort.onDisconnect.removeListener(
@@ -171,16 +177,24 @@ const onDisconnectDestroyCookieStreams = () => {
    * may cause issues. We suspect that this is a chromium bug as this event should only be called
    * once the port and connections are ready. Delay time is arbitrary.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (err) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 const onMessageSetUpCookieHandlerStreams = (msg: {
   name: string;
   origin: string;
 }): Promise<string | undefined> | undefined => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!cookieHandlerExtStream) {
       setupCookieHandlerExtStreams();

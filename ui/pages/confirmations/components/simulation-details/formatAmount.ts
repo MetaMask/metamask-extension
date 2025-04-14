@@ -11,6 +11,8 @@ const ZERO_DISPLAY = '0';
 
 export function formatAmountMaxPrecision(
   locale: string,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   num: number | BigNumber,
 ): string {
   const bigNumberValue = new BigNumber(num);

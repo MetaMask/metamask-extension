@@ -182,6 +182,8 @@ const registerInPageContentScript = async () => {
         allFrames: true,
       },
     ]);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     /**
      * An error occurs when app-init.js is reloaded. Attempts to avoid the duplicate script error:
@@ -190,6 +192,8 @@ const registerInPageContentScript = async () => {
      * 2. await chrome.scripting.getRegisteredContentScripts() to check for an existing
      *    inpage script before registering - The provider is not loaded on time.
      */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     console.warn(`Dropped attempt to register inpage content script. ${err}`);
   }
 };

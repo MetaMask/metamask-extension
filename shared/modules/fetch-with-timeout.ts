@@ -34,6 +34,8 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
 
     const combinedAbortController = new AbortController();
     const abortHandler = () => combinedAbortController.abort();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
@@ -50,7 +52,11 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
       return await f;
     } finally {
       clearTimeout(timer);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       abortSignals.forEach((sig) =>
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         sig.removeEventListener('abort', abortHandler),
       );
     }

@@ -655,6 +655,8 @@ describe('util', () => {
     });
 
     it('should return parsed nested array with struct if defined', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const msg = {
         nestedPeople: [
           [

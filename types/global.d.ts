@@ -256,7 +256,11 @@ type StateHooks = {
     persistedState?: any;
   };
   metamaskGetState?: () => Promise<any>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   throwTestError?: (msg?: string) => void;
   /**
    * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in

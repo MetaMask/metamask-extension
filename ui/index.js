@@ -276,7 +276,8 @@ function setupStateHooks(store) {
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line no-restricted-globals, id-denylist
     window.stateHooks.throwTestError = async function (msg = 'Test Error') {
       const error = new Error(msg);
       error.name = 'TestError';
@@ -292,6 +293,8 @@ function setupStateHooks(store) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
     // eslint-disable-next-line no-restricted-globals
     window.stateHooks.throwTestBackgroundError = async function (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = 'Test Error',
     ) {
       await actions.throwTestBackgroundError(msg);
@@ -333,7 +336,8 @@ function setupStateHooks(store) {
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-// eslint-disable-next-line no-restricted-globals
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line no-restricted-globals, id-denylist
 window.logStateString = async function (cb) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
   // eslint-disable-next-line no-restricted-globals
@@ -349,6 +353,8 @@ window.logStateString = async function (cb) {
       const stateString = JSON.stringify(state, null, 2);
       cb(null, stateString);
     })
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     .catch((err) => {
       cb(err);
     });
@@ -358,9 +364,14 @@ window.logStateString = async function (cb) {
 // eslint-disable-next-line no-restricted-globals
 window.logState = function (toClipboard) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line no-restricted-globals, id-denylist
   return window.logStateString((err, result) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     if (err) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       console.error(err.message);
     } else if (toClipboard) {
       copyToClipboard(result, COPY_OPTIONS);

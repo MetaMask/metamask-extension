@@ -14,10 +14,16 @@ const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 const getBackupJson = async () => {
   const date = new Date();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const prependZero = (num, maxLength) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     return num.toString().padStart(maxLength, '0');
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const prefixZero = (num) => prependZero(num, 2);
 
   /*

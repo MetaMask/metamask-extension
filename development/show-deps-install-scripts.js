@@ -5,8 +5,14 @@ const readInstalled = require('read-installed');
 
 const installScripts = ['preinstall', 'install', 'postinstall'];
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 readInstalled('./', { dev: true }, function (err, data) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (err) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     throw err;
   }
 

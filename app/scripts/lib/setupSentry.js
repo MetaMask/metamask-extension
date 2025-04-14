@@ -440,6 +440,8 @@ export function rewriteReport(report) {
     });
 
     report.tags.installType = installType;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     log('Error rewriting report', err);
   }

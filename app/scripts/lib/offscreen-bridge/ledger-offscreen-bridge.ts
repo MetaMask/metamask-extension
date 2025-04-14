@@ -32,9 +32,15 @@ export class LedgerOffscreenBridge
   isDeviceConnected = false;
 
   async init() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     chrome.runtime.onMessage.addListener((msg) => {
       if (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg.target === OffscreenCommunicationTarget.extension &&
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
       ) {
         this.isDeviceConnected = true;

@@ -112,10 +112,14 @@ export const NetworksForm = ({
   const { safeChains } = useSafeChains();
 
   const [errors, setErrors] = useState<
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     Record<string, { key: string; msg: string } | undefined>
   >({});
 
   const [warnings, setWarnings] = useState<
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     Record<string, { key: string; msg: string } | undefined>
   >({});
 
@@ -145,6 +149,8 @@ export const NetworksForm = ({
       name: mismatch
         ? {
             key: 'wrongNetworkName',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             msg: t('wrongNetworkName'),
           }
         : undefined,
@@ -169,6 +175,8 @@ export const NetworksForm = ({
       ticker: mismatch
         ? {
             key: 'chainListReturnedDifferentTickerSymbol',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             msg: t('chainListReturnedDifferentTickerSymbol'),
           }
         : undefined,
@@ -225,7 +233,11 @@ export const NetworksForm = ({
 
     setErrors((state) => ({
       ...state,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       chainId: error ? { key: error[0], msg: error[1] } : undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
     }));
   }, [chainId, fetchedChainId, existingNetwork?.chainId]);
@@ -240,6 +252,8 @@ export const NetworksForm = ({
         .then((response) => {
           setFetchedChainId(response as string);
         })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         .catch((err) => {
           setFetchedChainId(undefined);
           log.warn('Failed to fetch the chainId from the endpoint.', err);
@@ -247,6 +261,8 @@ export const NetworksForm = ({
             ...state,
             rpcUrl: {
               key: 'failedToFetchChainId',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+              // eslint-disable-next-line id-denylist
               msg: t('failedToFetchChainId'),
             },
           }));

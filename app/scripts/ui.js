@@ -265,6 +265,8 @@ async function initializeUiWithTab(
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
       global.platform.openExtensionInBrowser();
     }
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     displayCriticalError('troubleStarting', err);
   }
@@ -333,6 +335,8 @@ async function initializeUi(activeTab, connectionStream, traceContext) {
   });
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 async function displayCriticalError(errorKey, err, metamaskState) {
   const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
 
@@ -346,7 +350,11 @@ async function displayCriticalError(errorKey, err, metamaskState) {
     browser.runtime.reload();
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   log.error(err.stack);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   throw err;
 }
 

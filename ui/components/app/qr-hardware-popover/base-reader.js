@@ -159,20 +159,32 @@ const BaseReader = ({
   };
 
   const renderError = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     let title, msg;
     if (error.type === 'NO_WEBCAM_FOUND') {
       title = t('noWebcamFoundTitle');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = t('noWebcamFound');
     } else if (error.message === t('unknownQrCode')) {
       if (isReadingWallet) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg = t('QRHardwareUnknownWalletQRCode');
       } else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg = t('unknownQrCode');
       }
     } else if (error.message === t('QRHardwareMismatchedSignId')) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = t('QRHardwareMismatchedSignId');
     } else {
       title = t('generalCameraErrorTitle');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = t('generalCameraError');
     }
 
@@ -183,6 +195,8 @@ const BaseReader = ({
         </div>
         {title ? <div className="qr-scanner__title">{title}</div> : null}
         <div className="qr-scanner__error" data-testid="qr-scanner__error">
+          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889 */}
+          {/* eslint-disable-next-line id-denylist */}
           {msg}
         </div>
         <PageContainerFooter

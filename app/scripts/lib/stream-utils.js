@@ -17,8 +17,12 @@ export function setupMultiplex(connectionStream) {
    * https://github.com/MetaMask/object-multiplex/blob/280385401de84f57ef57054d92cfeb8361ef2680/src/ObjectMultiplex.ts#L63
    */
   mux.ignoreStream(EXTENSION_MESSAGES.CONNECTION_READY);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(connectionStream, mux, connectionStream, (err) => {
     // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     if (err && !err.message?.match('Premature close')) {
       console.error(err);
     }

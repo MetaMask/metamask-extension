@@ -65,6 +65,8 @@ export class CaipStream extends Duplex {
 export const createCaipStream = (portStream: Duplex): Duplex => {
   const caipStream = new CaipStream();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   pipeline(portStream, caipStream, portStream, (err: Error) => {
     caipStream.substream.destroy();
     console.log('MetaMask CAIP stream', err);

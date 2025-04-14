@@ -9,7 +9,11 @@ export default function failTxsThat(version, reason, condition) {
       const state = versionedData.data;
       const newState = transformState(state, condition, reason);
       versionedData.data = newState;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       console.warn(`MetaMask Migration #${version}${err.stack}`);
     }
     return Promise.resolve(versionedData);
@@ -28,6 +32,8 @@ function transformState(state, condition, reason) {
       }
 
       txMeta.status = TransactionStatus.failed;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       txMeta.err = {
         message: reason,
         note: `Tx automatically failed by migration because ${reason}`,

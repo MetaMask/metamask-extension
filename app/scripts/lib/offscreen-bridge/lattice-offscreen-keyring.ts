@@ -64,7 +64,8 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
 
       return creds;
       // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-denylist
     } catch (err: any) {
       throw new Error(err);
     }

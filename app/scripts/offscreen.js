@@ -41,9 +41,15 @@ export async function createOffscreen() {
 
   let offscreenDocumentLoadedListener;
   const loadPromise = new Promise((resolve) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     offscreenDocumentLoadedListener = (msg) => {
       if (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg.target === OffscreenCommunicationTarget.extensionMain &&
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         msg.isBooted
       ) {
         chrome.runtime.onMessage.removeListener(
@@ -53,6 +59,8 @@ export async function createOffscreen() {
 
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
         // start the SocketBackgroundToMocha.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (process.env.IN_TEST && msg.webdriverPresent) {
           getSocketBackgroundToMocha();
         }

@@ -99,12 +99,16 @@ export default class Analytics {
    * @param {object} msg
    * @param {Function} [callback] - (optional)
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   enqueue(type, msg, callback = noop) {
     if (!this.enable) {
       setImmediate(callback);
       return;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const message = { ...msg, type };
 
     // Specifying library here helps segment to understand structure of request.
@@ -182,6 +186,8 @@ export default class Analytics {
       sentAt: new Date(),
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const done = (err) => {
       setImmediate(() => {
         callbacks.forEach((fn) => fn(err, data));

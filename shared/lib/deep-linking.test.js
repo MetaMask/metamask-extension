@@ -21,6 +21,8 @@ describe('#openCustomProtocol', () => {
     });
 
     it('successfully open when protocol found', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       mockMsLaunchUri.mockImplementation((_protocol, cb) => cb());
 
       await openCustomProtocol('TEST PROTOCOL');
@@ -42,7 +44,8 @@ describe('#openCustomProtocol', () => {
 
   describe('without msLaunchUri available', () => {
     it('successfully open when protocol found', async () => {
-      // eslint-disable-next-line consistent-return
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line consistent-return, id-denylist
       const mockAddEventListener = jest.fn().mockImplementation((event, cb) => {
         if (event === 'blur') {
           return cb();

@@ -220,6 +220,8 @@ const mapDispatchToProps = (dispatch) => {
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     setNewTokensImportedError: (msg) => {
       dispatch(setNewTokensImportedError(msg));
     },

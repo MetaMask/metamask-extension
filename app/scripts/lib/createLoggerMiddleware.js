@@ -13,6 +13,8 @@ export default function createLoggerMiddleware(opts) {
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     next((/** @type {Function} */ cb) => {
       if (res.error) {
         log.debug('Error in RPC response:\n', res);

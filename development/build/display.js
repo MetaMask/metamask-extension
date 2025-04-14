@@ -95,6 +95,8 @@ function barBuilder(start, end) {
 
 // get integer and remainder
 function splitNumber(value = 0) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const [int, rest = '0'] = value.toString().split('.');
   const int2 = parseInt(int, 10);
   const rest2 = parseInt(rest, 10) / Math.pow(10, rest.length);

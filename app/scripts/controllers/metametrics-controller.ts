@@ -106,10 +106,14 @@ export const overrideAnonymousEventNames = {
     MetaMetricsEventName.SignatureRejectedAnon,
 } as const;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+// eslint-disable-next-line id-denylist
 const defaultCaptureException = (err: unknown) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
   // but does not interrupt the call stack
   setTimeout(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     throw err;
   });
 };
@@ -316,6 +320,8 @@ export type MetaMetricsControllerMessenger = RestrictedMessenger<
 
 type CaptureException =
   | typeof sentryCaptureException
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   | ((err: unknown) => void);
 
 export type MetaMetricsControllerOptions = {
@@ -399,6 +405,8 @@ export default class MetaMetricsController extends BaseController<
       messenger,
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     this.#captureException = (err: unknown) => {
       const message = getErrorMessage(err);
       // This is a temporary measure. Currently there are errors flooding sentry due to a problem in how we are tracking anonymousId
@@ -919,6 +927,8 @@ export default class MetaMetricsController extends BaseController<
         },
         context: this.#buildContext(referrer, page),
       });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       this.#captureException(err);
     }
@@ -936,6 +946,8 @@ export default class MetaMetricsController extends BaseController<
   ): void {
     // validation is not caught and handled
     this.#validatePayload(payload);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     this.#submitEvent(payload, options).catch((err) => {
       this.#captureException(err);
     });
@@ -1402,6 +1414,8 @@ export default class MetaMetricsController extends BaseController<
         userId: metaMetricsId ?? undefined,
         traits: userTraits,
       });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       this.#captureException(err);
     }
@@ -1515,9 +1529,17 @@ export default class MetaMetricsController extends BaseController<
     // updates, or otherwise delaying user interaction, supply the
     // 'flushImmediately' flag to the trackEvent method.
     return new Promise<void>((resolve, reject) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const callback = (err: unknown) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         if (err) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           const message = isErrorWithMessage(err) ? err.message : '';
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           const stack = isErrorWithStack(err) ? err.stack : undefined;
           // The error that segment gives us has some manipulation done to it
           // that seemingly breaks with lockdown enabled. Creating a new error

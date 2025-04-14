@@ -210,14 +210,22 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
   };
 
   const renderError = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     let title, msg;
     if (errorData.type === 'NO_WEBCAM_FOUND') {
       title = t('noWebcamFoundTitle');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = t('noWebcamFound');
     } else if (errorData.message === t('unknownQrCode')) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = t('unknownQrCode');
     } else {
       title = t('generalCameraErrorTitle');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       msg = t('generalCameraError');
     }
 
@@ -227,6 +235,8 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
           <img src="images/webcam.svg" width="70" height="70" alt="" />
         </div>
         {title && <div className="qr-scanner__title">{title}</div>}
+        {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889 */}
+        {/* eslint-disable-next-line id-denylist */}
         <div className="qr-scanner__error">{msg}</div>
         <PageContainerFooter
           onCancel={stopAndClose}

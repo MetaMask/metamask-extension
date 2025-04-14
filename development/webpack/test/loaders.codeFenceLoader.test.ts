@@ -58,6 +58,8 @@ console.log('I am Groot.');
       const returnValue = codeFenceLoader.call(data.context, data.source);
 
       assert.strictEqual(returnValue, undefined, 'should return undefined');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const [err, content] = await data.deferredPromise;
       assert.strictEqual(err, null);
       assert.strictEqual(content, data.expected);
@@ -85,9 +87,13 @@ console.log('I am Groot.');
     data.source = '///: BEGIN:ONLY_INCLUDE_IF\nconsole.log("I am Groot.");\n'; // invalid because there is no end comment
     const returnValue = codeFenceLoader.call(data.context, data.source);
     assert.strictEqual(returnValue, undefined, 'should return undefined');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     const [err, content] = await data.deferredPromise;
     assert(err);
     assert.deepStrictEqual(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       err.message,
       'Invalid code fence parameters in file "<resource-path>":\nNo parameters specified.',
     );

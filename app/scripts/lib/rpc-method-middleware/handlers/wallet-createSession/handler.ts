@@ -139,6 +139,8 @@ async function walletCreateSessionHandler(
       try {
         hooks.findNetworkClientIdByChainId(chainId);
         return true;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       } catch (err) {
         return false;
       }
@@ -281,6 +283,8 @@ async function walletCreateSessionHandler(
       sessionProperties: approvedSessionProperties,
     };
     return end();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     return end(err);
   }

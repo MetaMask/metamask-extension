@@ -156,9 +156,13 @@ function loadBuildTypesConfig() {
     return cachedBuildTypes;
   }
   const buildsData = yaml.parse(fs.readFileSync(BUILDS_YML_PATH, 'utf8'));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const [err, result] = validate(buildsData, BuildTypesStruct, {
     coerce: true,
   });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   if (err !== undefined) {
     throw new AssertionError({
       message: constructFailureMessage(err),

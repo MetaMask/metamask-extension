@@ -36,6 +36,8 @@ import {
 describe('Transaction Selectors', () => {
   describe('unapprovedMessagesSelector', () => {
     it('returns personal sign from unapprovedPersonalMsgsSelector', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const msg = {
         id: 1,
         msgParams: {
@@ -51,6 +53,8 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           unapprovedPersonalMsgs: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             1: msg,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
@@ -60,10 +64,14 @@ describe('Transaction Selectors', () => {
       const msgSelector = unapprovedMessagesSelector(state);
 
       expect(Array.isArray(msgSelector)).toStrictEqual(true);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       expect(msgSelector).toStrictEqual([msg]);
     });
 
     it('returns typed message from unapprovedTypedMessagesSelector', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       const msg = {
         id: 1,
         msgParams: {
@@ -80,6 +88,8 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           unapprovedTypedMessages: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
             1: msg,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
@@ -89,6 +99,8 @@ describe('Transaction Selectors', () => {
       const msgSelector = unapprovedMessagesSelector(state);
 
       expect(Array.isArray(msgSelector)).toStrictEqual(true);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
       expect(msgSelector).toStrictEqual([msg]);
     });
   });

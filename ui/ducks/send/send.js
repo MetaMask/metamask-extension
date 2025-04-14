@@ -2723,6 +2723,8 @@ export function updateSendAsset(
               details.address,
               details.tokenId,
             );
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
           } catch (err) {
             const message = getErrorMessage(err);
             if (message.includes('Unable to verify ownership.')) {

@@ -176,6 +176,8 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
     swcrc: false,
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   const cb = this.async();
   transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
 }

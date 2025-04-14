@@ -18,6 +18,8 @@ export const readAddressAsContract = async (
       params: [address, 'latest'],
     });
     contractCode = addHexPrefix(padToEven(result.slice(2)));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+  // eslint-disable-next-line id-denylist
   } catch (err) {
     // TODO(@dbrans): Dangerous to swallow errors here.
     contractCode = null;

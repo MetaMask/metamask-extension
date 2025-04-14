@@ -100,6 +100,8 @@ export default function setupEnsIpfsResolver({
           if (response.status === 200) {
             url = resolvedUrl;
           }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
         } catch (err) {
           console.warn(err);
         }
@@ -127,6 +129,8 @@ export default function setupEnsIpfsResolver({
           search || ''
         }${fragment || ''}`;
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
     } catch (err) {
       console.warn(err);
     } finally {
